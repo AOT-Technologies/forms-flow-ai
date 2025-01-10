@@ -1,11 +1,13 @@
-.badge-pill {
-    cursor: default;
-    border: 1px solid !important;
-    color: var(--color-gray-800);
-    background-color: transparent !important;
-    height: 32px !important;
-    padding: 10px !important;
-}
+@import "../../../variables.scss";
+
+// .badge-pill {
+//     cursor: default;
+//     border: 1px solid !important;
+//     color: $gray-800;
+//     background-color: transparent !important;
+//     height: 32px !important;
+//     padding: 10px !important;
+// }
 
 .text-hover {
     font-size: 18px;
@@ -20,9 +22,9 @@
 
 .badge-deleteIcon {
     font-size: 18px;
-    color: var(--color-white);
+    color: $white;
     border-radius: 22px;
-    background-color: var(--color-gray-400);
+    background-color: $gray-400;
     width: 18px !important;
     cursor: pointer;
     height: 18px !important;
@@ -30,7 +32,7 @@
 }
 
 .badge-deleteIcon:hover {
-    background-color: var(--color-gray-600) !important;
+    background-color: $gray-600 !important;
 }
 
 .poper {
@@ -39,7 +41,7 @@
 }
 
 .workflow-taskVariable {
-    border-bottom: 3px solid var(--color-primary) !important;
+    border-bottom: 3px solid $primary !important;
 }
 
 .add-task{

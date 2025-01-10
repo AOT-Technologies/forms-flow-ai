@@ -3,6 +3,7 @@ version: "3.7"
 
 volumes:
   postgres:
+  keycloak_custom_data:
   
 networks:
   keycloak-server-network:
@@ -20,35 +21,44 @@ services:
       POSTGRES_USER: ${KEYCLOAK_JDBC_USER:-admin}
       POSTGRES_PASSWORD: ${KEYCLOAK_JDBC_PASSWORD:-changeme}
     ports:
-      - 5431:5431
+      - 5431:5432
     networks:
       - keycloak-server-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.7
+    image: quay.io/keycloak/keycloak:25.0.4
     restart: unless-stopped
     container_name: keycloak
     volumes:
-      - ./imports:/opt/keycloak/data/import
-      - ./themes/formsflow:/opt/keycloak/themes/formsflow
-      - ./start-keycloak.sh:/opt/keycloak/bin/start-keycloak.sh
-    entrypoint: ["/bin/bash", "/opt/keycloak/bin/start-keycloak.sh"]
+      - keycloak_custom_data:/keycloak_custom_data
+    entrypoint: ["/bin/bash", "-c", "/keycloak_custom_data/start-keycloak.sh"]
     environment:
-      - DB_VENDOR=POSTGRES
-      - DB_ADDR=keycloak-db
-      - DB_PORT=5432
-      - DB_DATABASE=${KEYCLOAK_JDBC_DB:-keycloak}
-      - DB_USER=${KEYCLOAK_JDBC_USER-admin}
-      - DB_PASSWORD=${KEYCLOAK_JDBC_PASSWORD:-changeme}
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=keycloak-db
+      - KC_DB_URL_PORT=5432
+      - KC_DB_URL_DATABASE=${KEYCLOAK_JDBC_DB:-keycloak}
+      - KC_DB_USERNAME=${KEYCLOAK_JDBC_USER:-admin}
+      - KC_DB_PASSWORD=${KEYCLOAK_JDBC_PASSWORD:-changeme}
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USER:-admin}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
       - KEYCLOAK_START_MODE=${KEYCLOAK_START_MODE:-start-dev}
       - KEYCLOAK_HTTP_PATH=${KEYCLOAK_HTTP_PATH:-/auth}
-
     ports:
       - "8080:8080"
-    links:
+    depends_on:
       - keycloak-db
+      - keycloak-customizations
     networks:
       - keycloak-server-network
-   
+
+  keycloak-customizations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - keycloak_custom_data:/custom
+    command: /bin/sh
+    tty: true
+    stdin_open: true    
+    networks:
+      - keycloak-server-network

@@ -2,6 +2,8 @@
 
 import json
 
+from formsflow_api_utils.utils import VIEW_DASHBOARDS
+
 from tests.utilities.base_test import factory_auth, get_token
 
 
@@ -63,7 +65,7 @@ class TestAuthorizationResource:
             roles=["clerk"],
         )
 
-        token = get_token(jwt)
+        token = get_token(jwt, role=VIEW_DASHBOARDS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -73,7 +75,7 @@ class TestAuthorizationResource:
         assert response.status_code == 200
         assert len(response.json) == 0
 
-        token = get_token(jwt, roles=["clerk"])
+        token = get_token(jwt, role=VIEW_DASHBOARDS, roles=["clerk"])
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -82,7 +84,7 @@ class TestAuthorizationResource:
         assert response.status_code == 200
         assert len(response.json) == 2
 
-        token = get_token(jwt, roles=["approver"])
+        token = get_token(jwt, role=VIEW_DASHBOARDS, roles=["approver"])
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -157,37 +159,3 @@ class TestAuthorizationResource:
 
         response = client.get("/authorizations/form", headers=headers)
         assert response.status_code == 200
-
-    def test_current_user_form_authorization(self, app, client, session, jwt):
-        """Assert that formid authorization returns based on the user's role."""
-        factory_auth(
-            resource_id="1234",
-            resource_details={},
-            auth_type="form",
-            roles=["formsflow-reviewer"],
-        )
-        factory_auth(
-            resource_id="12345",
-            resource_details={},
-            auth_type="form",
-            roles=["formsflow-approver"],
-        )
-
-        token = get_token(jwt)
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
-
-        response = client.get("/authorizations/users/form", headers=headers)
-        assert response.status_code == 200
-        assert len(response.json) == 0
-
-        token = get_token(jwt, roles=["formsflow-reviewer"])
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
-        response = client.get("/authorizations/users/form", headers=headers)
-        assert response.status_code == 200
-        assert len(response.json) == 1

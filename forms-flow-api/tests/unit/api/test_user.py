@@ -1,7 +1,15 @@
 """Test suite for keycloak user API endpoint."""
 
 # from tests import skip_in_ci
-from tests.utilities.base_test import get_locale_update_valid_payload, get_token
+import json
+
+from formsflow_api_utils.utils import CREATE_FILTERS, VIEW_TASKS
+
+from tests.utilities.base_test import (
+    get_filter_payload,
+    get_locale_update_valid_payload,
+    get_token,
+)
 
 
 class TestKeycloakUserServiceResource:
@@ -33,7 +41,7 @@ class TestKeycloakUserServiceResource:
 
 def test_keycloak_users_list(app, client, session, jwt):
     """Test users list API with formsflow-reviewer group."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=VIEW_TASKS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get("/user?memberOfGroup=formsflow/formsflow-reviewer", headers=headers)
     assert rv.status_code == 200
@@ -59,12 +67,32 @@ def test_keycloak_users_list(app, client, session, jwt):
         assert type(user.get("role")) == list
         assert len(user["role"]) != 0
     realm_users = client.get("/user?role=true", headers=headers)
-    assert realm_users.status_code == 400
+    assert realm_users.status_code == 200
 
 
 def test_keycloak_users_list_invalid_group(app, client, session, jwt):
     """Test users list API with invalid group."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=VIEW_TASKS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get("/user?memberOfGroup=test123", headers=headers)
     assert rv.status_code == 400
+
+
+def test_default_filter(app, client, session, jwt):
+    """Test create a filter and update default filter of a user."""
+    token = get_token(jwt, role=CREATE_FILTERS, username="reviewer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # Create filter for clerk role
+    response = client.post(
+        "/filter",
+        headers=headers,
+        json=get_filter_payload(name="Clerk Task", roles=["clerk"]),
+    )
+    assert response.status_code == 201
+    response = client.post(
+        "/user/default-filter",
+        headers=headers,
+        data=json.dumps({"defaultFilter": response.json.get("id")}),
+        content_type="application/json",
+    )
+    assert response.status_code == 200

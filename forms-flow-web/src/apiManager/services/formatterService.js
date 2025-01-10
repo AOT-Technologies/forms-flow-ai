@@ -47,7 +47,7 @@ export const addApplicationDetailsToFormComponent = (formObjData) => {
 };
 
 export const getRelevantApplications = (applications, submissionData) => {
-  //TODO UPDATE SUBMISSIONS VIEW
+  //TBD UPDATE SUBMISSIONS VIEW
   submissionData.submissions = submissionData.submissions
     .map((submission) => {
       const applicationData = applications.find(

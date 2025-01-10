@@ -1,6 +1,10 @@
 """Test suite for application History API endpoint."""
+
 from typing import Dict, List
 
+from formsflow_api_utils.utils import VIEW_SUBMISSIONS
+
+from formsflow_api.models import Application
 from tests.utilities.base_test import get_token
 
 
@@ -38,7 +42,7 @@ def test_post_application_history_create_method(app, client, session, jwt):
 
 def test_get_application_history(app, client, session, jwt):
     """Get the json request for application /application/{application_id}/history."""
-    token = get_token(jwt)
+    token = get_token(jwt, role=VIEW_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     new_entry = client.post(
         "/application/1/history",
@@ -68,3 +72,26 @@ def test_application_history_get_un_authorized(app, client, session, jwt):
     # sending get request withouttoken
     rv = client.get("/application/1/history")
     assert rv.status_code == 401
+
+
+def create_application_history_service_account(app, client, session, jwt):
+    """Tests if the initial application history created with a service account replaced by application creator."""
+    application = Application()
+    application.created_by = "client"
+    application.application_status = "New"
+    application.form_process_mapper_id = 1
+    application.submission_id = "2345"
+    application.latest_form_id = "1234"
+    application.save()
+
+    payload = {
+        "applicationId": 1,
+        "applicationStatus": "New",
+        "formUrl": "http://testsample.com/form/23/submission/3423",
+        "submittedBy": "service-account-bpmn",
+    }
+    token = get_token(jwt)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    new_entry = client.post("/application/1/history", headers=headers, json=payload)
+    assert new_entry.status_code == 201
+    assert new_entry.submitted_by == "client"

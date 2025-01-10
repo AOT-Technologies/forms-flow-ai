@@ -1,4 +1,5 @@
 """Unit tests for Application Audit Model."""
+
 from formsflow_api.models import ApplicationHistory
 
 

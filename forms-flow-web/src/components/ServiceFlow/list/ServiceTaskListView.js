@@ -128,7 +128,7 @@ const ServiceTaskListView = React.memo((props) => {
     if ((tasksCount || taskList.length) && selectedFilter) {
       return (
         <>
-          <div className="list-container ">
+          <div className="list-container service-task-details">
             {taskList?.map((task, index) => {
               const adjustedValues = adjustTaskAttributes(
                 task?._embedded?.variable
@@ -175,7 +175,7 @@ const ServiceTaskListView = React.memo((props) => {
                     </Col>
                   </Row>
 
-                  <Row className="mt-4 p-2 justify-content-between task-attr-row">
+                  <Row className="mt-4 p-2 justify-content-evenly">
                     {vissibleAttributes?.taskVisibleAttributes
                       ?.applicationId && (
                       <Col xs={2}>
@@ -227,7 +227,7 @@ const ServiceTaskListView = React.memo((props) => {
                               <div className="col-12 word-break">
                                 <h6 className="fw-bold">{data?.label}</h6> 
                               </div>
-                              <div className="d-flex col-12">
+                              <div className="d-flex col-12 word-break pb-4">
                                 <h6>
                                   <u className="fw-light text-decoration-none ">
                                     {e?.value}
@@ -272,7 +272,7 @@ const ServiceTaskListView = React.memo((props) => {
                    
 
                       {vissibleAttributes?.taskVisibleAttributes?.priority &&
-                        <Col xs={2} className="d-flex">
+                        <Col xs={1} className="d-flex">
                           <div>
                           <div className="col-12">
                             <h6 className="fw-bold">{t("Priority")}</h6>
@@ -335,7 +335,7 @@ const ServiceTaskListView = React.memo((props) => {
                     ) && (
                       <>
                         <hr />
-                        <Row className="p-2">
+                        <Row className="px-4">
                           {taskListAttributes?.map((eachVariable, index) => {
                             if (
                               eachVariable.name !== "applicationId" &&
@@ -347,16 +347,15 @@ const ServiceTaskListView = React.memo((props) => {
                                   variableItem.name === eachVariable.name
                               );
                               return (
-                                <Col xs={2} key={index}>
+                                <Col xs={2} key={index} className="p-2">
                                   <div
-                                    className="col-12"
-                                    style={{ wordBreak: "break-all" }}
+                                    className="col-12 text-break"
                                   >
                                     <h6 className="fw-bold">{data?.label}</h6>
                                   </div>
-                                  <div className="d-flex col-12">
+                                  <div className="d-flex col-12 word-break">
                                     <h6>
-                                      <u className="fw-light text-decoration-none ">
+                                      <u className="fw-light text-decoration-none text-break" >
                                         {eachVariable.value}
                                       </u>
                                     </h6>

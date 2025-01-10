@@ -60,3 +60,17 @@ class TenantUserAddSchema(Schema):
 
     user = fields.Str(data_key="user", required=True)
     roles = fields.List(fields.Nested(AddUserRoleSchema))
+
+
+class UserSchema(Schema):
+    """Schema for user data."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    default_filter = fields.Int(data_key="defaultFilter", allow_none=True)
+    locale = fields.Str(data_key="locale")
+    user_name = fields.Str(data_key="userName", dump_only=True)
+    # tenant = fields.Str(data_key="tenantKey", dump_only=True)

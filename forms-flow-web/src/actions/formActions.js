@@ -196,4 +196,16 @@ export const setFormHistories = (historyData) => (dispatch) => {
   });
 };
 
+export const setBpmFormSort = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_FORM_SORT,
+    payload: data,
+    });
+};
 
+export const setClientFormSearch = ( data ) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_CLIENT_FORM_SEARCH,
+    payload: data,
+    });
+};

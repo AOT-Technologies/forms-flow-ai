@@ -9,11 +9,12 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 
 import org.camunda.bpm.engine.IdentityService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -35,7 +36,6 @@ import static org.junit.Assert.assertTrue;
 @ExtendWith(SpringExtension.class)
 public class KeycloakAuthenticationFilterTest {
 
-	@InjectMocks
 	private KeycloakAuthenticationFilter keycloakAuthenticationFilter;
 
 	@Mock
@@ -60,8 +60,17 @@ public class KeycloakAuthenticationFilterTest {
 	 * This test perform to check the groups and users
 	 * This will validate the userId and userGroups
 	 */
+
+	@BeforeEach
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 	@Test
 	public void doFilterTest() throws IOException, ServletException {
+		String userNameAttribute = "test-user";
+		boolean enableClientAuth = false;
+		boolean enableMultiTenancy = false;
+		keycloakAuthenticationFilter = new KeycloakAuthenticationFilter(identityService, clientService, userNameAttribute, enableClientAuth, enableMultiTenancy);
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
 		Map<String, Object> claims = new HashMap<>();
@@ -98,14 +107,21 @@ public class KeycloakAuthenticationFilterTest {
 	 */
 	@Test
 	public void doFilterTestForclientRoles() throws IOException, ServletException {
+		String userNameAttribute = "User1";
+		boolean enableClientAuth = true;
+		boolean enableMultiTenancy = true;
+		String tenantKey = "testtenant";
+		keycloakAuthenticationFilter = new KeycloakAuthenticationFilter(identityService, clientService, userNameAttribute, enableClientAuth, enableMultiTenancy);
+		
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
 		Map<String, Object> claims = new HashMap<>();
 		String userId = "User1";
-		JSONArray roles = new JSONArray();
-		roles.add(new String("camunda-admin"));
-		roles.add(new String("formsflow-reviewer"));
-		claims.put("roles", roles);
+		JSONArray groups = new JSONArray();
+		groups.add(new String(tenantKey+"-camunda-admin"));
+		groups.add(new String(tenantKey+"-formsflow-reviewer"));
+		claims.put("groups", groups);
+		claims.put("tenantKey", tenantKey);
 
 		OidcUser oidcUser = mock(OidcUser.class);
 		when(auth.getPrincipal()).thenReturn(oidcUser);
@@ -117,10 +133,11 @@ public class KeycloakAuthenticationFilterTest {
 		
 		ArgumentCaptor<String> userIdCaptor = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<List> userRolesCaptor = ArgumentCaptor.forClass(List.class);
-		verify(identityService).setAuthentication(userIdCaptor.capture(), userRolesCaptor.capture());
+		ArgumentCaptor<List> userTenanatCaptor = ArgumentCaptor.forClass(List.class);
+		verify(identityService).setAuthentication(userIdCaptor.capture(), userRolesCaptor.capture(), userTenanatCaptor.capture());
 		assertEquals("User1", userIdCaptor.getValue());
 		
-		assertTrue(userRolesCaptor.getValue().contains("camunda-admin"));
-		assertTrue(userRolesCaptor.getValue().contains("formsflow-reviewer"));
+		assertTrue(userRolesCaptor.getValue().contains(tenantKey+"-camunda-admin"));
+		assertTrue(userRolesCaptor.getValue().contains(tenantKey+"-formsflow-reviewer"));
 	}
 }

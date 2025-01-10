@@ -2,11 +2,16 @@
 The **formsflow.ai** framework could be hooked up with any OpenID Connect compliant Identity Management Server. To date, we have only tested [Keycloak](https://github.com/keycloak/keycloak)
 
 ## Table of Contents
-* [Authentication](#authentication)
-* [Authorization](#authorization)
-  * [User Roles](#user-roles)
-  * [User Groups](#user-groups)
-* [Keycloak Setup](#keycloak-setup)
+- [Identity Management](#identity-management)
+  - [Table of Contents](#table-of-contents)
+  - [Authentication](#authentication)
+  - [Authorization](#authorization)
+    - [User Roles](#user-roles)
+    - [User Groups](#user-groups)
+  - [Keycloak Setup](#keycloak-setup)
+  - [Migration](#migration)
+    - [v7.0.0 (Permission Matrix)](#v700-permission-matrix)
+  - [For migrating default roles (formsflow-client, formsflow-designer, formsflow-reviewer) to use permission matrix introduced in v7.0.0 follow the steps mentioned here](#for-migrating-default-roles-formsflow-client-formsflow-designer-formsflow-reviewer-to-use-permission-matrix-introduced-in-v700-follow-the-steps-mentioned-here)
 
 ## Authentication
 All the resources in the formsflow.ai solution require authentication i.e. users must be a member of a realm.
@@ -44,14 +49,19 @@ There are two groups
 Group | Sub Group | Roles | Description |
 --- | --- | --- | ---
 `camunda-admin`| | |Able to administer Camunda directly and create new workflows
-`formsflow`|`formsflow-designer` |formsflow-bpm|Able to design forms and publish for use.
-`formsflow`|`formsflow-reviewer` |formsflow-bpm|Able to access applications, tasks, metrics and Insight of formsflow UI
-`formsflow`|`formsflow-client` |formsflow-client|Able to access form fill-in only
+`formsflow`|`formsflow-designer` |`view_designs`,`create_designs`,`manage_integrations`|Able to design forms and publish for use.
+`formsflow`|`formsflow-reviewer` |`manage_tasks`, `view_tasks`, `create_filters`, `view_dashboards`, `view_filters`, `view_submissions`|Able to access applications, tasks, metrics and Insight of formsflow UI
+`formsflow`|`formsflow-client` |`create_submissions`, `view_submissions`|Able to access form fill-in only
      
 * Please note, it is possible to assign a user to multiple groups say `formsflow-designer` and `formsflow-reviewer`, in order to provide access to both designer and staff behavior. 
 * Also, based on the workflow process `user task` candidate groups; new groups (main or sub group of `formsflow-reviewer`) can be created in keycloak. 
   * In case of creating the candidate group as main group; ensure to add the role `formsflow-reviewer` role to it.
 
-Keycloak Setup
+## Keycloak Setup
 ----------
 [Instructions for Keycloak setup](./keycloak/README.md)
+
+## Migration
+### v7.0.0 (Permission Matrix)
+For migrating default roles (formsflow-client, formsflow-designer, formsflow-reviewer) to use permission matrix introduced in v7.0.0 follow the steps mentioned [here](./migration/README.md)
+- 

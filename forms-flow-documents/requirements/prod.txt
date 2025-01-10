@@ -1,11 +1,11 @@
 gunicorn
-Flask<3
+Flask
 Flask-Caching
 Flask-Migrate
 Flask-Moment
 Flask-SQLAlchemy
 flask-restx
-flask-jwt-oidc
+flask-jwt-oidc==0.7.0 # somehow latest version is not geting pulled from pypi
 python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy
@@ -14,7 +14,9 @@ Werkzeug
 sqlalchemy_utils
 markupsafe
 PyJWT
-selenium
+selenium==4.25.0
 selenium-wire
+blinker<1.8.0 # latest selenium-wire have breaking changes with blinker
 nested-lookup
-git+https://github.com/AOT-Technologies/forms-flow-ai.git@release/6.0.2#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+setuptools
+git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

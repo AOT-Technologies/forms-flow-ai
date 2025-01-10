@@ -1,9 +1,11 @@
+@import "../../../../variables.scss";
+
 .filter-sort-bar {
     margin-bottom: 1rem;
     .filter-list-view {
         position: absolute;
         z-index: 1000;
-        background-color: var(--color-white);
+        background-color: $white;
         top: 37px;;
         min-width: 180px;
     }

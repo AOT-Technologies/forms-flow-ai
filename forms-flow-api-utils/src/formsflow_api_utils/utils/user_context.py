@@ -51,15 +51,21 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
     def roles(self) -> List[str]:
         """Return the roles."""
         return self._roles
+    
+    @property
+    def groups(self) -> List[str]:
+        """Return the roles."""
+        return self._groups
 
     @property
     def group_or_roles(self) -> List[str]:
         """Return groups is env is using groups, else roles."""
-        return (
-            self._roles
-            if current_app.config.get("KEYCLOAK_ENABLE_CLIENT_AUTH")
-            else self._groups
-        )
+        if current_app.config.get(
+            "KEYCLOAK_ENABLE_CLIENT_AUTH"
+        ) and not current_app.config.get("MULTI_TENANCY_ENABLED"):
+            return self._roles
+        else:
+            return self._groups
 
 
 def user_context(function):

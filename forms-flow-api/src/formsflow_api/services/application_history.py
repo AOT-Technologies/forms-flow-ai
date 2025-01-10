@@ -3,7 +3,7 @@
 from flask import current_app
 from formsflow_api_utils.utils import get_form_and_submission_id_from_form_url
 
-from formsflow_api.models import ApplicationHistory
+from formsflow_api.models import Application, ApplicationHistory
 from formsflow_api.schemas import ApplicationHistorySchema
 
 
@@ -11,8 +11,18 @@ class ApplicationHistoryService:
     """This class manages application service."""
 
     @staticmethod
-    def create_application_history(data):
+    def create_application_history(data, application_id):
         """Create new application history."""
+        # Replace service-account with application creator in initial history.
+        if data.get("submitted_by") and data.get("submitted_by").startswith(
+            "service-account"
+        ):
+            application_history = ApplicationHistory.get_application_history_by_id(
+                application_id
+            )
+            if not application_history:
+                application = Application.find_by_id(application_id)
+                data["submitted_by"] = application.created_by
         (form_id, submission_id) = get_form_and_submission_id_from_form_url(
             data["form_url"]
         )

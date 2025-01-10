@@ -1,3 +1,11 @@
+@import "../variables.scss";
+
+
+.head-active {
+  color: $primary !important;
+  border-bottom: 4px solid  $primary;
+}
+
 /*#sidebar {
   & .navbar {
     padding: 15px 10px;
@@ -73,6 +81,11 @@
   align-items: stretch;
   min-height: 100vh;
   position: relative;
+}
+.set-default-filter-label{
+  &:hover{
+    font-weight:600;
+    }
 }
 
 /*#sidebar {
@@ -241,28 +254,12 @@
   }
 }*/
 
-.navbar-expand-lg .navbar-nav .nav-link {
-  padding-right: 2.5rem !important;
-  padding-left: .8rem !important;
-}
 
-/*.topheading-border-bottom{
-  z-index: 2000;
-  padding: 0.8rem 1rem !important;
-  border-bottom: 2px solid $light-blue !important;
-}*/
-
-.navbar-expand-lg .navbar-nav .nav-link {
-  padding-right: 2.5rem !important;
-  padding-left: .8rem !important;
-}
 
 .navbar-nav .nav-link:hover, .navbar-nav .nav-link:focus {
   text-decoration: none !important;
 }
-.dropdown-toggle{
-margin-right: 1rem;
-}
+
 .form-icons-active:active  {
   // fill: #4d61fc !important;
   filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
@@ -287,7 +284,7 @@ margin-right: 1rem;
     height: 100%;
     width: 100%;
     position: fixed;
-    background-color: var(--color-gray-800);
+    background-color: $gray-800;
     z-index: 1300;
     -webkit-transition: all 0.2s ease-in;
     -o-transition: all 0.2s ease-in;
@@ -299,7 +296,7 @@ margin-right: 1rem;
     right: -50px;
     padding: 5px 13px;
     top: 67px;
-    background: var(--color-white);
+    background: $white;
     border-radius: 10px;
     font-size: x-large;
   }
@@ -318,8 +315,8 @@ margin-right: 1rem;
 
 .button_component
 {
-  background-color: var(--color-white);
-  color: var(--color-black);
+  background-color: $white;
+  color: $dark;
   border: none;
   padding: auto;
 }
@@ -327,20 +324,11 @@ margin-right: 1rem;
 .cursor-pointer{
   cursor: pointer;
 }
-
-.head-item {
-  color: var(--color-gray-600);
-  cursor: pointer;
-  padding-bottom: 3rem;
-}
-
  
 .padding-left-60 {
   margin-left: 60px;
 }
-.padding-right-60 {
-  margin-left: -35px;
-}
+
 .head-rule{
   margin-top: -10px;
   padding-top: -10px;
@@ -351,19 +339,7 @@ margin-right: 1rem;
     font-weight: bold;
     font-size:26px;
     display: flex;
-}
-.application-head-details
-{
-    font-weight: bold;
-    margin-left: 10px !important;
-    display: inline-block;
-}
-.solid-list-icon {
-  height: 25px;
-  margin-top: 7px;
-}
-.application-text{
-  margin-left: 10px;
+    cursor: pointer;
 }
 .application-count
 {

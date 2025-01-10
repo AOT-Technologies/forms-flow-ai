@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserRolePermission } from "../../helper/user";
 import {
-  CLIENT,
   MULTITENANCY_ENABLED,
-  STAFF_REVIEWER,
 } from "../../constants/constants";
+
 import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
 import { HelperServices } from "@formsflow/service";
 import { Translation } from "react-i18next";
 import ApplicationFilter from "./ApplicationFilter";
-import { Dropdown } from "react-bootstrap";
-import Pagination from "react-js-pagination";
+
 import { useTranslation } from "react-i18next";
+import  userRoles  from "../../constants/permissions";
 
 import {
   setApplicationListActivePage,
@@ -23,13 +21,13 @@ import {
 } from "../../actions/applicationActions";
 import { push } from "connected-react-router";
 import LoadingOverlay from "react-loading-overlay-ts";
+import { TableFooter, CustomButton } from "@formsflow/components"; 
 
 const ApplicationTable = () => {
   const dispatch = useDispatch();
   const [displayFilter, setDisplayFilter] = useState(false);
   const searchParams = useSelector((state) => state.applications.searchParams);
   const [filterParams, setFilterParams] = useState(searchParams);
-  const [pageLimit, setPageLimit] = useState(5);
   const applications = useSelector(
     (state) => state.applications.applicationsList
   );
@@ -37,7 +35,7 @@ const ApplicationTable = () => {
 
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const userRoles = useSelector((state) => state.user.roles);
+  const { createSubmissions } = userRoles();
   const pageNo = useSelector((state) => state.applications?.activePage);
   const limit = useSelector((state) => state.applications?.countPerPage);
   const sortOrder = useSelector((state) => state.applications?.sortOrder);
@@ -50,10 +48,7 @@ const ApplicationTable = () => {
     (state) => state.applications?.applicationCount
   );
   const isClientEdit = (applicationStatus) => {
-    if (
-      getUserRolePermission(userRoles, CLIENT) ||
-      getUserRolePermission(userRoles, STAFF_REVIEWER)
-    ) {
+    if (createSubmissions) {
       return CLIENT_EDIT_STATUS.includes(applicationStatus);
     } else {
       return false;
@@ -163,7 +158,6 @@ const ApplicationTable = () => {
 
   const onSizePerPageChange = (limit) => {
     dispatch(setApplicationLoading(true));
-    setPageLimit(limit);
     dispatch(setCountPerpage(limit));
     dispatch(setApplicationListActivePage(1));
   };
@@ -176,12 +170,13 @@ const ApplicationTable = () => {
   };
 
   return (
-    <>
+
       <LoadingOverlay
         active={isApplicationLoading}
         spinner
         text={t("Loading...")}
       >
+        <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
         <table className="table custom-table table-responsive-sm">
           <thead>
             <tr>
@@ -260,27 +255,16 @@ const ApplicationTable = () => {
               <th colSpan="4">
                 <div className="d-flex justify-content-end filter-sort-bar mt-1">
                   <div className="filter-container-list application-filter-list-view">
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary tooltiptext"
-                      onClick={() => {
-                        setDisplayFilter(true);
-                      }}
-                      data-testid="submission-filter-btn"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-filter me-2"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                      </svg>
-                      {t("Filter")}
-                    </button>
-
+                  <CustomButton
+                    variant="secondary"
+                    size="md"
+                    label={t("Filter")}
+                    onClick={() => {
+                      setDisplayFilter(true);
+                    }}
+                    dataTestid="application-filter"
+                    ariaLabel={t("Application Filter Button")}
+                   />
                     {displayFilter && (
                       <div className="clickable shadow border filter-list-view m-0 p-0">
                         <ApplicationFilter
@@ -316,51 +300,24 @@ const ApplicationTable = () => {
             )}
           </tbody>
         </table>
+        </div>
 
         {applications.length ? (
-          <div className="d-flex justify-content-between align-items-center  flex-column flex-md-row">
-            <div className="d-flex align-items-center">
-              <span className="me-2"> {t("Rows per page")}</span>
-              <Dropdown size="sm">
-                <Dropdown.Toggle variant="light" id="dropdown-basic" data-testid="page-limit-dropdown-toggle">
-                  {pageLimit}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {pageOptions.map((option) => (
-                    <Dropdown.Item
-                      key={option.value}
-                      type="button"
-                      onClick={() => {
-                        onSizePerPageChange(option.value);
-                      }}
-                      data-testid={`page-limit-dropdown-item-${option.value}`}
-                    >
-                      {option.text}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-              <span className="ms-2">
-                {t("Showing")} {(limit * pageNo) - (limit - 1)} {t("to")}{" "}
-                {limit * pageNo > totalForms ? totalForms : limit * pageNo}{" "}
-                {t("of")} {totalForms} {t("results")}
-              </span>
-            </div>
-            <div className="d-flex align-items-center">
-              <Pagination
-                activePage={pageNo}
-                itemsCountPerPage={limit}
-                totalItemsCount={totalForms}
-                pageRangeDisplayed={5}
-                itemClass="page-item"
-                linkClass="page-link"
-                onChange={handlePageChange}
-              />
-            </div>
-          </div>
-        ) : null}
+          <table className="table">
+            <tfoot>
+             <TableFooter
+            limit={limit}
+            activePage={pageNo}
+            totalCount={totalForms}
+            handlePageChange={handlePageChange}
+            onLimitChange={onSizePerPageChange}
+            pageOptions={pageOptions}
+          />
+          </tfoot>
+          </table>
+          ) : null}
       </LoadingOverlay>
-    </>
+
   );
 };
 

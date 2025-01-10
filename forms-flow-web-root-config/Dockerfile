@@ -1,5 +1,5 @@
 # Base image
-FROM node:16.18.0-alpine as build-stage
+FROM node:16.20.0-alpine as build-stage
 
 # Set working directory
 WORKDIR /forms-flow-web-root-config/app
@@ -9,15 +9,16 @@ ARG NODE_ENV
 ARG MF_FORMSFLOW_WEB_URL
 ARG MF_FORMSFLOW_NAV_URL
 ARG MF_FORMSFLOW_SERVICE_URL
+ARG MF_FORMSFLOW_COMPONENTS_URL
 ARG MF_FORMSFLOW_ADMIN_URL
-ARG MF_FORMSFLOW_THEME_URL
+
 
 # Set environment variables
 ENV MF_FORMSFLOW_WEB_URL ${MF_FORMSFLOW_WEB_URL}
 ENV MF_FORMSFLOW_NAV_URL ${MF_FORMSFLOW_NAV_URL}
 ENV MF_FORMSFLOW_SERVICE_URL ${MF_FORMSFLOW_SERVICE_URL}
+ENV MF_FORMSFLOW_COMPONENTS_URL ${MF_FORMSFLOW_COMPONENTS_URL}
 ENV MF_FORMSFLOW_ADMIN_URL ${MF_FORMSFLOW_ADMIN_URL}
-ENV MF_FORMSFLOW_THEME_URL ${MF_FORMSFLOW_THEME_URL}
 ENV NODE_ENV ${NODE_ENV}
 
 # Add `/app/node_modules/.bin` to $PATH
@@ -45,7 +46,7 @@ RUN if [ $NODE_ENV == "development" ]; then \
 
 
 # Production stage
-FROM nginx:1.25.4-alpine as production-stage
+FROM nginx:1.27-alpine as production-stage
 
 # Set label for image
 LABEL Name="formsflow"

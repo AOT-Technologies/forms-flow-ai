@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.12.6-slim
+FROM python:3.11.7-slim-bullseye
 
 # set label for image
 LABEL Name="formsflow"
@@ -11,7 +11,7 @@ ARG MODEL_ID=Seethal/sentiment_analysis_generic_dataset
 
 RUN : \
     && python3 -m venv /venv \
-    && pip install --default-timeout=1000 -r requirements.txt 
+    && pip install --default-timeout=1000 -r requirements.txt
 
 ADD . /forms-flow-data-analysis-api/app
 RUN pip install .

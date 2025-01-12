@@ -43,6 +43,8 @@ jobs:
           - { name: "redash", tag: "24.04.0" }
           - { name: "forms-flow-data-analysis-api", tag: "latest" }
           - { name: "forms-flow-documents-api", tag: "latest" }
+          - { name: "forms-flow-webapi-ee", tag: "latest" }
+
     steps:
       - name: Authenticate with Docker Hub
         env:

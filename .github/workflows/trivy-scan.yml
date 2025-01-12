@@ -44,6 +44,13 @@ jobs:
           - { name: "forms-flow-data-analysis-api", tag: "latest" }
           - { name: "forms-flow-documents-api", tag: "latest" }
     steps:
+      - name: Authenticate with Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
       - name: Install Trivy
         run: |
           sudo apt-get update

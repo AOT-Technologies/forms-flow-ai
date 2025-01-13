@@ -227,8 +227,9 @@ const FormSettings = forwardRef((props, ref) => {
           isInvalid = {!!errors.name}
           feedback = {errors.name}
           turnOnLoader={isValidating.name}
-          onBlur={() => handleBlur('name', formDetails.title)}    
-           />
+          onBlur={() => handleBlur('name', formDetails.title)}   
+          maxLength={200} 
+          />
         <FormTextArea
           label={t("Description")}
           name="description"

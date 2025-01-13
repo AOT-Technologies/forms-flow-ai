@@ -8,7 +8,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
   | Component | Version|  
   | ---       | -----   |
-  |  Redash   | 10.1.5 |
+  |  Redash   | 24.04.0 |
 
 <br>
 
@@ -18,7 +18,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version |  
    | ---       | -----   |
-   |  Python   |  3.12.1 |
+   |  Python   |  3.12.6 |
    | Flask     |  2.3.3  |
    |  Postgres |  11.0   |
 
@@ -30,8 +30,8 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version|  
    | ---       | -----  |
-   |  Camunda  |  7.20.0 |
-   |  SpringBoot  | 3.1.10 |
+   |  Camunda  |  7.21.0 |
+   |  SpringBoot  | 3.3.5 |
    | Postgres    | Latest |
   <br>
   
@@ -78,5 +78,5 @@ In the following document, we’ll describe the details of dependencies of vario
    |  --- | --- |
    | React  | 17.0.2 |
    | Formio | 2.4.1 |
-   | Webpack| 5.76.0|
+   | Webpack| 5.94.0|
    <br>

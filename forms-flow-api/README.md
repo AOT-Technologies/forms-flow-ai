@@ -1,7 +1,7 @@
 # formsflow.ai API
 
 [![FormsFlow API CI](https://github.com/AOT-Technologies/forms-flow-ai/actions/workflows/forms-flow-api-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai/actions)
-![Python](https://img.shields.io/badge/python-3.12.1-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.3-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
+![Python](https://img.shields.io/badge/python-3.12.6-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.3-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
 
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
@@ -61,6 +61,8 @@ Variable name | Meaning | Possible values | Default value |
 `FORMSFLOW_API_DB_USER`|formsflow database postgres user|Used on installation to create the database.Choose your own|`postgres`
 `FORMSFLOW_API_DB_PASSWORD`|formsflow database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `FORMSFLOW_API_DB_NAME`|formsflow database name|Used on installation to create the database.Choose your own|`FORMSFLOW_API_DB`
+`FORMSFLOW_API_DB_HOST`|formsflow database host|Used on installation to create the database.Choose your own||`localhost`
+`FORMSFLOW_API_DB_PORT`|formsflow database port|Used on installation to create the database.Choose your own||`5432`
 `FORMSFLOW_API_DB_URL`|JDBC DB Connection URL for formsflow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi`
 `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
 `KEYCLOAK_URL_REALM`|The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
@@ -70,6 +72,16 @@ Variable name | Meaning | Possible values | Default value |
 `BPM_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
+`FORMSFLOW_ADMIN_URL`|To fetch formio roles in multi tenancy||`http://{your-ip-address}:5010/api/v1`
+`REDIS_URL`| Redis url||`redis://{your-ip-address}:6379/0`
+`REDIS_CLUSTER`|To support single/cluster node|`true`/`false`|`false`
+`DATABASE_URL`|Database Connection URL||postgresql://postgres:changeme@forms-flow-webapi-db:5432
+`DATABASE_USERNAME`|Database username(This is not needed if we are having DATABASE_URL)| `postgres` 
+`DATABASE_PASSWORD`|Database password(This is not needed if we are having DATABASE_URL)|`changeme`
+`DATABASE_HOST`|Database host(This is not needed if we are having DATABASE_URL)|`forms-flow-webapi-db`
+`DATABASE_PORT`|Database port(This is not needed if we are having DATABASE_URL)|`5432`
+`DATABASE_NAME`|Database name(This is not needed if we are having DATABASE_URL)|`webapi`
+
 
 **NOTE : Default realm is `forms-flow-ai`**
 

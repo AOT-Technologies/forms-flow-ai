@@ -32,7 +32,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     """This class manages authorization."""
 
     id = db.Column(db.Integer, primary_key=True, comment="Authorization ID")
-    tenant = db.Column(db.String, nullable=True, comment="Tenant key")
+    tenant = db.Column(db.String, nullable=True, comment="Tenant key", index=True)
     auth_type = db.Column(
         ENUM(AuthType, name="AuthType"), nullable=False, index=True, comment="Auth Type"
     )

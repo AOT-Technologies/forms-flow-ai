@@ -160,8 +160,8 @@ const PrivateRoute = React.memo((props) => {
           if (!authenticated) {
             setAuthError(true);
           } else {
-            authenticate(instance, props.store);
             publish("FF_AUTH", instance);
+            authenticate(instance, props.store);
           }
         });
       }

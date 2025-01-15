@@ -165,7 +165,9 @@ ActionModal.propTypes = {
   onAction: PropTypes.func.isRequired,
   published: PropTypes.bool.isRequired,
   isCreate: PropTypes.bool,
-  isMigrated: PropTypes.bool, // Adding validation for isMigrated
+  isMigrated: PropTypes.bool,
+  diagramType: PropTypes.string,
+  isPublished: PropTypes.bool,
 };
 
 export default ActionModal;

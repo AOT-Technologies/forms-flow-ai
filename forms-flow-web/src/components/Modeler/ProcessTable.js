@@ -119,10 +119,8 @@ const ProcessTable = React.memo(() => {
   const handleSearch = () => {
     setSearchLoading(true);
     if (isBPMN) {
-        setSearchBPMN(searchBPMN);
         dispatch(setBpmnSearchText(searchBPMN));
       } else {
-        setSearchDMN(searchDMN);
         dispatch(setDmnSearchText(searchDMN));
       }
       handlePageChange(1);

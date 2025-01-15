@@ -65,24 +65,24 @@ const FormSettings = forwardRef((props, ref) => {
   const publicUrlPath = `${window.location.origin}/public/form/`;
   const [urlPath,setUrlPath] = useState(publicUrlPath);
   const setSelectedOption = (option, roles = [])=> roles.length ? "specifiedRoles" : option;
-  const multiSlectOptionKey = "role";
+  const multiSelectOptionKey = "role";
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
     DESIGN: {
       selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.DESIGNER?.roles,
-         multiSlectOptionKey),
+         multiSelectOptionKey),
       selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
     },
     FORM: {
       roleInput: "",
       selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.FORM?.roles, 
-        multiSlectOptionKey),
+        multiSelectOptionKey),
       selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
     },
     APPLICATION: {
       roleInput: "",
       selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.APPLICATION?.roles,
-         multiSlectOptionKey),
+         multiSelectOptionKey),
       selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles), 
       /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
        we assume that the submitter is true. */
@@ -158,7 +158,7 @@ const FormSettings = forwardRef((props, ref) => {
       .then((res) => {
         if (res) {
           const { data = [] } = res;
-          setUserRoles(data.map((role,index) => ({[multiSlectOptionKey]:role.name, id: index})));
+          setUserRoles(data.map((role,index) => ({[multiSelectOptionKey]:role.name, id: index})));
         }
       })
       .catch((error) => console.error("error", error));
@@ -302,7 +302,7 @@ const FormSettings = forwardRef((props, ref) => {
           selectedValues={rolesState.DESIGN.selectedRoles} 
           onSelect={handleRoleSelectForDesign}  
           onRemove={handleRoleSelectForDesign}  
-          displayValue={multiSlectOptionKey}
+          displayValue={multiSelectOptionKey}
           avoidHighlightFirstOption={true}
           />
  
@@ -352,7 +352,7 @@ const FormSettings = forwardRef((props, ref) => {
             selectedValues={rolesState.FORM.selectedRoles} // Preselected value to persist in dropdown
             onSelect={handleRoleSelectForForm} // Function will trigger on select event
             onRemove={handleRoleSelectForForm} // Function will trigger on remove event
-            displayValue={multiSlectOptionKey} // Property name to display in the dropdown options
+            displayValue={multiSelectOptionKey} // Property name to display in the dropdown options
             avoidHighlightFirstOption={true}
             />
            
@@ -393,7 +393,7 @@ const FormSettings = forwardRef((props, ref) => {
             selectedValues={rolesState.APPLICATION.selectedRoles} // Preselected value to persist in dropdown
             onSelect={handleRoleSelectForApplication} // Function will trigger on select event
             onRemove={handleRoleSelectForApplication} // Function will trigger on remove event
-            displayValue={multiSlectOptionKey} // Property name to display in the dropdown options
+            displayValue={multiSelectOptionKey} // Property name to display in the dropdown options
             avoidHighlightFirstOption={true}
           />
  

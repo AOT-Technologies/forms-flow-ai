@@ -41,6 +41,7 @@ const ProcessTable = React.memo(() => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   
   //  local states for BPMN
+  const [searchBPMN, setSearchBPMN] = useState(searchText || "");
   const [activePageBPMN, setActivePageBPMN] = useState(1);
   const [limitBPMN, setLimitBPMN] = useState(5);
   const [currentBpmnSort, setCurrentBpmnSort] = useState({
@@ -51,6 +52,7 @@ const ProcessTable = React.memo(() => {
     status: { sortOrder: "asc" },
   });
   //  local states for DMN
+  const [searchDMN, setSearchDMN] = useState(searchText || "");
   const [activePageDMN, setActivePageDMN] = useState(1);
   const [limitDMN, setLimitDMN] = useState(5);
   const [currentDmnSort, setCurrentDmnSort] = useState({
@@ -61,6 +63,7 @@ const ProcessTable = React.memo(() => {
     status: { sortOrder: "asc" },
   });
   //viewtype specific states
+  const search = isBPMN ? searchBPMN : searchDMN;
   const activePage = isBPMN ? activePageBPMN : activePageDMN;
   const limit = isBPMN ? limitBPMN : limitDMN;
   const currentSort = isBPMN ? currentBpmnSort : currentDmnSort;
@@ -68,11 +71,39 @@ const ProcessTable = React.memo(() => {
   const [showBuildModal, setShowBuildModal] = useState(false);
   const [importProcess, setImportProcess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [search, setSearch] = useState(searchText || "");
   const [searchLoading, setSearchLoading] = useState(false);
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
+  //fetching bpmn or dmn
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(
+      fetchAllProcesses(
+        {
+          pageNo: activePage,
+          tenant_key: tenantKey,
+          processType: isBPMN ? "BPMN" : "DMN",
+          limit,
+          searchKey: search,
+          sortBy: currentSort.activeKey,
+          sortOrder: currentSort[currentSort.activeKey].sortOrder,
+        },
+        () => {
+          setIsLoading(false);
+          setSearchLoading(false);
+        }
+      )
+    );
+  }, [dispatch, activePage, limit, searchText, tenantKey, currentSort, isBPMN]);
+  
+  //Update api call when search field is empty
+  useEffect(() => {
+    if (!search.trim()) {
+      dispatch(isBPMN ? setBpmnSearchText("") : setDmnSearchText(""));
+    }
+  }, [search, dispatch, isBPMN]);
+  
   const handleSort = (key) => {
     const setSort = isBPMN ? setCurrentBpmnSort : setCurrentDmnSort;
   
@@ -87,14 +118,25 @@ const ProcessTable = React.memo(() => {
 
   const handleSearch = () => {
     setSearchLoading(true);
-    handlePageChange(1);
-    dispatch(isBPMN ? setBpmnSearchText(search) : setDmnSearchText(search));
+    if (isBPMN) {
+        setSearchBPMN(searchBPMN);
+        dispatch(setBpmnSearchText(searchBPMN));
+      } else {
+        setSearchDMN(searchDMN);
+        dispatch(setDmnSearchText(searchDMN));
+      }
+      handlePageChange(1);
   };
 
   const handleClearSearch = () => {
-    setSearch("");
+    if (isBPMN) {
+        setSearchBPMN("");
+        dispatch(setBpmnSearchText(""));
+      } else {
+        setSearchDMN("");
+        dispatch(setDmnSearchText(""));
+      }
     handlePageChange(1);
-    dispatch(isBPMN ? setBpmnSearchText("") : setDmnSearchText(""));
   };
 
   const handlePageChange = (page) => {
@@ -134,6 +176,7 @@ const ProcessTable = React.memo(() => {
     setImportProcess(true);
   };
 
+ //modal contents for importing BPMN or DMN
   const modalContents = [
     {
       id: 1,
@@ -148,41 +191,16 @@ const ProcessTable = React.memo(() => {
       onClick: showImportModal,
     },
   ];
+  
 
-  useEffect(() => {
-    if (!search.trim()) {
-      dispatch(isBPMN ? setBpmnSearchText("") : setDmnSearchText(""));
-    }
-  }, [search, dispatch, isBPMN]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    dispatch(
-      fetchAllProcesses(
-        {
-          pageNo: activePage,
-          tenant_key: tenantKey,
-          processType: isBPMN ? "BPMN" : "DMN",
-          limit,
-          searchKey: search,
-          sortBy: currentSort.activeKey,
-          sortOrder: currentSort[currentSort.activeKey].sortOrder,
-        },
-        () => {
-          setIsLoading(false);
-          setSearchLoading(false);
-        }
-      )
-    );
-  }, [dispatch, activePage, limit, searchText, tenantKey, currentSort, isBPMN]);
-
+ 
   return (
     <>
       <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
         <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
           <CustomSearch
             search={search}
-            setSearch={setSearch}
+            setSearch={isBPMN ? setSearchBPMN : setSearchDMN}
             handleSearch={handleSearch}
             handleClearSearch={handleClearSearch}
             placeholder={t(`Search ${isBPMN ? "BPMN" : "Decision Table"}`)}

@@ -115,10 +115,10 @@ const addTenantkeyAsSuffix = (value, tenantkey) => {
 };
 
 /* ----------------- convert data from and into multiselect ----------------- */
-const convertMultiSelectOptionToValue = (selectedValues = [], key) => 
+const convertMultiSelectOptionToValue = (selectedValues = [], key = null) => 
   selectedValues.map(i=> i[key]);
 
-const convertSelectedValueToMultiSelectOption = (values = [], key) => 
+const convertSelectedValueToMultiSelectOption = (values = [], key = null) => 
   values.map((value)=>({[key]:value, id:_.uniqueId(value)}));
 /* ----------------------------------- --- ---------------------------------- */
 export { generateUniqueId, 

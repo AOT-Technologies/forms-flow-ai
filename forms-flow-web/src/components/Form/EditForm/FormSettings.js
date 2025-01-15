@@ -11,8 +11,8 @@ import {
   CustomRadioButton,
   FormInput,
   FormTextArea,
+  MultipleSelect
 } from "@formsflow/components";
-import Multiselect from 'multiselect-react-dropdown';
 
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import {  addTenantkeyAsSuffix, convertSelectedValueToMultiSelectOption } from "../../../helper/helper";
@@ -297,7 +297,7 @@ const FormSettings = forwardRef((props, ref) => {
           <FormInput disabled={true} />
         )}
         {rolesState.DESIGN.selectedOption === "specifiedRoles" && (
-          <Multiselect
+          <MultipleSelect
           options={userRoles}  
           selectedValues={rolesState.DESIGN.selectedRoles} 
           onSelect={handleRoleSelectForDesign}  
@@ -347,7 +347,7 @@ const FormSettings = forwardRef((props, ref) => {
           <FormInput disabled={true} />
         )}
         {rolesState.FORM.selectedOption === "specifiedRoles" && (
-            <Multiselect 
+            <MultipleSelect 
             options={userRoles} // Options to display in the dropdown
             selectedValues={rolesState.FORM.selectedRoles} // Preselected value to persist in dropdown
             onSelect={handleRoleSelectForForm} // Function will trigger on select event
@@ -388,7 +388,7 @@ const FormSettings = forwardRef((props, ref) => {
         )}
 
         {rolesState.APPLICATION.selectedOption === "specifiedRoles" && (
-          <Multiselect 
+          <MultipleSelect 
             options={userRoles} // Options to display in the dropdown
             selectedValues={rolesState.APPLICATION.selectedRoles} // Preselected value to persist in dropdown
             onSelect={handleRoleSelectForApplication} // Function will trigger on select event

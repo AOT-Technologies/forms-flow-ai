@@ -64,26 +64,26 @@ const FormSettings = forwardRef((props, ref) => {
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
   const [urlPath,setUrlPath] = useState(publicUrlPath);
-  const setSelectedOption = (roles = [], option)=> roles.length ? "specifiedRoles" : option;
+  const setSelectedOption = (option, roles = [])=> roles.length ? "specifiedRoles" : option;
   const multiSlectOptionKey = "role";
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
     DESIGN: {
       selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.DESIGNER?.roles,
          multiSlectOptionKey),
-      selectedOption: setSelectedOption(formAuthorization.DESIGNER?.roles,"onlyYou"),
+      selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
     },
     FORM: {
       roleInput: "",
       selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.FORM?.roles, 
         multiSlectOptionKey),
-      selectedOption: setSelectedOption(formAuthorization.FORM?.roles,"registeredUsers"),
+      selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
     },
     APPLICATION: {
       roleInput: "",
       selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.APPLICATION?.roles,
          multiSlectOptionKey),
-      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"), 
+      selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles), 
       /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
        we assume that the submitter is true. */
     }

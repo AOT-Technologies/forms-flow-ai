@@ -39,55 +39,53 @@ const ProcessTable = React.memo(() => {
     isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  
-  //  local states for BPMN
-  const [searchBPMN, setSearchBPMN] = useState(searchText || "");
-  const [activePageBPMN, setActivePageBPMN] = useState(1);
-  const [limitBPMN, setLimitBPMN] = useState(5);
-  const [currentBpmnSort, setCurrentBpmnSort] = useState({
+
+  const initialSortConfig = {
     activeKey: "name",
     name: { sortOrder: "asc" },
     processKey: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
+  };
+
+  const [bpmnState, setBpmnState] = useState({
+    activePage: 1,
+    limit: 5,
+    sortConfig: initialSortConfig,
   });
-  //  local states for DMN
+
+  const [dmnState, setDmnState] = useState({
+    activePage: 1,
+    limit: 5,
+    sortConfig: initialSortConfig,
+  });
   const [searchDMN, setSearchDMN] = useState(searchText || "");
-  const [activePageDMN, setActivePageDMN] = useState(1);
-  const [limitDMN, setLimitDMN] = useState(5);
-  const [currentDmnSort, setCurrentDmnSort] = useState({
-    activeKey: "name",
-    name: { sortOrder: "asc" },
-    processKey: { sortOrder: "asc" },
-    modified: { sortOrder: "asc" },
-    status: { sortOrder: "asc" },
-  });
-  //viewtype specific states
+  const [searchBPMN, setSearchBPMN] = useState(searchText || "");
   const search = isBPMN ? searchBPMN : searchDMN;
-  const activePage = isBPMN ? activePageBPMN : activePageDMN;
-  const limit = isBPMN ? limitBPMN : limitDMN;
-  const currentSort = isBPMN ? currentBpmnSort : currentDmnSort;
 
   const [showBuildModal, setShowBuildModal] = useState(false);
   const [importProcess, setImportProcess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
 
+  const currentState = isBPMN ? bpmnState : dmnState;
+  const setCurrentState = isBPMN ? setBpmnState : setDmnState;
+
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
-  //fetching bpmn or dmn
-  useEffect(() => {
+   //fetching bpmn or dmn
+   useEffect(() => {
     setIsLoading(true);
     dispatch(
       fetchAllProcesses(
         {
-          pageNo: activePage,
-          tenant_key: tenantKey,
-          processType: isBPMN ? "BPMN" : "DMN",
-          limit,
-          searchKey: search,
-          sortBy: currentSort.activeKey,
-          sortOrder: currentSort[currentSort.activeKey].sortOrder,
+            pageNo: currentState.activePage,
+            tenant_key: tenantKey,
+            processType: isBPMN ? "BPMN" : "DMN",
+            limit: currentState.limit,
+            searchKey: search,
+            sortBy: currentState.sortConfig.activeKey,
+            sortOrder: currentState.sortConfig[currentState.sortConfig.activeKey].sortOrder,
         },
         () => {
           setIsLoading(false);
@@ -95,23 +93,24 @@ const ProcessTable = React.memo(() => {
         }
       )
     );
-  }, [dispatch, activePage, limit, searchText, tenantKey, currentSort, isBPMN]);
-  
+  }, [dispatch, currentState, tenantKey,searchText, isBPMN]);
+ 
   //Update api call when search field is empty
   useEffect(() => {
     if (!search.trim()) {
       dispatch(isBPMN ? setBpmnSearchText("") : setDmnSearchText(""));
     }
   }, [search, dispatch, isBPMN]);
-  
+
   const handleSort = (key) => {
-    const setSort = isBPMN ? setCurrentBpmnSort : setCurrentDmnSort;
-  
-    setSort((prevConfig) => ({
-      ...prevConfig,
-      activeKey: key,
-      [key]: {
-        sortOrder: prevConfig[key]?.sortOrder === "asc" ? "desc" : "asc",
+    setCurrentState((prevState) => ({
+      ...prevState,
+      sortConfig: {
+        ...prevState.sortConfig,
+        activeKey: key,
+        [key]: {
+          sortOrder: prevState.sortConfig[key]?.sortOrder === "asc" ? "desc" : "asc",
+        },
       },
     }));
   };
@@ -123,7 +122,7 @@ const ProcessTable = React.memo(() => {
       } else {
         dispatch(setDmnSearchText(searchDMN));
       }
-      handlePageChange(1);
+    handlePageChange(1);
   };
 
   const handleClearSearch = () => {
@@ -138,16 +137,18 @@ const ProcessTable = React.memo(() => {
   };
 
   const handlePageChange = (page) => {
-    isBPMN ? setActivePageBPMN(page) : setActivePageDMN(page);
+    setCurrentState((prevState) => ({
+      ...prevState,
+      activePage: page,
+    }));
   };
+
   const onLimitChange = (newLimit) => {
-    if (isBPMN) {
-      setLimitBPMN(newLimit);
-      setActivePageBPMN(1);
-    } else {
-      setLimitDMN(newLimit);
-      setActivePageDMN(1);
-    }
+    setCurrentState((prevState) => ({
+      ...prevState,
+      limit: newLimit,
+      activePage: 1,
+    }));
   };
 
   const gotoEdit = (data) => {
@@ -174,7 +175,7 @@ const ProcessTable = React.memo(() => {
     setImportProcess(true);
   };
 
- //modal contents for importing BPMN or DMN
+ // contents for import of  BPMN or DMN
   const modalContents = [
     {
       id: 1,
@@ -190,8 +191,6 @@ const ProcessTable = React.memo(() => {
     },
   ];
   
-
- 
   return (
     <>
       <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
@@ -226,7 +225,7 @@ const ProcessTable = React.memo(() => {
                     <SortableHeader
                       columnKey="name"
                       title="Name"
-                      currentSort={currentSort}
+                      currentSort={currentState.sortConfig}
                       handleSort={handleSort}
                       className="ms-4"
                     />
@@ -235,7 +234,7 @@ const ProcessTable = React.memo(() => {
                     <SortableHeader
                       columnKey="processKey"
                       title="ID"
-                      currentSort={currentSort}
+                      currentSort={currentState.sortConfig}
                       handleSort={handleSort}
                     />
                   </th>
@@ -243,7 +242,7 @@ const ProcessTable = React.memo(() => {
                     <SortableHeader
                       columnKey="modified"
                       title="Last Edited"
-                      currentSort={currentSort}
+                      currentSort={currentState.sortConfig}
                       handleSort={handleSort}
                     />
                   </th>
@@ -251,7 +250,7 @@ const ProcessTable = React.memo(() => {
                     <SortableHeader
                       columnKey="status"
                       title="Status"
-                      currentSort={currentSort}
+                      currentSort={currentState.sortConfig}
                       handleSort={handleSort}
                     />
                   </th>
@@ -269,8 +268,8 @@ const ProcessTable = React.memo(() => {
                     />
                   ))}
                   <TableFooter
-                    limit={limit}
-                    activePage={activePage}
+                    limit={currentState.limit}
+                    activePage={currentState.activePage}
                     totalCount={totalCount}
                     handlePageChange={handlePageChange}
                     onLimitChange={onLimitChange}

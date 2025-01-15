@@ -8,6 +8,7 @@ from typing import List, Set, Tuple
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
+from formsflow_api_utils.utils import CREATE_SUBMISSIONS
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
@@ -50,6 +51,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         is_active,
         is_designer: bool,
         active_forms: bool,
+        include_submissions_count: bool,
         **kwargs,
     ):  # pylint: disable=too-many-arguments, too-many-locals
         """Get all forms."""
@@ -90,8 +92,18 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 **designer_filters if is_designer else {},
             )
         mapper_schema = FormProcessMapperSchema()
+        mappers_response = mapper_schema.dump(mappers, many=True)
+        if include_submissions_count and CREATE_SUBMISSIONS in user.roles:
+            current_app.logger.debug("Fetching submissions count..")
+            for mapper in mappers_response:
+                mapper["submissionsCount"] = (
+                    Application.find_applications_count_by_parent_form_id_user(
+                        mapper["parentFormId"], user.user_name, user.tenant_key
+                    )
+                )
+
         return (
-            mapper_schema.dump(mappers, many=True),
+            mappers_response,
             get_all_mappers_count,
         )
 

@@ -254,7 +254,7 @@ const ProcessTable = React.memo(() => {
                       handleSort={handleSort}
                     />
                   </th>
-                  <th className="w-25" colSpan="4" aria-label={`edit ${isBPMN ? "BPMN" : "DMN"} button`}></th>
+                  <th className="w-25" colSpan="4" aria-label="edit-button"></th>
                 </tr>
               </thead>
               {processList.length ? (

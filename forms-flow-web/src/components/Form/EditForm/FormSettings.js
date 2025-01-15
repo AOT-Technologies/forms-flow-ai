@@ -12,10 +12,10 @@ import {
   FormInput,
   FormTextArea,
 } from "@formsflow/components";
+import Multiselect from 'multiselect-react-dropdown';
 
-import MultiSelectComponent from "../../CustomComponents/MultiSelect";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import {  addTenantkeyAsSuffix } from "../../../helper/helper";
+import {  addTenantkeyAsSuffix, convertSelectedValueToMultiSelectOption } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
@@ -64,21 +64,25 @@ const FormSettings = forwardRef((props, ref) => {
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
   const [urlPath,setUrlPath] = useState(publicUrlPath);
-  const setSelectedOption = (roles, option)=> roles.length ? "specifiedRoles" : option;
+  const setSelectedOption = (roles = [], option)=> roles.length ? "specifiedRoles" : option;
+  const multiSlectOptionKey = "role";
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
     DESIGN: {
-      selectedRoles: formAuthorization.DESIGNER?.roles,
+      selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.DESIGNER?.roles,
+         multiSlectOptionKey),
       selectedOption: setSelectedOption(formAuthorization.DESIGNER?.roles,"onlyYou"),
     },
     FORM: {
       roleInput: "",
-      selectedRoles: formAuthorization.FORM?.roles,
+      selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.FORM?.roles, 
+        multiSlectOptionKey),
       selectedOption: setSelectedOption(formAuthorization.FORM?.roles,"registeredUsers"),
     },
     APPLICATION: {
       roleInput: "",
-      selectedRoles: formAuthorization.APPLICATION?.roles,
+      selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.APPLICATION?.roles,
+         multiSlectOptionKey),
       selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"), 
       /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
        we assume that the submitter is true. */
@@ -154,7 +158,7 @@ const FormSettings = forwardRef((props, ref) => {
       .then((res) => {
         if (res) {
           const { data = [] } = res;
-          setUserRoles(data.map((role) => role.name));
+          setUserRoles(data.map((role,index) => ({[multiSlectOptionKey]:role.name, id: index})));
         }
       })
       .catch((error) => console.error("error", error));
@@ -162,7 +166,7 @@ const FormSettings = forwardRef((props, ref) => {
 
 
 
-  const handleRoleStateChange = (section, key, value) => {
+  const handleRoleStateChange = (section, key, value = []) => {
     setRolesState((prevState) => ({
       ...prevState,
       [section]: {
@@ -210,6 +214,10 @@ const FormSettings = forwardRef((props, ref) => {
     props.setIsSaveButtonDisabled(shouldDisableSaveButton);
   }, [rolesState, errors, formDetails]);
   
+  const handleRoleSelectForDesign = (roles) => handleRoleStateChange(DESIGN, "selectedRoles", roles);
+  const handleRoleSelectForForm = (roles) => handleRoleStateChange(FORM, "selectedRoles", roles);
+  const handleRoleSelectForApplication = (roles) => 
+    handleRoleStateChange(APPLICATION, "selectedRoles", roles);
 
   return (
     <>
@@ -289,14 +297,15 @@ const FormSettings = forwardRef((props, ref) => {
           <FormInput disabled={true} />
         )}
         {rolesState.DESIGN.selectedOption === "specifiedRoles" && (
-          <MultiSelectComponent
-            openByDefault
-            allRoles={userRoles}
-            selectedRoles={rolesState.DESIGN.selectedRoles}
-            setSelectedRoles={(roles) =>
-              handleRoleStateChange(DESIGN, "selectedRoles", roles)
-            }
+          <Multiselect
+          options={userRoles}  
+          selectedValues={rolesState.DESIGN.selectedRoles} 
+          onSelect={handleRoleSelectForDesign}  
+          onRemove={handleRoleSelectForDesign}  
+          displayValue={multiSlectOptionKey}
+          avoidHighlightFirstOption={true}
           />
+ 
         )}
 
         <Form.Label className="field-label mt-3">
@@ -338,14 +347,15 @@ const FormSettings = forwardRef((props, ref) => {
           <FormInput disabled={true} />
         )}
         {rolesState.FORM.selectedOption === "specifiedRoles" && (
-          <MultiSelectComponent
-            openByDefault 
-            allRoles={userRoles}
-            selectedRoles={rolesState.FORM.selectedRoles}
-            setSelectedRoles={(roles) =>
-              handleRoleStateChange(FORM, "selectedRoles", roles)
-            }
-          />
+            <Multiselect 
+            options={userRoles} // Options to display in the dropdown
+            selectedValues={rolesState.FORM.selectedRoles} // Preselected value to persist in dropdown
+            onSelect={handleRoleSelectForForm} // Function will trigger on select event
+            onRemove={handleRoleSelectForForm} // Function will trigger on remove event
+            displayValue={multiSlectOptionKey} // Property name to display in the dropdown options
+            avoidHighlightFirstOption={true}
+            />
+           
         )}
 
         <Form.Label className="field-label mt-3">
@@ -378,14 +388,15 @@ const FormSettings = forwardRef((props, ref) => {
         )}
 
         {rolesState.APPLICATION.selectedOption === "specifiedRoles" && (
-          <MultiSelectComponent
-            openByDefault
-            allRoles={userRoles}
-            selectedRoles={rolesState.APPLICATION.selectedRoles}
-            setSelectedRoles={(roles) =>
-              handleRoleStateChange(APPLICATION, "selectedRoles", roles)
-            }
+          <Multiselect 
+            options={userRoles} // Options to display in the dropdown
+            selectedValues={rolesState.APPLICATION.selectedRoles} // Preselected value to persist in dropdown
+            onSelect={handleRoleSelectForApplication} // Function will trigger on select event
+            onRemove={handleRoleSelectForApplication} // Function will trigger on remove event
+            displayValue={multiSlectOptionKey} // Property name to display in the dropdown options
+            avoidHighlightFirstOption={true}
           />
+ 
         )}
       </div>
 

@@ -3,7 +3,7 @@ import {  useSelector } from "react-redux";
 import { ListGroup } from "react-bootstrap";
 import { CustomPill,DeleteIcon } from "@formsflow/components";
 import PropTypes from 'prop-types';
-import { HelperServices } from "@formsflow/service";
+import { HelperServices, StyleServices } from "@formsflow/service";
 
 const RoleSelector = ({
   allRoles = [],
@@ -11,6 +11,7 @@ const RoleSelector = ({
   setSelectedRoles,
   openByDefault = false,
 }) => {
+  const primaryColor = StyleServices.getCSSVariable('primary'); 
   const [roleInput, setRoleInput] = useState("");
   const [filteredRoles, setFilteredRoles] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // To control dropdown visibility
@@ -74,7 +75,7 @@ const RoleSelector = ({
           <CustomPill
             key={role + index}
             label={HelperServices.removeTenantKeyFromData(role,tenantKey)}
-            icon={<DeleteIcon color="#253DF4" />}
+            icon={<DeleteIcon color={primaryColor} />}
             bg="primary"
             onClick={() => removeRole(role)}
           />

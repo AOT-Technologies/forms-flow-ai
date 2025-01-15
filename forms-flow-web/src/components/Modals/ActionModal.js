@@ -10,6 +10,7 @@ import {
   CustomInfo,
   CustomButton,
 } from "@formsflow/components";
+import { StyleServices } from "@formsflow/service";
 
 const ActionModal = React.memo(
   ({
@@ -19,21 +20,31 @@ const ActionModal = React.memo(
     onAction,
     published,
     isCreate,
-    isMigrated
+    isMigrated,
+    diagramType
   }) => {
+    const primaryColor = StyleServices.getCSSVariable('--ff-primary'); 
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
     };
     let customInfo = null;
 
-    if (published || !isMigrated) {
+    if (CategoryType === "FORM" && (published || !isMigrated)) {
       customInfo = {
         heading: "Note",
         content: `
-          ${published ? "Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes." : ""}
+          ${published ? `Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.` : ""}
           ${!isMigrated ? "\nSome actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\"." : ""}
         `.trim(),
+      };
+    } else if (CategoryType === "WORKFLOW" && published) {
+      customInfo = {
+        heading: "Note",
+        content: `Importing and deleting is not available when the ${diagramType} is published.` + 
+        `You must unpublish the ${diagramType} first if you wish to make any changes.`.trim(),
+      
+
       };
     }
     
@@ -46,7 +57,7 @@ const ActionModal = React.memo(
               <div> Action</div>
             </Modal.Title>
             <div className="d-flex align-items-center">
-              <CloseIcon onClick={onClose} color="#253DF4" />
+              <CloseIcon onClick={onClose} color={primaryColor} />
             </div>
           </Modal.Header>
           <Modal.Body className="action-modal-body">
@@ -57,8 +68,8 @@ const ActionModal = React.memo(
                   variant="secondary"
                   size="sm"
                   label="Duplicate"
-                  disabled={published || !isMigrated}
-                  icon={<DuplicateIcon color="#253DF4" />}
+                  disabled={!isMigrated}
+                  icon={<DuplicateIcon color={primaryColor} />}
                   className=""
                   dataTestid="duplicate-form-button"
                   ariaLabel="Duplicate Button"
@@ -154,6 +165,7 @@ ActionModal.propTypes = {
   published: PropTypes.bool.isRequired,
   isCreate: PropTypes.bool,
   isMigrated: PropTypes.bool, // Adding validation for isMigrated
+  diagramType: PropTypes.string,
 };
 
 export default ActionModal;

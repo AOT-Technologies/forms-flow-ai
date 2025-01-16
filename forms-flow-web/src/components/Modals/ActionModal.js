@@ -41,7 +41,7 @@ const ActionModal = React.memo(
     } else if (CategoryType === "WORKFLOW" && published) {
       customInfo = {
         heading: "Note",
-        content: `Importing and deleting is not available when the ${diagramType} is published.` + 
+        content: `Importing is not available when the ${diagramType} is published.` + 
         `You must unpublish the ${diagramType} first if you wish to make any changes.`.trim(),
       
 

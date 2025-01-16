@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import {
   createNewProcess,
   createNewDecision,
-  extractDataFromDiagram,
 } from "../../components/Modeler/helpers/helper";
 import {
   CustomButton,
@@ -37,7 +36,7 @@ import {
   validateProcess,
   compareXML,
   compareDmnXML,
-  validateDecisionNames,
+  validateDecisionNames
 } from "../../helper/processHelper";
 import BpmnEditor from "./Editors/BpmnEditor/BpmEditor.js";
 import DmnEditor from "./Editors/DmnEditor/DmnEditor.js";
@@ -48,8 +47,11 @@ import {
 } from "../../actions/processActions";
 import { useMutation, useQuery } from "react-query";
 import LoadingOverlay from "react-loading-overlay-ts";
+import ImportProcess from "../Modals/ImportProcess";
+import NavigateBlocker from "../CustomComponents/NavigateBlocker.jsx";
 
 const EXPORT = "EXPORT";
+const IMPORT = "IMPORT";
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
 const ProcessCreateEdit = ({ type }) => {
@@ -58,19 +60,19 @@ const ProcessCreateEdit = ({ type }) => {
   const isBPMN = type === "BPMN";
   const Process = isBPMN
     ? {
-        name: "Subflow",
-        type: "BPMN",
-        route: "subflow",
-        extension: ".bpmn",
-        fileType: "text/bpmn",
-      }
+      name: "Subflow",
+      type: "BPMN",
+      route: "subflow",
+      extension: ".bpmn",
+      fileType: "text/bpmn",
+    }
     : {
-        name: "Decision Table",
-        type: "DMN",
-        route: "decision-table",
-        extension: ".dmn",
-        fileType: "text/dmn",
-      };
+      name: "Decision Table",
+      type: "DMN",
+      route: "decision-table",
+      extension: ".dmn",
+      fileType: "text/dmn",
+    };
 
   const diagramType = Process.type;
   const dispatch = useDispatch();
@@ -98,16 +100,27 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublished, setIsPublished] = useState(
     processData?.status === "Published"
   );
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
+  const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
+  
   const isDataFetched = useRef();
+  useEffect(() => {
+    setIsPublished(processData.status === "Published");
+  }, [processData]);
+
+  
+  const publishText = isPublished ? t("Unpublish") : t("Publish");
+  const processName = processData.name;
+  const fileName = (processName + Process.extension).replaceAll(" ", "");
 
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
     ["processDetails", processKey],
-    () => getProcessDetails(processKey),
+    () => getProcessDetails({processKey}),
     {
       cacheTime: 0, // Disable caching if not disabled the previous data will be cached
       staleTime: 0, // Data is always treated as stale
@@ -143,6 +156,7 @@ const ProcessCreateEdit = ({ type }) => {
   } = useMutation((processId) => fetchRevertingProcessData(processId), {
     onSuccess: () => {
       setIsReverted(true);
+      enableWorkflowChange();
     },
   });
 
@@ -152,8 +166,13 @@ const ProcessCreateEdit = ({ type }) => {
   // handle history modal
   const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
-  const publishText = isPublished ? t("Unpublish") : t("Publish");
-  const processName = processData.name;
+  const enableWorkflowChange = ()=>{
+    setIsWorkflowChanged(true);
+  };
+
+  const disableWorkflowChange = ()=>{
+    setIsWorkflowChanged(false);
+  };
 
   useEffect(() => {
     if (isCreate) {
@@ -189,16 +208,18 @@ const ProcessCreateEdit = ({ type }) => {
       if (!isValid) return;
 
       const isEqual = await checkIfEqual(isCreate, xml);
-      if (!isReverted && !isCreateMode && isEqual)
+      if (!isReverted && !isCreateMode && isEqual){
+        disableWorkflowChange();
         return handleAlreadyUpToDate(isPublishing);
+      }
 
       setSavingFlow(true);
 
       const response = await saveProcess(isCreateMode, xml);
+      disableWorkflowChange();
       dispatch(setProcessData(response.data));
       isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
       handleSaveSuccess(response, isCreateMode, isPublishing);
-
       return response.data;
     } catch (error) {
       handleError();
@@ -255,9 +276,9 @@ const ProcessCreateEdit = ({ type }) => {
     return isCreate
       ? await createProcess(payload)
       : await updateProcess({
-          ...payload,
-          id: processData.id, // ID needed only for update
-        });
+        ...payload,
+        id: processData.id, // ID needed only for update
+      });
   };
 
   const handleSaveSuccess = (response, isCreate, isPublished) => {
@@ -301,7 +322,9 @@ const ProcessCreateEdit = ({ type }) => {
       let response = null;
 
       if (!isPublished) {
-        response = await saveFlow({ isPublishing: !isPublished });
+        response = await saveFlow({
+          isPublishing: !isPublished
+        });
       }
 
       closeModal();
@@ -344,7 +367,7 @@ const ProcessCreateEdit = ({ type }) => {
 
   const updateProcessDetails = async () => {
     const updatedProcessDetails = await getProcessDetails(
-      processData.processKey
+      {processKey:processData.processKey}
     );
     dispatch(setProcessData(updatedProcessDetails.data));
     setIsPublished(false); // Resetting publish state after unpublishing
@@ -367,16 +390,16 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handleExport = async () => {
     try {
-      let data;
-
+      let data = "";
       if (isCreate) {
-        data = isBPMN ? defaultProcessXmlData : defaultDmnXmlData;
+        const modeler = getModeler(isBPMN);
+        data = await createXMLFromModeler(modeler);
       } else {
         data = processData?.processData;
       }
 
       const isValid = isBPMN
-        ? await validateProcess(data)
+        ? await validateProcess(data, lintErrors)
         : await validateDecisionNames(data);
 
       if (isValid) {
@@ -384,12 +407,7 @@ const ProcessCreateEdit = ({ type }) => {
         const file = new Blob([data], { type: Process.fileType });
         element.href = URL.createObjectURL(file);
 
-        // Using the `Process` object for the filename and extension
-        const processName =
-          extractDataFromDiagram(data).name.replaceAll(" / ", "-") +
-          Process.extension;
-
-        element.download = processName.replaceAll(" ", "");
+        element.download = fileName;
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element); // Cleanup after download
@@ -435,6 +453,7 @@ const ProcessCreateEdit = ({ type }) => {
     }
     isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
     handleToggleConfirmModal();
+    disableWorkflowChange();
   };
   const handleCloseErrorModal = () => setShowErrorModal(false);
 
@@ -486,9 +505,9 @@ const ProcessCreateEdit = ({ type }) => {
         );
       case "discard":
         return getModalConfig(
-          t(`Are you sure you want to discard ${Process.type} changes?`),
+          t(`Are you sure want to discard ${Process.type} changes?`),
           t(
-            `Are you sure you want to discard all the changes to the ${Process.type}?`
+            `Are you sure want to discard all the changes to the ${Process.type}?`
           ),
           t("Discard Changes"),
           t("Cancel"),
@@ -510,9 +529,16 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const modalContent = getModalContent();
+  const handleImportData = (xml) => {
+    const ref = isBPMN ? bpmnRef : dmnRef;
+    if (ref.current) {
+      ref.current?.handleImport(xml);
+    }
+  };
 
   return (
     <div>
+      <NavigateBlocker isBlock={isWorkflowChanged} message={"You have made changes that are not saved yet"}  />
       <ConfirmModal
         show={showConfirmModal}
         title={modalContent.title}
@@ -604,7 +630,7 @@ const ProcessCreateEdit = ({ type }) => {
                   onClick={saveFlow}
                   label={t(`Save ${diagramType}`)}
                   buttonLoading={savingFlow}
-                  disabled={savingFlow || isPublished}
+                  disabled={savingFlow || isPublished || !isWorkflowChanged}
                   dataTestid={`save-${diagramType.toLowerCase()}-layout`}
                   ariaLabel={t(`Save ${diagramType} Layout`)}
                 />
@@ -613,6 +639,7 @@ const ProcessCreateEdit = ({ type }) => {
                   size="md"
                   onClick={() => openConfirmModal("discard")}
                   label={t("Discard Changes")}
+                  disabled={!isWorkflowChanged}
                   dataTestid={`discard-${diagramType.toLowerCase()}-changes-testid`}
                   ariaLabel={t(`Discard ${diagramType} Changes`)}
                 />
@@ -628,12 +655,14 @@ const ProcessCreateEdit = ({ type }) => {
           >
             {isBPMN ? (
               <BpmnEditor
+                onChange={enableWorkflowChange}
                 ref={bpmnRef}
                 bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
                 setLintErrors={setLintErrors}
               />
             ) : (
               <DmnEditor
+                onChange={enableWorkflowChange}
                 ref={dmnRef}
                 dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
               />
@@ -653,13 +682,15 @@ const ProcessCreateEdit = ({ type }) => {
           setSelectedAction(action);
         }}
         isCreate={isCreate}
+        published={isPublished}
+        diagramType={diagramType}
       />
 
       <ExportDiagram
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
         onExport={handleExport}
-        fileName={processName || "filename"}
+        fileName={fileName}
         modalTitle={t(`Export ${diagramType}`)}
         successMessage={t("Export Successful")}
         errorMessage={exportError}
@@ -686,7 +717,20 @@ const ProcessCreateEdit = ({ type }) => {
         revertBtnAction={fetchHistoryData}
         historyCount={historiesData?.totalCount || 0}
         currentVersionId={processData.id}
+        disableAllRevertButton={isPublished}
       />
+      {selectedAction === IMPORT && <ImportProcess
+        showModal={selectedAction === IMPORT}
+        closeImport={() => setSelectedAction(null)}
+        processId={processData.id}
+        processVersion={{
+          type: Process.type,
+          majorVersion: processData?.majorVersion,
+          minorVersion: processData?.minorVersion
+        }}
+        setImportXml={handleImportData}
+        fileType={Process.extension}
+      />}
     </div>
   );
 };

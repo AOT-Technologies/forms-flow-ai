@@ -295,16 +295,21 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-  export const getProcessDetails = (processKey, tenant_key) => {
-    const api = API.GET_PROCESS_XML;
-    let url = replaceUrl(api, "<process_key>", processKey);
+export const getProcessDetails = ({processKey, tenant_key = null, mapperId = null}) => {
+  const api = API.GET_PROCESS_XML;
+  let url = replaceUrl(api, "<process_key>", processKey);
 
-    if (tenant_key) {
-      url = url + `?tenantId=${tenant_key}`;
-    }
+  const params = [];
+  if (tenant_key) params.push(`tenantId=${tenant_key}`);
+  if (mapperId) params.push(`mapperId=${mapperId}`);
 
-    return RequestService.httpGETRequest(url);
-  };
+  if (params.length) {
+    url += `?${params.join("&")}`;
+  }
+
+  return RequestService.httpGETRequest(url);
+};
+
 
 
   export const updateProcess = ({id,data,type}) => {
@@ -501,7 +506,7 @@ export const fetchDiagram = (
 
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-    getProcessDetails(process_key,tenant_key)
+    getProcessDetails({processKey:process_key,tenant_key})
       .then((res) => {
         if (res.data) {
           dispatch(

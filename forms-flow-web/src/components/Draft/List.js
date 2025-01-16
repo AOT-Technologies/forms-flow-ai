@@ -3,14 +3,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"; 
 import Loading from "../../containers/Loading";
  import { useTranslation } from "react-i18next"; 
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
  
 import {
   fetchDrafts,
 } from "../../apiManager/services/draftService";
 import Confirm from "../../containers/Confirm";
 import Head from "../../containers/Head";
-import { push } from "connected-react-router";
 import {
   setDraftDelete,
   setDraftListLoading,
@@ -19,6 +17,7 @@ import { deleteDraftbyId } from "../../apiManager/services/draftService";
  import { toast } from "react-toastify";
 import { textTruncate } from "../../helper/helper";
 import DraftTable from "./DraftTable";
+import {navigateToSubmitFormsListing, navigateToSubmitFormsDraft, navigateToSubmitFormsApplication} from "../../helper/routerHelper";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -28,10 +27,6 @@ export const DraftList = React.memo(() => {
   const isDraftListLoading = useSelector(
     (state) => state.draft.isDraftListLoading
   );
-  const applicationCount = useSelector(
-    (state) => state.applications.applicationCount
-  );
-  const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const page = useSelector((state) => state.draft.activePage);
   const sortOrder = useSelector((state) => state.draft.sortOrder);
@@ -39,9 +34,7 @@ export const DraftList = React.memo(() => {
   const draftListSearchParams = useSelector(
     (state) => state.draft.searchParams
   );
- 
-   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const tenantId = useSelector((state) => state.tenants?.tenantId);
    let filterParams = {
       ...draftListSearchParams,
       page: page,
@@ -49,11 +42,6 @@ export const DraftList = React.memo(() => {
       sortOrder,
       sortBy
   };
-
- 
-
- 
- 
 
   useEffect(() => {
     dispatch(fetchDrafts(filterParams,() => {
@@ -101,20 +89,29 @@ export const DraftList = React.memo(() => {
     return <Loading />;
   }
 
- 
+  const navigateToSubmitFormsRoute = () => {
+    navigateToSubmitFormsListing(dispatch,tenantId);
+  };
+
+  const navigateToSubmitFormsDraftRoute = () => {
+    navigateToSubmitFormsDraft(dispatch,tenantId);
+  };
+  const navigateToSubmitFormsApplicationRoute = () => {
+    navigateToSubmitFormsApplication(dispatch,tenantId);
+  };
   const headerList = () => {
     return [
       {
+        name: "All Forms",
+        onClick: () => navigateToSubmitFormsRoute()//dispatch(push(`${redirectUrl}form`)),
+      },
+      {
         name: "Submissions",
-        count: applicationCount,
-        onClick: () => dispatch(push(`${redirectUrl}application`)),
-        icon: "list",
+        onClick: () => navigateToSubmitFormsApplicationRoute(),
       },
       {
         name: "Drafts",
-        count: draftCount,
-        onClick: () => dispatch(push(`${redirectUrl}draft`)),
-        icon: "edit",
+        onClick: () => navigateToSubmitFormsDraftRoute(),
       },
     ];
   };

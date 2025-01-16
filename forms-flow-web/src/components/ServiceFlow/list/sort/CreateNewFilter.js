@@ -96,7 +96,7 @@ export default function CreateNewFilterDrawer({
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const process = useSelector((state) => state.process?.processList);
   const processList = useMemo(() => listProcess(process, true), [process]);
-  const { createFilters, admin, manageAllFilters } = userRoles();
+  const { createFilters, admin } = userRoles();
   const userGroups = useSelector(
     (state) => state.userAuthorization?.userGroups
   );
@@ -166,7 +166,7 @@ export default function CreateNewFilterDrawer({
         setProcessLoading(false);
       })
       .catch((err) => {
-        console.err(err);
+        console.error(err);
         setProcessLoading(false);
       });
   };
@@ -689,7 +689,7 @@ export default function CreateNewFilterDrawer({
       </List>
 
       <List>
-        <h5 className="fw-bold fs-18">
+        <p className="fw-bold mb-0">
           <Translation>{(t) => t("Criteria")}</Translation>{" "}
           <i
             title={t(
@@ -697,28 +697,28 @@ export default function CreateNewFilterDrawer({
             )}
             className="fa fa-info-circle filter-tooltip-icon"
           ></i>
-        </h5>
+        </p>
         <div className="d-flex align-items-center mt-1">
           <input
-            className="me-1 mt-3"
+            className="me-1"
             type="checkbox"
             checked={isMyTasksEnabled}
             onChange={(e) => setIsMyTasksEnabled(e.target.checked)}
             title={t("Show only current user assigned task")}
             disabled={viewMode}
           />
-          <h5 className="mt-3 fw-normal">
+          <p className="mb-0">
             <Translation>
               {(t) => t("Show only current user assigned task")}
             </Translation>
-          </h5>
+          </p>
         </div>
 
         {admin && (
           <>
             <div className="d-flex align-items-center mt-1">
               <input
-                className="me-1 mt-3"
+                className="me-1"
                 type="checkbox"
                 checked={isTasksForCurrentUserGroupsEnabled}
                 onChange={(e) =>
@@ -727,11 +727,11 @@ export default function CreateNewFilterDrawer({
                 title={t("Display authorized tasks based on user roles")}
                 disabled={viewMode}
               />
-              <h5 className="mt-3 fw-normal">
+              <p className="mb-0">
                 <Translation>
                   {(t) => t("Display authorized tasks based on user roles")}
                 </Translation>
-              </h5>
+              </p>
             </div>
             {!isTasksForCurrentUserGroupsEnabled ? (
               <div className="alert taskvariable-alert mt-1" role="alert">
@@ -746,15 +746,15 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <label htmlFor="select-workflow">
-            <h5 className="mt-2 fw-bold">
-              <Translation>{(t) => t("Workflow")}</Translation>
-            </h5>
+            <p className="mt-2 fw-bold  mb-0">
+              <Translation>{(t) => t("Flow")}</Translation>
+            </p>
           </label>
           <Select
             isDisabled={viewMode}
             className="mb-3"
             options={processList}
-            placeholder={t("Select Workflow")}
+            placeholder={t("Select Flow")}
             isClearable
             value={processList?.find((list) => list.value === definitionKeyId)}
             onChange={(selectedOption) => {
@@ -772,13 +772,13 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <label htmlFor="select-user-group">
-            <h5 className="fw-bold">
+            <p className="fw-bold  mb-0">
               {MULTITENANCY_ENABLED ? (
                 <Translation>{(t) => t("User Role")}</Translation>
               ) : (
                 <Translation>{(t) => t("User Group")}</Translation>
               )}
-            </h5>
+            </p>
           </label>
 
           <Select
@@ -802,9 +802,9 @@ export default function CreateNewFilterDrawer({
 
         <div className="my-2">
           <label htmlFor="select-assignee">
-            <h5 className="pt-2 fw-bold">
+            <p className="pt-2 fw-bold  mb-0">
               <Translation>{(t) => t("Assignee")}</Translation>
-            </h5>
+            </p>
           </label>
 
           <Select
@@ -822,9 +822,9 @@ export default function CreateNewFilterDrawer({
           <Divider />
           <div className="my-3">
             <label htmlFor="select-form">
-              <h5 className="fw-bold ">
+              <p className="fw-bold  mb-0">
                 <Translation>{(t) => t("Select Form")}</Translation>
-              </h5>
+              </p>
             </label>
             <Select
               isDisabled={viewMode}
@@ -837,7 +837,7 @@ export default function CreateNewFilterDrawer({
               isLoading={forms.isLoading}
             />
           </div>
-          <h5 className="fw-bold ">
+          <p className="fw-bold  mb-0 ">
             <Translation>{(t) => t("Task Attributes")}</Translation>
             <i
               title={t(
@@ -845,7 +845,7 @@ export default function CreateNewFilterDrawer({
               )}
               className="fa fa-info-circle ms-2 filter-tooltip-icon"
             ></i>
-          </h5>
+          </p>
 
           <button
             className="btn btn-outline-primary w-100"
@@ -856,7 +856,7 @@ export default function CreateNewFilterDrawer({
         </div>
         <Divider />
         <div className="child-container-two pt-2">
-          <h5>
+          <p className="fw-bold mb-0">
             <Translation>{(t) => t("Permission")}</Translation>{" "}
             <i
               title={t(
@@ -864,7 +864,7 @@ export default function CreateNewFilterDrawer({
               )}
               className="fa fa-info-circle filter-tooltip-icon"
             ></i>
-          </h5>
+          </p>
           <input
             className="access-all"
             type="radio"
@@ -875,7 +875,7 @@ export default function CreateNewFilterDrawer({
             onChange={(e) => setPermissions(e.target.value)}
             disabled={viewMode}
           />
-          <label htmlFor="all-users" className="assigned-user fs-18">
+          <label htmlFor="all-users" className="assigned-user">
             <Translation>{(t) => t("Accessible for all users")}</Translation>
           </label>{" "}
           <br />
@@ -889,7 +889,7 @@ export default function CreateNewFilterDrawer({
             onChange={(e) => setPermissions(e.target.value)}
             disabled={viewMode}
           />
-          <label htmlFor="private-only" className="fs-18">
+          <label htmlFor="private-only">
             <Translation>{(t) => t("Private (Only You)")}</Translation>
           </label>
           <br />
@@ -903,7 +903,7 @@ export default function CreateNewFilterDrawer({
             onChange={handleSpecificUserGroup}
             disabled={viewMode}
           />
-          <label htmlFor="specific-grp" className="fs-18">
+          <label htmlFor="specific-grp" >
             <Translation>{(t) => t("Specific Group")}</Translation>
           </label>{" "}
           <br />
@@ -918,7 +918,7 @@ export default function CreateNewFilterDrawer({
                 overlay={
                   <Popover className="z-index">
                     <div className="poper">
-                      <ListGroup>
+                      <ListGroup  className="preview-list-group" >
                         {userGroups.length > 0 &&
                           userGroups?.map((e, i) => (
                             <ListGroup.Item
@@ -964,7 +964,7 @@ export default function CreateNewFilterDrawer({
                     {identifierId}
                     {!viewMode && (
                       <div
-                        className="badge-deleteIcon ms-2"
+                        className="badge-deleteIcon ms-2 cursor-pointer"
                         onClick={() => setIdentifierId(null)}
                       >
                         &times;
@@ -1001,7 +1001,7 @@ export default function CreateNewFilterDrawer({
           <div className="d-flex align-items-center">
             {!viewMode && (
               <button
-                className="btn btn-outline-secondary me-3"
+                className="btn btn-secondary me-3"
                 onClick={() => {
                   toggleDrawer();
                   setShowAlert(false);
@@ -1041,7 +1041,7 @@ export default function CreateNewFilterDrawer({
   return (
     <div>
       <React.Fragment key="left">
-        {(createFilters || manageAllFilters) && (
+        {createFilters  && (
       <button
         onClick={() => {
           toggleDrawer();

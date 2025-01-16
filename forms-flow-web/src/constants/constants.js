@@ -210,4 +210,34 @@ export const ENABLE_APPLICATIONS_MODULE =
     ? false
     : true;
 
+const MAIN_ROUTE = {
+  DRAFT: "draft",
+  FORM: "form",
+  FORMFLOW: "formflow",
+  TASK: "task",
+  APPLICATION: "application",
+  SUBFLOW: "subflow",
+  DECISIONTABLE: "decision-table",
+  METRICS: "metrics",
+  INSIGHTS: "insights",
+  ADMIN: "admin",
+  NOTFOUND: "404"
+};
 
+const getBaseRoute = (tenantId) => {
+  return MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
+};
+
+export const getRoute = (tenantId) => ({
+  DRAFT: getBaseRoute(tenantId) + MAIN_ROUTE.DRAFT,
+  FORM: getBaseRoute(tenantId) + MAIN_ROUTE.FORM,
+  FORMFLOW: getBaseRoute(tenantId) + MAIN_ROUTE.FORMFLOW,
+  TASK: getBaseRoute(tenantId) + MAIN_ROUTE.TASK,
+  APPLICATION: getBaseRoute(tenantId) + MAIN_ROUTE.APPLICATION,
+  SUBFLOW: getBaseRoute(tenantId) + MAIN_ROUTE.SUBFLOW,
+  DECISIONTABLE: getBaseRoute(tenantId) + MAIN_ROUTE.DECISIONTABLE,
+  METRICS: getBaseRoute(tenantId) + MAIN_ROUTE.METRICS,
+  INSIGHTS: getBaseRoute(tenantId) + MAIN_ROUTE.INSIGHTS,
+  ADMIN: getBaseRoute(tenantId) + MAIN_ROUTE.ADMIN,
+  NOTFOUND: getBaseRoute(tenantId) + MAIN_ROUTE.NOTFOUND
+});

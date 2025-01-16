@@ -20,6 +20,7 @@ const initialState = {
     visibility: { sortOrder: "asc"},
     status: { sortOrder: "asc" },
   },
+  clientFormSearch:"",
 };
 
 const bpmForms = (state = initialState, action) => {
@@ -44,8 +45,10 @@ const bpmForms = (state = initialState, action) => {
       return { ...state, bpmFormLoading: action.payload };
     case ACTION_CONSTANTS.BPM_FORM_TYPE:
       return { ...state, formType: action.payload };
-      case ACTION_CONSTANTS.BPM_FORM_SORT:
+    case ACTION_CONSTANTS.BPM_FORM_SORT:
       return { ...state, sort: action.payload };
+    case ACTION_CONSTANTS.BPM_CLIENT_FORM_SEARCH:
+      return { ...state, clientFormSearch: action.payload };
     default:
       return state;
   }

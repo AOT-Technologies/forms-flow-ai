@@ -37,14 +37,14 @@ const Item = React.memo(() => {
   const { createSubmissions, viewSubmissions} = userRoles();
 
 
-  const formAuthVerify = (formId,successCallBack)=>{
+  const formAuthVerify = ({parentFormId, currentFormId},successCallBack)=>{
       const isSubmissionRoute = pathname?.includes("/submission");
       const authFunction = isSubmissionRoute
       ? viewSubmissions
         ? getReviewerList
         : getClientList
       : getClientList;
-       authFunction(formId).then(successCallBack).catch((err)=>{
+       authFunction({parentFormId, currentFormId}).then(successCallBack).catch((err)=>{
         const {response} = err;
         dispatch(setApiCallError({message:response?.data?.message || 
           response.statusText,status:response.status}));
@@ -57,13 +57,14 @@ const Item = React.memo(() => {
     dispatch(setApiCallError(null));
     dispatch(setFormAuthVerifyLoading(true));
     dispatch(resetFormData("form", formId));
+    Formio.cache = {}; //clearing formio cache
     dispatch(clearSubmissionError("submission"));
     if (checkIsObjectId(formId)) {
       dispatch(getForm("form", formId,(err,res)=>{
         if(err){
           dispatch(setFormAuthVerifyLoading(false));
         }else{    
-          formAuthVerify(res.parentFormId || res._id);
+          formAuthVerify({parentFormId:res.parentFormId || res._id, currentFormId: res._id});
         }
       }));
     } else {
@@ -71,7 +72,8 @@ const Item = React.memo(() => {
         fetchFormByAlias(formId, async (err, formObj) => {
           if (!err) {
        
-            formAuthVerify(formObj.parentFormId || formObj._id,()=>{
+            formAuthVerify({parentFormId:formObj.parentFormId || formObj._id, 
+              currentFormId:formObj._id},()=>{
               const form_id = formObj._id;
               dispatch(
                 setFormRequestData(

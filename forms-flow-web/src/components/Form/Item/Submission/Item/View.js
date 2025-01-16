@@ -52,7 +52,7 @@ const View = React.memo((props) => {
   }
 
   return (
-    <div className="container row task-container bg-white p-2 m-0">
+    <div className="scrollable-overview  bg-white ps-3 pe-3 m-0">
       <div className="d-flex py-2 form-title">
         <h3 className="task-head text-truncate"> {form.title}</h3>
         {showPrintButton && form?._id ? (
@@ -73,7 +73,7 @@ const View = React.memo((props) => {
         text={t("Loading...")}
         className="col-12"
       >
-        <div className="sub-container">
+        <div className="sub-container wizard-tab">
           <Form
             form={form}
             submission={updatedSubmission}

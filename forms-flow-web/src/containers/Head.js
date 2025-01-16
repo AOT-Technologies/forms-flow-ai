@@ -3,7 +3,7 @@ import { Translation } from "react-i18next";
 import "./styles.scss";
 
 const Head = React.memo((props) => {
-  const { items = [], page, visibleHr = true, } = props;
+  const { items = [], page } = props;
   return (
     <div className="header-container">
       <div className="main-header">
@@ -31,7 +31,6 @@ const Head = React.memo((props) => {
           </div>
         ))}
       </div>
-      {visibleHr && <hr className="head-rule" />}
     </div>
   );
 });

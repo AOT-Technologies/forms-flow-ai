@@ -1,7 +1,7 @@
 # Workflow Engine
 
 [![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai/actions/workflows/forms-flow-bpm-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai/actions)
-![Camunda](https://img.shields.io/badge/Camunda-7.20.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.1.10-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
+![Camunda](https://img.shields.io/badge/Camunda-7.21-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3.5-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
 To know more about Camunda, visit https://camunda.com/.
@@ -117,6 +117,12 @@ To know more about Camunda, visit https://camunda.com/.
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
  `BPM_API_URL`:triangular_flag_on_post:|BPM Client URL||`http://{your-ip-address}:8000/camunda`
+ `VAULT_ENABLED`|Support to fetch secrets from vault|`true`/`false`|`false`
+ `VAULT_URL`|Support to fetch secrets from vault
+ `VAULT_TOKEN`|Support to fetch secrets from vault
+ `VAULT_PATH`|Support to fetch secrets from vault
+ `VAULT_SECRET`|Support to fetch secrets from vault
+ `FORMSFLOW_DOC_API_URL`|To support forms-flow-documents sevice||`http://localhost:5006`
    
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

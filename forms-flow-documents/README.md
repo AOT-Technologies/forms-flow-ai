@@ -1,6 +1,6 @@
 # formsflow.ai Documents API
 
-![Python](https://img.shields.io/badge/python-3.12.1-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.3-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
+![Python](https://img.shields.io/badge/python-3.12.6-blue) ![Flask](https://img.shields.io/badge/Flask-2.3.3-blue) 
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
 
@@ -208,6 +208,8 @@ template should be valid jinja template.
 
 * For docker based installation [Docker](https://docker.com) need to be installed.
 * Admin access to [Keycloak](../forms-flow-idm/keycloak) server and ensure audience(camunda-rest-api) is setup in Keycloak-bpm server.
+* Ensure that the `forms-flow-redis` service is running and accessible on port `6379`. For more details, refer to the [forms-flow-redis README](../forms-flow-redis/README.md).
+
 
 ## Solution Setup
 
@@ -250,6 +252,7 @@ Variable name | Meaning | Possible values | Default value |
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_DOC_API_URL`:triangular_flag_on_post:|formsflow.ai Document service URL||`http://{your-ip-address}:5006`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
+
 
 **NOTE : Default realm is `forms-flow-ai`**
 

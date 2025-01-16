@@ -131,6 +131,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Workflow engine
     USE_SPIFF_WF = str(os.getenv("USE_SPIFF_WF", default="true")).lower() == "true"
 
+    # Admin url
+    ADMIN_URL = os.getenv("FORMSFLOW_ADMIN_URL")
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

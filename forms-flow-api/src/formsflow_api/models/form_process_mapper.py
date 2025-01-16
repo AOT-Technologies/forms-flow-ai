@@ -22,21 +22,23 @@ from .base_model import BaseModel
 from .db import db
 
 
-class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
+class FormProcessMapper(
+    AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model
+):  # pylint: disable=too-many-public-methods
     """This class manages form process mapper information."""
 
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
-    form_name = db.Column(db.String(100), nullable=False)
+    form_name = db.Column(db.String(200), nullable=False)
     form_type = db.Column(db.String(20), nullable=False)
     parent_form_id = db.Column(db.String(50), nullable=False)
-    process_key = db.Column(db.String(50), nullable=True, default=DEFAULT_PROCESS_KEY)
+    process_key = db.Column(db.String(200), nullable=True, default=DEFAULT_PROCESS_KEY)
     process_name = db.Column(
-        db.String(100), nullable=True, default=DEFAULT_PROCESS_NAME
+        db.String(200), nullable=True, default=DEFAULT_PROCESS_NAME
     )
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
-    tenant = db.Column(db.String(100), nullable=True)
+    tenant = db.Column(db.String(100), nullable=True, index=True)
     process_tenant = db.Column(
         db.String(),
         nullable=True,
@@ -52,6 +54,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     version = db.Column(db.Integer, nullable=False, default=1)
     description = db.Column(db.String, nullable=True)
     prompt_new_version = db.Column(db.Boolean, nullable=True, default=False)
+    is_migrated = db.Column(
+        db.Boolean, nullable=True, default=False, comment="Is workflow migrated"
+    )
 
     __table_args__ = (
         UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
@@ -78,6 +83,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
                 mapper.description = mapper_info.get("description")
+                mapper.is_migrated = mapper_info.get("is_migrated", True)
                 mapper.save()
                 return mapper
         except Exception as err:  # pylint: disable=broad-except
@@ -106,6 +112,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "process_tenant",
                 "description",
                 "prompt_new_version",
+                "is_migrated",
             ],
             mapper_info,
         )
@@ -123,17 +130,10 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         self.commit()
 
     @classmethod
-    def find_all(cls, page_number, limit):
+    def find_all(cls):
         """Fetch all the form process mappers."""
-        if page_number == 0:
-            query = cls.query.order_by(FormProcessMapper.id.desc()).all()
-        else:
-            query = (
-                cls.query.order_by(FormProcessMapper.id.desc())
-                .paginate(page_number, limit, False)
-                .items
-            )
-        return query
+        query = cls.tenant_authorization(query=cls.query)
+        return query.all()
 
     @classmethod
     def filter_conditions(cls, **filters):
@@ -389,9 +389,23 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     @classmethod
     def find_forms_by_title(cls, form_title, exclude_id) -> FormProcessMapper:
         """Find all form process mapper that matches the provided form title."""
-        query = cls.query.filter(FormProcessMapper.form_name == form_title)
+        latest_mapper = (
+            db.session.query(
+                func.max(cls.id).label("latest_id"),
+                cls.parent_form_id,
+            )
+            .group_by(cls.parent_form_id)
+            .subquery()
+        )
+        query = (
+            db.session.query(cls)
+            .join(latest_mapper, cls.id == latest_mapper.c.latest_id)
+            .filter(cls.form_name == form_title, cls.deleted.is_(False))
+        )
+
         if exclude_id is not None:
-            query = query.filter(FormProcessMapper.parent_form_id != exclude_id)
+            query = query.filter(cls.parent_form_id != exclude_id)
+
         query = cls.tenant_authorization(query=query)
         return query.all()
 
@@ -407,3 +421,36 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             .first()
         )
         return query
+
+    @classmethod
+    @user_context
+    def get_mappers_by_process_key(cls, process_key=None, mapper_id=None, **kwargs):
+        """Get all mappers matching given process key."""
+        # Define the subquery with the window function to get latest mappers by process_key
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
+        subquery = (
+            db.session.query(
+                cls.process_key,
+                cls.parent_form_id,
+                cls.id,
+                cls.deleted,
+                cls.form_id,
+                cls.tenant,
+                func.row_number()  # pylint: disable=not-callable
+                .over(partition_by=cls.parent_form_id, order_by=cls.id.desc())
+                .label("row_num"),
+            ).filter(
+                cls.process_key == process_key,
+                cls.deleted.is_(False),
+                cls.id != mapper_id,
+                cls.tenant == tenant_key,
+            )
+        ).subquery("latest_mapper_rows_by_process_key")
+        # Only get the latest row in each parent_formid group
+        query = (
+            db.session.query(cls)
+            .join(subquery, cls.id == subquery.c.id)
+            .filter(subquery.c.row_num == 1)
+        )
+        return query.all()

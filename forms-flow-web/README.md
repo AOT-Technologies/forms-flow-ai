@@ -110,7 +110,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
 ### Internationalization
   * Default language 'English' can be changed to other languages according to the   user.
-  * The languages currently provided are `Chinese,Portuguese,French,German and Bulgarian`.
+  * The languages currently provided are `Chinese,Portuguese,French,German, Bulgarian and Spanish`.
   * User can add more languages by following the steps mentioned [here](https://aot-technologies.github.io/forms-flow-ai-doc/#language)
 
 ## forms-flow-web Events

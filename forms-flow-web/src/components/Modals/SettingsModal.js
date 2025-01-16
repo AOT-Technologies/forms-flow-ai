@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef ,useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@formsflow/components";
@@ -8,6 +8,7 @@ import FormSettings from "../Form/EditForm/FormSettings";
 const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) => {
   const { t } = useTranslation();
   const FormSettingsRef = useRef();
+  const [ isSaveButtonDisabled ,setIsSaveButtonDisabled] = useState(false);
 
   const handleConfirmFunction = () => {
      handleConfirm(FormSettingsRef.current);
@@ -28,13 +29,14 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           ref={FormSettingsRef}
           handleConfirm={handleConfirm}
           handleClose={handleClose}
+          setIsSaveButtonDisabled = {setIsSaveButtonDisabled}
         />
       </Modal.Body>
       <Modal.Footer>
         <CustomButton
           variant="primary"
           size="md"
-          disabled={isSaving}
+          disabled={isSaving || isSaveButtonDisabled}
           buttonLoading={isSaving}
           label={t("Save Changes")}
           onClick={handleConfirmFunction}

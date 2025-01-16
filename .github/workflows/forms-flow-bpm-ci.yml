@@ -1,11 +1,11 @@
 name: Forms Flow BPM CI
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - develop
-      - master
-      - release/**
+  # push:
+  #   branches:
+  #     - develop
+  #     - master
+  #     - release/**
   pull_request:
     branches:
       - develop

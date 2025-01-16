@@ -2,8 +2,10 @@
 
 from marshmallow import EXCLUDE, Schema, fields
 
+from .base_schema import AuditDateTimeSchema
 
-class FormHistorySchema(Schema):
+
+class FormHistorySchema(AuditDateTimeSchema):
     """This class provides the schema for Form history."""
 
     class Meta:  # pylint: disable=too-few-public-methods
@@ -14,7 +16,6 @@ class FormHistorySchema(Schema):
     id = fields.Str(dump_only=True)
     form_id = fields.Str(data_key="formId")
     created_by = fields.Str(data_key="createdBy")
-    created = fields.Str(data_key="created")
     change_log = fields.Dict(data_key="changeLog")
     major_version = fields.Int(data_key="majorVersion")
     minor_version = fields.Int(data_key="minorVersion")

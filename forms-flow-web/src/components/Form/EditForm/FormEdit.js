@@ -16,6 +16,8 @@ import {
   PreviewIcon,
   FormBuilderModal,
   HistoryModal,
+  ImportModal,
+  CustomInfo
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -36,8 +38,7 @@ import {
   unPublish,
   getFormHistory,
 } from "../../../apiManager/services/FormServices";
-import ImportModal from "../../Modals/ImportModal.js";
-import FileService from "../../../services/FileService"; 
+import FileService from "../../../services/FileService";
 import {
   setFormFailureErrorData,
   setFormSuccessData,
@@ -50,10 +51,8 @@ import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
+  getFormProcesses
 } from "../../../apiManager/services/processServices";
-import {
-  setProcessData,
-} from "../../../actions/processActions.js"; 
 import _ from "lodash";
 import SettingsModal from "../../Modals/SettingsModal";
 import FlowEdit from "./FlowEdit.js";
@@ -62,16 +61,20 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged} from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
+import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
+import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 
 // constant values
-const DUPLICATE = "DUPLICATE";
-const IMPORT = "IMPORT";
-const EXPORT = "EXPORT";
+const ACTION_OPERATIONS = {
+  DUPLICATE : "DUPLICATE",
+  IMPORT : "IMPORT",
+  EXPORT : "EXPORT",
+  DELETE : "DELETE"
+};
 const FORM_LAYOUT = "FORM_LAYOUT";
 const FLOW_LAYOUT = "FLOW_LAYOUT";
-const DELETE = "DELETE";
 
 const EditComponent = () => {
   const dispatch = useDispatch();
@@ -90,7 +93,11 @@ const EditComponent = () => {
     submissionAccess = [],
     lang,
     userDetail: { preferred_username },
+    roleIds = {}
   } = useSelector((state) => state.user);
+  // created a copy for access and submissin access
+  const [formAccessRoles, setFormAccessRoles] = useState(_cloneDeep(formAccess));
+  const [submissionAccessRoles, setSubmissionAccessRoles] = useState(_cloneDeep(submissionAccess));
 
   /* ---------------------------  form data --------------------------- */
   const { form: formData, error: errors } = useSelector((state) => state.form);
@@ -117,35 +124,80 @@ const EditComponent = () => {
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
+  const defaultPrimaryBtnText = "Confirm And Replace";
+  const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
   const { createDesigns } = userRoles();
+  const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });
+  const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
+  const [migration, setMigration] = useState(false);
+  const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
 
-   /* --------- validate form title exist or not --------- */
-   const {
+
+  /* ------------------------- migration states ------------------------- */
+  const [isMigrationLoading, setIsMigrationLoading] = useState(false);
+
+  /* ------------------------- deletion states ------------------------- */
+  const [isDeletionLoading, setIsDeletionLoading] = useState(false);
+
+
+  /* --------- validate form title exist or not --------- */
+  const {
     mutate: validateFormTitle, // this function will trigger the api call
     isLoading: validationLoading,
     // isError: error,
   } = useMutation(
     ({ title }) =>
-      validateFormName(title) ,
+      validateFormName(title),
     {
-      onSuccess:({data})=>{
+      onSuccess: ({ data }, { createButtonClicked, ...variables }) => {
+
         if (data && data.code === "FORM_EXISTS") {
           setNameError(data.message);  // Set exact error message
         } else {
           setNameError("");
+          if (createButtonClicked) {
+            handlePublishAsNewVersion(variables);
+          }
         }
       },
-      onError:(error)=>{
+      onError: (error) => {
         const errorMessage = error.response?.data?.message || "An error occurred while validating the form name.";
         setNameError(errorMessage);  // Set the error message from the server
       }
     }
   );
-  
   const UploadActionType = {
     IMPORT: "import",
     VALIDATE: "validate",
   };
+
+  // add and remove anonymouse access
+  const addAndRemoveAnonymouseId = (data, type, isAnonymouse)=>{
+    return data.map(access=>{
+      if (access.type === type) {
+        if (isAnonymouse) {
+          access.roles.push(roleIds.ANONYMOUS);
+        } else {
+          access.roles = access.roles.filter((id) => id !== roleIds.ANONYMOUS);
+        }
+      }
+      return access;
+    });
+  };
+
+  useEffect(() => {
+    // if anonymouse changed then the role ids add or remove from the state
+    setFormAccessRoles(prev =>addAndRemoveAnonymouseId(prev, "read_all", processListData.anonymous ));
+    setSubmissionAccessRoles(prev=> addAndRemoveAnonymouseId(prev, "create_own",processListData.anonymous ));
+  }, [processListData?.anonymous]);
+
+
+  useEffect(() => {
+    if (importError !== "") {
+      setPrimaryButtonText("Try Again");
+    }
+  }, [importError]);
+
   const [fileItems, setFileItems] = useState({
     workflow: {
       majorVersion: null,
@@ -157,83 +209,147 @@ const EditComponent = () => {
     },
   });
 
-  const handleImport = async (
-    fileContent,
-    UploadActionType,
-    selectedLayoutVersion,
-    selectedFlowVersion
-  ) => {
-    setImportLoader(true);
 
-    // Validate UploadActionType before proceeding
-    if (!["validate", "import"].includes(UploadActionType)) {
-      console.error("Invalid UploadActionType provided");
-      setImportLoader(false);
-      return;
-    }
+  const handleImport = async (fileContent, UploadActionType,
+    selectedLayoutVersion, selectedFlowVersion) => {
+    if (!isValidUploadActionType(UploadActionType)) return;
 
-    let data = {};
-    data.importType = "edit";
-    data.action = UploadActionType;
-    // Set form submission state for "import" action
+    const data = prepareImportData(UploadActionType, selectedLayoutVersion, selectedFlowVersion);
 
-    if (UploadActionType === "import") {
-      setFormSubmitted(true);
-      // Handle selectedLayoutVersion logic
-      if (selectedLayoutVersion || selectedFlowVersion) {
-        data.form = {
-          skip: selectedLayoutVersion === true,
-        };
-
-        data.workflow = {
-          skip: selectedFlowVersion === true,
-        };
-      }
-    }
-
-    // Add mapperId if available
-    data.mapperId = processListData.id;
-
-    // Convert data to a JSON string for the API request
-    const dataString = JSON.stringify(data);
     try {
-      const res = await formImport(fileContent, dataString);
-      setImportLoader(false);
-      setFormSubmitted(false);
-      const { data: responseData } = res;
-      if (responseData) {
-        const { workflow, form } = responseData;
-        setFileItems({
-          workflow: {
-            majorVersion: workflow?.majorVersion || null,
-            minorVersion: workflow?.minorVersion || null,
-          },
-          form: {
-            majorVersion: form?.majorVersion || null,
-            minorVersion: form?.minorVersion || null,
-          },
-        });
-      }
-      if (data.action === "validate") {
-        FileService.extractFormDetails(fileContent, (formExtracted) => {
-          if (formExtracted) {
-            setFormTitle(formExtracted.formTitle);
-          } else {
-            console.log("No valid form found.");
-          }
-        });
-      } else {
-        if (responseData?.formId) {
-          handleCloseSelectedAction();
-          dispatch(push(`${redirectUrl}formflow/${responseData.formId}/edit/`));
-        }
-      }
+      const res = await formImport(fileContent, JSON.stringify(data));
+      await handleImportResponse(res, fileContent, data.action);
     } catch (err) {
-      setImportLoader(false);
-      setFormSubmitted(false);
-      setImportError(err?.response?.data?.message || "An error occurred");
+      handleImportError(err);
     }
   };
+
+  // Helper function to validate the action type
+  const isValidUploadActionType = (actionType) => {
+    if (!["validate", "import"].includes(actionType)) {
+      console.error("Invalid UploadActionType provided");
+      setImportLoader(false);
+      return false;
+    }
+    return true;
+  };
+
+  // Helper function to prepare data for the API request
+  const prepareImportData = (actionType, selectedLayoutVersion, selectedFlowVersion) => {
+    const data = {
+      importType: "edit",
+      action: actionType,
+      mapperId: processListData.id,
+    };
+
+    if (actionType === "import") {
+      setImportLoader(true);
+      setFormSubmitted(true);
+
+      if (selectedLayoutVersion || selectedFlowVersion) {
+        data.form = prepareVersionData(selectedLayoutVersion);
+        //the workflow shoul send only the value of skip.
+        data.workflow = {
+          skip: typeof selectedFlowVersion !== 'string',
+        };
+      }
+    }
+
+    return data;
+  };
+
+  // Helper function to prepare version data
+  const prepareVersionData = (version) => ({
+    skip: typeof version !== 'string', // skip is false if version is a string, true otherwise
+    ...(typeof version === 'string' && { selectedVersion: version }), // Include selectedVersion only if version is a string
+  });
+
+  // Helper function to handle the API response
+  const handleImportResponse = async (res, fileContent, action) => {
+    setImportLoader(false);
+    setFormSubmitted(false);
+    const formExtracted = await extractForm(fileContent);
+    const { data: responseData } = res;
+    if (!responseData || !formExtracted) return;
+
+    /* -------------------------- if action is validate ------------------------- */
+    if (action === "validate") {
+      setFileItems({
+        workflow: extractVersionInfo(responseData.workflow),
+        form: extractVersionInfo(responseData.form),
+      });
+      setFormTitle(formExtracted.forms[0]?.formTitle || ""); 
+    }else{
+      /* ------------------------- if the form id changed ------------------------- */
+      const formId = responseData.mapper?.formId;
+      if(formId && formData._id != formId){
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
+        return;
+      }
+      updateLayout({formExtracted, responseData});
+    }
+  };
+
+  // Helper function to extract version information
+  const extractVersionInfo = (versionData) => (
+    {
+      majorVersion: versionData?.majorVersion,
+      minorVersion: versionData?.minorVersion
+    });
+
+  const extractForm = async (fileContent) => {
+    try {
+      const formExtracted = await FileService.extractFileDetails(fileContent);
+      return formExtracted;
+    } catch (error) {
+      setImportError(error);
+      return null;
+    }
+  };
+
+
+
+  const updateLayout = ({formExtracted, responseData}) => {
+    /* --------- the response data will contain' mapper and process' key -------- */
+    const { forms } = formExtracted || {};
+    const { process, mapper } = responseData;
+    const isNotFormPlusWorkflow = !forms[0]?.content;
+    const extractedForm = forms[0]?.content || forms[0];
+
+    /* if form changed then the response contain mapper key and will update
+    1. formio's form data
+    2. mapper data
+    3. current form data */
+    if(mapper && extractedForm){
+      if(isNotFormPlusWorkflow){
+        dispatchFormAction({
+          type: "components",
+          value: _cloneDeep(extractedForm.components),
+        });
+      }else{ 
+      const currentFormDataWithImportedData = {...formData, ...extractedForm};
+      dispatch(setFormSuccessData("form", currentFormDataWithImportedData));
+      dispatch(setFormPreviosData(mapper));
+      dispatch(setFormProcessesData(mapper));
+      dispatchFormAction({type:"replaceForm",value: currentFormDataWithImportedData});
+      }
+    }
+
+    /* ---------- if workflow changed then need to updated process dat ---------- */
+    if (process) {
+      dispatch(setProcessData(process));
+    }
+
+    handleCloseSelectedAction();
+  };
+
+  // Helper function to handle errors
+  const handleImportError = (err) => {
+    setImportLoader(false);
+    setFormSubmitted(false);
+    setImportError(err?.response?.data?.message || "An error occurred");
+  };
+
   /* ------------------------- form history variables ------------------------- */
   const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
@@ -274,22 +390,49 @@ const EditComponent = () => {
   const [newActionModal, setNewActionModal] = useState(false);
   const [isSettingsSaving, setIsSettingsSaving] = useState(false);
   const onCloseActionModal = () => setNewActionModal(false);
+  const processData = useSelector((state) => state.process?.processData);
 
   const CategoryType = {
     FORM: "FORM",
     WORKFLOW: "WORKFLOW",
   };
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const view = queryParams.get("view");
+    if (view === "flow") {
+      setCurrentLayout(FLOW_LAYOUT);
+      sideTabRef.current = true;
+    } else {
+      setCurrentLayout(FORM_LAYOUT);
+    }
+  }, [location.search]);
 
-  // handling form layout and flow layout
   const handleCurrentLayout = (e) => {
     //wehn the current is assigned with element then only the visible class will render
     sideTabRef.current = e;
-    setCurrentLayout(isFormLayout ? FLOW_LAYOUT : FORM_LAYOUT);
+    const newLayout = isFormLayout ? FLOW_LAYOUT : FORM_LAYOUT;
+    setCurrentLayout(newLayout);
+
+    const queryParams = newLayout === FLOW_LAYOUT ? "view=flow" : "";
+    const newUrl = `${redirectUrl}formflow/${formId}/edit`;
+
+    dispatch(push({
+      pathname: newUrl,
+      search: queryParams && `?${queryParams}`
+    }));
   };
+  
+const handleSaveLayout = () => {
+  if (promptNewVersion) {
+    handleVersioning();
+    return;
+  }
+  saveFormData({ showToast: false });
+};
 
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
-    if (selectedAction === IMPORT) {
+    if (selectedAction === ACTION_OPERATIONS.IMPORT) {
       setFileItems({
         workflow: {
           majorVersion: null,
@@ -301,8 +444,9 @@ const EditComponent = () => {
         },
       });
       setImportError("");
+      setPrimaryButtonText(defaultPrimaryBtnText);
     }
-    if (selectedAction === DUPLICATE) {
+    if (selectedAction === ACTION_OPERATIONS.DUPLICATE) {
       setNameError("");
       setFormSubmitted(false);
     }
@@ -370,7 +514,9 @@ const EditComponent = () => {
   }, [restoredFormId]);
 
   const fetchProcessDetails = async (processListData) => {
-    const response = await getProcessDetails(processListData.processKey);
+    //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id.
+    const mapperId = processListData.id;
+    const response = await getProcessDetails({processKey:processListData.processKey, mapperId});
     dispatch(setProcessData(response.data));
   };
 
@@ -382,17 +528,20 @@ const EditComponent = () => {
     }
   }, [processListData.processKey]);
 
-  const validateFormNameOnBlur = ({title}) => {
+  const validateFormNameOnBlur = ({ title, ...rest }) => {
     if (!title || title.trim() === "") {
       setNameError("This field is required");
       return;
     }
-    validateFormTitle({title});
+    validateFormTitle({ title, ...rest });
   };
 
 
   /* ----------- save settings function to be used in settings modal ---------- */
   const filterAuthorizationData = (authorizationData) => {
+    if(authorizationData.selectedOption === "submitter"){
+      return {roles: [], userName:null, resourceDetails:{submitter:true}};
+    }
     if (authorizationData.selectedOption === "specifiedRoles") {
       return { roles: authorizationData.selectedRoles, userName: "" };
     }
@@ -400,8 +549,7 @@ const EditComponent = () => {
   };
 
   const handleConfirmSettings = async ({
-    formDetails,
-    accessDetails,
+    formDetails, 
     rolesState,
   }) => {
     setIsSettingsSaving(true);
@@ -421,7 +569,7 @@ const EditComponent = () => {
     const authorizations = {
       application: {
         resourceId: parentFormId,
-        resourceDetails: {},
+        resourceDetails:{submitter:false},
         ...filterAuthorizationData(rolesState.APPLICATION),
       },
       designer: {
@@ -438,16 +586,22 @@ const EditComponent = () => {
             : [],
       },
     };
+    const updatepath = MULTITENANCY_ENABLED
+      ? addTenantkey(formDetails.path, tenantKey)
+      : formDetails.path;
 
+    // update the form Access and submission access if anonymouse changed
+    const formAccess = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", formDetails.anonymous);
+    const submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", formDetails.anonymous);
     const formData = {
       title: formDetails.title,
       display: formDetails.display,
-      path: formDetails.path,
-      submissionAccess: accessDetails.submissionAccess,
-      access: accessDetails.formAccess,
+      path: updatepath,
+      submissionAccess: submissionAccess,
+      access: formAccess,
     };
-    
-    try{
+
+    try {
       await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
       const updateFormResponse = await formUpdate(form._id, formData);
       dispatchFormAction({
@@ -455,20 +609,30 @@ const EditComponent = () => {
         value: { ...updateFormResponse.data, components: form.components },
       });
       dispatch(setFormSuccessData("form", updateFormResponse.data));
-    }catch(error){
+    } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       setIsSettingsSaving(false);
       handleToggleSettingsModal();
     }
   };
 
-  const saveFormData = async ({showToast = true}) => {
+  const handleUnpublishAndSaveChanges = () => {
+    if  (isPublished && (formChangeState.changed || workflowIsChanged)) {
+      setModalType("unpublishBeforeSaving");
+      setShowConfirmModal(true);
+    }
+  };
+
+  const saveFormData = async ({ showToast = true }) => {
     try {
-      const isFormChanged = isFormComponentsChanged({restoredFormData, 
-        restoredFormId, formData, form});
-      if(!isFormChanged && !promptNewVersion) {
+      const isFormChanged = isFormComponentsChanged({
+        restoredFormData,
+        restoredFormId, formData, form
+      });
+      if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
+        setFormChangeState(prev => ({ ...prev, changed: false }));
         return;
       }
       setShowConfirmModal(false);
@@ -477,16 +641,17 @@ const EditComponent = () => {
         form,
         MULTITENANCY_ENABLED,
         tenantKey,
-        formAccess,
-        submissionAccess
+        formAccessRoles,
+        submissionAccessRoles
       );
       newFormData.componentChanged = isFormChanged || promptNewVersion; //after unpublish need to save it in minor version on update
       newFormData.parentFormId = previousData.parentFormId;
       newFormData.title = processListData.formName;
 
-      const {data} = await formUpdate(newFormData._id, newFormData);
+      const { data } = await formUpdate(newFormData._id, newFormData);
       dispatch(setFormSuccessData("form", data));
       setPromptNewVersion(false);
+      setFormChangeState(prev => ({ ...prev, changed: false }));
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
@@ -496,7 +661,7 @@ const EditComponent = () => {
   };
 
   const backToForm = () => {
-    dispatch(push(`${redirectUrl}form/`));
+    dispatch(push(`${redirectUrl}formflow`));
   };
   const closeHistoryModal = () => {
     setShowHistoryModal(false);
@@ -529,7 +694,8 @@ const EditComponent = () => {
   };
 
   const handlePreview = () => {
-    console.log("handlePreview");
+    const newTabUrl = `${redirectUrl}formflow/${form._id}/view-edit`;
+    window.open(newTabUrl, "_blank");
   };
 
   const discardChanges = () => {
@@ -537,22 +703,22 @@ const EditComponent = () => {
       type: "components",
       value: _cloneDeep(formData.components),
     });
-    handleToggleConfirmModal();
+    setFormChangeState(prev => ({ ...prev, changed: false }));
+    setShowConfirmModal(false);
   };
 
   const editorActions = () => {
     setNewActionModal(true);
   };
 
- 
-  const handlePublishAsNewVersion = ({description, title}) => {
+  const handlePublishAsNewVersion = ({ description, title }) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
       MULTITENANCY_ENABLED,
       tenantKey,
-      formAccess,
-      submissionAccess
+      formAccessRoles,
+      submissionAccessRoles
     );
 
     const newPathAndName = generateUniqueId("duplicate-version-");
@@ -564,13 +730,19 @@ const EditComponent = () => {
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
     newFormData.description = description;
-    delete newFormData._id;
+    delete newFormData._id; 
+
+    //Process details for duplicate .
+    if (selectedAction == ACTION_OPERATIONS.DUPLICATE) {
+      newFormData.processData = processData?.processData;
+      newFormData.processType = processData?.processType;
+    }
 
     formCreate(newFormData)
       .then((res) => {
         const form = res.data;
         dispatch(setFormSuccessData("form", form));
-        dispatch(push(`${redirectUrl}formflow/${form._id}/edit/`));
+        dispatch(push(`${redirectUrl}formflow/${form._id}/edit`));
       })
       .catch((err) => {
         let error;
@@ -588,8 +760,23 @@ const EditComponent = () => {
       });
   };
 
-  const formChange = (newForm) =>
+  const captureFormChanges = () => {
+    setFormChangeState((prev) => {
+      let key = null;
+      if (!prev.initial) {
+        key = "initial";
+      } else if (!prev.changed) {
+        key = "changed";
+      }
+      return key ? { ...prev, [key]: true } : prev;
+    });
+  };
+
+  const formChange = (newForm) => {
+    captureFormChanges();
     dispatchFormAction({ type: "formChange", value: newForm });
+  };
+
 
   const confirmPublishOrUnPublish = async () => {
     try {
@@ -597,14 +784,14 @@ const EditComponent = () => {
       closeModal();
       setIsPublishLoading(true);
       if (!isPublished) {
-        await flowRef.current.saveFlow(false);
-        await saveFormData({showToast:false});
+       
+        await flowRef.current.saveFlow({processId: processData.id,showToast: false});
+        await saveFormData({ showToast: false });
       }
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
-      } else {
-        backToForm();
+        dispatch(getFormProcesses(formId));
       }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);
@@ -616,15 +803,52 @@ const EditComponent = () => {
     }
   };
 
-  const handleVersioning = () => {
+  const handleConfirmUnpublishAndSave = async () => {
+    try {
+      closeModal(); 
+      setLoadingVersioning(true);
+      await unPublish(processListData.id); // Unpublish the process
+      // Fetch mapper data
+      dispatch(
+        getFormProcesses(formId, async (error, data) => {
+          if(error){ //handling error
+            console.log(error);
+            setLoadingVersioning(false);
+            return;
+          }
+          /* ----------------------------- saving the data ---------------------------- */
+          const response = await getProcessDetails({
+            processKey: processListData.processKey,
+          });
+          dispatch(setProcessData(response.data));
+          if (!isFormLayout) {
+            if(response)
+            await flowRef.current.saveFlow({processId: response.data.id,showToast: false});
+            setLoadingVersioning(false); //setloading false after all function complete
+          } else {
+            setLoadingVersioning(false); //no longer keep loading
+            handleVersioning(data.majorVersion, data.minorVersion); // Handle versioning
+          }
+          /* ----------------------------------- ... ---------------------------------- */
+          setIsPublished(!isPublished); // Toggle publish state
+          setPromptNewVersion(isPublished); // Prompt for new version
+        })
+      );
+    } catch (error) {
+      setLoadingVersioning(false);
+      console.error("Error during confirmation:", error); 
+    } 
+  };
+  
+  const handleVersioning = (majorVersion, minorVersion) => {
     setVersion((prevVersion) => ({
       ...prevVersion,
-      major: processListData.majorVersion + 1 + ".0", // Increment the major version
-      minor:
-        processListData.majorVersion + "." + (processListData.minorVersion + 1), // Reset the minor version to 0
+      major: (majorVersion || processListData.majorVersion) + 1 + ".0", // Increment the major version
+      minor: (majorVersion || processListData.majorVersion) + "." + ((minorVersion || processListData.minorVersion) + 1), // Reset the minor version to 0
     }));
     openConfirmModal("save");
   };
+  
 
   const closeNewVersionModal = () => {
     setNewVersionModal(false);
@@ -637,16 +861,16 @@ const EditComponent = () => {
         form,
         MULTITENANCY_ENABLED,
         tenantKey,
-        formAccess,
-        submissionAccess
+        formAccessRoles,
+        submissionAccessRoles
       );
       //TBD: need to only update path and name so no need to send whole data
       const oldFormData = manipulatingFormData(
         formData,
         MULTITENANCY_ENABLED,
         tenantKey,
-        formAccess,
-        submissionAccess
+        formAccessRoles,
+        submissionAccessRoles
       );
 
       const newPathAndName = generateUniqueId("-v");
@@ -663,7 +887,7 @@ const EditComponent = () => {
       const res = await formCreate(newFormData);
       const response = res.data;
       dispatch(setFormSuccessData("form", response));
-      dispatch(push(`${redirectUrl}formflow/${response._id}/edit/`));
+      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
       setPromptNewVersion(false);
     } catch (err) {
       const error = err.response?.data || err.message;
@@ -677,14 +901,14 @@ const EditComponent = () => {
 
   /* ------------------------- handling confirm modal ------------------------- */
 
-  const handleToggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
+
   const openConfirmModal = (type) => {
     setModalType(type);
-    handleToggleConfirmModal();
+    setShowConfirmModal(true);
   };
   const closeModal = () => {
     setModalType("");
-    handleToggleConfirmModal();
+    setShowConfirmModal(false);
   };
 
   const handleShowVersionModal = () => {
@@ -708,7 +932,7 @@ const EditComponent = () => {
         return {
           title: "Confirm Publish",
           message:
-            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. to perform any additional changes you will need to unpublish the form again.",
+            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. To perform any additional changes you will need to unpublish the form again.",
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
           primaryBtnText: "Publish This Form",
@@ -718,7 +942,7 @@ const EditComponent = () => {
         return {
           title: "Confirm Unpublish",
           message:
-            "This form is currently live. To save changes to form edits, you need ot unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
+            "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
           primaryBtnText: "Unpublish and Edit This Form",
@@ -735,6 +959,21 @@ const EditComponent = () => {
           primaryBtnText: "Yes, Discard Changes",
           secondaryBtnText: "No, Keep My Changes",
         };
+      case "unpublishBeforeSaving":
+        return {
+          title: "Unpublish Before Saving",
+          message:
+          (
+            <CustomInfo
+              heading="Note"
+              content="This form is currently live. To save the changes to your form, you need to unpublish it first.    By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits."
+            />
+          ),
+          primaryBtnAction: handleConfirmUnpublishAndSave,
+          secondayBtnAction: closeModal,
+          primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",
+          secondaryBtnText: "Cancel, Keep This Form Published",
+          };
       default:
         return {};
     }
@@ -759,7 +998,7 @@ const EditComponent = () => {
       try {
         await unPublish(processListData.id);
         setIsPublished(false);
-        dispatch(push(`${redirectUrl}form`));
+        dispatch(push(`${redirectUrl}formflow`));
       } catch (err) {
         const error = err.response?.data || err.message;
         dispatch(setFormFailureErrorData("form", error));
@@ -776,8 +1015,11 @@ const EditComponent = () => {
   // deleting form hardly from formio and mark inactive in mapper table
   const deleteModal = () => {
     if (!applicationCount) {
-      dispatch(deleteForm("form", formId));
-      dispatch(push(`${redirectUrl}form`));
+      setIsDeletionLoading(true);
+      dispatch(deleteForm("form", formId,() => {
+        // Callback after form deletion;
+        dispatch(push(`${redirectUrl}formflow`));
+      }));
     }
 
     if (processListData.id) {
@@ -799,7 +1041,7 @@ const EditComponent = () => {
   const renderDeleteModal = () => {
     const hasSubmissions = processListData.id && applicationCount;
     const commonProps = {
-      show: selectedAction === DELETE,
+      show: selectedAction === ACTION_OPERATIONS.DELETE,
       primaryBtnAction: handleCloseActionModal,
       onClose: handleCloseActionModal,
     };
@@ -837,15 +1079,30 @@ const EditComponent = () => {
           primaryBtndataTestid="no-delete-button"
           primaryBtnariaLabel="No, Keep This Form"
           secondoryBtnariaLabel="Yes, Delete the Form"
+          secondaryBtnDisable={isDeletionLoading}
+          secondaryBtnLoading={isDeletionLoading}
         />
       );
+    }
+  };
+
+  const handlePublishClick = () => {
+    if (!processListData.isMigrated) {
+      if (!isPublished) {
+        setMigration(true);
+      } else {
+        openConfirmModal("unpublish");
+      }
+    } else {
+      openConfirmModal(isPublished ? "unpublish" : "publish");
     }
   };
 
   return (
     <div>
       <div>
-        <LoadingOverlay active={formSubmitted} spinner text={t("Loading...")}>
+        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
+        <LoadingOverlay active={formSubmitted || loadingVersioning} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
             isSaving={isSettingsSaving}
@@ -861,7 +1118,7 @@ const EditComponent = () => {
                 <div className="d-flex align-items-center justify-content-between">
                   <BackToPrevIcon onClick={backToForm} />
                   <div className="mx-4 editor-header-text">
-                    {formData.title}
+                    {textTruncate(75,75,formData.title)}
                   </div>
                   <span
                     data-testid={`form-status-${form._id}`}
@@ -897,11 +1154,7 @@ const EditComponent = () => {
                       size="md"
                       label={t(publishText)}
                       buttonLoading={isPublishLoading}
-                      onClick={() => {
-                        isPublished
-                          ? openConfirmModal("unpublish")
-                          : openConfirmModal("publish");
-                      }}
+                      onClick={handlePublishClick}
                       dataTestid="handle-publish-testid"
                       ariaLabel={`${t(publishText)} ${t("Button")}`}
                     />
@@ -952,10 +1205,11 @@ const EditComponent = () => {
                           variant="primary"
                           size="md"
                           className="mx-2"
-                          disabled={isPublished}
+                          disabled={!formChangeState.changed}
                           label={t("Save Layout")}
                           onClick={
-                            promptNewVersion ? handleVersioning : saveFormData
+                            isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
+
                           }
                           dataTestid="save-form-layout"
                           ariaLabel={t("Save Form Layout")}
@@ -967,6 +1221,7 @@ const EditComponent = () => {
                           onClick={() => {
                             openConfirmModal("discard");
                           }}
+                          disabled={!formChangeState.changed}
                           dataTestid="discard-button-testid"
                           ariaLabel={t("cancelBtnariaLabel")}
                         />
@@ -974,16 +1229,18 @@ const EditComponent = () => {
                     )}
                   </div>
                 </Card.Header>
+                <div className="form-edit"> 
                 <Card.Body>
-                  <div className="form-builder">
+                  <div className="form-builder custom-scroll">
                     {!createDesigns ? (
                       <div className="px-4 pt-4 form-preview">
-                       <Form
+                        <Form
                           form={form}
                           options={{
-                          disableAlerts: true,
-                          noAlerts: true,
-                          language: lang, i18n: RESOURCE_BUNDLES_DATA }}
+                            disableAlerts: true,
+                            noAlerts: true,
+                            language: lang, i18n: RESOURCE_BUNDLES_DATA
+                          }}
                         />
                       </div>
                     ) : (
@@ -991,30 +1248,44 @@ const EditComponent = () => {
                         key={form._id}
                         form={form}
                         onChange={formChange}
+
                         options={{
                           language: lang,
+                          alwaysConfirmComponentRemoval: true,
                           i18n: RESOURCE_BUNDLES_DATA,
                         }}
+                        onDeleteComponent={captureFormChanges}
                       />
                     )}
                   </div>
                 </Card.Body>
+                </div>
               </Card>
             </div>
             <div
               className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
             >
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit 
-              ref={flowRef}
-              CategoryType={CategoryType}
-              isPublished={isPublished}
-              form={form}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit
+                ref={flowRef}
+                setWorkflowIsChanged={setWorkflowIsChanged}
+                workflowIsChanged={workflowIsChanged}
+                CategoryType={CategoryType}
+                isPublished={isPublished}
+                migration={migration}
+                redirectUrl={redirectUrl}
+                setMigration={setMigration}
+                isMigrated = {processListData.isMigrated}
+                mapperId={processListData.id}
+                layoutNotsaved={formChangeState.changed}
+                handleCurrentLayout={handleCurrentLayout}
+                isMigrationLoading={isMigrationLoading}
+                setIsMigrationLoading={setIsMigrationLoading}
+                handleUnpublishAndSaveChanges={handleUnpublishAndSaveChanges}
               />}
             </div>
             <button
-              className={`border-0 form-flow-wraper-${
-                isFormLayout ? "right" : "left"
+              className={`border-0 form-flow-wraper-${ isFormLayout ? "right" : "left"
               } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
             >
@@ -1029,14 +1300,16 @@ const EditComponent = () => {
         CategoryType={CategoryType.FORM}
         onAction={setSelectedAction}
         published={isPublished}
+        isMigrated = {processListData.isMigrated}
       />
       <FormBuilderModal
         modalHeader={t("Duplicate")}
         nameLabel={t("New Form Name")}
         descriptionLabel={t("New Form Description")}
-        showBuildForm={selectedAction === DUPLICATE}
-        isLoading={formSubmitted || validationLoading}
-        onClose={handleCloseSelectedAction} 
+        showBuildForm={selectedAction === ACTION_OPERATIONS.DUPLICATE}
+        isSaveBtnLoading={formSubmitted}
+        isFormNameValidating={validationLoading}
+        onClose={handleCloseSelectedAction}
         primaryBtnLabel={t("Save and Edit form")}
         primaryBtnAction={handlePublishAsNewVersion}
         setNameError={setNameError}
@@ -1044,24 +1317,25 @@ const EditComponent = () => {
         nameError={nameError}
       />
 
-      <ImportModal
+      {selectedAction === ACTION_OPERATIONS.IMPORT && <ImportModal
         importLoader={importLoader}
         importError={importError}
-        importFormModal={selectedAction === IMPORT}
+        showModal={selectedAction === ACTION_OPERATIONS.IMPORT}
         uploadActionType={UploadActionType}
         formName={formTitle}
-        formSubmitted={formSubmitted}
         onClose={handleCloseSelectedAction}
         handleImport={handleImport}
         fileItems={fileItems}
         headerText="Import File"
-        primaryButtonText="Confirm And Replace"
-      />
+        primaryButtonText={primaryButtonText}
+        fileType=".json, .bpmn"
+      />}
 
       <ExportModal
-        showExportModal={selectedAction === EXPORT}
+        showExportModal={selectedAction === ACTION_OPERATIONS.EXPORT}
         onClose={handleCloseSelectedAction}
-        formId={processListData.id}
+        mapperId={processListData.id}
+        formTitle={form.title}
       />
 
       <NewVersionModal
@@ -1100,6 +1374,7 @@ const EditComponent = () => {
         categoryType={CategoryType.FORM}
         revertBtnAction={revertFormBtnAction}
         historyCount={formHistoryData.totalCount}
+        disableAllRevertButton={isPublished}
       />
       {renderDeleteModal()}
     </div>

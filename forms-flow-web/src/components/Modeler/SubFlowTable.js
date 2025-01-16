@@ -166,7 +166,7 @@ const SubFlow = React.memo(() => {
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
         <div className="min-height-400 pt-3">
           <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
+            <table className="table custom-tables table-responsive-sm mb-4">
               <thead className="table-header">
                 <tr>
                   <th className="w-25" scope="col">
@@ -175,7 +175,7 @@ const SubFlow = React.memo(() => {
                       title="Name"
                       currentSort={currentBpmnSort}
                       handleSort={handleSort}
-                      className="ms-4"
+                      className="gap-2"
                     />
                   </th>
                   <th className="w-20" scope="col">
@@ -184,6 +184,7 @@ const SubFlow = React.memo(() => {
                       title="ID"
                       currentSort={currentBpmnSort}
                       handleSort={handleSort}
+                      className="gap-2"
                     />
                   </th>
                   <th className="w-15" scope="col">
@@ -192,6 +193,7 @@ const SubFlow = React.memo(() => {
                       title="Last Edited"
                       currentSort={currentBpmnSort}
                       handleSort={handleSort}
+                      className="gap-2"
                     />
                   </th>
                   <th className="w-15" scope="col">
@@ -200,6 +202,7 @@ const SubFlow = React.memo(() => {
                       title="Status"
                       currentSort={currentBpmnSort}
                       handleSort={handleSort}
+                      className="gap-2"
                     />
                   </th>
                   <th className="w-25" colSpan="4" aria-label="edit bpmn button "></th>

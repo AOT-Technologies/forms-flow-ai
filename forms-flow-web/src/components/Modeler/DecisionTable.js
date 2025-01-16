@@ -181,7 +181,7 @@ const DecisionTable = React.memo(() => {
                         title="Name"
                         currentSort={currentDmnSort}
                         handleSort={handleSort}
-                        className="ms-4"
+                        className="gap-2"
                       />
                     </th>
                     <th className="w-20" scope="col">
@@ -190,6 +190,7 @@ const DecisionTable = React.memo(() => {
                         title="ID"
                         currentSort={currentDmnSort}
                         handleSort={handleSort}
+                        className="gap-2"
                       />
                     </th>
                     <th className="w-15" scope="col">
@@ -198,6 +199,7 @@ const DecisionTable = React.memo(() => {
                         title="Last Edited"
                         currentSort={currentDmnSort}
                         handleSort={handleSort}
+                        className="gap-2"
                       />
                     </th>
                     <th className="w-15" scope="col">
@@ -206,6 +208,7 @@ const DecisionTable = React.memo(() => {
                         title="Status"
                         currentSort={currentDmnSort}
                         handleSort={handleSort}
+                        className="gap-2"
                       />
                     </th>
                     <th className="w-25" colSpan="4" aria-label="edit bpmn button "></th>

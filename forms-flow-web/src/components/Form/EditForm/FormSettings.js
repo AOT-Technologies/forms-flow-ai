@@ -2,7 +2,8 @@ import React, {
   useEffect,
   useState,
   useImperativeHandle,
-  forwardRef, 
+  forwardRef,
+  useRef
 } from "react";
 import { Form, FormControl, InputGroup } from "react-bootstrap";
 import {
@@ -44,7 +45,9 @@ const FormSettings = forwardRef((props, ref) => {
   const {parentFormId,formId} = useSelector((state) => state.process.formProcessList);
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
-  const [copied, setCopied] = useState(false); 
+  const [copied, setCopied] = useState(false);
+  // to check if already vlidated and passed.
+  const blurStatus = useRef({ title: false, path: false });
   const [formDetails, setFormDetails] = useState({
     title: processListData.formName,
     path: path,
@@ -101,30 +104,38 @@ const FormSettings = forwardRef((props, ref) => {
     }
   },[MULTITENANCY_ENABLED]);
 
-    /* ------------------------- validating form name and path ------------------------ */
+  /* ------------------------- validating form name and path ------------------------ */
 
   const validateField = async (field, value) => {
-    let errorMessage = "";
-    setIsValidating((prev) => ({ ...prev, [field]: true }));
-
     if (!value.trim()) {
-      errorMessage = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-    } else {
-      try {
-        const response = field === 'name' ? await validateFormName(value,parentFormId) : await validatePathName(value,formId);
-        const data = response?.data;
-        if (data && data.code === "FORM_EXISTS") {
-          errorMessage = data.message;
-        }
-      } catch (error) {
-        errorMessage = error.response?.data?.message || 
-        `An error occurred while validating the ${field}.`;
-        console.error(`Error validating ${field}:`, errorMessage);
-      }
+      const errorMessage = `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`;
+      setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+      return false;
     }
+  
+    setIsValidating((prev) => ({ ...prev, [field]: true }));
+    let errorMessage = "";
+  
+    try {
+      const response =
+        field === "title"
+          ? await validateFormName(value, parentFormId)
+          : await validatePathName(value, formId);
+  
+      const data = response?.data;
+      if (data?.code === "FORM_EXISTS") {
+        errorMessage = data.message;
+      }
+    } catch (error) {
+      errorMessage =
+        error.response?.data?.message ||
+        `An error occurred while validating the ${field}.`;
+      console.error(`Error validating ${field}:`, errorMessage);
+    }
+  
     setErrors((prev) => ({ ...prev, [field]: errorMessage }));
     setIsValidating((prev) => ({ ...prev, [field]: false }));
-
+      return !errorMessage; // Return true if no error
   };
 
 
@@ -133,8 +144,11 @@ const FormSettings = forwardRef((props, ref) => {
 
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    let updatedValue =
-      name === "path" ? _camelCase(value).toLowerCase() : value;
+    let field = name === "title" ? "name" : name;  // Use 'name' for title case
+    // Clear errors and reset blurStatus for the relevant field
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+    blurStatus.current[name] = false;  
+    let updatedValue = name === "path" ? _camelCase(value).toLowerCase() : value;
   
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
@@ -188,6 +202,7 @@ const FormSettings = forwardRef((props, ref) => {
     return {
       formDetails: { ...formDetails, anonymous: isAnonymous },
       rolesState: rolesState,
+      validateField,
     };
   }); 
   

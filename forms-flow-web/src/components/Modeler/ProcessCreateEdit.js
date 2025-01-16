@@ -682,6 +682,8 @@ const ProcessCreateEdit = ({ type }) => {
           setSelectedAction(action);
         }}
         isCreate={isCreate}
+        published={isPublished}
+        diagramType={diagramType}
       />
 
       <ExportDiagram

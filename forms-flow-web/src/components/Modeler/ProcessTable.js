@@ -27,6 +27,15 @@ const ProcessTable = React.memo(() => {
   const isBPMN = viewType === "subflow";
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const ProcessContents = isBPMN
+    ? {
+        processType: "BPMN",
+        extension: ".bpmn",
+      }
+    : {   
+        processType: "DMN",
+        extension: ".dmn",
+      };
 
   // States and selectors
   const processList = useSelector((state) =>
@@ -81,7 +90,7 @@ const ProcessTable = React.memo(() => {
         {
             pageNo: currentState.activePage,
             tenant_key: tenantKey,
-            processType: isBPMN ? "BPMN" : "DMN",
+            processType: ProcessContents.processType,
             limit: currentState.limit,
             searchKey: search,
             sortBy: currentState.sortConfig.activeKey,
@@ -180,13 +189,13 @@ const ProcessTable = React.memo(() => {
     {
       id: 1,
       heading: "Build",
-      body: `Create the ${isBPMN ? "BPMN" : "DMN"} from scratch`,
+      body: `Create the ${ProcessContents.processType} from scratch`,
       onClick: () => dispatch(push(`${redirectUrl}${viewType}/create`)),
     },
     {
       id: 2,
       heading: "Import",
-      body: `Upload ${isBPMN ? "BPMN" : "DMN"} from a file`,
+      body: `Upload ${ProcessContents.processType} from a file`,
       onClick: showImportModal,
     },
   ];
@@ -200,18 +209,20 @@ const ProcessTable = React.memo(() => {
             setSearch={isBPMN ? setSearchBPMN : setSearchDMN}
             handleSearch={handleSearch}
             handleClearSearch={handleClearSearch}
-            placeholder={t(`Search ${isBPMN ? "BPMN" : "Decision Table"}`)}
+            placeholder={t(`Search ${ProcessContents.processType} Name`)}
             searchLoading={searchLoading}
-            title={t(`Search ${isBPMN ? "BPMN" : "DMN"} Name`)}
-            dataTestId={`${isBPMN ? "BPMN" : "DMN"}-search-input`}
+            title={t(`Search ${ProcessContents.processType} Name`)}
+            dataTestId={`${ProcessContents.processType}-search-input`}
           />
         </div>
         <div className="d-md-flex justify-content-end align-items-center">
           <CustomButton
             variant="primary"
             size="sm"
-            label={`New ${isBPMN ? "BPMN" : "DMN"}`}
+            label={`New ${ProcessContents.processType}`}
             onClick={handleCreateProcess}
+            dataTestid={`create-${ProcessContents.processType}-button`}
+            ariaLabel={` Create ${ProcessContents.processType}`}
           />
         </div>
       </div>
@@ -264,7 +275,7 @@ const ProcessTable = React.memo(() => {
                       key={processItem.id}
                       item={processItem}
                       gotoEdit={gotoEdit}
-                      buttonLabel={isBPMN ? "Bpmn" : "Dmn"}
+                      buttonLabel={ProcessContents.processType}
                     />
                   ))}
                   <TableFooter
@@ -291,14 +302,14 @@ const ProcessTable = React.memo(() => {
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}
-        title={t(`New ${isBPMN ? "BPMN" : "DMN"}`)}
+        title={t(`New ${ProcessContents.processType}`)}
         contents={modalContents}
       />
       {importProcess && (
         <ImportProcess
           showModal={importProcess}
           closeImport={() => setImportProcess(false)}
-          fileType={isBPMN ? ".bpmn" : ".dmn"}
+          fileType={ProcessContents.extension}
         />
       )}
     </>

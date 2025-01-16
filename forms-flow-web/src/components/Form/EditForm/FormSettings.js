@@ -2,8 +2,7 @@ import React, {
   useEffect,
   useState,
   useImperativeHandle,
-  forwardRef,
-  useCallback
+  forwardRef, 
 } from "react";
 import { Form, FormControl, InputGroup } from "react-bootstrap";
 import {
@@ -15,13 +14,16 @@ import {
 } from "@formsflow/components";
 
 import MultiSelectComponent from "../../CustomComponents/MultiSelect";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import {  addTenantkeyAsSuffix } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
 import { copyText } from "../../../apiManager/services/formatterService";
 import _camelCase from "lodash/camelCase";
-import _cloneDeep from "lodash/cloneDeep";
 import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
+import { HelperServices } from "@formsflow/service";
+import PropTypes from 'prop-types';
 
 //CONST VARIABLES
 const DESIGN = "DESIGN";
@@ -35,14 +37,11 @@ const FormSettings = forwardRef((props, ref) => {
   /* ---------------------------- redux store data ---------------------------- */
   const processListData = useSelector((state) => state.process.formProcessList);
   const { path, display } = useSelector((state) => state.form.form);
-  const { formAccess = [], submissionAccess = [] } = useSelector(
-    (state) => state.user
-  );
-  const roleIds = useSelector((state) => state.user?.roleIds || {});
+ 
   const { authorizationDetails: formAuthorization } = useSelector(
     (state) => state.process
   );
-
+  const {parentFormId,formId} = useSelector((state) => state.process.formProcessList);
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
   const [copied, setCopied] = useState(false); 
@@ -52,17 +51,19 @@ const FormSettings = forwardRef((props, ref) => {
     description: processListData.description,
     display: display,
   });
+  const [isValidating, setIsValidating] = useState({
+    name: false,
+    path: false,
+  });
   const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous || false);
   const [errors, setErrors] = useState({
     name: "",
     path: "",
   });
-  const [formAccessCopy, setFormAccessCopy] = useState(_cloneDeep(formAccess));
-  const [submissionAccessCopy, setSubmissionAccessCopy] = useState(
-    _cloneDeep(submissionAccess)
-  );
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
+  const [urlPath,setUrlPath] = useState(publicUrlPath);
   const setSelectedOption = (roles, option)=> roles.length ? "specifiedRoles" : option;
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
@@ -78,19 +79,39 @@ const FormSettings = forwardRef((props, ref) => {
     APPLICATION: {
       roleInput: "",
       selectedRoles: formAuthorization.APPLICATION?.roles,
-      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"),
-    },
+      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"), 
+      /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
+       we assume that the submitter is true. */
+    }
+
   });
+
+  /* --------Updating path if multitenant enabled-------------------------- */
+  useEffect(()=>{
+    if(MULTITENANCY_ENABLED){
+      const updatedDisplayPath = HelperServices.removeTenantKeyFromData(formDetails.path,tenantKey);
+      setFormDetails((prev) => {
+        return {
+          ...prev,
+          path: updatedDisplayPath
+        };
+      });
+      const updatedUrlPath = addTenantkeyAsSuffix(publicUrlPath,tenantKey);
+      setUrlPath(updatedUrlPath);
+    }
+  },[MULTITENANCY_ENABLED]);
 
     /* ------------------------- validating form name and path ------------------------ */
 
   const validateField = async (field, value) => {
     let errorMessage = "";
+    setIsValidating((prev) => ({ ...prev, [field]: true }));
+
     if (!value.trim()) {
       errorMessage = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
     } else {
       try {
-        const response = field === 'name' ? await validateFormName(value) : await validatePathName(value);
+        const response = field === 'name' ? await validateFormName(value,parentFormId) : await validatePathName(value,formId);
         const data = response?.data;
         if (data && data.code === "FORM_EXISTS") {
           errorMessage = data.message;
@@ -102,6 +123,8 @@ const FormSettings = forwardRef((props, ref) => {
       }
     }
     setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+    setIsValidating((prev) => ({ ...prev, [field]: false }));
+
   };
 
 
@@ -110,18 +133,18 @@ const FormSettings = forwardRef((props, ref) => {
 
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    // if form name or path changed need to call validation api based on that
     let updatedValue =
       name === "path" ? _camelCase(value).toLowerCase() : value;
-    
+  
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
     } else {
       setFormDetails((prev) => ({ ...prev, [name]: updatedValue }));
-      if (name === "title" || name === "path") {
-        validateField(name === "title" ? 'name' : 'path', updatedValue);
-      }
     }
+  };
+  
+  const handleBlur = (field, value) => {
+        validateField(field, value);
   };
   
 
@@ -138,28 +161,6 @@ const FormSettings = forwardRef((props, ref) => {
   }, [dispatch]);
 
 
-  const updateAccessRoles = useCallback((accessList, type, roleId) => {
-    return accessList.map((access) => {
-      if (access.type === type) {
-        const roles = isAnonymous
-          ? [...new Set([...access.roles, roleId])]
-          : access.roles.filter((id) => id !== roleId);
-        return { ...access, roles };
-      }
-      return access;
-    });
-  },[isAnonymous]);
-
-
-  //  chaning the form access
-  useEffect(() => {
-    setFormAccessCopy((prev) =>
-      updateAccessRoles(prev, "read_all", roleIds.ANONYMOUS)
-    );
-    setSubmissionAccessCopy((prev) =>
-      updateAccessRoles(prev, "create_own", roleIds.ANONYMOUS)
-    );
-  }, [isAnonymous, roleIds.ANONYMOUS]);
 
   const handleRoleStateChange = (section, key, value) => {
     setRolesState((prevState) => ({
@@ -173,7 +174,7 @@ const FormSettings = forwardRef((props, ref) => {
 
   const copyPublicUrl = async () => {
     try {
-      await copyText(`${publicUrlPath}${formDetails.path}`);
+      await copyText(`${urlPath}${formDetails.path}`);
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -186,13 +187,29 @@ const FormSettings = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => {
     return {
       formDetails: { ...formDetails, anonymous: isAnonymous },
-      accessDetails: {
-        formAccess: formAccessCopy,
-        submissionAccess: submissionAccessCopy,
-      },
       rolesState: rolesState,
     };
-  });
+  }); 
+  
+  useEffect(() => {
+    const isAnyRoleEmpty = Object.values(rolesState).some(
+      (section) =>
+        section.selectedOption === "specifiedRoles" &&
+        section.selectedRoles.length === 0
+    );
+  
+    const hasFormErrors =
+      errors.path !== "" ||
+      errors.name !== "" ||
+      formDetails.title === "" ||
+      formDetails.path === "";
+  
+    // checking both values for disabling the save changes button  
+    const shouldDisableSaveButton = isAnyRoleEmpty || hasFormErrors;
+
+    props.setIsSaveButtonDisabled(shouldDisableSaveButton);
+  }, [rolesState, errors, formDetails]);
+  
 
   return (
     <>
@@ -200,6 +217,7 @@ const FormSettings = forwardRef((props, ref) => {
       <div className="section">
         <h5 className="fw-bold">{t("Basic")}</h5>
         <FormInput
+          required
           value={formDetails.title}
           label={t("Name")}
           onChange={handleFormDetailsChange}
@@ -208,7 +226,9 @@ const FormSettings = forwardRef((props, ref) => {
           ariaLabel={t("Form Name")}
           isInvalid = {!!errors.name}
           feedback = {errors.name}
-          onBlur={() => validateField('name', formDetails.title)}
+          turnOnLoader={isValidating.name}
+          onBlur={() => handleBlur('name', formDetails.title)}   
+          maxLength={200} 
           />
         <FormTextArea
           label={t("Description")}
@@ -241,7 +261,7 @@ const FormSettings = forwardRef((props, ref) => {
         <h5 className="fw-bold">{t("Permissions")}</h5>
 
         <Form.Label className="field-label">
-          {t("Who Can Edit This Form")}
+          {t("Who Can View/Edit This Form")}
         </Form.Label>
         <CustomRadioButton
           items={[
@@ -270,6 +290,7 @@ const FormSettings = forwardRef((props, ref) => {
         )}
         {rolesState.DESIGN.selectedOption === "specifiedRoles" && (
           <MultiSelectComponent
+            openByDefault
             allRoles={userRoles}
             selectedRoles={rolesState.DESIGN.selectedRoles}
             setSelectedRoles={(roles) =>
@@ -318,6 +339,7 @@ const FormSettings = forwardRef((props, ref) => {
         )}
         {rolesState.FORM.selectedOption === "specifiedRoles" && (
           <MultiSelectComponent
+            openByDefault 
             allRoles={userRoles}
             selectedRoles={rolesState.FORM.selectedRoles}
             setSelectedRoles={(roles) =>
@@ -357,6 +379,7 @@ const FormSettings = forwardRef((props, ref) => {
 
         {rolesState.APPLICATION.selectedOption === "specifiedRoles" && (
           <MultiSelectComponent
+            openByDefault
             allRoles={userRoles}
             selectedRoles={rolesState.APPLICATION.selectedRoles}
             setSelectedRoles={(roles) =>
@@ -372,10 +395,10 @@ const FormSettings = forwardRef((props, ref) => {
         <CustomInfo heading="Note" 
         content="Making changes to your form URL will make your form inaccessible from your current URL." />
         <Form.Group className="settings-input w-100" controlId="url-input">
-          <Form.Label className="field-label">{t("URL Path")}</Form.Label>
+          <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
           <InputGroup className="url-input">
             <InputGroup.Text className="url-non-edit">
-              {publicUrlPath}
+              {urlPath}
             </InputGroup.Text>
 
             <FormControl
@@ -384,7 +407,7 @@ const FormSettings = forwardRef((props, ref) => {
               className="url-edit"
               name="path"
               onChange={handleFormDetailsChange}
-              onBlur={() => validateField('path', formDetails.path)}            />
+              onBlur={() => handleBlur('path', formDetails.path)}           />
             <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
               {copied ? <i className="fa fa-check" /> : <CopyIcon />}
             </InputGroup.Text>
@@ -396,5 +419,9 @@ const FormSettings = forwardRef((props, ref) => {
     </>
   );
 });
+
+FormSettings.propTypes = {
+  setIsSaveButtonDisabled: PropTypes.func.isRequired,
+};
 
 export default FormSettings;

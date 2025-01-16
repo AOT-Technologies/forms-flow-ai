@@ -25,6 +25,11 @@ export const formUpdate = (form_id,formData) => {
   return RequestService.httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
 };
 
+export const processMigrate = (migrationData) => {
+  return RequestService.httpPOSTRequest(API.PROCESS_MIGRATE, migrationData );
+};
+
+
 export const getFormHistory = (form_id, page = null, limit = null) => {
   let url = `${API.FORM_HISTORY}/${form_id}`;
   if (page !== null && limit !== null) {
@@ -86,24 +91,24 @@ export const getCustomSubmission = (submissionId, formId, ...rest) => {
   };
 };
 
-export const validateFormName = (title, name, id) => {
+export const validateFormName = (title, parentFormId) => {
   let url = `${API.VALIDATE_FORM_NAME}?title=${title}`;
-  if (name) {
-    url += `&name=${encodeURIComponent(name)}`;
-  }
-  if (id) {
-    url += `&id=${encodeURIComponent(id)}`;
+    // if (name) {
+  //   url += `&name=${encodeURIComponent(name)}`;
+  // }
+  if (parentFormId) {
+    url += `&parentFormId=${encodeURIComponent(parentFormId)}`;
   }
   return RequestService.httpGETRequest(url);
 };
 
-export const validatePathName = (path, name, id) => {
+export const validatePathName = (path,formId) => {
   let url = `${API.VALIDATE_FORM_NAME}?path=${path}`;
-  if (name) {
-    url += `&name=${encodeURIComponent(name)}`;
-  }
-  if (id) {
-    url += `&id=${encodeURIComponent(id)}`;
+    // if (name) {
+  //   url += `&name=${encodeURIComponent(name)}`;
+  // }
+  if (formId) {
+    url += `&id=${encodeURIComponent(formId)}`;
   }
   return RequestService.httpGETRequest(url);
 };

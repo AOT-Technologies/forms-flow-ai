@@ -8,6 +8,8 @@ from marshmallow import EXCLUDE, Schema, fields, validates
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models import FormProcessMapper
 
+from .base_schema import AuditDateTimeSchema
+
 
 class ProcessListSchema(Schema):
     """This class manages processlist response schema."""
@@ -22,7 +24,7 @@ class ProcessListSchema(Schema):
     tenantId = fields.Str(data_key="tenantKey")
 
 
-class ProcessDataSchema(Schema):
+class ProcessDataSchema(AuditDateTimeSchema):
     """This class manages process data schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
@@ -36,8 +38,6 @@ class ProcessDataSchema(Schema):
         "get_process_data", data_key="processData", dump_only=True
     )
     tenant = fields.Str(dump_only=True)
-    created = fields.Str(dump_only=True)
-    modified = fields.Str(dump_only=True)
     created_by = fields.Str(data_key="createdBy", dump_only=True)
     modified_by = fields.Str(data_key="modifiedBy", dump_only=True)
     status = fields.Method("get_status", deserialize="load_status")
@@ -132,3 +132,15 @@ class ProcessRequestSchema(Schema):
         if process_type and process_type.upper() == "LOWCODE" and process_data:
             data["processData"] = json.dumps(process_data)
         return super().load(data, *args, **kwargs)
+
+
+class MigrateRequestSchema(Schema):
+    """This class manages migrate request schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    process_key = fields.Str(data_key="processKey", required=True)
+    mapper_id = fields.Str(data_key="mapperId", required=True)

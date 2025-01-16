@@ -75,3 +75,6 @@ aside li.active>a {
   padding: 7px;
   line-height: 36px;
 }
+.ce-eol-banner {
+	display: none !important;
+}

@@ -13,6 +13,8 @@
   height: auto;
   resize: vertical;
   overflow: hidden;
+  max-height: 600px;
+  min-height: 450px;
 }
 
 /* ------------------- this is for diagram settings icons start  ------------------- */
@@ -71,7 +73,7 @@
 
 .zoom-container {
   position: relative;
-  bottom: 10em;
+  bottom: 18em;
   right: 15px;
   pointer-events: none;
 }

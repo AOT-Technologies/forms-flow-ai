@@ -41,19 +41,26 @@ formsflow.ai:
     url: ${FORMSFLOW_DOC_API_URL}
   authorizations:
     - groupId: "ROLE_create_submissions"
-      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
       resourceId: "*"
       permissions: ["ALL"]
     - groupId: "ROLE_view_designs"
-      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
+      resourceId: "*"
+      permissions: ["ALL"]
+    - groupId: "ROLE_create_designs"
+      resourceType: "DEPLOYMENT"
       resourceId: "*"
       permissions: ["ALL"]
     - groupId: "ROLE_view_tasks"
-      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER"
+      resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
       resourceId: "*"
       permissions: ["ALL"]
 
+
 camunda.bpm:
+  database:
+    schema-update: true
   job-execution:
     enabled: true
   history-level: ${CAMUNDA_BPM_HISTORY_LEVEL:none}
@@ -135,6 +142,8 @@ spring:
       secret: ${VAULT_SECRET} # secret name
       token: ${VAULT_TOKEN}
       uri: ${VAULT_URL}
+    compatibility-verifier:
+      enabled: false
 
 # Keycloak JWT Client configuration
 keycloak.jwt.realm: ${KEYCLOAK_URL_REALM}

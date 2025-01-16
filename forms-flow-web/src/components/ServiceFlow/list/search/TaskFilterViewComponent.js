@@ -256,7 +256,7 @@ const TaskFilterViewComponent = React.memo(
     }, []);
 
     return (
-      <>
+
         <div
           className="filter-listview "
           ref={createSearchNode}
@@ -321,7 +321,8 @@ const TaskFilterViewComponent = React.memo(
                       title={t("Task variables")}
                       className="form-control"
                       name={e.name}
-                      value={variable ? variable.value : ""}
+                      type={e.name === "applicationId" ? "number" : "text"}      
+                      value={variable?.value ? variable.value : ""}
                       onChange={(e) =>
                         handleProcessVariables(e.target.name, e.target.value)
                       }
@@ -378,11 +379,11 @@ const TaskFilterViewComponent = React.memo(
                 </Col>
               )}
               {vissibleAttributes.taskVisibleAttributes?.followUp && (
-                <Col xs={6}>
+                <Col xs={6} >
                   <label>{t("Follow up Date")}</label>
                   <div>
                     <Row>
-                      <Col xs={6}>
+                      <Col xs={6} className="follow-up-from">
                         <DatePicker
                           placeholderText={t("From")}
                           showTimeSelect
@@ -398,7 +399,7 @@ const TaskFilterViewComponent = React.memo(
                           customInput={<DatepickerCustomInput />}
                         />
                       </Col>
-                      <Col xs={6}>
+                      <Col xs={6} className="follow-up-to">
                         <DatePicker
                           placeholderText={t("To")}
                           showTimeSelect
@@ -489,7 +490,7 @@ const TaskFilterViewComponent = React.memo(
             </Col>
           </Row>
         </div>
-      </>
+
     );
   }
 );

@@ -1,15 +1,16 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
+import PropTypes from "prop-types";
 import {
   DuplicateIcon,
   ImportIcon,
   PencilIcon,
-  SaveTemplateIcon,
   CloseIcon,
   TrashIcon,
   CustomInfo,
   CustomButton,
 } from "@formsflow/components";
+import { StyleServices } from "@formsflow/service";
 
 const ActionModal = React.memo(
   ({
@@ -19,12 +20,35 @@ const ActionModal = React.memo(
     onAction,
     published,
     isCreate,
+    isMigrated,
+    diagramType
   }) => {
+    const primaryColor = StyleServices.getCSSVariable('--ff-primary'); 
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
     };
+    let customInfo = null;
 
+    if (CategoryType === "FORM" && (published || !isMigrated)) {
+      customInfo = {
+        heading: "Note",
+        content: `
+          ${published ? `Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.` : ""}
+          ${!isMigrated ? "\nSome actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\"." : ""}
+        `.trim(),
+      };
+    } else if (CategoryType === "WORKFLOW" && published) {
+      customInfo = {
+        heading: "Note",
+        content: `Importing is not available when the ${diagramType} is published.` + 
+        `You must unpublish the ${diagramType} first if you wish to make any changes.`.trim(),
+      
+
+      };
+    }
+    
+    
     return (
       <>
         <Modal show={newActionModal} onHide={onClose} centered={true} size="sm">
@@ -33,43 +57,27 @@ const ActionModal = React.memo(
               <div> Action</div>
             </Modal.Title>
             <div className="d-flex align-items-center">
-              <CloseIcon onClick={onClose} color="#253DF4" />
+              <CloseIcon onClick={onClose} color={primaryColor} />
             </div>
           </Modal.Header>
-          <Modal.Body className="modal-body custom-modal-body">
-            {published && (
-              <CustomInfo
-                heading="Note"
-                content="Importing and deleting is not available when the form is published.
-                     You must unpublish the form first if you wish to make any changes"
-              />
-            )}
+          <Modal.Body className="action-modal-body">
+          {customInfo && <CustomInfo heading={customInfo.heading} content={customInfo.content} />}
             {CategoryType === "FORM" && (
               <div className="custom-action-flex action-form">
                 <CustomButton
                   variant="secondary"
                   size="sm"
                   label="Duplicate"
-                  icon={<DuplicateIcon color="#253DF4" />}
+                  disabled={!isMigrated}
+                  icon={<DuplicateIcon color={primaryColor} />}
                   className=""
                   dataTestid="duplicate-form-button"
                   ariaLabel="Duplicate Button"
                   onClick={() => handleAction("DUPLICATE")}
                 />
-
                 <CustomButton
                   variant="secondary"
-                  size="sm"
-                  label="Save as template"
-                  icon={<SaveTemplateIcon color="#253DF4" />}
-                  className=""
-                  dataTestid="save-template-button"
-                  ariaLabel="Save as Template"
-                  onClick={() => handleAction("SAVE_AS_TEMPLATE")}
-                />
-                <CustomButton
-                  variant="secondary"
-                  disabled={published}
+                  disabled={published || !isMigrated}
                   size="sm"
                   label="Import"
                   icon={<ImportIcon />}
@@ -120,6 +128,7 @@ const ActionModal = React.memo(
 
                 <CustomButton
                   variant="secondary"
+                  disabled={published}
                   size="sm"
                   label="Import"
                   icon={<ImportIcon />}
@@ -147,5 +156,16 @@ const ActionModal = React.memo(
     );
   }
 );
+
+ActionModal.propTypes = {
+  newActionModal: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  CategoryType: PropTypes.string.isRequired,
+  onAction: PropTypes.func.isRequired,
+  published: PropTypes.bool.isRequired,
+  isCreate: PropTypes.bool,
+  isMigrated: PropTypes.bool, // Adding validation for isMigrated
+  diagramType: PropTypes.string,
+};
 
 export default ActionModal;

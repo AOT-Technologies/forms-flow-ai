@@ -130,6 +130,7 @@ const UserSelectionDebounce = React.memo((props) => {
               variant="secondary"
               id="dropdown-basic"
               data-testid="assignee-search-filter-dropdown-toggle"
+              size="sm"
             >
               <i className="fa fa-filter" />
             </Dropdown.Toggle>

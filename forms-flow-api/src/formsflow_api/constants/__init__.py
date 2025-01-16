@@ -89,6 +89,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "At least one query parameter (title, name, path) must be provided.",
         HTTPStatus.BAD_REQUEST,
     )
+    INVALID_FORM_TITLE_LENGTH = (
+        "The form title should not exceed 200 characters.",
+        HTTPStatus.BAD_REQUEST,
+    )
     KEYCLOAK_REQUEST_FAIL = (
         "Request to Keycloak Admin APIs failed.",
         HTTPStatus.BAD_REQUEST,
@@ -110,6 +114,19 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     FORM_VALIDATION_FAILED = "FORM_VALIDATION_FAILED.", HTTPStatus.BAD_REQUEST
+    INVALID_PROCESS = "Invalid process.", HTTPStatus.BAD_REQUEST
+    RESTRICT_FORM_DELETE = (
+        "Can't delete the form that has submissions associated with it.",
+        HTTPStatus.BAD_REQUEST,
+    )
+    ADMIN_SERVICE_UNAVAILABLE = (
+        "Admin service is not available",
+        HTTPStatus.SERVICE_UNAVAILABLE,
+    )
+    INVALID_ADMIN_RESPONSE = (
+        "Invalid response received from admin service",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""
@@ -144,7 +161,7 @@ def default_flow_xml_data(name="Defaultflow"):
         modeler:executionPlatform="Camunda Platform"
         modeler:executionPlatformVersion="7.15.0">
         <bpmn:process id="{name}" name="{name}" isExecutable="true">
-            <bpmn:startEvent id="StartEvent_1" name="Default Flow Started">
+            <bpmn:startEvent id="StartEvent_1" name="Default Flow Started" camunda:asyncAfter="true">
                 <bpmn:outgoing>Flow_09rbji4</bpmn:outgoing>
             </bpmn:startEvent>
             <bpmn:task id="Audit_Task_Executed" name="Execute Audit Task">
@@ -203,3 +220,14 @@ def default_flow_xml_data(name="Defaultflow"):
             </bpmndi:BPMNPlane>
         </bpmndi:BPMNDiagram>
     </bpmn:definitions>"""
+
+
+default_task_variables = [
+    {"key": "applicationId", "label": "Submission Id", "type": "hidden"},
+    {"key": "applicationStatus", "label": "Submission Status", "type": "hidden"},
+    {"key": "submitterLastName", "label": "Submitter Last Name", "type": "hidden"},
+    {"key": "submitterFirstName", "label": "Submitter First Name", "type": "hidden"},
+    {"key": "submitterEmail", "label": "Submitter Email", "type": "hidden"},
+    {"key": "currentUser", "label": "Current User", "type": "hidden"},
+    {"key": "currentUserRole", "label": "Current User Roles", "type": "hidden"},
+]

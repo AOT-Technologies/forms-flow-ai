@@ -155,13 +155,13 @@ public class KeycloakAuthenticationFilter implements Filter {
 		}
 		// Set the permission roles to match with the authorizations.
 		// Iterate the user's roles with HARD_CODED_ROLES, and set the matching ones as groups.
-		if (claims != null &&  claims.containsKey("role")) {
+		if (claims != null &&  claims.containsKey("roles")) {
 
-			List<String> roles = getKeys(claims, "role");
+			List<String> roles = getKeys(claims, "roles");
 			for (String role : roles) {
 				if (HARD_CODED_ROLES.contains(role)) {
 					if (enableMultiTenancy) {
-						//groupIds.add(tenantKey+"-"+role);
+						//groupIds.add(tenantKey+"-"+role); // No need to add tenantKey to the role as ROLE_ prefix is there.
 						groupIds.add("ROLE_"+role);
 					}else{
 						groupIds.add("ROLE_"+role);

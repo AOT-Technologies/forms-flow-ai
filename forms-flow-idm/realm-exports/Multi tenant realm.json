@@ -314,5 +314,10 @@
     "IDENTITY_PROVIDER_FIRST_LOGIN_ERROR"
   ],
   "adminEventsEnabled": false,
-  "adminEventsDetailsEnabled": false
+  "adminEventsDetailsEnabled": false,
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "en"
+  ],
+  "defaultLocale": "en"
 }

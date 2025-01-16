@@ -105,5 +105,14 @@ const isFormComponentsChanged = ({restoredFormData, restoredFormId, formData, fo
   );
 };
 
+// Adding tenantKey as suffix
+const addTenantkeyAsSuffix = (value, tenantkey) => {
+  if (value.toLowerCase().endsWith(`-${tenantkey}`)) {
+    return value.toLowerCase();
+  } else {
+    return `${value.toLowerCase()}${tenantkey}-`;
+  }
+};
+
 export { generateUniqueId, replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
-  filterSelectOptionByLabel, isFormComponentsChanged};
+  filterSelectOptionByLabel, isFormComponentsChanged,addTenantkeyAsSuffix};

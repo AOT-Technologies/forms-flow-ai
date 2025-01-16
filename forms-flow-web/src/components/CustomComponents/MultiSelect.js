@@ -1,15 +1,28 @@
 import React, { useState, useRef, useEffect } from "react";
+import {  useSelector } from "react-redux";
 import { ListGroup } from "react-bootstrap";
 import { CustomPill,DeleteIcon } from "@formsflow/components";
 import PropTypes from 'prop-types';
+import { HelperServices, StyleServices } from "@formsflow/service";
 
-const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) => { 
+const RoleSelector = ({
+  allRoles = [],
+  selectedRoles = [],
+  setSelectedRoles,
+  openByDefault = false,
+}) => {
+  const primaryColor = StyleServices.getCSSVariable('--ff-primary');  
   const [roleInput, setRoleInput] = useState("");
   const [filteredRoles, setFilteredRoles] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // To control dropdown visibility
   const dropDownRef = useRef(null);
   const inputRef = useRef(null);
- 
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  useEffect(() => {
+    if (openByDefault && inputRef.current && !selectedRoles.length) {
+      inputRef.current.focus();
+    }
+  }, [openByDefault]);
   // Filter roles based on input
   useEffect(() => {
     const filtered = allRoles.filter(
@@ -61,8 +74,8 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
         {selectedRoles.map((role, index) => (
           <CustomPill
             key={role + index}
-            label={role}
-            icon={<DeleteIcon color="#253DF4" />}
+            label={HelperServices.removeTenantKeyFromData(role,tenantKey)}
+            icon={<DeleteIcon color={primaryColor} />}
             bg="primary"
             onClick={() => removeRole(role)}
           />
@@ -86,7 +99,7 @@ const RoleSelector = ({ allRoles = [], selectedRoles = [], setSelectedRoles }) =
                 key={role + index}
                 onClick={() => handleRoleSelect(role)}
               >
-                {role}
+                {HelperServices.removeTenantKeyFromData(role,tenantKey)}
               </ListGroup.Item>
             ))}
           </ListGroup>
@@ -101,6 +114,7 @@ RoleSelector.propTypes = {
   allRoles: PropTypes.array,
   selectedRoles: PropTypes.array.isRequired, 
   setSelectedRoles: PropTypes.func.isRequired, 
+  openByDefault: PropTypes.bool,
 };
  
 export default RoleSelector;

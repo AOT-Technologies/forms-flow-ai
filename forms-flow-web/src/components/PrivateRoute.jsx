@@ -1,9 +1,15 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, lazy, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  Suspense,
+  useMemo,
+  useCallback
+} from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
+  getRoute,
   DRAFT_ENABLED,
   MULTITENANCY_ENABLED,
   KEYCLOAK_AUTH_URL,
@@ -52,8 +58,9 @@ import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
 import { LANGUAGE } from "../constants/constants";
-import  useUserRoles  from "../constants/permissions";
-
+import useUserRoles from "../constants/permissions";
+import { getUserRoles } from "../apiManager/services/authorizationService"; // Assuming you have a service to get roles
+import PropTypes from "prop-types";
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
     KEYCLOAK_AUTH_URL,
@@ -77,36 +84,33 @@ const PrivateRoute = React.memo((props) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles = useSelector((state) => state.user.roles || []);
   const { tenantId } = useParams();
-  const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
   const selectedLanguage = useSelector((state) => state.user.lang);
   const tenant = useSelector((state) => state.tenants);
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
   const [tenantValid, setTenantValid] = React.useState(true); // State to track tenant validity
-
+  const ROUTE_TO = getRoute(tenantId);
   const {
-          admin, 
-          createDesigns ,
-          createSubmissions ,
-          viewDesigns ,
-          viewSubmissions ,
-          viewTasks,
-          manageTasks,
-          viewDashboards 
-        } = useUserRoles();
-  
-       const BASE_ROUTE_PATH = (viewTasks || manageTasks)
-        ? `${redirecUrl}task`
-        : ( createSubmissions || createDesigns || viewDesigns)
-        ? `${redirecUrl}form`
-        : admin  
-        ? `${redirecUrl}admin` 
-        : viewSubmissions 
-        ? `${redirecUrl}application` 
-        : viewDashboards 
-        ? `${redirecUrl}metrics` 
-        : "/404";
-       
+    admin,
+    createDesigns,
+    createSubmissions,
+    viewDesigns,
+    viewSubmissions,
+    viewTasks,
+    manageTasks,
+    viewDashboards,
+  } = useUserRoles();
+
+  const BASE_ROUTE_PATH = (() => {
+    if (viewTasks || manageTasks) return ROUTE_TO.TASK;
+    if (createSubmissions) return ROUTE_TO.FORM;
+    if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;
+    if (admin) return ROUTE_TO.ADMIN;
+    if (viewSubmissions) return ROUTE_TO.APPLICATION;
+    if (viewDashboards) return ROUTE_TO.METRICS;
+    return ROUTE_TO.NOTFOUND;
+  })();
+
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -117,6 +121,18 @@ const PrivateRoute = React.memo((props) => {
     store.dispatch(setUserToken(instance.getToken()));
     // Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
+  
+    // Fetch user roles and update the local storage
+    getUserRoles()
+      .then((res) => {
+        if (res) {
+          const { data = [] } = res;
+          const roles = data.map((role) => role.name);
+          localStorage.setItem("allAvailableRoles", JSON.stringify(roles));
+        }
+      })
+      .catch((error) => console.error("Error fetching roles", error));
+  
     // Get formio roles
     store.dispatch(
       getFormioRoleIds((err) => {
@@ -132,6 +148,7 @@ const PrivateRoute = React.memo((props) => {
       })
     );
   };
+  
 
   const keycloakInitialize = useCallback(() => {
     let instance = tenantId ? kcServiceInstance(tenantId) : kcServiceInstance();
@@ -143,13 +160,14 @@ const PrivateRoute = React.memo((props) => {
           if (!authenticated) {
             setAuthError(true);
           } else {
-            authenticate(instance, props.store);
             publish("FF_AUTH", instance);
+            authenticate(instance, props.store);
           }
         });
       }
     }
   }, [props.store, kcInstance, tenantId]);
+
 
   useEffect(() => {
     if (tenantId && MULTITENANCY_ENABLED) {
@@ -227,23 +245,6 @@ const PrivateRoute = React.memo((props) => {
         ),
     [userRoles]
   );
-  const FormRoute = useMemo(
-    () =>
-      ({ component: Component, ...rest }) =>
-      (
-        <Route
-          {...rest}
-          render={(props) =>
-            createDesigns || viewDesigns || createSubmissions || viewSubmissions  ? (
-              <Component {...props} />
-            ) : (
-              <AccessDenied userRoles={userRoles} />
-            )
-          }
-        />
-      ),
-    [userRoles]
-  );
 
   const ReviewerRoute = useMemo(
     () =>
@@ -299,6 +300,28 @@ const PrivateRoute = React.memo((props) => {
     [userRoles]
   );
 
+  const ClientRoute = useMemo(
+    () =>
+      ({ component: Component, ...rest }) =>
+      (
+        <Route
+          {...rest}
+          render={(props) =>
+            createSubmissions || viewSubmissions  ? (
+              <Component {...props} />
+            ) : (
+              <AccessDenied userRoles={userRoles} />
+            )
+          }
+        />
+      ),
+    [userRoles]
+  );
+
+  ClientRoute.propTypes = {
+    component: PropTypes.elementType.isRequired,
+  };
+
   if (!tenantValid) {
     return <NotFound />;
   }
@@ -311,60 +334,56 @@ const PrivateRoute = React.memo((props) => {
         <Suspense fallback={<Loading />}>
           <Switch>
             {ENABLE_FORMS_MODULE && (
-              <FormRoute path={`${BASE_ROUTE}form`} component={Form} />
+              <ClientRoute path={ROUTE_TO.FORM} component={Form} />
             )}
             {ENABLE_FORMS_MODULE && (
-              <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
+              <DesignerRoute path={ROUTE_TO.FORMFLOW} component={Form} />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
-              <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
+              <DraftRoute path={ROUTE_TO.DRAFT} component={Drafts} />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
               <ClientReviewerRoute
-                path={`${BASE_ROUTE}application`}
+                path={ROUTE_TO.APPLICATION}
                 component={Application}
               />
             )}
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
-                path={`${BASE_ROUTE}subflow`}
+                path={ROUTE_TO.SUBFLOW}
                 component={Modeler}
               />
             )}
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
-                path={`${BASE_ROUTE}decision-table`}
+                path={ROUTE_TO.DECISIONTABLE}
                 component={Modeler}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
               <DashBoardRoute
-                path={`${BASE_ROUTE}metrics`}
+                path={ROUTE_TO.METRICS}
                 component={DashboardPage}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
               <DashBoardRoute
-                path={`${BASE_ROUTE}insights`}
+                path={ROUTE_TO.INSIGHTS}
                 component={InsightsPage}
               />
             )}
             {ENABLE_TASKS_MODULE && (
               <ReviewerRoute
-                path={`${BASE_ROUTE}task`}
+                path={ROUTE_TO.TASK}
                 component={ServiceFlow}
               />
             )}
-            <Route exact path={`${redirecUrl}admin`} /> 
+            <Route exact path={ROUTE_TO.ADMIN} /> 
             <Route exact path={BASE_ROUTE}>
-            {userRoles.length && (
-               <Redirect
-                 to={BASE_ROUTE_PATH}
-                />
-               )}
+              {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}
             </Route>
-            <Route path="/404" exact={true} component={NotFound} />
-            <Redirect from="*" to="/404" />
+            <Route path={ROUTE_TO.NOTFOUND} exact={true} component={NotFound} />
+            <Redirect from="*" to={ROUTE_TO.NOTFOUND} />
           </Switch>
         </Suspense>
       ) : (

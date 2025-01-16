@@ -37,7 +37,7 @@ const modelerConfig = {
   moddleExtensions: { camunda: camundaModdleDescriptors },
 };
 
-const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
+const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, ref) => {
   const [bpmnModeler, setBpmnModeler] = useState(null);
 
   const initializeModeler = useCallback(() => {
@@ -51,6 +51,11 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
   useEffect(() => {
     if (bpmnModeler) {
       handleImport(bpmnXml);
+      bpmnModeler.on('element.changed', onChange);
+      return () => {
+        // Cleanup event listener when component unmounts or bpmn changes
+        bpmnModeler.off("element.changed", onChange);
+      };
     }
   }, [bpmnXml, bpmnModeler]);
 
@@ -79,6 +84,8 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
   const zoom = () => bpmnModeler?.get("zoomScroll")?.stepZoom(1);
   const zoomOut = () => bpmnModeler?.get("zoomScroll")?.stepZoom(-1);
   const zoomReset = () => bpmnModeler?.get("zoomScroll")?.reset();
+  const undo = () => bpmnModeler?.get("commandStack")?.undo();
+  const redo = () => bpmnModeler?.get("commandStack")?.redo();
 
   return (
     <div className="bpmn-main-container">
@@ -88,11 +95,25 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
           ref={containerRef}
           className="bpm-modeler-container grab-cursor border border-dark border-1"
         ></div>
-
+ 
         <div className="d-flex justify-content-end zoom-container">
-          <div className="d-flex flex-column">
+          <div className="d-flex flex-column gap-3">
+          <button
+              className="btn-zoom cursor-pointer btn btn-sm btn-secondary"
+              title="Undo"
+              onClick={undo}
+            >
+              <i className="fa fa-undo" aria-hidden="true" />
+            </button>
             <button
-              className="mb-3 btn-zoom cursor-pointer btn btn-sm btn-secondary"
+              className="btn btn-zoom cursor-pointer btn-sm btn-secondary"
+              title="Redo"
+              onClick={redo}
+            >
+              <i className="fas fa-redo" aria-hidden="true" />
+            </button>
+            <button
+              className="btn-zoom cursor-pointer btn btn-sm btn-outline-primary"
               title="Reset Zoom"
               onClick={zoomReset}
               data-testid="prcosses-bpmneditor-zoomreset-button"
@@ -115,6 +136,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
             >
               <i className="fa fa-search-minus" aria-hidden="true" />
             </button>
+           
           </div>
         </div>
       </div>
@@ -125,8 +147,9 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors }, ref) => {
 
 // Adding PropTypes validation for the props
 BpmnEditor.propTypes = {
-  bpmnXml: PropTypes.string.isRequired,
+  bpmnXml: PropTypes.string,
   setLintErrors: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
 };
 
 export default React.memo(BpmnEditor);

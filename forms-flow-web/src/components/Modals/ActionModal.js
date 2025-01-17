@@ -21,23 +21,32 @@ const ActionModal = React.memo(
     onAction,
     published,
     isCreate,
-    isMigrated
+    isMigrated,
+    diagramType
   }) => {
     const { t } = useTranslation();
-    const primaryColor = StyleServices.getCSSVariable('primary');
+    const primaryColor = StyleServices.getCSSVariable('--ff-primary');
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
     };
     let customInfo = null;
 
-    if (published || !isMigrated) {
+    if (CategoryType === "FORM" && (published || !isMigrated)) {
       customInfo = {
         heading: t("Note"),
         content: `
           ${published ? t("Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.") : ""}
           ${!isMigrated ? "\nSome actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\"." : ""}
         `.trim(),
+      };
+    } else if (CategoryType === "WORKFLOW" && published) {
+      customInfo = {
+        heading: "Note",
+        content: `Importing is not available when the ${diagramType} is published.` +
+        `You must unpublish the ${diagramType} first if you wish to make any changes.`.trim(),
+
+
       };
     }
 
@@ -61,7 +70,7 @@ const ActionModal = React.memo(
                   variant="secondary"
                   size="sm"
                   label={t("Duplicate")}
-                  disabled={published || !isMigrated}
+                  disabled={!isMigrated}
                   icon={<DuplicateIcon color={primaryColor} />}
                   className=""
                   dataTestid="duplicate-form-button"
@@ -158,6 +167,7 @@ ActionModal.propTypes = {
   published: PropTypes.bool.isRequired,
   isCreate: PropTypes.bool,
   isMigrated: PropTypes.bool, // Adding validation for isMigrated
+  diagramType: PropTypes.string,
 };
 
 export default ActionModal;

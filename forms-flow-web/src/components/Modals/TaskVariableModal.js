@@ -33,8 +33,8 @@ import { StyleServices } from "@formsflow/service";
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
-  const primaryColor = StyleServices.getCSSVariable('primary');
-  const secondaryColor = StyleServices.getCSSVariable('secondary');
+  const primaryColor = StyleServices.getCSSVariable('--ff-primary');
+  const secondaryColor = StyleServices.getCSSVariable('--ff-secondary');
 
   const filteredVariablePills = Object.values(alternativeLabels).filter(
     ({ key }) => !ignoreKeywords.has(key)

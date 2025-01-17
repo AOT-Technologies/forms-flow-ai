@@ -43,7 +43,7 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
   const handleToggleShow = () => setShowPrompt(!showPrompt);
   const resetPath = () =>
     window.history.replaceState({}, "", nextLocation.currentPath);
-  
+
   const handleConfirm = (confirm) => {
     handleToggleShow();
     setNextLocation((prev) => ({ ...prev, onOk: confirm }));
@@ -65,7 +65,7 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
             resetPath();
           }}
           title={t("You Have Unsaved Changes")}
-          message={<CustomInfo heading="Note" content={message} />}
+          message={<CustomInfo heading={t("Note")} content={message} />}
           messageSecondary={t(secondaryMessage)}
           secondayBtnAction={() => {
             handleConfirm(true);

@@ -1,8 +1,10 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
 import { CloseIcon } from "@formsflow/components";
+import { useTranslation } from "react-i18next";
 
 const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
+    const { t } = useTranslation();
     const ActionType = {
         BUILD: "BUILD",
         IMPORT: "IMPORT",
@@ -14,21 +16,21 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
             <Modal show={newFormModal} onHide={onClose} centered={true}>
                 <Modal.Header>
                     <Modal.Title className="modal-headder">
-                        <div> Add Form</div>
+                        <div>{t("Add Form")}</div>
                     </Modal.Title>
                     <div className="d-flex align-items-center">
                         <CloseIcon width="16.5" height="16.5" onClick={onClose} data-testid="modal-close-icon" />
                     </div>
                 </Modal.Header>
                 <Modal.Body className="create-form-modal-body d-flex justify-content-around">
-                        <div className="content-wrapper" onClick={() => onAction(ActionType.BUILD)}>
-                            <span className="modal-content-heading">Build</span>
-                            <span className="modal-content-text">Create the form from scratch</span>
-                        </div>
-                        <div className="content-wrapper" onClick={() => onAction(ActionType.IMPORT)}>
-                            <span className="modal-content-heading">Import</span>
-                            <span className="modal-content-text">Upload form from a file</span>
-                        </div>
+                    <div className="content-wrapper" onClick={() => onAction(ActionType.BUILD)}>
+                        <span className="modal-content-heading">{t("Build")}</span>
+                        <span className="modal-content-text">{t("Create the form from scratch")}</span>
+                    </div>
+                    <div className="content-wrapper" onClick={() => onAction(ActionType.IMPORT)}>
+                        <span className="modal-content-heading">{t("Import")}</span>
+                        <span className="modal-content-text">{t("Upload form from a file")}</span>
+                    </div>
                 </Modal.Body>
             </Modal>
         </>

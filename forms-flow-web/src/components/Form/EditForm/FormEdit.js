@@ -1119,7 +1119,7 @@ const handleSaveLayout = () => {
                     className="d-flex align-items-center white-text mx-3"
                   >
                     <div
-                      className={`status-${isPublished ? "live" : "draft"}`}
+                      className={`status-${isPublished ? t("Live") : t("Draft")}`}
                     ></div>
                     {isPublished ? t("Live") : t("Draft")}
                   </span>

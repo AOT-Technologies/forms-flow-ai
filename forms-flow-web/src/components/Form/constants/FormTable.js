@@ -108,7 +108,7 @@ function FormTable() {
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
           <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
+            <table className="table custom-tables table-responsive-sm mb-0">
               <thead className="table-header">
                 <tr>
                   <th className="w-20">
@@ -117,7 +117,7 @@ function FormTable() {
                    title="Form Name"
                    currentSort={currentFormSort}
                    handleSort={handleSort}
-                   className="ms-4"
+                   className="gap-2"
                   />
                   </th>
                   <th className="w-30" scope="col">{t("Description")}</th>
@@ -127,6 +127,7 @@ function FormTable() {
                   title="Last Edited"
                   currentSort={currentFormSort}
                   handleSort={handleSort}
+                  className="gap-2"
                   />
                   </th>
                   <th className="w-13" scope="col">
@@ -134,14 +135,16 @@ function FormTable() {
                     columnKey="visibility"
                     title="Visibility"
                     currentSort={currentFormSort}
-                    handleSort={handleSort} />
+                    handleSort={handleSort} 
+                    className="gap-2"/>                
                   </th>
                   <th className="w-12" scope="col" colSpan="4">
                     <SortableHeader 
                     columnKey="status"
                     title="Status"
                     currentSort={currentFormSort}
-                    handleSort={handleSort} />
+                    handleSort={handleSort} 
+                    className="gap-2"/>
                   </th>
                   <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>
                 </tr>
@@ -156,7 +159,7 @@ function FormTable() {
                       <tr key={index}>
                         <td className="w-20">
                           <div className="d-flex">
-                            <span className="ms-4 text-container">{e.title}</span>
+                            <span className="text-container">{e.title}</span>
                           </div>
                         </td>
                         <td className="w-30 cursor-pointer">
@@ -177,7 +180,7 @@ function FormTable() {
                             {e.status === "active" ? t("Live") : t("Draft")}
                           </span>
                         </td>
-                        <td className="w-12">
+                        <td className="w-12 text-end">
                         {(createDesigns || viewDesigns) && (
                           <CustomButton
                             variant="secondary"

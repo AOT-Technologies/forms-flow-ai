@@ -297,6 +297,7 @@ class FormProcessMapper(
             cls.form_name,
             cls.modified,
             cls.description,
+            cls.parent_form_id,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)

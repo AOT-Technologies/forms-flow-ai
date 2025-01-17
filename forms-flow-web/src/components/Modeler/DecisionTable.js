@@ -52,14 +52,14 @@ const DecisionTable = React.memo(() => {
   const contents = [
     {
       id: 1,
-      heading: "Build",
-      body: "Create the DMN from scratch",
+      heading: t("Build"),
+      body: t("Create the DMN from scratch"),
       onClick: handleBuildClick
     },
     {
       id: 2,
-      heading: "Import",
-      body: "Upload DMN from a file",
+      heading: t("Import"),
+      body: t("Upload DMN from a file"),
       onClick: handleImportClick
     }
   ];

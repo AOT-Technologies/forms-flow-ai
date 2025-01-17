@@ -6,6 +6,7 @@ import { createProcess,updateProcess } from "../../apiManager/services/processSe
 import { useSelector, useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import { useTranslation} from "react-i18next";
 import {setProcessData} from "../../actions/processActions";
 
 const ImportProcess = React.memo(({
@@ -18,11 +19,12 @@ const ImportProcess = React.memo(({
 }) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   // Determine redirect URL and text based on file type
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const baseUrl = fileType === ".bpmn" ? "subflow/edit/" : "decision-table/edit/";
-  const defaultPrimaryBtnText = fileType === ".bpmn" ? "Create And Edit BPMN" : "Create And Edit DMN";
+  const defaultPrimaryBtnText = fileType === ".bpmn" ? t("Create And Edit BPMN") : t("Create And Edit DMN");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
@@ -31,7 +33,7 @@ const ImportProcess = React.memo(({
     if (processId) {
       return "Import File";
     }
-    return `Import New ${fileType === ".bpmn" ? "BPMN" : "DMN"}`;
+    return `${t("Import New")} ${fileType === ".bpmn" ? "BPMN" : "DMN"}`;
   };
 
   const headerText = getHeaderText();

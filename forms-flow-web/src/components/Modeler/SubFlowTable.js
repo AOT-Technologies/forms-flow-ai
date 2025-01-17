@@ -54,14 +54,14 @@ const SubFlow = React.memo(() => {
   const modalContents = [
     {
       id: 1,
-      heading: "Build",
-      body: "Create the BPMN from scratch",
+      heading: t("Build"),
+      body: t("Create the BPMN from scratch"),
       onClick: () => dispatch(push(`${redirectUrl}subflow/create`)),
     },
     {
       id: 2,
-      heading: "Import",
-      body: "Upload BPMN from a file",
+      heading: t("Import"),
+      body: t("Upload BPMN from a file"),
       onClick: ShowImportModal,
     },
   ];
@@ -155,7 +155,7 @@ const SubFlow = React.memo(() => {
           <CustomButton
             variant="primary"
             size="sm"
-            label="New BPMN"
+            label={t("New BPMN")}
             className=""
             dataTestid="create-BPMN-button"
             ariaLabel="Create BPMN"
@@ -181,7 +181,7 @@ const SubFlow = React.memo(() => {
                   <th className="w-20" scope="col">
                     <SortableHeader
                       columnKey="processKey"
-                      title="ID"
+                      title={t("ID")}
                       currentSort={currentBpmnSort}
                       handleSort={handleSort}
                     />

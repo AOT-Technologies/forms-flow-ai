@@ -38,6 +38,10 @@ class ApplicationListRequestSchema(ApplicationListReqSchema):
         data_key="modifiedTo", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
     sort_order = fields.Str(data_key="sortOrder", required=False)
+    created_user_submissions = fields.Bool(data_key="createdUserSubmissions")
+    parent_form_id = fields.Str(data_key="parentFormId")
+    include_drafts = fields.Bool(data_key="includeDrafts")
+    only_drafts = fields.Bool(data_key="onlyDrafts")
 
 
 class ApplicationSchema(AuditDateTimeSchema):
@@ -66,6 +70,7 @@ class ApplicationSchema(AuditDateTimeSchema):
     is_resubmit = fields.Bool(data_key="isResubmit", dump_only=True)
     event_name = fields.Str(data_key="eventName", dump_only=True)
     data = fields.Dict(data_key="data", load_only=True)
+    is_draft = fields.Bool(data_key="isDraft", dump_only=True)
 
 
 class ApplicationUpdateSchema(Schema):

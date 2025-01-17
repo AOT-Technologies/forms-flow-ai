@@ -42,6 +42,7 @@ FILTER_MAPS = {
     "process_name": {"field": "name", "operator": "ilike"},
     "process_status": {"field": "status", "operator": "eq"},
     "process_type": {"field": "process_type", "operator": "eq"},
+    "parent_form_id": {"field": "parent_form_id", "operator": "eq"},
 }
 
 DEFAULT_PROCESS_KEY = "Defaultflow"

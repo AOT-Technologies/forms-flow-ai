@@ -197,6 +197,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         application_status: str,
         created_by: str,
         sort_order: str,
+        parent_form_id: str,
         **kwargs,
     ):
         """Get applications only from authorized groups."""
@@ -230,6 +231,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             created_to=created_to,
             form_ids=form_ids,
             user_name=user_name,
+            parent_form_id=parent_form_id,
         )
         draft_count = Draft.get_draft_count()
         return (
@@ -280,6 +282,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         application_status: str,
         application_name: str,
         application_id: int,
+        parent_form_id: str,
+        include_drafts: str,
+        only_drafts: bool,
         **kwargs,
     ):
         """Get all applications based on user."""
@@ -299,6 +304,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             modified_to=modified_to,
             created_from=created_from,
             created_to=created_to,
+            parent_form_id=parent_form_id,
+            include_drafts=include_drafts,
+            only_drafts=only_drafts,
         )
         draft_count = Draft.get_draft_count()
         return (

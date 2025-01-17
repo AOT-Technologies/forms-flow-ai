@@ -35,6 +35,7 @@ class Application(
     latest_form_id = db.Column(db.String(100), nullable=False)
     is_resubmit = db.Column(db.Boolean, nullable=True, default=False)
     event_name = db.Column(db.String(100), nullable=True)
+    is_draft = db.Column(db.Boolean, default=False, index=True)
 
     draft = db.relationship(
         "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
@@ -52,6 +53,7 @@ class Application(
             ]
             application.submission_id = application_info["submission_id"]
             application.latest_form_id = application_info["form_id"]
+            application.is_draft = application_info.get("is_draft", False)
             application.save_and_flush()
             return application
         return None
@@ -68,6 +70,7 @@ class Application(
                 "modified_by",
                 "is_resubmit",
                 "event_name",
+                "is_draft",
             ],
             mapper_info,
         )
@@ -161,7 +164,7 @@ class Application(
                 filter_map = FILTER_MAPS[key]
                 model_name = (
                     Application
-                    if not filter_map["field"] == "form_name"
+                    if filter_map["field"] not in ["form_name", "parent_form_id"]
                     else FormProcessMapper
                 )
                 condition = Application.create_filter_condition(
@@ -184,10 +187,12 @@ class Application(
             cls.modified_by,
             cls.is_resubmit,
             cls.event_name,
+            cls.is_draft,
             FormProcessMapper.form_name.label("application_name"),
             FormProcessMapper.process_key.label("process_key"),
             FormProcessMapper.process_name.label("process_name"),
             FormProcessMapper.process_tenant.label("process_tenant"),
+            FormProcessMapper.parent_form_id,
         )
         query = query.filter(*filter_conditions) if filter_conditions else query
         return query
@@ -200,13 +205,18 @@ class Application(
         limit: int,
         order_by: str,
         sort_order: str,
+        include_drafts: str,
+        only_drafts: str,
         **filters,
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer."""
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(Application.created_by == user_id)
-        query = cls.filter_draft_applications(query=query)
+        if only_drafts:  # only draft applications
+            query = query.filter(Application.is_draft.is_(True))
+        elif not include_drafts:  # only submissions
+            query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             table_name = "application"
@@ -725,7 +735,7 @@ class Application(
         """Modifies the query to filter draft applications."""
         if not isinstance(query, Query):
             raise TypeError("Query object must be of type Query")
-        return query.filter(cls.application_status != DRAFT_APPLICATION_STATUS)
+        return query.filter(cls.is_draft.is_(False))
 
     @classmethod
     def get_all_application_count(cls):

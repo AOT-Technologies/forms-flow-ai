@@ -171,7 +171,12 @@ class ApplicationsResource(Resource):
         modified_from_date = dict_data.get("modified_from_date")
         modified_to_date = dict_data.get("modified_to_date")
         sort_order = dict_data.get("sort_order", "desc")
-        if auth.has_role([VIEW_TASKS, MANAGE_TASKS]):
+        created_user_submissions = dict_data.get("created_user_submissions", False)
+        parent_form_id = dict_data.get("parent_form_id")
+        include_drafts = dict_data.get("include_drafts")
+        only_drafts = dict_data.get("only_drafts")
+
+        if auth.has_role([VIEW_TASKS, MANAGE_TASKS]) and not created_user_submissions:
             (
                 application_schema_dump,
                 application_count,
@@ -189,6 +194,7 @@ class ApplicationsResource(Resource):
                 application_status=application_status,
                 page_no=page_no,
                 limit=limit,
+                parent_form_id=parent_form_id,
             )
         else:
             (
@@ -208,6 +214,9 @@ class ApplicationsResource(Resource):
                 application_id=application_id,
                 application_name=application_name,
                 application_status=application_status,
+                parent_form_id=parent_form_id,
+                include_drafts=include_drafts,
+                only_drafts=only_drafts,
             )
         return (
             (

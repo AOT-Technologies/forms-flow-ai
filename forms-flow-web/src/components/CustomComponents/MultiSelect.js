@@ -11,7 +11,7 @@ const RoleSelector = ({
   setSelectedRoles,
   openByDefault = false,
 }) => {
-  const primaryColor = StyleServices.getCSSVariable('primary'); 
+  const primaryColor = StyleServices.getCSSVariable('--ff-primary');  
   const [roleInput, setRoleInput] = useState("");
   const [filteredRoles, setFilteredRoles] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // To control dropdown visibility

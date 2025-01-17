@@ -16,7 +16,8 @@ import {
   PreviewIcon,
   FormBuilderModal,
   HistoryModal,
-  ImportModal
+  ImportModal,
+  CustomInfo
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -962,7 +963,12 @@ const handleSaveLayout = () => {
         return {
           title: "Unpublish Before Saving",
           message:
-            "This form is currently live. To save the changes to your form, you need to unpublish it first. By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits.",
+          (
+            <CustomInfo
+              heading="Note"
+              content="This form is currently live. To save the changes to your form, you need to unpublish it first.    By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits."
+            />
+          ),
           primaryBtnAction: handleConfirmUnpublishAndSave,
           secondayBtnAction: closeModal,
           primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",

@@ -2,7 +2,7 @@ import React, {
   useEffect,
   useState,
   useImperativeHandle,
-  forwardRef, 
+  forwardRef,
 } from "react";
 import { Form, FormControl, InputGroup } from "react-bootstrap";
 import {
@@ -37,14 +37,14 @@ const FormSettings = forwardRef((props, ref) => {
   /* ---------------------------- redux store data ---------------------------- */
   const processListData = useSelector((state) => state.process.formProcessList);
   const { path, display } = useSelector((state) => state.form.form);
- 
+
   const { authorizationDetails: formAuthorization } = useSelector(
     (state) => state.process
   );
   const {parentFormId,formId} = useSelector((state) => state.process.formProcessList);
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
-  const [copied, setCopied] = useState(false); 
+  const [copied, setCopied] = useState(false);
   const [formDetails, setFormDetails] = useState({
     title: processListData.formName,
     path: path,
@@ -79,7 +79,7 @@ const FormSettings = forwardRef((props, ref) => {
     APPLICATION: {
       roleInput: "",
       selectedRoles: formAuthorization.APPLICATION?.roles,
-      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"), 
+      selectedOption: setSelectedOption(formAuthorization.APPLICATION?.roles, "submitter"),
       /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
        we assume that the submitter is true. */
     }
@@ -117,7 +117,7 @@ const FormSettings = forwardRef((props, ref) => {
           errorMessage = data.message;
         }
       } catch (error) {
-        errorMessage = error.response?.data?.message || 
+        errorMessage = error.response?.data?.message ||
         `An error occurred while validating the ${field}.`;
         console.error(`Error validating ${field}:`, errorMessage);
       }
@@ -128,25 +128,25 @@ const FormSettings = forwardRef((props, ref) => {
   };
 
 
-  
+
   /* ---------------------- handling form details change ---------------------- */
 
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
     let updatedValue =
       name === "path" ? _camelCase(value).toLowerCase() : value;
-  
+
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
     } else {
       setFormDetails((prev) => ({ ...prev, [name]: updatedValue }));
     }
   };
-  
+
   const handleBlur = (field, value) => {
         validateField(field, value);
   };
-  
+
 
   /* ---------------------------- Fetch user roles ---------------------------- */
   useEffect(() => {
@@ -189,27 +189,27 @@ const FormSettings = forwardRef((props, ref) => {
       formDetails: { ...formDetails, anonymous: isAnonymous },
       rolesState: rolesState,
     };
-  }); 
-  
+  });
+
   useEffect(() => {
     const isAnyRoleEmpty = Object.values(rolesState).some(
       (section) =>
         section.selectedOption === "specifiedRoles" &&
         section.selectedRoles.length === 0
     );
-  
+
     const hasFormErrors =
       errors.path !== "" ||
       errors.name !== "" ||
       formDetails.title === "" ||
       formDetails.path === "";
-  
-    // checking both values for disabling the save changes button  
+
+    // checking both values for disabling the save changes button
     const shouldDisableSaveButton = isAnyRoleEmpty || hasFormErrors;
 
     props.setIsSaveButtonDisabled(shouldDisableSaveButton);
   }, [rolesState, errors, formDetails]);
-  
+
 
   return (
     <>
@@ -227,8 +227,8 @@ const FormSettings = forwardRef((props, ref) => {
           isInvalid = {!!errors.name}
           feedback = {errors.name}
           turnOnLoader={isValidating.name}
-          onBlur={() => handleBlur('name', formDetails.title)}   
-          maxLength={200} 
+          onBlur={() => handleBlur('name', formDetails.title)}
+          maxLength={200}
           />
         <FormTextArea
           label={t("Description")}
@@ -240,8 +240,8 @@ const FormSettings = forwardRef((props, ref) => {
           maxRows={3}
           minRows={3}
         />
-        <CustomInfo heading="Note" 
-        content="Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later." />
+        <CustomInfo heading={t("Note")}
+        content={t("Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later.")} />
 
         <Form.Check
           data-testid="form-edit-wizard-display"
@@ -281,7 +281,7 @@ const FormSettings = forwardRef((props, ref) => {
           }
           dataTestid="who-can-edit-this-form"
           id="who-can-edit-this-form"
-          ariaLabel={t("Edit Submission Role")} 
+          ariaLabel={t("Edit Submission Role")}
           selectedValue={rolesState.DESIGN.selectedOption}
         />
 
@@ -339,7 +339,7 @@ const FormSettings = forwardRef((props, ref) => {
         )}
         {rolesState.FORM.selectedOption === "specifiedRoles" && (
           <MultiSelectComponent
-            openByDefault 
+            openByDefault
             allRoles={userRoles}
             selectedRoles={rolesState.FORM.selectedRoles}
             setSelectedRoles={(roles) =>
@@ -392,8 +392,8 @@ const FormSettings = forwardRef((props, ref) => {
       <div className="modal-hr" />
       <div className="section">
         <h5 className="fw-bold">{t("Link for this form")}</h5>
-        <CustomInfo heading="Note" 
-        content="Making changes to your form URL will make your form inaccessible from your current URL." />
+        <CustomInfo heading={t("Note")}
+        content={t("Making changes to your form URL will make your form inaccessible from your current URL.")} />
         <Form.Group className="settings-input w-100" controlId="url-input">
           <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
           <InputGroup className="url-input">

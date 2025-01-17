@@ -108,7 +108,7 @@ function FormTable() {
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
           <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
+            <table className="table custom-tables table-responsive-sm mb-0">
               <thead className="table-header">
                 <tr>
                   <th className="w-20">

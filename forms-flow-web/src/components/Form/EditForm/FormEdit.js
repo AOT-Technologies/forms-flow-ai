@@ -61,7 +61,8 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate } from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate,
+  convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
@@ -538,12 +539,13 @@ const handleSaveLayout = () => {
 
 
   /* ----------- save settings function to be used in settings modal ---------- */
+  
   const filterAuthorizationData = (authorizationData) => {
     if(authorizationData.selectedOption === "submitter"){
       return {roles: [], userName:null, resourceDetails:{submitter:true}};
     }
     if (authorizationData.selectedOption === "specifiedRoles") {
-      return { roles: authorizationData.selectedRoles, userName: "" };
+      return { roles: convertMultiSelectOptionToValue(authorizationData.selectedRoles, "role"), userName: "" };
     }
     return { roles: [], userName: preferred_username };
   };
@@ -582,7 +584,7 @@ const handleSaveLayout = () => {
         resourceDetails: {},
         roles:
           rolesState.FORM.selectedOption === "specifiedRoles"
-            ? rolesState.FORM.selectedRoles
+            ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
             : [],
       },
     };
@@ -1125,7 +1127,7 @@ const handleSaveLayout = () => {
                     className="d-flex align-items-center white-text mx-3"
                   >
                     <div
-                      className={`status-${isPublished ? t("Live") : t("Draft")}`}
+                      className={`status-${isPublished ? "live" : "draft"}`}
                     ></div>
                     {isPublished ? t("Live") : t("Draft")}
                   </span>

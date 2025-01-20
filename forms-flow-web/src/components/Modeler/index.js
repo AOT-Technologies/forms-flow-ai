@@ -2,8 +2,7 @@ import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProcessCreateEdit from "./ProcessCreateEdit";
-import SubFlowList from './SubFlowTable';
-import DecisionTable from './DecisionTable';
+import ProcessTable from './ProcessTable';
 import { BASE_ROUTE } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import AccessDenied from "../AccessDenied";
@@ -38,8 +37,7 @@ const Processes = () => {
   return (
     <div data-testid="Process-index">
       <Switch>
-        <Route exact path={`${BASE_ROUTE}subflow`} component={SubFlowList} />
-        <Route exact path={`${BASE_ROUTE}decision-table`} component={DecisionTable} />
+        <Route exact path={`${BASE_ROUTE}:viewType`} component={ProcessTable} />
         <DesignerProcessRoute
           exact
           path={`${BASE_ROUTE}subflow/:step/:processKey?`}

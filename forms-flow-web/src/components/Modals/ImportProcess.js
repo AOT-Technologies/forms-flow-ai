@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { ImportModal } from "@formsflow/components";
 import FileService from "../../services/FileService";
-import { createProcess } from "../../apiManager/services/processServices";
+import { createProcess,updateProcess } from "../../apiManager/services/processServices";
 import { useSelector, useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import {setProcessData} from "../../actions/processActions";
 
 const ImportProcess = React.memo(({
   showModal,
@@ -75,6 +76,12 @@ const ImportProcess = React.memo(({
       if(!xml) return;
       if (processId) {
         // Update an existing process
+        const response = await updateProcess({
+          id: processId,
+          data:xml,
+          type: fileType === ".bpmn" ? "bpmn" : "dmn"
+        });
+        dispatch(setProcessData(response?.data));
         setImportXml(xml);
         closeImport();
       } else {

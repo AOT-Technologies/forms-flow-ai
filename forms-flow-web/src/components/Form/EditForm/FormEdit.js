@@ -16,7 +16,8 @@ import {
   PreviewIcon,
   FormBuilderModal,
   HistoryModal,
-  ImportModal
+  ImportModal,
+  CustomInfo
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -60,7 +61,8 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate } from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate,
+  convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
@@ -537,12 +539,13 @@ const handleSaveLayout = () => {
 
 
   /* ----------- save settings function to be used in settings modal ---------- */
+  
   const filterAuthorizationData = (authorizationData) => {
     if(authorizationData.selectedOption === "submitter"){
       return {roles: [], userName:null, resourceDetails:{submitter:true}};
     }
     if (authorizationData.selectedOption === "specifiedRoles") {
-      return { roles: authorizationData.selectedRoles, userName: "" };
+      return { roles: convertMultiSelectOptionToValue(authorizationData.selectedRoles, "role"), userName: "" };
     }
     return { roles: [], userName: preferred_username };
   };
@@ -581,7 +584,7 @@ const handleSaveLayout = () => {
         resourceDetails: {},
         roles:
           rolesState.FORM.selectedOption === "specifiedRoles"
-            ? rolesState.FORM.selectedRoles
+            ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
             : [],
       },
     };
@@ -962,7 +965,12 @@ const handleSaveLayout = () => {
         return {
           title: "Unpublish Before Saving",
           message:
-            "This form is currently live. To save the changes to your form, you need to unpublish it first. By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits.",
+          (
+            <CustomInfo
+              heading="Note"
+              content="This form is currently live. To save the changes to your form, you need to unpublish it first.    By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits."
+            />
+          ),
           primaryBtnAction: handleConfirmUnpublishAndSave,
           secondayBtnAction: closeModal,
           primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",

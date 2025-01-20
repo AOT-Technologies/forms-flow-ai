@@ -41,9 +41,8 @@ const ProcessTable = React.memo(() => {
   const processList = useSelector((state) =>
     isBPMN ? state.process.processList : state.process.dmnProcessList
   );
-  const searchText = useSelector((state) =>
-    isBPMN ? state.process.bpmnSearchText : state.process.dmnSearchText
-  );
+  const searchTextDMN = useSelector((state) => state.process.dmnSearchText);
+  const searchTextBPMN = useSelector((state)=> state.process.bpmnSearchText);
   const totalCount = useSelector((state) =>
     isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
   );
@@ -68,8 +67,8 @@ const ProcessTable = React.memo(() => {
     limit: 5,
     sortConfig: initialSortConfig,
   });
-  const [searchDMN, setSearchDMN] = useState(searchText || "");
-  const [searchBPMN, setSearchBPMN] = useState(searchText || "");
+  const [searchDMN, setSearchDMN] = useState(searchTextDMN || "");
+  const [searchBPMN, setSearchBPMN] = useState(searchTextBPMN || "");
   const search = isBPMN ? searchBPMN : searchDMN;
 
   const [showBuildModal, setShowBuildModal] = useState(false);
@@ -102,7 +101,7 @@ const ProcessTable = React.memo(() => {
         }
       )
     );
-  }, [dispatch, currentState, tenantKey,searchText, isBPMN]);
+  }, [dispatch, currentState, tenantKey,searchTextBPMN,searchTextDMN, isBPMN]);
  
   //Update api call when search field is empty
   useEffect(() => {

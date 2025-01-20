@@ -130,7 +130,7 @@ class ApplicationsResource(Resource):
                 "description": "Filter resources by application name.",
                 "type": "string",
             },
-            "id": {
+            "Id": {
                 "in": "query",
                 "description": "Filter resources by id.",
                 "type": "int",
@@ -144,6 +144,46 @@ class ApplicationsResource(Resource):
                 "in": "query",
                 "description": "Filter resources by modified to.",
                 "type": "string",
+            },
+            "createdBy": {
+                "in": "query",
+                "description": "Filter resources by created by.",
+                "type": "string",
+            },
+            "createdFrom": {
+                "in": "query",
+                "description": "Filter resources by created from.",
+                "type": "string",
+            },
+            "createdTo": {
+                "in": "query",
+                "description": "Filter resources by created to.",
+                "type": "string",
+            },
+            "applicationStatus": {
+                "in": "query",
+                "description": "Filter resources by application status.",
+                "type": "string",
+            },
+            "parentFormId": {
+                "in": "query",
+                "description": "Filter resources by parent form id.",
+                "type": "string",
+            },
+            "createdUserSubmissions": {
+                "in": "query",
+                "description": "Return user created submissions.",
+                "type": "bool",
+            },
+            "includeDrafts": {
+                "in": "query",
+                "description": "Return submissions and drafts/Specific to client permission.",
+                "type": "bool",
+            },
+            "onlyDrafts": {
+                "in": "query",
+                "description": "Return only drafts/Specific to client permission.",
+                "type": "bool",
             },
         }
     )
@@ -159,22 +199,27 @@ class ApplicationsResource(Resource):
     def get():  # pylint:disable=too-many-locals
         """Get applications."""
         dict_data = ApplicationListRequestSchema().load(request.args) or {}
-        page_no = dict_data.get("page_no")
-        limit = dict_data.get("limit")
-        order_by = dict_data.get("order_by", "id")
-        application_id = dict_data.get("application_id")
-        application_name = dict_data.get("application_name")
-        application_status = dict_data.get("application_status")
-        created_by = dict_data.get("created_by")
-        created_from_date = dict_data.get("created_from_date")
-        created_to_date = dict_data.get("created_to_date")
-        modified_from_date = dict_data.get("modified_from_date")
-        modified_to_date = dict_data.get("modified_to_date")
-        sort_order = dict_data.get("sort_order", "desc")
+        # Common parameters
+        common_filters = {
+            "page_no": dict_data.get("page_no"),
+            "limit": dict_data.get("limit"),
+            "order_by": dict_data.get("order_by", "id"),
+            "application_id": dict_data.get("application_id"),
+            "application_name": dict_data.get("application_name"),
+            "application_status": dict_data.get("application_status"),
+            "created_by": dict_data.get("created_by"),
+            "created_from": dict_data.get("created_from_date"),
+            "created_to": dict_data.get("created_to_date"),
+            "modified_from": dict_data.get("modified_from_date"),
+            "modified_to": dict_data.get("modified_to_date"),
+            "sort_order": dict_data.get("sort_order", "desc"),
+            "parent_form_id": dict_data.get("parent_form_id"),
+        }
+
+        # Flags
+        include_drafts = dict_data.get("include_drafts", False)
+        only_drafts = dict_data.get("only_drafts", False)
         created_user_submissions = dict_data.get("created_user_submissions", False)
-        parent_form_id = dict_data.get("parent_form_id")
-        include_drafts = dict_data.get("include_drafts")
-        only_drafts = dict_data.get("only_drafts")
 
         if auth.has_role([VIEW_TASKS, MANAGE_TASKS]) and not created_user_submissions:
             (
@@ -182,19 +227,7 @@ class ApplicationsResource(Resource):
                 application_count,
                 draft_count,
             ) = ApplicationService.get_auth_applications_and_count(
-                created_from=created_from_date,
-                created_to=created_to_date,
-                modified_from=modified_from_date,
-                modified_to=modified_to_date,
-                order_by=order_by,
-                sort_order=sort_order,
-                created_by=created_by,
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
-                page_no=page_no,
-                limit=limit,
-                parent_form_id=parent_form_id,
+                filters=common_filters
             )
         else:
             (
@@ -202,19 +235,7 @@ class ApplicationsResource(Resource):
                 application_count,
                 draft_count,
             ) = ApplicationService.get_all_applications_by_user(
-                page_no=page_no,
-                limit=limit,
-                order_by=order_by,
-                sort_order=sort_order,
-                created_from=created_from_date,
-                created_to=created_to_date,
-                modified_from=modified_from_date,
-                modified_to=modified_to_date,
-                created_by=created_by,
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
-                parent_form_id=parent_form_id,
+                filters=common_filters,
                 include_drafts=include_drafts,
                 only_drafts=only_drafts,
             )
@@ -224,8 +245,8 @@ class ApplicationsResource(Resource):
                     "applications": application_schema_dump,
                     "totalCount": application_count,
                     "draftCount": draft_count,
-                    "limit": limit,
-                    "pageNo": page_no,
+                    "limit": common_filters["limit"],
+                    "pageNo": common_filters["page_no"],
                 }
             ),
             HTTPStatus.OK,

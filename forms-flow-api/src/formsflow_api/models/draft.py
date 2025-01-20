@@ -5,7 +5,6 @@ from __future__ import annotations
 import uuid
 
 from formsflow_api_utils.utils import (
-    DRAFT_APPLICATION_STATUS,
     FILTER_MAPS,
     validate_sort_order_and_order_by,
 )
@@ -206,7 +205,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         query = query.filter(Application.created_by == user_id)
         query = query.filter(
             and_(
-                Application.application_status == DRAFT_APPLICATION_STATUS,
+                Application.is_draft.is_(True),
                 Draft.status == str(DraftStatus.ACTIVE.value),
             )
         )
@@ -234,7 +233,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 Application.form_process_mapper_id.in_(
                     [id for id, in get_all_mapper_id]
                 ),
-                Application.application_status == DRAFT_APPLICATION_STATUS,
+                Application.is_draft.is_(True),
             )
         )
         return FormProcessMapper.tenant_authorization(result).all()

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
-    DRAFT_APPLICATION_STATUS,
     FILTER_MAPS,
     validate_sort_order_and_order_by,
 )
@@ -457,7 +456,7 @@ class Application(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         ).filter(
             cls.latest_form_id == form_id,
-            cls.application_status != DRAFT_APPLICATION_STATUS,
+            cls.is_draft.is_(False),
         )
         return FormProcessMapper.tenant_authorization(query=query).count()
 
@@ -705,7 +704,7 @@ class Application(
                 FormProcessMapper.id == Application.form_process_mapper_id,
             )
             .filter(FormProcessMapper.id == form_process_mapper_id)
-            .filter(Application.application_status != DRAFT_APPLICATION_STATUS)
+            .filter(Application.is_draft.is_(False))
             .one_or_none()
         )
         # returns a list of one element with count of applications

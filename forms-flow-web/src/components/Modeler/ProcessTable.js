@@ -238,7 +238,7 @@ const ProcessTable = React.memo(() => {
                       title="Name"
                       currentSort={currentState.sortConfig}
                       handleSort={handleSort}
-                      className="ms-4"
+                      className="gap-2"
                     />
                   </th>
                   <th className="w-20" scope="col">
@@ -247,6 +247,7 @@ const ProcessTable = React.memo(() => {
                       title="ID"
                       currentSort={currentState.sortConfig}
                       handleSort={handleSort}
+                      className="gap-2"
                     />
                   </th>
                   <th className="w-15" scope="col">
@@ -255,6 +256,7 @@ const ProcessTable = React.memo(() => {
                       title="Last Edited"
                       currentSort={currentState.sortConfig}
                       handleSort={handleSort}
+                      className="gap-2"
                     />
                   </th>
                   <th className="w-15" scope="col">
@@ -263,6 +265,7 @@ const ProcessTable = React.memo(() => {
                       title="Status"
                       currentSort={currentState.sortConfig}
                       handleSort={handleSort}
+                      className="gap-2"
                     />
                   </th>
                   <th className="w-25" colSpan="4" aria-label="edit-button"></th>

@@ -119,8 +119,7 @@ const FormSettings = forwardRef((props, ref) => {
       } catch (error) {
         errorMessage = error.response?.data?.message ||
         `An error occurred while validating the ${field}.`;
-        console.error
-        (`Error validating ${field}:`, errorMessage);
+        console.error(`Error validating ${field}:`, errorMessage);
       }
     }
     setErrors((prev) => ({ ...prev, [field]: errorMessage }));

@@ -756,6 +756,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             "name": "Name: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,"
             "and must include at least one letter.",
         }
+        # Validate path has reserved keywords
+        FormProcessMapperService.vaidate_path(path)
 
         # Validate title
         if title and not cls.is_valid_field(title, title_pattern):
@@ -793,6 +795,35 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return True
 
     @staticmethod
+    def vaidate_path(path):
+        """Validate path with formio resevered keywords."""
+        # Keywords that are invalid as standalone input
+        restricted_keywords = {
+            "exists",
+            "export",
+            "role",
+            "current",
+            "logout",
+            "import",
+            "form",
+            "access",
+            "token",
+            "recaptcha",
+        }
+
+        # Forbidden end keywords
+        forbidden_end_keywords = {"submission", "action"}
+
+        if (
+            path in restricted_keywords
+            or path
+            and any(path.endswith(keyword) for keyword in forbidden_end_keywords)
+        ):
+            raise BusinessException(BusinessErrorCode.INVALID_PATH)
+
+        return True
+
+    @staticmethod
     @user_context
     def validate_form_name_path_title(request, **kwargs):
         """Validate a form name by calling the external validation API."""
@@ -812,6 +843,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         if title and len(title) > 200:
             raise BusinessException(BusinessErrorCode.INVALID_FORM_TITLE_LENGTH)
+
+        # In case of new form creation, title alone passed form UI
+        # Trim space & validate path
+        if not parent_form_id and title:
+            path = title.replace(" ", "")
 
         FormProcessMapperService.validate_title_name_path(title, path, name)
 

@@ -590,6 +590,14 @@ def test_form_name_invalid_form_title(app, client, session, jwt, mock_redis_clie
         response.json["message"]
         == "Title: Only contain alphanumeric characters, hyphens(not at the start or end), spaces,and must include at least one letter."
     )
+    # Validate for formio reserved keyword on path while new form creation
+    response = client.get("/form/validate?title=import", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "The path must not contain: exists, export, role, current, logout, import, form, access, token, recaptcha or end with submission/action."
+    )
 
 
 def test_form_name_invalid_form_name(app, client, session, jwt, mock_redis_client):
@@ -649,6 +657,14 @@ def test_form_name_invalid_form_path(app, client, session, jwt, mock_redis_clien
     assert (
         response.json["message"]
         == "Path: Only contain alphanumeric characters, hyphens(not at the start or end), no spaces,and must include at least one letter."
+    )
+    # Validate for formio reserved keyword on path
+    response = client.get("/form/validate?path=import", headers=headers)
+    assert response.status_code == 400
+    assert response.json is not None
+    assert (
+        response.json["message"]
+        == "The path must not contain: exists, export, role, current, logout, import, form, access, token, recaptcha or end with submission/action."
     )
 
 

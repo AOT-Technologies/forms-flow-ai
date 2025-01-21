@@ -20,16 +20,24 @@ jobs:
           QA_URL="https://forms-flow-web-qa.aot-technologies.com/"
           
           # Check DEV
-          if curl -s --head "$DEV_URL" | grep "200 OK" > /dev/null; then
+          echo "Checking DEV URL: $DEV_URL"
+          RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL")
+          echo "DEV URL Response: $RESPONSE_DEV"
+          if [ "$RESPONSE_DEV" -eq 200 ]; then
             echo "Dev URL is up: $DEV_URL"
             echo "target=$DEV_URL" >> $GITHUB_ENV
           # Check QA only if DEV is down
-          elif curl -s --head "$QA_URL" | grep "200 OK" > /dev/null; then
-            echo "QA URL is up: $QA_URL"
-            echo "target=$QA_URL" >> $GITHUB_ENV
           else
-            echo "Neither DEV nor QA URL is up!"
-            exit 1
+            echo "DEV URL not reachable, checking QA URL"
+            RESPONSE_QA=$(curl -s -o /dev/null -w "%{http_code}" "$QA_URL")
+            echo "QA URL Response: $RESPONSE_QA"
+            if [ "$RESPONSE_QA" -eq 200 ]; then
+              echo "QA URL is up: $QA_URL"
+              echo "target=$QA_URL" >> $GITHUB_ENV
+            else
+              echo "Neither DEV nor QA URL is up!"
+              exit 1
+            fi
           fi
 
       - name: Print selected target

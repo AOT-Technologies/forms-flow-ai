@@ -33,7 +33,8 @@ jobs:
           fi
 
       - name: Print selected target
-        run: echo "Selected target is: ${{ env.target }}"
+        run: |
+          echo "Selected target is: ${{ env.target }}"
 
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.8.0

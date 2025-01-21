@@ -40,16 +40,14 @@ import userRoles from "../../constants/permissions.js";
 import FileService from "../../services/FileService";
 import {
   FormBuilderModal,
-  SortModal,
   ImportModal,
   CustomSearch,
   CustomButton,
-  FilterIcon,
-  RefreshIcon,
 } from "@formsflow/components";
 import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { navigateToDesignFormEdit } from "../../helper/routerHelper.js";
+import FilterSortActions from "../CustomComponents/FilterSortActions.js";
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
@@ -164,6 +162,12 @@ const List = React.memo((props) => {
   const [newFormModal, setNewFormModal] = useState(false);
   const [description, setUploadFormDescription] = useState("");
   const [formTitle, setFormTitle] = useState("");
+  const  optionSortBy = [
+    { value: "formName", label: t("Form Name") },
+    { value: "visibility", label: t("Visibility") },
+    { value: "status", label: t("Status") },
+    { value: "modified", label: t("Last Edited") },
+  ];
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
@@ -331,7 +335,7 @@ const List = React.memo((props) => {
 
   return (
     <>
-      {(forms.isActive || designerFormLoading || isBPMFormListLoading ) &&
+      {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
       !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
@@ -354,35 +358,18 @@ const List = React.memo((props) => {
                     dataTestId="form-search-input"
                   />
                 </div>
-                <div
-                  className="d-md-flex justify-content-end align-items-center button-align"
-                >
-                  <FilterIcon onClick={handleFilterIconClick}  />
-                  <RefreshIcon onClick={handleRefresh}  />
-                  {showSortModal  && (
-                    <SortModal
-                    firstItemLabel = {t("Sort By")}
-                    secondItemLabel = {t("In a")}
+                <div className="d-md-flex justify-content-end align-items-center button-align">
+                  <FilterSortActions
                     showSortModal={showSortModal}
-                    onClose={handleSortModalClose}
-                    primaryBtnAction={handleSortApply}
-                    modalHeader={t("Sort")} // Translation for modal header
-                    primaryBtnLabel={t("Sort Results")} // Translation for the primary button
-                    secondaryBtnLabel={t("Cancel")} // Translation for the secondary button
-                    optionSortBy={[
-                      { value: "formName", label: t("Form Name") }, // Translation for options
-                      { value: "visibility", label: t("Visibility") },
-                      { value: "status", label: t("Status") },
-                      { value: "modified", label: t("Last Edited") },
-                    ]}
-                    optionSortOrder={[
-                      { value: "asc", label: t("Ascending") }, // Translation for sort order
-                      { value: "desc", label: t("Descending") },
-                    ]}
+                    handleFilterIconClick={handleFilterIconClick}
+                    handleRefresh={handleRefresh}
+                    handleSortModalClose={handleSortModalClose}
+                    handleSortApply={handleSortApply}
+                    t={t}
+                    optionSortBy={optionSortBy}
                     defaultSortOption={selectedSortOption}
                     defaultSortOrder={selectedSortOrder}
                   />
-                  )}
 
                   {createDesigns && (
                     <CustomButton

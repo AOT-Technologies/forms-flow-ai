@@ -7,10 +7,8 @@ import {
   TableFooter,
   NoDataFound,
   BuildModal,
-  FilterIcon,
-  RefreshIcon,
-  SortModal
 } from "@formsflow/components";
+import FilterSortActions from "../CustomComponents/FilterSortActions";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -80,7 +78,12 @@ const ProcessTable = React.memo(() => {
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [showSortModal, setShowSortModal] = useState(false);
-
+  const optionSortBy = [
+    { value: "name", label: t("Name") },
+    { value: "processKey", label: t("Id") },
+    { value: "status", label: t("Status") },
+    { value: "modified", label: t("Last Edited") },
+  ];
   const fetchProcesses = () => {
     setIsLoading(true);
     dispatch(
@@ -247,32 +250,17 @@ const ProcessTable = React.memo(() => {
           />
         </div>
         <div className="d-md-flex justify-content-end align-items-center button-align">
-          <FilterIcon onClick={handleFilterIconClick} />
-          <RefreshIcon onClick={handleRefresh} />
-          {showSortModal && (
-            <SortModal
-              firstItemLabel={t("Sort By")}
-              secondItemLabel={t("In a")}
-              showSortModal={showSortModal}
-              onClose={handleSortModalClose}
-              primaryBtnAction={handleSortApply}
-              modalHeader={t("Sort")} 
-              primaryBtnLabel={t("Sort Results")}
-              secondaryBtnLabel={t("Cancel")} 
-              optionSortBy={[
-                { value: "name", label: t("Name") },
-                { value: "processKey", label: t("Id") },
-                { value: "status", label: t("Status") },
-                { value: "modified", label: t("Last Edited") },
-              ]}
-              optionSortOrder={[
-                { value: "asc", label: t("Ascending") },
-                { value: "desc", label: t("Descending") },
-              ]}
-              defaultSortOption={sortConfig.activeKey}
-              defaultSortOrder={sortConfig[sortConfig.activeKey]?.sortOrder}
-            />
-          )}
+          <FilterSortActions
+            showSortModal={showSortModal}
+            handleFilterIconClick={handleFilterIconClick}
+            handleRefresh={handleRefresh}
+            handleSortModalClose={handleSortModalClose}
+            handleSortApply={handleSortApply}
+            t={t}
+            optionSortBy={optionSortBy}
+            defaultSortOption={sortConfig.activeKey}
+            defaultSortOrder={sortConfig[sortConfig.activeKey]?.sortOrder}
+          />
           <CustomButton
             variant="primary"
             size="sm"

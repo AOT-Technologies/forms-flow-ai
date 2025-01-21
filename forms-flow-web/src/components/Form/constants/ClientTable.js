@@ -29,10 +29,6 @@ function ClientTable() {
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
 
-  // const [formsort ,setformsort] = useState({
-  // activeKey: "formName",
-  // formName: { sortOrder: "asc" },
-  // });
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );

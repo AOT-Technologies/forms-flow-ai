@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { connect, useSelector, useDispatch } from "react-redux";
 import CreateFormModal from "../Modals/CreateFormModal.js";
 import { toast } from "react-toastify";
@@ -59,8 +60,6 @@ const List = React.memo((props) => {
   const [importFormModal, setImportFormModal] = useState(false);
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
-  const [selectedSortOption, setSelectedSortOption] = useState("formName"); // Track selected sort option
-  const [selectedSortOrder, setSelectedSortOrder] = useState("asc");
   const [showSortModal, setShowSortModal] = useState(false);
 
 
@@ -73,8 +72,6 @@ const List = React.memo((props) => {
   };
 
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-    setSelectedSortOption(selectedSortOption);
-    setSelectedSortOrder(selectedSortOrder);
     dispatch(
       setBpmFormSort({
         ...formSort,
@@ -332,7 +329,17 @@ const List = React.memo((props) => {
   const handleRefresh = () => {
   fetchForms();
   };
-
+  const renderTable = () => {
+    if (createDesigns || viewDesigns) {
+      return <FormTable />;
+    }
+    if (createSubmissions) {
+      return <ClientTable />;
+    }
+    return null;
+  };
+  
+  
   return (
     <>
       {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
@@ -367,8 +374,8 @@ const List = React.memo((props) => {
                     handleSortApply={handleSortApply}
                     t={t}
                     optionSortBy={optionSortBy}
-                    defaultSortOption={selectedSortOption}
-                    defaultSortOrder={selectedSortOrder}
+                    defaultSortOption={formSort.activeKey}
+                    defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}
                   />
 
                   {createDesigns && (
@@ -423,18 +430,17 @@ const List = React.memo((props) => {
               </div>
             </>
           )}
-
-          {createDesigns || viewDesigns ? (
-            <FormTable />
-          ) : createSubmissions ? (
-            <ClientTable />
-          ) : null}
+         {renderTable()}
         </div>
       )}
     </>
   );
 });
-
+List.propTypes = {
+  forms: PropTypes.object.isRequired,
+  getFormsInit: PropTypes.bool.isRequired,
+  errors: PropTypes.object.isRequired,
+};
 const mapStateToProps = (state) => {
   return {
     forms: selectRoot("forms", state),

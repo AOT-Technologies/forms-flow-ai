@@ -16,6 +16,7 @@ from formsflow_api.models import FormProcessMapper
 from formsflow_api.services import FormHistoryService
 from tests.utilities.base_test import (
     get_application_create_payload,
+    get_draft_create_payload,
     get_form_request_payload,
     get_formio_form_request_payload,
     get_token,
@@ -778,3 +779,62 @@ def test_unpublish(app, client, session, jwt, mock_redis_client, create_mapper):
         mock_post.return_value = mock_response
         response = client.post(f"/form/{mapper_id}/unpublish", headers=headers)
         assert response.status_code == 200
+
+
+def test_form_list_submission_count(app, client, session, jwt, create_mapper):
+    """Tests the form list endpoint with includeSubmissionsCount query param."""
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+
+    form_id = create_mapper["formId"]
+    auth_payload = {
+        "resourceId": "1234",
+        "resourceDetails": {},
+        "roles": [],
+    }
+    # create authorization for the form.
+    client.post(
+        "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
+    )
+    client.post(
+        "/authorizations/designer", headers=headers, data=json.dumps(auth_payload)
+    )
+    client.post(
+        "/authorizations/application", headers=headers, data=json.dumps(auth_payload)
+    )
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    # create application.
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=get_application_create_payload(form_id),
+    )
+    assert rv.status_code == 201
+
+    # create draft
+    client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
+
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # submissionsCount exclude draft and return submission count
+    response = client.get("/form?includeSubmissionsCount=true", headers=headers)
+    assert response.status_code == 200
+    forms = response.json["forms"]
+    assert len(forms) == 1
+    assert forms[0]["submissionsCount"] == 1
+
+    # Assert form list api with no create_submissions permission.
+    token = get_token(jwt, role=CREATE_DESIGNS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.get("/form?includeSubmissionsCount=true", headers=headers)
+    assert response.status_code == 200
+    forms = response.json["forms"]
+    assert len(forms) == 1
+    assert "submissionsCount" not in forms[0]

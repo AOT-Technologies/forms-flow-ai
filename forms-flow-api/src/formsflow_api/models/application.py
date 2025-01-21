@@ -305,6 +305,23 @@ class Application(
         return pagination.items, total_count
 
     @classmethod
+    def find_applications_count_by_parent_form_id_user(
+        cls, parent_form_id, user_name, tenant
+    ):
+        """Fetch application count based on parent_form_id and user who submitted the application."""
+        count_query = (
+            db.session.query(func.count(Application.id))
+            .join(FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id)
+            .filter(
+                FormProcessMapper.parent_form_id == parent_form_id,
+                FormProcessMapper.tenant == tenant,
+                cls.created_by == user_name,
+                cls.is_draft.is_(False),
+            )
+        )
+        return count_query.scalar()
+
+    @classmethod
     def find_applications_by_auth_formids_user(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         page_no: int,

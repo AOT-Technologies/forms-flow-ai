@@ -187,14 +187,14 @@ const ProcessTable = React.memo(() => {
   const modalContents = [
     {
       id: 1,
-      heading: "Build",
-      body: `Create the ${ProcessContents.processType} from scratch`,
+      heading: t("Build"),
+      body: t(`Create the ${ProcessContents.processType} from scratch`),
       onClick: () => dispatch(push(`${redirectUrl}${viewType}/create`)),
     },
     {
       id: 2,
-      heading: "Import",
-      body: `Upload ${ProcessContents.processType} from a file`,
+      heading: t("Import"),
+      body: t(`Upload ${ProcessContents.processType} from a file`),
       onClick: showImportModal,
     },
   ];
@@ -218,7 +218,7 @@ const ProcessTable = React.memo(() => {
           <CustomButton
             variant="primary"
             size="sm"
-            label={`New ${ProcessContents.processType}`}
+            label={t(`New ${ProcessContents.processType}`)}
             onClick={handleCreateProcess}
             dataTestid={`create-${ProcessContents.processType}-button`}
             ariaLabel={` Create ${ProcessContents.processType}`}

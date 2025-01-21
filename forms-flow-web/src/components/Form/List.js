@@ -319,7 +319,7 @@ const List = React.memo((props) => {
                     <CustomButton
                       variant="primary"
                       size="sm"
-                      label="New Form"
+                      label={t("New Form")}
                       onClick={() => setNewFormModal(true)}
                       className=""
                       dataTestid="create-form-button"
@@ -333,9 +333,9 @@ const List = React.memo((props) => {
                     onAction={handleAction}
                   />
                   <FormBuilderModal
-                    modalHeader="Build New Form"
-                    nameLabel="Form Name"
-                    descriptionLabel="Form Description"
+                    modalHeader={t("Build New Form")}
+                    nameLabel={t("Form Name")}
+                    descriptionLabel={t("Form Description")}
                     showBuildForm={showBuildForm}
                     isSaveBtnLoading={formSubmitted}
                     isFormNameValidating={validationLoading}
@@ -357,8 +357,8 @@ const List = React.memo((props) => {
                     description={description}
                     onClose={onCloseimportModal}
                     handleImport={handleImport}
-                    headerText="Import New Form"
-                    primaryButtonText="Confirm and Edit form"
+                    headerText={t("Import New Form")}
+                    primaryButtonText={t("Confirm and Edit form")}
                     fileType=".json"
                   /> }
                 </div>

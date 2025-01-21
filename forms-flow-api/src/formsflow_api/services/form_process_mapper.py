@@ -52,6 +52,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         is_designer: bool,
         active_forms: bool,
         include_submissions_count: bool,
+        ignore_designer: bool,
         **kwargs,
     ):  # pylint: disable=too-many-arguments, too-many-locals
         """Get all forms."""
@@ -93,7 +94,13 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             )
         mapper_schema = FormProcessMapperSchema()
         mappers_response = mapper_schema.dump(mappers, many=True)
-        if include_submissions_count and CREATE_SUBMISSIONS in user.roles:
+        # Submissions count should return only for user with create_submissions permission
+        # & client form listing with showForOnlyCreateSubmissionUsers param true
+        if (
+            include_submissions_count
+            and CREATE_SUBMISSIONS in user.roles
+            and ignore_designer
+        ):
             current_app.logger.debug("Fetching submissions count..")
             for mapper in mappers_response:
                 mapper["submissionsCount"] = (

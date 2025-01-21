@@ -183,20 +183,28 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         )
 
     @staticmethod
+    def extract_common_filters(filters: dict) -> dict:
+        """Extract common filter parameters from the filters dictionary."""
+        return {
+            "application_id": filters.get("application_id"),
+            "application_name": filters.get("application_name"),
+            "application_status": filters.get("application_status"),
+            "created_by": filters.get("created_by"),
+            "page_no": filters.get("page_no"),
+            "limit": filters.get("limit"),
+            "order_by": filters.get("order_by"),
+            "sort_order": filters.get("sort_order"),
+            "created_from": filters.get("created_from"),
+            "created_to": filters.get("created_to"),
+            "modified_from": filters.get("modified_from"),
+            "modified_to": filters.get("modified_to"),
+            "parent_form_id": filters.get("parent_form_id"),
+        }
+
+    @staticmethod
     @user_context
     def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
-        page_no: int,
-        limit: int,
-        order_by: str,
-        created_from: datetime,
-        created_to: datetime,
-        modified_from: datetime,
-        modified_to: datetime,
-        application_id: int,
-        application_name: str,
-        application_status: str,
-        created_by: str,
-        sort_order: str,
+        filters: dict,
         **kwargs,
     ):
         """Get applications only from authorized groups."""
@@ -212,22 +220,13 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         )
         for form in forms:
             form_ids.append(form.resource_id)
+
+        common_filters = ApplicationService.extract_common_filters(filters)
         (
             applications,
             get_all_applications_count,
         ) = Application.find_applications_by_auth_formids_user(
-            application_id=application_id,
-            application_name=application_name,
-            application_status=application_status,
-            created_by=created_by,
-            page_no=page_no,
-            limit=limit,
-            order_by=order_by,
-            modified_from=modified_from,
-            modified_to=modified_to,
-            sort_order=sort_order,
-            created_from=created_from,
-            created_to=created_to,
+            **common_filters,
             form_ids=form_ids,
             user_name=user_name,
         )
@@ -268,37 +267,20 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     @staticmethod
     @user_context
     def get_all_applications_by_user(  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
-        page_no: int,
-        limit: int,
-        order_by: str,
-        sort_order: str,
-        created_from: datetime,
-        created_to: datetime,
-        modified_from: datetime,
-        modified_to: datetime,
-        created_by: str,
-        application_status: str,
-        application_name: str,
-        application_id: int,
+        filters: dict,
+        include_drafts: bool,
+        only_drafts: bool,
         **kwargs,
     ):
         """Get all applications based on user."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
+        common_filters = ApplicationService.extract_common_filters(filters)
         applications, get_all_applications_count = Application.find_all_by_user(
             user_id=user_id,
-            page_no=page_no,
-            limit=limit,
-            order_by=order_by,
-            sort_order=sort_order,
-            application_id=application_id,
-            application_name=application_name,
-            application_status=application_status,
-            created_by=created_by,
-            modified_from=modified_from,
-            modified_to=modified_to,
-            created_from=created_from,
-            created_to=created_to,
+            **common_filters,
+            include_drafts=include_drafts,
+            only_drafts=only_drafts,
         )
         draft_count = Draft.get_draft_count()
         return (

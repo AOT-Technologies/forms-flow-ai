@@ -157,20 +157,20 @@ jobs:
         run: |
           DEV_URL="${{ secrets.BPM_DEV_URL }}"
           QA_URL="${{ secrets.BPM_QA_URL }}"
-          
+        
           # Check DEV
           echo "Checking DEV URL..."
           RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
           if [ "$RESPONSE_DEV" -eq 200 ]; then
             echo "DEV URL is up"
-            echo "target=dev" >> $GITHUB_ENV
+            echo "BPM_TARGET_URL=dev" >> $GITHUB_ENV
           else
             echo "DEV URL is down"
             # Check QA only if DEV is down
             RESPONSE_QA=$(curl -s -o /dev/null -w "%{http_code}" "$QA_URL" || echo "Failed")
             if [ "$RESPONSE_QA" -eq 200 ]; then
               echo "QA URL is up"
-              echo "target=qa" >> $GITHUB_ENV
+              echo "BPM_TARGET_URL=qa" >> $GITHUB_ENV
             else
               echo "Both DEV and QA URLs are down"
               exit 1
@@ -179,13 +179,13 @@ jobs:
 
       - name: Print selected target
         run: |
-          echo "Selected target is: ${{ env.target }}"
+          echo "Selected target is: ${{ env.BPM_TARGET_URL }}"
 
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.8.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: ${{ env.target }}
+          target: ${{ env.BPM_TARGET_URL }}
           rules_file_name: '.zap/rules.tsv'
 
       - name: Install AWS CLI

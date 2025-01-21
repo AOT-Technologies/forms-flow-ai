@@ -64,7 +64,7 @@ const List = React.memo((props) => {
   const [selectedSortOption, setSelectedSortOption] = useState("formName"); // Track selected sort option
   const [selectedSortOrder, setSelectedSortOrder] = useState("asc");
   const [showSortModal, setShowSortModal] = useState(false);
-  
+
 
   const handleFilterIconClick = () => {
     setShowSortModal(true); // Open the SortModal
@@ -86,7 +86,7 @@ const List = React.memo((props) => {
     );
     setShowSortModal(false);
   };
-  
+
   const ActionType = {
     BUILD: "BUILD",
     IMPORT: "IMPORT",
@@ -381,14 +381,14 @@ const List = React.memo((props) => {
                     ]}
                     defaultSortOption={selectedSortOption}
                     defaultSortOrder={selectedSortOrder}
-                  />                  
+                  />
                   )}
 
                   {createDesigns && (
                     <CustomButton
                       variant="primary"
                       size="sm"
-                      label="New Form"
+                      label={t("New Form")}
                       onClick={() => setNewFormModal(true)}
                       className=""
                       dataTestid="create-form-button"
@@ -402,9 +402,9 @@ const List = React.memo((props) => {
                     onAction={handleAction}
                   />
                   <FormBuilderModal
-                    modalHeader="Build New Form"
-                    nameLabel="Form Name"
-                    descriptionLabel="Form Description"
+                    modalHeader={t("Build New Form")}
+                    nameLabel={t("Form Name")}
+                    descriptionLabel={t("Form Description")}
                     showBuildForm={showBuildForm}
                     isSaveBtnLoading={formSubmitted}
                     isFormNameValidating={validationLoading}
@@ -427,8 +427,8 @@ const List = React.memo((props) => {
                       description={description}
                       onClose={onCloseimportModal}
                       handleImport={handleImport}
-                      headerText="Import New Form"
-                      primaryButtonText="Confirm and Edit form"
+                      headerText={t("Import New Form")}
+                      primaryButtonText={t("Confirm and Edit form")}
                       fileType=".json"
                     />
                   )}

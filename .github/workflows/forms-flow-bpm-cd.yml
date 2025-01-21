@@ -13,11 +13,33 @@ jobs:
         with:
           ref: develop
       
+      - name: Check which URL is up
+        id: check-urls
+        run: |
+          DEV_URL="https://forms-flow-web-dev.aot-technologies.com/"
+          QA_URL="https://forms-flow-web-qa.aot-technologies.com/"
+          
+          # Check DEV
+          if curl -s --head "$DEV_URL" | grep "200 OK" > /dev/null; then
+            echo "Dev URL is up: $DEV_URL"
+            echo "target=$DEV_URL" >> $GITHUB_ENV
+          # Check QA only if DEV is down
+          elif curl -s --head "$QA_URL" | grep "200 OK" > /dev/null; then
+            echo "QA URL is up: $QA_URL"
+            echo "target=$QA_URL" >> $GITHUB_ENV
+          else
+            echo "Neither DEV nor QA URL is up!"
+            exit 1
+          fi
+
+      - name: Print selected target
+        run: echo "Selected target is: ${{ env.target }}"
+
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.8.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'https://forms-flow-bpm-qa.aot-technologies.com/camunda'
+          target: ${{ env.target }}
           rules_file_name: '.zap/rules.tsv'
 
       - name: Install AWS CLI

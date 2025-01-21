@@ -3,7 +3,8 @@ name: Push Forms flow BPM to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/* ]
+    branches:
+      - develop
     paths:
       - "forms-flow-bpm/**"
       - "VERSION"

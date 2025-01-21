@@ -824,7 +824,7 @@ def test_form_list_submission_count(app, client, session, jwt, create_mapper):
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # submissionsCount exclude draft and return submission count
-    response = client.get("/form?includeSubmissionsCount=true", headers=headers)
+    response = client.get("/form?includeSubmissionsCount=true&showForOnlyCreateSubmissionUsers=true", headers=headers)
     assert response.status_code == 200
     forms = response.json["forms"]
     assert len(forms) == 1

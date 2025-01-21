@@ -874,7 +874,7 @@ const handleSaveLayout = () => {
         formAccessRoles,
         submissionAccessRoles
       );
-
+   
       const newPathAndName = generateUniqueId("-v");
       oldFormData.path += newPathAndName;
       oldFormData.name += newPathAndName;
@@ -883,6 +883,8 @@ const handleSaveLayout = () => {
       newFormData.componentChanged = true;
       newFormData.newVersion = true;
       newFormData.parentFormId = previousData.parentFormId;
+      newFormData.title = previousData.formName;
+
       delete newFormData.machineName;
       delete newFormData._id;
 

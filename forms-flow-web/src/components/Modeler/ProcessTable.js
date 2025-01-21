@@ -80,13 +80,34 @@ const ProcessTable = React.memo(() => {
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [showSortModal, setShowSortModal] = useState(false);
+
+  const fetchProcesses = () => {
+    setIsLoading(true);
+    dispatch(
+      fetchAllProcesses(
+        {
+          pageNo: currentState.activePage,
+          tenant_key: tenantKey,
+          processType: ProcessContents.processType,
+          limit: currentState.limit,
+          searchKey: search,
+          sortBy: sortConfig.activeKey,
+          sortOrder: sortConfig[sortConfig.activeKey].sortOrder,
+        },
+        () => {
+          setIsLoading(false);
+          setSearchLoading(false);
+        }
+      )
+    );
+  };
   
   const handleFilterIconClick = () => {
-    setShowSortModal(true); // Open the SortModal
+    setShowSortModal(true); 
   };
 
   const handleSortModalClose = () => {
-    setShowSortModal(false); // Close the SortModal
+    setShowSortModal(false);
   };
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
     setIsLoading(true);
@@ -103,46 +124,12 @@ const ProcessTable = React.memo(() => {
   
   
   const handleRefresh = () => {
-    setIsLoading(true);
-    dispatch(
-      fetchAllProcesses(
-        {
-            pageNo: currentState.activePage,
-            tenant_key: tenantKey,
-            processType: ProcessContents.processType,
-            limit: currentState.limit,
-            searchKey: search,
-            sortBy: sortConfig.activeKey,
-            sortOrder: sortConfig[sortConfig.activeKey].sortOrder,
-        },
-        () => {
-          setIsLoading(false);
-          setSearchLoading(false);
-        }
-      )
-    );
+    fetchProcesses();
   };
 
    //fetching bpmn or dmn
    useEffect(() => {
-    setIsLoading(true);
-    dispatch(
-      fetchAllProcesses(
-        {
-            pageNo: currentState.activePage,
-            tenant_key: tenantKey,
-            processType: ProcessContents.processType,
-            limit: currentState.limit,
-            searchKey: search,
-            sortBy: sortConfig.activeKey,
-            sortOrder: sortConfig[sortConfig.activeKey].sortOrder,
-        },
-        () => {
-          setIsLoading(false);
-          setSearchLoading(false);
-        }
-      )
-    );
+    fetchProcesses();
   }, [dispatch, currentState, tenantKey,searchTextBPMN,searchTextDMN, isBPMN,sortConfig]);
  
   //Update api call when search field is empty
@@ -269,17 +256,17 @@ const ProcessTable = React.memo(() => {
               showSortModal={showSortModal}
               onClose={handleSortModalClose}
               primaryBtnAction={handleSortApply}
-              modalHeader={t("Sort")} // Translation for modal header
-              primaryBtnLabel={t("Sort Results")} // Translation for the primary button
-              secondaryBtnLabel={t("Cancel")} // Translation for the secondary button
+              modalHeader={t("Sort")} 
+              primaryBtnLabel={t("Sort Results")}
+              secondaryBtnLabel={t("Cancel")} 
               optionSortBy={[
-                { value: "name", label: t("Name") }, // Translation for options
+                { value: "name", label: t("Name") },
                 { value: "processKey", label: t("Id") },
                 { value: "status", label: t("Status") },
                 { value: "modified", label: t("Last Edited") },
               ]}
               optionSortOrder={[
-                { value: "asc", label: t("Ascending") }, // Translation for sort order
+                { value: "asc", label: t("Ascending") },
                 { value: "desc", label: t("Descending") },
               ]}
               defaultSortOption={sortConfig.activeKey}

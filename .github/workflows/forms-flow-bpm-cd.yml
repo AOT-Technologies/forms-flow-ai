@@ -20,33 +20,20 @@ jobs:
           QA_URL="${{ secrets.QA_URL }}"
           
           # Check DEV
-          echo "Checking DEV URL: $DEV_URL"
+          echo "Checking DEV URL..."
           RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
-          echo "DEV URL Response: $RESPONSE_DEV"
           if [ "$RESPONSE_DEV" -eq 200 ]; then
-            echo "Dev URL is up: $DEV_URL"
+            echo "DEV URL is up"
             echo "target=$DEV_URL" >> $GITHUB_ENV
-          # Check QA only if DEV is down
-          elif [ "$RESPONSE_DEV" = "Failed" ]; then
-            echo "DEV URL not reachable, checking QA URL"
-            RESPONSE_QA=$(curl -s -o /dev/null -w "%{http_code}" "$QA_URL" || echo "Failed")
-            echo "QA URL Response: $RESPONSE_QA"
-            if [ "$RESPONSE_QA" -eq 200 ]; then
-              echo "QA URL is up: $QA_URL"
-              echo "target=$QA_URL" >> $GITHUB_ENV
-            else
-              echo "Neither DEV nor QA URL is up!"
-              exit 1
-            fi
           else
-            echo "DEV URL is not reachable, checking QA URL"
+            echo "DEV URL is down"
+            # Check QA only if DEV is down
             RESPONSE_QA=$(curl -s -o /dev/null -w "%{http_code}" "$QA_URL" || echo "Failed")
-            echo "QA URL Response: $RESPONSE_QA"
             if [ "$RESPONSE_QA" -eq 200 ]; then
-              echo "QA URL is up: $QA_URL"
+              echo "QA URL is up"
               echo "target=$QA_URL" >> $GITHUB_ENV
             else
-              echo "Neither DEV nor QA URL is up!"
+              echo "Both DEV and QA URLs are down"
               exit 1
             fi
           fi

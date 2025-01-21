@@ -10,8 +10,23 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
   const FormSettingsRef = useRef();
   const [ isSaveButtonDisabled ,setIsSaveButtonDisabled] = useState(false);
 
-  const handleConfirmFunction = () => {
-     handleConfirm(FormSettingsRef.current);
+  const handleConfirmFunction = async () => {
+    const { formDetails, validateField } = FormSettingsRef.current;
+    const fieldsToValidate = ["title", "path"];
+    
+    // Reset validation error state at the beginning
+    let validationError = false;
+  
+    for (const field of fieldsToValidate) {
+      const fieldValue = formDetails?.[field];  
+      if (!fieldValue || !(await validateField(field, fieldValue))) {
+        validationError = true;
+        break; // Stop further validation if any field fails
+      }
+    }
+    if (!validationError) {
+      handleConfirm(FormSettingsRef.current);
+    } 
   };
   return (
     <Modal

@@ -16,7 +16,7 @@ jobs:
       - name: Check which URL is up
         id: check-urls
         run: |
-          DEV_URL="https://forms-flow-web-devnotexist.aot-technologies.com/"
+          DEV_URL="https://forms-flow-web-dev.aot-technologies.com/"
           QA_URL="https://forms-flow-web-qa.aot-technologies.com/"
           
           # Check DEV

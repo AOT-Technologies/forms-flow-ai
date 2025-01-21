@@ -24,14 +24,14 @@ jobs:
           RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
           if [ "$RESPONSE_DEV" -eq 200 ]; then
             echo "DEV URL is up"
-            echo "target=$DEV_URL" >> $GITHUB_ENV
+            echo "target=dev" >> $GITHUB_ENV
           else
             echo "DEV URL is down"
             # Check QA only if DEV is down
             RESPONSE_QA=$(curl -s -o /dev/null -w "%{http_code}" "$QA_URL" || echo "Failed")
             if [ "$RESPONSE_QA" -eq 200 ]; then
               echo "QA URL is up"
-              echo "target=$QA_URL" >> $GITHUB_ENV
+              echo "target=qa" >> $GITHUB_ENV
             else
               echo "Both DEV and QA URLs are down"
               exit 1

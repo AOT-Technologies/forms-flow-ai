@@ -812,6 +812,42 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return True
 
     @staticmethod
+    def validate_query_parameters(title, name, path):
+        """Check if at least one query parameter is provided."""
+        if not (title or name or path):
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
+
+    @staticmethod
+    def validate_path(path):
+        """Validate path with formio resevered keywords."""
+        current_app.logger.debug(f"Validate path for reseverd keyword:{path}")
+        # Keywords that are invalid as standalone input
+        restricted_keywords = {
+            "exists",
+            "export",
+            "role",
+            "current",
+            "logout",
+            "import",
+            "form",
+            "access",
+            "token",
+            "recaptcha",
+        }
+
+        # Forbidden end keywords
+        forbidden_end_keywords = {"submission", "action"}
+
+        if (
+            path in restricted_keywords
+            or path
+            and any(path.endswith(keyword) for keyword in forbidden_end_keywords)
+        ):
+            raise BusinessException(BusinessErrorCode.INVALID_PATH)
+
+        return True
+
+    @staticmethod
     @user_context
     def validate_form_name_path_title(request, **kwargs):
         """Validate a form name by calling the external validation API."""
@@ -825,20 +861,25 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             f"Title:{title}, Name:{name}, Path:{path}, form_id:{form_id}, parent_form_id: {parent_form_id}"
         )
 
-        # Check if at least one query parameter is provided
-        if not (title or name or path):
-            raise BusinessException(BusinessErrorCode.INVALID_FORM_VALIDATION_INPUT)
+        FormProcessMapperService.validate_query_parameters(title, name, path)
 
         if title and len(title) > 200:
             raise BusinessException(BusinessErrorCode.INVALID_FORM_TITLE_LENGTH)
 
         FormProcessMapperService.validate_title_name_path(title, path, name)
 
+        # In case of new form creation, title alone passed form UI
+        # Trim space & validate path
+        if not parent_form_id and title:
+            path = title.replace(" ", "")
+
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
             user: UserContext = kwargs["user"]
             tenant_key = user.tenant_key
             name = f"{tenant_key}-{name}"
             path = f"{tenant_key}-{path}"
+        # Validate path has reserved keywords
+        FormProcessMapperService.validate_path(path)
         # Validate title exists validation on mapper & path, name in formio.
         if title:
             FormProcessMapperService.validate_form_title(title, parent_form_id)

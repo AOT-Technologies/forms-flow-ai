@@ -281,6 +281,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
             # In case of new import validate title in mapper table & path,name in formio.
             FormProcessMapperService.validate_form_title(title, exclude_id=None)
             query_params = f"path={path}&name={name}&select=title,path,name,_id"
+        # Validate path has reserved keywords
+        FormProcessMapperService.validate_path(path)
         current_app.logger.info(f"Validating form exists...{query_params}")
         response = self.get_form_by_query(query_params)
         return response

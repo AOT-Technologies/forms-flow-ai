@@ -127,6 +127,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Invalid response received from admin service",
         HTTPStatus.BAD_REQUEST,
     )
+    INVALID_PATH = (
+        "The path must not contain: exists, export, role, current, logout, import, form, access, token, recaptcha or end with submission/action.",  # pylint: disable=line-too-long
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

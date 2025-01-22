@@ -150,7 +150,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: master
+          ref: test
 
       - name: Check DEV URL
         id: check-dev-url

@@ -47,12 +47,9 @@ jobs:
           VER=$(cat VERSION)
           VER=${VER/-alpha/''}
           echo "VERSION=$VER" >> $GITHUB_ENV
-      
       - run: echo ${{ env.VERSION }}
-
       - run: npm ci
         working-directory: ./forms-flow-web/scripts
-
       - run: node index
         env:
           BUCKET: ${{ secrets.BUCKET }}
@@ -65,14 +62,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: master
 
-      - name: Check which URL is up
-        id: check-urls
+      - name: Check DEV URL
+        id: check-dev-url
         run: |
           DEV_URL="${{ secrets.WEB_DEV_URL }}"
-          QA_URL="${{ secrets.WEB_QA_URL }}"
           
           echo "Checking DEV URL..."
           RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
@@ -80,20 +74,13 @@ jobs:
             echo "DEV URL is up"
             echo "WEB_TARGET_URL=$DEV_URL" >> $GITHUB_ENV
           else
-            echo "DEV URL is down. Checking QA URL..."
-            RESPONSE_QA=$(curl -s -o /dev/null -w "%{http_code}" "$QA_URL" || echo "Failed")
-            if [ "$RESPONSE_QA" -eq 200 ]; then
-              echo "QA URL is up"
-              echo "WEB_TARGET_URL=$QA_URL" >> $GITHUB_ENV
-            else
-              echo "Both DEV and QA URLs are down!"
-              exit 1
-            fi
+            echo "DEV URL is down. Exiting workflow."
+            exit 0
           fi
 
       - name: Print selected target
         run: |
-          echo "Selected target url is: ${{ env.WEB_TARGET_URL }}"
+          echo "Selected target URL is: ${{ env.WEB_TARGET_URL }}"
 
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.8.0

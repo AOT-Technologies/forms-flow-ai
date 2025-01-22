@@ -79,6 +79,7 @@ jobs:
             echo "DEV URL is down. Exiting workflow."
             echo "URL_STATUS=failure" >> $GITHUB_ENV
             exit 0
+          fi
 
       - name: Print selected target
         if: env.URL_STATUS == 'success'

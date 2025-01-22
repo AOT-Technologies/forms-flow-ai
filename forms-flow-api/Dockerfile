@@ -6,6 +6,14 @@ LABEL Name="formsflow"
 
 WORKDIR /forms-flow-api/app
 
+# Set build arguments for workers and threads
+ARG GUNICORN_WORKERS=5
+ARG GUNICORN_THREADS=10
+
+# Set environment variables from the build arguments
+ENV GUNICORN_WORKERS=${GUNICORN_WORKERS}
+ENV GUNICORN_THREADS=${GUNICORN_THREADS}
+
 # install curl, gnupg2 and unzip
 RUN  apt-get update \
   && apt-get install -y git

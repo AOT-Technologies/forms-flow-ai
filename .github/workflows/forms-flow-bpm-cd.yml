@@ -3,7 +3,9 @@ name: Push Forms flow BPM to registry
 on:
   workflow_dispatch:
   push:
-    branches: 
+    branches:
+      - master
+      - develop
       - test
     paths:
       - "forms-flow-bpm/**"
@@ -150,8 +152,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          ref: test
 
       - name: Check DEV URL
         id: check-dev-url

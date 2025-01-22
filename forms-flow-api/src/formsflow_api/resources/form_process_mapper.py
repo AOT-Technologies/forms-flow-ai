@@ -321,6 +321,7 @@ class FormResourceList(Resource):
             is_designer=is_designer,
             active_forms=active_forms,
             include_submissions_count=include_submissions_count,
+            ignore_designer=ignore_designer,
         )
         return (
             (

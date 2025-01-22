@@ -143,6 +143,44 @@ class TestApplicationResource:
         assert response.status_code == 200
         assert len(response.json["applications"]) == 0
 
+    def test_application_list_include_drafts_and_only_drafts(
+        self, app, client, session, jwt, create_mapper
+    ):
+        """Test Application list with includeDrafts & onlyDrafts query param."""
+        form_id = create_mapper["formId"]
+        token = get_token(jwt, role=CREATE_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # creating application
+        rv = client.post(
+            "/application/create",
+            headers=headers,
+            json=get_application_create_payload(form_id),
+        )
+
+        assert rv.status_code == 201
+        # creating a draft
+        client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # With includeDrafts=true, includes drafts in-addition to submissions
+        response = client.get("/application?includeDrafts=true", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 2
+        # With includeDrafts=false, returns only submissions
+        response = client.get("/application?includeDrafts=false", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 1
+        # With onlyDrafts=true, application list api returns only drafts
+        response = client.get("/application?onlyDrafts=true", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 1
+
 
 class TestApplicationDetailView:
     """Test suite for the API/application/<id> endpoint."""

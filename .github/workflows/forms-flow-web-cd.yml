@@ -70,6 +70,7 @@ jobs:
           
           echo "Checking DEV URL..."
           RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
+
           if [ "$RESPONSE_DEV" -eq 200 ]; then
             echo "DEV URL is up"
             echo "WEB_TARGET_URL=$DEV_URL" >> $GITHUB_ENV

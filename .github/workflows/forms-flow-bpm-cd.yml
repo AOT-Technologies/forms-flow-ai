@@ -149,39 +149,33 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          ref: master
 
-      - name: Check which URL is up
-        id: check-urls
+      - name: Check DEV URL
+        id: check-dev-url
         run: |
           DEV_URL="${{ secrets.BPM_DEV_URL }}"
-          QA_URL="${{ secrets.BPM_QA_URL }}"
-        
+
           # Check DEV
           echo "Checking DEV URL..."
           RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
+
           if [ "$RESPONSE_DEV" -eq 200 ]; then
             echo "DEV URL is up"
-            echo "BPM_TARGET_URL=dev" >> $GITHUB_ENV
+            echo "BPM_TARGET_URL=$DEV_URL" >> $GITHUB_ENV
+            echo "URL_STATUS=success" >> $GITHUB_ENV
           else
-            echo "DEV URL is down"
-            # Check QA only if DEV is down
-            RESPONSE_QA=$(curl -s -o /dev/null -w "%{http_code}" "$QA_URL" || echo "Failed")
-            if [ "$RESPONSE_QA" -eq 200 ]; then
-              echo "QA URL is up"
-              echo "BPM_TARGET_URL=qa" >> $GITHUB_ENV
-            else
-              echo "Both DEV and QA URLs are down"
-              exit 1
-            fi
+            echo "DEV URL is down. Exiting workflow."
+            echo "URL_STATUS=failure" >> $GITHUB_ENV
+            exit 0
           fi
 
       - name: Print selected target
+        if: env.URL_STATUS == 'success'
         run: |
-          echo "Selected target is: ${{ env.BPM_TARGET_URL }}"
+          echo "Selected target URL is: ${{ env.BPM_TARGET_URL }}"
 
       - name: ZAP Scan
+        if: env.URL_STATUS == 'success'
         uses: zaproxy/action-full-scan@v0.8.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -189,11 +183,13 @@ jobs:
           rules_file_name: '.zap/rules.tsv'
 
       - name: Install AWS CLI
+        if: env.URL_STATUS == 'success'
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
           
       - name: Configure AWS credentials
+        if: env.URL_STATUS == 'success'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -201,5 +197,6 @@ jobs:
           aws-region: ${{ secrets.REGION }}
 
       - name: Upload ZAP Report to S3
+        if: env.URL_STATUS == 'success'
         run: |
           aws s3 cp report_html.html s3://zap-report-formsflow/zap-reports/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html

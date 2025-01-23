@@ -6,8 +6,6 @@ LABEL Name="formsflow"
 
 WORKDIR /forms-flow-api/app
 
-# Set environment variables from the build arguments
-
 # install curl, gnupg2 and unzip
 RUN  apt-get update \
   && apt-get install -y git

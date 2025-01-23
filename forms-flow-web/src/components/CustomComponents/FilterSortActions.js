@@ -50,7 +50,6 @@ FilterSortActions.propTypes = {
   handleSortApply: PropTypes.func.isRequired,
   defaultSortOption: PropTypes.string.isRequired,
   defaultSortOrder: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired, 
   optionSortBy: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,

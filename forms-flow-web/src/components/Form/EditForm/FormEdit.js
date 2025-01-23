@@ -882,8 +882,8 @@ const handleSaveLayout = () => {
 
       newFormData.componentChanged = true;
       newFormData.newVersion = true;
-      newFormData.parentFormId = previousData.parentFormId;
-      newFormData.title = previousData.formName;
+      newFormData.parentFormId = processListData.parentFormId;
+      newFormData.title = processListData.formName;
 
       delete newFormData.machineName;
       delete newFormData._id;

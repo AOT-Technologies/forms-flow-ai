@@ -16,8 +16,9 @@
       "lcov",
       "cobertura"
     ],
-    "testMatch": [
-      "**/*.test.js",
-      "**/*.spec.js"
-    ]
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ],
+    
+    "verbose": true
   }

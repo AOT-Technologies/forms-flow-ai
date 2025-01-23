@@ -3,6 +3,19 @@
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
 
+## 7.1.0
+
+`Added`
+
+**formsflow-api**
+* Below fields added to application list endpoint
+   * Added parentFormId filter parameter to filter the submissions for a specific form
+   * Added the includeDrafts parameter to include drafts along with submissions.
+   * Added the onlyDrafts parameter to retrieve only drafts.
+   * Added the createdUserSubmissions parameter to filter submissions created by a specific user.
+* Added a new column, is_draft, to the application table to identify draft entries.
+* Added Alembic script to update existing active drafts by setting is_draft to true in the application table.
+* Added the includeSubmissionsCount=true parameter to the form list endpoint to include the submissions count.
 
 ## 7.0.0 - 2025-01-10
 

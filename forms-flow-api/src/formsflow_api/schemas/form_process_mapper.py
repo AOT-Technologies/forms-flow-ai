@@ -58,3 +58,6 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     ignore_designer = fields.Bool(
         data_key="showForOnlyCreateSubmissionUsers", required=False
     )
+    include_submissions_count = fields.Bool(
+        data_key="includeSubmissionsCount", required=False
+    )

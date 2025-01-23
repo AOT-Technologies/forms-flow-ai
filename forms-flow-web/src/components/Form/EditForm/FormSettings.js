@@ -60,7 +60,7 @@ const FormSettings = forwardRef((props, ref) => {
   });
   const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous || false);
   const [errors, setErrors] = useState({
-    name: "",
+    title: "",
     path: "",
   });
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -146,21 +146,20 @@ const FormSettings = forwardRef((props, ref) => {
 
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    let field = name === "title" ? "name" : name;  // Use 'name' for title case
-    // Clear errors and reset blurStatus for the relevant field
-    setErrors((prev) => ({ ...prev, [field]: "" }));
-    blurStatus.current[name] = false;
-    let updatedValue = name === "path" ? _camelCase(value).toLowerCase() : value;
-
+    const sanitizedValue = value.replace(/#/g, "");
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+    blurStatus.current[name] = false;  
+    let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;
+  
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
     } else {
       setFormDetails((prev) => ({ ...prev, [name]: updatedValue }));
     }
   };
-
-  const handleBlur = (field, value) => {
-        validateField(field, value);
+  
+  const handleBlur = (field, sanitizedValue) => {
+        validateField(field, sanitizedValue);
   };
 
 
@@ -217,7 +216,7 @@ const FormSettings = forwardRef((props, ref) => {
 
     const hasFormErrors =
       errors.path !== "" ||
-      errors.name !== "" ||
+      errors.title !== "" ||
       formDetails.title === "" ||
       formDetails.path === "";
 
@@ -245,11 +244,11 @@ const FormSettings = forwardRef((props, ref) => {
           dataTestid="form-name"
           name="title"
           ariaLabel={t("Form Name")}
-          isInvalid = {!!errors.name}
-          feedback = {errors.name}
+          isInvalid = {!!errors.title}
+          feedback = {errors.title}
           turnOnLoader={isValidating.name}
-          onBlur={() => handleBlur('name', formDetails.title)}
-          maxLength={200}
+          onBlur={() => handleBlur('title', formDetails.title)}   
+          maxLength={200} 
           />
         <FormTextArea
           label={t("Description")}

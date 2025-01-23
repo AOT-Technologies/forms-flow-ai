@@ -300,6 +300,7 @@ class FormResourceList(Resource):
         )
         sort_by = sort_by.split(",")
         sort_order = sort_order.split(",")
+        include_submissions_count = dict_data.get("include_submissions_count", False)
         if form_type:
             form_type = form_type.split(",")
         if search:
@@ -319,6 +320,8 @@ class FormResourceList(Resource):
             is_active=is_active,
             is_designer=is_designer,
             active_forms=active_forms,
+            include_submissions_count=include_submissions_count,
+            ignore_designer=ignore_designer,
         )
         return (
             (

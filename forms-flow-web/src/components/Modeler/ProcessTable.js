@@ -256,7 +256,6 @@ const ProcessTable = React.memo(() => {
             handleRefresh={handleRefresh}
             handleSortModalClose={handleSortModalClose}
             handleSortApply={handleSortApply}
-            t={t}
             optionSortBy={optionSortBy}
             defaultSortOption={sortConfig.activeKey}
             defaultSortOrder={sortConfig[sortConfig.activeKey]?.sortOrder}

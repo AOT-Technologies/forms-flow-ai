@@ -372,7 +372,6 @@ const List = React.memo((props) => {
                     handleRefresh={handleRefresh}
                     handleSortModalClose={handleSortModalClose}
                     handleSortApply={handleSortApply}
-                    t={t}
                     optionSortBy={optionSortBy}
                     defaultSortOption={formSort.activeKey}
                     defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}

@@ -1,6 +1,7 @@
 import React from "react";
 import { FilterIcon, RefreshIcon, SortModal } from "@formsflow/components";
 import PropTypes from "prop-types";
+import { useTranslation  } from "react-i18next";
 
 const FilterSortActions = ({
   showSortModal,
@@ -10,9 +11,9 @@ const FilterSortActions = ({
   handleSortApply,
   defaultSortOption,
   defaultSortOrder,
-  t,
   optionSortBy,  // Accept optionSortBy as a prop
 }) => {
+  const { t } = useTranslation();
   return (
     <>
       <FilterIcon onClick={handleFilterIconClick} />

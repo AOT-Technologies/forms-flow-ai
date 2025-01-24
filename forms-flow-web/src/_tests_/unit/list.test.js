@@ -8,15 +8,10 @@ import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
 import List from '../../components/Form/List'; 
 import { createMemoryHistory } from 'history';
-import { Router, Route } from 'react-router-dom';  
+import { Router, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 
-
-jest.mock('@formsflow/components', () => ({
-  CustomButton: jest.fn(({ onClick, label }) => (
-    <button onClick={onClick}>{label}</button>
-  )),
-}));
-
+ 
 const queryClient = new QueryClient();
 let store = configureStore({
   reducer: rootReducer,
@@ -26,20 +21,17 @@ let store = configureStore({
 function renderWithRouterMatch(Ui, { path = '/', route = '/' }) {
   const history = createMemoryHistory({ initialEntries: [route] });
 
-  return {
-    ...rtlRender(
-      <QueryClientProvider client={queryClient}>
-        <Provider store={store}>
-          <Router history={history}>
-            <switch>
-              <Route path={path} element={<Ui />} />
-            </switch>
-          </Router>
-        </Provider>
-      </QueryClientProvider>
-    )
-  }
-  
+  return rtlRender(
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <Router history={history}>
+          <Switch>
+            <Route path={path} component={Ui} />
+          </Switch>
+        </Router>
+      </Provider>
+    </QueryClientProvider>
+  );
 }
 
 beforeEach(() => {
@@ -55,12 +47,6 @@ it('should render the list component without breaking', async () => {
     route: '/formflow',
   });
 
-  const button = screen.getByPlaceholderText('Search Form Name and Description');
+  const button = screen.getByText("New Form");
   expect(button).toBeInTheDocument();
-
-  // fireEvent.click(button);
-
-
-  // await waitFor(() => expect(screen.getByText('Add Form')).toBeInTheDocument());
 });
-

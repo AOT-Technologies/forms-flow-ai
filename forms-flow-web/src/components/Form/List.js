@@ -376,11 +376,11 @@ const List = React.memo((props) => {
 const mapStateToProps = (state) => {
   return {
     forms: selectRoot("forms", state),
-    userRoles: selectRoot("user", state)?.roles || [],
-    modalOpen: selectRoot("formDelete", state)?.formDelete.modalOpen,
-    formId: selectRoot("formDelete", state)?.formDelete.formId,
-    formName: selectRoot("formDelete", state)?.formDelete.formName,
-    isFormWorkflowSaved: selectRoot("formDelete", state)?.isFormWorkflowSaved,
+    userRoles: selectRoot("user", state).roles || [],
+    modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
+    formId: selectRoot("formDelete", state).formDelete.formId,
+    formName: selectRoot("formDelete", state).formDelete.formName,
+    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
     tenants: selectRoot("tenants", state),
     path: selectRoot("formDelete", state)?.formDelete.path,
   };

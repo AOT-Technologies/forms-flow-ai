@@ -1,7 +1,9 @@
 
 export const mockstate = {
 
-  
+  process:{
+    processList: []
+  },
   bpmForms:  {
     error: "",
     forms: [],
@@ -83,8 +85,8 @@ export const mockstate = {
     designerFormLoading: false,
     searchFormLoading: false,
     designerAccessDenied: false
-  }
-
+  },
+ 
 
 }
 

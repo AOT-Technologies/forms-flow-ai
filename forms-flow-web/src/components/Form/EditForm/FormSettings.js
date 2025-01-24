@@ -38,7 +38,7 @@ const FormSettings = forwardRef((props, ref) => {
   /* ---------------------------- redux store data ---------------------------- */
   const processListData = useSelector((state) => state.process.formProcessList);
   const { path, display } = useSelector((state) => state.form.form);
- 
+
   const { authorizationDetails: formAuthorization } = useSelector(
     (state) => state.process
   );
@@ -60,7 +60,7 @@ const FormSettings = forwardRef((props, ref) => {
   });
   const [isAnonymous, setIsAnonymous] = useState(processListData.anonymous || false);
   const [errors, setErrors] = useState({
-    name: "",
+    title: "",
     path: "",
   });
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -78,7 +78,7 @@ const FormSettings = forwardRef((props, ref) => {
     },
     FORM: {
       roleInput: "",
-      selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.FORM?.roles, 
+      selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.FORM?.roles,
         multiSelectOptionKey),
       selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
     },
@@ -86,7 +86,7 @@ const FormSettings = forwardRef((props, ref) => {
       roleInput: "",
       selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.APPLICATION?.roles,
          multiSelectOptionKey),
-      selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles), 
+      selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
       /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
        we assume that the submitter is true. */
     }
@@ -116,16 +116,16 @@ const FormSettings = forwardRef((props, ref) => {
       setErrors((prev) => ({ ...prev, [field]: errorMessage }));
       return false;
     }
-  
+
     setIsValidating((prev) => ({ ...prev, [field]: true }));
     let errorMessage = "";
-  
+
     try {
       const response =
         field === "title"
           ? await validateFormName(value, parentFormId)
           : await validatePathName(value, formId);
-  
+
       const data = response?.data;
       if (data?.code === "FORM_EXISTS") {
         errorMessage = data.message;
@@ -134,25 +134,22 @@ const FormSettings = forwardRef((props, ref) => {
       errorMessage =
         error.response?.data?.message ||
         `An error occurred while validating the ${field}.`;
-      console.error(`Error validating ${field}:`, errorMessage);
+        console.error(`Error validating ${field}:`,errorMessage);
     }
-  
+
     setErrors((prev) => ({ ...prev, [field]: errorMessage }));
     setIsValidating((prev) => ({ ...prev, [field]: false }));
       return !errorMessage; // Return true if no error
   };
 
-
-  
   /* ---------------------- handling form details change ---------------------- */
 
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    let field = name === "title" ? "name" : name;  // Use 'name' for title case
-    // Clear errors and reset blurStatus for the relevant field
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+    const sanitizedValue = value.replace(/#/g, "");
+    setErrors((prev) => ({ ...prev, [name]: "" }));
     blurStatus.current[name] = false;  
-    let updatedValue = name === "path" ? _camelCase(value).toLowerCase() : value;
+    let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;
   
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
@@ -161,10 +158,10 @@ const FormSettings = forwardRef((props, ref) => {
     }
   };
   
-  const handleBlur = (field, value) => {
-        validateField(field, value);
+  const handleBlur = (field, sanitizedValue) => {
+        validateField(field, sanitizedValue);
   };
-  
+
 
   /* ---------------------------- Fetch user roles ---------------------------- */
   useEffect(() => {
@@ -208,30 +205,30 @@ const FormSettings = forwardRef((props, ref) => {
       rolesState: rolesState,
       validateField,
     };
-  }); 
-  
+  });
+
   useEffect(() => {
     const isAnyRoleEmpty = Object.values(rolesState).some(
       (section) =>
         section.selectedOption === "specifiedRoles" &&
         section.selectedRoles.length === 0
     );
-  
+
     const hasFormErrors =
       errors.path !== "" ||
-      errors.name !== "" ||
+      errors.title !== "" ||
       formDetails.title === "" ||
       formDetails.path === "";
-  
-    // checking both values for disabling the save changes button  
+
+    // checking both values for disabling the save changes button
     const shouldDisableSaveButton = isAnyRoleEmpty || hasFormErrors;
 
     props.setIsSaveButtonDisabled(shouldDisableSaveButton);
   }, [rolesState, errors, formDetails]);
-  
+
   const handleRoleSelectForDesign = (roles) => handleRoleStateChange(DESIGN, "selectedRoles", roles);
   const handleRoleSelectForForm = (roles) => handleRoleStateChange(FORM, "selectedRoles", roles);
-  const handleRoleSelectForApplication = (roles) => 
+  const handleRoleSelectForApplication = (roles) =>
     handleRoleStateChange(APPLICATION, "selectedRoles", roles);
 
   return (
@@ -247,10 +244,10 @@ const FormSettings = forwardRef((props, ref) => {
           dataTestid="form-name"
           name="title"
           ariaLabel={t("Form Name")}
-          isInvalid = {!!errors.name}
-          feedback = {errors.name}
+          isInvalid = {!!errors.title}
+          feedback = {errors.title}
           turnOnLoader={isValidating.name}
-          onBlur={() => handleBlur('name', formDetails.title)}   
+          onBlur={() => handleBlur('title', formDetails.title)}   
           maxLength={200} 
           />
         <FormTextArea
@@ -263,8 +260,8 @@ const FormSettings = forwardRef((props, ref) => {
           maxRows={3}
           minRows={3}
         />
-        <CustomInfo heading="Note" 
-        content="Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later." />
+        <CustomInfo heading={t("Note")}
+        content={t("Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later.")} />
 
         <Form.Check
           data-testid="form-edit-wizard-display"
@@ -304,7 +301,7 @@ const FormSettings = forwardRef((props, ref) => {
           }
           dataTestid="who-can-edit-this-form"
           id="who-can-edit-this-form"
-          ariaLabel={t("Edit Submission Role")} 
+          ariaLabel={t("Edit Submission Role")}
           selectedValue={rolesState.DESIGN.selectedOption}
         />
 
@@ -313,14 +310,14 @@ const FormSettings = forwardRef((props, ref) => {
         )}
         {rolesState.DESIGN.selectedOption === "specifiedRoles" && (
           <MultipleSelect
-          options={userRoles}  
-          selectedValues={rolesState.DESIGN.selectedRoles} 
-          onSelect={handleRoleSelectForDesign}  
-          onRemove={handleRoleSelectForDesign}  
+          options={userRoles}
+          selectedValues={rolesState.DESIGN.selectedRoles}
+          onSelect={handleRoleSelectForDesign}
+          onRemove={handleRoleSelectForDesign}
           displayValue={multiSelectOptionKey}
           avoidHighlightFirstOption={true}
           />
- 
+
         )}
 
         <Form.Label className="field-label mt-3">
@@ -362,7 +359,7 @@ const FormSettings = forwardRef((props, ref) => {
           <FormInput disabled={true} />
         )}
         {rolesState.FORM.selectedOption === "specifiedRoles" && (
-            <MultipleSelect 
+            <MultipleSelect
             options={userRoles} // Options to display in the dropdown
             selectedValues={rolesState.FORM.selectedRoles} // Preselected value to persist in dropdown
             onSelect={handleRoleSelectForForm} // Function will trigger on select event
@@ -370,7 +367,7 @@ const FormSettings = forwardRef((props, ref) => {
             displayValue={multiSelectOptionKey} // Property name to display in the dropdown options
             avoidHighlightFirstOption={true}
             />
-           
+
         )}
 
         <Form.Label className="field-label mt-3">
@@ -403,7 +400,7 @@ const FormSettings = forwardRef((props, ref) => {
         )}
 
         {rolesState.APPLICATION.selectedOption === "specifiedRoles" && (
-          <MultipleSelect 
+          <MultipleSelect
             options={userRoles} // Options to display in the dropdown
             selectedValues={rolesState.APPLICATION.selectedRoles} // Preselected value to persist in dropdown
             onSelect={handleRoleSelectForApplication} // Function will trigger on select event
@@ -411,15 +408,15 @@ const FormSettings = forwardRef((props, ref) => {
             displayValue={multiSelectOptionKey} // Property name to display in the dropdown options
             avoidHighlightFirstOption={true}
           />
- 
+
         )}
       </div>
 
       <div className="modal-hr" />
       <div className="section">
         <h5 className="fw-bold">{t("Link for this form")}</h5>
-        <CustomInfo heading="Note" 
-        content="Making changes to your form URL will make your form inaccessible from your current URL." />
+        <CustomInfo heading={t("Note")}
+        content={t("Making changes to your form URL will make your form inaccessible from your current URL.")} />
         <Form.Group className="settings-input w-100" controlId="url-input">
           <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
           <InputGroup className="url-input">

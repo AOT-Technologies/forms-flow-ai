@@ -27,10 +27,8 @@ function ClientTable() {
   const pageNo = useSelector((state) => state.bpmForms.page);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
-  const [currentFormSort ,setCurrentFormSort] = useState({
-  activeKey: "formName",
-  formName: { sortOrder: "asc" },
-  });
+  const formsort = useSelector((state) => state.bpmForms.sort);
+
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
@@ -50,14 +48,12 @@ function ClientTable() {
   ];
 
   const handleSort = (key) => {
-    setCurrentFormSort((prevSort) => {
-      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
-      return {
-        ...prevSort,
-        activeKey: key,
-        [key]: { sortOrder: newSortOrder },
-      };
-    });
+    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
+   dispatch(setBpmFormSort({
+    ...formsort,
+    activeKey: key,
+    [key]: { sortOrder: newSortOrder },
+  }));
   };
 
   useEffect(() => {
@@ -88,9 +84,6 @@ function ClientTable() {
     dispatch(setBPMFormLimit(newLimit));
     dispatch(setBPMFormListPage(1));
   };
-  useEffect(() => {
-    dispatch(setBpmFormSort(currentFormSort));
-  },[currentFormSort,dispatch]);
 
   const noDataFound = () => {
     return (
@@ -135,7 +128,7 @@ function ClientTable() {
                   <SortableHeader
                    columnKey="formName"
                    title="Form Name"
-                   currentSort={currentFormSort}
+                   currentSort={formsort}
                    handleSort={handleSort}
                    className="d-flex justify-content-start"
                   />

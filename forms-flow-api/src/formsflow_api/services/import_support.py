@@ -750,7 +750,12 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         selected_workflow_version,
                     )
         if mapper_response:
+            major_version, minor_version = FormProcessMapperService.get_form_version(
+                mapper_response
+            )
             mapper_response = FormProcessMapperSchema().dump(mapper_response)
+            mapper_response["majorVersion"] = major_version
+            mapper_response["minorVersion"] = minor_version
             if task_variables := mapper_response.get("taskVariables"):
                 mapper_response["taskVariables"] = json.loads(task_variables)
             response["mapper"] = mapper_response

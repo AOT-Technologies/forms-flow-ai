@@ -55,6 +55,7 @@ class DraftService:
 
         application_payload["application_status"] = DRAFT_APPLICATION_STATUS
         application_payload["submission_id"] = None
+        application_payload["is_draft"] = True
         application = cls.__create_draft_application(application_payload)
         if not application:
             raise BusinessException(BusinessErrorCode.APPLICATION_CREATE_ERROR)
@@ -130,10 +131,12 @@ class DraftService:
 
             application = Application.find_by_id(draft.application_id)
             mapper = FormProcessMapper.find_form_by_form_id(application.latest_form_id)
+            update_dict = {"is_draft": False}
             if application.form_process_mapper_id != mapper.id:
                 # The form mapper version got updated after the draft entry
                 # was created, update the application with new mapper
-                application.update({"form_process_mapper_id": mapper.id})
+                update_dict["form_process_mapper_id"] = mapper.id
+            application.update(update_dict)
             task_variables = (
                 json.loads(mapper.task_variable)
                 if mapper.task_variable is not None

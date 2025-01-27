@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
-                   
+
   setBpmFormSort,
 } from "../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -38,7 +38,6 @@ function FormTable() {
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
   const { createDesigns, viewDesigns } = userRoles();
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [currentFormSort ,setCurrentFormSort] = useState(formsort);  
 
   const pageOptions = [
     {
@@ -65,20 +64,14 @@ function FormTable() {
 
 
   const handleSort = (key) => {
-    setCurrentFormSort((prevSort) => {
-      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
-      return {
-        ...prevSort,
-        activeKey: key,
-        [key]: { sortOrder: newSortOrder },
-      };
-    });
+    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
+   dispatch(setBpmFormSort({
+    ...formsort,
+    activeKey: key,
+    [key]: { sortOrder: newSortOrder },
+  }));
   };
 
-  useEffect(() => {
-    dispatch(setBpmFormSort(currentFormSort));
-  },[currentFormSort,dispatch]);
-  
   const viewOrEditForm = (formId, path) => {
     dispatch(resetFormProcessData());
     dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
@@ -108,40 +101,43 @@ function FormTable() {
       <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
           <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
+            <table className="table custom-tables table-responsive-sm mb-0">
               <thead className="table-header">
                 <tr>
                   <th className="w-20">
                   <SortableHeader
                    columnKey="formName"
                    title="Form Name"
-                   currentSort={currentFormSort}
+                   currentSort={formsort}
                    handleSort={handleSort}
-                   className="ms-4"
+                   className="gap-2"
                   />
                   </th>
                   <th className="w-30" scope="col">{t("Description")}</th>
                   <th className="w-13" scope="col">
-                  <SortableHeader 
+                  <SortableHeader
                   columnKey="modified"
                   title="Last Edited"
-                  currentSort={currentFormSort}
+                  currentSort={formsort}
                   handleSort={handleSort}
+                  className="gap-2"
                   />
                   </th>
                   <th className="w-13" scope="col">
-                  <SortableHeader 
+                  <SortableHeader
                     columnKey="visibility"
                     title="Visibility"
-                    currentSort={currentFormSort}
-                    handleSort={handleSort} />
+                    currentSort={formsort}
+                    handleSort={handleSort}
+                    className="gap-2"/>
                   </th>
                   <th className="w-12" scope="col" colSpan="4">
-                    <SortableHeader 
+                    <SortableHeader
                     columnKey="status"
                     title="Status"
-                    currentSort={currentFormSort}
-                    handleSort={handleSort} />
+                    currentSort={formsort}
+                    handleSort={handleSort}
+                    className="gap-2"/>
                   </th>
                   <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>
                 </tr>
@@ -156,7 +152,7 @@ function FormTable() {
                       <tr key={index}>
                         <td className="w-20">
                           <div className="d-flex">
-                            <span className="ms-4 text-container">{e.title}</span>
+                            <span className="text-container">{e.title}</span>
                           </div>
                         </td>
                         <td className="w-30 cursor-pointer">
@@ -177,7 +173,7 @@ function FormTable() {
                             {e.status === "active" ? t("Live") : t("Draft")}
                           </span>
                         </td>
-                        <td className="w-12">
+                        <td className="w-12 text-end">
                         {(createDesigns || viewDesigns) && (
                           <CustomButton
                             variant="secondary"

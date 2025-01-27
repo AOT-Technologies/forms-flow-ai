@@ -119,7 +119,8 @@ export default React.memo(() => {
             .then((res) => {
               dispatch(setBPMFiltersAndCount(res.data));
             })
-            .catch((err) => console.error(err))
+            .catch((err) =>
+              console.error(err))
             .finally(() => {
               dispatch(setBPMFilterLoader(false));
             });
@@ -275,13 +276,13 @@ export default React.memo(() => {
       {cardView ? (
         <>
           <div className="row mx-0">
-           
+
             <div className="col-12 px-0 col-md-4 col-xl-3">
               <section>
                 {/* <header className="d-flex flex-wrap align-items-center p-2 bg-light shadow mb-2">
               <TaskSortSelectedList />
             </header> */}
-                <ServiceFlowTaskList 
+                <ServiceFlowTaskList
                   expandedTasks={expandedTasks}
                   setExpandedTasks={setExpandedTasks}/>
               </section>

@@ -61,7 +61,8 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate } from "../../../helper/helper.js";
+import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate,
+  convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
@@ -278,7 +279,7 @@ const EditComponent = () => {
         workflow: extractVersionInfo(responseData.workflow),
         form: extractVersionInfo(responseData.form),
       });
-      setFormTitle(formExtracted.forms[0]?.formTitle || ""); 
+      setFormTitle(formExtracted.forms[0]?.formTitle || "");
     }else{
       /* ------------------------- if the form id changed ------------------------- */
       const formId = responseData.mapper?.formId;
@@ -326,7 +327,7 @@ const EditComponent = () => {
           type: "components",
           value: _cloneDeep(extractedForm.components),
         });
-      }else{ 
+      }else{
       const currentFormDataWithImportedData = {...formData, ...extractedForm};
       dispatch(setFormSuccessData("form", currentFormDataWithImportedData));
       dispatch(setFormPreviosData(mapper));
@@ -421,7 +422,7 @@ const EditComponent = () => {
       search: queryParams && `?${queryParams}`
     }));
   };
-  
+
 const handleSaveLayout = () => {
   if (promptNewVersion) {
     handleVersioning();
@@ -538,18 +539,19 @@ const handleSaveLayout = () => {
 
 
   /* ----------- save settings function to be used in settings modal ---------- */
+  
   const filterAuthorizationData = (authorizationData) => {
     if(authorizationData.selectedOption === "submitter"){
       return {roles: [], userName:null, resourceDetails:{submitter:true}};
     }
     if (authorizationData.selectedOption === "specifiedRoles") {
-      return { roles: authorizationData.selectedRoles, userName: "" };
+      return { roles: convertMultiSelectOptionToValue(authorizationData.selectedRoles, "role"), userName: "" };
     }
     return { roles: [], userName: preferred_username };
   };
 
   const handleConfirmSettings = async ({
-    formDetails, 
+    formDetails,
     rolesState,
   }) => {
     setIsSettingsSaving(true);
@@ -582,7 +584,7 @@ const handleSaveLayout = () => {
         resourceDetails: {},
         roles:
           rolesState.FORM.selectedOption === "specifiedRoles"
-            ? rolesState.FORM.selectedRoles
+            ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
             : [],
       },
     };
@@ -730,7 +732,7 @@ const handleSaveLayout = () => {
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
     newFormData.description = description;
-    delete newFormData._id; 
+    delete newFormData._id;
 
     //Process details for duplicate .
     if (selectedAction == ACTION_OPERATIONS.DUPLICATE) {
@@ -784,7 +786,7 @@ const handleSaveLayout = () => {
       closeModal();
       setIsPublishLoading(true);
       if (!isPublished) {
-       
+
         await flowRef.current.saveFlow({processId: processData.id,showToast: false});
         await saveFormData({ showToast: false });
       }
@@ -805,7 +807,7 @@ const handleSaveLayout = () => {
 
   const handleConfirmUnpublishAndSave = async () => {
     try {
-      closeModal(); 
+      closeModal();
       setLoadingVersioning(true);
       await unPublish(processListData.id); // Unpublish the process
       // Fetch mapper data
@@ -836,10 +838,10 @@ const handleSaveLayout = () => {
       );
     } catch (error) {
       setLoadingVersioning(false);
-      console.error("Error during confirmation:", error); 
-    } 
+      console.error("Error during confirmation:", error);
+    }
   };
-  
+
   const handleVersioning = (majorVersion, minorVersion) => {
     setVersion((prevVersion) => ({
       ...prevVersion,
@@ -848,7 +850,7 @@ const handleSaveLayout = () => {
     }));
     openConfirmModal("save");
   };
-  
+
 
   const closeNewVersionModal = () => {
     setNewVersionModal(false);
@@ -872,7 +874,7 @@ const handleSaveLayout = () => {
         formAccessRoles,
         submissionAccessRoles
       );
-
+   
       const newPathAndName = generateUniqueId("-v");
       oldFormData.path += newPathAndName;
       oldFormData.name += newPathAndName;
@@ -880,7 +882,9 @@ const handleSaveLayout = () => {
 
       newFormData.componentChanged = true;
       newFormData.newVersion = true;
-      newFormData.parentFormId = previousData.parentFormId;
+      newFormData.parentFormId = processListData.parentFormId;
+      newFormData.title = processListData.formName;
+
       delete newFormData.machineName;
       delete newFormData._id;
 
@@ -920,44 +924,42 @@ const handleSaveLayout = () => {
     switch (modalType) {
       case "save":
         return {
-          title: "Save Your Changes",
+          title: t("Save Your Changes"),
           message:
-            "Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions.",
+            t("Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions."),
           primaryBtnAction: saveFormData,
           secondayBtnAction: handleShowVersionModal,
-          primaryBtnText: `Save as Version ${version.minor}`,
-          secondaryBtnText: `Save as Version ${version.major}`,
+          primaryBtnText: `${t("Save as Version")} ${version.minor}`,
+          secondaryBtnText: `${t("Save as Version")} ${version.major}`,
         };
       case "publish":
         return {
-          title: "Confirm Publish",
-          message:
-            "Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. To perform any additional changes you will need to unpublish the form again.",
+          title: t("Confirm Publish"),
+          message: t("Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. To perform any additional changes you will need to unpublish the form again."),
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Publish This Form",
-          secondaryBtnText: "Cancel",
+          primaryBtnText: t("Publish This Form"),
+          secondaryBtnText: t("Cancel"),
         };
       case "unpublish":
         return {
-          title: "Confirm Unpublish",
-          message:
-            "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailble for new submissin to those who currently have access to it. You can republish the form after making your edits. ",
+          title: t("Confirm Unpublish"),
+          message: t( "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailable for new submissions to those who currently have access to it. You can republish the form after making your edits."),
           primaryBtnAction: confirmPublishOrUnPublish,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Unpublish and Edit This Form",
-          secondaryBtnText: "Cancel, Keep This Form Unpublished",
+          primaryBtnText: t("Unpublish and Edit This Form"),
+          secondaryBtnText: t("Cancel, Keep This Form Unpublished"),
         };
       case "discard":
         return {
-          title: "Discard Layout Changes?",
+          title: t("Discard Layout Changes?"),
           message:
-            "Are you sure you want to discard all the changes to the layout of the form?",
-          messageSecondary: "This action cannot be undone.",
+            t("Are you sure you want to discard all the changes to the layout of the form?"),
+          messageSecondary: t("This action cannot be undone."),
           primaryBtnAction: discardChanges,
           secondayBtnAction: closeModal,
-          primaryBtnText: "Yes, Discard Changes",
-          secondaryBtnText: "No, Keep My Changes",
+          primaryBtnText: t("Yes, Discard Changes"),
+          secondaryBtnText: t("No, Keep My Changes"),
         };
       case "unpublishBeforeSaving":
         return {
@@ -1101,7 +1103,7 @@ const handleSaveLayout = () => {
   return (
     <div>
       <div>
-        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={"You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."} />
+        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={t("You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side.")} />
         <LoadingOverlay active={formSubmitted || loadingVersioning} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
@@ -1174,7 +1176,7 @@ const handleSaveLayout = () => {
                     style={{ width: "100%" }}
                   >
                     <div className="d-flex align-items-center justify-content-between">
-                      <div className="mx-2 builder-header-text">Layout</div>
+                      <div className="mx-2 builder-header-text">{t("Layout")}</div>
                       {createDesigns && (
                         <div>
                           <CustomButton
@@ -1229,7 +1231,7 @@ const handleSaveLayout = () => {
                     )}
                   </div>
                 </Card.Header>
-                <div className="form-edit"> 
+                <div className="form-edit">
                 <Card.Body>
                   <div className="form-builder custom-scroll">
                     {!createDesigns ? (
@@ -1289,7 +1291,7 @@ const handleSaveLayout = () => {
               } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
             >
-              {isFormLayout ? "Flow" : "Layout"}
+              {isFormLayout ? t("Flow") : t("Layout")}
             </button>
           </div>
         </LoadingOverlay>
@@ -1326,7 +1328,7 @@ const handleSaveLayout = () => {
         onClose={handleCloseSelectedAction}
         handleImport={handleImport}
         fileItems={fileItems}
-        headerText="Import File"
+        headerText={t("Import File")}
         primaryButtonText={primaryButtonText}
         fileType=".json, .bpmn"
       />}

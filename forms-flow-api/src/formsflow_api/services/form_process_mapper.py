@@ -21,7 +21,6 @@ from formsflow_api.models import (
     Application,
     Authorization,
     AuthType,
-    Draft,
     FormHistory,
     FormProcessMapper,
     Process,
@@ -233,7 +232,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 raise BusinessException(BusinessErrorCode.RESTRICT_FORM_DELETE)
             application.mark_inactive()
             # fetching all draft application application and delete it
-            draft_applications = Draft.get_draft_by_parent_form_id(
+            draft_applications = Application.get_draft_by_parent_form_id(
                 parent_form_id=application.parent_form_id
             )
             if draft_applications:

@@ -11,7 +11,7 @@ import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
-    DRAFT_APPLICATION_STATUS,
+    ANONYMOUS_USER,
     MANAGE_TASKS,
     NEW_APPLICATION_STATUS,
 )
@@ -230,11 +230,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             form_ids=form_ids,
             user_name=user_name,
         )
-        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
-            draft_count,
         )
 
     @staticmethod
@@ -255,7 +253,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             resource_id=parent_form_ref,
         )
         if application_auth:
-            application = Application.find_auth_by_id(application_id=application_id)
+            application = Application.find_auth_by_id(application_id, user.user_name)
         else:
             # Reviewer lack application permissions can still have form permissions,
             # submit and view their application.
@@ -282,22 +280,16 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             include_drafts=include_drafts,
             only_drafts=only_drafts,
         )
-        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
-            draft_count,
         )
 
     @staticmethod
     def get_all_application_status():
         """Get all application status."""
         status_list = Application.find_all_application_status()
-        status_list = [
-            x.application_status
-            for x in status_list
-            if x.application_status != DRAFT_APPLICATION_STATUS
-        ]
+        status_list = [x.application_status for x in status_list]
         current_app.logger.debug(status_list)
         return {"applicationStatus": status_list}
 
@@ -361,18 +353,33 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
         return ApplicationSchema().dump([]), HTTPStatus.FORBIDDEN
 
+    @classmethod
+    def update_draft(cls, application_id: int, data: Dict):
+        """Update draft by application id."""
+        draft = Draft.get_draft_by_application_id(application_id)
+        if draft:
+            draft.update_draft_data_and_commit(draft_info=data)
+        else:
+            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
+
     @staticmethod
     @user_context
     def update_application(application_id: int, data: Dict, **kwargs):
         """Update application."""
         user: UserContext = kwargs["user"]
-        data["modified_by"] = user.user_name
-        application = Application.find_by_id(application_id=application_id)
+        user_id: str = user.user_name or ANONYMOUS_USER
+        application = Application.find_by_id(
+            application_id=application_id, user_id=user_id
+        )
         if application is None and user.tenant_key is not None:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         if application:
-            application.update(data)
-            application.commit()
+            if application.is_draft:
+                ApplicationService.update_draft(application_id, data)
+            else:
+                data["modified_by"] = user.user_name
+                application.update(data)
+                application.commit()
         else:
             raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
 
@@ -535,3 +542,39 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         except requests.exceptions.ConnectionError as err:
             current_app.logger.warning(err)
             raise BusinessException(ExternalError.BPM_SERVICE_UNAVAILABLE) from err
+
+    @classmethod
+    def _delete_draft_by_application_id(cls, application_id):
+        """Deletes draft by application id."""
+        draft = Draft.get_draft_by_application_id(application_id)
+        if draft:
+            draft.delete()
+
+    @classmethod
+    def make_submission(cls, application_id, data, user_id):
+        """Activates the application from the draft entry."""
+        application = Application.find_draft_application_by_user(
+            application_id, user_id
+        )
+        if application:
+            print(application, "appln found... ")
+            application.application_status = data["application_status"]
+            application.submission_id = data["submission_id"]
+            cls._delete_draft_by_application_id(application_id)
+            return application
+        return None
+
+    @classmethod
+    @user_context
+    def delete_draft_application(cls, application_id: int, **kwargs):
+        """Delete draft application."""
+        user: UserContext = kwargs["user"]
+        application = Application.find_draft_application_by_user(
+            application_id, user.user_name
+        )
+        if application:
+            # deletes the draft and application entry related to the draft.
+            cls._delete_draft_by_application_id(application_id)
+            application.delete()
+        else:
+            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)

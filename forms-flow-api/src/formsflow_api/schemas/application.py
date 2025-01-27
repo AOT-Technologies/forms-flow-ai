@@ -69,7 +69,7 @@ class ApplicationSchema(AuditDateTimeSchema):
     web_form_url = fields.Str(data_key="webFormUrl", load_only=True)
     is_resubmit = fields.Bool(data_key="isResubmit", dump_only=True)
     event_name = fields.Str(data_key="eventName", dump_only=True)
-    data = fields.Dict(data_key="data", load_only=True)
+    data = fields.Dict(data_key="data")
     is_draft = fields.Bool(data_key="isDraft", dump_only=True)
 
 
@@ -81,10 +81,11 @@ class ApplicationUpdateSchema(Schema):
 
         unknown = EXCLUDE
 
-    application_status = fields.Str(data_key="applicationStatus", required=True)
+    application_status = fields.Str(data_key="applicationStatus", required=False)
     form_url = fields.Str(data_key="formUrl", required=False)
     is_resubmit = fields.Bool(data_key="isResubmit")
     event_name = fields.Str(data_key="eventName", allow_none=True)
+    data = fields.Dict(data_key="data", required=False)
 
 
 class ApplicationSubmissionSchema(Schema):

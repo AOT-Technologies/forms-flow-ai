@@ -8,6 +8,7 @@ from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     MANAGE_TASKS,
+    NEW_APPLICATION_STATUS,
     VIEW_SUBMISSIONS,
     VIEW_TASKS,
     auth,
@@ -20,9 +21,10 @@ from formsflow_api.schemas import (
     ApplicationListReqSchema,
     ApplicationListRequestSchema,
     ApplicationSchema,
+    ApplicationSubmissionSchema,
     ApplicationUpdateSchema,
 )
-from formsflow_api.services import ApplicationService
+from formsflow_api.services import ApplicationService, DraftService
 
 API = Namespace("Application", description="Application")
 
@@ -78,7 +80,16 @@ application_list_model = API.model(
 
 application_update_model = API.model(
     "ApplicationUpdate",
-    {"applicationStatus": fields.String(), "formUrl": fields.String()},
+    {
+        "applicationStatus": fields.String(),
+        "formUrl": fields.String(),
+        "data": fields.Raw(),
+    },
+)
+
+draft_update_model = API.model(
+    "DraftUpdate",
+    {"data": fields.Raw()},
 )
 
 application_status_list_model = API.model(
@@ -93,6 +104,32 @@ application_resubmit_model = API.model(
         "data": fields.Raw(),
     },
 )
+submission = API.model(
+    "Submission",
+    {
+        "formId": fields.String(),
+        "formUrl": fields.String(),
+        "submissionId": fields.String(),
+        "webFormUrl": fields.String(),
+    },
+)
+submission_response = API.model(
+    "SubmissionResponse",
+    {
+        "applicationStatus": fields.String(),
+        "created": fields.String(),
+        "createdBy": fields.String(),
+        "formId": fields.String(),
+        "formProcessMapperId": fields.String(),
+        "id": fields.Integer(),
+        "modified": fields.String(),
+        "modifiedBy": fields.String(),
+        "processInstanceId": fields.String(),
+        "submissionId": fields.String(),
+    },
+)
+
+message = API.model("Message", {"message": fields.String()})
 
 
 @cors_preflight("GET,POST,OPTIONS")
@@ -225,7 +262,6 @@ class ApplicationsResource(Resource):
             (
                 application_schema_dump,
                 application_count,
-                draft_count,
             ) = ApplicationService.get_auth_applications_and_count(
                 filters=common_filters
             )
@@ -233,7 +269,6 @@ class ApplicationsResource(Resource):
             (
                 application_schema_dump,
                 application_count,
-                draft_count,
             ) = ApplicationService.get_all_applications_by_user(
                 filters=common_filters,
                 include_drafts=include_drafts,
@@ -244,7 +279,6 @@ class ApplicationsResource(Resource):
                 {
                     "applications": application_schema_dump,
                     "totalCount": application_count,
-                    "draftCount": draft_count,
                     "limit": common_filters["limit"],
                     "pageNo": common_filters["page_no"],
                 }
@@ -254,7 +288,7 @@ class ApplicationsResource(Resource):
 
 
 @cors_preflight("GET,PUT,OPTIONS")
-@API.route("/<int:application_id>", methods=["GET", "PUT", "OPTIONS"])
+@API.route("/<int:application_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 class ApplicationResourceById(Resource):
     """Resource for getting application by id."""
 
@@ -291,7 +325,11 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.doc(body=application_update_model)
+    @API.doc(
+        body=application_update_model,
+        description="Provide `applicationStatus` and `formUrl` for an application update, or\
+                    `data` for a draft update.",
+    )
     @API.response(200, "OK:- Successful request.")
     @API.response(
         400,
@@ -302,7 +340,7 @@ class ApplicationResourceById(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def put(application_id: int):
-        """Update application details."""
+        """Update either an application or a draft."""
         application_json = request.get_json()
         application_schema = ApplicationUpdateSchema()
         dict_data = application_schema.load(application_json)
@@ -318,6 +356,19 @@ class ApplicationResourceById(Resource):
             application_id=application_id, data=dict_data
         )
         return "Updated successfully", HTTPStatus.OK
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_SUBMISSIONS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.", model=message)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    def delete(application_id: int):
+        """Delete draft application."""
+        ApplicationService.delete_draft_application(application_id)
+        return {"message": "Draft deleted successfully"}, HTTPStatus.OK
 
 
 @cors_preflight("GET,OPTIONS")
@@ -520,3 +571,83 @@ class ApplicationResubmitById(Resource):
             application_id, resubmit_json, token=request.headers["Authorization"]
         )
         return "Message event updated successfully.", HTTPStatus.OK
+
+
+@cors_preflight("PUT, OPTIONS")
+@API.route("/<int:application_id>/submit", methods=["PUT", "OPTIONS"])
+class DraftSubmissionResource(Resource):
+    """Converts the given draft entry to actual submission."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_SUBMISSIONS])
+    @profiletime
+    @API.doc(body=submission)
+    @API.response(200, "OK:- Successful request.", model=submission_response)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    def put(application_id: str):
+        """Updates the application and draft entry to create a new submission."""
+        payload = request.get_json()
+        token = request.headers["Authorization"]
+        application_schema = ApplicationSubmissionSchema()
+        dict_data = application_schema.load(payload)
+        dict_data["application_status"] = NEW_APPLICATION_STATUS
+        response = DraftService.make_submission_from_draft(
+            dict_data, application_id, token
+        )
+        res = ApplicationSchema().dump(response)
+        return res, HTTPStatus.OK
+
+
+@cors_preflight("PUT, OPTIONS")
+@API.route("/public/<int:application_id>/submit", methods=["PUT", "OPTIONS"])
+class PublicDraftSubmissionResource(Resource):
+    """Converts the given anonymous draft entry to actual submission."""
+
+    @staticmethod
+    @profiletime
+    @API.doc(body=submission)
+    @API.response(200, "OK:- Successful request.", model=submission_response)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    def put(application_id: int):
+        """Updates the application and draft entry to create a new submission."""
+        payload = request.get_json()
+        application_schema = ApplicationSubmissionSchema()
+        dict_data = application_schema.load(payload)
+        dict_data["application_status"] = NEW_APPLICATION_STATUS
+        response = DraftService.make_submission_from_draft(dict_data, application_id)
+        res = ApplicationSchema().dump(response)
+        return res, HTTPStatus.OK
+
+
+@cors_preflight("PUT, OPTIONS")
+@API.route("/public/<int:application_id>", methods=["PUT", "OPTIONS"])
+class PublicDraftUpdateResourceById(Resource):
+    """Resource for updating the anonymous draft."""
+
+    @staticmethod
+    @profiletime
+    @API.doc(body=draft_update_model)
+    @API.response(
+        200,
+        "OK:- Successful request. Returns ```str: success message```",
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    def put(application_id: int):
+        """Update draft details."""
+        input_json = request.get_json()
+        application_schema = ApplicationSchema()
+        dict_data = application_schema.load(input_json)
+        ApplicationService.update_application(application_id, data=dict_data)
+        return (
+            f"Updated {application_id} successfully",
+            HTTPStatus.OK,
+        )

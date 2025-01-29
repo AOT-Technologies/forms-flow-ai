@@ -82,6 +82,13 @@ const FormComponent = React.memo(
       const data = _.cloneDeep(form);
       const manipulatedKeys = [];
       Utils.eachComponent(data.components,(component)=>{
+        // remove display (show/hide) conditions for showing the component in taskvariable modal
+        /* --------------------------- ------------------ --------------------------- */
+        component.conditional = {};
+        component.customConditional = "";
+        component.logic = [];
+        component.hidden = false;
+        /* ---------------------------------- ---- ---------------------------------- */
         //Keys ignored for the default task variable that don't need to be displayed in the form.
         if(component.type == "hidden" && !ignoreKeywords.has(component.key)){
           component.type = "textfield";

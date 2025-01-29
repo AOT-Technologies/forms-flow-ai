@@ -35,7 +35,6 @@ const FilterSortActions = ({
         onClick={handleFilterIconClick}
         tabIndex="0" // Make the element focusable
         onKeyDown={(e) => handleKeyDown(e, handleFilterIconClick)} // Add keyboard interaction
-        role="button" // Indicate that it's a clickable element
       >
         <FilterIcon />
       </span>
@@ -46,7 +45,6 @@ const FilterSortActions = ({
         onClick={handleRefresh}
         tabIndex="0" // Make the element focusable
         onKeyDown={(e) => handleKeyDown(e, handleRefresh)} // Add keyboard interaction
-        role="button" // Indicate that it's a clickable element
       >
         <RefreshIcon />
       </span>

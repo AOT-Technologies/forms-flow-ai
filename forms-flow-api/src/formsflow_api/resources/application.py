@@ -107,6 +107,7 @@ application_resubmit_model = API.model(
 submission = API.model(
     "Submission",
     {
+        "data": fields.Raw(),
         "formId": fields.String(),
         "formUrl": fields.String(),
         "submissionId": fields.String(),
@@ -126,6 +127,9 @@ submission_response = API.model(
         "modifiedBy": fields.String(),
         "processInstanceId": fields.String(),
         "submissionId": fields.String(),
+        "isResubmit": fields.Boolean(),
+        "eventName": fields.String(),
+        "isDraft": fields.Boolean(),
     },
 )
 
@@ -293,7 +297,9 @@ class ApplicationResourceById(Resource):
     """Resource for getting application by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([VIEW_SUBMISSIONS, VIEW_TASKS, MANAGE_TASKS])
+    @auth.has_one_of_roles(
+        [CREATE_SUBMISSIONS, VIEW_SUBMISSIONS, VIEW_TASKS, MANAGE_TASKS]
+    )
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_model)
     @API.response(

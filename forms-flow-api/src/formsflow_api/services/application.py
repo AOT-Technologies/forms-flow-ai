@@ -557,7 +557,6 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             application_id, user_id
         )
         if application:
-            print(application, "appln found... ")
             application.application_status = data["application_status"]
             application.submission_id = data["submission_id"]
             cls._delete_draft_by_application_id(application_id)

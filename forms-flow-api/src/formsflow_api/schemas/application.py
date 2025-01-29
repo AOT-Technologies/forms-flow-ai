@@ -85,7 +85,7 @@ class ApplicationUpdateSchema(Schema):
     form_url = fields.Str(data_key="formUrl", required=False)
     is_resubmit = fields.Bool(data_key="isResubmit")
     event_name = fields.Str(data_key="eventName", allow_none=True)
-    data = fields.Dict(data_key="data", required=False)
+    data = fields.Dict(data_key="data", required=False, allow_none=True)
 
 
 class ApplicationSubmissionSchema(Schema):

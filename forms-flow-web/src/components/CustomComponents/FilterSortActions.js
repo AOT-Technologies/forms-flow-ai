@@ -19,12 +19,23 @@ const FilterSortActions = ({
 }) => {
   const { t } = useTranslation();
 
+  // Handle keydown event to trigger click on Enter/Space key press
+  const handleKeyDown = (event, handler) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault(); // Prevent default behavior for space key
+      handler();
+    }
+  };
+
   return (
     <>
       <span
         data-testid={filterDataTestId}
         aria-label={filterAriaLabel}
         onClick={handleFilterIconClick}
+        tabIndex="0" // Make the element focusable
+        onKeyDown={(e) => handleKeyDown(e, handleFilterIconClick)} // Add keyboard interaction
+        role="button" // Indicate that it's a clickable element
       >
         <FilterIcon />
       </span>
@@ -33,6 +44,9 @@ const FilterSortActions = ({
         data-testid={refreshDataTestId}
         aria-label={refreshAriaLabel}
         onClick={handleRefresh}
+        tabIndex="0" // Make the element focusable
+        onKeyDown={(e) => handleKeyDown(e, handleRefresh)} // Add keyboard interaction
+        role="button" // Indicate that it's a clickable element
       >
         <RefreshIcon />
       </span>

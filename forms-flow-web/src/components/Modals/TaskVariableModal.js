@@ -92,6 +92,7 @@ const FormComponent = React.memo(
         component.customConditional = "";
         component.logic = [];
         component.hidden = false;
+        component.hideLabel = false;
         /* ---------------------------------- ---- ---------------------------------- */
         //Keys ignored for the default task variable that don't need to be displayed in the form.
         if(component.type == "hidden" && !ignoreKeywords.has(component.key)){

@@ -25,7 +25,6 @@ const FilterSortActions = ({
         data-testid={filterDataTestId}
         aria-label={filterAriaLabel}
         onClick={handleFilterIconClick}
-        role="button"
       >
         <FilterIcon />
       </span>
@@ -34,7 +33,6 @@ const FilterSortActions = ({
         data-testid={refreshDataTestId}
         aria-label={refreshAriaLabel}
         onClick={handleRefresh}
-        role="button"
       >
         <RefreshIcon />
       </span>

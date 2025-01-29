@@ -53,6 +53,7 @@ const ProcessTable = React.memo(() => {
   const sortConfig = useSelector((state) =>
     isBPMN ? state.process.bpmsort : state.process.dmnSort
   );
+
   const [bpmnState, setBpmnState] = useState({
     activePage: 1,
     limit: 5,
@@ -259,6 +260,10 @@ const ProcessTable = React.memo(() => {
             optionSortBy={optionSortBy}
             defaultSortOption={sortConfig.activeKey}
             defaultSortOrder={sortConfig[sortConfig.activeKey]?.sortOrder}
+            filterDataTestId={isBPMN ? "Process-list-filter-bpmn" : "Process-list-filter-dmn"}
+            filterAriaLabel={isBPMN ? "Filter the Process list (BPMN)" : "Filter the Process list (DMN)"}
+            refreshDataTestId={isBPMN ? "Process-list-refresh-bpmn" : "Process-list-refresh-dmn"}
+            refreshAriaLabel={isBPMN ? "Refresh the Process list (BPMN)" : "Refresh the Process list (DMN)"}
           />
           <CustomButton
             variant="primary"

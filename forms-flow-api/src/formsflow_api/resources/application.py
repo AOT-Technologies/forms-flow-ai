@@ -26,7 +26,11 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import ApplicationService, DraftService
 
-API = Namespace("Application", description="Application")
+API = Namespace(
+    "Application",
+    description="Manages form submissions, creating, retrieving, updating, managing submission data,\
+                    and tracking submission history.",
+)
 
 application_create_model = API.model(
     "ApplicationCreate",

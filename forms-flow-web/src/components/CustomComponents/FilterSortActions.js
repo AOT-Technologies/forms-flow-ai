@@ -1,7 +1,7 @@
 import React from "react";
 import { FilterIcon, RefreshIcon, SortModal } from "@formsflow/components";
 import PropTypes from "prop-types";
-import { useTranslation  } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const FilterSortActions = ({
   showSortModal,
@@ -11,13 +11,34 @@ const FilterSortActions = ({
   handleSortApply,
   defaultSortOption,
   defaultSortOrder,
-  optionSortBy,  // Accept optionSortBy as a prop
+  optionSortBy,
+  filterDataTestId,
+  filterAriaLabel,
+  refreshDataTestId,
+  refreshAriaLabel,
 }) => {
   const { t } = useTranslation();
+
   return (
     <>
-      <FilterIcon onClick={handleFilterIconClick} />
-      <RefreshIcon onClick={handleRefresh} />
+      <button
+        className={`button-div`}
+        data-testid={filterDataTestId}
+        aria-label={filterAriaLabel}
+        onClick={handleFilterIconClick}
+      >
+        <FilterIcon />
+      </button>
+
+      <button
+        className={`button-div`}
+        data-testid={refreshDataTestId}
+        aria-label={refreshAriaLabel}
+        onClick={handleRefresh}
+      >
+        <RefreshIcon />
+      </button>
+
       {showSortModal && (
         <SortModal
           firstItemLabel={t("Sort By")}
@@ -35,13 +56,17 @@ const FilterSortActions = ({
           ]}
           defaultSortOption={defaultSortOption}
           defaultSortOrder={defaultSortOrder}
+          primaryBtndataTestid="apply-sort-button"
+          secondaryBtndataTestid="cancel-sort-button"
+          primaryBtnariaLabel={t("Apply sorting")}
+          secondaryBtnariaLabel={t("Cancel sorting")}
+          closedataTestid="close-sort-modal"
         />
       )}
     </>
   );
 };
 
-// Add propTypes to validate props
 FilterSortActions.propTypes = {
   showSortModal: PropTypes.bool.isRequired,
   handleFilterIconClick: PropTypes.func.isRequired,
@@ -56,6 +81,10 @@ FilterSortActions.propTypes = {
       label: PropTypes.string.isRequired,
     })
   ).isRequired,
+  filterDataTestId: PropTypes.string.isRequired,
+  filterAriaLabel: PropTypes.string.isRequired,
+  refreshDataTestId: PropTypes.string.isRequired,
+  refreshAriaLabel: PropTypes.string.isRequired,
 };
 
 export default FilterSortActions;

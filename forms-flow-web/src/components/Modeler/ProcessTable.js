@@ -31,14 +31,22 @@ const ProcessTable = React.memo(() => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const ProcessContents = isBPMN
-    ? {
-        processType: "BPMN",
-        extension: ".bpmn",
-      }
-    : {   
-        processType: "DMN",
-        extension: ".dmn",
-      };
+  ? {
+      processType: "BPMN",
+      extension: ".bpmn",
+      filterDataTestId: "Process-list-filter-bpmn",
+      filterAriaLabel: "Filter the Process list (BPMN)",
+      refreshDataTestId: "Process-list-refresh-bpmn",
+      refreshAriaLabel: "Refresh the Process list (BPMN)",
+    }
+  : {   
+      processType: "DMN",
+      extension: ".dmn",
+      filterDataTestId: "Process-list-filter-dmn",
+      filterAriaLabel: "Filter the Process list (DMN)",
+      refreshDataTestId: "Process-list-refresh-dmn",
+      refreshAriaLabel: "Refresh the Process list (DMN)",
+    };
 
   // States and selectors
   const processList = useSelector((state) =>
@@ -53,6 +61,7 @@ const ProcessTable = React.memo(() => {
   const sortConfig = useSelector((state) =>
     isBPMN ? state.process.bpmsort : state.process.dmnSort
   );
+
   const [bpmnState, setBpmnState] = useState({
     activePage: 1,
     limit: 5,
@@ -259,6 +268,10 @@ const ProcessTable = React.memo(() => {
             optionSortBy={optionSortBy}
             defaultSortOption={sortConfig.activeKey}
             defaultSortOrder={sortConfig[sortConfig.activeKey]?.sortOrder}
+            filterDataTestId={ProcessContents.filterDataTestId}
+            filterAriaLabel={ProcessContents.filterAriaLabel}
+            refreshDataTestId={ProcessContents.refreshDataTestId}
+            refreshAriaLabel={ProcessContents.refreshAriaLabel}
           />
           <CustomButton
             variant="primary"

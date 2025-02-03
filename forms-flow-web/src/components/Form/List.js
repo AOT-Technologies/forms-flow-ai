@@ -375,6 +375,10 @@ const List = React.memo((props) => {
                     optionSortBy={optionSortBy}
                     defaultSortOption={formSort.activeKey}
                     defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}
+                    filterDataTestId="form-list-filter" 
+                    filterAriaLabel="Filter the form list" 
+                    refreshDataTestId="form-list-refresh" 
+                    refreshAriaLabel="Refresh the form list"
                   />
 
                   {createDesigns && (

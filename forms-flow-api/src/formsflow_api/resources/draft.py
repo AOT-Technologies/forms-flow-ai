@@ -82,29 +82,3 @@ class DraftResource(Resource):
         )
         response = draft_schema.dump(res)
         return response, HTTPStatus.CREATED
-
-
-@cors_preflight("POST, OPTIONS")
-@API.route("/public/create", methods=["POST", "OPTIONS"])
-class PublicDraftResource(Resource):
-    """Public endpoints to support anonymous forms."""
-
-    @staticmethod
-    @profiletime
-    @API.doc(body=draft)
-    @API.response(201, "CREATED:- Successful request.", model=draft_create_response)
-    @API.response(
-        400,
-        "BAD_REQUEST:- Invalid request.",
-    )
-    def post():
-        """Create a anonymous new draft."""
-        application_json = draft_json = request.get_json()
-        application_schema = ApplicationSchema()
-        draft_schema = DraftSchema()
-
-        application_dict_data = application_schema.load(application_json)
-        draft_dict_data = draft_schema.load(draft_json)
-        res = DraftService.create_new_draft(application_dict_data, draft_dict_data)
-        response = draft_schema.dump(res)
-        return response, HTTPStatus.CREATED

@@ -163,7 +163,7 @@ def test_anonymous_drafts(app, client, session, jwt):
         "content-type": "application/json",
     }
     response = client.post(
-        "/draft/public/create", headers=headers, json=get_draft_create_payload(form_id)
+        "/public/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert response.status_code == 201
     assert response.json.get("data") == get_draft_create_payload()["data"]
@@ -173,7 +173,7 @@ def test_anonymous_drafts(app, client, session, jwt):
     assert application is not None
     assert application.created_by == ANONYMOUS_USER
     response = client.put(
-        f"/application/public/{draft.application_id}/submit",
+        f"/public/application/{draft.application_id}/submit",
         headers=headers,
         json=get_application_create_payload(form_id),
     )
@@ -194,7 +194,7 @@ def test_anonymous_drafts(app, client, session, jwt):
         "content-type": "application/json",
     }
     response = client.post(
-        "/draft/public/create", headers=headers, json=get_draft_create_payload(form_id2)
+        "/public/draft", headers=headers, json=get_draft_create_payload(form_id2)
     )
     assert response.status_code == 403
     assert response.json == {

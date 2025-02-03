@@ -35,6 +35,7 @@ API = Namespace(
 application_create_model = API.model(
     "ApplicationCreate",
     {
+        "data": fields.Raw(),
         "formId": fields.String(),
         "submissionId": fields.String(),
         "formUrl": fields.String(),
@@ -89,11 +90,6 @@ application_update_model = API.model(
         "formUrl": fields.String(),
         "data": fields.Raw(),
     },
-)
-
-draft_update_model = API.model(
-    "DraftUpdate",
-    {"data": fields.Raw()},
 )
 
 application_status_list_model = API.model(
@@ -609,55 +605,3 @@ class DraftSubmissionResource(Resource):
         )
         res = ApplicationSchema().dump(response)
         return res, HTTPStatus.OK
-
-
-@cors_preflight("PUT, OPTIONS")
-@API.route("/public/<int:application_id>/submit", methods=["PUT", "OPTIONS"])
-class PublicDraftSubmissionResource(Resource):
-    """Converts the given anonymous draft entry to actual submission."""
-
-    @staticmethod
-    @profiletime
-    @API.doc(body=submission)
-    @API.response(200, "OK:- Successful request.", model=submission_response)
-    @API.response(
-        400,
-        "BAD_REQUEST:- Invalid request.",
-    )
-    def put(application_id: int):
-        """Updates the application and draft entry to create a new submission."""
-        payload = request.get_json()
-        application_schema = ApplicationSubmissionSchema()
-        dict_data = application_schema.load(payload)
-        dict_data["application_status"] = NEW_APPLICATION_STATUS
-        response = DraftService.make_submission_from_draft(dict_data, application_id)
-        res = ApplicationSchema().dump(response)
-        return res, HTTPStatus.OK
-
-
-@cors_preflight("PUT, OPTIONS")
-@API.route("/public/<int:application_id>", methods=["PUT", "OPTIONS"])
-class PublicDraftUpdateResourceById(Resource):
-    """Resource for updating the anonymous draft."""
-
-    @staticmethod
-    @profiletime
-    @API.doc(body=draft_update_model)
-    @API.response(
-        200,
-        "OK:- Successful request. Returns ```str: success message```",
-    )
-    @API.response(
-        400,
-        "BAD_REQUEST:- Invalid request.",
-    )
-    def put(application_id: int):
-        """Update draft details."""
-        input_json = request.get_json()
-        application_schema = ApplicationSchema()
-        dict_data = application_schema.load(input_json)
-        ApplicationService.update_application(application_id, data=dict_data)
-        return (
-            f"Updated {application_id} successfully",
-            HTTPStatus.OK,
-        )

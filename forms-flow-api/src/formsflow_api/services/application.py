@@ -376,6 +376,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if application:
             if application.is_draft:
                 ApplicationService.update_draft(application_id, data)
+            # update_application is also used for updating drafts, including anonymous drafts.
+            # To prevent public API updates to applications, ensure user_id is checked and not anonymous.
+            elif user_id == ANONYMOUS_USER:
+                raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
             else:
                 data["modified_by"] = user.user_name
                 application.update(data)

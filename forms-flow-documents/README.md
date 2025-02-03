@@ -120,7 +120,7 @@ example
 
 The example template will produce a PDF in a tabular form
 
-[Preview](https://github.com/sreehari-aot/forms-flow-ai/blob/pdf-template/.images/export_pdf_template_1.pdf)
+[Preview](https://github.com/AOT-Technologies/forms-flow-ai/blob/develop/.images/export_pdf_template_1.pdf)
 
 
 Example template for bundle 
@@ -176,7 +176,7 @@ In case of a bundle, the form object contains a list of forms along with the sub
 ```
 The example template will generate a PDF with a table for each form.
 
-[Preview](https://github.com/auslin-aot/forms-flow-ai/blob/feature/FWF-3257-export-pdf-bundle/.images/export_pdf_bundle_template.pdf)
+[Preview](https://github.com/AOT-Technologies/forms-flow-ai/blob/develop/.images/export_pdf_bundle_template.pdf)
 
 TODO: Provide details for `form` object 
 

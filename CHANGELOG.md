@@ -17,15 +17,16 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added Alembic script to update existing active drafts by setting is_draft to true in the application table.
 * Added the includeSubmissionsCount=true parameter to the form list endpoint to include the submissions count.
 * Added below endpoints
-   * Public draft update: `/application/public/<id>`
+   * Public draft update: `/public/application/<id>`
    * Draft submit by id: `/application/<id>/submit`
-   * Public draft submit by id: `/application/public/<id>/submit`
-   * Delete draft by id: `/application/id`
+   * Public draft submit by id: `/public/application/<id>/submit`
+   * Delete draft by id: `/application/<id>`
 
 `Modified`
 
 **formsflow-api**
 * Modified application get/update `/application/id` endpoint to support draft get and update.
+* Updated the anonymous draft POST API URL from `/draft/public/create` to `/public/draft`.
 
 `Removed`
 

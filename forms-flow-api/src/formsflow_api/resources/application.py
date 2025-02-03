@@ -56,6 +56,9 @@ application_base_model = API.model(
         "modifiedBy": fields.String(),
         "processInstanceId": fields.String(),
         "submissionId": fields.String(),
+        "isResubmit": fields.Boolean(),
+        "eventName": fields.String(),
+        "isDraft": fields.Boolean(),
     },
 )
 
@@ -102,34 +105,6 @@ application_resubmit_model = API.model(
         "processInstanceId": fields.String(),
         "messageName": fields.String(),
         "data": fields.Raw(),
-    },
-)
-submission = API.model(
-    "Submission",
-    {
-        "data": fields.Raw(),
-        "formId": fields.String(),
-        "formUrl": fields.String(),
-        "submissionId": fields.String(),
-        "webFormUrl": fields.String(),
-    },
-)
-submission_response = API.model(
-    "SubmissionResponse",
-    {
-        "applicationStatus": fields.String(),
-        "created": fields.String(),
-        "createdBy": fields.String(),
-        "formId": fields.String(),
-        "formProcessMapperId": fields.String(),
-        "id": fields.Integer(),
-        "modified": fields.String(),
-        "modifiedBy": fields.String(),
-        "processInstanceId": fields.String(),
-        "submissionId": fields.String(),
-        "isResubmit": fields.Boolean(),
-        "eventName": fields.String(),
-        "isDraft": fields.Boolean(),
     },
 )
 
@@ -587,14 +562,14 @@ class DraftSubmissionResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_SUBMISSIONS])
     @profiletime
-    @API.doc(body=submission)
-    @API.response(200, "OK:- Successful request.", model=submission_response)
+    @API.doc(body=application_create_model)
+    @API.response(200, "OK:- Successful request.", model=application_base_model)
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
     )
     def put(application_id: str):
-        """Updates the application and draft entry to create a new submission."""
+        """Updates the draft to actual submission."""
         payload = request.get_json()
         token = request.headers["Authorization"]
         application_schema = ApplicationSubmissionSchema()

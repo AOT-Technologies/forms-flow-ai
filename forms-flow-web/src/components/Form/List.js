@@ -61,7 +61,10 @@ const List = React.memo((props) => {
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
-
+  const [successState, setSuccessState] = useState({
+    showSuccess: false,
+    countdown: 2,
+  });
 
   const handleFilterIconClick = () => {
     setShowSortModal(true); // Open the SortModal
@@ -276,13 +279,65 @@ const List = React.memo((props) => {
     validateFormTitle({ title, ...rest });
   };
 
+  // const handleBuild = ({ description, display, title }) => {
+  //   setFormSubmitted(true);
+  //   const error = validateForm({ title });
+  //   if (error) {
+  //     setNameError(error);
+  //     return;
+  //   }
+  //   const name = _camelCase(title);
+  //   const newForm = {
+  //     display,
+  //     tags: ["common"],
+  //     submissionAccess: submissionAccess,
+  //     componentChanged: true,
+  //     newVersion: true,
+  //     components: [],
+  //     access: formAccess,
+  //     title,
+  //     name,
+  //     description,
+  //     path: name.toLowerCase(),
+  //   };
+  //   newForm.components = addHiddenApplicationComponent(newForm).components;
+
+  //   if (MULTITENANCY_ENABLED && tenantKey) {
+  //     newForm.tenantKey = tenantKey;
+  //     newForm.path = addTenantkey(newForm.path, tenantKey);
+  //     newForm.name = addTenantkey(newForm.name, tenantKey);
+  //   }
+  //   formCreate(newForm)
+  //     .then((res) => {
+  //       const form = res.data;
+  //       dispatch(setFormSuccessData("form", form));
+  //       navigateToDesignFormEdit(dispatch, tenantKey, form._id);
+  //     })
+  //     .catch((err) => {
+  //       let error;
+  //       if (err.response?.data) {
+  //         error = err.response.data;
+  //         console.log(error);
+  //         setNameError(error?.errors?.name?.message);
+  //       } else {
+  //         error = err.message;
+  //         setNameError(error?.errors?.name?.message);
+  //       }
+  //     })
+  //     .finally(() => {
+  //       setFormSubmitted(false);
+  //     });
+  // };
   const handleBuild = ({ description, display, title }) => {
     setFormSubmitted(true);
     const error = validateForm({ title });
+  
     if (error) {
       setNameError(error);
+      setFormSubmitted(false); // Stop loader if validation fails
       return;
     }
+  
     const name = _camelCase(title);
     const newForm = {
       display,
@@ -297,18 +352,34 @@ const List = React.memo((props) => {
       description,
       path: name.toLowerCase(),
     };
+  
     newForm.components = addHiddenApplicationComponent(newForm).components;
-
+  
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
       newForm.path = addTenantkey(newForm.path, tenantKey);
       newForm.name = addTenantkey(newForm.name, tenantKey);
     }
+  
     formCreate(newForm)
       .then((res) => {
         const form = res.data;
         dispatch(setFormSuccessData("form", form));
-        navigateToDesignFormEdit(dispatch, tenantKey, form._id);
+  
+        // 🎯 Start Success Countdown (2 → 1 → 0)
+        let count = 2;
+        setSuccessState({ showSuccess: true, countdown: count });
+  
+        const interval = setInterval(() => {
+          count--; // Decrement the count
+          setSuccessState((prev) => ({ ...prev, countdown: count })); // Update state
+  
+          if (count < 0) {
+            clearInterval(interval); // Clear interval
+            setSuccessState({ showSuccess: false, countdown: 0 }); // Hide success
+              navigateToDesignFormEdit(dispatch, tenantKey, form._id);
+          }
+        }, 1000);
       })
       .catch((err) => {
         let error;
@@ -318,14 +389,16 @@ const List = React.memo((props) => {
           setNameError(error?.errors?.name?.message);
         } else {
           error = err.message;
-          setNameError(error?.errors?.name?.message);
+          setNameError(error);
         }
       })
       .finally(() => {
-        setFormSubmitted(false);
+        setFormSubmitted(false); // Stop loader
       });
   };
-
+  
+  
+  
   const handleRefresh = () => {
   fetchForms();
   };
@@ -412,6 +485,8 @@ const List = React.memo((props) => {
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
                     buildForm={true}
+                    showSuccess={successState.showSuccess}
+                    successCountdown={successState.countdown}
                   />
                   {importFormModal && (
                     <ImportModal

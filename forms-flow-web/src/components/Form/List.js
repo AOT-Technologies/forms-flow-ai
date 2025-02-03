@@ -279,70 +279,31 @@ const List = React.memo((props) => {
     validateFormTitle({ title, ...rest });
   };
 
-  // const handleBuild = ({ description, display, title }) => {
-  //   setFormSubmitted(true);
-  //   const error = validateForm({ title });
-  //   if (error) {
-  //     setNameError(error);
-  //     return;
-  //   }
-  //   const name = _camelCase(title);
-  //   const newForm = {
-  //     display,
-  //     tags: ["common"],
-  //     submissionAccess: submissionAccess,
-  //     componentChanged: true,
-  //     newVersion: true,
-  //     components: [],
-  //     access: formAccess,
-  //     title,
-  //     name,
-  //     description,
-  //     path: name.toLowerCase(),
-  //   };
-  //   newForm.components = addHiddenApplicationComponent(newForm).components;
-
-  //   if (MULTITENANCY_ENABLED && tenantKey) {
-  //     newForm.tenantKey = tenantKey;
-  //     newForm.path = addTenantkey(newForm.path, tenantKey);
-  //     newForm.name = addTenantkey(newForm.name, tenantKey);
-  //   }
-  //   formCreate(newForm)
-  //     .then((res) => {
-  //       const form = res.data;
-  //       dispatch(setFormSuccessData("form", form));
-  //       navigateToDesignFormEdit(dispatch, tenantKey, form._id);
-  //     })
-  //     .catch((err) => {
-  //       let error;
-  //       if (err.response?.data) {
-  //         error = err.response.data;
-  //         console.log(error);
-  //         setNameError(error?.errors?.name?.message);
-  //       } else {
-  //         error = err.message;
-  //         setNameError(error?.errors?.name?.message);
-  //       }
-  //     })
-  //     .finally(() => {
-  //       setFormSubmitted(false);
-  //     });
-  // };
   const handleBuild = ({ description, display, title }) => {
     setFormSubmitted(true);
+    
     const error = validateForm({ title });
+    if (error) return handleValidationError(error);
+    
+    const newForm = createNewForm({ title, display, description });
+    
+    formCreate(newForm)
+      .then((res) => handleFormSuccess(res))
+      .catch((err) => handleFormError(err))
+      .finally(() => setFormSubmitted(false));
+  };
   
-    if (error) {
-      setNameError(error);
-      setFormSubmitted(false); // Stop loader if validation fails
-      return;
-    }
+  const handleValidationError = (error) => {
+    setNameError(error);
+    setFormSubmitted(false);
+  };
   
+  const createNewForm = ({ title, display, description }) => {
     const name = _camelCase(title);
-    const newForm = {
+    let newForm = {
       display,
       tags: ["common"],
-      submissionAccess: submissionAccess,
+      submissionAccess,
       componentChanged: true,
       newVersion: true,
       components: [],
@@ -354,48 +315,48 @@ const List = React.memo((props) => {
     };
   
     newForm.components = addHiddenApplicationComponent(newForm).components;
-  
+    
     if (MULTITENANCY_ENABLED && tenantKey) {
-      newForm.tenantKey = tenantKey;
-      newForm.path = addTenantkey(newForm.path, tenantKey);
-      newForm.name = addTenantkey(newForm.name, tenantKey);
+      newForm = applyMultitenancy(newForm);
     }
   
-    formCreate(newForm)
-      .then((res) => {
-        const form = res.data;
-        dispatch(setFormSuccessData("form", form));
-  
-        // 🎯 Start Success Countdown (2 → 1 → 0)
-        let count = 2;
-        setSuccessState({ showSuccess: true, countdown: count });
-  
-        const interval = setInterval(() => {
-          count--; // Decrement the count
-          setSuccessState((prev) => ({ ...prev, countdown: count })); // Update state
-  
-          if (count < 0) {
-            clearInterval(interval); // Clear interval
-            setSuccessState({ showSuccess: false, countdown: 0 }); // Hide success
-              navigateToDesignFormEdit(dispatch, tenantKey, form._id);
-          }
-        }, 1000);
-      })
-      .catch((err) => {
-        let error;
-        if (err.response?.data) {
-          error = err.response.data;
-          console.log(error);
-          setNameError(error?.errors?.name?.message);
-        } else {
-          error = err.message;
-          setNameError(error);
-        }
-      })
-      .finally(() => {
-        setFormSubmitted(false); // Stop loader
-      });
+    return newForm;
   };
+  
+  const applyMultitenancy = (form) => {
+    form.tenantKey = tenantKey;
+    form.path = addTenantkey(form.path, tenantKey);
+    form.name = addTenantkey(form.name, tenantKey);
+    return form;
+  };
+  
+  const handleFormSuccess = (res) => {
+    const form = res.data;
+    dispatch(setFormSuccessData("form", form));
+    startSuccessCountdown(form);
+  };
+  
+  const startSuccessCountdown = (form) => {
+    let count = 2;
+    setSuccessState({ showSuccess: true, countdown: count });
+    
+    const interval = setInterval(() => {
+      count--;
+      setSuccessState((prev) => ({ ...prev, countdown: count }));
+      
+      if (count < 0) {
+        clearInterval(interval);
+        setSuccessState({ showSuccess: false, countdown: 0 });
+        navigateToDesignFormEdit(dispatch, tenantKey, form._id);
+      }
+    }, 1000);
+  };
+  
+  const handleFormError = (err) => {
+    const error = err.response?.data || err.message;
+    setNameError(error?.errors?.name?.message || error);
+  };
+  
   
   
   

@@ -9,9 +9,28 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
   const { t } = useTranslation();
   const FormSettingsRef = useRef();
   const [ isSaveButtonDisabled ,setIsSaveButtonDisabled] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
 
-  const handleConfirmFunction = () => {
-     handleConfirm(FormSettingsRef.current);
+  const handleConfirmFunction = async () => {
+    const { formDetails, validateField } = FormSettingsRef.current;
+    const fieldsToValidate = ["title", "path"];
+    
+    // Reset validation error state at the beginning
+    let validationError = false;
+  
+    for (const field of fieldsToValidate) {
+      setIsValidating(true);
+      const fieldValue = formDetails?.[field];  
+      if (!fieldValue || !(await validateField(field, fieldValue))) {
+        validationError = true;
+        setIsValidating(false);
+        break; // Stop further validation if any field fails
+      }
+    }
+    if (!validationError) {
+      setIsValidating(false);
+      handleConfirm(FormSettingsRef.current);
+    } 
   };
   return (
     <Modal
@@ -37,10 +56,10 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           variant="primary"
           size="md"
           disabled={isSaving || isSaveButtonDisabled}
-          buttonLoading={isSaving}
+          buttonLoading={isSaving || isValidating}
           label={t("Save Changes")}
           onClick={handleConfirmFunction}
-          dataTestid="save-form-settings"
+          dataTestId="save-form-settings"
           ariaLabel={t("Save Form Settings")}
         />
 
@@ -49,7 +68,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           size="md"
           label={t("Discard Changes")}
           onClick={handleClose}
-          dataTestid="cancel-form-settings"
+          dataTestId="cancel-form-settings"
           ariaLabel={t("Cancel Form Settings")}
         />
       </Modal.Footer>

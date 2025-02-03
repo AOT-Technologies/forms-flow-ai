@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation  } from "react-i18next";
+import { SortIcon } from "@formsflow/components";
+import { StyleServices } from "@formsflow/service";
 
 const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = "" }) => {
     const { t } = useTranslation();
@@ -11,6 +13,7 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
         handleSort(columnKey);
         }
     };
+    const grayColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
     return (
       <button
         className={`button-as-div ${className}`}
@@ -21,13 +24,8 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
         aria-label={`${title}-header-btn`}
       >
         <span className="mt-1">{t(title)}</span>
-        <span>
-        <i
-          data-testid={`${columnKey}-${sortedOrder}-sort-icon`}
-          className={`fa fa-arrow-${sortedOrder === "asc" ? "up" : "down"} sort-icon fs-16 ms-2`}
-          data-toggle="tooltip"
-          title={t(sortedOrder === "asc" ? "Ascending" : "Descending")}
-        ></i>
+        <span className={sortedOrder === "asc" ? "arrow-up" : "arrow-down"}>
+        <SortIcon color={grayColor}/>
       </span>
       </button>
     );

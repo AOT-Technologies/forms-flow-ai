@@ -11,6 +11,7 @@ import {
   CustomButton,
 } from "@formsflow/components";
 import { StyleServices } from "@formsflow/service";
+import { useTranslation } from "react-i18next";
 
 const ActionModal = React.memo(
   ({
@@ -23,7 +24,8 @@ const ActionModal = React.memo(
     isMigrated,
     diagramType
   }) => {
-    const primaryColor = StyleServices.getCSSVariable('--ff-primary'); 
+    const { t } = useTranslation();
+    const primaryColor = StyleServices.getCSSVariable('--ff-primary');
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
@@ -32,29 +34,29 @@ const ActionModal = React.memo(
 
     if (CategoryType === "FORM" && (published || !isMigrated)) {
       customInfo = {
-        heading: "Note",
+        heading: t("Note"),
         content: `
-          ${published ? `Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.` : ""}
+          ${published ? t("Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.") : ""}
           ${!isMigrated ? "\nSome actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\"." : ""}
         `.trim(),
       };
     } else if (CategoryType === "WORKFLOW" && published) {
       customInfo = {
         heading: "Note",
-        content: `Importing and deleting is not available when the ${diagramType} is published.` + 
+        content: `Importing is not available when the ${diagramType} is published.` +
         `You must unpublish the ${diagramType} first if you wish to make any changes.`.trim(),
-      
+
 
       };
     }
-    
-    
+
+
     return (
       <>
         <Modal show={newActionModal} onHide={onClose} centered={true} size="sm">
           <Modal.Header>
             <Modal.Title className="modal-headder">
-              <div> Action</div>
+              <div>{t("Action")}</div>
             </Modal.Title>
             <div className="d-flex align-items-center">
               <CloseIcon onClick={onClose} color={primaryColor} />
@@ -67,11 +69,11 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Duplicate"
+                  label={t("Duplicate")}
                   disabled={!isMigrated}
                   icon={<DuplicateIcon color={primaryColor} />}
                   className=""
-                  dataTestid="duplicate-form-button"
+                  dataTestId="duplicate-form-button"
                   ariaLabel="Duplicate Button"
                   onClick={() => handleAction("DUPLICATE")}
                 />
@@ -79,10 +81,10 @@ const ActionModal = React.memo(
                   variant="secondary"
                   disabled={published || !isMigrated}
                   size="sm"
-                  label="Import"
+                  label={t("Import")}
                   icon={<ImportIcon />}
                   className=""
-                  dataTestid="import-form-button"
+                  dataTestId="import-form-button"
                   ariaLabel="Import Form"
                   onClick={() => handleAction("IMPORT")}
                 />
@@ -90,10 +92,10 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Export"
+                  label={t("Export")}
                   icon={<PencilIcon />}
                   className=""
-                  dataTestid="export-form-button"
+                  dataTestId="export-form-button"
                   ariaLabel="Export Form"
                   onClick={() => handleAction("EXPORT")}
                 />
@@ -102,10 +104,10 @@ const ActionModal = React.memo(
                   variant="secondary"
                   disabled={published}
                   size="sm"
-                  label="Delete"
+                  label={t("Delete")}
                   icon={<TrashIcon />}
                   className=""
-                  dataTestid="delete-form-button"
+                  dataTestId="delete-form-button"
                   ariaLabel="Delete Form"
                   onClick={() => handleAction("DELETE")}
                 />
@@ -120,7 +122,7 @@ const ActionModal = React.memo(
                   label="Duplicate"
                   icon={<DuplicateIcon />}
                   className=""
-                  dataTestid="duplicate-workflow-button"
+                  dataTestId="duplicate-workflow-button"
                   ariaLabel="Duplicate Workflow"
                   disabled={isCreate}
                   onClick={() => handleAction("DUPLICATE")}
@@ -133,7 +135,7 @@ const ActionModal = React.memo(
                   label="Import"
                   icon={<ImportIcon />}
                   className=""
-                  dataTestid="import-workflow-button"
+                  dataTestId="import-workflow-button"
                   ariaLabel="Import Workflow"
                   onClick={() => handleAction("IMPORT")}
                 />
@@ -144,7 +146,7 @@ const ActionModal = React.memo(
                   label="Export"
                   icon={<PencilIcon />}
                   className=""
-                  dataTestid="export-workflow-button"
+                  dataTestId="export-workflow-button"
                   ariaLabel="Export Workflow"
                   onClick={() => handleAction("EXPORT")}
                 />

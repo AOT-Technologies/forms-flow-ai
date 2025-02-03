@@ -1,6 +1,139 @@
-export const CustomButton = ({ onClick, label }) => {
-    return <button onClick={onClick}>{label}</button>;  
-}
+//mocked components from MF
+
+export const CustomButton = ({ 
+  onClick, 
+  label, 
+  dataTestId, 
+  variant, 
+  size, 
+  className = "", 
+  ariaLabel, 
+  disabled = false 
+}) => {
+  return (
+    <button
+      onClick={onClick}
+      data-testid={dataTestId}
+      aria-label={ariaLabel}
+      className={`${className} ${size ? `btn-${size}` : ''} ${variant ? `btn-${variant}` : ''}`}
+      disabled={disabled}
+    >
+      {label}
+    </button>
+  );
+};
+
+export const CloseIcon = ({ 
+  onClick, 
+  dataTestId,  
+}) => {
+  return (
+    <button
+      onClick={onClick}
+      data-testid={dataTestId}
+    >
+    </button>
+  );
+};
+
+export const FilterIcon = ({ 
+  handleFilterIconClick, 
+  filterDataTestId,  
+}) => {
+  return (
+    <button
+        className={`button-div`}
+        data-testid={filterDataTestId}
+        onClick={handleFilterIconClick}
+      >
+        <FilterIcon />
+      </button>
+  );
+};
+
+export const RefreshIcon = ({ 
+  handleRefresh, 
+  refreshDataTestId,  
+}) => {
+  return (
+    <button
+        className={`button-div`}
+        data-testid={refreshDataTestId}
+        onClick={handleRefresh}
+      >
+        <RefreshIcon />
+      </button>
+  );
+};
+
+export const SortModal = ({
+  showSortModal,
+  onClose,
+  primaryBtnAction,
+  secondaryBtnAction,
+  secondaryBtnLabel,
+  optionSortBy,
+  optionSortOrder,
+  defaultSortOption,
+  defaultSortOrder,
+  firstItemLabel,
+  secondItemLabel,
+  isSaveBtnLoading,
+}) => {
+  const [selectedOption, setSelectedOption] = useState(defaultSortOption);
+  const [selectedOrder, setSelectedOrder] = useState(defaultSortOrder);
+
+  return (
+    <div data-testid="sort-modal">
+      {showSortModal && (
+        <div>
+          <h1>{modalHeader}</h1>
+          <div>
+            <label>{firstItemLabel}</label>
+            <select
+              value={selectedOption}
+              onChange={(e) => setSelectedOption(e.target.value)}
+            >
+              {optionSortBy.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label>{secondItemLabel}</label>
+            <select
+              value={selectedOrder}
+              onChange={(e) => setSelectedOrder(e.target.value)}
+            >
+              {optionSortOrder.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            onClick={() =>
+              primaryBtnAction && primaryBtnAction(selectedOption, selectedOrder)
+            }
+            disabled={isSaveBtnLoading || !selectedOption || !selectedOrder}
+          >
+            {primaryBtnLabel}
+          </button>
+
+          <button onClick={secondaryBtnAction}>{secondaryBtnLabel}</button>
+          <button onClick={onClose}>Close</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
 
 
 export const FormBuilderModal = ({

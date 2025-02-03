@@ -57,7 +57,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
               setSortOptions(!sortOptions);
               setDisplayFilter(false);
             }}
-            dataTestid="task-sorby"
+            dataTestId="task-sorby"
             ariaLabel={t("Task Sortby Button")}
             />
           {sortOptions && (
@@ -76,7 +76,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
               setDisplayFilter(false); 
               setSortOptions(false);
             }}
-            dataTestid="task-expand"
+            dataTestId="task-expand"
             ariaLabel={t("Task Expand Button")}
             />
            </div>
@@ -91,7 +91,7 @@ const TaskSearchBarListView = React.memo(({ toggleAllTaskVariables }) => {
             onClick={() => {
               setDisplayFilter(true); setSortOptions(false);
             }}
-            dataTestid="task-search"
+            dataTestId="task-search"
             ariaLabel={t("Task Search Button")}
             />
           {displayFilter && (

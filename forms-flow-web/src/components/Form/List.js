@@ -141,7 +141,7 @@ const List = React.memo((props) => {
     setSearch("");
     dispatch(setBpmFormSearch(""));
   };
-  const { forms, getFormsInit, errors } = props;
+  const { forms, getFormsInit } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading

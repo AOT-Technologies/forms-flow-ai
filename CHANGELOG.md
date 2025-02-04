@@ -25,7 +25,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 `Modified`
 
 **formsflow-api**
-* Modified application get/update `/application/id` endpoint to support draft get and update.
+* Modified the `/application/<id>` GET and UPDATE endpoints to support draft get and update.
 * Updated the anonymous draft POST API URL from `/draft/public/create` to `/public/draft`.
 
 `Removed`

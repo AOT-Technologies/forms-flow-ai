@@ -10,6 +10,7 @@ from formsflow_api_utils.utils import (
     NEW_APPLICATION_STATUS,
     cors_preflight,
     profiletime,
+    submission_response,
 )
 
 from formsflow_api.constants import BusinessErrorCode
@@ -34,23 +35,8 @@ application_create_model = API.model(
     },
 )
 
-application_base_model = API.model(
-    "AnonymousApplicationCreateResponse",
-    {
-        "applicationStatus": fields.String(),
-        "created": fields.String(),
-        "createdBy": fields.String(),
-        "formId": fields.String(),
-        "formProcessMapperId": fields.String(),
-        "id": fields.Integer(),
-        "modified": fields.String(),
-        "modifiedBy": fields.String(),
-        "processInstanceId": fields.String(),
-        "submissionId": fields.String(),
-        "isResubmit": fields.Boolean(),
-        "eventName": fields.String(),
-        "isDraft": fields.Boolean(),
-    },
+anonymous_application_response_model = API.model(
+    "AnonymousApplicationCreateResponse", submission_response
 )
 
 check_response = API.model(
@@ -91,7 +77,9 @@ class ApplicationAnonymousResourcesByIds(Resource):
     @staticmethod
     @profiletime
     @API.doc(body=application_create_model)
-    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
+    @API.response(
+        201, "CREATED:- Successful request.", model=anonymous_application_response_model
+    )
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -179,7 +167,9 @@ class PublicDraftSubmissionResource(Resource):
     @staticmethod
     @profiletime
     @API.doc(body=application_create_model)
-    @API.response(200, "OK:- Successful request.", model=application_base_model)
+    @API.response(
+        200, "OK:- Successful request.", model=anonymous_application_response_model
+    )
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",

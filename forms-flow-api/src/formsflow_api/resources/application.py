@@ -15,6 +15,7 @@ from formsflow_api_utils.utils import (
     cors_preflight,
     get_form_and_submission_id_from_form_url,
     profiletime,
+    submission_response,
 )
 
 from formsflow_api.schemas import (
@@ -43,28 +44,13 @@ application_create_model = API.model(
     },
 )
 
-application_base_model = API.model(
-    "ApplicationCreateResponse",
-    {
-        "applicationStatus": fields.String(),
-        "created": fields.String(),
-        "createdBy": fields.String(),
-        "formId": fields.String(),
-        "formProcessMapperId": fields.String(),
-        "id": fields.Integer(),
-        "modified": fields.String(),
-        "modifiedBy": fields.String(),
-        "processInstanceId": fields.String(),
-        "submissionId": fields.String(),
-        "isResubmit": fields.Boolean(),
-        "eventName": fields.String(),
-        "isDraft": fields.Boolean(),
-    },
+application_create_response_model = API.model(
+    "ApplicationCreateResponse", submission_response
 )
 
 application_model = API.inherit(
     "Application",
-    application_base_model,
+    application_create_response_model,
     {
         "applicationName": fields.String(),
         "processKey": fields.String(),
@@ -468,7 +454,9 @@ class ApplicationResourcesByIds(Resource):
     @auth.has_one_of_roles([CREATE_SUBMISSIONS])
     @profiletime
     @API.doc(body=application_create_model)
-    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
+    @API.response(
+        201, "CREATED:- Successful request.", model=application_create_response_model
+    )
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -563,7 +551,9 @@ class DraftSubmissionResource(Resource):
     @auth.has_one_of_roles([CREATE_SUBMISSIONS])
     @profiletime
     @API.doc(body=application_create_model)
-    @API.response(200, "OK:- Successful request.", model=application_base_model)
+    @API.response(
+        200, "OK:- Successful request.", model=application_create_response_model
+    )
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",

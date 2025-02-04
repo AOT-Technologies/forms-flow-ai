@@ -202,3 +202,16 @@ export const setTotalDmnCount = (data) => (dispatch) => {
     payload: data,
     }); 
 };
+
+export const setBpmSort = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_SORT,
+    payload: data,
+    });
+};
+export const setDmnSort = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DMN_SORT,
+    payload: data,
+    });
+};

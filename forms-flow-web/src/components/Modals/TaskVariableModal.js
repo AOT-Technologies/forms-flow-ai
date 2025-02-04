@@ -20,8 +20,8 @@ import { StyleServices } from "@formsflow/service";
 
   // Filter out applicationId and applicationStatus
   const ignoreKeywords = new Set([
-    "applicationId", 
-    "applicationStatus", 
+    "applicationId",
+    "applicationStatus",
     "currentUser",
     "submitterEmail",
     "submitterFirstName",
@@ -29,7 +29,7 @@ import { StyleServices } from "@formsflow/service";
     "currentUserRole",
     "allAvailableRoles"
   ]);
- 
+
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
@@ -68,8 +68,8 @@ PillList.propTypes = {
 /* ------------------------------ end pill list ----------------------------- */
 
 const FormComponent = React.memo(
-  ({ form, 
-    alternativeLabels, 
+  ({ form,
+    alternativeLabels,
     setAlternativeLabels,
     selectedComponent,
     setSelectedComponent
@@ -86,6 +86,14 @@ const FormComponent = React.memo(
       const data = _.cloneDeep(form);
       const manipulatedKeys = [];
       Utils.eachComponent(data.components,(component)=>{
+        // remove display (show/hide) conditions for showing the component in taskvariable modal
+        /* --------------------------- ------------------ --------------------------- */
+        component.conditional = {};
+        component.customConditional = "";
+        component.logic = [];
+        component.hidden = false;
+        component.hideLabel = false;
+        /* ---------------------------------- ---- ---------------------------------- */
         //Keys ignored for the default task variable that don't need to be displayed in the form.
         if(component.type == "hidden" && !ignoreKeywords.has(component.key)){
           component.type = "textfield";
@@ -107,19 +115,19 @@ const FormComponent = React.memo(
       "tabs",
     ]);
     const ignoredKeys = new Set([
-      "hidden", 
+      "hidden",
     ]);
     const handleClick = useCallback(
       (e) => {
         const formioComponent = e.target.closest(".formio-component");
         const highlightedElement = document.querySelector(".formio-hilighted");
-    
+
         if (highlightedElement) {
           highlightedElement.classList.remove("formio-hilighted");
         }
-    
+
         if (formioComponent) {
-          
+
           let classes = Array.from(formioComponent.classList).filter((cls) =>
             cls.startsWith("formio-component-")
           );
@@ -139,13 +147,13 @@ const FormComponent = React.memo(
               label: "",
               altVariable: "",
             });
-            return; 
+            return;
           }
-     
-    
+
+
           const labelElement = formioComponent.querySelector("label");
           let label = "";
-    
+
           if (labelElement) {
             label = Array.from(labelElement.childNodes)
               .filter(
@@ -158,11 +166,11 @@ const FormComponent = React.memo(
               .map((node) => node.textContent.trim())
               .join(" ");
           }
-              
+
           // Highlight the selected component
           formioComponent.classList.add("formio-hilighted");
           setShowElement(true);
-    
+
           // Update the selected component state
           setSelectedComponent({
             key: componentKey,
@@ -188,9 +196,9 @@ const FormComponent = React.memo(
       const handleOutsideClick = (event) => {
         const clickedInsideForm = formHilighter?.contains(event.target);
         const clickedInsideDetails = detailsRef.current?.contains(event.target);
-    
+
         if (!clickedInsideForm && !clickedInsideDetails) {
-          setShowElement(false); 
+          setShowElement(false);
           const highlightedElement = document.querySelector(".formio-hilighted");
           if (highlightedElement) {
             highlightedElement.classList.remove("formio-hilighted"); // Remove the highlight class
@@ -221,7 +229,7 @@ const FormComponent = React.memo(
         if (highlightedElement) {
           highlightedElement.classList.remove("formio-hilighted");
         }
-      }     
+      }
       setShowElement(false);
     };
 
@@ -278,7 +286,7 @@ const FormComponent = React.memo(
                 onClick={handleAddAlternative}
                 className="w-75"
                 disabled={selectedComponent.
-                    altVariable === alternativeLabels[selectedComponent.key]?.altVariable} //TBD need to create a variable to compare values 
+                    altVariable === alternativeLabels[selectedComponent.key]?.altVariable} //TBD need to create a variable to compare values
               />
             </div>
           ) : (
@@ -306,7 +314,7 @@ const TaskVariableModal = React.memo(
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
-    
+
     const form = useSelector((state) => state.form?.form || {});
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
@@ -331,7 +339,7 @@ const TaskVariableModal = React.memo(
         label: "",
         altVariable: "",
       });
-      
+
     const removeSelectedVariable = useCallback((key) => {
         setSelectedComponent((prev) => ({
             ...prev,
@@ -342,7 +350,7 @@ const TaskVariableModal = React.memo(
         delete newLabels[key];
         return newLabels;
       });
-      
+
     }, []);
 
     const handleClose = () => onClose();
@@ -352,7 +360,7 @@ const TaskVariableModal = React.memo(
         (i) => ({
           key: i.key,
           label: i.altVariable || i.labelOfComponent,    // If altVariable exists, use it, otherwise it will be  labelOfComponent
-          type: i.type 
+          type: i.type
         })
       );
       const mapper = {
@@ -453,10 +461,8 @@ const TaskVariableModal = React.memo(
             <>
               <div className="info-pill-container">
                 <CustomInfo
-                  heading="Note"
-                  content="To use variables in the flow, as well as sorting by them in
-                  the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed
-                 are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks."
+                  heading={t("Note")}
+                  content={t("To use variables in the flow, as well as sorting by them in the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks.")}
                 />
                 <div>
                   <label className="selected-var-text">

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
-                   
+
   setBpmFormSort,
 } from "../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -38,7 +38,6 @@ function FormTable() {
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
   const { createDesigns, viewDesigns } = userRoles();
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [currentFormSort ,setCurrentFormSort] = useState(formsort);  
 
   const pageOptions = [
     {
@@ -65,20 +64,14 @@ function FormTable() {
 
 
   const handleSort = (key) => {
-    setCurrentFormSort((prevSort) => {
-      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
-      return {
-        ...prevSort,
-        activeKey: key,
-        [key]: { sortOrder: newSortOrder },
-      };
-    });
+    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
+   dispatch(setBpmFormSort({
+    ...formsort,
+    activeKey: key,
+    [key]: { sortOrder: newSortOrder },
+  }));
   };
 
-  useEffect(() => {
-    dispatch(setBpmFormSort(currentFormSort));
-  },[currentFormSort,dispatch]);
-  
   const viewOrEditForm = (formId, path) => {
     dispatch(resetFormProcessData());
     dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
@@ -115,35 +108,35 @@ function FormTable() {
                   <SortableHeader
                    columnKey="formName"
                    title="Form Name"
-                   currentSort={currentFormSort}
+                   currentSort={formsort}
                    handleSort={handleSort}
                    className="gap-2"
                   />
                   </th>
                   <th className="w-30" scope="col">{t("Description")}</th>
                   <th className="w-13" scope="col">
-                  <SortableHeader 
+                  <SortableHeader
                   columnKey="modified"
                   title="Last Edited"
-                  currentSort={currentFormSort}
+                  currentSort={formsort}
                   handleSort={handleSort}
                   className="gap-2"
                   />
                   </th>
                   <th className="w-13" scope="col">
-                  <SortableHeader 
+                  <SortableHeader
                     columnKey="visibility"
                     title="Visibility"
-                    currentSort={currentFormSort}
-                    handleSort={handleSort} 
-                    className="gap-2"/>                
+                    currentSort={formsort}
+                    handleSort={handleSort}
+                    className="gap-2"/>
                   </th>
                   <th className="w-12" scope="col" colSpan="4">
-                    <SortableHeader 
+                    <SortableHeader
                     columnKey="status"
                     title="Status"
-                    currentSort={currentFormSort}
-                    handleSort={handleSort} 
+                    currentSort={formsort}
+                    handleSort={handleSort}
                     className="gap-2"/>
                   </th>
                   <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>

@@ -6,8 +6,6 @@ import { toast } from "react-toastify";
 import { addTenantkey } from "../../helper/helper";
 import {
   selectRoot,
-  selectError,
-  Errors,
   deleteForm,
 } from "@aot-technologies/formio-react";
 import Loading from "../../containers/Loading";
@@ -446,11 +444,11 @@ List.propTypes = {
 const mapStateToProps = (state) => {
   return {
     forms: selectRoot("forms", state),
-    userRoles: selectRoot("user", state)?.roles || [],
-    modalOpen: selectRoot("formDelete", state)?.formDelete.modalOpen,
-    formId: selectRoot("formDelete", state)?.formDelete.formId,
-    formName: selectRoot("formDelete", state)?.formDelete.formName,
-    isFormWorkflowSaved: selectRoot("formDelete", state)?.isFormWorkflowSaved,
+    userRoles: selectRoot("user", state).roles || [],
+    modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
+    formId: selectRoot("formDelete", state).formDelete.formId,
+    formName: selectRoot("formDelete", state).formDelete.formName,
+    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
     tenants: selectRoot("tenants", state),
     path: selectRoot("formDelete", state)?.formDelete.path,
   };

@@ -97,8 +97,7 @@ function FormTable() {
 
 
   return (
-    <>
-      <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
+    <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
           <div className="custom-tables-wrapper">
             <table className="table custom-tables table-responsive-sm mb-0">
@@ -185,7 +184,7 @@ function FormTable() {
                             }
                             onClick={() => viewOrEditForm(e._id, 'edit')}
                             className=""
-                            dataTestid={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
+                            dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
                             ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
                           /> )}
                         </td>
@@ -212,7 +211,6 @@ function FormTable() {
           </div>
         </div>
       </LoadingOverlay>
-    </>
   );
 }
 

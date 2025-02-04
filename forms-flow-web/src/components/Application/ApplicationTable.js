@@ -262,7 +262,7 @@ const ApplicationTable = () => {
                     onClick={() => {
                       setDisplayFilter(true);
                     }}
-                    dataTestid="application-filter"
+                    dataTestId="application-filter"
                     ariaLabel={t("Application Filter Button")}
                    />
                     {displayFilter && (

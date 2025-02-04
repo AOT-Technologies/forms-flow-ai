@@ -1,10 +1,19 @@
 
 export const mockstate = {
 
-  
+  process:{
+    processList: []
+  },
   bpmForms:  {
     error: "",
-    forms: [],
+    forms: [
+      {
+        _id: 'some-form-id',
+        title: 'Test Form',
+        description: 'Test Description',
+        status: 'active',
+      },
+    ],
     isActive: false,
     limit: 5,
     page: 1,
@@ -83,8 +92,12 @@ export const mockstate = {
     designerFormLoading: false,
     searchFormLoading: false,
     designerAccessDenied: false
+  },
+  formDelete: { 
+    formDelete: { modalOpen: false, formId: "", formName: "" }
   }
 
+ 
 
 }
 

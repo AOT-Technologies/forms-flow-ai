@@ -9,6 +9,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
   const { t } = useTranslation();
   const FormSettingsRef = useRef();
   const [ isSaveButtonDisabled ,setIsSaveButtonDisabled] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
 
   const handleConfirmFunction = async () => {
     const { formDetails, validateField } = FormSettingsRef.current;
@@ -18,13 +19,16 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
     let validationError = false;
   
     for (const field of fieldsToValidate) {
+      setIsValidating(true);
       const fieldValue = formDetails?.[field];  
       if (!fieldValue || !(await validateField(field, fieldValue))) {
         validationError = true;
+        setIsValidating(false);
         break; // Stop further validation if any field fails
       }
     }
     if (!validationError) {
+      setIsValidating(false);
       handleConfirm(FormSettingsRef.current);
     } 
   };
@@ -52,7 +56,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           variant="primary"
           size="md"
           disabled={isSaving || isSaveButtonDisabled}
-          buttonLoading={isSaving}
+          buttonLoading={isSaving || isValidating}
           label={t("Save Changes")}
           onClick={handleConfirmFunction}
           dataTestid="save-form-settings"

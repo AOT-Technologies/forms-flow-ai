@@ -8,6 +8,7 @@ import {
   NoDataFound,
   BuildModal,
 } from "@formsflow/components";
+import FilterSortActions from "../CustomComponents/FilterSortActions";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -20,6 +21,8 @@ import {
   setBpmnSearchText,
   setDmnSearchText,
   setIsPublicDiagram,
+  setBpmSort,
+  setDmnSort
 } from "../../actions/processActions";
 
 const ProcessTable = React.memo(() => {
@@ -28,14 +31,22 @@ const ProcessTable = React.memo(() => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const ProcessContents = isBPMN
-    ? {
-        processType: "BPMN",
-        extension: ".bpmn",
-      }
-    : {   
-        processType: "DMN",
-        extension: ".dmn",
-      };
+  ? {
+      processType: "BPMN",
+      extension: ".bpmn",
+      filterDataTestId: "Process-list-filter-bpmn",
+      filterAriaLabel: "Filter the Process list (BPMN)",
+      refreshDataTestId: "Process-list-refresh-bpmn",
+      refreshAriaLabel: "Refresh the Process list (BPMN)",
+    }
+  : {   
+      processType: "DMN",
+      extension: ".dmn",
+      filterDataTestId: "Process-list-filter-dmn",
+      filterAriaLabel: "Filter the Process list (DMN)",
+      refreshDataTestId: "Process-list-refresh-dmn",
+      refreshAriaLabel: "Refresh the Process list (DMN)",
+    };
 
   // States and selectors
   const processList = useSelector((state) =>
@@ -47,25 +58,20 @@ const ProcessTable = React.memo(() => {
     isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-
-  const initialSortConfig = {
-    activeKey: "name",
-    name: { sortOrder: "asc" },
-    processKey: { sortOrder: "asc" },
-    modified: { sortOrder: "asc" },
-    status: { sortOrder: "asc" },
-  };
+  const sortConfig = useSelector((state) =>
+    isBPMN ? state.process.bpmsort : state.process.dmnSort
+  );
 
   const [bpmnState, setBpmnState] = useState({
     activePage: 1,
     limit: 5,
-    sortConfig: initialSortConfig,
+    sortConfig: sortConfig,
   });
 
   const [dmnState, setDmnState] = useState({
     activePage: 1,
     limit: 5,
-    sortConfig: initialSortConfig,
+    sortConfig: sortConfig,
   });
   const [searchDMN, setSearchDMN] = useState(searchTextDMN || "");
   const [searchBPMN, setSearchBPMN] = useState(searchTextBPMN || "");
@@ -80,20 +86,25 @@ const ProcessTable = React.memo(() => {
   const setCurrentState = isBPMN ? setBpmnState : setDmnState;
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-   //fetching bpmn or dmn
-   useEffect(() => {
+  const [showSortModal, setShowSortModal] = useState(false);
+  const optionSortBy = [
+    { value: "name", label: t("Name") },
+    { value: "processKey", label: t("Id") },
+    { value: "status", label: t("Status") },
+    { value: "modified", label: t("Last Edited") },
+  ];
+  const fetchProcesses = () => {
     setIsLoading(true);
     dispatch(
       fetchAllProcesses(
         {
-            pageNo: currentState.activePage,
-            tenant_key: tenantKey,
-            processType: ProcessContents.processType,
-            limit: currentState.limit,
-            searchKey: search,
-            sortBy: currentState.sortConfig.activeKey,
-            sortOrder: currentState.sortConfig[currentState.sortConfig.activeKey].sortOrder,
+          pageNo: currentState.activePage,
+          tenant_key: tenantKey,
+          processType: ProcessContents.processType,
+          limit: currentState.limit,
+          searchKey: search,
+          sortBy: sortConfig.activeKey,
+          sortOrder: sortConfig[sortConfig.activeKey].sortOrder,
         },
         () => {
           setIsLoading(false);
@@ -101,7 +112,37 @@ const ProcessTable = React.memo(() => {
         }
       )
     );
-  }, [dispatch, currentState, tenantKey,searchTextBPMN,searchTextDMN, isBPMN]);
+  };
+  
+  const handleFilterIconClick = () => {
+    setShowSortModal(true); 
+  };
+
+  const handleSortModalClose = () => {
+    setShowSortModal(false);
+  };
+  const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+    setIsLoading(true);
+    const action = isBPMN ? setBpmSort : setDmnSort;
+    dispatch(action({
+      ...sortConfig,
+      activeKey: selectedSortOption,
+      [selectedSortOption]: { sortOrder: selectedSortOrder },
+    }));
+
+    setIsLoading(false);
+    setShowSortModal(false);
+  };
+  
+  
+  const handleRefresh = () => {
+    fetchProcesses();
+  };
+
+   //fetching bpmn or dmn
+   useEffect(() => {
+    fetchProcesses();
+  }, [dispatch, currentState, tenantKey,searchTextBPMN,searchTextDMN, isBPMN,sortConfig]);
  
   //Update api call when search field is empty
   useEffect(() => {
@@ -111,18 +152,21 @@ const ProcessTable = React.memo(() => {
   }, [search, dispatch, isBPMN]);
 
   const handleSort = (key) => {
-    setCurrentState((prevState) => ({
-      ...prevState,
-      sortConfig: {
-        ...prevState.sortConfig,
-        activeKey: key,
-        [key]: {
-          sortOrder: prevState.sortConfig[key]?.sortOrder === "asc" ? "desc" : "asc",
-        },
+    const newSortConfig = {
+      ...sortConfig,
+      activeKey: key,
+      [key]: {
+        sortOrder: sortConfig[key]?.sortOrder === "asc" ? "desc" : "asc",
       },
-    }));
+    };
+  
+    if (isBPMN) {
+      dispatch(setBpmSort(newSortConfig));
+    } else {
+      dispatch(setDmnSort(newSortConfig)); 
+    }
   };
-
+  
   const handleSearch = () => {
     setSearchLoading(true);
     if (isBPMN) {
@@ -214,7 +258,21 @@ const ProcessTable = React.memo(() => {
             dataTestId={`${ProcessContents.processType}-search-input`}
           />
         </div>
-        <div className="d-md-flex justify-content-end align-items-center">
+        <div className="d-md-flex justify-content-end align-items-center button-align">
+          <FilterSortActions
+            showSortModal={showSortModal}
+            handleFilterIconClick={handleFilterIconClick}
+            handleRefresh={handleRefresh}
+            handleSortModalClose={handleSortModalClose}
+            handleSortApply={handleSortApply}
+            optionSortBy={optionSortBy}
+            defaultSortOption={sortConfig.activeKey}
+            defaultSortOrder={sortConfig[sortConfig.activeKey]?.sortOrder}
+            filterDataTestId={ProcessContents.filterDataTestId}
+            filterAriaLabel={ProcessContents.filterAriaLabel}
+            refreshDataTestId={ProcessContents.refreshDataTestId}
+            refreshAriaLabel={ProcessContents.refreshAriaLabel}
+          />
           <CustomButton
             variant="primary"
             size="sm"
@@ -235,7 +293,7 @@ const ProcessTable = React.memo(() => {
                     <SortableHeader
                       columnKey="name"
                       title="Name"
-                      currentSort={currentState.sortConfig}
+                      currentSort={sortConfig}
                       handleSort={handleSort}
                       className="gap-2"
                     />
@@ -244,7 +302,7 @@ const ProcessTable = React.memo(() => {
                     <SortableHeader
                       columnKey="processKey"
                       title="ID"
-                      currentSort={currentState.sortConfig}
+                      currentSort={sortConfig}
                       handleSort={handleSort}
                       className="gap-2"
                     />
@@ -253,7 +311,7 @@ const ProcessTable = React.memo(() => {
                     <SortableHeader
                       columnKey="modified"
                       title="Last Edited"
-                      currentSort={currentState.sortConfig}
+                      currentSort={sortConfig}
                       handleSort={handleSort}
                       className="gap-2"
                     />
@@ -262,12 +320,16 @@ const ProcessTable = React.memo(() => {
                     <SortableHeader
                       columnKey="status"
                       title="Status"
-                      currentSort={currentState.sortConfig}
+                      currentSort={sortConfig}
                       handleSort={handleSort}
                       className="gap-2"
                     />
                   </th>
-                  <th className="w-25" colSpan="4" aria-label="edit-button"></th>
+                  <th
+                    className="w-25"
+                    colSpan="4"
+                    aria-label="edit-button"
+                  ></th>
                 </tr>
               </thead>
               {processList.length ? (
@@ -296,7 +358,9 @@ const ProcessTable = React.memo(() => {
                     ]}
                   />
                 </tbody>
-              ) : !isLoading && <NoDataFound />}
+              ) : (
+                !isLoading && <NoDataFound />
+              )}
             </table>
           </div>
         </div>

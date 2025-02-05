@@ -16,13 +16,13 @@ from formsflow_api.schemas.aggregated_application import (
 )
 from formsflow_api.services import ApplicationService as AS
 
-API = Namespace("Metrics", description="Application Metrics endpoint")
+API = Namespace("Metrics", description="Endpoints for retrieving application metrics.")
 
 version_model = API.model(
     "FormVersions",
     {
         "formId": fields.String(),
-        "version": fields.String(),
+        "version": fields.Integer(),
     },
 )
 
@@ -32,12 +32,12 @@ metrics_model = API.model(
         "formversions": fields.List(fields.Nested(version_model)),
         "formName": fields.String(),
         "parentFormId": fields.Integer(),
-        "submission_count": fields.Integer(),
+        "applicationCount": fields.String(),
     },
 )
 
 metrics_list_model = API.model(
-    "Metrics List",
+    "MetricsList",
     {
         "applications": fields.List(fields.Nested(metrics_model)),
         "limit": fields.Integer(),
@@ -47,14 +47,13 @@ metrics_list_model = API.model(
 )
 
 metrics_detail_model = API.model(
-    "Metrics detail",
+    "MetricsDetail",
     {
         "applications": fields.List(
             fields.Nested(
                 API.model(
-                    "Metrics detail mapper",
+                    "MetricsDetailMapper",
                     {
-                        "applicationName": fields.String(),
                         "count": fields.Integer(),
                         "statusName": fields.String(),
                     },
@@ -75,20 +74,30 @@ class AggregatedApplicationsResource(Resource):
     @profiletime
     @API.doc(
         params={
+            "pageNo": {
+                "in": "query",
+                "description": "Page number for paginated results",
+                "default": "1",
+            },
+            "limit": {
+                "in": "query",
+                "description": "Limit for paginated results",
+                "default": "5",
+            },
             "from": {
                 "in": "query",
                 "description": "From date for metrics filter.",
-                "default": "1",
+                "default": "2024-12-31T18:30:00+00:00",
             },
             "to": {
                 "in": "query",
                 "description": "To date for metrics filter.",
-                "default": "5",
+                "default": "2025-02-01T18:30:00+00:00",
             },
-            "orderBy": {
+            "sortBy": {
                 "in": "query",
                 "description": "Specify field for sorting the results.",
-                "default": "id",
+                "default": "formName",
             },
             "sortOrder": {
                 "in": "query",
@@ -153,21 +162,21 @@ class AggregatedApplicationStatusResource(Resource):
             "from": {
                 "in": "query",
                 "description": "From date for metrics filter.",
-                "default": "1",
+                "default": "2024-12-31T18:30:00+00:00",
             },
             "to": {
                 "in": "query",
                 "description": "To date for metrics filter.",
-                "default": "5",
+                "default": "2025-02-01T18:30:00+00:00",
             },
             "orderBy": {
                 "in": "query",
                 "description": "Specify field for sorting the results.",
-                "default": "id",
+                "default": "created",
             },
             "formType": {
                 "in": "query",
-                "description": "Specify field for filtering by form type.",
+                "description": "Specify field for filtering by form type - form or parent.",
                 "default": "form",
             },
         }
@@ -187,9 +196,9 @@ class AggregatedApplicationStatusResource(Resource):
     )
     def get(form_id):
         """
-        Get application metrics corresponding to a mapper_id.
+        Get application metrics corresponding to a form_id.
 
-        : mapper_id:- Get aggregated application status.
+        Get summarized application status data with counts, filtered by form_id or parent_form_id.
         """
         request_schema = ApplicationMetricsRequestSchema()
         dict_data = request_schema.load(request.args)

@@ -19,7 +19,7 @@ from formsflow_api_utils.utils import (
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import AuthorizationService
 
-API = Namespace("authorization", description="Authorization APIs")
+API = Namespace("Authorization", description="Authorization APIs")
 auth_service = AuthorizationService()
 
 resource_details_model = API.model("resource_details", {"name": fields.String()})
@@ -30,11 +30,12 @@ authorization_model = API.model(
         "resourceId": fields.String(),
         "resourceDetails": fields.Nested(resource_details_model),
         "roles": fields.List(fields.String(), description="Authorized Roles"),
+        "userName": fields.String(description="UserName can be null or string"),
     },
 )
 
 authorization_list_model = API.model(
-    "Authorization List",
+    "AuthorizationList",
     {
         "APPLICATION": fields.Nested(authorization_model),
         "FORM": fields.Nested(authorization_model),
@@ -45,12 +46,15 @@ authorization_list_model = API.model(
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("/<string:auth_type>", methods=["GET", "POST", "OPTIONS"])
-@API.doc(params={"auth_type": "Type of authorization ```dashboard/form```"})
+@API.doc(
+    params={
+        "auth_type": "Type of authorization ```dashboard/form/application/designer```"
+    }
+)
 class AuthorizationList(Resource):
     """Resource to fetch Authorization List and create authorization."""
 
     @staticmethod
-    @API.doc("list_authorization")
     @auth.require
     @profiletime
     @API.doc(
@@ -118,12 +122,15 @@ class AuthorizationList(Resource):
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("/users/<string:auth_type>", methods=["GET", "POST", "OPTIONS"])
-@API.doc(params={"auth_type": "Type of authorization ```dashboard/form```"})
+@API.doc(
+    params={
+        "auth_type": "Type of authorization ```dashboard/form/application/designer```"
+    }
+)
 class UserAuthorizationList(Resource):
     """Resource to fetch Authorization List for the current user."""
 
     @staticmethod
-    @API.doc("list_authorization")
     @auth.has_one_of_roles([VIEW_DASHBOARDS])
     @profiletime
     @API.doc(
@@ -137,7 +144,7 @@ class UserAuthorizationList(Resource):
         """
         List all authorization for the current user.
 
-        List all authorization for the current user based on authorization type.
+        List authorizations for the current user based on authorization type.
         """
         return auth_service.get_user_authorizations(auth_type.upper()), HTTPStatus.OK
 
@@ -154,7 +161,6 @@ class AuthorizationDetail(Resource):
     """Resource to fetch Authorization Details corresponding to resource id."""
 
     @staticmethod
-    @API.doc("Authorization detail by Id")
     @auth.has_one_of_roles(
         [CREATE_DESIGNS, VIEW_DESIGNS, CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]
     )
@@ -203,7 +209,6 @@ class AuthorizationListById(Resource):
     """Resource to fetch Authorization List corresponding to resource id."""
 
     @staticmethod
-    @API.doc("Authorization list by Id")
     @auth.has_one_of_roles([CREATE_DESIGNS, VIEW_DESIGNS])
     @profiletime
     @API.doc(
@@ -225,7 +230,6 @@ class AuthorizationListById(Resource):
         raise BusinessException(BusinessErrorCode.INVALID_AUTH_RESOURCE_ID)
 
     @staticmethod
-    @API.doc("Authorization create by Id")
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
     @API.doc(
@@ -235,6 +239,7 @@ class AuthorizationListById(Resource):
         },
         model=authorization_list_model,
     )
+    @API.expect(authorization_list_model)
     def post(resource_id: str):
         """Create or Update Authoization of Form by id."""
         data = request.get_json()

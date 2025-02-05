@@ -59,7 +59,7 @@ tenant_add_user_model = API.model(
         "roles": fields.List(
             fields.Nested(
                 API.model(
-                    "roles data",
+                    "rolesData",
                     {
                         "name": fields.String(),
                         "roleId": fields.String(),
@@ -271,7 +271,6 @@ class UserPermission(Resource):
     @staticmethod
     @auth.has_one_of_roles([ADMIN])
     @profiletime
-    @API.doc(body=user_permission_update_model)
     @API.response(204, "NO CONTENT:- Successful request.")
     @API.response(
         400,

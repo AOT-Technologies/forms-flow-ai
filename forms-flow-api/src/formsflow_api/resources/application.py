@@ -45,7 +45,7 @@ application_create_model = API.model(
 )
 
 application_create_response_model = API.model(
-    "ApplicationCreateResponse", submission_response
+    "ApplicationCreationResponse", submission_response
 )
 
 application_model = API.inherit(
@@ -65,7 +65,6 @@ application_list_model = API.model(
         "applications": fields.List(
             fields.Nested(application_model, description="List of Applications.")
         ),
-        "draftCount": fields.Integer(),
         "totalCount": fields.Integer(),
         "limit": fields.Integer(),
         "pageNo": fields.Integer(),
@@ -135,7 +134,7 @@ class ApplicationsResource(Resource):
             "Id": {
                 "in": "query",
                 "description": "Filter resources by id.",
-                "type": "int",
+                "type": "integer",
             },
             "modifiedFrom": {
                 "in": "query",
@@ -175,17 +174,17 @@ class ApplicationsResource(Resource):
             "createdUserSubmissions": {
                 "in": "query",
                 "description": "Return user created submissions.",
-                "type": "bool",
+                "type": "boolean",
             },
             "includeDrafts": {
                 "in": "query",
                 "description": "Return submissions and drafts/Specific to client permission.",
-                "type": "bool",
+                "type": "boolean",
             },
             "onlyDrafts": {
                 "in": "query",
                 "description": "Return only drafts/Specific to client permission.",
-                "type": "bool",
+                "type": "boolean",
             },
         }
     )
@@ -507,7 +506,7 @@ class ApplicationResourceByApplicationStatus(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get():
-        """Method to get the application status lists."""
+        """Retrieve the list of application statuses."""
         return (
             ApplicationService.get_all_application_status(),
             HTTPStatus.OK,

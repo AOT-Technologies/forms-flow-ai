@@ -179,11 +179,11 @@ form_history_response_model = API.inherit(
     },
 )
 forms_list_model = API.model(
-    "Forms List Model",
+    "FormsListModel",
     {"formTitle": fields.String(), "type": fields.String(), "content": fields.Raw()},
 )
 workflows_list_model = API.model(
-    "Workflows List",
+    "WorkflowsList",
     {
         "processKey": fields.String(),
         "processName": fields.String(),
@@ -192,7 +192,7 @@ workflows_list_model = API.model(
     },
 )
 dmns_list_model = API.model(
-    "DMN List",
+    "DMNList",
     {"key": fields.String(), "type": fields.String(), "content": fields.String()},
 )
 resource_details_model = API.model("resource_details", {"name": fields.String()})
@@ -208,7 +208,7 @@ authorization_model = API.model(
 )
 
 authorization_list_model = API.model(
-    "Authorization List",
+    "AuthorizationList",
     {
         "APPLICATION": fields.Nested(authorization_model),
         "FORM": fields.Nested(authorization_model),
@@ -655,7 +655,6 @@ class FormHistoryResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
-    @API.doc(body=form_create_model)
     @API.response(200, "OK:- Successful request.", model=form_history_response_model)
     @API.response(
         400,

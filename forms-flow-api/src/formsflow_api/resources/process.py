@@ -145,7 +145,7 @@ class ProcessDataResource(Resource):
             "id": {
                 "in": "query",
                 "description": "Filter process by id.",
-                "type": "int",
+                "type": "integer",
             },
             "modifiedFrom": {
                 "in": "query",
@@ -354,7 +354,7 @@ class ValidateProcess(Resource):
 
 @cors_preflight("POST,OPTIONS")
 @API.route("/<process_id>/publish", methods=["POST", "OPTIONS"])
-class PublishResource(Resource):
+class PublishProcessResource(Resource):
     """Resource to support publish sub-process/worklfow."""
 
     @staticmethod
@@ -383,7 +383,7 @@ class PublishResource(Resource):
 
 @cors_preflight("POST,OPTIONS")
 @API.route("/<process_id>/unpublish", methods=["POST", "OPTIONS"])
-class UnpublishResource(Resource):
+class UnpublishProcessResource(Resource):
     """Resource to support unpublish sub-process/workflow."""
 
     @staticmethod

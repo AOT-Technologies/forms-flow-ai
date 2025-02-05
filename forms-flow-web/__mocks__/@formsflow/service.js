@@ -14,4 +14,5 @@ export const StorageService = {
 
 export const StyleServices = {
     "getCSSVariable": (e)=> {return '#000'},
+
 }

@@ -62,7 +62,11 @@ it('should render the list component and open the modal when New Form is clicked
   expect(button).toBeInTheDocument();
 
   userEvent.click(button);
-
+  // Wait for the modal to open and check if it is displayed
+  await waitFor(() => {
+    const addFormModal = screen.getByText('Add Form');  // 'Add Form' text is visible in the modal
+    expect(addFormModal).toBeInTheDocument();
+  });
 });
 
 //  Should render the search input and perform a search

@@ -141,7 +141,7 @@ const List = React.memo((props) => {
     setSearch("");
     dispatch(setBpmFormSearch(""));
   };
-  const { forms, getFormsInit, errors } = props;
+  const { forms, getFormsInit } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
@@ -340,7 +340,7 @@ const List = React.memo((props) => {
   
   return (
     <>
-      {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
+      {(forms?.isActive || designerFormLoading || isBPMFormListLoading) &&
       !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
@@ -437,9 +437,8 @@ const List = React.memo((props) => {
   );
 });
 List.propTypes = {
-  forms: PropTypes.object.isRequired,
-  getFormsInit: PropTypes.bool.isRequired,
-  errors: PropTypes.object.isRequired,
+  forms: PropTypes.object,
+  getFormsInit: PropTypes.bool,
 };
 const mapStateToProps = (state) => {
   return {

@@ -46,7 +46,6 @@ export const FilterIcon = ({
         data-testid={filterDataTestId}
         onClick={handleFilterIconClick}
       >
-        <FilterIcon />
       </button>
   );
 };
@@ -61,7 +60,6 @@ export const RefreshIcon = ({
         data-testid={refreshDataTestId}
         onClick={handleRefresh}
       >
-        <RefreshIcon />
       </button>
   );
 };

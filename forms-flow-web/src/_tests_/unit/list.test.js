@@ -11,6 +11,7 @@ import List from '../../components/Form/List';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
+import { CustomButton } from '@formsflow/components';
 
 const queryClient = new QueryClient();
 let store = configureStore({
@@ -19,7 +20,9 @@ let store = configureStore({
 });
 
 // Helper function to render the component with router support
-function renderWithRouterMatch(Ui, { path = '/', route = '/' }) {
+function renderWithRouterMatch(Ui, { path = '/', route = '/' ,
+  props = {}
+}) {
   const history = createMemoryHistory({ initialEntries: [route] });
 
   return rtlRender(
@@ -27,7 +30,7 @@ function renderWithRouterMatch(Ui, { path = '/', route = '/' }) {
       <Provider store={store}>
         <Router history={history}>
           <Switch>
-            <Route path={path} component={Ui} />
+            <Route path={path} render={(routeProps) => <Ui {...routeProps} {...props} />} />
           </Switch>
         </Router>
       </Provider>
@@ -40,21 +43,25 @@ beforeEach(() => {
     reducer: rootReducer,
     preloadedState: mockstate,
   });
+
+  renderWithRouterMatch(List, {
+    path: '/formflow',
+    route: '/formflow',
+    props: {
+      forms: {isActive:true},
+      getFormsInit:true
+    }
+  });
 });
 
 //Should render the list component and open the modal when "New Form" is clicked
 it('should render the list component and open the modal when New Form is clicked', async () => {
-  renderWithRouterMatch(List, {
-    path: '/formflow',
-    route: '/formflow',
-  });
-
+  rtlRender(<CustomButton dataTestId="create-form-button" />);
   // Check that the "New Form" button is rendered
   const button = screen.getByTestId("create-form-button");
   expect(button).toBeInTheDocument();
 
   userEvent.click(button);
-
   // Wait for the modal to open and check if it is displayed
   await waitFor(() => {
     const addFormModal = screen.getByText('Add Form');  // 'Add Form' text is visible in the modal
@@ -64,10 +71,6 @@ it('should render the list component and open the modal when New Form is clicked
 
 //  Should render the search input and perform a search
 it('should render the search input and perform a search', async () => {
-  renderWithRouterMatch(List, {
-    path: '/formflow',
-    route: '/formflow',
-  });
 
   //Check that the search input is rendered
   const searchInput = screen.getByTestId('form-search-input');

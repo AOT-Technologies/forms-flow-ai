@@ -10,3 +10,9 @@ export const StorageService = {
     USER_ROLE : "USER_ROLE"
     }
 }
+
+
+export const StyleServices = {
+    "getCSSVariable": (e)=> {return '#000'},
+
+}

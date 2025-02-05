@@ -340,8 +340,8 @@ const List = React.memo((props) => {
   
   return (
     <>
-      {(forms?.isActive || designerFormLoading || isBPMFormListLoading) &&
-        !searchFormLoading ? (
+      {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
+      !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>

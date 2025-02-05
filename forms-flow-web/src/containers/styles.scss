@@ -284,7 +284,7 @@
     height: 100%;
     width: 100%;
     position: fixed;
-    background-color: $gray-800;
+    background-color: $gray-darkest;
     z-index: 1300;
     -webkit-transition: all 0.2s ease-in;
     -o-transition: all 0.2s ease-in;
@@ -316,7 +316,7 @@
 .button_component
 {
   background-color: $white;
-  color: $dark;
+  color: $black;
   border: none;
   padding: auto;
 }

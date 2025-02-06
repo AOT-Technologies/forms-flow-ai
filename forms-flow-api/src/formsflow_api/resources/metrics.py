@@ -104,6 +104,12 @@ class AggregatedApplicationsResource(Resource):
                 "description": "Specify sorting  order.",
                 "default": "desc",
             },
+            "orderBy": {
+                "in": "query",
+                "description": "Specifies whether to filter records by modified or created timestamp \
+                                within the provided date range (from and to).",
+                "default": "created",
+            },
         }
     )
     @API.response(200, "OK:- Successful request.", model=metrics_list_model)
@@ -171,12 +177,14 @@ class AggregatedApplicationStatusResource(Resource):
             },
             "orderBy": {
                 "in": "query",
-                "description": "Specify field for sorting the results.",
+                "description": "Specifies whether to filter records by modified or created timestamp \
+                                within the provided date range (from and to).",
                 "default": "created",
             },
             "formType": {
                 "in": "query",
-                "description": "Specify field for filtering by form type - form or parent.",
+                "description": "Determines whether to filter by form_id or parent_form_id \
+                                based on the provided formType(form/parent).",
                 "default": "form",
             },
         }

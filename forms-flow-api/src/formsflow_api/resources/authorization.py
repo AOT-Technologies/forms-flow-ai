@@ -19,7 +19,10 @@ from formsflow_api_utils.utils import (
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.services import AuthorizationService
 
-API = Namespace("Authorization", description="Authorization APIs")
+API = Namespace(
+    "Authorization",
+    description="Manages form editing, viewing, submissions, and dashboard authorizations.",
+)
 auth_service = AuthorizationService()
 
 resource_details_model = API.model("resource_details", {"name": fields.String()})

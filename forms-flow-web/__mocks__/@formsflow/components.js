@@ -10,18 +10,30 @@ export const CustomButton = ({
   ariaLabel, 
   disabled = false 
 }) => {
+  // Create base className and add size and variant if present
+  let buttonClass = className;
+  
+  if (size) {
+    buttonClass += ` btn-${size}`;
+  }
+  
+  if (variant) {
+    buttonClass += ` btn-${variant}`;
+  }
+
   return (
     <button
       onClick={onClick}
       data-testid={dataTestId}
       aria-label={ariaLabel}
-      className={`${className} ${size ? `btn-${size}` : ''} ${variant ? `btn-${variant}` : ''}`}
+      className={buttonClass}
       disabled={disabled}
     >
       {label}
     </button>
   );
 };
+
 
 CustomButton.propTypes = {
   onClick: PropTypes.func.isRequired,
@@ -72,26 +84,34 @@ export const FilterIcon = ({
   filterDataTestId 
 }) => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="5"
-      height="5"
-      viewBox="0 0 14 14"
-      fill="none"
+    <div 
+      className="filter-icon-container"
+      onClick={handleFilterIconClick}
+      data-testid={filterDataTestId}
+      role="button"
+      aria-label="Filter Icon"
     >
-      <path
-        d="M1.5 1.5L12.5 12.5"
-        stroke="#fff"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M12.5 1.5L1.5 12.5"
-        stroke="#000"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+      >
+        <path
+          d="M1.5 1.5L12.5 12.5"
+          stroke="#000"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M12.5 1.5L1.5 12.5"
+          stroke="#000"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    </div>
   );
 };
 
@@ -105,28 +125,28 @@ export const RefreshIcon = ({
   refreshDataTestId 
 }) => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="5"
-      height="5"
-      viewBox="0 0 14 14"
-      fill="none"
+    <button 
+      className="refresh-icon-button"
+      onClick={handleRefresh}
+      data-testid={refreshDataTestId}
+      aria-label="Refresh Icon"
     >
-      <path
-        d="M1.5 1.5L12.5 12.5"
-        stroke="#fff"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M12.5 1.5L1.5 12.5"
-        stroke="#000"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+      >
+        <path
+          d="M7 1V0C3.14 0 0 3.14 0 7s3.14 7 7 7 7-3.14 7-7c0-1.72-.62-3.29-1.66-4.53L10.53 4.41C11.37 5.55 12 6.77 12 7c0 2.21-1.79 4-4 4s-4-1.79-4-4h1c0 1.66 1.34 3 3 3s3-1.34 3-3c0-.23-.14-.45-.34-.59l-1.86-1.67C9.41 5.71 8.25 5 7 5V4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2h1z"
+          fill="#000"
+        />
+      </svg>
+    </button>
   );
 };
+
 
 RefreshIcon.propTypes = {
   handleRefresh: PropTypes.func,
@@ -138,28 +158,32 @@ export const SortIcon = ({
   dataTestId 
 }) => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="5"
-      height="5"
-      viewBox="0 0 14 14"
-      fill="none"
+    <div 
+      className="sort-icon-container"
+      onClick={onClick}
+      data-testid={dataTestId}
+      aria-label="Sort Icon"
+      role="button"
     >
-      <path
-        d="M1.5 1.5L12.5 12.5"
-        stroke="#fff"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M12.5 1.5L1.5 12.5"
-        stroke="#000"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+      >
+        <path
+          d="M3 6l4 4 4-4"
+          stroke="#000"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    </div>
   );
 };
+
+
 
 SortIcon.propTypes = {
   onClick: PropTypes.func,
@@ -218,7 +242,7 @@ export const SortModal = ({
 
           <button
             onClick={() =>
-              primaryBtnAction && primaryBtnAction(selectedOption, selectedOrder)
+              primaryBtnAction?.(selectedOption, selectedOrder)
             }
             disabled={isSaveBtnLoading || !selectedOption || !selectedOrder}
           >
@@ -278,17 +302,14 @@ export const FormBuilderModal = ({
           <input
             type="text"
             placeholder={placeholderForForm}
-            onChange={(e) => handleChange && handleChange("title", e)}
+            onChange={(e) => handleChange?.("title", e)}
           />
           <textarea
             placeholder={placeholderForDescription}
-            onChange={(e) => handleChange && handleChange("description", e)}
+            onChange={(e) => handleChange?.("description", e)}
           />
           <button
-            onClick={() =>
-              primaryBtnAction &&
-              primaryBtnAction({ title: "mockTitle", description: "mockDesc" })
-            }
+           onClick={() => primaryBtnAction?.({ title: "mockTitle", description: "mockDesc" })}
             disabled={isSaveBtnLoading || isFormNameValidating}
           >
             {primaryBtnLabel}
@@ -346,13 +367,15 @@ export const CustomSearch = ({
         data-testid="custom-search-input"
       />
       {search && !searchLoading && (
-        <span
-          className="d-flex search-box-icon"
-          onClick={handleClearSearch}
-          data-testid="form-search-clear-button"
-        >
-          Clear
-        </span>
+       <button
+  className="d-flex search-box-icon"
+  onClick={handleClearSearch}
+  data-testid="form-search-clear-button"
+  aria-label="Clear search"
+>
+  Clear
+</button>
+
       )}
       {searchLoading && <div className="search-spinner">Loading...</div>}
     </div>

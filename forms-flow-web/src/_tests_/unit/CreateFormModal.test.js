@@ -1,11 +1,27 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import CreateFormModal  from "../../components/Modals/CreateFormModal";
+import CreateFormModal from "../../components/Modals/CreateFormModal";
 import '@testing-library/jest-dom';
+import PropTypes from 'prop-types';  // Ensure PropTypes is imported at the top level
 
-jest.mock("@formsflow/components", () => ({
-  CloseIcon: ({ onClick }) => <button data-testid="modal-close-icon" onClick={onClick}>Close</button>
-}));
+// Define the CloseIcon component outside the mock
+const CloseIconComponent = ({ onClick }) => (
+  <button data-testid="modal-close-icon" onClick={onClick}>
+    Close
+  </button>
+);
+
+// Apply prop validation to the CloseIconComponent
+CloseIconComponent.propTypes = {
+  onClick: PropTypes.func.isRequired,  // Ensure onClick is a required function
+};
+
+// Mock the @formsflow/components package and replace CloseIcon with the mocked component
+jest.mock("@formsflow/components", () => {
+  return {
+    CloseIcon: CloseIconComponent, // Use the pre-defined CloseIconComponent here
+  };
+});
 
 describe("CreateFormModal", () => {
   let onClose, onAction;

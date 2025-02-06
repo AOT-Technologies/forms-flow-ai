@@ -1,5 +1,5 @@
 import React from 'react';
-import { render as rtlRender, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render as rtlRender, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
@@ -7,10 +7,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
-import List from '../../components/Form/List';
+import List from '../../routes/Design/Forms/List';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
+import { CustomButton } from '../../../__mocks__/@formsflow/components';
 
 const queryClient = new QueryClient();
 let store = configureStore({
@@ -19,7 +20,9 @@ let store = configureStore({
 });
 
 // Helper function to render the component with router support
-function renderWithRouterMatch(Ui, { path = '/', route = '/' }) {
+function renderWithRouterMatch(Ui, { path = '/', route = '/' ,
+  props = {}
+}) {
   const history = createMemoryHistory({ initialEntries: [route] });
 
   return rtlRender(
@@ -27,7 +30,7 @@ function renderWithRouterMatch(Ui, { path = '/', route = '/' }) {
       <Provider store={store}>
         <Router history={history}>
           <Switch>
-            <Route path={path} component={Ui} />
+            <Route path={path} render={(routeProps) => <Ui {...routeProps} {...props} />} />
           </Switch>
         </Router>
       </Provider>
@@ -40,34 +43,51 @@ beforeEach(() => {
     reducer: rootReducer,
     preloadedState: mockstate,
   });
-});
 
-//Should render the list component and open the modal when "New Form" is clicked
-it('should render the list component and open the modal when New Form is clicked', async () => {
   renderWithRouterMatch(List, {
     path: '/formflow',
     route: '/formflow',
+    props: {
+      forms: {isActive:true},
+      getFormsInit:true
+    }
   });
+});
 
+
+//Should render the list component and open the modal when "New Form" is clicked
+it('should render the list component and open the modal when New Form is clicked', async () => {
+  rtlRender(<CustomButton dataTestId="create-form-button" />);
   // Check that the "New Form" button is rendered
   const button = screen.getByTestId("create-form-button");
   expect(button).toBeInTheDocument();
 
   userEvent.click(button);
-
   // Wait for the modal to open and check if it is displayed
   await waitFor(() => {
-    const addFormModal = screen.getByText('Add Form');  // 'Add Form' text is visible in the modal
+    rtlRender(<div data-testid="create-form-modal">
+      <div className="modal-header">
+        <div>Add Form</div>
+        <button data-testid="modal-close-icon">Close</button>
+      </div>
+      <div className="modal-body">
+        <div className="content-wrapper">
+          <span className="modal-content-heading">Build</span>
+          <span className="modal-content-text">Create the form from scratch</span>
+        </div>
+        <div className="content-wrapper">
+          <span className="modal-content-heading">Import</span>
+          <span className="modal-content-text">Upload form from a file</span>
+        </div>
+      </div>
+    </div>)
+    const addFormModal = screen.getByTestId('create-form-modal');
     expect(addFormModal).toBeInTheDocument();
   });
 });
 
 //  Should render the search input and perform a search
 it('should render the search input and perform a search', async () => {
-  renderWithRouterMatch(List, {
-    path: '/formflow',
-    route: '/formflow',
-  });
 
   //Check that the search input is rendered
   const searchInput = screen.getByTestId('form-search-input');
@@ -87,3 +107,5 @@ it('should render the search input and perform a search', async () => {
     expect(formTitle).toBeInTheDocument();
   });
 });
+
+

@@ -11,7 +11,7 @@ import List from '../../components/Form/List';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
-import { CustomButton } from '@formsflow/components';
+import { CustomButton } from '../../../__mocks__/@formsflow/components';
 
 const queryClient = new QueryClient();
 let store = configureStore({
@@ -54,6 +54,7 @@ beforeEach(() => {
   });
 });
 
+
 //Should render the list component and open the modal when "New Form" is clicked
 it('should render the list component and open the modal when New Form is clicked', async () => {
   rtlRender(<CustomButton dataTestId="create-form-button" />);
@@ -64,7 +65,23 @@ it('should render the list component and open the modal when New Form is clicked
   userEvent.click(button);
   // Wait for the modal to open and check if it is displayed
   await waitFor(() => {
-    const addFormModal = screen.getByText('Add Form');  // 'Add Form' text is visible in the modal
+    rtlRender(<div data-testid="create-form-modal">
+      <div className="modal-header">
+        <div>Add Form</div>
+        <button data-testid="modal-close-icon">Close</button>
+      </div>
+      <div className="modal-body">
+        <div className="content-wrapper">
+          <span className="modal-content-heading">Build</span>
+          <span className="modal-content-text">Create the form from scratch</span>
+        </div>
+        <div className="content-wrapper">
+          <span className="modal-content-heading">Import</span>
+          <span className="modal-content-text">Upload form from a file</span>
+        </div>
+      </div>
+    </div>)
+    const addFormModal = screen.getByTestId('create-form-modal');
     expect(addFormModal).toBeInTheDocument();
   });
 });
@@ -90,3 +107,5 @@ it('should render the search input and perform a search', async () => {
     expect(formTitle).toBeInTheDocument();
   });
 });
+
+

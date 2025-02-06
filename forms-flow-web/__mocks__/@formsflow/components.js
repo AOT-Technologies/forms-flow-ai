@@ -84,11 +84,10 @@ export const FilterIcon = ({
   filterDataTestId 
 }) => {
   return (
-    <div 
+    <button
       className="filter-icon-container"
       onClick={handleFilterIconClick}
       data-testid={filterDataTestId}
-      role="button"
       aria-label="Filter Icon"
     >
       <svg
@@ -111,7 +110,7 @@ export const FilterIcon = ({
           strokeLinecap="round"
         />
       </svg>
-    </div>
+    </button>
   );
 };
 
@@ -158,12 +157,11 @@ export const SortIcon = ({
   dataTestId 
 }) => {
   return (
-    <div 
+    <button
       className="sort-icon-container"
       onClick={onClick}
       data-testid={dataTestId}
       aria-label="Sort Icon"
-      role="button"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -179,7 +177,7 @@ export const SortIcon = ({
           strokeLinecap="round"
         />
       </svg>
-    </div>
+    </button>
   );
 };
 

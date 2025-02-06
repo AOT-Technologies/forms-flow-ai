@@ -140,7 +140,7 @@ const ExportDiagram = React.memo(
               label={<Translation>{(t) => t(retryButtonText)}</Translation>}
               onClick={exportData}
               className="mb-2"
-              dataTestid="try-again"
+              dataTestId="try-again"
               ariaLabel="Try Again"
             />
             <CustomButton
@@ -149,7 +149,7 @@ const ExportDiagram = React.memo(
               label={<Translation>{(t) => t(cancelButtonText)}</Translation>}
               onClick={onClose}
               className="mb-2"
-              dataTestid="cancel"
+              dataTestId="cancel"
               ariaLabel="Cancel"
             />
         </Modal.Footer>}

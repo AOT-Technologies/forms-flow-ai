@@ -59,7 +59,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           buttonLoading={isSaving || isValidating}
           label={t("Save Changes")}
           onClick={handleConfirmFunction}
-          dataTestid="save-form-settings"
+          dataTestId="save-form-settings"
           ariaLabel={t("Save Form Settings")}
         />
 
@@ -68,7 +68,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           size="md"
           label={t("Discard Changes")}
           onClick={handleClose}
-          dataTestid="cancel-form-settings"
+          dataTestId="cancel-form-settings"
           ariaLabel={t("Cancel Form Settings")}
         />
       </Modal.Footer>

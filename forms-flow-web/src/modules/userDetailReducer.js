@@ -30,6 +30,7 @@ const initialState = {
   lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : null,
   selectLanguages: getLanguages ? JSON.parse(getLanguages) : [],
   defaultFilter: "",
+  searchText: '',
 };
 
 const user = (state = initialState, action) => {

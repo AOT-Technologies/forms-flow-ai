@@ -6,8 +6,6 @@ import { toast } from "react-toastify";
 import { addTenantkey } from "../../helper/helper";
 import {
   selectRoot,
-  selectError,
-  Errors,
   deleteForm,
 } from "@aot-technologies/formio-react";
 import Loading from "../../containers/Loading";
@@ -143,7 +141,7 @@ const List = React.memo((props) => {
     setSearch("");
     dispatch(setBpmFormSearch(""));
   };
-  const { forms, getFormsInit, errors } = props;
+  const { forms, getFormsInit } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
@@ -342,14 +340,13 @@ const List = React.memo((props) => {
   
   return (
     <>
-      {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
+      {(forms?.isActive || designerFormLoading || isBPMFormListLoading) &&
       !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>
       ) : (
         <div>
-          <Errors errors={errors} />
           {createDesigns && (
             <>
               <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
@@ -440,21 +437,19 @@ const List = React.memo((props) => {
   );
 });
 List.propTypes = {
-  forms: PropTypes.object.isRequired,
-  getFormsInit: PropTypes.bool.isRequired,
-  errors: PropTypes.object.isRequired,
+  forms: PropTypes.object,
+  getFormsInit: PropTypes.bool,
 };
 const mapStateToProps = (state) => {
   return {
     forms: selectRoot("forms", state),
-    errors: selectError("forms", state),
     userRoles: selectRoot("user", state).roles || [],
     modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
     isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
     tenants: selectRoot("tenants", state),
-    path: selectRoot("formDelete", state).formDelete.path,
+    path: selectRoot("formDelete", state)?.formDelete.path,
   };
 };
 

@@ -1139,7 +1139,7 @@ const handleSaveLayout = () => {
                       size="md"
                       label={t("Settings")}
                       onClick={handleToggleSettingsModal}
-                      dataTestid="eidtor-settings-testid"
+                      dataTestId="eidtor-settings-testid"
                       ariaLabel={t("Designer Settings Button")}
                     />
                     <CustomButton
@@ -1148,7 +1148,7 @@ const handleSaveLayout = () => {
                       className="mx-2"
                       label={t("Actions")}
                       onClick={editorActions}
-                      dataTestid="designer-action-testid"
+                      dataTestId="designer-action-testid"
                       ariaLabel={(t) => t("Designer Actions Button")}
                     />
                     <CustomButton
@@ -1157,7 +1157,7 @@ const handleSaveLayout = () => {
                       label={t(publishText)}
                       buttonLoading={isPublishLoading}
                       onClick={handlePublishClick}
-                      dataTestid="handle-publish-testid"
+                      dataTestId="handle-publish-testid"
                       ariaLabel={`${t(publishText)} ${t("Button")}`}
                     />
                   </div>
@@ -1185,7 +1185,7 @@ const handleSaveLayout = () => {
                             icon={<HistoryIcon />}
                             label={t("History")}
                             onClick={() => handleFormHistory()}
-                            dataTestid="handle-form-history-testid"
+                            dataTestId="handle-form-history-testid"
                             ariaLabel={t("Form History Button")}
                           />
                           <CustomButton
@@ -1195,7 +1195,7 @@ const handleSaveLayout = () => {
                             icon={<PreviewIcon />}
                             label={t("Preview")}
                             onClick={handlePreview}
-                            dataTestid="handle-preview-testid"
+                            dataTestId="handle-preview-testid"
                             ariaLabel={t("Preview Button")}
                           />
                         </div>
@@ -1213,7 +1213,7 @@ const handleSaveLayout = () => {
                             isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
 
                           }
-                          dataTestid="save-form-layout"
+                          dataTestId="save-form-layout"
                           ariaLabel={t("Save Form Layout")}
                         />
                         <CustomButton
@@ -1224,7 +1224,7 @@ const handleSaveLayout = () => {
                             openConfirmModal("discard");
                           }}
                           disabled={!formChangeState.changed}
-                          dataTestid="discard-button-testid"
+                          dataTestId="discard-button-testid"
                           ariaLabel={t("cancelBtnariaLabel")}
                         />
                       </div>

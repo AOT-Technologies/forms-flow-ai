@@ -264,7 +264,7 @@ const FormComponent = React.memo(
               <FormInput
                 type="text"
                 ariaLabel="Add alternative label input"
-                dataTestid="Add-alternative-input"
+                dataTestId="Add-alternative-input"
                 label="Add Alternative Label"
                 value={selectedComponent.altVariable}
                 onChange={(e) =>
@@ -275,7 +275,7 @@ const FormComponent = React.memo(
                 }
               />
               <CustomButton
-                dataTestid="Add-alternative-btn"
+                dataTestId="Add-alternative-btn"
                 ariaLabel="Add alternative label button"
                 size="sm"
                 label={
@@ -387,7 +387,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Back to Layout")}
           ariaLabel="Back to Layout btn"
-          dataTestid="back-to-layout-btn"
+          dataTestId="back-to-layout-btn"
           onClick={handleBackToLayout}
         />
         <CustomButton
@@ -396,7 +396,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
-          dataTestid="cancel-btn"
+          dataTestId="cancel-btn"
           onClick={handleClose}
         />
       </>
@@ -412,7 +412,7 @@ const TaskVariableModal = React.memo(
           disabled={isPublished}
           label={t("Save")}
           ariaLabel="save task variable btn"
-          dataTestid="save-task-variable-btn"
+          dataTestId="save-task-variable-btn"
           onClick={handleSaveTaskVariable}
         />
         <CustomButton
@@ -421,7 +421,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
-          dataTestid="cancel-btn"
+          dataTestId="cancel-btn"
           onClick={handleClose}
         />
       </>

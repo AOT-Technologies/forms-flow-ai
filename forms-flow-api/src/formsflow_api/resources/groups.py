@@ -11,7 +11,7 @@ from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.schemas import ApplicationListReqSchema
 from formsflow_api.services.factory import KeycloakFactory
 
-API = Namespace("groups", description="Keycloak wrapper APIs")
+API = Namespace("Groups", description="Keycloak wrapper groups APIs.")
 
 groups_list_model = API.model(
     "Group",
@@ -56,7 +56,7 @@ class KeycloakDashboardGroupList(Resource):
         "NOT_FOUND:- Resource not found.",
     )
     def get():
-        """GET request to fetch all dashboard groups from Keycloak.
+        """GET request to fetch all dashboard authorized groups from Keycloak.
 
         :params int pageNo: page number (optional)
         :params int limit: number of items per page (optional)

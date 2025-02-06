@@ -13,7 +13,7 @@ from formsflow_api.services import (
     FormProcessMapperService,
 )
 
-API = Namespace("Embed", description="APIs for form embeding")
+API = Namespace("Embed", description="APIs for form embeding.")
 
 application_external_create_model = API.model(
     "ApplicationCreateExternal", {"formId": fields.String(), "data": fields.Raw()}
@@ -126,7 +126,7 @@ class FormExternal(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get(path):
-        """Get form by form name with external authentication."""
+        """Get form by form path with external authentication."""
         return EmbedCommonMethods.get(path)
 
 
@@ -189,5 +189,5 @@ class FormInternal(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get(path):
-        """Get form by form name with internal authentication."""
+        """Get form by form path with internal authentication."""
         return EmbedCommonMethods.get(path)

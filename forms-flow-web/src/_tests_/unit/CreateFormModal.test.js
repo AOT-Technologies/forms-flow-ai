@@ -3,14 +3,26 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import CreateFormModal from "../../components/Modals/CreateFormModal";
 import '@testing-library/jest-dom';
 
-// Mock the CloseIcon component
+// Mocking CloseIcon with PropTypes validation for onClick
 jest.mock("@formsflow/components", () => {
+  const PropTypes = require('prop-types'); // Import PropTypes for validation
   return {
-    CloseIcon: ({ onClick }) => (
-      <button data-testid="modal-close-icon" onClick={onClick}>
-        Close
-      </button>
-    ),
+    // Here we're creating a mocked CloseIcon component and applying PropTypes to it
+    CloseIcon: ({ onClick }) => {
+      // Applying prop validation to ensure onClick is passed correctly
+      const CloseIconComponent = ({ onClick }) => (
+        <button data-testid="modal-close-icon" onClick={onClick}>
+          Close
+        </button>
+      );
+
+      // Prop validation for onClick
+      CloseIconComponent.propTypes = {
+        onClick: PropTypes.func.isRequired,  // Ensures that onClick is a required function
+      };
+
+      return <CloseIconComponent onClick={onClick} />;
+    },
   };
 });
 

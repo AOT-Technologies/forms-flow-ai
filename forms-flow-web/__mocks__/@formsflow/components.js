@@ -75,7 +75,7 @@ export const CloseIcon = ({
 };
 
 CloseIcon.propTypes = {
-  onClick: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
   dataTestId: PropTypes.string
 };
 

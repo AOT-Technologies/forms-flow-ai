@@ -80,7 +80,7 @@ it('should render the list component and open the modal when New Form is clicked
           <span className="modal-content-text">Upload form from a file</span>
         </div>
       </div>
-    </div>)
+    </div>);
     const addFormModal = screen.getByTestId('create-form-modal');
     expect(addFormModal).toBeInTheDocument();
   });

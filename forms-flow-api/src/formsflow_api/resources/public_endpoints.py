@@ -22,7 +22,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import ApplicationService, DraftService
 
-API = Namespace("Public", description="Public APIs")
+API = Namespace("Public", description="Public APIs.")
 
 application_create_model = API.model(
     "AnonymousApplicationCreate",

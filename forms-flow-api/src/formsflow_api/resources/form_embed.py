@@ -31,6 +31,9 @@ application_base_model = API.model(
         "modifiedBy": fields.String(),
         "processInstanceId": fields.String(),
         "submissionId": fields.String(),
+        "isResubmit": fields.Boolean(),
+        "eventName": fields.String(),
+        "isDraft": fields.Boolean(),
     },
 )
 

@@ -341,7 +341,7 @@ class FormResourceList(Resource):
             },
             "sortOrder": {
                 "in": "query",
-                "description": "Specify sorting  order.",
+                "description": "Specify sorting order.",
                 "default": "desc",
             },
             "search": {

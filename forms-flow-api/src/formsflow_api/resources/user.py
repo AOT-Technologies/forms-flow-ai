@@ -24,7 +24,10 @@ from formsflow_api.schemas import (
 from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory, KeycloakGroupService
 
-API = Namespace("user", description="Keycloak user APIs")
+API = Namespace(
+    "User",
+    description="Handles APIs for Keycloak user management and maintains the user database.",
+)
 
 user_list_count_model = API.model(
     "List",
@@ -71,7 +74,12 @@ tenant_add_user_model = API.model(
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
-default_filter_model = API.model("DefaulFilter", {"defaultFilter": fields.String()})
+default_filter_model = API.model("DefaulFilter", {"defaultFilter": fields.Integer()})
+default_filter_response_model = API.inherit(
+    "DefaulFilterResponse",
+    default_filter_model,
+    {"userName": fields.String(), "locale": fields.String()},
+)
 
 
 @cors_preflight("PUT, OPTIONS")
@@ -134,7 +142,7 @@ class UserDefaultFilter(Resource):
     @auth.has_one_of_roles([ADMIN, CREATE_FILTERS, MANAGE_ALL_FILTERS])
     @profiletime
     @API.doc(body=default_filter_model)
-    @API.response(200, "OK:- Successful request.")
+    @API.response(200, "OK:- Successful request.", model=default_filter_response_model)
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -188,7 +196,7 @@ class KeycloakUsersList(Resource):
             },
             "permission": {
                 "in": "query",
-                "description": "A string to filter user by permission.",
+                "description": "Filter user by permission.",
                 "default": "",
             },
         }
@@ -253,7 +261,7 @@ class UserPermission(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def put(user_id, group_id):
-        """Add users to role / group."""
+        """Add users to group."""
         json_payload = request.get_json()
         user_and_group = UserPermissionUpdateSchema().load(json_payload)
         current_app.logger.debug("Initializing admin API service...")
@@ -281,7 +289,7 @@ class UserPermission(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def delete(user_id, group_id):
-        """Remove users from role / group."""
+        """Remove users from group."""
         json_payload = request.get_json()
         user_and_group = UserPermissionUpdateSchema().load(json_payload)
         current_app.logger.debug("Initializing admin API service...")

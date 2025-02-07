@@ -11,7 +11,7 @@ from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.schemas import ApplicationListReqSchema
 from formsflow_api.services.factory import KeycloakFactory
 
-API = Namespace("Groups", description="Keycloak wrapper groups APIs.")
+API = Namespace("Groups", description="Keycloak wrapper groups APIs for dashbard.")
 
 groups_list_model = API.model(
     "Group",

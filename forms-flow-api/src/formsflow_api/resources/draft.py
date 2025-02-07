@@ -14,7 +14,7 @@ from formsflow_api_utils.utils import (
 from formsflow_api.schemas import ApplicationSchema, DraftSchema
 from formsflow_api.services import DraftService
 
-API = Namespace("Draft", description="Manage Drafts")
+API = Namespace("Draft", description="Manage Drafts.")
 
 message = API.model("Message", {"message": fields.String()})
 

@@ -45,7 +45,7 @@
   padding-bottom: 10px;
   list-style: none;
   margin: auto;
-  border-left: 1px solid $gray-400;
+  border-left: 1px solid $gray-medium-dark;
   position: relative;
 }
 
@@ -54,7 +54,7 @@
 .form-history-container .history-details {
   padding: 15px;
   margin-left: 2rem;
-  border: 1px solid $gray-400;
+  border: 1px solid $gray-medium-dark;
   border-radius: 4px;
 }
 
@@ -72,7 +72,7 @@
   top: 0;
   content: " ";
   border-radius: 500%;
-  background: $gray-400;
+  background: $gray-medium-dark;
   height: 20px;
   width: 20px;
   transition: all 500ms ease-in-out;

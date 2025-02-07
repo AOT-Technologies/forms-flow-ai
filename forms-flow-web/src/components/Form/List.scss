@@ -16,16 +16,16 @@
 .published-forms-label{
     color: $success;
     // #52C41A;
-    background: $success-200 0% 0% no-repeat padding-box;
+    background: $success 0% 0% no-repeat padding-box;
     border: 1px solid $success;
     border-radius: 7px;
 }
 
 .unpublished-forms-label{
-    background: $primary-100 0% 0% no-repeat padding-box;
+    background: $primary-light 0% 0% no-repeat padding-box;
     border-radius: 7px;
-    border: 1px solid $primary-400;
-    color: $primary-400;
+    border: 1px solid $primary;
+    color: $primary;
 }
 .custom-grid {
     .col {
@@ -115,7 +115,7 @@ flex-wrap: wrap;
 }
 
 .fileupload-fail {
-    color: $danger-100;
+    color: $danger;
     float: right;
     font-weight: normal
 }

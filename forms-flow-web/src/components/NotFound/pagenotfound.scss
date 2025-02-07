@@ -10,7 +10,7 @@
 .circles p {
  
   font-size: 240px;
-  color: $dark;
+  color: $black;
  
   position: relative;
   font-family: "Raleway", sans-serif;
@@ -29,7 +29,7 @@
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  background: $primary-200;
+  background: $primary-light;
   position: absolute;
   z-index: 1;
   top: 80px;
@@ -44,7 +44,7 @@
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: $primary-200;
+  background: $primary-light;
   position: absolute;
   z-index: 1;
   top: 0;
@@ -59,7 +59,7 @@
   width: 400px;
   height: 400px;
   border-radius: 50%;
-  background: $primary-200;
+  background: $primary-light;
   position: absolute;
   z-index: 1;
   top: 200px;

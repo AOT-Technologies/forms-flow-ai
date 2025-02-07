@@ -125,7 +125,7 @@ const EditComponent = () => {
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
-  const defaultPrimaryBtnText = "Confirm And Replace";
+  const defaultPrimaryBtnText = t("Confirm And Replace");
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
   const { createDesigns } = userRoles();
   const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });

@@ -21,7 +21,7 @@
 .card-body {
   padding-top: 16px !important;
   padding-bottom: 16px !important;
-  color: $dark;
+  color: $black;
 }
 
 .card-overflow {
@@ -33,7 +33,7 @@
   padding-top: 16px;
 }
 .card-border {
-  border-left: solid 1px $gray-200;
+  border-left: solid 1px $gray-medium;
 }
 
 .card-header.bg-default .card-title {
@@ -41,7 +41,7 @@
 }
 
 .card-header .card-title {
-  color: $dark; 
+  color: $black; 
 }
 /* ------------------- this is for diagram settings icons end  ------------------- */
 
@@ -54,7 +54,7 @@
 }
 
 .properties-panel-parent {
-  border: 1px solid $dark;
+  border: 1px solid $black;
   border-left: none;
 }
 
@@ -64,7 +64,7 @@
 }
 
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-  fill: $primary-500 !important;
+  fill: $primary !important;
 }
 
 .highlight .djs-label {

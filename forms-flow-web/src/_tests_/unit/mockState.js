@@ -99,5 +99,5 @@ export const mockstate = {
 
  
 
-}
+};
 

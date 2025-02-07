@@ -12,8 +12,7 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
         USE_AI: "USE_AI"
     };
     return (
-        <>
-            <Modal show={newFormModal} onHide={onClose} centered={true}>
+        <Modal show={newFormModal} onHide={onClose} centered={true} data-testid="create-form-modal" >
                 <Modal.Header>
                     <Modal.Title className="modal-headder">
                         <div>{t("Add Form")}</div>
@@ -33,7 +32,6 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
                     </div>
                 </Modal.Body>
             </Modal>
-        </>
     );
 });
 

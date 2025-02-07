@@ -241,7 +241,7 @@ const FormSettings = forwardRef((props, ref) => {
           value={formDetails.title}
           label={t("Name")}
           onChange={handleFormDetailsChange}
-          dataTestid="form-name"
+          dataTestId="form-name"
           name="title"
           ariaLabel={t("Form Name")}
           isInvalid = {!!errors.title}
@@ -299,7 +299,7 @@ const FormSettings = forwardRef((props, ref) => {
               handleRoleStateChange(DESIGN, "selectedOption", value);
             }
           }
-          dataTestid="who-can-edit-this-form"
+          dataTestId="who-can-edit-this-form"
           id="who-can-edit-this-form"
           ariaLabel={t("Edit Submission Role")}
           selectedValue={rolesState.DESIGN.selectedOption}
@@ -346,7 +346,7 @@ const FormSettings = forwardRef((props, ref) => {
             },
           ]}
           id="who-can-create-submission"
-          dataTestid="create-submission-role"
+          dataTestId="create-submission-role"
           ariaLabel={t("Create Submission Role")}
           onChange={
             (value) => {
@@ -385,7 +385,7 @@ const FormSettings = forwardRef((props, ref) => {
             },
           ]}
           id="who-can-view-submission"
-          dataTestid="view-submission-role"
+          dataTestId="view-submission-role"
           ariaLabel={t("View Submission Role")}
           onChange={
             (value) => {

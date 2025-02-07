@@ -227,7 +227,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                       icon={<HistoryIcon />}
                       label={t("History")}
                       onClick={handleProcessHistory}
-                      dataTestid="flow-history-button-testid"
+                      dataTestId="flow-history-button-testid"
                       ariaLabel={t("Flow History Button")}
                     />
                     <CustomButton
@@ -237,7 +237,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                       icon={<CurlyBracketsIcon />}
                       label={t("Variables")}
                       onClick={() => handlePreviewAndVariables()}
-                      dataTestid="preview-and-variables-testid"
+                      dataTestId="preview-and-variables-testid"
                       ariaLabel={t("{Preview and Variables Button}")}
                     />
                   </div>
@@ -252,7 +252,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                     label={t("Save Flow")}
                     onClick={isPublished ? handleUnpublishAndSaveChanges : handleSaveFlowClick}
                     disabled={!workflowIsChanged}
-                    dataTestid="save-flow-layout"
+                    dataTestId="save-flow-layout"
                     ariaLabel={t("Save Flow Layout")}
                     buttonLoading={savingFlow}
                   />
@@ -262,7 +262,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                     label={t("Discard Changes")}
                     onClick={handleDiscardModal}
                     disabled={!workflowIsChanged}
-                    dataTestid="discard-flow-changes-testid"
+                    dataTestId="discard-flow-changes-testid"
                     ariaLabel={t("Discard Flow Changes")}
                   />
                 </div>

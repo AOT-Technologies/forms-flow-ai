@@ -580,7 +580,7 @@ const ProcessCreateEdit = ({ type }) => {
                 className="mx-2"
                 label={t("Actions")}
                 onClick={editorActions}
-                dataTestid="designer-action-testid"
+                dataTestId="designer-action-testid"
                 ariaLabel={t("Designer Actions Button")}
               />
               <CustomButton
@@ -594,7 +594,7 @@ const ProcessCreateEdit = ({ type }) => {
                     : openConfirmModal("publish");
                 }}
                 disabled={isPublishLoading}
-                dataTestid="handle-publish-testid"
+                dataTestId="handle-publish-testid"
                 ariaLabel={`${t(publishText)} ${t("Button")}`}
               />
             </div>
@@ -615,7 +615,7 @@ const ProcessCreateEdit = ({ type }) => {
                     icon={<HistoryIcon />}
                     onClick={handleProcessHistory}
                     label={t("History")}
-                    dataTestid={`${diagramType.toLowerCase()}-history-button-testid`}
+                    dataTestId={`${diagramType.toLowerCase()}-history-button-testid`}
                     ariaLabel={t(`${diagramType} History Button`)}
                   />
                 )}
@@ -629,7 +629,7 @@ const ProcessCreateEdit = ({ type }) => {
                   label={t(`Save ${diagramType}`)}
                   buttonLoading={savingFlow}
                   disabled={savingFlow || isPublished || !isWorkflowChanged}
-                  dataTestid={`save-${diagramType.toLowerCase()}-layout`}
+                  dataTestId={`save-${diagramType.toLowerCase()}-layout`}
                   ariaLabel={t(`Save ${diagramType} Layout`)}
                 />
                 <CustomButton
@@ -638,7 +638,7 @@ const ProcessCreateEdit = ({ type }) => {
                   onClick={() => openConfirmModal("discard")}
                   label={t("Discard Changes")}
                   disabled={!isWorkflowChanged}
-                  dataTestid={`discard-${diagramType.toLowerCase()}-changes-testid`}
+                  dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
                   ariaLabel={t(`Discard ${diagramType} Changes`)}
                 />
               </div>

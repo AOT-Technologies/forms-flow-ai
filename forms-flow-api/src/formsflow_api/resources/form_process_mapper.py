@@ -31,14 +31,6 @@ from formsflow_api.services import (
     FormProcessMapperService,
 )
 
-
-class NullableString(fields.String):
-    """Extending String field to be nullable."""
-
-    __schema_type__ = ["string", "null"]
-    __schema_example__ = "nullable string"
-
-
 API = Namespace(
     "Form",
     description="Manages form lifecycle, including creation, update, listing, \
@@ -96,18 +88,18 @@ mapper_create_response_model = API.model(
     "MapperCreateResponse",
     {
         "anonymous": fields.Boolean(),
-        "comments": NullableString(),
+        "comments": fields.String(),
         "created": fields.String(),
         "createdBy": fields.String(),
         "formId": fields.String(),
         "formName": fields.String(),
         "id": fields.String(),
         "modified": fields.String(),
-        "modifiedBy": NullableString(),
+        "modifiedBy": fields.String(),
         "processKey": fields.String(),
         "processName": fields.String(),
-        "processTenant": NullableString(),
-        "status": NullableString(),
+        "processTenant": fields.String(),
+        "status": fields.String(),
         "taskVariables": fields.List(fields.Nested(task_variables_model)),
         "version": fields.String(),
         "promptNewVersion": fields.Boolean(default=False),
@@ -164,7 +156,7 @@ task_variable_response_model = API.model(
         "formType": fields.String(),
         "processName": fields.String(),
         "processKey": fields.String(),
-        "processTenant": NullableString(),
+        "processTenant": fields.String(),
         "taskVariables": fields.String(),
     },
 )

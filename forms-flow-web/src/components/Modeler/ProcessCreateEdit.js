@@ -88,7 +88,7 @@ const ProcessCreateEdit = ({ type }) => {
   const [exportError, setExportError] = useState(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  
   const defaultProcessXmlData = useSelector(
     (state) => state.process.defaultProcessXmlData
   );
@@ -116,7 +116,7 @@ const ProcessCreateEdit = ({ type }) => {
   const publishText = isPublished ? t("Unpublish") : t("Publish");
   const processName = processData.name;
   const fileName = (processName + Process.extension).replaceAll(" ", "");
-
+  
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
     ["processDetails", processKey],
@@ -477,15 +477,14 @@ const ProcessCreateEdit = ({ type }) => {
         secondayBtnAction: secondaryAction,
       };
     };
-
+    
     switch (modalType) {
       case "publish":
         return getModalConfig(
           t("Confirm Publish"),
-          t(
-            `Publishing will lock the ${Process.type}. To save changes on further edits,
-             you will need to unpublish the ${Process.type} first.`
-          ),
+          t("Publishing will lock the {{type}}. To save changes on further edits, you will need to unpublish the {{type}} first.", {
+            type: Process.type,
+          }),
           t(`Publish This ${Process.type}`),
           t("Cancel"),
           confirmPublishOrUnPublish,
@@ -494,10 +493,9 @@ const ProcessCreateEdit = ({ type }) => {
       case "unpublish":
         return getModalConfig(
           t("Confirm Unpublish"),
-          t(
-            `This ${Process.type} is currently live. To save changes to ${Process.type} edits, 
-            you need to unpublish it first.`
-          ),
+          t("This {{type}} is currently live. To save changes to {{type}} edits, you need to unpublish it first.",{
+            type: Process.type
+    }),
           t(`Unpublish and Edit This ${Process.type}`),
           t(`Cancel, Keep This ${Process.type} published`),
           confirmPublishOrUnPublish,

@@ -38,6 +38,7 @@ const ProcessTable = React.memo(() => {
       filterAriaLabel: "Filter the Process list (BPMN)",
       refreshDataTestId: "Process-list-refresh-bpmn",
       refreshAriaLabel: "Refresh the Process list (BPMN)",
+      message: "No subflows have been found. Create a new subflow by clicking \"New BPMN\" button in the top right."
     }
   : {   
       processType: "DMN",
@@ -46,6 +47,7 @@ const ProcessTable = React.memo(() => {
       filterAriaLabel: "Filter the Process list (DMN)",
       refreshDataTestId: "Process-list-refresh-dmn",
       refreshAriaLabel: "Refresh the Process list (DMN)",
+      message: "No decision tables have been found. Create a new decision table by clicking \"New DMN\" button in the top right."
     };
 
   // States and selectors
@@ -153,19 +155,26 @@ const ProcessTable = React.memo(() => {
 
   const handleSort = (key) => {
     const newSortConfig = {
-      ...sortConfig,
       activeKey: key,
       [key]: {
         sortOrder: sortConfig[key]?.sortOrder === "asc" ? "desc" : "asc",
       },
     };
   
+    // Reset all other sort keys to default (ascending)
+    Object.keys(sortConfig).forEach((sortKey) => {
+      if (sortKey !== key && sortKey !== "activeKey") {
+        newSortConfig[sortKey] = { sortOrder: "asc" };
+      }
+    });
+  
     if (isBPMN) {
       dispatch(setBpmSort(newSortConfig));
     } else {
-      dispatch(setDmnSort(newSortConfig)); 
+      dispatch(setDmnSort(newSortConfig));
     }
   };
+  
   
   const handleSearch = () => {
     setSearchLoading(true);
@@ -359,7 +368,7 @@ const ProcessTable = React.memo(() => {
                   />
                 </tbody>
               ) : (
-                !isLoading && <NoDataFound />
+                !isLoading &&  <NoDataFound message={t(`${ProcessContents.message}`)} />
               )}
             </table>
           </div>

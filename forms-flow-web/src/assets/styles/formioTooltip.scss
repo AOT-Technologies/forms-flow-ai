@@ -47,10 +47,6 @@
     opacity: 0
   }
   
-  .tippy-box[data-animation=fade][data-state=hidden] {
-    opacity: 0
-  }
-  
   [data-tippy-root] {
     max-width: calc(100vw - 10px)
   }
@@ -105,7 +101,7 @@
     position: relative;
     padding: 5px 9px;
     z-index: 1;
- 
+    
   }
   
   

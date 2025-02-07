@@ -42,9 +42,11 @@ const ActionModal = React.memo(
       };
     } else if (CategoryType === "WORKFLOW" && published) {
       customInfo = {
-        heading: "Note",
-        content: `Importing is not available when the ${diagramType} is published.` +
-        `You must unpublish the ${diagramType} first if you wish to make any changes.`.trim(),
+        heading: t("Note"),
+        content: t(
+          "Importing is not available when the {{type}} is published. You must unpublish the {{type}} first if you wish to make any changes.",
+          { type: diagramType }
+        ).trim(),
 
 
       };
@@ -119,7 +121,7 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Duplicate"
+                  label={t("Duplicate")}
                   icon={<DuplicateIcon />}
                   className=""
                   dataTestId="duplicate-workflow-button"
@@ -132,7 +134,7 @@ const ActionModal = React.memo(
                   variant="secondary"
                   disabled={published}
                   size="sm"
-                  label="Import"
+                  label={t("Import")}
                   icon={<ImportIcon />}
                   className=""
                   dataTestId="import-workflow-button"
@@ -143,7 +145,7 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Export"
+                  label={t("Export")}
                   icon={<PencilIcon />}
                   className=""
                   dataTestId="export-workflow-button"

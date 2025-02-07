@@ -31,7 +31,7 @@ const ImportProcess = React.memo(({
 
   const getHeaderText = () => {
     if (processId) {
-      return "Import File";
+      return t("Import File");
     }
     return `${t("Import New")} ${fileType === ".bpmn" ? "BPMN" : "DMN"}`;
   };

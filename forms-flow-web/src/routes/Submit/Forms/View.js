@@ -60,8 +60,8 @@ import {
 } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../../components/Loading/SavingLoading";
-//import NotFound from "../../NotFound/";
 import { renderPage } from "../../../helper/helper";
+import PropTypes from "prop-types";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -111,8 +111,7 @@ const View = React.memo((props) => {
   const [notified, setNotified] = useState(false);
   const {
     isAuthenticated,
-    submission,
-    hideComponents,
+    submission, 
     onSubmit,
     onCustomEvent,
     errors,
@@ -336,8 +335,7 @@ const View = React.memo((props) => {
         (formStatus === "active" ||
           (publicFormStatus?.anonymous === true &&
             publicFormStatus?.status === "active")) && (
-          <>
-            <span className="pe-2  me-2 d-flex justify-content-end align-items-center">
+             <span className="pe-2  me-2 d-flex justify-content-end align-items-center">
               {!notified && (
                 <span className="text-primary">
                   <i className="fa fa-info-circle me-2" aria-hidden="true"></i>
@@ -358,8 +356,7 @@ const View = React.memo((props) => {
                 />
               )}
             </span>
-          </>
-        )}
+         )}
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
           <SubmissionError
@@ -408,7 +405,6 @@ const View = React.memo((props) => {
           language: lang,
           i18n: RESOURCE_BUNDLES_DATA,
         }}
-        hideComponents={hideComponents}
         onChange={(data) => {
           setDraftData(data);
           draftRef.current = data;
@@ -441,7 +437,7 @@ const doProcessActions = (submission, ownProps) => {
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, origin,submission?.data);
     let draft_id = state.draft.draftSubmission?.id;
-    let isDraftCreated = draft_id ? true : false;
+    let isDraftCreated = !!draft_id;
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,
       isDraftCreated,
@@ -450,7 +446,7 @@ const doProcessActions = (submission, ownProps) => {
 
     dispatch(
       // eslint-disable-next-line no-unused-vars
-      applicationCreateAPI(data, draft_id ? draft_id : null, (err, res) => {
+      applicationCreateAPI(data, draft_id, (err, res) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
           toast.success(
@@ -488,6 +484,18 @@ const mapStateToProps = (state) => {
     },
     submissionError: selectRoot("formDelete", state).formSubmissionError,
   };
+};
+
+View.propTypes = {
+  form: PropTypes.object,
+  isAuthenticated: PropTypes.bool,
+  errors: PropTypes.array,
+  options: PropTypes.object,
+  submissionError: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onConfirm: PropTypes.func,
+  submission:PropTypes.object, 
+  onCustomEvent:PropTypes.func
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {

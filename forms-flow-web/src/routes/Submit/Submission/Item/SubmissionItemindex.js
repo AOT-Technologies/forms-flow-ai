@@ -67,7 +67,7 @@ const Item = React.memo(() => {
     } else if (applicationStatus) {
       if (userRoles.includes('create_submissions')) {
         setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus)
-          || applicationDetail.isResubmit ? true : false);
+          || applicationDetail.isResubmit);
         setShowSubmissionLoading(false);
       }
     }
@@ -79,27 +79,6 @@ const Item = React.memo(() => {
 
   return (
     <div>
-      <ul className="nav nav-tabs">
-        {/* {showViewSubmissions && getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-        <li className="nav-item">
-          <Link className="nav-link" to={`${redirectUrl}form/${formId}/submission`}>
-            <i className="fa fa-chevron-left fa-lg" />
-          </Link>
-        </li>:null} */}
-        {/*{(path.indexOf("edit") > 0) ?
-          <li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
-            <img src="/webfonts/fa_eye.svg" alt="back"/> View
-            </Link>
-          </li>
-          :
-          editAllowed ? (<li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}/edit`}>
-              <img src="/webfonts/fa_edit.svg" alt="back"/> Edit
-            </Link>
-          </li>) : null
-        }*/}
-      </ul>
       <Switch>
         {!submissionError ? (
           <Route

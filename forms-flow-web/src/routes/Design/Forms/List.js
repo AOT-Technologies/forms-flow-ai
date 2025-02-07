@@ -10,7 +10,6 @@ import {
 } from "@aot-technologies/formio-react";
 import Loading from "../../../containers/Loading";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-// import "../Form/List.scss";//To check
 import {
   setBPMFormListLoading,
   setFormDeleteStatus,
@@ -90,7 +89,6 @@ const List = React.memo((props) => {
     VALIDATE: "validate",
   };
 
-  // const [formDescription, setFormDescription] = useState("");
   const [nameError, setNameError] = useState("");
   const dispatch = useDispatch();
   const submissionAccess = useSelector(
@@ -155,7 +153,7 @@ const List = React.memo((props) => {
     (state) => state.formCheckList.searchFormLoading
   );
   const [newFormModal, setNewFormModal] = useState(false);
-  const [description, setUploadFormDescription] = useState("");
+  const [description, setDescription] = useState("");
   const [formTitle, setFormTitle] = useState("");
   const  optionSortBy = [
     { value: "formName", label: t("Form Name") },
@@ -230,7 +228,7 @@ const List = React.memo((props) => {
 
         if (Array.isArray(formExtracted?.forms)) {
           setFormTitle(formExtracted?.forms[0]?.formTitle || "");
-          setUploadFormDescription(
+          setDescription(
             formExtracted?.forms[0]?.formDescription || ""
           );
         }
@@ -348,7 +346,6 @@ const List = React.memo((props) => {
       ) : (
         <div>
           {createDesigns && (
-            <>
               <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
                 <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
                   <CustomSearch
@@ -428,7 +425,6 @@ const List = React.memo((props) => {
                   )}
                 </div>
               </div>
-            </>
           )}
          {renderTable()}
         </div>

@@ -6,6 +6,7 @@ import ProcessTable from './ProcessTable';
 import { BASE_ROUTE } from "../../../constants/constants";
 import Loading from "../../../containers/Loading";
 import AccessDenied from "../../../components/AccessDenied";
+import PropTypes from "prop-types";
 
 let user = "";
 
@@ -22,9 +23,14 @@ const DesignerProcessRoute = ({ component: Component, ...rest }) => (
   />
 );
 
+DesignerProcessRoute.propTypes = {
+  component: PropTypes.func.isRequired,
+};
+
 // Wrapper components to pass type prop to ProcessCreateEdit
 const ProcessCreateEditBPMN = (props) => <ProcessCreateEdit {...props} type="BPMN" />;
 const ProcessCreateEditDMN = (props) => <ProcessCreateEdit {...props} type="DMN" />;
+
 
 const Processes = () => {
   user = useSelector((state) => state.user?.roles || []);

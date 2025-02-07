@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { DRAFT_ENABLED } from "../../../constants/constants";
-// import "../Form/List.scss";
 import {
   setBPMFormListLoading,
   setClientFormSearch,

@@ -2,14 +2,11 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
-// import List from "./List";
 import SubmitList from "./SubmitList";
-// import EditForm from "./EditForm";
 import SubmitIndex from "./SubmitIndex";
 import { BASE_ROUTE } from "../../../constants/constants";
 import Loading from "../../../containers/Loading";
 import AccessDenied from "../../../components/AccessDenied";
-// import FormPreview from "./EditForm/FormPreview";
 
 const GenericRoute = ({ component: Component, roles, ...rest }) => {
   const userRoles = useSelector((state) => state.user.roles || []);

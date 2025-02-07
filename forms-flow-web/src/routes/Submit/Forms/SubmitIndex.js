@@ -24,6 +24,7 @@ import Loading from "../../../containers/Loading";
 import { getClientList, getReviewerList } from "../../../apiManager/services/authorizationService";
 import NotFound from "../../../components/NotFound";
 import { setApiCallError } from "../../../actions/ErroHandling";
+import proptypes from 'prop-types';
 
 const Item = React.memo(() => {
   const { formId } = useParams();
@@ -39,11 +40,7 @@ const Item = React.memo(() => {
 
   const formAuthVerify = ({parentFormId, currentFormId},successCallBack)=>{
       const isSubmissionRoute = pathname?.includes("/submission");
-      const authFunction = isSubmissionRoute
-      ? viewSubmissions
-        ? getReviewerList
-        : getClientList
-      : getClientList;
+      const authFunction = (isSubmissionRoute && viewSubmissions) ? getReviewerList : getClientList;
        authFunction({parentFormId, currentFormId}).then(successCallBack).catch((err)=>{
         const {response} = err;
         dispatch(setApiCallError({message:response?.data?.message || 
@@ -131,6 +128,10 @@ const Item = React.memo(() => {
       }
     />
   );
+
+SubmissionRoute.propTypes = {
+    component: proptypes.func.isRequired,
+};
 
   /**
    * Protected route for form deletion

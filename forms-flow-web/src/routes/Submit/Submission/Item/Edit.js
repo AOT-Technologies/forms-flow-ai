@@ -33,14 +33,14 @@ import LoadingOverlay from "react-loading-overlay-ts";
 import { toast } from "react-toastify";
 import { Translation, useTranslation } from "react-i18next";
 import { updateCustomSubmission } from "../../../../apiManager/services/FormServices";
+import PropTypes from "prop-types";
 
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const lang = useSelector((state) => state.user.lang);
   const { formId, submissionId } = useParams();
-  const {
-    hideComponents,
+  const { 
     onSubmit,
     options,
     errors,
@@ -124,8 +124,7 @@ const Edit = React.memo((props) => {
           <Form
             form={form}
             submission={isFormSubmissionLoading ? updatedSubmissionData : updatedSubmission}
-            url={url}
-            hideComponents={hideComponents}
+            url={url} 
             onSubmit={(submission) =>{
 
               setUpdatedSubmissionData(submission);
@@ -179,6 +178,17 @@ const mapStateToProps = (state) => {
   };
 };
 
+Edit.propTypes = {
+  onCustomEvent: PropTypes.func,
+  form: PropTypes.object,
+  submission: PropTypes.object, 
+  errors: PropTypes.array,
+  options: PropTypes.object,
+  onConfirm: PropTypes.func,
+  submissionError: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onFormSubmit: PropTypes.func,
+};
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (
@@ -203,9 +213,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 if (onFormSubmit) {
                   onFormSubmit();
                 } else {
-                  toast.success(
-                    <Translation>{(t) => t("Submission Saved")}</Translation>
-                  );
+                  toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);
                   dispatch(
                     push(
                       // eslint-disable-next-line max-len

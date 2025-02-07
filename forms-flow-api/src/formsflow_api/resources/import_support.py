@@ -15,18 +15,6 @@ from formsflow_api.services import ImportService
 
 API = Namespace("Import", description="Handles form and workflow import.")
 
-form_edit_import_model = API.model(
-    "FormEditImportModel",
-    {
-        "skip": fields.Boolean(description="Skip form import"),
-        "selectedVersion": fields.String(description="Import as major/minor version"),
-    },
-)
-workflow_edit_import_model = API.model(
-    "WorkflowEditImportModel",
-    {"skip": fields.Boolean(description="Skip workflow import")},
-)
-
 version_model = API.model(
     "VersionModel",
     {
@@ -34,24 +22,7 @@ version_model = API.model(
         "minorVersion": fields.Integer(),
     },
 )
-import_model = API.model(
-    "ImportModel",
-    {
-        "importType": fields.String(
-            description="New import or import on existing form - new/edit"
-        ),
-        "action": fields.String(
-            description="Action to be performed - validate or import"
-        ),
-        "mapperId": fields.String(),
-        "form": fields.Nested(form_edit_import_model),
-        "workflow": fields.Nested(workflow_edit_import_model),
-    },
-)
-import_request_model = API.model(
-    "ImportRequestModel",
-    {"file": fields.String(), "data": fields.Nested(import_model)},
-)
+
 import_validate_response_model = API.model(
     "ImportValidateResponseModel",
     {
@@ -86,13 +57,30 @@ class Import(Resource):
         403,
         "FORBIDDEN:- Authorization will not help.",
     )
-    @API.expect(import_request_model)
+    @API.doc(
+        params={
+            "file": {
+                "in": "formData",
+                "description": "json file to import",
+                "type": "file",
+                "required": True,
+            },
+            "data": {
+                "in": "formData",
+                "description": "Determines import or validate the form/workflow as new or to an existing layout.",
+                "required": True,
+                "default": """{"importType": "new", "action": "validate"}""",
+            },
+        }
+    )
     def post():
         """Import form and workflow.
 
-        Import payload given as form-data with fields: file-as json file and data
+        Import payload given as form-data.
         e.g payload ,
         Validate new import
+        :importType param - Specifies whether to import as a new layout or edit an existing one.
+        :action param - Decide whether to validate the file or perform the import.
         ```
         file: importfile.json
         data: {"importType":"new","action":"validate"}
@@ -102,13 +90,16 @@ class Import(Resource):
         file: importfile.json
         data: {"importType":"new","action":"import"}
         ```
-        Validate import to an existing form
+        Validate import to an existing layout
         ```
+        :mapperId param - ID of the form mapper for the existing layout to edit.
         file: importfile.json
         data: {"importType":"edit","action":"validate","mapperId":"123"}
 
         ```
-        Import to an existing form
+        Import to an existing layout.
+        :skip param - Skip importing either the form or the workflow.
+        :selectedVersion param - Import the form as a major or minor version.
         ```
         file: importfile.json
         data: {

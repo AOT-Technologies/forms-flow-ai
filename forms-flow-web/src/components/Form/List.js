@@ -310,9 +310,9 @@ const List = React.memo((props) => {
       .then((res) => {
         const form = res.data;
         dispatch(setFormSuccessData("form", form));
-        startSuccessCountdown(2, () => {
+        startSuccessCountdown(() => {
           navigateToDesignFormEdit(dispatch, tenantKey, form._id);
-        });
+        },2);
       })
       .catch((err) => {
         let error;

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+const INTERVAL_DELAY = 1000; 
+
 const useSuccessCountdown = () => {
   const [successState, setSuccessState] = useState({
     showSuccess: false,
@@ -7,7 +9,7 @@ const useSuccessCountdown = () => {
   });
   const [onCountdownEnd, setOnCountdownEnd] = useState(null); // Store callback
 
-  const startSuccessCountdown = (initialCount = 2, callback) => {
+  const startSuccessCountdown = (callback, initialCount = 2) => {
     setSuccessState({ showSuccess: true, countdown: initialCount });
     setOnCountdownEnd(() => callback); // Store the callback function
   };
@@ -16,17 +18,14 @@ const useSuccessCountdown = () => {
     if (successState.countdown >= 0) {
       const interval = setInterval(() => {
         setSuccessState((prev) => {
-          if (prev.countdown === 1) {
-            return { ...prev, countdown: 0 }; // Show 0 before redirecting
-          }
-          if (prev.countdown === 0) {
+          if (prev.countdown <= 0) {
             clearInterval(interval);
             if (onCountdownEnd) onCountdownEnd(); // Call callback at 0
             return { showSuccess: false, countdown: 0 };
           }
           return { ...prev, countdown: prev.countdown - 1 };
         });
-      }, 1000);
+      }, INTERVAL_DELAY);
 
       return () => clearInterval(interval); // Cleanup interval
     }

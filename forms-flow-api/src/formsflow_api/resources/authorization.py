@@ -12,6 +12,8 @@ from formsflow_api_utils.utils import (
     VIEW_DESIGNS,
     VIEW_SUBMISSIONS,
     auth,
+    authorization_doc_params,
+    authorization_model,
     cors_preflight,
     profiletime,
 )
@@ -27,15 +29,6 @@ auth_service = AuthorizationService()
 
 resource_details_model = API.model("resource_details", {"name": fields.String()})
 
-authorization_model = API.model(
-    "Authorization",
-    {
-        "resourceId": fields.String(),
-        "resourceDetails": fields.Nested(resource_details_model),
-        "roles": fields.List(fields.String(), description="Authorized Roles"),
-        "userName": fields.String(description="UserName can be null or string"),
-    },
-)
 
 authorization_list_model = API.model(
     "AuthorizationList",
@@ -49,11 +42,7 @@ authorization_list_model = API.model(
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("/<string:auth_type>", methods=["GET", "POST", "OPTIONS"])
-@API.doc(
-    params={
-        "auth_type": "Type of authorization ```dashboard/form/application/designer```"
-    }
-)
+@API.doc(params=authorization_doc_params)
 class AuthorizationList(Resource):
     """Resource to fetch Authorization List and create authorization."""
 
@@ -125,11 +114,7 @@ class AuthorizationList(Resource):
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("/users/<string:auth_type>", methods=["GET", "POST", "OPTIONS"])
-@API.doc(
-    params={
-        "auth_type": "Type of authorization ```dashboard/form/application/designer```"
-    }
-)
+@API.doc(params=authorization_doc_params)
 class UserAuthorizationList(Resource):
     """Resource to fetch Authorization List for the current user."""
 

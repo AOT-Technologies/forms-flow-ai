@@ -20,7 +20,11 @@ from formsflow_api.schemas import (
     ApplicationSubmissionSchema,
     DraftSchema,
 )
-from formsflow_api.services import ApplicationService, DraftService
+from formsflow_api.services import (
+    ApplicationService,
+    DraftService,
+    ThemeCustomizationService,
+)
 
 API = Namespace("Public", description="Public APIs.")
 
@@ -66,6 +70,21 @@ draft_create_response = API.model(
 draft_update_model = API.model(
     "DraftUpdate",
     {"data": fields.Raw()},
+)
+
+theme_response = API.model(
+    "ThemeResponseModel",
+    {
+        "logoName": fields.String(),
+        "type": fields.String(),
+        "value": fields.String(),
+        "applicationTitle": fields.String(),
+        "themeJson": fields.Raw(),
+        "logoData": fields.String(),
+        "id": fields.Integer(),
+        "created_by": fields.String(),
+        "tenant": fields.String(),
+    },
 )
 
 
@@ -211,3 +230,33 @@ class PublicDraftUpdateResourceById(Resource):
             f"Updated {application_id} successfully",
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/themes", methods=["GET", "OPTIONS"])
+class PublicThemeCustomizationResource(Resource):
+    """Resource to manage get theme."""
+
+    @staticmethod
+    @profiletime
+    @API.doc(
+        params={
+            "tenantKey": {
+                "in": "query",
+                "description": "Specify tenant key.",
+            }
+        },
+        responses={
+            200: "OK:- Successful request.",
+            403: "FORBIDDEN:- Permission denied",
+        },
+        model=theme_response,
+    )
+    def get():
+        """Get theme by tenant key."""
+        tenant_key = request.args.get("tenantKey", default=None)
+        response, status = (
+            ThemeCustomizationService.get_theme(tenant_key),
+            HTTPStatus.OK,
+        )
+        return response, status

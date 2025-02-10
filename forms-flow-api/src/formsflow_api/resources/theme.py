@@ -63,30 +63,6 @@ class ThemeCustomizationResource(Resource):
         return response, status
 
     @staticmethod
-    @profiletime
-    @API.doc(
-        params={
-            "tenantKey": {
-                "in": "query",
-                "description": "Specify tenant key.",
-            }
-        },
-        responses={
-            200: "OK:- Successful request.",
-            403: "FORBIDDEN:- Permission denied",
-        },
-        model=theme_response_model,
-    )
-    def get():
-        """Get theme by tenant key. This is a public API."""
-        tenant_key = request.args.get("tenantKey", default=None)
-        response, status = (
-            ThemeCustomizationService.get_theme(tenant_key),
-            HTTPStatus.OK,
-        )
-        return response, status
-
-    @staticmethod
     @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(

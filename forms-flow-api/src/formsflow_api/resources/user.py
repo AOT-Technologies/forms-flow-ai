@@ -290,12 +290,10 @@ class UserPermission(Resource):
     )
     def delete(user_id, group_id):
         """Remove users from group."""
-        json_payload = request.get_json()
-        user_and_group = UserPermissionUpdateSchema().load(json_payload)
         current_app.logger.debug("Initializing admin API service...")
         service = KeycloakFactory.get_instance()
         current_app.logger.debug("Successfully initialized admin API service !")
-        response = service.remove_user_from_group(user_id, group_id, user_and_group)
+        response = service.remove_user_from_group(user_id, group_id)
         if not response:
             current_app.logger.error(
                 f"Failed to remove {user_id} from group {group_id}"

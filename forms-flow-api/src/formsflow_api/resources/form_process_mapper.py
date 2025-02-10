@@ -278,14 +278,6 @@ authorization_model = API.model(
     },
 )
 
-authorization_list_model = API.model(
-    "AuthorizationList",
-    {
-        "APPLICATION": fields.Nested(authorization_model),
-        "FORM": fields.Nested(authorization_model),
-        "DESIGNER": fields.Nested(authorization_model),
-    },
-)
 export_response_model = API.model(
     "ExportResponse",
     {

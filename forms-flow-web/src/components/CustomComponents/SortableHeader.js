@@ -16,7 +16,7 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
         handleSort(columnKey);
         }
     };
-   // const grayColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
+  
     return (
       <button
         className={`button-as-div ${className}`}

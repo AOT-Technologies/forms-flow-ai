@@ -68,6 +68,10 @@ class DraftResource(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def post():
         """Create a new draft."""
         application_json = request.get_json()

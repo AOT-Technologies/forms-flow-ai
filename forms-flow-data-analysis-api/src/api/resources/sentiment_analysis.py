@@ -10,7 +10,7 @@ from api.services.store_sentiment_result import save_sentiment_result
 from api.services.transformers import sentiment_analysis_pipeline_transformers
 from api.utils import Service, auth, cors_preflight
 
-API = Namespace("SentimentAnalysis", description="API endpoint for sentiment analysis")
+API = Namespace("SentimentAnalysis", description="API endpoint for sentiment analysis.")
 
 APP_CONFIG = config.get_named_config(os.getenv("DEPLOYMENT_ENV", "production"))
 
@@ -68,7 +68,7 @@ class SentimentAnalysisTransformerResource(Resource):
     )
     @API.expect(request_model)
     def post():
-        """POST API definition for sentiment analysis."""
+        """Returns the sentiment (positive, negative, or neutral) for the given text in the request body."""
         try:
             input_json = request.get_json()
             response_json = {

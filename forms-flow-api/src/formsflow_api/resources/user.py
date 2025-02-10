@@ -116,6 +116,10 @@ class KeycloakUserService(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def put(self) -> dict:
         """Update the user locale attribute."""
         user = self.__get_user_data()
@@ -146,6 +150,10 @@ class UserDefaultFilter(Resource):
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
         """Update the user's default task filter."""

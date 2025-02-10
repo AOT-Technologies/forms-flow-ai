@@ -120,6 +120,7 @@ class FilterResource(Resource):
     @API.doc(
         responses={
             200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         },
         model=[filter_response],
@@ -138,12 +139,11 @@ class FilterResource(Resource):
     @profiletime
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            201: ("CREATED:- Successful request.", filter_response),
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
-        },
-        model=filter_response,
+        }
     )
     @API.expect(filter_request)
     def post():
@@ -204,6 +204,7 @@ class UsersFilterList(Resource):
     @API.doc(
         responses={
             200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         },
         model=filter_response_with_default_filter,
@@ -231,6 +232,7 @@ class FilterResourceById(Resource):
         responses={
             200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         },
         model=filter_response,
@@ -253,6 +255,7 @@ class FilterResourceById(Resource):
         responses={
             200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         },
         model=filter_response,
@@ -279,6 +282,7 @@ class FilterResourceById(Resource):
         responses={
             200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         }
     )

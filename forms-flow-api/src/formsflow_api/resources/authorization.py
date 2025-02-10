@@ -69,7 +69,7 @@ class AuthorizationList(Resource):
     @profiletime
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
         },
@@ -157,6 +157,7 @@ class AuthorizationDetail(Resource):
         responses={
             200: "OK:- Successful request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+            403: "FORBIDDEN:- Permission denied",
         },
         model=authorization_model,
     )
@@ -164,7 +165,7 @@ class AuthorizationDetail(Resource):
         """
         Fetch Authorization details by resource id.
 
-        Fetch Authorization details by resource id based on authorization type.
+        Fetch Authorization details based on authorization type - ```dashboard/form/application/designer```.
         """
         if auth_type.upper() == "APPLICATION":
             response = auth_service.get_application_resource_by_id(
@@ -202,6 +203,7 @@ class AuthorizationListById(Resource):
     @API.doc(
         responses={
             200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
         },
         model=authorization_list_model,
@@ -223,6 +225,7 @@ class AuthorizationListById(Resource):
     @API.doc(
         responses={
             200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
         },
         model=authorization_list_model,

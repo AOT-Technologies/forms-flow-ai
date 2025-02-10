@@ -103,6 +103,10 @@ class ApplicationAnonymousResourcesByIds(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def post():
         """Post a new anonymous application using the request body."""
         application_json = request.get_json()
@@ -137,6 +141,10 @@ class AnonymousResourceById(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get(form_id: str):
         """Check if the form is anonymous and published."""
         mapper = FormProcessMapper.find_form_by_form_id(form_id)
@@ -164,6 +172,10 @@ class PublicDraftResource(Resource):
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
         """Create a new anonymous draft submission."""
@@ -193,6 +205,10 @@ class PublicDraftSubmissionResource(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def put(application_id: int):
         """Updates the draft entry to actual submission."""
         payload = request.get_json()
@@ -219,6 +235,10 @@ class PublicDraftUpdateResourceById(Resource):
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def put(application_id: int):
         """Update draft details."""
@@ -248,6 +268,8 @@ class PublicThemeCustomizationResource(Resource):
         },
         responses={
             200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         },
         model=theme_response,

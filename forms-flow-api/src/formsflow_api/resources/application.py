@@ -95,6 +95,14 @@ application_resubmit_model = API.model(
 
 message = API.model("Message", {"message": fields.String()})
 
+application_count_model = API.inherit(
+    "ApplicationCountModel",
+    message,
+    {
+        "value": fields.Integer(),
+    },
+)
+
 
 @cors_preflight("GET,POST,OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
@@ -428,6 +436,13 @@ class ApplicationResourceCountByFormId(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=application_count_model,
+    )
     def get(form_id: str):
         """Get application count by formId."""
         application_count = ApplicationService.get_all_applications_form_id_count(
@@ -556,6 +571,10 @@ class DraftSubmissionResource(Resource):
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def put(application_id: str):
         """Updates the draft to actual submission."""

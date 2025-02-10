@@ -45,12 +45,11 @@ class ThemeCustomizationResource(Resource):
     @profiletime
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            201: ("CREATED:- Successful request.", theme_response_model),
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
-        },
-        model=theme_response_model,
+        }
     )
     @API.expect(theme_model)
     def post():
@@ -69,6 +68,7 @@ class ThemeCustomizationResource(Resource):
         responses={
             200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         },
         model=theme_response_model,

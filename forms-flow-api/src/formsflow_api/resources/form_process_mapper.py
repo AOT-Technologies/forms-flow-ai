@@ -571,7 +571,6 @@ class FormResourceByFormId(Resource):
     @API.response(
         200, "CREATED:- Successful request.", model=mapper_create_response_model
     )
-    @API.response(204, "NO_CONTENT:- Successful request but nothing follows.")
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",

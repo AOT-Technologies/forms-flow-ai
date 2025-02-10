@@ -201,11 +201,10 @@ class ProcessDataResource(Resource):
     @API.expect(process_request)
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            201: ("CREATED:- Successful request.", process_response),
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-        },
-        model=process_response,
+        }
     )
     def post():
         """Create process data."""

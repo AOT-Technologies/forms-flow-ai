@@ -26,6 +26,27 @@ import NotFound from "../../../components/NotFound";
 import { setApiCallError } from "../../../actions/ErroHandling";
 import proptypes from 'prop-types';
 
+const SubmissionRoute = ({ component: Component, createSubmissions, 
+  viewSubmissions, redirectUrl, ...rest }) => (
+  <Route
+    {...rest}
+    render={(props) =>
+      createSubmissions || viewSubmissions ? (
+        <Component {...props} />
+      ) : (
+        <Redirect exact to={`${redirectUrl}`} />
+      )
+    }
+  />
+);
+
+SubmissionRoute.propTypes = {
+  component: proptypes.func.isRequired,
+  createSubmissions: proptypes.bool.isRequired,
+  viewSubmissions: proptypes.bool.isRequired,
+  redirectUrl: proptypes.string.isRequired,
+};
+
 const Item = React.memo(() => {
   const { formId } = useParams();
   const location = useLocation(); // React Router's hook to get the current location
@@ -116,27 +137,6 @@ const Item = React.memo(() => {
   />;
   }
 
-  const SubmissionRoute = ({ component: Component, ...rest }) => (
-    <Route
-      {...rest}
-      render={(props) =>
-        createSubmissions || viewSubmissions ? (
-          <Component {...props} />
-        ) : (
-          <Redirect exact to={`${redirectUrl}`} />
-        )
-      }
-    />
-  );
-
-SubmissionRoute.propTypes = {
-    component: proptypes.func.isRequired,
-};
-
-  /**
-   * Protected route for form deletion
-   */
-
   return (
     <div>
       <Switch>
@@ -144,10 +144,16 @@ SubmissionRoute.propTypes = {
         <SubmissionRoute
           path={`${BASE_ROUTE}form/:formId/submission`}
           component={Submission}
+          createSubmissions={createSubmissions}
+          viewSubmissions={viewSubmissions}
+          redirectUrl={redirectUrl}
         />
         <SubmissionRoute
           path={`${BASE_ROUTE}form/:formId/draft`}
           component={Draft}
+          createSubmissions={createSubmissions}
+          viewSubmissions={viewSubmissions}
+          redirectUrl={redirectUrl}
         />
         <Redirect exact to="/404" />
       </Switch>

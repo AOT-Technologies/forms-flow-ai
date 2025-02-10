@@ -20,10 +20,10 @@ import {
 } from "../../../../constants/constants";
 import { updateCustomSubmission } from "../../../../apiManager/services/FormServices";
 import DownloadPDFButton from "../../../../components/Form/ExportAsPdf/downloadPdfButton";
+import PropTypes from "prop-types";
 const View = React.memo((props) => {
   const { t } = useTranslation();
-  const {
-    hideComponents,
+  const { 
     onSubmit,
     options,
     errors,
@@ -77,8 +77,7 @@ const View = React.memo((props) => {
           <Form
             form={form}
             submission={updatedSubmission}
-            url={url}
-            hideComponents={hideComponents}
+            url={url} 
             onSubmit={onSubmit}
             options={{ ...options, i18n: RESOURCE_BUNDLES_DATA, viewAsHtml: true }}
           />
@@ -92,8 +91,18 @@ View.defaultProps = {
   showPrintButton: true,
 };
 
+View.propTypes = {
+  onSubmit: PropTypes.func,
+  options: PropTypes.object,
+  errors: PropTypes.array,
+  form: PropTypes.object,
+  submission: PropTypes.object,
+  showPrintButton: PropTypes.bool,
+};
+
+
 const mapStateToProps = (state, props) => {
-  const isDraftView = props.page === "draft-detail" ? true : false;
+  const isDraftView = props.page === "draft-detail";
   return {
     form: selectRoot("form", state),
     submission: isDraftView

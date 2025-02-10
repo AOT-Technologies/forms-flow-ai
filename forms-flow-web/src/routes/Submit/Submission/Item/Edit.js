@@ -71,7 +71,7 @@ const Edit = React.memo((props) => {
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   useEffect(() => {
-    // Check if the application is in "Resubmit" or "Awaiting Acknowledgement" status (old approach and it’s kept to have backward compatibility)
+    // Check if the application is in "Resubmit" or "Awaiting Acknowledgement" status (old approach and it's kept to have backward compatibility)
     // In the new approach, we will use the "isResubmit" key
     if (applicationStatus && !onFormSubmit) {
       if (
@@ -190,79 +190,63 @@ Edit.propTypes = {
   onFormSubmit: PropTypes.func,
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
+  const handleSubmissionSuccess = (submission, onFormSubmit, redirectUrl) => {
+    dispatch(resetSubmissions("submission"));
+    dispatch(setFormSubmissionLoading(false));
+    
+    if (onFormSubmit) {
+      onFormSubmit();
+    } else {
+      toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);
+      const path = 
+      `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}`;
+      dispatch(push(path));
+    }
+  };
+
+  const handleSubmissionError = () => {
+    dispatch(setFormSubmissionLoading(false));
+    const ErrorDetails = {
+      modalOpen: true,
+      message: <Translation>{(t) => t("Submission cannot be done.")}</Translation>,
+    };
+    toast.error(<Translation>{(t) => t("Error while Submission.")}</Translation>);
+    dispatch(setFormSubmissionError(ErrorDetails));
+  };
+
+  const handleApplicationEvent = (applicationDetail, submission, onFormSubmit, redirectUrl) => {
+    const data = getProcessDataReq(applicationDetail, submission.data);
+    dispatch(
+      updateApplicationEvent(applicationDetail.id, data, () => {
+        handleSubmissionSuccess(submission, onFormSubmit, redirectUrl);
+      })
+    );
+  };
+
   return {
-    onSubmit: (
-      submission,
-      applicationDetail,
-      onFormSubmit,
-      formId,
-      redirectUrl
-    ) => {
+    onSubmit: (submission, applicationDetail, onFormSubmit, formId, redirectUrl) => {
       dispatch(setFormSubmissionLoading(true));
+      
       const callBack = (err, submission) => {
         if (!err) {
-          if (
-            UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus) ||
-            applicationDetail.isResubmit
-          ) {
-            const data = getProcessDataReq(applicationDetail,submission.data);
-            dispatch(
-              updateApplicationEvent(applicationDetail.id, data, () => {
-                dispatch(resetSubmissions("submission"));
-                dispatch(setFormSubmissionLoading(false));
-                if (onFormSubmit) {
-                  onFormSubmit();
-                } else {
-                  toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);
-                  dispatch(
-                    push(
-                      // eslint-disable-next-line max-len
-                      `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}`
-                    )
-                  );
-                }
-              })
-            );
+          if (UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus) || 
+              applicationDetail.isResubmit) {
+            handleApplicationEvent(applicationDetail, submission, onFormSubmit, redirectUrl);
           } else {
-            dispatch(resetSubmissions("submission"));
-            dispatch(setFormSubmissionLoading(false));
-            if (onFormSubmit) {
-              onFormSubmit();
-            } else {
-              toast.success(
-                <Translation>{(t) => t("Submission Saved")}</Translation>
-              );
-              dispatch(
-                push(
-                  // eslint-disable-next-line max-len
-                  `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}/edit`
-                )
-              );
-            }
+            handleSubmissionSuccess(submission, onFormSubmit, redirectUrl);
           }
         } else {
-          dispatch(setFormSubmissionLoading(false));
-          const ErrorDetails = {
-            modalOpen: true,
-            message: (
-              <Translation>
-                {(t) => t("Submission cannot be done.")}
-              </Translation>
-            ),
-          };
-          toast.error(
-            <Translation>{(t) => t("Error while Submission.")}</Translation>
-          );
-          dispatch(setFormSubmissionError(ErrorDetails));
+          handleSubmissionError();
         }
       };
+
       if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
         updateCustomSubmission(
           submission,
           onFormSubmit ? formId : ownProps.match.params.formId,
           callBack
         );
-      }else{
+      } else {
         dispatch(
           saveSubmission(
             "submission",
@@ -272,11 +256,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           )
         );
       }
-
     },
     onConfirm: () => {
-      const ErrorDetails = { modalOpen: false, message: "" };
-      dispatch(setFormSubmissionError(ErrorDetails));
+      dispatch(setFormSubmissionError({ modalOpen: false, message: "" }));
     },
   };
 };

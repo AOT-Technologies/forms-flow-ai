@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 const userRoles = () => {
-  const assignedRoles = useSelector((state) => state.user.roles || []);
+  const assignedRoles = useSelector((state) => state?.user?.roles || []);
   const role = (role) => assignedRoles.includes(role);
 
   return {

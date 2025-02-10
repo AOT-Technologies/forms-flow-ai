@@ -88,7 +88,7 @@ const ProcessCreateEdit = ({ type }) => {
   const [exportError, setExportError] = useState(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  
   const defaultProcessXmlData = useSelector(
     (state) => state.process.defaultProcessXmlData
   );
@@ -116,7 +116,7 @@ const ProcessCreateEdit = ({ type }) => {
   const publishText = isPublished ? t("Unpublish") : t("Publish");
   const processName = processData.name;
   const fileName = (processName + Process.extension).replaceAll(" ", "");
-
+  
   // fetching process data
   const { isLoading: isProcessDetailsLoading } = useQuery(
     ["processDetails", processKey],
@@ -477,15 +477,14 @@ const ProcessCreateEdit = ({ type }) => {
         secondayBtnAction: secondaryAction,
       };
     };
-
+    
     switch (modalType) {
       case "publish":
         return getModalConfig(
           t("Confirm Publish"),
-          t(
-            `Publishing will lock the ${Process.type}. To save changes on further edits,
-             you will need to unpublish the ${Process.type} first.`
-          ),
+          t("Publishing will lock the {{type}}. To save changes on further edits, you will need to unpublish the {{type}} first.", {
+            type: Process.type,
+          }),
           t(`Publish This ${Process.type}`),
           t("Cancel"),
           confirmPublishOrUnPublish,
@@ -494,10 +493,9 @@ const ProcessCreateEdit = ({ type }) => {
       case "unpublish":
         return getModalConfig(
           t("Confirm Unpublish"),
-          t(
-            `This ${Process.type} is currently live. To save changes to ${Process.type} edits, 
-            you need to unpublish it first.`
-          ),
+          t("This {{type}} is currently live. To save changes to {{type}} edits, you need to unpublish it first.",{
+            type: Process.type
+    }),
           t(`Unpublish and Edit This ${Process.type}`),
           t(`Cancel, Keep This ${Process.type} published`),
           confirmPublishOrUnPublish,
@@ -582,7 +580,7 @@ const ProcessCreateEdit = ({ type }) => {
                 className="mx-2"
                 label={t("Actions")}
                 onClick={editorActions}
-                dataTestid="designer-action-testid"
+                dataTestId="designer-action-testid"
                 ariaLabel={t("Designer Actions Button")}
               />
               <CustomButton
@@ -596,7 +594,7 @@ const ProcessCreateEdit = ({ type }) => {
                     : openConfirmModal("publish");
                 }}
                 disabled={isPublishLoading}
-                dataTestid="handle-publish-testid"
+                dataTestId="handle-publish-testid"
                 ariaLabel={`${t(publishText)} ${t("Button")}`}
               />
             </div>
@@ -617,7 +615,7 @@ const ProcessCreateEdit = ({ type }) => {
                     icon={<HistoryIcon />}
                     onClick={handleProcessHistory}
                     label={t("History")}
-                    dataTestid={`${diagramType.toLowerCase()}-history-button-testid`}
+                    dataTestId={`${diagramType.toLowerCase()}-history-button-testid`}
                     ariaLabel={t(`${diagramType} History Button`)}
                   />
                 )}
@@ -631,7 +629,7 @@ const ProcessCreateEdit = ({ type }) => {
                   label={t(`Save ${diagramType}`)}
                   buttonLoading={savingFlow}
                   disabled={savingFlow || isPublished || !isWorkflowChanged}
-                  dataTestid={`save-${diagramType.toLowerCase()}-layout`}
+                  dataTestId={`save-${diagramType.toLowerCase()}-layout`}
                   ariaLabel={t(`Save ${diagramType} Layout`)}
                 />
                 <CustomButton
@@ -640,7 +638,7 @@ const ProcessCreateEdit = ({ type }) => {
                   onClick={() => openConfirmModal("discard")}
                   label={t("Discard Changes")}
                   disabled={!isWorkflowChanged}
-                  dataTestid={`discard-${diagramType.toLowerCase()}-changes-testid`}
+                  dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
                   ariaLabel={t(`Discard ${diagramType} Changes`)}
                 />
               </div>

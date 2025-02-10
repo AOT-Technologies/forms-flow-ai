@@ -193,7 +193,7 @@ const DraftTable = () => {
                     onClick={() => {
                       setDisplayFilter(true);
                     }}
-                    dataTestid="draft filter"
+                    dataTestId="draft filter"
                     ariaLabel={t("Draft Filter Button")}
                     />
                       {displayFilter && (

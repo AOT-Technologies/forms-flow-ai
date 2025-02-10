@@ -24,12 +24,14 @@ import {
   setBpmSort,
   setDmnSort
 } from "../../actions/processActions";
+import userRoles from "../../constants/permissions.js";
 
 const ProcessTable = React.memo(() => {
   const { viewType } = useParams();
   const isBPMN = viewType === "subflow";
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const { createDesigns } = userRoles();
   const ProcessContents = isBPMN
   ? {
       processType: "BPMN",
@@ -47,7 +49,7 @@ const ProcessTable = React.memo(() => {
       refreshDataTestId: "Process-list-refresh-dmn",
       refreshAriaLabel: "Refresh the Process list (DMN)",
     };
-
+    
   // States and selectors
   const processList = useSelector((state) =>
     isBPMN ? state.process.processList : state.process.dmnProcessList
@@ -273,14 +275,14 @@ const ProcessTable = React.memo(() => {
             refreshDataTestId={ProcessContents.refreshDataTestId}
             refreshAriaLabel={ProcessContents.refreshAriaLabel}
           />
-          <CustomButton
+          {createDesigns && (<CustomButton
             variant="primary"
             size="sm"
             label={t(`New ${ProcessContents.processType}`)}
             onClick={handleCreateProcess}
             dataTestid={`create-${ProcessContents.processType}-button`}
             ariaLabel={` Create ${ProcessContents.processType}`}
-          />
+          />)}
         </div>
       </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>

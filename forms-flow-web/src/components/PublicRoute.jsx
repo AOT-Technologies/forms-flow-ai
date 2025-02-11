@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { getForm } from "@aot-technologies/formio-react";
-import View from "../components/Form/Item/View";
+import View from "../routes/Submit/Forms/View";
 import NotFound from "./NotFound";
 
 const PublicRoute = ({publish}) => {

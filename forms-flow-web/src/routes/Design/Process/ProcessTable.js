@@ -24,7 +24,7 @@ import {
   setBpmSort,
   setDmnSort
 } from "../../../actions/processActions";
-import userRoles from "../../constants/permissions.js";
+import userRoles from "../../../constants/permissions";
 
 const ProcessTable = React.memo(() => {
   const { viewType } = useParams();

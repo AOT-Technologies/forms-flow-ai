@@ -58,7 +58,7 @@ srsly==1.0.7
 sympy==1.12
 thinc==7.4.6
 tokenizers==0.15.2
-torch==2.0.1
+torch==2.2.0
 tqdm==4.66.1
 transformers==4.36.2
 typing_extensions==4.8.0

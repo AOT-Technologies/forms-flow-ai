@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 export const CustomButton = ({ 
   onClick, 
-  label, 
+  label = "Edit", 
   dataTestId, 
   variant, 
   size, 
@@ -36,8 +36,8 @@ export const CustomButton = ({
 
 
 CustomButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+  label: PropTypes.any,
   dataTestId: PropTypes.string,
   variant: PropTypes.string,
   size: PropTypes.string,
@@ -75,7 +75,7 @@ export const CloseIcon = ({
 };
 
 CloseIcon.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   dataTestId: PropTypes.string
 };
 
@@ -84,12 +84,6 @@ export const FilterIcon = ({
   filterDataTestId 
 }) => {
   return (
-    <button
-      className="filter-icon-container"
-      onClick={handleFilterIconClick}
-      data-testid={filterDataTestId}
-      aria-label="Filter Icon"
-    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="14"
@@ -110,7 +104,6 @@ export const FilterIcon = ({
           strokeLinecap="round"
         />
       </svg>
-    </button>
   );
 };
 
@@ -124,12 +117,6 @@ export const RefreshIcon = ({
   refreshDataTestId 
 }) => {
   return (
-    <button 
-      className="refresh-icon-button"
-      onClick={handleRefresh}
-      data-testid={refreshDataTestId}
-      aria-label="Refresh Icon"
-    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="14"
@@ -142,7 +129,6 @@ export const RefreshIcon = ({
           fill="#000"
         />
       </svg>
-    </button>
   );
 };
 
@@ -157,12 +143,6 @@ export const SortIcon = ({
   dataTestId 
 }) => {
   return (
-    <button
-      className="sort-icon-container"
-      onClick={onClick}
-      data-testid={dataTestId}
-      aria-label="Sort Icon"
-    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="14"
@@ -177,7 +157,6 @@ export const SortIcon = ({
           strokeLinecap="round"
         />
       </svg>
-    </button>
   );
 };
 
@@ -257,9 +236,9 @@ export const SortModal = ({
 
 SortModal.propTypes = {
   showSortModal: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  primaryBtnAction: PropTypes.func.isRequired,
-  secondaryBtnAction: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
+  primaryBtnAction: PropTypes.func,
+  secondaryBtnAction: PropTypes.func,
   secondaryBtnLabel: PropTypes.string.isRequired,
   optionSortBy: PropTypes.array.isRequired,
   optionSortOrder: PropTypes.array.isRequired,
@@ -322,24 +301,24 @@ export const FormBuilderModal = ({
 
 FormBuilderModal.propTypes = {
   showBuildForm: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  primaryBtnAction: PropTypes.func.isRequired,
-  secondaryBtnAction: PropTypes.func.isRequired,
-  setNameError: PropTypes.func.isRequired,
-  nameError: PropTypes.bool.isRequired,
-  description: PropTypes.string.isRequired,
-  modalHeader: PropTypes.string.isRequired,
-  nameLabel: PropTypes.string.isRequired,
-  descriptionLabel: PropTypes.string.isRequired,
-  primaryBtnLabel: PropTypes.string.isRequired,
-  secondaryBtnLabel: PropTypes.string.isRequired,
-  placeholderForForm: PropTypes.string.isRequired,
-  placeholderForDescription: PropTypes.string.isRequired,
-  buildForm: PropTypes.bool.isRequired,
-  checked: PropTypes.bool.isRequired,
-  isSaveBtnLoading: PropTypes.bool.isRequired,
-  isFormNameValidating: PropTypes.bool.isRequired
+  onClose: PropTypes.func,
+  handleChange: PropTypes.func,
+  primaryBtnAction: PropTypes.func,
+  secondaryBtnAction: PropTypes.func,
+  setNameError: PropTypes.func,
+  nameError: PropTypes.any,
+  description: PropTypes.string,
+  modalHeader: PropTypes.string,
+  nameLabel: PropTypes.string,
+  descriptionLabel: PropTypes.string,
+  primaryBtnLabel: PropTypes.string,
+  secondaryBtnLabel: PropTypes.string,
+  placeholderForForm: PropTypes.string,
+  placeholderForDescription: PropTypes.string,
+  buildForm: PropTypes.bool,
+  checked: PropTypes.bool,
+  isSaveBtnLoading: PropTypes.bool,
+  isFormNameValidating: PropTypes.bool
 };
 
 export const CustomSearch = ({
@@ -382,10 +361,10 @@ export const CustomSearch = ({
 
 CustomSearch.propTypes = {
   searchLoading: PropTypes.bool.isRequired,
-  handleClearSearch: PropTypes.func.isRequired,
+  handleClearSearch: PropTypes.func,
   search: PropTypes.string.isRequired,
-  setSearch: PropTypes.func.isRequired,
-  handleSearch: PropTypes.func.isRequired,
+  setSearch: PropTypes.func,
+  handleSearch: PropTypes.func,
   placeholder: PropTypes.string,
   title: PropTypes.string,
   dataTestId: PropTypes.string
@@ -405,8 +384,8 @@ export const ImportModal = ({ showModal, onClose, onImport, isLoading, errorMess
 
 ImportModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
+  onImport: PropTypes.func,
   isLoading: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string
 };
@@ -451,8 +430,8 @@ TableFooter.propTypes = {
   limit: PropTypes.number.isRequired,
   activePage: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
-  handlePageChange: PropTypes.func.isRequired,
-  onLimitChange: PropTypes.func.isRequired,
+  handlePageChange: PropTypes.func,
+  onLimitChange: PropTypes.func,
   pageOptions: PropTypes.array
 };
 
@@ -465,3 +444,86 @@ export const NoDataFound = () => {
 };
 
 NoDataFound.propTypes = {};
+
+
+export const ConfirmModal = ({ children }) => {
+  return (
+    <dialog 
+      data-testid="confirm-modal"
+      aria-labelledby="confirm-modal-title"
+      aria-describedby="confirm-modal-message"
+      className="modal"
+    >
+      <div className="modal-content">
+        <header>
+          <h2 id="confirm-modal-title" data-testid="modal-title">Title</h2>
+          <button data-testid="close-button" aria-label="Close modal">×</button>
+        </header>
+    
+        <div data-testid="modal-body">
+          <div id="confirm-modal-message">
+            <p data-testid="primary-message">Primary message</p>
+            <p data-testid="secondary-message">Secondary message</p>
+          </div>
+        </div>
+    
+        <footer>
+          <button 
+            data-testid="primary-button"
+            className="primary"
+            aria-label="Primary action"
+          >
+            Primary
+          </button>
+          <button
+            data-testid="secondary-button" 
+            className="secondary"
+            aria-label="Secondary action"
+          >
+            Secondary
+          </button>
+        </footer>
+      </div>
+    </dialog>
+  );
+};
+
+ConfirmModal.propTypes = {
+  children: PropTypes.node.isRequired
+};
+
+
+export const BackToPrevIcon = ({ color = baseColor, onClick, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="33"
+    viewBox="0 0 32 33"
+    fill="none"
+    onClick={onClick}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M29.9998 16.5C29.9998 16.2348 29.8945 15.9805 29.7069 15.7929C29.5194 15.6054 29.2651 15.5 28.9998 15.5H5.41383L11.7078 9.20804C11.8008 9.11507 11.8746 9.00469 11.9249 8.88321C11.9752 8.76173 12.0011 8.63153 12.0011 8.50004C12.0011 8.36855 11.9752 8.23835 11.9249 8.11688C11.8746 7.9954 11.8008 7.88502 11.7078 7.79204C11.6149 7.69907 11.5045 7.62531 11.383 7.575C11.2615 7.52468 11.1313 7.49878 10.9998 7.49878C10.8683 7.49878 10.7381 7.52468 10.6167 7.575C10.4952 7.62531 10.3848 7.69907 10.2918 7.79204L2.29183 15.792C2.19871 15.8849 2.12482 15.9953 2.07441 16.1168C2.024 16.2383 1.99805 16.3685 1.99805 16.5C1.99805 16.6316 2.024 16.7618 2.07441 16.8833C2.12482 17.0048 2.19871 17.1152 2.29183 17.208L10.2918 25.208C10.3848 25.301 10.4952 25.3748 10.6167 25.4251C10.7381 25.4754 10.8683 25.5013 10.9998 25.5013C11.1313 25.5013 11.2615 25.4754 11.383 25.4251C11.5045 25.3748 11.6149 25.301 11.7078 25.208C11.8008 25.1151 11.8746 25.0047 11.9249 24.8832C11.9752 24.7617 12.0011 24.6315 12.0011 24.5C12.0011 24.3686 11.9752 24.2384 11.9249 24.1169C11.8746 23.9954 11.8008 23.885 11.7078 23.792L5.41383 17.5H28.9998C29.2651 17.5 29.5194 17.3947 29.7069 17.2071C29.8945 17.0196 29.9998 16.7653 29.9998 16.5Z"
+      fill="white"
+    />
+  </svg>
+);
+
+BackToPrevIcon.propTypes = {
+  color: PropTypes.string,
+  onClick: PropTypes.func,
+};
+
+export const CustomInfo = () => {
+  return <div className={`info-panel`}>
+  <div className="d-flex align-items-center">
+    <InfoIcon />
+    <div className="field-label ms-2">Note</div>
+  </div>
+  <div className="info-content">Sample content to show</div> 
+</div>;
+};
+
+CustomInfo.propTypes = {};

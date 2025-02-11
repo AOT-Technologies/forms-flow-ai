@@ -126,6 +126,11 @@ export const appState = {
     processActivityLoadError: false,
     isProcessDiagramLoading: true,
     formPreviousData: [],
+    processData: {
+      name: 'Test Process',
+      status: 'Published',
+      processData: '<xml>test</xml>'
+    }
   },
   menu: {
     isMenuOpen: false,

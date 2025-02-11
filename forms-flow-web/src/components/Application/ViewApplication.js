@@ -12,7 +12,7 @@ import {
   setApplicationDetailStatusCode,
 } from "../../actions/applicationActions";
 import History from "./ApplicationHistory";
-import View from "../Form/Item/Submission/Item/View";
+import View from "../../routes/Submit/Submission/Item/View";
 import { getForm, getSubmission } from "@aot-technologies/formio-react";
 import NotFound from "../NotFound";
 import { Translation,useTranslation } from "react-i18next";

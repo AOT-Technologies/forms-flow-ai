@@ -5,6 +5,7 @@ import {
   setBPMFormListLoading,
   setClientFormSearch,
   setBPMFormListPage,
+  setBpmFormSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -15,9 +16,9 @@ import { useTranslation } from "react-i18next";
 import ClientTable from "../../../components/Form/constants/ClientTable";
 
 import { CustomSearch } from "@formsflow/components";
-import Head from "../../../containers/Head";
-import {navigateToSubmitFormsListing, navigateToSubmitFormsDraft, navigateToSubmitFormsApplication} from "../../../helper/routerHelper";
+import { navigateToSubmitFormsListing, navigateToSubmitFormsDraft, navigateToSubmitFormsApplication } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
+import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
 
 const SubmitList = React.memo((props) => {
   const { t } = useTranslation();
@@ -27,6 +28,33 @@ const SubmitList = React.memo((props) => {
   const userRoles = useSelector((state) => state.user.roles || []);
   const create_submissions = userRoles.includes("create_submissions");
   const dispatch = useDispatch();
+  const [showSortModal, setShowSortModal] = useState(false);
+  const optionSortBy = [
+    { value: "formName", label: t("Form Name") },
+    { value: "modified", label: t("Latest Submission") },
+  ];
+
+  const handleFilterIconClick = () => {
+    setShowSortModal(true); // Open the SortModal
+  };
+
+  const handleSortModalClose = () => {
+    setShowSortModal(false); // Close the SortModal
+  };
+
+  const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+    dispatch(
+      setBpmFormSort({
+        ...formSort,
+        activeKey: selectedSortOption,
+        [selectedSortOption]: { sortOrder: selectedSortOrder },
+      })
+    );
+    setShowSortModal(false);
+  };
+  const handleRefresh = () => {
+    fetchForms();
+  };
 
   useEffect(() => {
     setSearch(searchText);
@@ -68,7 +96,9 @@ const SubmitList = React.memo((props) => {
   const fetchForms = () => {
     const showForOnlyCreateSubmissionUsers = true;
     const formType = "";
-    let filters = [pageNo, limit, formSort, searchText,formType,showForOnlyCreateSubmissionUsers];
+    const includeSubmissionsCount = true;
+    let filters = [pageNo, limit, formSort, searchText, formType,
+      showForOnlyCreateSubmissionUsers, includeSubmissionsCount];
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList(...filters));
   };
@@ -118,18 +148,35 @@ const SubmitList = React.memo((props) => {
 
   return (
     <div>
-      <Head items={headOptions} page="All Forms" />
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap width-25 search-box">
-        <CustomSearch
-          search={search}
-          setSearch={setSearch}
-          handleSearch={handleSearch}
-          handleClearSearch={handleClearSearch}
-          placeholder={t("Search Form Name and Description")}
-          searchLoading={searchFormLoading}
-          title={t("Search Form Name and Description")}
-          dataTestId="form-search-input"
-        />
+      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
+        <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap width-25 search-box">
+          <CustomSearch
+            search={search}
+            setSearch={setSearch}
+            handleSearch={handleSearch}
+            handleClearSearch={handleClearSearch}
+            placeholder={t("Search Form Name and Description")}
+            searchLoading={searchFormLoading}
+            title={t("Search Form Name and Description")}
+            dataTestId="form-search-input"
+          />
+        </div>
+        <div className="d-md-flex justify-content-end align-items-center button-align">
+          <FilterSortActions
+            showSortModal={showSortModal}
+            handleFilterIconClick={handleFilterIconClick}
+            handleRefresh={handleRefresh}
+            handleSortModalClose={handleSortModalClose}
+            handleSortApply={handleSortApply}
+            optionSortBy={optionSortBy}
+            defaultSortOption={formSort.activeKey}
+            defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}
+            filterDataTestId="form-list-filter"
+            filterAriaLabel="Filter the form list"
+            refreshDataTestId="form-list-refresh"
+            refreshAriaLabel="Refresh the form list"
+          />
+        </div>
       </div>
       <ClientTable />
     </div>

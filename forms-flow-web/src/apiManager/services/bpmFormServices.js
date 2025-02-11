@@ -18,6 +18,7 @@ export const fetchBPMFormList = (
   formName,
   formType,
   showForOnlyCreateSubmissionUsers,
+  includeSubmissionsCount,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => { };
@@ -26,18 +27,23 @@ export const fetchBPMFormList = (
     let sortOrder = formSort[sortBy].sortOrder ; 
     let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy
     }&sortOrder=${sortOrder}`;
-    if (formType) {
-      url += `&formType=${formType}`;
+    const queryParams = [];
+
+    if (formType) queryParams.push(`formType=${formType}`);
+    if (formName) queryParams.push(`search=${encodeURIComponent(formName)}`);
+    if (typeof showForOnlyCreateSubmissionUsers === "boolean") {
+      queryParams.push(`showForOnlyCreateSubmissionUsers=${showForOnlyCreateSubmissionUsers}`);
     }
-    if (formName) {
-      url += `&search=${encodeURIComponent(formName)}`;
+    if (typeof includeSubmissionsCount === "boolean") {
+      queryParams.push(`includeSubmissionsCount=${includeSubmissionsCount}`);
     }
-    if(showForOnlyCreateSubmissionUsers){
-      url += `&showForOnlyCreateSubmissionUsers=${showForOnlyCreateSubmissionUsers}`;
-    }
+    
+    const queryString = queryParams.length ? `&${queryParams.join("&")}` : "";
+    url += queryString;
+    
     RequestService.httpGETRequest(url, {}, StorageService.get(StorageService.User.AUTH_TOKEN))
       .then((res) => {
-        if (res.data) {
+        if (res.data) { 
           dispatch(setBPMFormList(res.data));
           dispatch(setBPMFormListLoading(false));
           //dispatch(setBPMLoader(false));

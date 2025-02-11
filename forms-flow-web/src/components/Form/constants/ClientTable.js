@@ -28,6 +28,7 @@ function ClientTable() {
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
+  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
 
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
@@ -46,14 +47,18 @@ function ClientTable() {
     { text: "100", value: 100 },
     { text: "All", value: totalForms },
   ];
-
   const handleSort = (key) => {
     const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
-   dispatch(setBpmFormSort({
-    ...formsort,
-    activeKey: key,
-    [key]: { sortOrder: newSortOrder },
-  }));
+    dispatch(setBpmFormSort({
+      ...formsort,
+      activeKey: key,
+      [key]: { sortOrder: newSortOrder },
+    }));
+  };
+
+  const stripHtml = (html) => {
+    let doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
   };
 
   useEffect(() => {
@@ -101,93 +106,145 @@ function ClientTable() {
     );
   };
 
-  const extractContent = (htmlContent) => {
-    const sanitizedHtml = DOMPurify.sanitize(htmlContent);
-    const tempElement = document.createElement("div");
-    tempElement.innerHTML = sanitizedHtml;
-
-    // Get the text content from the sanitized HTML
-    const textContent = tempElement.textContent || tempElement.innerText || "";
-    return textContent;
+  const toggleRow = (index) => {
+    setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
   };
-
+  function formatDate(isoString) {
+    const date = new Date(isoString);
+    const options = {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+    let formattedDate = date.toLocaleString("en-US", options);
+    return formattedDate.replace(/(\w{3}) (\d{1,2}), (\d{4}),/, "$1 $2, $3");
+  }
 
   return (
 
-     <LoadingOverlay
-        active={searchFormLoading}
-        spinner
-        text={t("Loading...")}
-      >
-      <div>
-        <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
-          <table className="table custom-table table-responsive-sm">
-            <thead>
+    <LoadingOverlay
+      active={searchFormLoading}
+      spinner
+      text={t("Loading...")}
+    >
+      <div className="min-height-400">
+        <div className="custom-tables-wrapper">
+          <table className="table custom-tables table-responsive-sm">
+            <thead className="table-header">
               <tr>
-                <th className="col-3">
+                <th className="w-20">
                   <SortableHeader
-                   columnKey="formName"
-                   title="Form Name"
-                   currentSort={formsort}
-                   handleSort={handleSort}
-                   className="d-flex justify-content-start"
+                    columnKey="formName"
+                    title="Form Name"
+                    currentSort={formsort}
+                    handleSort={handleSort}
+                    className="gap-2"
                   />
                 </th>
-                <th className="col-7">{t("Form Description")}</th>
-                <th className="col-2"></th>
+                <th className="w-30" scope="col">{t("Description")}</th>
+
+                <th className="w-13" scope="col">
+                {t("Submissions")}
+                  {/* <SortableHeader
+                    columnKey="submissionsCount"
+                    title="Submission Count"
+                    currentSort={formsort}
+                    handleSort={handleSort}
+                    className="gap-2" /> */}
+                </th>
+
+                <th className="w-13" scope="col">
+                  <SortableHeader
+                    columnKey="modified"
+                    title={t("Latest Submission")}
+                    currentSort={formsort}
+                    handleSort={handleSort}
+                    className="gap-2" />
+                </th>
+                <th className="w-12" colSpan="4" aria-label="Select a Form"></th>
               </tr>
             </thead>
             {formData?.length ? (
               <tbody>
-                {formData.map((e, index) => (
-                  <React.Fragment key={index}>
-                    <tr>
-                      <td className="col-3">
-                        <span
-                          data-testid={`form-title-${e._id}`}
-                          className="mt-2"
-                        >
-                          {e.title}
-                        </span>
-                      </td>
-                      <td
-                        data-testid={`form-description${e._id}`}  className="col-7">
-                        {extractContent(e.description)}
-                      </td>
-
-                      <td className="col-2">
-                        <button
-                          data-testid={`form-submit-button-${e._id}`}
-                          className="btn btn-primary"
-                          onClick={() => submitNewForm(e._id)}
-                        >
-                          <Translation>{(t) => t("Submit New")}</Translation>
-                        </button>
-                      </td>
-                    </tr>
-
-                    {index === openIndex && (
+                {formData.map((e, index) => {
+                  const isExpanded = expandedRowIndex === index;
+                  return (
+                    <React.Fragment key={index}>
                       <tr>
-                        <td colSpan={10}>
-                          <div className="bg-white p-3">
-                            <h4>
-                              <strong>{t("Form Description")}</strong>
-                            </h4>
+                        <td className="w-20">
+                          <span
+                            data-testid={`form-title-${e._id}`}
+                            className="mt-2 text-container"
+                          >
+                            {e.title}
+                          </span>
+                        </td>
+                        <td className="w-30">
+                          <span className={isExpanded ? "text-container-expand" : "text-container"}
+                            onClick={() => toggleRow(index)}>
+                            {stripHtml(e.description ? e.description : "")}
+                          </span>
+                        </td>
+                        <td
+                          data-testid={`Submissions-count-${e._id}`} className="w-13">
+                          {e.submissionsCount}
+                        </td>
+                        <td
+                          data-testid={`latest-submission-${e._id}`} className="w-13">
+                          {formatDate(e.modified)}
+                        </td>
 
-                            <div
-                              className="form-description-p-tag "
-                              dangerouslySetInnerHTML={{
-                                __html: DOMPurify.sanitize(e?.description, {
-                                  ADD_ATTR: ["target"],
-                                }),
-                              }}
-                            />
+                        <td className=" w-12 ">
+                          <div className="d-flex justify-content-end">
+                            <button
+                              data-testid={`form-submit-button-${e._id}`}
+                              className="btn btn-secondary"
+                              onClick={() => submitNewForm(e._id)}
+                            >
+                              <Translation>{(t) => t("Select")}</Translation>
+                            </button>
                           </div>
                         </td>
                       </tr>
-                    )}
-                  </React.Fragment>
-                ))}
+
+                      {index === openIndex && (
+                        <tr>
+                          <td colSpan={10}>
+                            <div className="bg-white p-3">
+                              <h4>
+                                <strong>{t("Form Description")}</strong>
+                              </h4>
+
+                              <div
+                                className="form-description-p-tag "
+                                dangerouslySetInnerHTML={{
+                                  __html: DOMPurify.sanitize(e?.description, {
+                                    ADD_ATTR: ["target"],
+                                  }),
+                                }}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+                {formData.length ? (
+                  <TableFooter
+                    limit={limit}
+                    activePage={pageNo}
+                    totalCount={totalForms}
+                    handlePageChange={handlePageChange}
+                    onLimitChange={onSizePerPageChange}
+                    pageOptions={pageOptions}
+                  />
+                ) : (
+                  <td colSpan={3}></td>
+                )}
               </tbody>
             ) : !searchFormLoading ? (
               noDataFound()
@@ -195,24 +252,9 @@ function ClientTable() {
               null
             )}
           </table>
-          </div>
         </div>
-
-      {formData.length ? (
-        <table className="table">
-          <tfoot>
-            <TableFooter
-              limit={limit}
-              activePage={pageNo}
-              totalCount={totalForms}
-              handlePageChange={handlePageChange}
-              onLimitChange={onSizePerPageChange}
-              pageOptions={pageOptions}
-            />
-          </tfoot>
-        </table>
-      ) : null}
-            </LoadingOverlay>
+      </div>
+    </LoadingOverlay>
 
   );
 }

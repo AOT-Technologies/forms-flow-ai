@@ -15,6 +15,12 @@ import {
   KEYCLOAK_AUTH_URL,
   Keycloak_Client,
   KEYCLOAK_REALM,
+  ENABLE_APPLICATIONS_MODULE,
+  ENABLE_DASHBOARDS_MODULE,
+  ENABLE_FORMS_MODULE,
+  ENABLE_PROCESSES_MODULE,
+  ENABLE_TASKS_MODULE,
+  LANGUAGE
 } from "../constants/constants";
 import { KeycloakService, StorageService } from "@formsflow/service";
 import {
@@ -24,13 +30,6 @@ import {
   setUserDetails,
 } from "../actions/bpmActions";
 import { setLanguage } from "../actions/languageSetAction";
-import {
-  ENABLE_APPLICATIONS_MODULE,
-  ENABLE_DASHBOARDS_MODULE,
-  ENABLE_FORMS_MODULE,
-  ENABLE_PROCESSES_MODULE,
-  ENABLE_TASKS_MODULE,
-} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
@@ -41,12 +40,13 @@ import {
 
 // Lazy imports is having issues with micro-front-end build
 
-import Form from "./Form";
+import SubmitFormRoutes from "./../routes/Submit/Forms";
+import DesignFormRoutes from "./../routes/Design/Forms";
 import ServiceFlow from "./ServiceFlow";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
-import Modeler from "./Modeler";
+import DesignProcessRoutes from "./../routes/Design/Process";
 import Drafts from "./Draft";
 import {
   BPM_API_URL_WITH_VERSION,
@@ -57,7 +57,6 @@ import {
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
-import { LANGUAGE } from "../constants/constants";
 import useUserRoles from "../constants/permissions";
 import { getUserRoles } from "../apiManager/services/authorizationService"; // Assuming you have a service to get roles
 import PropTypes from "prop-types";
@@ -334,10 +333,10 @@ const PrivateRoute = React.memo((props) => {
         <Suspense fallback={<Loading />}>
           <Switch>
             {ENABLE_FORMS_MODULE && (
-              <ClientRoute path={ROUTE_TO.FORM} component={Form} />
+              <ClientRoute path={ROUTE_TO.FORM} component={SubmitFormRoutes} />
             )}
             {ENABLE_FORMS_MODULE && (
-              <DesignerRoute path={ROUTE_TO.FORMFLOW} component={Form} />
+              <DesignerRoute path={ROUTE_TO.FORMFLOW} component={DesignFormRoutes} />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
               <DraftRoute path={ROUTE_TO.DRAFT} component={Drafts} />
@@ -351,13 +350,13 @@ const PrivateRoute = React.memo((props) => {
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
                 path={ROUTE_TO.SUBFLOW}
-                component={Modeler}
+                component={DesignProcessRoutes}
               />
             )}
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
                 path={ROUTE_TO.DECISIONTABLE}
-                component={Modeler}
+                component={DesignProcessRoutes}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (

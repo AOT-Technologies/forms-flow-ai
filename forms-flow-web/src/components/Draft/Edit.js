@@ -19,7 +19,7 @@ import {RESOURCE_BUNDLES_DATA} from "../../resourceBundles/i18n";
 
 import useInterval from "../../customHooks/useInterval";
 import { CUSTOM_EVENT_TYPE } from "../ServiceFlow/constants/customEventTypes";
-import selectApplicationCreateAPI from "../Form/Item/apiSelectHelper";
+import selectApplicationCreateAPI from "../Form/constants/apiSelectHelper";
 import {
   setFormSubmissionError,
   setFormSubmissionLoading,
@@ -49,6 +49,7 @@ import { setDraftDelete } from "../../actions/draftActions";
 import { setFormStatusLoading } from "../../actions/processActions";
 import { getFormProcesses } from "../../apiManager/services/processServices";
 import { textTruncate } from "../../helper/helper";
+import PropTypes from "prop-types";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -348,6 +349,20 @@ const executeAuthSideEffects = (dispatch, redirectUrl) => {
   dispatch(push(`${redirectUrl}draft`));
 };
 
+View.propTypes = {
+  isAuthenticated: PropTypes.bool,
+  form: PropTypes.object,
+  submission: PropTypes.object,
+  url: PropTypes.string,
+  options: PropTypes.object,
+  hideComponents: PropTypes.array,
+  onSubmit: PropTypes.func,
+  onCustomEvent: PropTypes.func,
+  submissionError: PropTypes.object,
+  onConfirm: PropTypes.func,
+  errors: PropTypes.array,
+};
+
 // eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
@@ -360,7 +375,7 @@ const doProcessActions = (submission, ownProps) => {
     const origin = `${window.location.origin}${redirectUrl}`;
     const data = getProcessReq(form, submission._id, origin, submission?.data);
     let draft_id = state.draft.submission?.id;
-    let isDraftCreated = draft_id ? true : false;
+    let isDraftCreated = !!draft_id;
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,
       isDraftCreated,
@@ -368,7 +383,7 @@ const doProcessActions = (submission, ownProps) => {
     );
    
     dispatch(
-      applicationCreateAPI(data, draft_id ? draft_id : null, (err) => {
+      applicationCreateAPI(data, draft_id, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
           toast.success(

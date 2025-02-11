@@ -9,10 +9,10 @@ import { Form, FormControl, InputGroup } from "react-bootstrap";
 import {
   CopyIcon,
   CustomInfo,
-  CustomRadioButton,
   FormInput,
   FormTextArea,
-  MultipleSelect
+  CustomTabs,
+  DropdownMultiSelect
 } from "@formsflow/components";
 
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
@@ -231,11 +231,13 @@ const FormSettings = forwardRef((props, ref) => {
   const handleRoleSelectForApplication = (roles) =>
     handleRoleStateChange(APPLICATION, "selectedRoles", roles);
 
-  return (
-    <>
-      {/* Section 1: Basic */}
-      <div className="section">
-        <h5 className="fw-bold">{t("Basic")}</h5>
+  const  [key,setKey] = useState("Basic");
+  const tabs = [
+    {
+      eventKey: "Basic",
+      title: "Basic",
+      content: (
+        <div className="settings-sections">
         <FormInput
           required
           value={formDetails.title}
@@ -273,18 +275,23 @@ const FormSettings = forwardRef((props, ref) => {
           onChange={handleFormDetailsChange}
           className="field-label"
         />
-      </div>
+        </div>
+      ),
+    },
+    {
+      eventKey: "Permissions",
+      title: "Permissions",
+      content: (
+        <div className="settings-sections">
+        <DropdownMultiSelect
+          dropdownLabel="Who Can View/Edit This Form"
+          enableMultiSelect= { 
+            rolesState?.DESIGN?.selectedOption !== "onlyYou" &&
+            rolesState?.DESIGN?.selectedOption !== "Only You" 
 
-      <div className="modal-hr" />
-
-      <div className="section">
-        <h5 className="fw-bold">{t("Permissions")}</h5>
-
-        <Form.Label className="field-label">
-          {t("Who Can View/Edit This Form")}
-        </Form.Label>
-        <CustomRadioButton
-          items={[
+          }
+          inputDropDownSelectedValue={rolesState?.DESIGN?.selectedOption}
+          inputDropDownOptions={[
             {
               label: t("Only You"),
               value:"onlyYou",
@@ -294,48 +301,27 @@ const FormSettings = forwardRef((props, ref) => {
               value: "specifiedRoles",
             },
           ]}
-          onChange={
-            (value) => {
-              handleRoleStateChange(DESIGN, "selectedOption", value);
-            }
-          }
-          dataTestId="who-can-edit-this-form"
-          id="who-can-edit-this-form"
-          ariaLabel={t("Edit Submission Role")}
-          selectedValue={rolesState.DESIGN.selectedOption}
-        />
-
-        {rolesState.DESIGN.selectedOption === "onlyYou" && (
-          <FormInput disabled={true} />
-        )}
-        {rolesState.DESIGN.selectedOption === "specifiedRoles" && (
-          <MultipleSelect
-          options={userRoles}
-          selectedValues={rolesState.DESIGN.selectedRoles}
-          onSelect={handleRoleSelectForDesign}
-          onRemove={handleRoleSelectForDesign}
-          displayValue={multiSelectOptionKey}
-          avoidHighlightFirstOption={true}
-          />
-
-        )}
-
-        <Form.Label className="field-label mt-3">
-          {t("Who Can Create Submissions")}
-        </Form.Label>
-        <Form.Check
-          type="checkbox"
-          id="anonymouseCheckbox"
-          label={t("Anonymous users")}
-          checked={isAnonymous}
-          onChange={() => {
-            setIsAnonymous(!isAnonymous);
+          multiSelectedValues={rolesState?.DESIGN?.selectedRoles }
+          multiSelectOptions={userRoles || []}
+          onDropdownChange={(value) => {
+            handleRoleStateChange(DESIGN, "selectedOption", value);
           }}
-          className="field-label"
+         onMultiSelectionChange={handleRoleSelectForDesign}
+         displayValue={multiSelectOptionKey}
+         ariaLabel="design-permission"
+         dataTestid="design-permission"
+         
         />
 
-        <CustomRadioButton
-          items={[
+        <DropdownMultiSelect
+          dropdownLabel="Who Can Create Submissions"
+          enableMultiSelect={ 
+            rolesState?.FORM?.selectedOption !== "registeredUsers" &&
+            rolesState?.FORM?.selectedOption !== "Registered users" 
+
+          }
+          inputDropDownSelectedValue={rolesState.FORM.selectedOption}
+          inputDropDownOptions={[
             {
               label: t("Registered users"),
               value:"registeredUsers",
@@ -345,36 +331,40 @@ const FormSettings = forwardRef((props, ref) => {
               value:"specifiedRoles"
             },
           ]}
-          id="who-can-create-submission"
-          dataTestId="create-submission-role"
-          ariaLabel={t("Create Submission Role")}
-          onChange={
+          multiSelectedValues={rolesState.FORM.selectedRoles }
+          multiSelectOptions={userRoles}
+          onDropdownChange={
             (value) => {
               handleRoleStateChange(FORM, "selectedOption", value);
             }
           }
-          selectedValue={rolesState.FORM.selectedOption}
+         onMultiSelectionChange={handleRoleSelectForForm}
+          displayValue={multiSelectOptionKey}
+          ariaLabel="form-permission"
+          dataTestid="form-permission"
+
         />
-        {rolesState.FORM.selectedOption === "registeredUsers" && (
-          <FormInput disabled={true} />
-        )}
-        {rolesState.FORM.selectedOption === "specifiedRoles" && (
-            <MultipleSelect
-            options={userRoles} // Options to display in the dropdown
-            selectedValues={rolesState.FORM.selectedRoles} // Preselected value to persist in dropdown
-            onSelect={handleRoleSelectForForm} // Function will trigger on select event
-            onRemove={handleRoleSelectForForm} // Function will trigger on remove event
-            displayValue={multiSelectOptionKey} // Property name to display in the dropdown options
-            avoidHighlightFirstOption={true}
-            />
+        <Form.Check
+          type="checkbox"
+          id="anonymouseCheckbox"
+          label={t("Also allow anonymous users to create submissions")}
+          checked={isAnonymous}
+          onChange={() => {
+            setIsAnonymous(!isAnonymous);
+          }}
+          className="field-label"
+        />
 
-        )}
 
-        <Form.Label className="field-label mt-3">
-          {t("Who Can View Submissions")}
-        </Form.Label>
-        <CustomRadioButton
-          items={[
+        <DropdownMultiSelect
+          dropdownLabel="Who Can View Submissions"
+          enableMultiSelect={ 
+            rolesState?.APPLICATION?.selectedOption !== "submitter" &&
+            rolesState?.APPLICATION?.selectedOption !== "Submitter" 
+
+          }
+          inputDropDownSelectedValue={rolesState.APPLICATION.selectedOption}
+          inputDropDownOptions={[
             {
               label: t("Submitter"),
               value:"submitter"
@@ -384,37 +374,25 @@ const FormSettings = forwardRef((props, ref) => {
               value:"specifiedRoles"
             },
           ]}
-          id="who-can-view-submission"
-          dataTestId="view-submission-role"
-          ariaLabel={t("View Submission Role")}
-          onChange={
+          multiSelectedValues={rolesState.APPLICATION.selectedRoles }
+          multiSelectOptions={userRoles}
+          onDropdownChange={
             (value) => {
               handleRoleStateChange(APPLICATION, "selectedOption", value);
             }
           }
-          selectedValue={rolesState.APPLICATION.selectedOption}
+         onMultiSelectionChange={handleRoleSelectForApplication}
+          displayValue={multiSelectOptionKey}
         />
 
-        {rolesState.APPLICATION.selectedOption === "submitter" && (
-          <FormInput disabled={true} />
-        )}
-
-        {rolesState.APPLICATION.selectedOption === "specifiedRoles" && (
-          <MultipleSelect
-            options={userRoles} // Options to display in the dropdown
-            selectedValues={rolesState.APPLICATION.selectedRoles} // Preselected value to persist in dropdown
-            onSelect={handleRoleSelectForApplication} // Function will trigger on select event
-            onRemove={handleRoleSelectForApplication} // Function will trigger on remove event
-            displayValue={multiSelectOptionKey} // Property name to display in the dropdown options
-            avoidHighlightFirstOption={true}
-          />
-
-        )}
-      </div>
-
-      <div className="modal-hr" />
-      <div className="section">
-        <h5 className="fw-bold">{t("Link for this form")}</h5>
+        </div>
+      ),
+    },
+    {
+      eventKey :"Link",
+      title : "Link",
+      content : (
+        <div className="settings-sections">
         <CustomInfo heading={t("Note")}
         content={t("Making changes to your form URL will make your form inaccessible from your current URL.")} />
         <Form.Group className="settings-input w-100" controlId="url-input">
@@ -438,8 +416,21 @@ const FormSettings = forwardRef((props, ref) => {
           {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
 
         </Form.Group>
-      </div>
-    </>
+        </div>
+      )
+    }
+  ];
+  return (
+    <div className="settings-tab-container">
+      <CustomTabs
+       defaultActiveKey={key}
+       onSelect={setKey}
+       tabs={tabs}
+       dataTestid="template-form-flow-tabs"
+       ariaLabel="Template forms flow  tabs"
+       className="custom-tab"
+       /> 
+    </div>     
   );
 });
 

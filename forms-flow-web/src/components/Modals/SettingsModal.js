@@ -39,6 +39,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
       onHide={handleClose}
       size="sm"
       backdrop="static"
+      centered
     >
       <Modal.Header>
         <Modal.Title>{t("Settings")}</Modal.Title>

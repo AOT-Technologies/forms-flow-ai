@@ -24,7 +24,7 @@ filelock==3.12.4
 flask-jwt-oidc==0.3.0
 flask-restx==1.1.0
 fsspec==2023.9.1
-gunicorn==21.2.0
+gunicorn==22.0.0
 huggingface-hub==0.19.4
 idna==3.4
 itsdangerous==2.1.2

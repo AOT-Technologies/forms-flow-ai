@@ -24,12 +24,14 @@ import {
   setBpmSort,
   setDmnSort
 } from "../../../actions/processActions";
+import userRoles from "../../../constants/permissions";
 
 const ProcessTable = React.memo(() => {
   const { viewType } = useParams();
   const isBPMN = viewType === "subflow";
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const { createDesigns } = userRoles();
   const ProcessContents = isBPMN
   ? {
       processType: "BPMN",
@@ -38,14 +40,16 @@ const ProcessTable = React.memo(() => {
       filterAriaLabel: "Filter the Process list (BPMN)",
       refreshDataTestId: "Process-list-refresh-bpmn",
       refreshAriaLabel: "Refresh the Process list (BPMN)",
+      message: "No subflows have been found. Create a new subflow by clicking \"New BPMN\" button in the top right."
     }
-  : {   
+  : {
       processType: "DMN",
       extension: ".dmn",
       filterDataTestId: "Process-list-filter-dmn",
       filterAriaLabel: "Filter the Process list (DMN)",
       refreshDataTestId: "Process-list-refresh-dmn",
       refreshAriaLabel: "Refresh the Process list (DMN)",
+      message: "No decision tables have been found. Create a new decision table by clicking \"New DMN\" button in the top right."
     };
 
   // States and selectors
@@ -113,9 +117,9 @@ const ProcessTable = React.memo(() => {
       )
     );
   };
-  
+
   const handleFilterIconClick = () => {
-    setShowSortModal(true); 
+    setShowSortModal(true);
   };
 
   const handleSortModalClose = () => {
@@ -133,8 +137,8 @@ const ProcessTable = React.memo(() => {
     setIsLoading(false);
     setShowSortModal(false);
   };
-  
-  
+
+
   const handleRefresh = () => {
     fetchProcesses();
   };
@@ -143,7 +147,7 @@ const ProcessTable = React.memo(() => {
    useEffect(() => {
     fetchProcesses();
   }, [dispatch, currentState, tenantKey,searchTextBPMN,searchTextDMN, isBPMN,sortConfig]);
- 
+
   //Update api call when search field is empty
   useEffect(() => {
     if (!search.trim()) {
@@ -153,20 +157,24 @@ const ProcessTable = React.memo(() => {
 
   const handleSort = (key) => {
     const newSortConfig = {
-      ...sortConfig,
       activeKey: key,
       [key]: {
         sortOrder: sortConfig[key]?.sortOrder === "asc" ? "desc" : "asc",
       },
     };
-  
+// Reset all other sort keys to default (ascending)
+    Object.keys(sortConfig).forEach((sortKey) => {
+      if (sortKey !== key && sortKey !== "activeKey") {
+        newSortConfig[sortKey] = { sortOrder: "asc" };
+      }
+    });
+
     if (isBPMN) {
       dispatch(setBpmSort(newSortConfig));
     } else {
-      dispatch(setDmnSort(newSortConfig)); 
+      dispatch(setDmnSort(newSortConfig));
     }
   };
-  
   const handleSearch = () => {
     setSearchLoading(true);
     if (isBPMN) {
@@ -242,7 +250,7 @@ const ProcessTable = React.memo(() => {
       onClick: showImportModal,
     },
   ];
-  
+
   return (
     <>
       <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
@@ -273,14 +281,14 @@ const ProcessTable = React.memo(() => {
             refreshDataTestId={ProcessContents.refreshDataTestId}
             refreshAriaLabel={ProcessContents.refreshAriaLabel}
           />
-          <CustomButton
+          {createDesigns && (<CustomButton
             variant="primary"
             size="sm"
             label={t(`New ${ProcessContents.processType}`)}
             onClick={handleCreateProcess}
             dataTestid={`create-${ProcessContents.processType}-button`}
             ariaLabel={` Create ${ProcessContents.processType}`}
-          />
+          />)}
         </div>
       </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
@@ -359,7 +367,7 @@ const ProcessTable = React.memo(() => {
                   />
                 </tbody>
               ) : (
-                !isLoading && <NoDataFound />
+                !isLoading &&  <NoDataFound message={t(`${ProcessContents.message}`)} />
               )}
             </table>
           </div>

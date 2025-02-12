@@ -47,15 +47,6 @@ function ClientTable() {
     { text: "100", value: 100 },
     { text: "All", value: totalForms },
   ];
-  const handleSort = (key) => {
-    const newSortOrder = formsort[key]?.sortOrder === "asc" ? "desc" : "asc";
-    dispatch(setBpmFormSort({
-      ...formsort,
-      activeKey: key,
-      [key]: { sortOrder: newSortOrder },
-    }));
-  };
-
   const stripHtml = (html) => {
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
@@ -65,8 +56,22 @@ function ClientTable() {
     if (e.key === "Enter" || e.key === " ") {
       toggleRow(index);
     }
-  };
 
+    const handleSort = (key) => {
+    const newSortOrder = formsort[key]?.sortOrder === "asc" ? "desc" : "asc";
+  
+    // Reset all other columns to default (ascending) except the active one
+    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
+      return acc;
+    }, {});
+  
+    dispatch(setBpmFormSort({
+      ...updatedSort,
+      activeKey: key,
+    }));
+  };
+  
   useEffect(() => {
     setSearch(searchText);
   }, [searchText]);

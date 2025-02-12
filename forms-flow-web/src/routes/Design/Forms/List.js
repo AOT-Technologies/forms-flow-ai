@@ -46,6 +46,7 @@ import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { navigateToDesignFormEdit } from "../../../helper/routerHelper.js";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
+import useSuccessCountdown from "../../../customHooks/useSuccessCountdown";
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
@@ -58,6 +59,7 @@ const List = React.memo((props) => {
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
+  const { successState, startSuccessCountdown } = useSuccessCountdown();
 
 
   const handleFilterIconClick = () => {
@@ -304,7 +306,9 @@ const List = React.memo((props) => {
       .then((res) => {
         const form = res.data;
         dispatch(setFormSuccessData("form", form));
-        navigateToDesignFormEdit(dispatch, tenantKey, form._id);
+        startSuccessCountdown(() => {
+          navigateToDesignFormEdit(dispatch, tenantKey, form._id);
+        },2);
       })
       .catch((err) => {
         let error;
@@ -334,8 +338,8 @@ const List = React.memo((props) => {
     }
     return null;
   };
-  
-  
+
+
   return (
     <>
       {(forms?.isActive || designerFormLoading || isBPMFormListLoading) &&
@@ -345,7 +349,7 @@ const List = React.memo((props) => {
         </div>
       ) : (
         <div>
-          {createDesigns && (
+          {(
               <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
                 <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
                   <CustomSearch
@@ -369,9 +373,9 @@ const List = React.memo((props) => {
                     optionSortBy={optionSortBy}
                     defaultSortOption={formSort.activeKey}
                     defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}
-                    filterDataTestId="form-list-filter" 
-                    filterAriaLabel="Filter the form list" 
-                    refreshDataTestId="form-list-refresh" 
+                    filterDataTestId="form-list-filter"
+                    filterAriaLabel="Filter the form list"
+                    refreshDataTestId="form-list-refresh"
                     refreshAriaLabel="Refresh the form list"
                   />
 
@@ -406,6 +410,8 @@ const List = React.memo((props) => {
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
                     buildForm={true}
+                    showSuccess={successState.showSuccess} // ✅ Pass success state
+                    successCountdown={successState.countdown} // ✅ Pass countdown
                   />
                   {importFormModal && (
                     <ImportModal

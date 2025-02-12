@@ -159,10 +159,8 @@ SearchBar.propTypes = {
   search: PropTypes.string.isRequired,
   setSearch: PropTypes.func.isRequired,
   handleSearch: PropTypes.func.isRequired,
+  handleClearSearch: PropTypes.func.isRequired,
   searchLoading: PropTypes.bool.isRequired,
-};
-SearchBar.defaultProps = {
-  handleClearSearch: () => {},
 };
 
 SubmitList.propTypes = {

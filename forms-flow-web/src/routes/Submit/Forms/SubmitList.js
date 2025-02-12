@@ -4,7 +4,7 @@ import { DRAFT_ENABLED } from "../../../constants/constants";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
-  setBPMFormListPage,
+  setBPMSubmitListPage
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -39,7 +39,7 @@ const SubmitList = React.memo((props) => {
   }, [search]);
   const handleSearch = () => {
     dispatch(setClientFormSearch(search));
-    dispatch(setBPMFormListPage(1));
+    dispatch(setBPMSubmitListPage(1));
   };
   const handleClearSearch = () => {
     setSearch("");
@@ -47,7 +47,7 @@ const SubmitList = React.memo((props) => {
   };
   const { getFormsInit } = props;
 
-  const pageNo = useSelector((state) => state.bpmForms.page);
+  const pageNo = useSelector((state) => state.bpmForms.submitListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const formSort = useSelector((state) => state.bpmForms.sort);
   const searchFormLoading = useSelector(

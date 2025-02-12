@@ -286,9 +286,7 @@ const FormSettings = forwardRef((props, ref) => {
         <DropdownMultiSelect
           dropdownLabel="Who Can View/Edit This Form"
           enableMultiSelect= { 
-            rolesState?.DESIGN?.selectedOption !== "onlyYou" &&
-            rolesState?.DESIGN?.selectedOption !== "Only You" 
-
+            rolesState?.DESIGN?.selectedOption !== "onlyYou"
           }
           inputDropDownSelectedValue={rolesState?.DESIGN?.selectedOption}
           inputDropDownOptions={[
@@ -309,16 +307,14 @@ const FormSettings = forwardRef((props, ref) => {
          onMultiSelectionChange={handleRoleSelectForDesign}
          displayValue={multiSelectOptionKey}
          ariaLabel="design-permission"
-         dataTestid="design-permission"
+         dataTestId="design-permission"
          
         />
 
         <DropdownMultiSelect
           dropdownLabel="Who Can Create Submissions"
           enableMultiSelect={ 
-            rolesState?.FORM?.selectedOption !== "registeredUsers" &&
-            rolesState?.FORM?.selectedOption !== "Registered users" 
-
+            rolesState?.FORM?.selectedOption !== "registeredUsers" 
           }
           inputDropDownSelectedValue={rolesState.FORM.selectedOption}
           inputDropDownOptions={[
@@ -341,7 +337,7 @@ const FormSettings = forwardRef((props, ref) => {
          onMultiSelectionChange={handleRoleSelectForForm}
           displayValue={multiSelectOptionKey}
           ariaLabel="form-permission"
-          dataTestid="form-permission"
+          dataTestId="form-permission"
 
         />
         <Form.Check
@@ -359,9 +355,7 @@ const FormSettings = forwardRef((props, ref) => {
         <DropdownMultiSelect
           dropdownLabel="Who Can View Submissions"
           enableMultiSelect={ 
-            rolesState?.APPLICATION?.selectedOption !== "submitter" &&
-            rolesState?.APPLICATION?.selectedOption !== "Submitter" 
-
+            rolesState?.APPLICATION?.selectedOption !== "submitter"
           }
           inputDropDownSelectedValue={rolesState.APPLICATION.selectedOption}
           inputDropDownOptions={[
@@ -426,7 +420,7 @@ const FormSettings = forwardRef((props, ref) => {
        defaultActiveKey={key}
        onSelect={setKey}
        tabs={tabs}
-       dataTestid="template-form-flow-tabs"
+       dataTestId="template-form-flow-tabs"
        ariaLabel="Template forms flow  tabs"
        className="custom-tab"
        /> 

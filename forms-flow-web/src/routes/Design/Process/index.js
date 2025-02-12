@@ -14,7 +14,7 @@ const DesignerProcessRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      if ((user.includes('create_designs') || user.includes('view_designs'))) {
+      if (user.some(i => i === "create_designs" || i === "view_designs")) {
         return <Component {...props} />;
       } else {
         return <AccessDenied userRoles={user} />;

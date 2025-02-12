@@ -64,10 +64,17 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   // Fetch Forms Function
   const fetchForms = () => {
     dispatch(setFormSearchLoading(true));
-    dispatch(fetchBPMFormList(
-      pageNo, limit, formSort, searchText, "", true, true
-    ));
+    dispatch(fetchBPMFormList({
+      pageNo, 
+      limit, 
+      formSort, 
+      formName: searchText, 
+      formType: "", 
+      showForOnlyCreateSubmissionUsers: true, 
+      includeSubmissionsCount: true
+    }));
   };
+  
 
   // Handle Sorting
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
@@ -150,6 +157,11 @@ const SubmitList = React.memo(({ getFormsInit }) => {
 
 SubmitList.propTypes = {
   getFormsInit: PropTypes.bool,
+  search: PropTypes.string.isRequired,
+  setSearch: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+  handleClearSearch: PropTypes.func.isRequired,
+  searchLoading: PropTypes.bool.isRequired,
 };
 
 export default SubmitList;

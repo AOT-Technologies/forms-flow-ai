@@ -11,7 +11,7 @@ import {
 import { replaceUrl } from "../../helper/helper";
 import { setFormSearchLoading } from "../../actions/checkListActions";
 
-export const fetchBPMFormList = (
+export const fetchBPMFormList = ({
   pageNo,
   limit,
   formSort,
@@ -19,14 +19,13 @@ export const fetchBPMFormList = (
   formType,
   showForOnlyCreateSubmissionUsers,
   includeSubmissionsCount,
-  ...rest
-) => {
-  const done = rest.length ? rest[0] : () => { };
+  done = () => {},
+}) => {
   return (dispatch) => {
-    let sortBy = formSort.activeKey; 
-    let sortOrder = formSort[sortBy].sortOrder ; 
-    let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy
-    }&sortOrder=${sortOrder}`;
+    let sortBy = formSort.activeKey;
+    let sortOrder = formSort[sortBy]?.sortOrder;
+    let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+
     const queryParams = [];
 
     if (formType) queryParams.push(`formType=${formType}`);
@@ -46,24 +45,19 @@ export const fetchBPMFormList = (
         if (res.data) { 
           dispatch(setBPMFormList(res.data));
           dispatch(setBPMFormListLoading(false));
-          //dispatch(setBPMLoader(false));
           dispatch(setBpmFormLoading(false));
           dispatch(setFormSearchLoading(false));
 
           done(null, res.data);
         } else {
           dispatch(setBPMFormListLoading(false));
-          //console.log("Error", res);
           dispatch(serviceActionError(res));
           dispatch(setFormSearchLoading(false));
-          //dispatch(setBPMTaskLoader(false));
         }
       })
       .catch((error) => {
-        //console.log("Error", error);
         dispatch(setBPMFormListLoading(false));
         dispatch(serviceActionError(error));
-        //dispatch(setBPMTaskLoader(false));
         done(error);
       });
   };

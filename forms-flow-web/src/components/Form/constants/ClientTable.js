@@ -12,7 +12,7 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { useTranslation, Translation } from "react-i18next";
-import DOMPurify  from "dompurify";
+import DOMPurify from "dompurify";
 import { TableFooter } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import SortableHeader from '../../CustomComponents/SortableHeader';
@@ -59,6 +59,12 @@ function ClientTable() {
   const stripHtml = (html) => {
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
+  };
+
+  const handleKeyPress = (e, index) => {
+    if (e.key === "Enter" || e.key === " ") {
+      toggleRow(index);
+    }
   };
 
   useEffect(() => {
@@ -147,7 +153,7 @@ function ClientTable() {
                 <th className="w-30" scope="col">{t("Description")}</th>
 
                 <th className="w-13" scope="col">
-                {t("Submissions")}
+                  {t("Submissions")}
                   {/* <SortableHeader
                     columnKey="submissionsCount"
                     title="Submission Count"
@@ -183,8 +189,13 @@ function ClientTable() {
                           </span>
                         </td>
                         <td className="w-30">
-                          <span className={isExpanded ? "text-container-expand" : "text-container"}
-                            onClick={() => toggleRow(index)}>
+                          <span
+                            className={isExpanded ? "text-container-expand" : "text-container"}
+                            role="button"
+                            tabIndex="0"
+                            onClick={() => toggleRow(index)}
+                            onKeyDown={(e) => handleKeyPress(e, index)} // Handle keyboard events
+                          >
                             {stripHtml(e.description ? e.description : "")}
                           </span>
                         </td>

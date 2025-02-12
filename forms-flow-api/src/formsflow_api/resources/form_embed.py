@@ -5,7 +5,12 @@ from http import HTTPStatus
 from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.services.external import FormioService
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import (
+    auth,
+    cors_preflight,
+    profiletime,
+    submission_response,
+)
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 
 from formsflow_api.services import (
@@ -13,26 +18,12 @@ from formsflow_api.services import (
     FormProcessMapperService,
 )
 
-API = Namespace("Embed", description="APIs for form embeding")
+API = Namespace("Embed", description="APIs for form embeding.")
 
 application_external_create_model = API.model(
     "ApplicationCreateExternal", {"formId": fields.String(), "data": fields.Raw()}
 )
-application_base_model = API.model(
-    "ApplicationCreateResponse",
-    {
-        "applicationStatus": fields.String(),
-        "created": fields.String(),
-        "createdBy": fields.String(),
-        "formId": fields.String(),
-        "formProcessMapperId": fields.String(),
-        "id": fields.Integer(),
-        "modified": fields.String(),
-        "modifiedBy": fields.String(),
-        "processInstanceId": fields.String(),
-        "submissionId": fields.String(),
-    },
-)
+application_base_model = API.model("ApplicationCreateResponse", submission_response)
 
 
 class EmbedCommonMethods:
@@ -126,7 +117,7 @@ class FormExternal(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get(path):
-        """Get form by form name with external authentication."""
+        """Get form by form path with external authentication."""
         return EmbedCommonMethods.get(path)
 
 
@@ -189,5 +180,5 @@ class FormInternal(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get(path):
-        """Get form by form name with internal authentication."""
+        """Get form by form path with internal authentication."""
         return EmbedCommonMethods.get(path)

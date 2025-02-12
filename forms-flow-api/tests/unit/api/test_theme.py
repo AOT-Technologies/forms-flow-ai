@@ -34,7 +34,7 @@ def test_get_theme(app, client, session, jwt):
     )
     assert response.status_code == 201
 
-    response = client.get("/themes")
+    response = client.get("/public/themes")
     assert response.status_code == 200
 
 
@@ -49,7 +49,7 @@ def test_theme_update(app, client, session, jwt):
     )
     assert response.status_code == 201
 
-    response = client.get("/themes", headers=headers)
+    response = client.get("/public/themes", headers=headers)
     assert response.status_code == 200
     update_payload = {
         "type": "base64",

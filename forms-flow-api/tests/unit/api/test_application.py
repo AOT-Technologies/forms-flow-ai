@@ -348,12 +348,6 @@ def test_application_payload(app, client, session, jwt, create_mapper):
 
 def test_application_update_details_api(app, client, session, jwt, create_mapper):
     """Tests the application update endpoint with valid payload."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}

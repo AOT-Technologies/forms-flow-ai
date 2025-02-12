@@ -118,6 +118,7 @@ def handle_sqlalchemy_error(e, model=None):
 def register_error_handlers(api, sentry_capture_handled_errors: bool = False):
     @api.errorhandler(AuthError)
     def handle_forbidden_error(error):
+        """Handle auth error."""
         error_response = create_error_response("Invalid Token Error", code="INVALID_AUTH_TOKEN")
         _report_error(error_response)
         return error_response.__dict__, error.status_code
@@ -131,12 +132,14 @@ def register_error_handlers(api, sentry_capture_handled_errors: bool = False):
 
     @api.errorhandler(BusinessException)
     def handle_business_error(error):
+        """Handle business exception."""
         error_response = create_error_response(error.message, error.code, error.details)
         _report_error(error_response)
         return error_response.__dict__, error.status_code
 
     @api.errorhandler(ValidationError)
     def handle_validation_error(error):
+        """Handle validation error."""
         error_details = [ErrorDetail(field, messages[0]).__dict__ for field, messages in error.messages.items()]
         error_response = ErrorResponse(message="Validation failed", code="VALIDATION_ERROR", details=error_details)
         error.data = error_response.__dict__
@@ -145,6 +148,7 @@ def register_error_handlers(api, sentry_capture_handled_errors: bool = False):
 
     @api.errorhandler(KeyError)
     def handle_key_error(error):
+        """Handle key error."""
         error_detail = ErrorDetail(code="KeyError", message=str(error))
         error_response = ErrorResponse(message="KeyError occurred", code="KEY_ERROR", details=[error_detail.__dict__])
         _report_error(error_response)
@@ -152,6 +156,7 @@ def register_error_handlers(api, sentry_capture_handled_errors: bool = False):
 
     @api.errorhandler(requests.exceptions.HTTPError)
     def handle_http_error(error):
+        """Handle http error."""
         error_response = ErrorResponse(message="HttpError occurred", code="HTTP_ERROR", details=[])
         _report_error(error_response)
         return error_response.__dict__, 400

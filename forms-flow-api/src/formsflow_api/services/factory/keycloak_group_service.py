@@ -278,7 +278,7 @@ class KeycloakGroupService(KeycloakAdmin):
             url_path=f"users/{user_id}/role-mappings/clients/{client_id}", data=[data]
         )
 
-    def remove_user_from_group(self, user_id: str, group_id: str, payload: Dict = None):
+    def remove_user_from_group(self, user_id: str, group_id: str):
         """Remove user to group."""
         return self.client.delete_request(url_path=f"users/{user_id}/groups/{group_id}")
 

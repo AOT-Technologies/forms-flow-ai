@@ -11,17 +11,26 @@ from formsflow_api.services import ThemeCustomizationService
 
 theme_schema = ThemeCustomizationSchema()
 
-API = Namespace("Themes", description="Theme Customization APIs")
+API = Namespace("Themes", description="Theme Customization APIs.")
 
 theme_model = API.model(
     "Themes",
     {
-        "id": fields.Integer(),
         "logoName": fields.String(),
-        "logoType": fields.String(),
+        "type": fields.String(),
         "value": fields.String(),
         "applicationTitle": fields.String(),
-        "theme": fields.Raw(),
+        "themeJson": fields.Raw(),
+        "logoData": fields.String(),
+    },
+)
+theme_response_model = API.inherit(
+    "ThemeResponse",
+    theme_model,
+    {
+        "id": fields.Integer(),
+        "created_by": fields.String(),
+        "tenant": fields.String(),
     },
 )
 
@@ -36,13 +45,13 @@ class ThemeCustomizationResource(Resource):
     @profiletime
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            201: ("CREATED:- Successful request.", theme_response_model),
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
-        },
-        model=theme_model,
+        }
     )
+    @API.expect(theme_model)
     def post():
         """Create Theme."""
         theme_data = theme_schema.load(request.get_json())
@@ -53,36 +62,20 @@ class ThemeCustomizationResource(Resource):
         return response, status
 
     @staticmethod
-    @profiletime
-    @API.doc(
-        responses={
-            200: "OK:- Successful request.",
-            403: "FORBIDDEN:- Permission denied",
-        },
-        model=[theme_model],
-    )
-    def get():
-        """Get theme by tenant key. This is a public API."""
-        tenant_key = request.args.get("tenantKey", default=None)
-        response, status = (
-            ThemeCustomizationService.get_theme(tenant_key),
-            HTTPStatus.OK,
-        )
-        return response, status
-
-    @staticmethod
     @auth.has_one_of_roles([ADMIN])
     @profiletime
     @API.doc(
         responses={
             200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         },
-        model=theme_model,
+        model=theme_response_model,
     )
+    @API.expect(theme_model)
     def put():
-        """Update Theme by tenant key."""
+        """Update Theme."""
         theme_data = theme_schema.load(request.get_json())
         theme_result = ThemeCustomizationService.update_theme(theme_data)
         response, status = (

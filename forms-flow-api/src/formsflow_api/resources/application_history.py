@@ -26,6 +26,8 @@ application_history_model = API.model(
         "formUrl": fields.String(),
         "submissionId": fields.String(),
         "submittedBy": fields.String(),
+        "color": fields.String(),
+        "percentage": fields.Float(),
     },
 )
 
@@ -66,7 +68,7 @@ class ApplicationHistoryResource(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get(application_id):
-        """Get application history."""
+        """Retrieve the history of an application based on the application ID."""
         return (
             (
                 {
@@ -92,7 +94,7 @@ class ApplicationHistoryResource(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post(application_id):
-        """Post a new history entry using the request body."""
+        """Create a new application history entry from the request body."""
         application_history_json = request.get_json()
 
         application_history_schema = ApplicationHistorySchema()

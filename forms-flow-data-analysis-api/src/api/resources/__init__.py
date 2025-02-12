@@ -9,10 +9,14 @@ from flask_restx import Api
 from .checkpoint import API as CHECKPOINT_API
 from .sentiment_analysis import API as SENTIMENT_API
 
+AUTHORIZATIONS = {"apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}}
+
 data_analysis_api = Api(
     version="1.0",
     title="Sentiment-API",
     description="API endpoint for sentiment analysis component for formsflow.ai.",
+    security=["apikey"],
+    authorizations=AUTHORIZATIONS,
 )
 
 

@@ -172,9 +172,9 @@ const List = React.memo((props) => {
   }, []);
 
   const fetchForms = () => {
-    let filters = [pageNo, limit, formSort, searchText];
+    let filters = {pageNo, limit, formSort, searchText};
     dispatch(setFormSearchLoading(true));
-    dispatch(fetchBPMFormList(...filters));
+    dispatch(fetchBPMFormList({...filters}));
   };
   const onClose = () => {
     setNewFormModal(false);

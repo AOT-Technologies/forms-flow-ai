@@ -48,7 +48,7 @@ function ClientTable() {
     { text: "All", value: totalForms },
   ];
   const handleSort = (key) => {
-    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
+    const newSortOrder = formsort[key]?.sortOrder === "asc" ? "desc" : "asc";
     dispatch(setBpmFormSort({
       ...formsort,
       activeKey: key,
@@ -153,13 +153,12 @@ function ClientTable() {
                 <th className="w-30" scope="col">{t("Description")}</th>
 
                 <th className="w-13" scope="col">
-                  {t("Submissions")}
-                  {/* <SortableHeader
-                    columnKey="submissionsCount"
-                    title="Submission Count"
+                  <SortableHeader
+                    columnKey="submissionCount"
+                    title="Submissions"
                     currentSort={formsort}
                     handleSort={handleSort}
-                    className="gap-2" /> */}
+                    className="gap-2" />
                 </th>
 
                 <th className="w-13" scope="col">
@@ -196,7 +195,6 @@ function ClientTable() {
                             aria-expanded={isExpanded} // Adds accessibility
                             onClick={() => toggleRow(index)}
                             onKeyDown={(e) => handleKeyPress(e, index)}
-                            
                           >
                             {stripHtml(e.description ? e.description : "")}
                           </span>
@@ -214,7 +212,7 @@ function ClientTable() {
                           <div className="d-flex justify-content-end">
                             <button
                               data-testid={`form-submit-button-${e._id}`}
-                              className="btn btn-secondary"
+                              className="btn btn-secondary btn-table"
                               onClick={() => submitNewForm(e._id)}
                             >
                               <Translation>{(t) => t("Select")}</Translation>

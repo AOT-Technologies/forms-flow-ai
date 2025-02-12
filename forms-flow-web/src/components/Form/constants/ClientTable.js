@@ -190,11 +190,13 @@ function ClientTable() {
                         </td>
                         <td className="w-30">
                           <span
-                            className={isExpanded ? "text-container-expand" : "text-container"}
+                            className={` cursor-pointer ${isExpanded ? "text-container-expand" : "text-container"}`}
                             role="button"
                             tabIndex="0"
+                            aria-expanded={isExpanded} // Adds accessibility
                             onClick={() => toggleRow(index)}
-                            onKeyDown={(e) => handleKeyPress(e, index)} // Handle keyboard events
+                            onKeyDown={(e) => handleKeyPress(e, index)}
+                            
                           >
                             {stripHtml(e.description ? e.description : "")}
                           </span>

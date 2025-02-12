@@ -155,13 +155,19 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   );
 });
 
-SubmitList.propTypes = {
-  getFormsInit: PropTypes.bool,
+SearchBar.propTypes = {
   search: PropTypes.string.isRequired,
   setSearch: PropTypes.func.isRequired,
   handleSearch: PropTypes.func.isRequired,
   handleClearSearch: PropTypes.func.isRequired,
   searchLoading: PropTypes.bool.isRequired,
+};
+SearchBar.defaultProps = {
+  handleClearSearch: () => {},
+};
+
+SubmitList.propTypes = {
+  getFormsInit: PropTypes.bool,
 };
 
 export default SubmitList;

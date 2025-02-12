@@ -253,6 +253,7 @@ const FormSettings = forwardRef((props, ref) => {
           maxLength={200} 
           />
         <FormTextArea
+          dataTestId="form-description"
           label={t("Description")}
           name="description"
           value={formDetails.description}
@@ -377,6 +378,7 @@ const FormSettings = forwardRef((props, ref) => {
           }
          onMultiSelectionChange={handleRoleSelectForApplication}
           displayValue={multiSelectOptionKey}
+          dataTestId="application-permission"
         />
 
         </div>
@@ -398,6 +400,7 @@ const FormSettings = forwardRef((props, ref) => {
 
             <FormControl
               type="text"
+              data-test-id="url-edit-input"
               value={formDetails.path}
               className="url-edit"
               name="path"

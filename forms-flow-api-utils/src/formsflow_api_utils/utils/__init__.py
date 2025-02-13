@@ -1,5 +1,6 @@
 """This module holds general utility functions and helpers for the main package."""
 
+from .api_docs_models import submission_response
 from .auth import auth, jwt
 from .constants import (
     ALLOW_ALL_APPLICATIONS,

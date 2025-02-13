@@ -7,6 +7,7 @@ from flask import g, request
 from flask_jwt_oidc import JwtManager
 
 from ..exceptions import BusinessException
+from .format import CustomFormatter
 
 jwt = JwtManager()  # pylint: disable=invalid-name
 
@@ -25,6 +26,7 @@ class Auth:
                 request.headers.get("Authorization", None)
             )
             g.token_info = g.jwt_oidc_token_info  # pylint: disable=assigning-non-slot
+            CustomFormatter.tenant=g.jwt_oidc_token_info.get("tenantKey","default")
 
             return f(*args, **kwargs)
 

@@ -52,6 +52,7 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     parent_process_key = db.Column(db.String, index=True)
     is_subflow = db.Column(db.Boolean, default=False)
     status_changed = db.Column(db.Boolean, default=False)
+    message_key = db.Column(db.String)
 
     __table_args__ = (
         Index("idx_tenant_is_subflow", "tenant", "is_subflow"),
@@ -81,7 +82,6 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             process.save()
             return process
         return None
-
     @classmethod
     @user_context
     def auth_query(cls, query, **kwargs) -> Process:
@@ -220,6 +220,17 @@ class Process(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 cls.query.filter(cls.parent_process_key == parent_process_key)
             )
             .order_by(cls.major_version.desc(), cls.minor_version.desc(), cls.id.desc())
+            .first()
+        )
+
+        return query
+
+    @classmethod
+    def get_latest_version_by_mapper(cls, process_key) -> Process:
+        """Get latest version of process given form process mapper id."""
+        query = (
+            cls.auth_query(cls.query.filter(cls.process_key == process_key))
+            .order_by(cls.major_version.desc(), cls.minor_version.desc())
             .first()
         )
 

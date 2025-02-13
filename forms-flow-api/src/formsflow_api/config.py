@@ -128,6 +128,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Configure LOG
     CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
 
+    # Workflow engine
+    USE_SPIFF_WF = str(os.getenv("USE_SPIFF_WF", default="true")).lower() == "true"
+
     # Admin url
     ADMIN_URL = os.getenv("FORMSFLOW_ADMIN_URL")
 

@@ -21,7 +21,9 @@ window["_env_"] = {
   REACT_APP_LANGUAGE: "en",
   //// Environment Variables for forms-flow-bpm ////
   // bpm base api, default: http://{your-ip-address}:8000/camunda
-  REACT_APP_BPM_URL: "<Camunda base API>",
+  REACT_APP_BPM_URL: "<BPM base URL>",
+
+  REACT_APP_BPM_CONTEXT: "<BPM context with version>",
 
 //Web Socket encrypt key for Socket IO
   REACT_APP_WEBSOCKET_ENCRYPT_KEY: "giert989jkwrgb@DR55",

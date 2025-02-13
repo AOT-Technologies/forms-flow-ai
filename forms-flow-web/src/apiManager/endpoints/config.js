@@ -15,12 +15,16 @@ export const CUSTOM_SUBMISSION_URL =
   (window._env_ && window._env_.REACT_APP_CUSTOM_SUBMISSION_URL) ||
   process.env.REACT_APP_CUSTOM_SUBMISSION_URL;
 
- export const BPM_BASE_URL_EXT = `${
+
+export const BPM_BASE_URL_CONTEXT = `${
+    (window._env_ && window._env_.REACT_APP_BPM_CONTEXT) ||
+    process.env.REACT_APP_BPM_CONTEXT ||
+    'engine-rest-ext/v1'
+  }`;
+export const BPM_API_URL_WITH_VERSION = `${
    (window._env_ && window._env_.REACT_APP_BPM_URL) ||
    process.env.REACT_APP_BPM_URL
- }/engine-rest-ext`;
-
-export const BPM_API_URL_WITH_VERSION = `${BPM_BASE_URL_EXT}/v1`;
+ }/${BPM_BASE_URL_CONTEXT}`;
 
 export const BPM_BASE_URL_SOCKET_IO = `${
   (window._env_ && window._env_.REACT_APP_BPM_URL) ||

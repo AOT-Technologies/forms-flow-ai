@@ -2,7 +2,79 @@
 export const mockstate = {
 
   process:{
-    processList: []
+    isProcessLoading: true,
+    processStatusList: [],
+    processLoadError: false,
+    processXml: "",
+    processList: [
+      {
+        "created": "2025-02-10T09:01:11.971172Z",
+        "modified": "2025-02-10T09:01:11.971190Z",
+        "id": 4676,
+        "name": "AAA123 asdfas fasdfasdfasdf asdf",
+        "tenant": null,
+        "createdBy": "formsflow-designer",
+        "modifiedBy": null,
+        "status": "Published",
+        "processType": "BPMN",
+        "isSubflow": true,
+        "processKey": "Process_nm9ewcsAAQQQ",
+        "parentProcessKey": "Process_nm9ewcsAAQQQ"
+    }
+    ],
+    dmnProcessList: [{
+      "created": "2025-02-10T09:00:27.522600Z",
+      "modified": "2025-02-10T09:00:27.522617Z",
+      "id": 4674,
+      "name": "abilaaadddghaagccalexaaaffcxdfvdff",
+      "tenant": null,
+      "createdBy": "formsflow-designer",
+      "modifiedBy": null,
+      "status": "Draft",
+      "processType": "DMN",
+      "isSubflow": true,
+      "processKey": "abddddlsghaafdantonydsfcvgf",
+      "parentProcessKey": "ablsghaafdantonydsfcvgf"
+  }],
+    formProcessError: false,
+    formProcessList: [],
+    formPreviousData: [],
+    processActivityList: null,
+    processActivityLoadError: false,
+    isProcessDiagramLoading: false,
+    applicationCount: 0,
+    isApplicationCountLoading: false,
+    applicationCountResponse: false,
+    unPublishApiError: false,
+    workflowAssociated: null, //{label:'Workflow Name', value:'workflow_process_key'}
+    formStatusLoading: false,
+    authorizationDetails: {},
+    formAuthVerifyLoading: false,
+    isBpmnModel: false,
+    bpmnSearchText: "",
+    dmnSearchText: "",
+    isPublicDiagram: null,
+    processHistoryData:{},
+    processData:{},
+    totalBpmnCount:50,
+    totalDmnCount:50,
+    defaultProcessXmlData:<xml></xml>,
+    defaultDmnXmlData:<xml></xml>,
+    bpmsort: {
+      activeKey: "name",
+      name: { sortOrder: "asc" },
+      processKey: { sortOrder: "asc" },
+      modified: { sortOrder: "asc" },
+      status: { sortOrder: "asc" },
+   },
+   dmnSort: {
+      activeKey: "name",
+      name: { sortOrder: "asc" },
+      processKey: { sortOrder: "asc" },
+      modified: { sortOrder: "asc" },
+      status: { sortOrder: "asc" },
+   }
+   
   },
   bpmForms:  {
     error: "",

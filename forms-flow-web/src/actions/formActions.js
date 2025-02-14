@@ -69,6 +69,13 @@ export const setBPMFormListPage = (page) => (dispatch) => {
   });
 };
 
+export const setBPMSubmitListPage = (page) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_PAGE_CHANGE,
+    payload: page,
+  });
+};
+
 export const setBPMFormLimit = (pageLimit) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_FORM_LIST_LIMIT_CHANGE,

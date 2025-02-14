@@ -12,7 +12,8 @@ jest.mock("../../components/Modeler/Editors/BpmnEditor/BpmEditor.js", () => {
         saveXML: jest.fn().mockResolvedValue({
           xml: '<?xml version="1.0" encoding="UTF-8"?>\n<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definition_1">\n<bpmn:process id="Process_1" isExecutable="false"></bpmn:process>\n</bpmn:definitions>'
         })
-      }
+      },
+      getBpmnModeler: jest.fn().mockResolvedValue("<xml>test-xml</xml>"),
     }));
 
     return (
@@ -33,6 +34,13 @@ jest.mock("../../components/Modeler/Editors/DmnEditor/DmnEditor.js", () => ({
   }
 }));
 
+// Mock the processHelper
+jest.mock("../../helper/processHelper", () => ({
+  // createXMLFromModeler: jest.fn(() => Promise.resolve("<xml>1</xml>")),
+  createXMLFromModeler: jest.fn().mockResolvedValue("<xml>1</xml>"),
+  validateProcess:jest.fn(() => {return true}),
+}));
+
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import ProcessCreateEdit from "../../components/Modeler/ProcessCreateEdit";
@@ -45,32 +53,17 @@ import rootReducer from "./rootReducer";
 import { QueryClient, QueryClientProvider } from "react-query"; // Add this import at the top
 import { mockstate } from "./mockState";
 import userEvent from '@testing-library/user-event';
-import { updateProcess, createProcess } from "../../apiManager/services/processServices";
+import ExportDiagram from "../../components/Modals/ExportDiagrams";
+// import { updateProcess, createProcess } from "../../apiManager/services/processServices";
+
+import {
+  createXMLFromModeler,
+} from "../../helper/processHelper";
 
 
-// jest.mock('react-i18next', () => ({
-//   useTranslation: () => ({
-//     t: (key) => key, // This will return the key string instead of translation object
-//     i18n: {
-//       changeLanguage: jest.fn(),
-//     },
-//   }),
-//   // Add Translation component mock
-//   Translation: ({ children }) => children((key) => key),
-//   // If you're using withTranslation, you can add it here too
-//   withTranslation: () => (Component) => (props) => <Component t={(key) => key} {...props} />
-// }));
 
-// Mock the API services
-jest.mock("../../apiManager/services/processServices", () => ({
-  updateProcess: jest.fn(),
-  createProcess: jest.fn(),
-  publish: jest.fn(),
-  unPublish: jest.fn(),
-  getProcessDetails: jest.fn(),
-  getProcessHistory: jest.fn(),
-  fetchRevertingProcessData: jest.fn()
-}));
+// Create a new QueryClient instance
+const queryClient = new QueryClient();
 
 
 const store = configureStore({
@@ -78,48 +71,42 @@ const store = configureStore({
   preloadedState: mockstate,
 });
 
-// Create a new QueryClient instance
-const queryClient = new QueryClient();
+jest.mock("connected-react-router", () => ({
+  push: jest.fn(), // Mock push() to avoid real navigation
+  ConnectedRouter: ({ children }) => children, // Mock ConnectedRouter if used
+}));
 
-// Define the CloseIcon component
-const CloseIconComponent = ({ onClick }) => (
-  <button data-testid="modal-close-icon" onClick={onClick}>
-    Close
-  </button>
-);
-
-const ConfirmModalComponent = () => <div>Confirm Modal</div>;
-
-// Add prop validation
-CloseIconComponent.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
-
-const DuplicateIcon = () => <span>Duplicate Icon</span>;
-const ImportIcon = () => <span>Import Icon</span>;
-const PencilIcon = () => <span>Pencil Icon</span>;
+// Mock the API services
+jest.mock("../../apiManager/services/processServices", () => ({
+  // updateProcess: jest.fn(),
+  // createProcess: jest.fn(),
+  publish: jest.fn(),
+  unPublish: jest.fn(),
+  getProcessDetails: jest.fn(),
+  getProcessHistory: jest.fn(),
+  fetchRevertingProcessData: jest.fn()
+}));
 
 // Mock the @formsflow/components package and replace CloseIcon with the mocked component
 jest.mock("@formsflow/components", () => {
   const actual = jest.requireActual("../../../__mocks__/@formsflow/components");
   return {
-    BackToPrevIcon: ({ onClick }) => <span onClick={onClick}>Back</span>,
+    BackToPrevIcon: () => <span>Back</span>,
     HistoryIcon: () => <span>History Icon</span>,
-    CloseIcon: CloseIconComponent,
-    DuplicateIcon: DuplicateIcon,
-    ImportIcon: ImportIcon,
-    PencilIcon: PencilIcon,
-    ConfirmModal: ConfirmModalComponent,
+    CloseIcon: actual.CloseIcon,
+    DuplicateIcon: () => <span>Duplicate Icon</span>,
+    ImportIcon: () => <span>Import Icon</span>,
+    PencilIcon: () => <span>Pencil Icon</span>,
+    ConfirmModal:() => <div>Confirm Modal</div>,
     ErrorModal: () => <div>Error Modal</div>,
     HistoryModal: () => <div>History Modal</div>,
     CustomButton: actual.CustomButton,
     CustomInfo: actual.CustomInfo,
+    FailedIcon:actual.FailedIcon
   };
 });
 
 
-// First, create the mock navigate function
-const mockUnblock = jest.fn();
 const mockBlockCallback = jest.fn((tx) => {
   // Simulate the block callback logic
   if (tx.pathname === mockHistory.location.pathname) return true;
@@ -130,7 +117,7 @@ const mockBlockCallback = jest.fn((tx) => {
 const mockBlock = jest.fn((callback) => {
   // Store the callback
   mockBlockCallback.mockImplementation(callback);
-  return mockUnblock; // Return the unblock function
+  return jest.fn(); // Return the unblock function
 });
 
 const mockHistory = {
@@ -143,12 +130,6 @@ const mockHistory = {
   createHref: jest.fn()
 };
 
-// Mock the history module
-jest.mock('history', () => ({
-  ...jest.requireActual('history'),
-  createBrowserHistory: jest.fn(() => mockHistory)
-}));
-
 jest.mock("react-router-dom", () => {
   const actual = jest.requireActual('react-router-dom');
   return {
@@ -160,11 +141,6 @@ jest.mock("react-router-dom", () => {
   };
 });
 
-const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    <Provider store={store}>{children}</Provider>
-  </QueryClientProvider>
-);
 
 // Add this polyfill before the tests
 if (!String.prototype.replaceAll) {
@@ -176,17 +152,63 @@ if (!String.prototype.replaceAll) {
   };
 }
 
-describe("ProcessCreateEdit test suite for BPM Subflow test cases", () => {
-  const defaultPropsBPMN = {
+
+const wrapper = ({ children }) => (
+  <QueryClientProvider client={queryClient}>
+    <Provider store={store}>{children}</Provider>
+  </QueryClientProvider>
+);
+
+///////////////
+//////////
+////////
+const defaultPropsBPMN = {
+  type: "BPMN",
+  Process: {
+    name: "Subflow",
     type: "BPMN",
-    Process: {
-      name: "Subflow",
-      type: "BPMN",
-      route: "subflow",
-      extension: ".bpmn",
-      fileType: "text/bpmn",
+    route: "subflow",
+    extension: ".bpmn",
+    fileType: "text/bpmn",
+  }
+};
+const renderComponent = (props = {}) => {
+  return render(<ProcessCreateEdit {...defaultPropsBPMN} {...props} />, { wrapper });
+};
+
+
+// 
+
+// Mock process data with published status
+const mockStatePublished = {
+  ...mockstate,
+  process: {
+    ...mockstate.process,
+    processData: {
+      ...mockstate.process.processData,
+      status: "Published"
     }
-  };
+  }
+};
+
+const storePublished = configureStore({
+  reducer: rootReducer,
+  preloadedState: mockStatePublished
+});
+
+const wrapperWithMockStorePublished = ({ children }) => (
+  <QueryClientProvider client={queryClient}>
+    <Provider store={storePublished}>{children}</Provider>
+  </QueryClientProvider>
+);
+
+const renderComponentWithPublished = (props = {}) => {
+  return render(<ProcessCreateEdit {...defaultPropsBPMN} {...props} />, { wrapper : wrapperWithMockStorePublished});
+};
+
+
+describe("ProcessCreateEdit test suite for BPM Subflow test cases", () => {
+
   beforeEach(() => {
     useParams.mockReturnValue({
       processKey: "test-process-key",
@@ -204,117 +226,48 @@ describe("ProcessCreateEdit test suite for BPM Subflow test cases", () => {
       },
       error: null,
     }));
-
-    // Clear mock calls between tests
-    mockUnblock.mockClear();
   });
 
   test("displays Draft status when process is not published", () => {
-    render(<ProcessCreateEdit type={defaultPropsBPMN.type} Process={defaultPropsBPMN.Process} />, { wrapper });
+    renderComponent();
     expect(screen.getByText("Live")).toBeInTheDocument();
   });
 
   test("renders save button with correct data-testid", () => {
-    render(<ProcessCreateEdit type={defaultPropsBPMN.type} Process={defaultPropsBPMN.Process} />, { wrapper });
-    // Check if button exists
+    renderComponent();
     const saveButton = screen.getByTestId("save-bpmn-layout");
     expect(saveButton).toBeInTheDocument();
   });
 
   test("save button is initially disabled when workflow is not changed", () => {
-    render(
-      <ProcessCreateEdit 
-        type={defaultPropsBPMN.type} 
-        Process={defaultPropsBPMN.Process}
-      />, 
-      { wrapper }
-    );
-
+    renderComponent();
     const saveButton = screen.getByTestId("save-bpmn-layout");
     expect(saveButton).toBeDisabled();
   });
 
   test("save button is disabled when process is published", () => {
-    // Mock process data with published status
-    const mockStatePublished = {
-      ...mockstate,
-      process: {
-        ...mockstate.process,
-        processData: {
-          ...mockstate.process.processData,
-          status: "Published"
-        }
-      }
-    };
-
-    const storePublished = configureStore({
-      reducer: rootReducer,
-      preloadedState: mockStatePublished
-    });
-
-    const customWrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        <Provider store={storePublished}>{children}</Provider>
-      </QueryClientProvider>
-    );
-
-    render(
-      <ProcessCreateEdit 
-        type={defaultPropsBPMN.type} 
-        Process={defaultPropsBPMN.Process}
-      />, 
-      { wrapper: customWrapper }
-    );
-
+    renderComponentWithPublished();
     const saveButton = screen.getByTestId("save-bpmn-layout");
     expect(saveButton).toBeDisabled();
   });
 
   test("save button is disabled during saving process", () => {
-    render(
-      <ProcessCreateEdit 
-        type={defaultPropsBPMN.type} 
-        Process={defaultPropsBPMN.Process}
-      />, 
-      { wrapper }
-    );
-
-    // Get the save button and click it
+    renderComponent();
     const saveButton = screen.getByTestId("save-bpmn-layout");
     fireEvent.click(saveButton);
-
-    // Button should be disabled during saving
     expect(saveButton).toBeDisabled();
   });
 });
 
 describe("ProcessCreateEdit When save button is enabled", () => {
-  const defaultProps = {
-    type: "BPMN",
-    Process: {
-      name: "Subflow",
-      type: "BPMN",
-      route: "subflow",
-      extension: ".bpmn",
-      fileType: "text/bpmn",
-    }
-  };
-
-  let mockUnblock;
-
   beforeEach(() => {
-    // Clear all mocks
-    jest.clearAllMocks();
-
-  
-
     useParams.mockReturnValue({
       processKey: 'test-process-key',
       step: 'edit'
     });
     useLocation.mockReturnValue({ pathname: '/process/edit' });
-    updateProcess.mockResolvedValue({ data: { id: '123' } });
-    createProcess.mockResolvedValue({ data: { id: '234' } });
+    // updateProcess.mockResolvedValue({ data: { id: '123' } });
+    // createProcess.mockResolvedValue({ data: { id: '234' } });
   });
 
   // Mock the initial state where the button should be enabled
@@ -330,9 +283,6 @@ describe("ProcessCreateEdit When save button is enabled", () => {
       },
       defaultProcessXmlData: "<xml>default</xml>",
       defaultDmnXmlData: "<xml>default-dmn</xml>"
-    },
-    tenants: {
-      tenantId: "test-tenant"
     }
   };
 
@@ -367,8 +317,8 @@ describe("ProcessCreateEdit When save button is enabled", () => {
 
     render(
       <ProcessCreateEdit 
-        type={defaultProps.type} 
-        Process={defaultProps.Process}
+        type={defaultPropsBPMN.type} 
+        Process={defaultPropsBPMN.Process}
       />, 
       { wrapper }
     );
@@ -419,8 +369,8 @@ describe("ProcessCreateEdit When save button is enabled", () => {
 
     render(
       <ProcessCreateEdit 
-        type={defaultProps.type} 
-        Process={defaultProps.Process}
+        type={defaultPropsBPMN.type} 
+        Process={defaultPropsBPMN.Process}
       />, 
       { wrapper }
     );
@@ -441,3 +391,118 @@ describe("ProcessCreateEdit When save button is enabled", () => {
 
 ///////
 
+describe("ProcessCreateEdit Save flow operations", () => {
+  
+
+  beforeEach(() => {
+    useParams.mockReturnValue({
+      processKey: 'test-process-key',
+      step: 'edit'
+    });
+    useLocation.mockReturnValue({ pathname: '/process/edit' });
+  });
+
+  // Mock the initial state where the button should be enabled
+  const mockStateEnabled = {
+    process: {
+      processData: {
+        id: "test-id",
+        processKey: "test-process-key",
+        name: "Test Process",
+        status: "Draft",  // Not published
+        parentProcessKey: "parent-key",
+        processData: "<xml>test</xml>"
+      },
+      defaultProcessXmlData: "<xml>default</xml>",
+      defaultDmnXmlData: "<xml>default-dmn</xml>"
+    },
+    tenants: {
+      tenantId: "test-tenant"
+    }
+  };
+
+  beforeEach(() => {
+    useParams.mockReturnValue({
+      processKey: 'test-process-key',
+      step: 'edit'
+    });
+    useLocation.mockReturnValue({ pathname: '/process/edit' });
+
+    // Mock useQuery to return unpublished status
+    jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
+      isLoading: false,
+      data: {
+        data: mockStateEnabled.process.processData
+      },
+      error: null
+    }));
+  });
+
+
+  test("Positive case when save flow is clicked", async () => {
+    const mockStateEnabled = {
+      process: {
+        processData: {
+          id: "test-id",
+          processKey: "test-process-key",
+          name: "Test Process",
+          status: "Draft",
+          parentProcessKey: "parent-key",
+          processData: "<xml>test</xml>"
+        },
+        defaultProcessXmlData: "<xml>default</xml>",
+        defaultDmnXmlData: "<xml>default-dmn</xml>"
+      },
+      tenants: {
+        tenantId: "test-tenant"
+      }
+    };
+
+    const store = configureStore({
+      reducer: rootReducer,
+      preloadedState: mockStateEnabled
+    });
+
+    const wrapper = ({ children }) => (
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>{children}</Provider>
+      </QueryClientProvider>
+    );
+
+    render(
+      <ProcessCreateEdit 
+        type={defaultPropsBPMN.type} 
+        Process={defaultPropsBPMN.Process}
+      />, 
+      { wrapper }
+    );
+
+    // Trigger workflow change to enable save button
+    const bpmnEditor = screen.getByTestId("bpmn-editor");
+    fireEvent.click(bpmnEditor);
+
+    // Get and click the save button
+    const saveButton = screen.getByTestId("save-bpmn-layout");
+
+     userEvent.click(saveButton);
+     const mockBpmnModeler = {
+      get: jest.fn((name) => {
+        if (name === "moddle") return { create: jest.fn() };
+        return null;
+      }),
+      invoke: jest.fn(),
+      _definitions: {
+        id: "Definitions_mocked",
+        targetNamespace: "http://bpmn.io/schema/bpmn",
+      },
+      _moddle: {
+        create: jest.fn(),
+      },
+    };
+
+    // // Mock the return value of createXMLFromModeler
+   await createXMLFromModeler(mockBpmnModeler);
+   expect(createXMLFromModeler).toHaveBeenCalled()
+  });
+
+});

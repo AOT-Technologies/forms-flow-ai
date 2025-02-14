@@ -385,7 +385,7 @@ const List = React.memo((props) => {
                       label={t("New Form")}
                       onClick={() => setNewFormModal(true)}
                       className=""
-                      dataTestid="create-form-button"
+                      dataTestId="create-form-button"
                       ariaLabel="Create Form"
                     />
                   )}

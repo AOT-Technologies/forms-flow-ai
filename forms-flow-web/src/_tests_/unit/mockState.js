@@ -2,13 +2,14 @@
 export const mockstate = {
 
   process:{
-    processList: []
+    processList: [],
+    isApplicationCountLoading: false
   },
   bpmForms:  {
     error: "",
     forms: [
       {
-        _id: 'some-form-id',
+        _id: 'mock-form-id',        
         title: 'Test Form',
         description: 'Test Description',
         status: 'active',
@@ -17,7 +18,7 @@ export const mockstate = {
     isActive: false,
     limit: 5,
     page: 1,
-    totalForms: 0,
+    totalForms: 50,
     bpmFormLoading: false,
     sortBy: "formName",
     sortOrder: "asc",
@@ -33,7 +34,9 @@ export const mockstate = {
     clientFormSearch:"",
   },
 
-  user:{bearerToken: "",
+  user:{
+    createDesigns: true,  
+    bearerToken: "",
     roles: [
     "view_tasks",
     "formsflow-client",

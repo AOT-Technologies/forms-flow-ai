@@ -342,54 +342,54 @@ FormBuilderModal.propTypes = {
   isFormNameValidating: PropTypes.bool.isRequired
 };
 
-export const CustomSearch = ({
-  searchLoading,
-  handleClearSearch,
-  search,
-  setSearch,
-  handleSearch,
-  placeholder = "Search...",
-  title = "Search",
-  dataTestId
-}) => {
-  return (
-    <div data-testid={dataTestId}>
-      <input
-        type="text"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-        placeholder={placeholder}
-        title={title}
-        aria-label={placeholder}
-        data-testid="custom-search-input"
-      />
-      {search && !searchLoading && (
-       <button
-  className="d-flex search-box-icon"
-  onClick={handleClearSearch}
-  data-testid="form-search-clear-button"
-  aria-label="Clear search"
->
-  Clear
-</button>
+// export const CustomSearch = ({
+//   searchLoading,
+//   handleClearSearch,
+//   search,
+//   setSearch,
+//   handleSearch,
+//   placeholder = "Search...",
+//   title = "Search",
+//   dataTestId
+// }) => {
+//   return (
+//     <div data-testid={dataTestId}>
+//       <input
+//         type="text"
+//         value={search}
+//         onChange={(e) => setSearch(e.target.value)}
+//         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+//         placeholder={placeholder}
+//         title={title}
+//         aria-label={placeholder}
+//         data-testid="custom-search-input"
+//       />
+//       {search && !searchLoading && (
+//        <button
+//   className="d-flex search-box-icon"
+//   onClick={handleClearSearch}
+//   data-testid="form-search-clear-button"
+//   aria-label="Clear search"
+// >
+//   Clear
+// </button>
 
-      )}
-      {searchLoading && <div className="search-spinner">Loading...</div>}
-    </div>
-  );
-};
+//       )}
+//       {searchLoading && <div className="search-spinner">Loading...</div>}
+//     </div>
+//   );
+// };
 
-CustomSearch.propTypes = {
-  searchLoading: PropTypes.bool.isRequired,
-  handleClearSearch: PropTypes.func.isRequired,
-  search: PropTypes.string.isRequired,
-  setSearch: PropTypes.func.isRequired,
-  handleSearch: PropTypes.func.isRequired,
-  placeholder: PropTypes.string,
-  title: PropTypes.string,
-  dataTestId: PropTypes.string
-};
+// CustomSearch.propTypes = {
+//   searchLoading: PropTypes.bool.isRequired,
+//   handleClearSearch: PropTypes.func.isRequired,
+//   search: PropTypes.string.isRequired,
+//   setSearch: PropTypes.func.isRequired,
+//   handleSearch: PropTypes.func.isRequired,
+//   placeholder: PropTypes.string,
+//   title: PropTypes.string,
+//   dataTestId: PropTypes.string
+// };
 
 export const ImportModal = ({ showModal, onClose, onImport, isLoading, errorMessage }) => (
   <div>
@@ -410,58 +410,333 @@ ImportModal.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string
 };
-
+const NormalDropdown = ({ 
+  limit, 
+  onLimitChange, 
+  pageOptions, 
+  isDropdownOpen, 
+  toggleDropdown,
+  'data-testid': dataTestId 
+}) => {
+  return (
+    <div className="normal-dropdown" data-testid={dataTestId}>
+      <button
+        className="dropdown-toggle"
+        onClick={toggleDropdown}
+        data-testid="page-size-dropdown"
+      >
+        {limit}
+      </button>
+      <ul className="dropdown-menu" style={{ display: isDropdownOpen ? 'block' : 'none' }}>
+        {pageOptions?.map((option) => (
+          <li
+            key={option.value}
+            data-testid={`page-size-option-${option.value}`}
+            onClick={() => {
+              onLimitChange(option.value);
+              toggleDropdown();
+            }}
+          >
+            {`${option.value} per page`}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 export const TableFooter = ({
   limit,
   activePage,
   totalCount,
   handlePageChange,
   onLimitChange,
-  pageOptions
-}) => (
-  <tr>
-    <td colSpan={3}>
-      <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
-        <span>Showing {limit * activePage - (limit - 1)} to {Math.min(limit * activePage, totalCount)} of {totalCount}</span>
-      </div>
-    </td>
-    {totalCount > 5 ? (
-      <>
+  pageOptions,
+  isDropdownOpen,
+  toggleDropdown,
+  dataTestId="table-footer"
+}) => {
+  return (
+    <tr data-testid={dataTestId}>
+      <td colSpan={3}>
+        <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
+          <span data-testid="items-count">
+            Showing {limit * activePage - (limit - 1)} to&nbsp;
+            {Math.min(limit * activePage, totalCount)} of&nbsp;
+            <span data-testid="total-items">{totalCount}</span>
+          </span>
+        </div>
+      </td>
+      <td colSpan={3}>
+        <div className="d-flex align-items-center">
+          <button data-testid="left-button" onClick={() => handlePageChange(activePage - 1)}>
+            <AngleLeftIcon />
+          </button>
+          <span data-testid="current-page-display">{activePage}</span>
+          <button data-testid="right-button" onClick={() => handlePageChange(activePage + 1)}>
+            <AngleRightIcon />
+          </button>
+        </div>
+      </td>
+      {pageOptions && (
         <td colSpan={3}>
-          <div className="d-flex align-items-center">
-            <div>Mocked Pagination</div>
+          <div className="d-flex align-items-center justify-content-end">
+            <span className="pagination-text">Rows per page</span>
+            <div className="pagination-dropdown">
+              <NormalDropdown
+                data-testid="page-size-select"
+                limit={limit}
+                onLimitChange={onLimitChange}
+                pageOptions={pageOptions}
+                isDropdownOpen={isDropdownOpen}
+                toggleDropdown={toggleDropdown}
+              />
+            </div>
           </div>
         </td>
-        {pageOptions && (
-          <td colSpan={3}>
-            <div className="d-flex align-items-center justify-content-end">
-              <span className="pagination-text">Rows per page</span>
-              <div className="pagination-dropdown">
-                <div>Mocked Dropdown for Limit</div>
-              </div>
-            </div>
-          </td>
-        )}
-      </>
-    ) : null}
-  </tr>
-);
-
-TableFooter.propTypes = {
-  limit: PropTypes.number.isRequired,
-  activePage: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  handlePageChange: PropTypes.func.isRequired,
-  onLimitChange: PropTypes.func.isRequired,
-  pageOptions: PropTypes.array
+      )}
+    </tr>
+  );
 };
-
-export const NoDataFound = () => {
+export const NoDataFound = ({message,dataTestId}) => {
   return (
     <div>
-      <span className="no-data-text" data-testid="no-data-found">Nothing is found based on your search query. Please try again.</span>
+      <span className="no-data-text" data-testid={dataTestId}>{message}</span>
     </div>
   );
 };
 
 NoDataFound.propTypes = {};
+
+export const ReusableProcessTableRow = ({ item, buttonLabel, dataTestId="reusable-process-table-row" }) => {
+  return (
+    <tr data-testid={`process-table-row-${item._id}`}>
+      <td className="w-25 text-ellipsis text-nowrap">
+        <span>{item.name}</span>
+      </td>
+      <td className="w-20 text-ellipsis text-nowrap">
+        <span>{item.processKey}</span>
+      </td>
+      <td className="w-15">{item.modified || 'N/A'}</td>
+      <td className="w-15">
+        <span data-testid={`sub-flow-status-${item._id}`} className="d-flex align-items-center">
+          <span className={item.status === 'Published' ? 'status-live' : 'status-draft'}></span>
+          {item.status === 'Published' ? 'Live' : 'Draft'}
+        </span>
+      </td>
+      <td className="w-25">
+        <span className="d-flex justify-content-end">
+          <button
+            className="btn btn-secondary btn-sm"
+            aria-label={`Edit ${buttonLabel} Button`}
+            data-testid={`edit-button-${item._id}`}
+          >
+            Edit
+          </button>
+        </span>
+      </td>
+    </tr>
+  );
+};
+
+ReusableProcessTableRow.propTypes = {
+  item: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    processKey: PropTypes.string,
+    modified: PropTypes.string,
+    status: PropTypes.string,
+    _id: PropTypes.string.isRequired,
+  }).isRequired,
+  buttonLabel: PropTypes.string.isRequired,
+};
+
+export const BuildModal = ({ show, title, contents }) => {
+  return (
+    <div
+      data-testid="build-modal"
+      aria-labelledby="build-modal-title"
+      aria-describedby="build-modal-message"
+      className={`mock-modal ${show ? "show" : "hide"}`}
+    >
+      {show && (
+        <div className="mock-modal-content">
+          <div className="mock-modal-header">
+            <h2 id="build-modal-title">{title}</h2>
+            <button data-testid="close-modal">X</button>
+          </div>
+          <div className="mock-modal-body d-flex">
+            {contents.map(({ id, heading, body }) => (
+              <button
+                className="col-md-6 build-contents"
+                key={id}
+                tabIndex={0}
+                aria-label={`Button for ${heading}`}
+                data-testid={`button-${id}`}
+              >
+                <span className="mb-3 content-heading">{heading}</span>
+                <span className="content-body">{body}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+BuildModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
+  contents: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      heading: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
+
+
+export const CustomSearch = ({
+  searchLoading,
+  handleClearSearch,
+  search,
+  setSearch,
+  handleSearch,
+  placeholder = "Search...",
+  title = "Search",
+  dataTestId
+}) => {
+  return (
+    <div data-testid={`${dataTestId}-container`}>
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+        placeholder={placeholder}
+        title={title}
+        aria-label={placeholder}
+        data-testid={`${dataTestId}`}
+      />
+      {search && !searchLoading && (
+        <button
+          className="d-flex search-box-icon"
+          onClick={handleClearSearch}
+          data-testid={`${dataTestId}-clear-button`}
+          aria-label="Clear search"
+        >
+          Clear
+        </button>
+      )}
+      {searchLoading && (
+        <div className="search-spinner" data-testid={`${dataTestId}-loading`}>
+          Loading...
+        </div>
+      )}
+    </div>
+  );
+};
+
+CustomSearch.propTypes = {
+  searchLoading: PropTypes.bool.isRequired,
+  handleClearSearch: PropTypes.func.isRequired,
+  search: PropTypes.string.isRequired,
+  setSearch: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  title: PropTypes.string,
+  dataTestId: PropTypes.string,
+};
+
+
+export const AngleLeftIcon = ({
+  onClick,
+  dataTestId="left-icon"
+}) => {
+  return (
+    <button
+      className="left-icon-container"
+      onClick={onClick}
+      data-testid={dataTestId}
+      aria-label="Left Icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="15"
+        viewBox="0 0 10 15"
+        fill="none"
+        onClick={onClick}
+      >
+        <path
+          d="M8.2501 14.0005L1.74951 7.4999L8.24951 0.999901"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
+
+  );
+} 
+
+export const AngleRightIcon = ({
+  onClick,
+  dataTestId="right-icon"
+}) => {
+  return (
+    <button
+      className="right-icon-container"
+      onClick={onClick}
+      data-testid={dataTestId}
+      aria-label="Right Icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="15"
+        viewBox="0 0 10 15"
+        fill="none"
+        onClick={onClick}
+      >
+        <path
+          d="M8.2501 14.0005L1.74951 7.4999L8.24951 0.999901"
+          // stroke={props.disabled ? grayColor : color}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
+
+  );
+} 
+
+export const DownArrowIcon = ({
+  downIconClick,
+  downIconDataTestId
+}) => {
+  return (
+    <button
+      className="left-icon-container"
+      onClick={downIconClick}
+      data-testid={downIconDataTestId}
+      aria-label="Down Icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="15"
+        viewBox="0 0 10 15"
+        fill="none"
+        onClick={onClick}
+      >
+        <path
+          d="M8.2501 14.0005L1.74951 7.4999L8.24951 0.999901"
+          stroke={props.disabled ? grayColor : color}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
+
+  );
+}

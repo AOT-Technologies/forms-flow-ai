@@ -797,3 +797,33 @@ class UnpublishResource(Resource):
             form_service.unpublish(mapper_id),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/form-data/<string:form_id>", methods=["GET", "OPTIONS"])
+class FormDataResource(Resource):
+    """Resource to support form data."""
+
+    @staticmethod
+    @profiletime
+    @API.doc(
+        params={
+            "form_id": "Unique identifier of the form",
+            "auth_type": "Authorization type (form, application, designer)",
+        }
+    )
+    @API.response(200, "OK:- Successful request.")
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(403, "FORBIDDEN:- Authorization will not help.")
+    def get(form_id: str):
+        """Get form data by form_id."""
+        form_service = FormProcessMapperService()
+        auth_type = request.args.get("auth_type")
+        return (
+            form_service.get_form_data(form_id, auth_type),
+            HTTPStatus.OK,
+        )

@@ -7,7 +7,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
-import List from '../../components/Form/List';
+import List from '../../routes/Design/Forms/List';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';

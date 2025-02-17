@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { CustomButton } from "@formsflow/components";
 import PropTypes from 'prop-types';
 
-import FormSettings from "../Form/EditForm/FormSettings";
+import FormSettings from "../Form/components/FormSettings";
 const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) => {
   const { t } = useTranslation();
   const FormSettingsRef = useRef();
@@ -39,6 +39,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
       onHide={handleClose}
       size="sm"
       backdrop="static"
+      centered
     >
       <Modal.Header>
         <Modal.Title>{t("Settings")}</Modal.Title>

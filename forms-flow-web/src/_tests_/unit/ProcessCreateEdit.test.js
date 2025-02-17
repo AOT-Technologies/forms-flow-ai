@@ -164,7 +164,7 @@ jest.mock("../../components/CustomComponents/NavigateBlocker", () => {
 
 import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
-import ProcessCreateEdit from "../../components/Modeler/ProcessCreateEdit";
+import ProcessCreateEdit from "../../routes/Design/Process/ProcessCreateEdit";
 import "@testing-library/jest-dom";
 import { useParams } from "react-router-dom";
 import { Provider, useDispatch } from "react-redux";

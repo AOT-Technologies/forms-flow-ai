@@ -19,50 +19,6 @@ jest.mock("../../apiManager/services/processServices", () => {
   };
 });
 
-jest.mock("../../components/Modeler/Editors/BpmnEditor/BpmEditor.js", () => {
-  const React = require("react");
-  const PropTypes = require("prop-types");
-
-  const MockedBpmEditor = React.forwardRef((props, ref) => {
-    React.useImperativeHandle(ref, () => ({
-      getXML: jest.fn().mockResolvedValue("<xml>test-xml</xml>"),
-      setXML: jest.fn().mockResolvedValue(undefined),
-      modeler: {
-        saveXML: jest.fn().mockResolvedValue({
-          xml: '<?xml version="1.0" encoding="UTF-8"?>\n<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definition_1">\n<bpmn:process id="Process_1" isExecutable="false"></bpmn:process>\n</bpmn:definitions>',
-        }),
-      },
-      getBpmnModeler: jest.fn().mockResolvedValue("<xml>test-xml</xml>"),
-      handleImport: jest.fn(),
-    }));
-
-    return (
-      <button
-        data-testid="bpmn-editor"
-        tabIndex={0}
-        onClick={() => props.onChange && props.onChange("<new-bpmn-xml>")}
-        onKeyPress={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            props.onChange && props.onChange("<new-bpmn-xml>");
-          }
-        }}
-      >
-        Mocked BPMN Editor
-      </button>
-    );
-  });
-
-  // Add PropTypes validation
-  MockedBpmEditor.propTypes = {
-    onChange: PropTypes.func.isRequired, // Validate onChange as a required function
-  };
-
-  return {
-    __esModule: true,
-    default: MockedBpmEditor,
-  };
-});
-
 jest.mock("../../components/Modeler/Editors/DmnEditor/DmnEditor.js", () => {
   const React = require("react");
   const PropTypes = require("prop-types");
@@ -82,12 +38,12 @@ jest.mock("../../components/Modeler/Editors/DmnEditor/DmnEditor.js", () => {
 
     return (
       <button
-        data-testid="bpmn-editor"
+        data-testid="dmn-editor"
         tabIndex={0}
-        onClick={() => props.onChange && props.onChange("<new-bpmn-xml>")}
+        onClick={() => props.onChange && props.onChange("<new-dmn-xml>")}
         onKeyPress={(e) => {
           if (e.key === "Enter" || e.key === " ") {
-            props.onChange && props.onChange("<new-bpmn-xml>");
+            props.onChange && props.onChange("<new-dmn-xml>");
           }
         }}
       >
@@ -196,18 +152,16 @@ jest.mock("react-toastify", () => ({
 }));
 
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import ProcessCreateEdit from "../../components/Modeler/ProcessCreateEdit";
+import { render, screen, fireEvent } from "@testing-library/react";
+import ProcessCreateEdit from "../../routes/Design/Process/ProcessCreateEdit";
 import "@testing-library/jest-dom";
 import { useParams } from "react-router-dom";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "./rootReducer";
 import { QueryClient, QueryClientProvider } from "react-query"; // Add this import at the top
 import { mockstate } from "./mockState";
 import userEvent from "@testing-library/user-event";
-import { setProcessData } from "../../actions/processActions";
-import * as processServices from "../../apiManager/services/processServices";
 
 const queryClient = new QueryClient();
 const store = configureStore({
@@ -231,16 +185,6 @@ jest.mock("../../actions/processActions", () => ({
   setProcessDiagramXML: jest.fn(),
 }));
 
-// jest.mock('../../components/Modals/ActionModal', () => {
-//   const actual = jest.requireActual("../../../__mocks__/ActionModal.mock.js");
-//   return {
-//     ...actual,
-//     handleAction: actual.handleAction
-//   }
-// });
-
-// jest.mock("../../components/Modals/ActionModal", () => require("../../../__mocks__/ActionModal.mock.js"));
-
 // Mock the @formsflow/components package and replace CloseIcon with the mocked component
 jest.mock("@formsflow/components", () => {
   const actual = jest.requireActual("../../../__mocks__/@formsflow/components");
@@ -252,7 +196,6 @@ jest.mock("@formsflow/components", () => {
     DuplicateIcon: () => <span>Duplicate Icon</span>,
     ImportIcon: () => <span>Import Icon</span>,
     PencilIcon: () => <span>Pencil Icon</span>,
-    // ConfirmModal:() => <div>Confirm Modal</div>,
     ErrorModal: () => <div>Error Modal</div>,
     HistoryModal: () => <div>History Modal</div>,
     CustomButton: actual.CustomButton,
@@ -299,19 +242,8 @@ jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
   error: null,
 }));
 
-const mockBlockCallback = jest.fn((tx) => {
-  return tx.pathname === mockHistory.location.pathname;
-});
-
-// Create mock block function that returns the unblock function
-const mockBlock = jest.fn((callback) => {
-  // Store the callback
-  mockBlockCallback.mockImplementation(callback);
-  return jest.fn(); // Return the unblock function
-});
-
 const mockHistory = {
-  block: mockBlock,
+  block: jest.fn(),
   location: {
     pathname: "/current/path",
   },
@@ -435,9 +367,7 @@ describe("ProcessCreateEdit DMN When save button is enabled", () => {
     renderDMNComponent();
     // Trigger workflow change
     const dmnEditor = screen.getByTestId("dmn-editor");
-    console.log("22");
     fireEvent.click(dmnEditor); // This should trigger onChange and set isWorkflowChanged to true
-    console.log("33");
     const saveButton = screen.getByTestId("save-dmn-layout");
     expect(saveButton).toBeDisabled();
     expect(saveButton).toHaveTextContent("Save DMN");

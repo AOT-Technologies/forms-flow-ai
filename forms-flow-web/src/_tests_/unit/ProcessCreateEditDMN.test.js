@@ -151,6 +151,13 @@ jest.mock("react-toastify", () => ({
   ...jest.requireActual("react-toastify"),
 }));
 
+
+jest.mock("../../components/CustomComponents/NavigateBlocker", () => {
+  return function MockedNavigateBlocker() {
+    return null; // Render nothing
+  };
+});
+
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import ProcessCreateEdit from "../../routes/Design/Process/ProcessCreateEdit";

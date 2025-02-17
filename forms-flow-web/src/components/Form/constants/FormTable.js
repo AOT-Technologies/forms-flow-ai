@@ -27,7 +27,7 @@ function FormTable() {
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
-  const pageNo = useSelector((state) => state.bpmForms.page);
+  const pageNo = useSelector((state) => state.bpmForms.formListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
@@ -65,12 +65,19 @@ function FormTable() {
 
   const handleSort = (key) => {
     const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
-   dispatch(setBpmFormSort({
-    ...formsort,
-    activeKey: key,
-    [key]: { sortOrder: newSortOrder },
-  }));
+  
+    // Reset all other columns to default (ascending) except the active one
+    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
+      return acc;
+    }, {});
+  
+    dispatch(setBpmFormSort({
+      ...updatedSort,
+      activeKey: key,
+    }));
   };
+  
 
   const viewOrEditForm = (formId, path) => {
     dispatch(resetFormProcessData());
@@ -106,7 +113,7 @@ function FormTable() {
                   <th className="w-20">
                   <SortableHeader
                    columnKey="formName"
-                   title="Form Name"
+                   title="Name"
                    currentSort={formsort}
                    handleSort={handleSort}
                    className="gap-2"
@@ -205,7 +212,9 @@ function FormTable() {
                     )}
                 </tbody>
               ) : !searchFormLoading ? (
-                <NoDataFound />
+                <NoDataFound
+                message={t('No forms have been found. Create a new form by clicking the "New Form" button in the top right.')}
+              />
               ) : null}
             </table>
           </div>

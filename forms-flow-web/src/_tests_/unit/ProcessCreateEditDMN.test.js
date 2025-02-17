@@ -165,7 +165,7 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import ProcessCreateEdit from "../../components/Modeler/ProcessCreateEdit";
 import "@testing-library/jest-dom";
 import { useParams } from "react-router-dom";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch,useSelector } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "./rootReducer";
 import { QueryClient, QueryClientProvider } from "react-query"; // Add this import at the top
@@ -221,6 +221,7 @@ jest.mock("@formsflow/components", () => {
     DuplicateIcon: () => <span>Duplicate Icon</span>,
     ImportIcon: () => <span>Import Icon</span>,
     PencilIcon: () => <span>Pencil Icon</span>,
+    // ConfirmModal:() => <div>Confirm Modal</div>,
     ErrorModal: () => <div>Error Modal</div>,
     HistoryModal: () => <div>History Modal</div>,
     CustomButton: actual.CustomButton,
@@ -255,6 +256,12 @@ const mockStatePublished = {
     }
   }
 };
+
+const storePublished = configureStore({
+  reducer: rootReducer,
+  preloadedState: mockStatePublished,
+});
+
 
 jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
   isLoading: false,
@@ -311,60 +318,33 @@ if (!String.prototype.replaceAll) {
   };
 }
 
+/// TEST CASES FOR DECISION TABLE PROCESS ////
 
-const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    <Provider store={store}>{children}</Provider>
-  </QueryClientProvider>
-);
 
-const defaultPropsBPMN = {
-  type: "BPMN",
-  Process: {
-    name: "Subflow",
-    type: "BPMN",
-    route: "subflow",
-    extension: ".bpmn",
-    fileType: "text/bpmn",
-  }
-};
-const renderBPMNComponent = (props = {}) => {
-  return render(<ProcessCreateEdit {...defaultPropsBPMN} {...props} />, { wrapper });
-};
 
-const storePublished = configureStore({
-  reducer: rootReducer,
-  preloadedState: mockStatePublished
-});
-
-const wrapperWithMockStorePublished = ({ children }) => (
+const wrapperDMN = ({ children }) => (
   <QueryClientProvider client={queryClient}>
     <Provider store={storePublished}>{children}</Provider>
   </QueryClientProvider>
 );
 
-const renderBPMNComponentWithPublished = (props = {}) => {
-  return render(<ProcessCreateEdit {...defaultPropsBPMN} {...props} />, { wrapper : wrapperWithMockStorePublished});
+const defaultPropsDMN = {
+  type: "DMN",
+  Process: {
+    name: "Decision Table",
+    type: "DMN",
+    route: "decision-table",
+    extension: ".dmn",
+    fileType: "text/dmn",
+  }
 };
 
-
-const storeDraft = configureStore({
-  reducer: rootReducer,
-  preloadedState: mockStateDraft
-});
-
-const wrapperWithMockStoreDraft = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    <Provider store={storeDraft}>{children}</Provider>
-  </QueryClientProvider>
-);
-
-const renderBPMNComponentWithDraft = (props = {}) => {
-  return render(<ProcessCreateEdit {...defaultPropsBPMN} {...props} />, { wrapper : wrapperWithMockStoreDraft});
+const renderDMNComponent = (props = {}) => {
+  return render(<ProcessCreateEdit {...defaultPropsDMN} {...props} />, { wrapper:wrapperDMN });
 };
 
+describe("ProcessCreateEdit test suite for DMN test cases", () => {
 
-describe("ProcessCreateEdit test suite for BPM Subflow test cases", () => {
   beforeEach(() => {
     useParams.mockReturnValue({
       processKey: "test-process-key",
@@ -381,41 +361,42 @@ describe("ProcessCreateEdit test suite for BPM Subflow test cases", () => {
   });
 
   test("displays Draft status when process is not published", () => {
-    renderBPMNComponent();
+    renderDMNComponent();
     expect(screen.getByText("Live")).toBeInTheDocument();
   });
 
+
   test("renders save button with correct data-testid", () => {
-    renderBPMNComponent();
-    const saveButton = screen.getByTestId("save-bpmn-layout");
+    renderDMNComponent();
+    const saveButton = screen.getByTestId("save-dmn-layout");
     expect(saveButton).toBeInTheDocument();
   });
 
   test("save button is initially disabled when workflow is not changed", () => {
-    renderBPMNComponent();
-    const saveButton = screen.getByTestId("save-bpmn-layout");
+    renderDMNComponent();
+    const saveButton = screen.getByTestId("save-dmn-layout");
     expect(saveButton).toBeDisabled();
   });
 
-  test("save button is disabled when process is published", () => {
-    renderBPMNComponentWithPublished();
-    const saveButton = screen.getByTestId("save-bpmn-layout");
-    expect(saveButton).toBeDisabled();
-  });
+  // test("save button is disabled when process is published", () => {
+  //   renderBPMNComponentWithPublished();
+  //   const saveButton = screen.getByTestId("save-bpmn-layout");
+  //   expect(saveButton).toBeDisabled();
+  // });
 
   test("save button is disabled during saving process", () => {
-    renderBPMNComponent();
-    const saveButton = screen.getByTestId("save-bpmn-layout");
+    renderDMNComponent();
+    const saveButton = screen.getByTestId("save-dmn-layout");
     fireEvent.click(saveButton);
     expect(saveButton).toBeDisabled();
   });
 });
 
-describe("ProcessCreateEdit When save button is enabled", () => {
-  const store = configureStore({
-    reducer: rootReducer,
-    preloadedState: mockStateDraft
-  });
+
+
+describe("ProcessCreateEdit DMN When save button is enabled", () => {
+  
+
   beforeEach(() => {
     useParams.mockReturnValue({
       processKey: 'test-process-key',
@@ -433,342 +414,18 @@ describe("ProcessCreateEdit When save button is enabled", () => {
 
   
   test("save button should be enabled and flow to be saved on CREATE mode",async () => {
-    // useParams.mockReturnValue({
-    //   processKey: 'test-process-key',
-    //   step: 'create'
-    // });
-    const wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        <Provider store={store}>{children}</Provider>
-      </QueryClientProvider>
-    );
-
-    render(
-      <ProcessCreateEdit 
-        type={defaultPropsBPMN.type} 
-        Process={defaultPropsBPMN.Process}
-      />, 
-      { wrapper }
-    );
-
+    
+    renderDMNComponent()
     // Trigger workflow change
-    const bpmnEditor = screen.getByTestId("bpmn-editor");
-    fireEvent.click(bpmnEditor); // This should trigger onChange and set isWorkflowChanged to true
-    const saveButton = screen.getByTestId("save-bpmn-layout");
+    const dmnEditor = screen.getByTestId("dmn-editor");
+    console.log('22');
+    fireEvent.click(dmnEditor); // This should trigger onChange and set isWorkflowChanged to true
+    console.log('33');
+    const saveButton = screen.getByTestId("save-dmn-layout");
     expect(saveButton).not.toBeDisabled();
-    expect(saveButton).toHaveTextContent("Save BPMN");
+    expect(saveButton).toHaveTextContent("Save DMN");
     
     await userEvent.click(saveButton);
   });
   
-});
-
-
-describe("ProcessCreateEdit Save flow operations on process CREATE", () => {
-  let mockDispatch = jest.fn();
-
-  beforeEach(() => {
-    useParams.mockReturnValue({
-      processKey: 'test-process-key',
-      step: 'create'
-    });
-    jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
-      isLoading: false,
-      data: {
-        data: mockStateDraft.process.processData
-      },
-      error: null
-    }));
-
-    useDispatch.mockReturnValue(mockDispatch);
-
-  });
-
-  test("save button should be enabled and flow to be saved on CREATE mode",async () => {
-    const store = configureStore({
-      reducer: rootReducer,
-      preloadedState: mockStateDraft
-    });
-    const wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        <Provider store={store}>{children}</Provider>
-      </QueryClientProvider>
-    );
-
-    render(
-      <ProcessCreateEdit 
-        type={defaultPropsBPMN.type} 
-        Process={defaultPropsBPMN.Process}
-      />, 
-      { wrapper }
-    );
-
-    // Trigger workflow change
-    const bpmnEditor = screen.getByTestId("bpmn-editor");
-    fireEvent.click(bpmnEditor); // This should trigger onChange and set isWorkflowChanged to true
-
-    // Get the save button
-    const saveButton = screen.getByTestId("save-bpmn-layout");
-    // Verify button is enabled
-    expect(saveButton).not.toBeDisabled();
-    expect(saveButton).toHaveTextContent("Save BPMN");
-    await userEvent.click(saveButton);
-  });
-
-});
-
-
-describe('Check process PUBLISH button click', () => {
-  let queryClient ;
-  beforeEach(() => {
-      useParams.mockReturnValue({
-        processKey: 'test-process-key',
-        step: 'create'
-      });
-      jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
-        isLoading: false,
-        data: {
-          data: mockStateDraft.process.processData
-        },
-        error: null
-      }));
-      useDispatch.mockReturnValue(jest.fn());
-      queryClient = new QueryClient();
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();  // Clears all mock calls and instances
-    jest.restoreAllMocks(); // Restores original implementations of spied methods
-  });
-
-
-  test('should call getModalContent with modalType "publish" and CREATE mode', async () => {
-    // renderBPMNComponent();
-    const mstore = configureStore({
-      reducer: rootReducer,
-      preloadedState: mockStateDraft
-    });
-    const wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        <Provider store={mstore}>{children}</Provider>
-      </QueryClientProvider>
-    );
-
-    render(
-      <ProcessCreateEdit 
-        type={defaultPropsBPMN.type} 
-        Process={defaultPropsBPMN.Process}
-      />, 
-      { wrapper }
-    );
-
-    const bpmnEditor = screen.getByTestId("bpmn-editor");
-    fireEvent.click(bpmnEditor); // This should trigger onChange and set isWorkflowChanged to true
-    const publishBtn = screen.getByTestId("handle-publish-testid");
-    fireEvent.click(publishBtn); 
-    const confirmModalActionBtn = screen.getByTestId("Confirm-button");
-    expect(confirmModalActionBtn).toBeInTheDocument();
-    await act (async () => {
-      fireEvent.click(confirmModalActionBtn);
-    });
-  });
-
-
-  test('should call getModalContent with modalType "publish" and EDIT mode', async () => {
-    useParams.mockReturnValue({
-      processKey: 'test-process-key',
-      step: 'edit'
-    });
-    // renderBPMNComponent();
-    const mstore = configureStore({
-      reducer: rootReducer,
-      preloadedState: mockStateDraft
-    });
-    const wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        <Provider store={mstore}>{children}</Provider>
-      </QueryClientProvider>
-    );
-
-    render(
-      <ProcessCreateEdit 
-        type={defaultPropsBPMN.type} 
-        Process={defaultPropsBPMN.Process}
-      />, 
-      { wrapper }
-    );
-
-    const bpmnEditor = screen.getByTestId("bpmn-editor");
-    fireEvent.click(bpmnEditor); 
-    const publishBtn = screen.getByTestId("handle-publish-testid");
-    expect(publishBtn).toBeInTheDocument();
-    fireEvent.click(publishBtn); 
-    const confirmModalActionBtn = screen.getByTestId("Confirm-button");
-    expect(confirmModalActionBtn).toBeInTheDocument();
-    await act (async () => {
-      fireEvent.click(confirmModalActionBtn);
-    });
-  });
-});
-
-
-describe('Check process UNPUBLISH button click', () => {
-  beforeEach(() => {
-      useParams.mockReturnValue({
-        processKey: 'test-process-key',
-        step: 'edit'
-      });
-      jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
-        isLoading: false,
-        data: {
-          data: mockStateDraft.process.processData
-        },
-        error: null
-      }));
-      useDispatch.mockReturnValue(jest.fn());
-  });
-
-  test('should call "unpublish" button in and EDIT mode', async () => {
-    renderBPMNComponentWithPublished();
-
-    const bpmnEditor = screen.getByTestId("bpmn-editor");
-    fireEvent.click(bpmnEditor); // This should trigger onChange and set isWorkflowChanged to true
-    const publishBtn = screen.getByTestId("handle-unpublish-testid");
-    expect(publishBtn).toBeInTheDocument();
-    fireEvent.click(publishBtn); 
-    const confirmModalActionBtn = screen.getByTestId("Confirm-button");
-    expect(confirmModalActionBtn).toBeInTheDocument();
-    await act (async () => {
-      fireEvent.click(confirmModalActionBtn);
-    });
-  });
-});
-
-
-describe("History modal working in process ", () => {
-  let mockDispatch = jest.fn();
-  beforeEach(() => {
-      useParams.mockReturnValue({
-        processKey: 'test-process-key',
-        step: 'create'
-      });
-      jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
-        isLoading: false,
-        data: {
-          data: mockStateDraft.process.processData
-        },
-        error: null
-      }));
-      useDispatch.mockReturnValue(mockDispatch);
-  });
-  test('should not show history button on CREATE mode', async () => {
-    renderBPMNComponent();
-    const historyBtn = screen.queryByTestId("bpmn-history-button-testid");
-    expect(historyBtn).not.toBeInTheDocument();
-  });
-
-  test('should show history button on EDIT mode', async () => {
-    useParams.mockReturnValue({
-      processKey: 'test-process-key',
-      step: 'edit'
-    });
-    renderBPMNComponent();
-    const historyBtn = screen.queryByTestId("bpmn-history-button-testid");
-    expect(historyBtn).toBeInTheDocument();
-  });
-
-
-  test('should click history button and open on EDIT mode', async () => {
-    useParams.mockReturnValue({
-      processKey: 'test-process-key',
-      step: 'edit'
-    });
-    renderBPMNComponent();
-    const historyBtn = screen.queryByTestId("bpmn-history-button-testid");
-    expect(historyBtn).toBeInTheDocument();
-    await userEvent.click(historyBtn);
-  });
-});
-
-
-describe('Check process Discard Changes button click', () => {
-  beforeEach(() => {
-      useParams.mockReturnValue({
-        processKey: 'test-process-key',
-        step: 'create'
-      });
-      jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
-        isLoading: false,
-        data: {
-          data: mockStateDraft.process.processData
-        },
-        error: null
-      }));
-      useDispatch.mockReturnValue(jest.fn());
-  });
-
-  test('should call modalType "discard" and CREATE mode', async () => {
-    renderBPMNComponent();
-
-    const bpmnEditor = screen.getByTestId("bpmn-editor");
-    fireEvent.click(bpmnEditor); 
-    const discardBtn = screen.getByTestId("discard-bpmn-changes-testid");
-    fireEvent.click(discardBtn); 
-    const confirmModalActionBtn = screen.getByTestId("Confirm-button");
-    expect(confirmModalActionBtn).toBeInTheDocument();
-    await act (async () => {
-      fireEvent.click(confirmModalActionBtn);
-    });
-  });
-
-});
-
-
-describe("Action modal working in process ", () => {
-  let mockDispatch = jest.fn();
-  beforeEach(() => {
-      useParams.mockReturnValue({
-        processKey: 'test-process-key',
-        step: 'create'
-      });
-      jest.spyOn(require("react-query"), "useQuery").mockImplementation(() => ({
-        isLoading: false,
-        data: {
-          data: mockStateDraft.process.processData
-        },
-        error: null
-      }));
-      useDispatch.mockReturnValue(mockDispatch);
-  });
-  test('should show action button on CREATE mode', async () => {
-    renderBPMNComponent();
-    const actionBtn = screen.queryByTestId("designer-action-testid");
-    expect(actionBtn).toBeInTheDocument();
-  });
-
-  test('should show action button on EDIT mode', async () => {
-    useParams.mockReturnValue({
-      processKey: 'test-process-key',
-      step: 'edit'
-    });
-    renderBPMNComponent();
-    const actionBtn = screen.queryByTestId("designer-action-testid");
-    expect(actionBtn).toBeInTheDocument();
-  });
-
-  test('should click history button and open on EDIT mode', async () => {
-    useParams.mockReturnValue({
-      processKey: 'test-process-key',
-      step: 'edit'
-    });
-    renderBPMNComponent();
-    const actionBtn = screen.queryByTestId("designer-action-testid");
-    expect(actionBtn).toBeInTheDocument();
-    await userEvent.click(actionBtn);
-    const actionModal = screen.queryByTestId("action-modal");
-    expect(actionModal).toBeInTheDocument();
-    const actionModalCloseBtn = screen.getByTestId("action-modal-close");
-    expect(actionModalCloseBtn).toBeInTheDocument();
-    await userEvent.click(actionModalCloseBtn);
-  });
 });

@@ -867,7 +867,7 @@ def test_get_form_data(app, client, session, jwt, mock_redis_client, create_mapp
     response = client.post("/form/form-design", headers=headers, json=payload)
     assert response.status_code == 201
     form_id = response.json["_id"]
-    response = client.get(f"/form/form-data/{form_id}", headers=headers)
+    response = client.get(f"/form/form-data/{form_id}?authType=designer", headers=headers)
     assert response.status_code == 200
     assert response.json is not None
     unauthorized_token = get_token(jwt, role=CREATE_DESIGNS, username="designer2")
@@ -875,5 +875,5 @@ def test_get_form_data(app, client, session, jwt, mock_redis_client, create_mapp
         "Authorization": f"Bearer {unauthorized_token}",
         "content-type": "application/json",
     }
-    response = client.get(f"/form/form-data/{form_id}", headers=headers)
+    response = client.get(f"/form/form-data/{form_id}?authType=designer", headers=headers)
     assert response.status_code == 403

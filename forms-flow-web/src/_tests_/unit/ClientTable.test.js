@@ -1,5 +1,5 @@
 import React from 'react';
-import { render as rtlRender, fireEvent, waitFor, screen } from '@testing-library/react';
+import { render as rtlRender, fireEvent, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import '@testing-library/jest-dom';
 import { configureStore } from '@reduxjs/toolkit';
@@ -10,6 +10,7 @@ import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
 import ClientTable from '../../components/Form/constants/ClientTable';
+import { push } from 'connected-react-router';
 
 jest.mock('connected-react-router', () => ({
   push: jest.fn(),
@@ -183,14 +184,7 @@ it('should handle latest submission (Modified) column sorting', async () => {
 
 ('should render the selected form correctly', () => {
   const mockFormId = 'some-form-id';
-  const store = mockStore({});
   store.dispatch = jest.fn();
-
-  render(
-    <Provider store={store}>
-      <YourComponent />
-    </Provider>
-  );
 
   const selectButton = screen.getByTestId(`form-submit-button-${mockFormId}`);
   expect(selectButton).toBeInTheDocument();

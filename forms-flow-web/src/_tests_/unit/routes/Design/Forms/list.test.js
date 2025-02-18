@@ -5,13 +5,12 @@ import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import rootReducer from './rootReducer';
-import { mockstate } from './mockState';
-import List from '../../routes/Design/Forms/List';
+import rootReducer from './../../../rootReducer';
+import { mockstate } from './../../../mockState'; 
+import List from '../../../../../routes/Design/Forms/List';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
-import { CustomButton } from '../../../__mocks__/@formsflow/components';
 
 const queryClient = new QueryClient();
 let store = configureStore({
@@ -57,12 +56,11 @@ beforeEach(() => {
 
 //Should render the list component and open the modal when "New Form" is clicked
 it('should render the list component and open the modal when New Form is clicked', async () => {
-  rtlRender(<CustomButton dataTestId="create-form-button" />);
   // Check that the "New Form" button is rendered
-  const button = screen.getByTestId("create-form-button");
-  expect(button).toBeInTheDocument();
+  const createButton = screen.getByTestId("create-form-button");
+  expect(createButton).toBeInTheDocument();
 
-  userEvent.click(button);
+  userEvent.click(createButton);
   // Wait for the modal to open and check if it is displayed
   await waitFor(() => {
     rtlRender(<div data-testid="create-form-modal">

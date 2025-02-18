@@ -27,7 +27,7 @@ function FormTable() {
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
-  const pageNo = useSelector((state) => state.bpmForms.page);
+  const pageNo = useSelector((state) => state.bpmForms.formListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
@@ -163,7 +163,9 @@ function FormTable() {
                         </td>
                         <td className="w-30 cursor-pointer">
                           <span className={isExpanded ? "text-container-expand" : "text-container"}
-                            onClick={() => toggleRow(index)}>
+                            onClick={() => toggleRow(index)}
+                            data-testid="description-cell"
+                            >
                             {stripHtml(e.description ? e.description : "")}
                           </span>
                         </td>

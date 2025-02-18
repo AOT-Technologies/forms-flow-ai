@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
-  setBPMFormListPage,
-  setBpmFormSort,
+  setBPMSubmitListPage,
+  setBpmFormSort
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -89,17 +89,6 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   // Navigation Handler (Refactored)
   const navigateTo = (routeFunction) => routeFunction(dispatch, tenantId);
 
-  // Handle Search & Clear
-  const handleSearch = () => {
-    dispatch(setClientFormSearch(search));
-    dispatch(setBPMFormListPage(1));
-  };
-
-  const handleClearSearch = () => {
-    setSearch("");
-    dispatch(setClientFormSearch(""));
-  };
-
   // Effects
   useEffect(() => {
     setSearch(searchText);
@@ -110,6 +99,15 @@ const SubmitList = React.memo(({ getFormsInit }) => {
       dispatch(setClientFormSearch(""));
     }
   }, [search]);
+
+  const handleSearch = () => {
+    dispatch(setClientFormSearch(search));
+    dispatch(setBPMSubmitListPage(1));
+  };
+  const handleClearSearch = () => {
+    setSearch("");
+    dispatch(setClientFormSearch(""));
+  };
 
   useEffect(() => {
     dispatch(setFormCheckList([]));

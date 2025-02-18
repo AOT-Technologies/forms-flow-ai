@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {
   setBPMFormLimit,
-  setBPMFormListPage,
-  // setBPMFormListSort,
+  setBPMSubmitListPage,
   setBpmFormSearch,
   setBpmFormSort,
 } from "../../../actions/formActions";
@@ -24,7 +23,7 @@ function ClientTable() {
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = bpmForms?.forms || [];
-  const pageNo = useSelector((state) => state.bpmForms.page);
+  const pageNo = useSelector((state) => state.bpmForms.submitListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
@@ -94,12 +93,12 @@ function ClientTable() {
 
   const handlePageChange = (page) => {
     resetIndex();
-    dispatch(setBPMFormListPage(page));
+    dispatch(setBPMSubmitListPage(page));
   };
 
   const onSizePerPageChange = (newLimit) => {
     dispatch(setBPMFormLimit(newLimit));
-    dispatch(setBPMFormListPage(1));
+    dispatch(setBPMSubmitListPage(1));
   };
 
   const noDataFound = () => {

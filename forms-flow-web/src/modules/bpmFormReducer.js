@@ -6,7 +6,8 @@ const initialState = {
   forms: [],
   isActive: false,
   limit: 5,
-  page: 1,
+  formListPage: 1,
+  submitListPage: 1,
   totalForms: 0,
   bpmFormLoading: false,
   sortBy: "formName",
@@ -35,7 +36,9 @@ const bpmForms = (state = initialState, action) => {
     case ACTION_CONSTANTS.BPM_FORM_LIST_LIMIT_CHANGE:
       return { ...state, limit: action.payload };
     case ACTION_CONSTANTS.BPM_FORM_LIST_PAGE_CHANGE:
-      return { ...state, page: action.payload };
+      return { ...state, formListPage: action.payload };
+    case ACTION_CONSTANTS.BPM_SUBMIT_LIST_PAGE_CHANGE:
+      return { ...state, submitListPage: action.payload };
     case ACTION_CONSTANTS.IS_BPM_FORM_LIST_LOADING:
       return { ...state, isActive: action.payload };
     case ACTION_CONSTANTS.BPM_FORM_SEARCH:

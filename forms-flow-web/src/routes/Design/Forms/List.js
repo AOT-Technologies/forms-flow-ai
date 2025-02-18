@@ -147,7 +147,7 @@ const List = React.memo((props) => {
     (state) => state.formCheckList.designerFormLoading
   );
 
-  const pageNo = useSelector((state) => state.bpmForms.page);
+  const pageNo = useSelector((state) => state.bpmForms.formListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const formSort = useSelector((state) => state.bpmForms.sort);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
@@ -386,7 +386,7 @@ const List = React.memo((props) => {
                       label={t("New Form")}
                       onClick={() => setNewFormModal(true)}
                       className=""
-                      dataTestid="create-form-button"
+                      dataTestId="create-form-button"
                       ariaLabel="Create Form"
                     />
                   )}

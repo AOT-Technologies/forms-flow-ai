@@ -27,6 +27,7 @@ export const mockstate = {
       activeKey: "formName", 
       formName: { sortOrder: "asc" },
       modified: { sortOrder: "asc" },
+      submissions: { sortOrder: "asc" },
       visibility: { sortOrder: "asc"},
       status: { sortOrder: "asc" },
     },

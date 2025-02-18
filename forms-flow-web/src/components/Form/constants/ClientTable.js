@@ -66,8 +66,7 @@ function ClientTable() {
     const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
       acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
       return acc;
-    }, {});
-  
+    }, {});  
     dispatch(setBpmFormSort({
       ...updatedSort,
       activeKey: key,
@@ -145,10 +144,10 @@ function ClientTable() {
     >
       <div className="min-height-400">
         <div className="custom-tables-wrapper">
-          <table className="table custom-tables table-responsive-sm">
+        <table className="table custom-tables table-responsive-sm" data-testid="client-table">
             <thead className="table-header">
               <tr>
-                <th className="w-20">
+                <th className="w-20" data-testid="form-name-header">
                   <SortableHeader
                     columnKey="formName"
                     title="Form Name"
@@ -157,10 +156,10 @@ function ClientTable() {
                     className="gap-2"
                   />
                 </th>
-                <th className="w-30" scope="col">{t("Description")}</th>
+                <th className="w-30" scope="col" data-testid="description-header">{t("Description")}</th>
 
-                <th className="w-13" scope="col">
-                  <SortableHeader
+                <th className="w-13" scope="col" data-testid="submission-count-header">
+                   <SortableHeader
                     columnKey="submissionCount"
                     title="Submissions"
                     currentSort={formsort}
@@ -168,7 +167,7 @@ function ClientTable() {
                     className="gap-2" />
                 </th>
 
-                <th className="w-13" scope="col">
+                <th className="w-13" scope="col" data-testid="latest-submission-header">
                   <SortableHeader
                     columnKey="modified"
                     title={t("Latest Submission")}
@@ -196,6 +195,7 @@ function ClientTable() {
                         </td>
                         <td className="w-30">
                           <span
+                            data-testid="description-cell"
                             className={` cursor-pointer ${isExpanded ? "text-container-expand" : "text-container"}`}
                             role="button"
                             tabIndex="0"

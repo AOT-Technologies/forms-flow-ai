@@ -7,16 +7,13 @@ import { StyleServices } from "@formsflow/service";
 const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = "" }) => {
     const { t } = useTranslation();
     const sortedOrder = currentSort[columnKey]?.sortOrder; 
-    const isSorted = currentSort.activeKey === columnKey;
-    const iconColor = isSorted 
-    ? StyleServices.getCSSVariable('--ff-primary') 
-    : StyleServices.getCSSVariable('--ff-gray-medium-dark');
+    const isSorted = currentSort[columnKey] !== undefined;
     const handleKeyDown = (event)=>{
       if (event.key === 'Enter') {  
         handleSort(columnKey);
         }
     };
-  
+    const grayColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
     return (
       <button
         className={`button-as-div ${className}`}
@@ -28,7 +25,7 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
       >
         <span className="mt-1">{t(title)}</span>
         <span className={sortedOrder === "asc" ? "arrow-up" : "arrow-down"}>
-        <SortIcon color={iconColor}/>
+        <SortIcon color={grayColor}/>
       </span>
       </button>
     );

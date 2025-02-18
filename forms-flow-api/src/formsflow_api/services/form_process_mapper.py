@@ -1005,18 +1005,12 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             ProcessService.update_process_status(process, ProcessStatus.DRAFT, user)
         return {}
 
-    def check_role_exist(self, data, user):
-        """Check if the user has the required roles."""
-        if not data.roles.intersection(user.roles):
-            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
-        return True
-
     @user_context
-    def get_form_data(self, form_id: str, auth_type=AuthType.FORM, **kwargs):
+    def get_form_data(self, form_id: str, auth_type: str, is_designer: bool, **kwargs):
         """Get form data by form_id."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
-        auth_type = auth_type.upper()
+        auth_type = auth_type.upper() if auth_type else AuthType.FORM.value
         mapper_data = FormProcessMapper.find_form_by_form_id(form_id)
 
         # check the mapper exists and is accessible
@@ -1031,28 +1025,25 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             if not mapper_data.is_anonymous and mapper_data.tenant != tenant_key:
                 raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
 
-        # checking the authorization of the user
-        authoirzation_data = Authorization.find_auth_list_by_id(
-            mapper_data.parent_form_id, tenant_key
-        )
+        auth_service = AuthorizationService()
+        auth_data = None
+        if auth_type == AuthType.APPLICATION.value:
+            auth_data = auth_service.get_application_resource_by_id(
+                auth_type=auth_type,
+                resource_id=mapper_data.parent_form_id,
+                form_id=form_id,
+                user=user,
+            )
+        else:
+            auth_data = auth_service.get_resource_by_id(
+                auth_type=auth_type,
+                resource_id=mapper_data.parent_form_id,
+                is_designer=is_designer,
+                user=user,
+            )
 
-        if not authoirzation_data:
+        if not auth_data:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
-
-        data = authoirzation_data[auth_type]
-        if auth_type == AuthType.FORM.value and data.rols:
-            self.check_role_exist(data, user)
-
-        if auth_type == AuthType.APPLICATION.value and self.check_role_exist(
-            data, user
-        ):
-            if not Application.get_application_by_formid_and_user_name(
-                formid=form_id, user_name=user.user_name
-            ):
-                raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
-
-        if auth_type == AuthType.DESIGNER.value and data.user_name != user.user_name:
-            self.check_role_exist(data, user)
 
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()

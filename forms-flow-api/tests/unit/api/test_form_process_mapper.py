@@ -812,9 +812,7 @@ def test_form_list_submission_count(app, client, session, jwt, create_mapper):
         "roles": [],
     }
     # create authorization for the form.
-    client.post(
-        "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
-    )
+    client.post("/authorizations/form", headers=headers, data=json.dumps(auth_payload))
     client.post(
         "/authorizations/designer", headers=headers, data=json.dumps(auth_payload)
     )
@@ -840,7 +838,10 @@ def test_form_list_submission_count(app, client, session, jwt, create_mapper):
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # submissionsCount exclude draft and return submission count
-    response = client.get("/form?includeSubmissionsCount=true&showForOnlyCreateSubmissionUsers=true", headers=headers)
+    response = client.get(
+        "/form?includeSubmissionsCount=true&showForOnlyCreateSubmissionUsers=true",
+        headers=headers,
+    )
     assert response.status_code == 200
     forms = response.json["forms"]
     assert len(forms) == 1
@@ -854,3 +855,25 @@ def test_form_list_submission_count(app, client, session, jwt, create_mapper):
     forms = response.json["forms"]
     assert len(forms) == 1
     assert "submissionsCount" not in forms[0]
+
+
+def test_get_form_data(app, client, session, jwt, mock_redis_client, create_mapper):
+    """Testing get form data endpoint."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    payload = get_formio_form_request_payload()
+    payload["componentChanged"] = True
+    payload["newVersion"] = True
+    response = client.post("/form/form-design", headers=headers, json=payload)
+    assert response.status_code == 201
+    form_id = response.json["_id"]
+    response = client.get(f"/form/form-data/{form_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.json is not None
+    unauthorized_token = get_token(jwt, role=CREATE_DESIGNS, username="designer2")
+    headers = {
+        "Authorization": f"Bearer {unauthorized_token}",
+        "content-type": "application/json",
+    }
+    response = client.get(f"/form/form-data/{form_id}", headers=headers)
+    assert response.status_code == 403

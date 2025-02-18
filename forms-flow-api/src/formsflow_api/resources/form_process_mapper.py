@@ -13,6 +13,7 @@ from formsflow_api_utils.utils import (
     MANAGE_ALL_FILTERS,
     VIEW_DESIGNS,
     VIEW_FILTERS,
+    VIEW_SUBMISSIONS,
     auth,
     cors_preflight,
     profiletime,
@@ -801,17 +802,20 @@ class UnpublishResource(Resource):
 
 @cors_preflight("GET,OPTIONS")
 @API.route("/form-data/<string:form_id>", methods=["GET", "OPTIONS"])
+@API.doc(
+    params={
+        "form_id": "Unique identifier of the form",
+        "auth_type": "Authorization type (form, application, designer)",
+    }
+)
 class FormDataResource(Resource):
     """Resource to support form data."""
 
     @staticmethod
-    @profiletime
-    @API.doc(
-        params={
-            "form_id": "Unique identifier of the form",
-            "auth_type": "Authorization type (form, application, designer)",
-        }
+    @auth.has_one_of_roles(
+        [CREATE_DESIGNS, VIEW_DESIGNS, CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]
     )
+    @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(400, "BAD_REQUEST:- Invalid request.")
     @API.response(
@@ -822,8 +826,9 @@ class FormDataResource(Resource):
     def get(form_id: str):
         """Get form data by form_id."""
         form_service = FormProcessMapperService()
-        auth_type = request.args.get("auth_type")
+        auth_type = request.args.get("authType")
+        is_designer = auth.has_role([CREATE_DESIGNS])
         return (
-            form_service.get_form_data(form_id, auth_type),
+            form_service.get_form_data(form_id, auth_type, is_designer),
             HTTPStatus.OK,
         )

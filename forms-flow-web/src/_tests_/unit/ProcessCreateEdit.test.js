@@ -86,7 +86,8 @@ jest.mock("../../helper/processHelper", () => {
       <bpmn:incoming>Flow_1cawbcg</bpmn:incoming>
       <bpmn:outgoing>Flow_1jdbs66</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_1cawbcg" name="AAA" sourceRef="StartEvent_1" targetRef="Activity_0fngdxtAA" />
+    <bpmn:sequenceFlow id="Flow_1cawbcg" name="AAA" sourceRef="StartEvent_1"
+     targetRef="Activity_0fngdxtAA" />
     <bpmn:endEvent id="Event_0g5jxoy" name="AAA">
       <bpmn:incoming>Flow_1jdbs66</bpmn:incoming>
     </bpmn:endEvent>

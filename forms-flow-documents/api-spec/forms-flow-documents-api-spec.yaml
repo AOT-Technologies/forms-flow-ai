@@ -7,7 +7,7 @@ servers:
 - url: http://{{baseurl}}
 - url: 'http://localhost:5006'
 security:
-- apikey: []
+- bearerAuth: []
 tags:
 - name: PDFExport
   description: Handles API operations for exporting form as a PDF.
@@ -124,7 +124,7 @@ components:
       description: Handle http error
       content: {}
   securitySchemes:
-    apikey:
-      type: apiKey
-      name: Authorization
-      in: header
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

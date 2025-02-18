@@ -7,7 +7,7 @@ servers:
 - url: http://{{baseurl}}
 - url: 'http://localhost:6001'
 security:
-- apikey: []
+- bearerAuth: []
 tags:
 - name: Checkpoint
   description: Verify the application's health status.
@@ -105,7 +105,7 @@ components:
       description: Handle Business exception
       content: {}
   securitySchemes:
-    apikey:
-      type: apiKey
-      name: Authorization
-      in: header
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

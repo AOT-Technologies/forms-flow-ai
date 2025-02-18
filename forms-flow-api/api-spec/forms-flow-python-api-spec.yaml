@@ -7,7 +7,7 @@ servers:
 - url: 'http://localhost:5000'
 - url: 'http://{{baseurl}}'
 security:
-- apikey: []
+- bearerAuth: []
 tags:
 - name: Application
   description: "Manages form submissions, creating, retrieving, updating, managing\
@@ -4095,7 +4095,7 @@ components:
       description: Handle http error
       content: {}
   securitySchemes:
-    apikey:
-      type: apiKey
-      name: Authorization
-      in: header
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

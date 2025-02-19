@@ -11,7 +11,6 @@ import List from '../../../../../routes/Design/Forms/List';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
-import { CustomButton } from '../../../__mocks__/@formsflow/components';
 
 const queryClient = new QueryClient();
 let store = configureStore({
@@ -57,7 +56,6 @@ beforeEach(() => {
 
 //Should render the list component and open the modal when "New Form" is clicked
 it('should render the list component and open the modal when New Form is clicked', async () => {
-  rtlRender(<CustomButton dataTestId="create-form-button" label="New Form" />);
   // Check that the "New Form" button is rendered
   const createButton = screen.getByTestId("create-form-button");
   expect(createButton).toBeInTheDocument();

@@ -867,7 +867,9 @@ def test_get_form_data(app, client, session, jwt, mock_redis_client, create_mapp
     response = client.post("/form/form-design", headers=headers, json=payload)
     assert response.status_code == 201
     form_id = response.json["_id"]
-    response = client.get(f"/form/form-data/{form_id}?authType=designer", headers=headers)
+    response = client.get(
+        f"/form/form-data/{form_id}?authType=designer", headers=headers
+    )
     assert response.status_code == 200
     assert response.json is not None
     unauthorized_token = get_token(jwt, role=CREATE_DESIGNS, username="designer2")
@@ -875,5 +877,62 @@ def test_get_form_data(app, client, session, jwt, mock_redis_client, create_mapp
         "Authorization": f"Bearer {unauthorized_token}",
         "content-type": "application/json",
     }
-    response = client.get(f"/form/form-data/{form_id}?authType=designer", headers=headers)
+    response = client.get(
+        f"/form/form-data/{form_id}?authType=designer", headers=headers
+    )
+    assert response.status_code == 403
+
+
+def test_get_form_data_client(
+    app, client, session, jwt, mock_redis_client, create_mapper
+):
+    """Testing get form data endpoint."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    payload = get_formio_form_request_payload()
+    payload["componentChanged"] = True
+    payload["newVersion"] = True
+    response = client.post("/form/form-design", headers=headers, json=payload)
+    assert response.status_code == 201
+    form_id = response.json["_id"]
+    form_name = response.json["name"]
+    mapper_id = create_mapper["id"]
+    payload = {
+        "mapper": {
+            "formId": form_id,
+            "parentFormId": form_id,
+            "status": "active",
+            "id": mapper_id,
+            "formName": form_name,
+            "formType": "form",
+            "anonymous": False,
+        },
+        "authorizations": {
+            "form": {
+                "resourceId": form_id,
+                "resourceDetails": {},
+                "roles": ["/formsflow/sample"],
+            },
+        },
+    }
+    response = client.put(f"/form/{mapper_id}", headers=headers, json=payload)
+    assert response.status_code == 200
+    # test authorized user
+    client_token = get_token(jwt, role=CREATE_SUBMISSIONS, roles=["/formsflow/sample"])
+    headers = {
+        "Authorization": f"Bearer {client_token}",
+        "content-type": "application/json",
+    }
+    response = client.get(f"/form/form-data/{form_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.json is not None
+    # test unauthorized user
+    unauthorized_token = get_token(
+        jwt, role=CREATE_SUBMISSIONS, roles=["/formsflow/unauthorized"]
+    )
+    headers = {
+        "Authorization": f"Bearer {unauthorized_token}",
+        "content-type": "application/json",
+    }
+    response = client.get(f"/form/form-data/{form_id}", headers=headers)
     assert response.status_code == 403

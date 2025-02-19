@@ -805,7 +805,7 @@ class UnpublishResource(Resource):
 @API.doc(
     params={
         "form_id": "Unique identifier of the form",
-        "auth_type": "Authorization type (form, application, designer)",
+        "authType": "Authorization type (form, application, designer)",
     }
 )
 class FormDataResource(Resource):

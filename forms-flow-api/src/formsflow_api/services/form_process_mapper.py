@@ -1038,7 +1038,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             auth_data = auth_service.get_resource_by_id(
                 auth_type=auth_type,
                 resource_id=mapper_data.parent_form_id,
-                is_designer=is_designer,
+                is_designer=is_designer if auth_type == AuthType.DESIGN.value else False,
                 user=user,
             )
 

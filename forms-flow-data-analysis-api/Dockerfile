@@ -5,8 +5,10 @@ FROM python:3.11.7-slim-bullseye
 LABEL Name="formsflow"
 
 WORKDIR /forms-flow-data-analysis-api/app
-RUN  apt-get update \
-  && apt-get install -y git
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends git \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
 ARG MODEL_ID=Seethal/sentiment_analysis_generic_dataset

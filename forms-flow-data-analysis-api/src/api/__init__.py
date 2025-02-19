@@ -7,10 +7,11 @@ import threading
 from flask import Flask
 from transformers import pipeline
 
+from formsflow_api_utils.utils import jwt, Service, register_log_handlers, setup_logging
+
 from . import config, models
 from .models import db, migrate
 from .resources import data_analysis_api
-from formsflow_api_utils.utils import jwt, Service, register_log_handlers, setup_logging
 
 flask_logger = setup_logging(
     os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf")

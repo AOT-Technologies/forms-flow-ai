@@ -11,6 +11,7 @@ import List from '../../../../../routes/Design/Forms/List';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
+import { CustomButton } from '../../../__mocks__/@formsflow/components';
 
 const queryClient = new QueryClient();
 let store = configureStore({

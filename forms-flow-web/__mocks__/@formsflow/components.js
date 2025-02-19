@@ -604,3 +604,48 @@ export const NoDataFound = () => {
 };
 
 NoDataFound.propTypes = {};
+
+NormalDropdown.propTypes = {
+  limit: PropTypes.number.isRequired,
+  onLimitChange: PropTypes.func.isRequired,
+  pageOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      label: PropTypes.string
+    })
+  ),
+  isDropdownOpen: PropTypes.bool.isRequired,
+  toggleDropdown: PropTypes.func.isRequired,
+  'data-testid': PropTypes.string
+};
+
+TableFooter.propTypes = {
+  limit: PropTypes.number.isRequired,
+  activePage: PropTypes.number.isRequired,
+  totalCount: PropTypes.number.isRequired,
+  handlePageChange: PropTypes.func.isRequired,
+  onLimitChange: PropTypes.func.isRequired,
+  pageOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      label: PropTypes.string
+    })
+  ),
+  isDropdownOpen: PropTypes.bool.isRequired,
+  toggleDropdown: PropTypes.func.isRequired,
+  dataTestId: PropTypes.string
+};
+
+AngleLeftIcon.propTypes = {
+  onClick: PropTypes.func,
+  dataTestId: PropTypes.string
+};
+
+SortIcon.propTypes = {
+  onClick: PropTypes.func,
+  downIconClick: PropTypes.func,
+  disabled: PropTypes.bool,
+  dataTestId: PropTypes.string
+};
+
+

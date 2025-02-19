@@ -10,8 +10,6 @@ import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
 import FormTable from '../../components/Form/constants/FormTable';
-// import { setBpmFormSort } from '../../actions/formActions';
-// import { push } from 'connected-react-router'; // Assuming push is from connected-react-router
   
 jest.mock('connected-react-router', () => ({
   push: jest.fn(),

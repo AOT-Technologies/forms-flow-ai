@@ -1,3 +1,4 @@
+// Import statements
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
@@ -7,38 +8,35 @@ import {
   setBpmFormSearch,
   setBpmFormSort,
 } from "../../../actions/formActions";
-import {
-  MULTITENANCY_ENABLED,
-} from "../../../constants/constants";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { useTranslation, Translation } from "react-i18next";
-import DOMPurify from "dompurify";
 import { TableFooter } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import SortableHeader from '../../CustomComponents/SortableHeader';
+import { formatDate } from "../../../helper/dateTimeHelper";
 
 function ClientTable() {
-
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  // Redux hooks and state management
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const bpmForms = useSelector((state) => state.bpmForms);
+  const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
+  
+  // Local state
+  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
+  const [search, setSearch] = useState(useSelector((state) => state.bpmForms.searchText) || "");
+
+  // Derived state from Redux
   const formData = bpmForms?.forms || [];
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
-  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-
-  const searchFormLoading = useSelector(
-    (state) => state.formCheckList.searchFormLoading
-  );
-  const [search, setSearch] = useState(useSelector((state) => state.bpmForms.searchText) || "");
-
   const searchText = useSelector((state) => state.bpmForms.searchText);
-
+  
+  // Constants
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const [openIndex, setOpenIndex] = useState(null);
-
   const pageOptions = [
     { text: "5", value: 5 },
     { text: "25", value: 25 },
@@ -47,6 +45,7 @@ function ClientTable() {
     { text: "All", value: totalForms },
   ];
 
+  // Utility functions
   const stripHtml = (html) => {
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
@@ -58,10 +57,9 @@ function ClientTable() {
     }
   };
 
+  // Event handlers
   const handleSort = (key) => {
     const newSortOrder = formsort[key]?.sortOrder === "asc" ? "desc" : "asc";
-  
-    // Reset all other columns to default (ascending) except the active one
     const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
       acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
       return acc;
@@ -71,28 +69,12 @@ function ClientTable() {
       activeKey: key,
     }));
   };
-  
-  useEffect(() => {
-    setSearch(searchText);
-  }, [searchText]);
-
-  useEffect(() => {
-    if (!search?.trim()) {
-      dispatch(setBpmFormSearch(""));
-    }
-  }, [search]);
-
 
   const submitNewForm = (formId) => {
     dispatch(push(`${redirectUrl}form/${formId}`));
   };
 
-  const resetIndex = () => {
-    if (openIndex !== null) setOpenIndex(null);
-  };
-
   const handlePageChange = (page) => {
-    resetIndex();
     dispatch(setBPMSubmitListPage(page));
   };
 
@@ -101,13 +83,17 @@ function ClientTable() {
     dispatch(setBPMSubmitListPage(1));
   };
 
+  const toggleRow = (index) => {
+    setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
+  };
+
+  // UI Components
   const noDataFound = () => {
     return (
       <tbody>
         <tr>
           <td colSpan="3">
-            <div
-              className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100">
+            <div className="d-flex align-items-center justify-content-center clientForm-table-col flex-column w-100">
               <h3>{t("No forms found")}</h3>
               <p>{t("Please change the selected filters to view Forms")}</p>
             </div>
@@ -117,22 +103,16 @@ function ClientTable() {
     );
   };
 
-  const toggleRow = (index) => {
-    setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
-  };
-  function formatDate(isoString) {
-    const date = new Date(isoString);
-    const options = {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
-    let formattedDate = date.toLocaleString("en-US", options);
-    return formattedDate.replace(/(\w{3}) (\d{1,2}), (\d{4}),/, "$1 $2, $3");
-  }
+  // Effects
+  useEffect(() => {
+    setSearch(searchText);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (!search?.trim()) {
+      dispatch(setBpmFormSearch(""));
+    }
+  }, [search]);
 
   return (
 
@@ -227,26 +207,6 @@ function ClientTable() {
                         </td>
                       </tr>
 
-                      {index === openIndex && (
-                        <tr>
-                          <td colSpan={10}>
-                            <div className="bg-white p-3">
-                              <h4>
-                                <strong>{t("Form Description")}</strong>
-                              </h4>
-
-                              <div
-                                className="form-description-p-tag "
-                                dangerouslySetInnerHTML={{
-                                  __html: DOMPurify.sanitize(e?.description, {
-                                    ADD_ATTR: ["target"],
-                                  }),
-                                }}
-                              />
-                            </div>
-                          </td>
-                        </tr>
-                      )}
                     </React.Fragment>
                   );
                 })}

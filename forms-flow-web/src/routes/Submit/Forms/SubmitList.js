@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
-  setBPMFormListPage,
+  setBPMSubmitListPage,
   setBpmFormSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
@@ -46,11 +46,13 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const userRoles = useSelector((state) => state.user.roles || []);
   const create_submissions = userRoles.includes("create_submissions");
-  const pageNo = useSelector((state) => state.bpmForms.page);
+
+  const pageNo = useSelector((state) => state.bpmForms.submitListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const formSort = useSelector((state) => state.bpmForms.sort);
-  const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
-
+  const searchFormLoading = useSelector(
+    (state) => state.formCheckList.searchFormLoading
+  );
   // Local States
   const [search, setSearch] = useState(searchText || "");
   const [showSortModal, setShowSortModal] = useState(false);
@@ -89,17 +91,6 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   // Navigation Handler (Refactored)
   const navigateTo = (routeFunction) => routeFunction(dispatch, tenantId);
 
-  // Handle Search & Clear
-  const handleSearch = () => {
-    dispatch(setClientFormSearch(search));
-    dispatch(setBPMFormListPage(1));
-  };
-
-  const handleClearSearch = () => {
-    setSearch("");
-    dispatch(setClientFormSearch(""));
-  };
-
   // Effects
   useEffect(() => {
     setSearch(searchText);
@@ -110,6 +101,18 @@ const SubmitList = React.memo(({ getFormsInit }) => {
       dispatch(setClientFormSearch(""));
     }
   }, [search]);
+  const handleSearch = () => {
+    dispatch(setClientFormSearch(search));
+    dispatch(setBPMSubmitListPage(1));
+  };
+  const handleClearSearch = () => {
+    setSearch("");
+    dispatch(setClientFormSearch(""));
+  };
+
+
+
+
 
   useEffect(() => {
     dispatch(setFormCheckList([]));

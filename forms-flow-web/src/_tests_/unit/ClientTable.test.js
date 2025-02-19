@@ -182,15 +182,11 @@ it('should handle latest submission (Modified) column sorting', async () => {
   );
 });
 
-('should render the selected form correctly', () => {
-  const mockFormId = 'some-form-id';
-  store.dispatch = jest.fn();
-
+it('should render the selected form correctly', () => {
+  const mockFormId = 'mock-form-id';
   const selectButton = screen.getByTestId(`form-submit-button-${mockFormId}`);
   expect(selectButton).toBeInTheDocument();
-
   fireEvent.click(selectButton);
-
   expect(store.dispatch).toHaveBeenCalledWith(push(`/form/${mockFormId}`));
 });
 
@@ -201,7 +197,6 @@ it('should render the table footer component and handle pagination correctly', (
   // Test footer existence and basic elements
   const footer = screen.getByTestId("table-footer");
   expect(footer).toBeInTheDocument();
-
   const itemsCount = screen.getByTestId("items-count");
   expect(itemsCount).toBeInTheDocument();
 

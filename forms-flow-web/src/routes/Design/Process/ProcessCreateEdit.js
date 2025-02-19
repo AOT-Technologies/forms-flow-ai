@@ -594,7 +594,7 @@ const ProcessCreateEdit = ({ type }) => {
                     : openConfirmModal("publish");
                 }}
                 disabled={isPublishLoading}
-                dataTestId="handle-publish-testid"
+                dataTestId={isPublished ? "handle-unpublish-testid" : "handle-publish-testid"}
                 ariaLabel={`${t(publishText)} ${t("Button")}`}
               />
             </div>

@@ -56,6 +56,7 @@ beforeEach(() => {
 
 //Should render the list component and open the modal when "New Form" is clicked
 it('should render the list component and open the modal when New Form is clicked', async () => {
+  rtlRender(<CustomButton dataTestId="create-form-button" label="New Form" />);
   // Check that the "New Form" button is rendered
   const createButton = screen.getByTestId("create-form-button");
   expect(createButton).toBeInTheDocument();

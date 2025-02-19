@@ -431,44 +431,55 @@ export const TableFooter = ({
   totalCount,
   handlePageChange,
   onLimitChange,
-  pageOptions
-}) => (
-  <tr>
-    <td colSpan={3}>
-      <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
-        <span>Showing {limit * activePage - (limit - 1)} to {Math.min(limit * activePage, totalCount)} of {totalCount}</span>
-      </div>
-    </td>
-    {totalCount > 5 ? (
-      <>
+  pageOptions,
+  isDropdownOpen,
+  toggleDropdown,
+  dataTestId="table-footer"
+}) => {
+  return (
+    <tr data-testid={dataTestId}>
+      <td colSpan={3}>
+        <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
+          <span data-testid="items-count">
+            Showing {limit * activePage - (limit - 1)} to&nbsp;
+            {Math.min(limit * activePage, totalCount)} of&nbsp;
+            <span data-testid="total-items">{totalCount}</span>
+          </span>
+        </div>
+      </td>
+      <td colSpan={3}>
+        <div className="d-flex align-items-center">
+          <button data-testid="left-button" onClick={() => handlePageChange(activePage - 1)}>
+            <AngleLeftIcon />
+          </button>
+          <span data-testid="current-page-display">{activePage}</span>
+          <button data-testid="right-button" onClick={() => handlePageChange(activePage + 1)}>
+            <AngleRightIcon />
+          </button>
+        </div>
+      </td>
+      {pageOptions && (
         <td colSpan={3}>
-          <div className="d-flex align-items-center">
-            <div>Mocked Pagination</div>
+          <div className="d-flex align-items-center justify-content-end">
+            <span className="pagination-text">Rows per page</span>
+            <div className="pagination-dropdown">
+              <NormalDropdown
+                data-testid="page-size-select"
+                limit={limit}
+                onLimitChange={onLimitChange}
+                pageOptions={pageOptions}
+                isDropdownOpen={isDropdownOpen}
+                toggleDropdown={toggleDropdown}
+              />
+            </div>
           </div>
         </td>
-        {pageOptions && (
-          <td colSpan={3}>
-            <div className="d-flex align-items-center justify-content-end">
-              <span className="pagination-text">Rows per page</span>
-              <div className="pagination-dropdown">
-                <div>Mocked Dropdown for Limit</div>
-              </div>
-            </div>
-          </td>
-        )}
-      </>
-    ) : null}
-  </tr>
-);
-
-TableFooter.propTypes = {
-  limit: PropTypes.number.isRequired,
-  activePage: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  handlePageChange: PropTypes.func,
-  onLimitChange: PropTypes.func,
-  pageOptions: PropTypes.array
+      )}
+    </tr>
+  );
 };
+
+
 export const NoDataFound = ({message,dataTestId}) => {
   return (
     <div>
@@ -635,7 +646,7 @@ export const FailedIcon = () => (
 
 export const ReusableProcessTableRow = ({ item, buttonLabel, dataTestId="reusable-process-table-row" }) => {
   return (
-    <tr data-testid={`process-table-row-${item._id}`}>
+    <tr data-testid={`process-table-row-${item.processKey}`}>
       <td className="w-25 text-ellipsis text-nowrap">
         <span>{item.name}</span>
       </td>
@@ -644,7 +655,7 @@ export const ReusableProcessTableRow = ({ item, buttonLabel, dataTestId="reusabl
       </td>
       <td className="w-15">{item.modified || 'N/A'}</td>
       <td className="w-15">
-        <span data-testid={`sub-flow-status-${item._id}`} className="d-flex align-items-center">
+        <span data-testid={`sub-flow-status-${item.processKey}`} className="d-flex align-items-center">
           <span className={item.status === 'Published' ? 'status-live' : 'status-draft'}></span>
           {item.status === 'Published' ? 'Live' : 'Draft'}
         </span>
@@ -653,8 +664,8 @@ export const ReusableProcessTableRow = ({ item, buttonLabel, dataTestId="reusabl
         <span className="d-flex justify-content-end">
           <button
             className="btn btn-secondary btn-sm"
-            aria-label={`Edit ${buttonLabel} Button`}
-            data-testid={`edit-button-${item._id}`}
+            aria-label={`Edit ${item.processKey} Button`}
+            data-testid={`edit-button-${item.processKey}`}
           >
             Edit
           </button>

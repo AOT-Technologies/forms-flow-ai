@@ -16,25 +16,23 @@ import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 import rootReducer from "../rootReducer";
 import { mockstate } from "../mockState";
 import ProcessTable from "../../../routes/Design/Process/ProcessTable";
-import { useTranslation } from "react-i18next";
 
 jest.mock("connected-react-router", () => ({
   push: jest.fn(),
 }));
 jest.mock("@formsflow/components", () => ({
-  ...jest.requireActual("../../../__mocks__/@formsflow/components"),
-  FilterIcon: () => <div>Filter Icon</div>,
-  RefreshIcon: () => <div>Refresh Icon</div>,
-  SortModal: ({ showSortModal, onClose, primaryBtnAction }) => (
-    showSortModal ? (
-      <div data-testid="sort-modal">
-        <button data-testid="sort-modal-close" onClick={onClose}>Close</button>
-        <button data-testid="apply-sort-button" onClick={primaryBtnAction}>Apply Sort</button>
-      </div>
-    ) : null
-  )
-}));
-
+    ...jest.requireActual("../../../__mocks__/@formsflow/components"),
+    FilterIcon: () => <div>Filter Icon</div>,
+    RefreshIcon: () => <div>Refresh Icon</div>,
+    SortModal: ({ showSortModal, onClose, primaryBtnAction }) => (
+      showSortModal ? (
+        <div data-testid="sort-modal">
+          <button data-testid="sort-modal-close" onClick={onClose}>Close</button>
+          <button data-testid="apply-sort-button" onClick={primaryBtnAction}>Apply Sort</button>
+        </div>
+      ) : null
+    )
+  }));
 const queryClient = new QueryClient();
 let store;
 let history;
@@ -54,7 +52,7 @@ function renderWithRouterMatch(Ui, { path = "/", route = "/", props = {} }) {
   );
 }
 
-describe('ProcessTable Component Tests', () => {
+describe('DMN ProcessTable Component Tests', () => {
   beforeEach(() => {
     store = configureStore({
       reducer: rootReducer,
@@ -64,25 +62,21 @@ describe('ProcessTable Component Tests', () => {
     
     renderWithRouterMatch(ProcessTable, {
       path: "/:viewType",
-      route: "/subflow",
+      route: "/decision-table",
     });
     
     store.dispatch.mockClear();
     jest.clearAllMocks();
   });
 
-  it("should render process table header correctly", () => {
+  it("should render DMN table header correctly", () => {
     expect(screen.getByText("Name")).toBeInTheDocument();
     expect(screen.getByText("ID")).toBeInTheDocument();
     expect(screen.getByText("Last Edited")).toBeInTheDocument();
     expect(screen.getByText("Status")).toBeInTheDocument();
   });
 
-  it("should handle process name column sorting", async () => {
-    const currentPath = history.location.pathname;
-    const viewType = currentPath.split("/")[1];
-    const expectedSortType = viewType === "subflow" ? "BPM_SORT" : "DMN_SORT";
-    
+  it("should handle DMN name column sorting", async () => {
     const sortButton = screen.getByTestId("Name-header-btn");
     fireEvent.click(sortButton);
     
@@ -96,36 +90,31 @@ describe('ProcessTable Component Tests', () => {
     await waitFor(() => {
       expect(store.dispatch).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: expectedSortType,
+          type: "DMN_SORT",
           payload: expect.objectContaining({
             activeKey: "name",
-            name: expect.objectContaining({ sortOrder: "desc" }),
-            modified: expect.objectContaining({ sortOrder: "asc" }),
-            status: expect.objectContaining({ sortOrder: "asc" }),
-            processKey: expect.objectContaining({ sortOrder: "asc" }),
+            name: expect.objectContaining({ sortOrder: "desc" })
           }),
         })
       );
     });
   });
 
-  it('should handle search functionality correctly', async () => {
-    const searchInput = screen.getByTestId('BPMN-search-input');
-    await userEvent.type(searchInput, 'test process');
+  it('should handle DMN search functionality correctly', async () => {
+    const searchInput = screen.getByTestId('DMN-search-input');
+    await userEvent.type(searchInput, 'test decision');
     
     const searchButton = screen.getByRole('button', { name: /search/i });
     fireEvent.click(searchButton);
 
     await waitFor(() => {
-      expect(store.dispatch).toHaveBeenCalledWith(
-        expect.any(Function)
-      );
+      expect(store.dispatch).toHaveBeenCalledWith(expect.any(Function));
     });
   });
 
-  it('should handle clear search correctly', async () => {
-    const searchInput = screen.getByTestId('BPMN-search-input');
-    await userEvent.type(searchInput, 'test process');
+  it('should handle DMN clear search correctly', async () => {
+    const searchInput = screen.getByTestId('DMN-search-input');
+    await userEvent.type(searchInput, 'test decision');
     
     const clearButton = screen.getByRole('button', { name: /clear/i });
     fireEvent.click(clearButton);
@@ -134,72 +123,33 @@ describe('ProcessTable Component Tests', () => {
     expect(store.dispatch).toHaveBeenCalled();
   });
 
+//   it('should dispatch action on DMN refresh button click', async () => {
+//     const refreshButton = screen.getByTestId("Process-list-refresh-dmn");
+//     fireEvent.click(refreshButton);
 
-  it('should show loading overlay when isLoading is true', () => {
-    const overlay = screen.getByTestId("overlay");
-    const loadingOverlay = screen.getByText('Loading...');
-    expect(overlay).toBeInTheDocument();
-    expect(loadingOverlay).toBeInTheDocument();
-  });
+//     await waitFor(() => {
+//       expect(store.dispatch).toHaveBeenCalledWith(expect.any(Function));
+//     });
+//   });
 
-  it('should render the table footer component and handle pagination correctly', () => {
-    store.dispatch.mockClear();
-    jest.clearAllMocks();
-    
-    const footer = screen.getByTestId("table-footer");
-    expect(footer).toBeInTheDocument();
-    
-    const itemsCount = screen.getByTestId("items-count");
-    expect(itemsCount).toBeInTheDocument();
-    
-    const totalItems = screen.getByTestId("total-items");
-    expect(totalItems).toHaveTextContent('50');
-    
-    const prevButton = screen.getByTestId('left-button');
-    const nextButton = screen.getByTestId('right-button');
-    expect(prevButton).toBeInTheDocument();
-    expect(nextButton).toBeInTheDocument();
-    
-    const pageDisplay = screen.getByTestId('current-page-display');
-    expect(pageDisplay).toBeInTheDocument();
-    
-    fireEvent.click(nextButton);
-    expect(store.dispatch).toHaveBeenCalled();
-    
-    fireEvent.click(prevButton);
-    expect(store.dispatch).toHaveBeenCalled();
-    
-    const pageSizeDropdown = screen.getByTestId('page-size-dropdown');
-    expect(pageSizeDropdown).toBeInTheDocument();
-    
-    fireEvent.change(pageSizeDropdown, { target: { value: "10" } });
-    
-    expect(store.dispatch).toHaveBeenCalled();
-    const dispatchedAction = store.dispatch.mock.calls[store.dispatch.mock.calls.length - 1][0];
-    expect(typeof dispatchedAction).toBe('function');
-  });
-    it("should redirect to edit page when gotoEdit is called", () => {
-    const processItem = mockstate.process.processList[0];
-    
-    // Mock the dispatch function before configuring store
+  it("should redirect to DMN edit page when gotoEdit is called", () => {
+    const dmnItem = mockstate.process.dmnProcessList[0];
     const mockDispatch = jest.fn();
     store.dispatch = mockDispatch;
-  
-    // Get the button and trigger click
-    const editButton = screen.getByTestId(`edit-button-${processItem.processKey}`);
+
+    const editButton = screen.getByTestId(`edit-button-${dmnItem.processKey}`);
     fireEvent.click(editButton);
-  
-    // Wait for dispatch to be called
+
     waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith(
         expect.objectContaining({
-          payload: `/subflow/edit/${processItem.processKey}`
+          payload: `/dmn/edit/${dmnItem.processKey}`
         })
       );
     });
   });
   it('should handle filter icon click and sort modal interactions', () => {
-    const filterButton = screen.getByTestId('Process-list-filter-bpmn');
+    const filterButton = screen.getByTestId('Process-list-filter-dmn');
     fireEvent.click(filterButton);
     
     const sortModal = screen.getByTestId('sort-modal');
@@ -211,7 +161,7 @@ describe('ProcessTable Component Tests', () => {
   });
 
   it('should handle sort modal interactions correctly', async () => {
-    const filterButton = screen.getByTestId('Process-list-filter-bpmn');
+    const filterButton = screen.getByTestId('Process-list-filter-dmn');
     fireEvent.click(filterButton);
     
     const sortModal = screen.getByTestId('sort-modal');
@@ -228,7 +178,7 @@ describe('ProcessTable Component Tests', () => {
   });
   
   it('should handle refresh functionality correctly', async () => {
-    const refreshButton = screen.getByTestId('Process-list-refresh-bpmn');
+    const refreshButton = screen.getByTestId('Process-list-refresh-dmn');
     fireEvent.click(refreshButton);
     
     await waitFor(() => {

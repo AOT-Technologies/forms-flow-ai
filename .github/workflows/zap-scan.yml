@@ -22,7 +22,7 @@ jobs:
 
       - name: ZAP Scan
         id: zap_scan
-        uses: zaproxy/action-full-scan@v0.8.0
+        uses: zaproxy/action-full-scan@v0.12.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: ${{ secrets.WEB_TARGET_URL }}

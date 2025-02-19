@@ -8,7 +8,7 @@ from flask_restx import Namespace, Resource, cors
 from api import config
 from api.services.store_sentiment_result import save_sentiment_result
 from api.services.transformers import sentiment_analysis_pipeline_transformers
-from api.utils import Service, auth, cors_preflight
+from formsflow_api_utils.utils import Service, auth, cors_preflight
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 

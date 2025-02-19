@@ -12,7 +12,7 @@ import sys
 
 from dotenv import find_dotenv, load_dotenv
 
-from .utils.enumerator import Service
+from formsflow_api_utils.utils import Service
 
 # this will load all the envars from a .env file located in the project root (api)
 load_dotenv(find_dotenv())

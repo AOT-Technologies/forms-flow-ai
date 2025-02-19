@@ -16,7 +16,7 @@ import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 import rootReducer from "../rootReducer";
 import { mockstate } from "../mockState";
 import ProcessTable from "../../../routes/Design/Process/ProcessTable";
-import { useTranslation } from "react-i18next";
+
 
 jest.mock("connected-react-router", () => ({
   push: jest.fn(),

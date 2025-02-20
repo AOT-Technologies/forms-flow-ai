@@ -71,7 +71,6 @@ export const mockstate = {
       modified: { sortOrder: "asc" },
       status: { sortOrder: "asc" },
    },
-    isApplicationCountLoading: false,
     processData: {
       name: "Test Process",
       status: "Published",

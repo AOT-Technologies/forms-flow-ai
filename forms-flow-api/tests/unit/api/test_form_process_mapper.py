@@ -857,7 +857,9 @@ def test_form_list_submission_count(app, client, session, jwt, create_mapper):
     assert "submissionsCount" not in forms[0]
 
 
-def test_get_form_data(app, client, session, jwt, mock_redis_client, create_mapper):
+def test_get_form_data_for_designer(
+    app, client, session, jwt, mock_redis_client, create_mapper
+):
     """Testing get form data endpoint."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -883,7 +885,7 @@ def test_get_form_data(app, client, session, jwt, mock_redis_client, create_mapp
     assert response.status_code == 403
 
 
-def test_get_form_data_client(
+def test_get_form_data_for_client(
     app, client, session, jwt, mock_redis_client, create_mapper
 ):
     """Testing get form data endpoint."""
@@ -896,13 +898,14 @@ def test_get_form_data_client(
     assert response.status_code == 201
     form_id = response.json["_id"]
     form_name = response.json["name"]
-    mapper_id = create_mapper["id"]
+    mapper_data = FormProcessMapper.find_form_by_form_id(form_id)
+
     payload = {
         "mapper": {
             "formId": form_id,
             "parentFormId": form_id,
             "status": "active",
-            "id": mapper_id,
+            "id": str(mapper_data.id),
             "formName": form_name,
             "formType": "form",
             "anonymous": False,
@@ -915,7 +918,7 @@ def test_get_form_data_client(
             },
         },
     }
-    response = client.put(f"/form/{mapper_id}", headers=headers, json=payload)
+    response = client.put(f"/form/{mapper_data.id}", headers=headers, json=payload)
     assert response.status_code == 200
     # test authorized user
     client_token = get_token(jwt, role=CREATE_SUBMISSIONS, roles=["/formsflow/sample"])
@@ -936,3 +939,39 @@ def test_get_form_data_client(
     }
     response = client.get(f"/form/form-data/{form_id}", headers=headers)
     assert response.status_code == 403
+
+
+def test_get_form_data_for_application(
+    app, client, session, jwt, mock_redis_client, create_mapper
+):
+    """Testing get form data endpoint."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    payload = get_formio_form_request_payload()
+    payload["componentChanged"] = True
+    payload["newVersion"] = True
+    response = client.post("/form/form-design", headers=headers, json=payload)
+    assert response.status_code == 201
+
+    token = get_token(jwt, role=CREATE_SUBMISSIONS, username="submitter")
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    form_id = create_mapper["formId"]
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=get_application_create_payload(form_id),
+    )
+    assert rv.status_code == 201
+    token = get_token(jwt, role=VIEW_SUBMISSIONS, username="submitter")
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    response = client.get(
+        f"/form/form-data/{form_id}?authType=application", headers=headers
+    )
+    assert response.status_code == 200
+    assert response.json is not None

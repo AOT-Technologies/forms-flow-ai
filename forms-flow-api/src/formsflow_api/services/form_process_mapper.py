@@ -1012,11 +1012,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         tenant_key = user.tenant_key
         auth_type = auth_type.upper() if auth_type else AuthType.FORM.value
         mapper_data = FormProcessMapper.find_form_by_form_id(form_id)
-
         # check the mapper exists and is accessible
         if not mapper_data:
             raise BusinessException(BusinessErrorCode.FORM_NOT_FOUND)
-
         if auth_type == AuthType.FORM.value:
             # check the form is published
             if mapper_data.status == FormProcessMapperStatus.INACTIVE.value:
@@ -1024,7 +1022,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             # check the user is not anonymous then the tenant must match
             if not mapper_data.is_anonymous and mapper_data.tenant != tenant_key:
                 raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
-
         auth_service = AuthorizationService()
         auth_data = None
         if auth_type == AuthType.APPLICATION.value:
@@ -1038,7 +1035,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             auth_data = auth_service.get_resource_by_id(
                 auth_type=auth_type,
                 resource_id=mapper_data.parent_form_id,
-                is_designer=is_designer if auth_type == AuthType.DESIGN.value else False,
+                is_designer=(
+                    is_designer if auth_type == AuthType.DESIGNER.value else False
+                ),
                 user=user,
             )
 

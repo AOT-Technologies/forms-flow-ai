@@ -58,12 +58,15 @@ function ClientTable() {
   };
 
   // Event handlers
-  const handleSort = (key) => {
-    const newSortOrder = formsort[key]?.sortOrder === "asc" ? "desc" : "asc";
+ const handleSort = (key) => {
+    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
+  
+    // Reset all other columns to default (ascending) except the active one
     const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
       acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
       return acc;
-    }, {});  
+    }, {});
+  
     dispatch(setBpmFormSort({
       ...updatedSort,
       activeKey: key,

@@ -19,4 +19,4 @@ selenium-wire
 blinker<1.8.0 # latest selenium-wire have breaking changes with blinker
 nested-lookup
 setuptools
-git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/auslin-aot/forms-flow-ai.git@bugfix/fwf-4352-data-analysis-api-test-lint-fix#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

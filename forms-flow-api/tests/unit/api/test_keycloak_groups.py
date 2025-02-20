@@ -1,8 +1,9 @@
 """Unit test for APIs of Keycloak Group."""
 
 import pytest
+from formsflow_api_utils.utils import get_token
 
-from tests.utilities.base_test import get_token, update_dashboard_payload
+from tests.utilities.base_test import update_dashboard_payload
 
 
 def test_group_list(app, client, session, jwt):

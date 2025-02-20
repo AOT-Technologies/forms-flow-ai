@@ -1,7 +1,7 @@
 """Common utilities for testing."""
 
 import time
-import os
+from flask import current_app
 
 from .permisions import CREATE_SUBMISSIONS
 
@@ -23,7 +23,7 @@ def get_token(
             "exp": round(time.time() * 1000),
             "nbf": 0,
             "iat": 1635399332,
-            "iss": os.getenv("JWT_OIDC_TEST_ISSUER"),
+            "iss": current_app.config["JWT_OIDC_TEST_ISSUER"],
             "aud": ["camunda-rest-api", "forms-flow-web"],
             "sub": "47b46f22-45ec-4cfb-825b-ed10ba8bed01",
             "typ": "Bearer",

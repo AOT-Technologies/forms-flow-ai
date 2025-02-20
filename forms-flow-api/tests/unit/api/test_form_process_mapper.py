@@ -10,6 +10,7 @@ from formsflow_api_utils.utils import (
     CREATE_SUBMISSIONS,
     VIEW_DESIGNS,
     VIEW_SUBMISSIONS,
+    get_token,
 )
 
 from formsflow_api.models import FormProcessMapper
@@ -19,7 +20,6 @@ from tests.utilities.base_test import (
     get_draft_create_payload,
     get_form_request_payload,
     get_formio_form_request_payload,
-    get_token,
 )
 
 

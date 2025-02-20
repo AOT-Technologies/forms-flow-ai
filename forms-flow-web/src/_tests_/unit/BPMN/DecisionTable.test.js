@@ -70,10 +70,10 @@ describe('DMN ProcessTable Component Tests', () => {
   });
 
   it("should render DMN table header correctly", () => {
-    expect(screen.getByText("Name")).toBeInTheDocument();
-    expect(screen.getByText("ID")).toBeInTheDocument();
-    expect(screen.getByText("Last Edited")).toBeInTheDocument();
-    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByTestId("Name-header-btn")).toBeInTheDocument();
+    expect(screen.getByTestId("ID-header-btn")).toBeInTheDocument();
+    expect(screen.getByTestId("Last Edited-header-btn")).toBeInTheDocument();
+    expect(screen.getByTestId("Status-header-btn")).toBeInTheDocument();
   });
 
   it("should handle DMN name column sorting", async () => {

@@ -1,12 +1,9 @@
 """Utils for Test Suite"""
-import ast
-import os
 import time
 
-import requests
 from dotenv import find_dotenv, load_dotenv
 from flask import current_app
-
+from formsflow_api_utils.utils import CREATE_SUBMISSIONS
 load_dotenv(find_dotenv())
 
 token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
@@ -14,7 +11,7 @@ token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
 
 def get_token(
     jwt,
-    role: str = "formsflow-client",
+    role: str = CREATE_SUBMISSIONS,
     username: str = "client",
     roles: list = [],
     tenant_key: str = None,
@@ -44,6 +41,7 @@ def get_token(
             },
             "scope": "camunda-rest-api email profile",
             "roles": [role, *roles],
+            "groups": [role, *roles],
             "name": "John Smith",
             "preferred_username": username,
             "given_name": "John",

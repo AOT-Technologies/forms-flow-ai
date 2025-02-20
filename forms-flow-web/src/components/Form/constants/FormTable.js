@@ -163,7 +163,9 @@ function FormTable() {
                         </td>
                         <td className="w-30 cursor-pointer">
                           <span className={isExpanded ? "text-container-expand" : "text-container"}
-                            onClick={() => toggleRow(index)}>
+                            onClick={() => toggleRow(index)}
+                            data-testid="description-cell"
+                            >
                             {stripHtml(e.description ? e.description : "")}
                           </span>
                         </td>

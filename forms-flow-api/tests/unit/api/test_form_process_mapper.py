@@ -952,7 +952,14 @@ def test_get_form_data_for_application(
     payload["newVersion"] = True
     response = client.post("/form/form-design", headers=headers, json=payload)
     assert response.status_code == 201
-
+    auth_payload = {
+        "resourceId": "1234",
+        "resourceDetails": {"submitter": True},
+        "roles": [],
+    }
+    client.post(
+        "/authorizations/application", headers=headers, data=json.dumps(auth_payload)
+    )
     token = get_token(jwt, role=CREATE_SUBMISSIONS, username="submitter")
     headers = {
         "Authorization": f"Bearer {token}",

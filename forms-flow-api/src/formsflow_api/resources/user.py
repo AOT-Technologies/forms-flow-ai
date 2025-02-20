@@ -257,7 +257,7 @@ class UserPermission(Resource):
         json_payload = request.get_json()
         user_and_group = UserPermissionUpdateSchema().load(json_payload)
         current_app.logger.debug("Initializing admin API service...")
-        service = KeycloakGroupService()
+        service = KeycloakFactory.get_instance()
         current_app.logger.debug("Successfully initialized admin API service !")
         response = service.add_user_to_group(user_id, group_id, user_and_group)
         if not response:

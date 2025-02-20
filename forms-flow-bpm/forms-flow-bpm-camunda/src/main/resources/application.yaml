@@ -182,6 +182,12 @@ plugin.identity.keycloak:
   enableClientAuth: ${KEYCLOAK_ENABLE_CLIENT_AUTH:false}
   enableMultiTenancy: ${MULTI_TENANCY_ENABLED:false}
   formsFlowAdminUrl: ${FORMSFLOW_ADMIN_URL:}
+  sharedRealmEnabled: ${SHARED_REALM:false}
+  cssApiUrl: ${CSS_API_BASE_URL:}/${CSS_INTEGRATION_ID:}/${CSS_ENV:}
+  cssApiClient: ${CSS_API_CLIENT_ID:}
+  cssApiSecret: ${CSS_API_SECRET:}
+  cssApiLogin: ${CSS_API_LOGIN_URL:}
+  
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 
@@ -241,3 +247,6 @@ logging:
       max-history: 30
   file:
     name: /logs/forms-flow-bpm.log
+
+  
+

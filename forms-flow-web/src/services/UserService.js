@@ -49,11 +49,13 @@ const initKeycloak = (store, ...rest) => {
     checkLoginIframe: false,
   }).then((authenticated) => {
     if (authenticated) {
-      if (KeycloakData.resourceAccess[clientId]) {
-        const UserRoles = KeycloakData.resourceAccess[clientId].roles;
+      const tokenParsed = KeycloakData.tokenParsed || {};
+      const UserRoles = tokenParsed.roles || tokenParsed.role || tokenParsed.client_roles || [];
+      if (UserRoles.length > 0) {
+        // const UserRoles = KeycloakData.resourceAccess[clientId].roles;
         store.dispatch(setUserRole(UserRoles));
         store.dispatch(setUserToken(KeycloakData.token));
-        store.dispatch(setLanguage(KeycloakData.tokenParsed.locale || "en"));
+        store.dispatch(setLanguage(tokenParsed.locale || "en"));
         //Set Cammunda/Formio Base URL
         setApiBaseUrlToLocalStorage();
         // get formio roles

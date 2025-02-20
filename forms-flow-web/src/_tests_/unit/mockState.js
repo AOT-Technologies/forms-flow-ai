@@ -2,8 +2,75 @@
 export const mockstate = {
 
   process:{
-    processList: [],
+    isProcessLoading: true,
+    processStatusList: [],
+    processLoadError: false,
+    processXml: "",
+    processList: [
+      {
+        "created": "2025-02-10T09:01:11.971172Z",
+        "modified": "2025-02-10T09:01:11.971190Z",
+        "id": 4676,
+        "name": "AAA123 asdfas fasdfasdfasdf asdf",
+        "tenant": null,
+        "createdBy": "formsflow-designer",
+        "modifiedBy": null,
+        "status": "Published",
+        "processType": "BPMN",
+        "isSubflow": true,
+        "processKey": "Process_nm9ewcsAAQQQ",
+        "parentProcessKey": "Process_nm9ewcsAAQQQ"
+    }
+    ],
+    dmnProcessList: [{
+      "created": "2025-02-10T09:00:27.522600Z",
+      "modified": "2025-02-10T09:00:27.522617Z",
+      "id": 4674,
+      "name": "abilaaadddghaagccalexaaaffcxdfvdff",
+      "tenant": null,
+      "createdBy": "formsflow-designer",
+      "modifiedBy": null,
+      "status": "Draft",
+      "processType": "DMN",
+      "isSubflow": true,
+      "processKey": "abddddlsghaafdantonydsfcvgf",
+      "parentProcessKey": "ablsghaafdantonydsfcvgf"
+  }],
+    formProcessError: false,
+    formProcessList: [],
+    formPreviousData: [],
+    processActivityList: null,
+    processActivityLoadError: false,
+    isProcessDiagramLoading: false,
+    applicationCount: 0,
     isApplicationCountLoading: false,
+    applicationCountResponse: false,
+    unPublishApiError: false,
+    workflowAssociated: null, //{label:'Workflow Name', value:'workflow_process_key'}
+    formStatusLoading: false,
+    authorizationDetails: {},
+    formAuthVerifyLoading: false,
+    isBpmnModel: false,
+    bpmnSearchText: "",
+    dmnSearchText: "",
+    isPublicDiagram: null,
+    processHistoryData:{},
+    totalBpmnCount:50,
+    totalDmnCount:50,
+    bpmsort: {
+      activeKey: "name",
+      name: { sortOrder: "asc" },
+      processKey: { sortOrder: "asc" },
+      modified: { sortOrder: "asc" },
+      status: { sortOrder: "asc" },
+   },
+   dmnSort: {
+      activeKey: "processKey",
+      name: { sortOrder: "asc" },
+      processKey: { sortOrder: "asc" },
+      modified: { sortOrder: "asc" },
+      status: { sortOrder: "asc" },
+   },
     processData: {
       name: "Test Process",
       status: "Published",
@@ -16,7 +83,7 @@ export const mockstate = {
     error: "",
     forms: [
       {
-        _id: 'mock-form-id',        
+        _id: 'mock-form-id',
         title: 'Test Form',
         description: 'Test Description',
         status: 'active',
@@ -32,7 +99,7 @@ export const mockstate = {
     formType:"form",
     searchText: "",
     sort: {
-      activeKey: "formName", 
+      activeKey: "formName",
       formName: { sortOrder: "asc" },
       modified: { sortOrder: "asc" },
       submissions: { sortOrder: "asc" },
@@ -43,7 +110,7 @@ export const mockstate = {
   },
 
   user:{
-    createDesigns: true,  
+    createDesigns: true,
     bearerToken: "",
     roles: [
     "view_tasks",
@@ -78,7 +145,7 @@ export const mockstate = {
       "RESOURCE_ID": "65f6845c5a0b7bdb4eabdde1"
   },
     userDetail: {},
-    isAuthenticated: false,
+    isAuthenticated: true,
     currentPage: "",
     showApplications: false,
     lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : null,
@@ -104,11 +171,9 @@ export const mockstate = {
     searchFormLoading: false,
     designerAccessDenied: false
   },
-  formDelete: { 
+  formDelete: {
     formDelete: { modalOpen: false, formId: "", formName: "" }
-  }
-
- 
+  },
 
 };
 

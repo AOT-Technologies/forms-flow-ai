@@ -22,7 +22,8 @@ export const CustomButton = ({
   }
 
   return (
-    <button
+    
+       <button
       onClick={onClick}
       data-testid={dataTestId}
       aria-label={ariaLabel}
@@ -31,6 +32,7 @@ export const CustomButton = ({
     >
       {label}
     </button>
+   
   );
 };
 
@@ -45,6 +47,95 @@ CustomButton.propTypes = {
   ariaLabel: PropTypes.string,
   disabled: PropTypes.bool
 };
+
+const NormalDropdown = ({ 
+  limit, 
+  onLimitChange, 
+  pageOptions, 
+  isDropdownOpen, 
+  toggleDropdown,
+  'data-testid': dataTestId 
+}) => {
+  return (
+    <div className="normal-dropdown" data-testid={dataTestId}>
+      <button
+        className="dropdown-toggle"
+        onClick={toggleDropdown}
+        data-testid="page-size-dropdown"
+      >
+        {limit}
+      </button>
+      <ul className="dropdown-menu" style={{ display: isDropdownOpen ? 'block' : 'none' }}>
+        {pageOptions?.map((option) => (
+          <li
+            key={option.value}
+            data-testid={`page-size-option-${option.value}`}
+            onClick={() => {
+              onLimitChange(option.value);
+              toggleDropdown();
+            }}
+          >
+            {`${option.value} per page`}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+export const TableFooter = ({
+  limit,
+  activePage,
+  totalCount,
+  handlePageChange,
+  onLimitChange,
+  pageOptions,
+  isDropdownOpen,
+  toggleDropdown,
+  dataTestId="table-footer"
+}) => {
+  return (
+    <tr data-testid={dataTestId}>
+      <td colSpan={3}>
+        <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
+          <span data-testid="items-count">
+            Showing {limit * activePage - (limit - 1)} to&nbsp;
+            {Math.min(limit * activePage, totalCount)} of&nbsp;
+            <span data-testid="total-items">{totalCount}</span>
+          </span>
+        </div>
+      </td>
+      <td colSpan={3}>
+        <div className="d-flex align-items-center">
+          <button data-testid="left-button" onClick={() => handlePageChange(activePage - 1)}>
+            <AngleLeftIcon />
+          </button>
+          <span data-testid="current-page-display">{activePage}</span>
+          <button data-testid="right-button" onClick={() => handlePageChange(activePage + 1)}>
+            <AngleRightIcon />
+          </button>
+        </div>
+      </td>
+      {pageOptions && (
+        <td colSpan={3}>
+          <div className="d-flex align-items-center justify-content-end">
+            <span className="pagination-text">Rows per page</span>
+            <div className="pagination-dropdown">
+              <NormalDropdown
+                data-testid="page-size-select"
+                limit={limit}
+                onLimitChange={onLimitChange}
+                pageOptions={pageOptions}
+                isDropdownOpen={isDropdownOpen}
+                toggleDropdown={toggleDropdown}
+              />
+            </div>
+          </div>
+        </td>
+      )}
+    </tr>
+  );
+};
+
 
 export const CloseIcon = ({ 
   onClick, 
@@ -80,6 +171,98 @@ CloseIcon.propTypes = {
   onClick: PropTypes.func,
   dataTestId: PropTypes.string
 };
+
+export const AngleLeftIcon = ({
+  onClick,
+  dataTestId="left-icon"
+}) => {
+  return (
+    <button
+      className="left-icon-container"
+      onClick={onClick}
+      data-testid={dataTestId}
+      aria-label="Left Icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="15"
+        viewBox="0 0 10 15"
+        fill="none"
+        onClick={onClick}
+      >
+        <path
+          d="M8.2501 14.0005L1.74951 7.4999L8.24951 0.999901"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
+
+  );
+} 
+
+export const AngleRightIcon = ({
+  onClick,
+  dataTestId="right-icon"
+}) => {
+  return (
+    <button
+      className="right-icon-container"
+      onClick={onClick}
+      data-testid={dataTestId}
+      aria-label="Right Icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="15"
+        viewBox="0 0 10 15"
+        fill="none"
+        onClick={onClick}
+      >
+        <path
+          d="M8.2501 14.0005L1.74951 7.4999L8.24951 0.999901"
+          // stroke={props.disabled ? grayColor : color}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
+
+  );
+} 
+
+export const DownArrowIcon = ({
+  downIconClick,
+  downIconDataTestId
+}) => {
+  return (
+    <button
+      className="left-icon-container"
+      onClick={downIconClick}
+      data-testid={downIconDataTestId}
+      aria-label="Down Icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="15"
+        viewBox="0 0 10 15"
+        fill="none"
+        onClick={onClick}
+      >
+        <path
+          d="M8.2501 14.0005L1.74951 7.4999L8.24951 0.999901"
+          stroke={props.disabled ? grayColor : color}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
+
+  );
+}
 
 export const FilterIcon = ({ 
   handleFilterIconClick, 
@@ -392,50 +575,6 @@ ImportModal.propTypes = {
   errorMessage: PropTypes.string
 };
 
-export const TableFooter = ({
-  limit,
-  activePage,
-  totalCount,
-  handlePageChange,
-  onLimitChange,
-  pageOptions
-}) => (
-  <tr>
-    <td colSpan={3}>
-      <div className="d-flex justify-content-between align-items-center flex-column flex-md-row">
-        <span>Showing {limit * activePage - (limit - 1)} to {Math.min(limit * activePage, totalCount)} of {totalCount}</span>
-      </div>
-    </td>
-    {totalCount > 5 ? (
-      <>
-        <td colSpan={3}>
-          <div className="d-flex align-items-center">
-            <div>Mocked Pagination</div>
-          </div>
-        </td>
-        {pageOptions && (
-          <td colSpan={3}>
-            <div className="d-flex align-items-center justify-content-end">
-              <span className="pagination-text">Rows per page</span>
-              <div className="pagination-dropdown">
-                <div>Mocked Dropdown for Limit</div>
-              </div>
-            </div>
-          </td>
-        )}
-      </>
-    ) : null}
-  </tr>
-);
-
-TableFooter.propTypes = {
-  limit: PropTypes.number.isRequired,
-  activePage: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  handlePageChange: PropTypes.func,
-  onLimitChange: PropTypes.func,
-  pageOptions: PropTypes.array
-};
 
 export const NoDataFound = () => {
   return (
@@ -446,6 +585,50 @@ export const NoDataFound = () => {
 };
 
 NoDataFound.propTypes = {};
+
+NormalDropdown.propTypes = {
+  limit: PropTypes.number.isRequired,
+  onLimitChange: PropTypes.func.isRequired,
+  pageOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      label: PropTypes.string
+    })
+  ),
+  isDropdownOpen: PropTypes.bool.isRequired,
+  toggleDropdown: PropTypes.func.isRequired,
+  'data-testid': PropTypes.string
+};
+
+TableFooter.propTypes = {
+  limit: PropTypes.number.isRequired,
+  activePage: PropTypes.number.isRequired,
+  totalCount: PropTypes.number.isRequired,
+  handlePageChange: PropTypes.func.isRequired,
+  onLimitChange: PropTypes.func.isRequired,
+  pageOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      label: PropTypes.string
+    })
+  ),
+  isDropdownOpen: PropTypes.bool.isRequired,
+  toggleDropdown: PropTypes.func.isRequired,
+  dataTestId: PropTypes.string
+};
+
+AngleLeftIcon.propTypes = {
+  onClick: PropTypes.func,
+  dataTestId: PropTypes.string
+};
+
+SortIcon.propTypes = {
+  onClick: PropTypes.func,
+  downIconClick: PropTypes.func,
+  disabled: PropTypes.bool,
+  dataTestId: PropTypes.string
+};
+
 
 
 export const ConfirmModal = ({show,

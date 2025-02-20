@@ -3,6 +3,7 @@ export const mockstate = {
 
   process:{
     processList: [],
+    isApplicationCountLoading: false,
     processData: {
       name: "Test Process",
       status: "Published",
@@ -15,7 +16,7 @@ export const mockstate = {
     error: "",
     forms: [
       {
-        _id: 'some-form-id',
+        _id: 'mock-form-id',        
         title: 'Test Form',
         description: 'Test Description',
         status: 'active',
@@ -24,7 +25,7 @@ export const mockstate = {
     isActive: false,
     limit: 5,
     page: 1,
-    totalForms: 0,
+    totalForms: 50,
     bpmFormLoading: false,
     sortBy: "formName",
     sortOrder: "asc",
@@ -34,13 +35,16 @@ export const mockstate = {
       activeKey: "formName", 
       formName: { sortOrder: "asc" },
       modified: { sortOrder: "asc" },
+      submissions: { sortOrder: "asc" },
       visibility: { sortOrder: "asc"},
       status: { sortOrder: "asc" },
     },
     clientFormSearch:"",
   },
 
-  user:{bearerToken: "",
+  user:{
+    createDesigns: true,  
+    bearerToken: "",
     roles: [
     "view_tasks",
     "formsflow-client",

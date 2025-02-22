@@ -277,7 +277,7 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>3.0.21</version>
+            <version>3.0.23</version>
             <type>pom</type>
         </dependency>
 
@@ -326,7 +326,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-websocket</artifactId>
-            <version>6.1.12</version>
+            <version>6.1.14</version>
         </dependency>
 
         <dependency>

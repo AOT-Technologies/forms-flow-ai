@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -96,22 +96,23 @@ jest.mock("../../components/Modals/SettingsModal", () => ({
 }));
 
 // Mock all required components
-jest.mock("@formsflow/components", () => ({
-  CustomButton: ({ label, dataTestId, disabled }) => (
-    <button data-testid={dataTestId} disabled={disabled}>
-      {label}
-    </button>
-  ),
-  ConfirmModal: ({ show }) => (show ? <div data-testid="confirm-modal" /> : null),
-  ActionModal: ({ show }) => (show ? <div data-testid="action-modal" /> : null),
-  BackToPrevIcon: () => <div data-testid="back-icon" />,
-  HistoryIcon: () => <div data-testid="history-icon" />,
-  PreviewIcon: () => <div data-testid="preview-icon" />,
-  FormBuilderModal: () => <div data-testid="form-builder-modal" />,
-  HistoryModal: () => <div data-testid="history-modal" />,
-  ImportModal: () => <div data-testid="import-modal" />,
-  CustomInfo: () => <div data-testid="custom-info" />,
-}));
+jest.mock("@formsflow/components", () => {
+  const actual = jest.requireActual("../../../__mocks__/@formsflow/components");
+  return {
+    ...actual,
+    BackToPrevIcon: () => <span>Back</span>,
+    HistoryIcon: () => <span>History Icon</span>,
+    DuplicateIcon: () => <span>Duplicate Icon</span>,
+    ImportIcon: () => <span>Import Icon</span>,
+    PencilIcon: () => <span>Pencil Icon</span>,
+    ErrorModal: () => <div>Error Modal</div>,
+    HistoryModal: () => <div>History Modal</div>,
+    CustomButton: actual.CustomButton,
+    CustomInfo: actual.CustomInfo,
+    FailedIcon: actual.FailedIcon,
+    InfoIcon: actual.InfoIcon,
+  };
+});
 
 // Mock react-i18next
 jest.mock("react-i18next", () => ({
@@ -137,52 +138,6 @@ const renderWithProviders = (ui) => {
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>{ui}</Provider>
     </QueryClientProvider>
-  );
-};
-
-const renderConfirmModal = () => {
-  render(
-    <div data-testid="confirm-modal">
-      <div className="modal-header">
-        <div>Confirm Publish</div>
-        <button data-testid="modal-close-icon">Close</button>
-      </div>
-
-      <div className="modal-body">
-        <div className="content-wrapper">
-          <span className="modal-content-heading">
-            Publishing will save any unsaved changes and lock the entire form,
-            including the layout and the flow. To perform any additional changes
-            you will need to unpublish the form again.
-          </span>
-          <span className="modal-content-text">Main content goes here</span>
-        </div>
-
-        <div className="content-wrapper">
-          <span className="modal-content-heading">Secondary Message</span>
-          <span className="modal-content-text">
-            Additional content goes here
-          </span>
-        </div>
-      </div>
-
-      <div className="modal-footer">
-        <button
-          className="btn-primary"
-          data-testid="confirm-button"
-          onClick={() => {}}
-        >
-          Publish this form
-        </button>
-        <button
-          className="btn-secondary"
-          data-testid="cancel-button"
-          onClick={() => {}}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
   );
 };
 
@@ -227,6 +182,11 @@ describe("working of publish button", () => {
   beforeEach(() => {
     useParams.mockReturnValue({ formId: "test-form-id" });
   });
+
+  afterEach(() => {
+    jest.clearAllMocks(); // Clears all mock calls and instances
+    jest.restoreAllMocks(); // Restores original implementations of spied methods
+  });
   //shows publish button when form is in draft state
   test("shows publish button when form is in draft state", async () => {
     store = configureStore(middlewares)({
@@ -240,16 +200,13 @@ describe("working of publish button", () => {
       },
     });
     renderWithProviders(<Edit />);
-    expect(screen.getByTestId("handle-publish-testid")).toBeInTheDocument();
-    // Wait for the modal to open and check if it is displayed
-    await waitFor(() => {
-      renderConfirmModal();
-    });
+    const publishBtn = screen.getByTestId("handle-publish-testid");
+    expect(publishBtn).toBeInTheDocument();
+    
 
-    expect(screen.getByTestId("confirm-modal")).toBeInTheDocument();
   });
 
-  test("shows unpublish button with correct state", async () => {
+  test("shows unpublish button with correct state", () => {
     store = configureStore(middlewares)({
       ...store.getState(),
       process: {
@@ -263,13 +220,7 @@ describe("working of publish button", () => {
     renderWithProviders(<Edit />);
     const publishButton = screen.getByTestId("handle-publish-testid");
     expect(publishButton).toHaveTextContent("Unpublish");
-
-    // Wait for the modal to open and check if it is displayed
-    await waitFor(() => {
-      renderConfirmModal();
-    });
-
-    expect(screen.getByTestId("confirm-modal")).toBeInTheDocument();
+    
   });
 });
 
@@ -311,7 +262,7 @@ describe("save layout button working", () => {
   });
 
   //shows save layout button when changes are made
-  test("shows save layout button when changes are made", async () => {
+  test("shows save layout button when changes are made",  () => {
     store = configureStore(middlewares)({
       ...store.getState(),
       form: {
@@ -321,12 +272,6 @@ describe("save layout button working", () => {
     });
     renderWithProviders(<Edit />);
     expect(screen.getByTestId("save-form-layout")).toBeInTheDocument();
-        // Wait for the modal to open and check if it is displayed
-        await waitFor(() => {
-          renderConfirmModal();
-        });
-    
-    expect(screen.getByTestId("confirm-modal")).toBeInTheDocument();
   });
 });
 
@@ -358,13 +303,13 @@ describe("discard button working", () => {
       },
     });
     renderWithProviders(<Edit />);
-    expect(screen.getByTestId("discard-button-testid")).toBeInTheDocument();
-    // Wait for the modal to open and check if it is displayed
-    await waitFor(() => {
-          renderConfirmModal();
-        });
-    
-    expect(screen.getByTestId("confirm-modal")).toBeInTheDocument();
+    const discardBtn = screen.getByTestId("discard-button-testid");
+    fireEvent.click(discardBtn);
+    const confirmModalActionBtn = screen.getByTestId("Confirm-button");
+    expect(confirmModalActionBtn).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(confirmModalActionBtn); 
+    });
   });
 });
 
@@ -386,10 +331,57 @@ describe("action button button working", () => {
   });
 
   //shows actions button for authorized users
-  test("shows actions button for authorized users", async () => {
-    renderWithProviders(<Edit />);
-    expect(screen.getByTestId("designer-action-testid")).toBeInTheDocument();
-  });
+  test("should show action button on CREATE mode", async () => {
+      renderWithProviders(<Edit />);
+      const actionBtn = screen.queryByTestId("designer-action-testid");
+      expect(actionBtn).toBeInTheDocument();
+    });
+  
+    const commonActionModalOpenStep = async () => {
+      const actionBtn = screen.queryByTestId("designer-action-testid");
+      expect(actionBtn).toBeInTheDocument();
+      await userEvent.click(actionBtn);
+      const actionModal = screen.queryByTestId("action-modal");
+      expect(actionModal).toBeInTheDocument();
+    };
+  
+    test("should show action button on EDIT mode", async () => {
+      renderWithProviders(<Edit />);
+      await commonActionModalOpenStep();
+    }); 
+    
+    test("should click action button and open on EDIT mode and perform close modal", async () => {
+      renderWithProviders(<Edit />);
+      await commonActionModalOpenStep();
+      const actionModalCloseBtn = screen.getByTestId("action-modal-close");
+      expect(actionModalCloseBtn).toBeInTheDocument();
+      await userEvent.click(actionModalCloseBtn);
+    });
+
+    test("should perform DUPLICATE btn click from ACTION modal", async () => {
+      renderWithProviders(<Edit />);
+      await commonActionModalOpenStep();
+      const duplicateBtn = screen.getByTestId("duplicate-form-button");
+      expect(duplicateBtn).toBeInTheDocument();
+      await userEvent.click(duplicateBtn);
+    });
+
+    test("should perform IMPORT btn click from ACTION modal", async () => {
+      renderWithProviders(<Edit />);
+      await commonActionModalOpenStep();
+      const importBtn = screen.getByTestId("import-form-button");
+      expect(importBtn).toBeInTheDocument();
+      await userEvent.click(importBtn);
+    });
+
+    // test("should perform EXPORT btn click from ACTION modal", async () => {
+    //   renderWithProviders(<Edit />);
+    //   await commonActionModalOpenStep();
+    //   const exportBtn = screen.getByTestId("export-form-button");
+    //   expect(exportBtn).toBeInTheDocument();
+    //   await userEvent.click(exportBtn);
+    // }); 
+    
 });
 
 describe("preview button button working", () => {

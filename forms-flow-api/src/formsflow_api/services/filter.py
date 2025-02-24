@@ -46,8 +46,20 @@ class FilterService:
         return filter_schema.dump(filter_data)
 
     @staticmethod
+    def get_attribute_filters(filter_data, filter_type):
+        """Get attribute filters."""
+        attribute_filters = {}
+        if "TASK" in filter_type:
+            attribute_filters = {
+                f["parentFilterId"]: f
+                for f in filter_data
+                if f["filterType"] == "ATTRIBUTE"
+            }
+        return attribute_filters
+
+    @staticmethod
     @user_context
-    def get_user_filters(**kwargs):
+    def get_user_filters(request_args, **kwargs):  # pylint: disable=too-many-locals
         """Get filters for the user."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
@@ -99,28 +111,50 @@ class FilterService:
                     },
                 )
                 filter_obj.save()
-
+        # If filter type is not provided, get all filters for type task and attribute
+        filter_type = (
+            [request_args.get("filterType").upper()]
+            if request_args.get("filterType")
+            else ["TASK", "ATTRIBUTE"]
+        )
         filters = Filter.find_user_filters(
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
             admin=ADMIN in user.roles,
+            filter_type=filter_type,
         )
         filter_data = filter_schema.dump(filters, many=True)
         default_variables = [
             {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},
         ]
+        attribute_filters = FilterService.get_attribute_filters(
+            filter_data, filter_type
+        )
+
+        organized_filters = []
         # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
             filter_item["editPermission"] = (
                 filter_item["createdBy"] == user.user_name or ADMIN in user.roles
             )
-            # Check and add default variables if not present
-            filter_item["variables"] = filter_item["variables"] or []
-            filter_item["variables"] += [
-                var for var in default_variables if var not in filter_item["variables"]
-            ]
+
+            if filter_item["filterType"] == "TASK":
+                # Find all attribute filters that have this task filter as parent
+                filter_item["attributeFilters"] = attribute_filters.get(
+                    filter_item["id"]
+                )
+                # Check and add default variables if not present
+                filter_item["variables"] = filter_item["variables"] or []
+                filter_item["variables"] += [
+                    var
+                    for var in default_variables
+                    if var not in filter_item["variables"]
+                ]
+            organized_filters.append(filter_item)
+        filter_data = organized_filters
+
         response = {"filters": filter_data}
         # get user default filter
         user_data = User.get_user_by_user_name(user_name=user.user_name)
@@ -141,7 +175,19 @@ class FilterService:
             admin=ADMIN in user.roles,
         )
         if filter_result:
-            return filter_result
+            response = filter_schema.dump(filter_result)
+            attribute_filters = Filter.find_user_filters(
+                roles=user.group_or_roles,
+                user=user.user_name,
+                tenant=tenant_key,
+                admin=ADMIN in user.roles,
+                filter_type=["ATTRIBUTE"],
+                parent_filter_id=response["id"],
+            )
+            response["attributeFilters"] = filter_schema.dump(
+                attribute_filters, many=True
+            )
+            return response
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 
     @staticmethod

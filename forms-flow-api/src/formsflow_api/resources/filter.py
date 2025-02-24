@@ -176,7 +176,7 @@ class UsersFilterList(Resource):
 
         Get all active filters of current reviewer user for requests with ```reviewer permission```.
         """
-        response, status = FilterService.get_user_filters(), HTTPStatus.OK
+        response, status = FilterService.get_user_filters(request.args), HTTPStatus.OK
         return response, status
 
 
@@ -187,7 +187,7 @@ class FilterResourceById(Resource):
     """Resource for managing filter by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -204,7 +204,7 @@ class FilterResourceById(Resource):
         Get filter details corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
         """
         filter_result = FilterService.get_filter_by_id(filter_id)
-        response, status = filter_schema.dump(filter_result), HTTPStatus.OK
+        response, status = filter_result, HTTPStatus.OK
 
         return response, status
 

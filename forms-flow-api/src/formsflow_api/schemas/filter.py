@@ -42,3 +42,18 @@ class FilterSchema(AuditDateTimeSchema):
     isMyTasksEnabled = fields.Bool(load_only=True)
     isTasksForCurrentUserGroupsEnabled = fields.Bool(load_only=True)
     order = fields.Int(data_key="order", allow_none=True)
+    filter_type = fields.Method(
+        "get_filter_type",
+        deserialize="load_filter_type",
+        data_key="filterType",
+        allow_none=True,
+    )
+    parent_filter_id = fields.Int(data_key="parentFilterId", allow_none=True)
+
+    def get_filter_type(self, obj):
+        """This method is to get the filter type."""
+        return obj.filter_type.value
+
+    def load_filter_type(self, value):
+        """This method is to load the filter type."""
+        return value.upper() if value else None

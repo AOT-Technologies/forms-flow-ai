@@ -106,7 +106,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         )
         query = query.filter(Filter.status == str(FilterStatus.ACTIVE.value))
         if filter_type:
-            query = query.filter(Filter.filter_type.in_(filter_type))
+            query = query.filter(Filter.filter_type == filter_type)
         if parent_filter_id:
             query = query.filter(Filter.parent_filter_id == parent_filter_id)
         order_by_user_first = case((Filter.created_by == user, 1), else_=2)

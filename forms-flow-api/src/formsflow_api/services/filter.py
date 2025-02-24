@@ -6,7 +6,7 @@ from formsflow_api_utils.utils import ADMIN
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import Filter, User
+from formsflow_api.models import Filter, FilterType, User
 from formsflow_api.schemas import FilterSchema
 
 filter_schema = FilterSchema()
@@ -46,15 +46,21 @@ class FilterService:
         return filter_schema.dump(filter_data)
 
     @staticmethod
-    def get_attribute_filters(filter_data, filter_type):
-        """Get attribute filters."""
+    def get_attribute_filters(filter_type, user):
+        """Get attribute filters & create lookup table with parent filter id."""
         attribute_filters = {}
-        if "TASK" in filter_type:
-            attribute_filters = {
-                f["parentFilterId"]: f
-                for f in filter_data
-                if f["filterType"] == "ATTRIBUTE"
-            }
+        print(filter_type)
+        if filter_type == FilterType.TASK:
+            filters = Filter.find_user_filters(
+                roles=user.group_or_roles,
+                user=user.user_name,
+                tenant=user.tenant_key,
+                admin=ADMIN in user.roles,
+                filter_type=FilterType.ATTRIBUTE,
+            )
+            filters = filter_schema.dump(filters, many=True)
+            attribute_filters = {f["parentFilterId"]: f for f in filters}
+        print(attribute_filters)
         return attribute_filters
 
     @staticmethod
@@ -113,9 +119,9 @@ class FilterService:
                 filter_obj.save()
         # If filter type is not provided, get all filters for type task and attribute
         filter_type = (
-            [request_args.get("filterType").upper()]
+            request_args.get("filterType").upper()
             if request_args.get("filterType")
-            else ["TASK", "ATTRIBUTE"]
+            else FilterType.TASK
         )
         filters = Filter.find_user_filters(
             roles=user.group_or_roles,
@@ -129,32 +135,23 @@ class FilterService:
             {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},
         ]
-        attribute_filters = FilterService.get_attribute_filters(
-            filter_data, filter_type
-        )
+        attribute_filters = FilterService.get_attribute_filters(filter_type, user)
 
-        organized_filters = []
         # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
             filter_item["editPermission"] = (
                 filter_item["createdBy"] == user.user_name or ADMIN in user.roles
             )
-
-            if filter_item["filterType"] == "TASK":
-                # Find all attribute filters that have this task filter as parent
+            # Check and add default variables if not present
+            filter_item["variables"] = filter_item["variables"] or []
+            filter_item["variables"] += [
+                var for var in default_variables if var not in filter_item["variables"]
+            ]
+            # Return attribute filters for task filters
+            if filter_item["filterType"] == FilterType.TASK.value:
                 filter_item["attributeFilters"] = attribute_filters.get(
                     filter_item["id"]
                 )
-                # Check and add default variables if not present
-                filter_item["variables"] = filter_item["variables"] or []
-                filter_item["variables"] += [
-                    var
-                    for var in default_variables
-                    if var not in filter_item["variables"]
-                ]
-            organized_filters.append(filter_item)
-        filter_data = organized_filters
-
         response = {"filters": filter_data}
         # get user default filter
         user_data = User.get_user_by_user_name(user_name=user.user_name)
@@ -181,7 +178,7 @@ class FilterService:
                 user=user.user_name,
                 tenant=tenant_key,
                 admin=ADMIN in user.roles,
-                filter_type=["ATTRIBUTE"],
+                filter_type=FilterType.ATTRIBUTE,
                 parent_filter_id=response["id"],
             )
             response["attributeFilters"] = filter_schema.dump(

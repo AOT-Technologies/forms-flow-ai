@@ -94,6 +94,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
           id="canvas"
           ref={containerRef}
           className="bpm-modeler-container grab-cursor border border-dark border-1"
+          data-testid="bpmneditor-canvas"
         ></div>
  
         <div className="d-flex justify-content-end zoom-container">
@@ -102,6 +103,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
               className="btn-zoom cursor-pointer btn btn-sm btn-secondary"
               title="Undo"
               onClick={undo}
+              data-testid="bpmneditor-undo-button"
             >
               <i className="fa fa-undo" aria-hidden="true" />
             </button>
@@ -109,6 +111,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
               className="btn btn-zoom cursor-pointer btn-sm btn-secondary"
               title="Redo"
               onClick={redo}
+              data-testid="bpmneditor-redo-button"
             >
               <i className="fas fa-redo" aria-hidden="true" />
             </button>
@@ -116,7 +119,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
               className="btn-zoom cursor-pointer btn btn-sm btn-outline-primary"
               title="Reset Zoom"
               onClick={zoomReset}
-              data-testid="prcosses-bpmneditor-zoomreset-button"
+              data-testid="bpmneditor-zoomreset-button"
             >
               <i className="fa fa-retweet" aria-hidden="true" />
             </button>
@@ -124,7 +127,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
               className="btn btn-zoom cursor-pointer btn-sm btn-outline-primary"
               title="Zoom In"
               onClick={zoom}
-              data-testid="prcosses-bpmneditor-zoom-button"
+              data-testid="bpmneditor-zoomin-button"
             >
               <i className="fa fa-search-plus" aria-hidden="true" />
             </button>
@@ -132,7 +135,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
               className="btn btn-zoom cursor-pointer btn-sm btn-outline-primary"
               title="Zoom Out"
               onClick={zoomOut}
-              data-testid="prcosses-bpmneditor-zoomout-button"
+              data-testid="bpmneditor-zoomout-button"
             >
               <i className="fa fa-search-minus" aria-hidden="true" />
             </button>

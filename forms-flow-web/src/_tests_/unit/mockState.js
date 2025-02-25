@@ -1,4 +1,3 @@
-
 export const mockstate = {
 
   process:{
@@ -70,8 +69,8 @@ export const mockstate = {
       processKey: { sortOrder: "asc" },
       modified: { sortOrder: "asc" },
       status: { sortOrder: "asc" },
-   },
-    processData: {
+  },
+  processData: {
       name: "Test Process",
       status: "Published",
       processData: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" id=\"Definitions_49a3inm\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"Camunda Modeler\" exporterVersion=\"5.0.0\" modeler:executionPlatform=\"Camunda Platform\" modeler:executionPlatformVersion=\"7.17.0\">\n  <bpmn:process id=\"Process_nm9ewcsAAQQQ\" name=\"AAA123 asdfas fasdfasdfasdf asdf\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"StartEvent_1\" name=\"AAA\">\n      <bpmn:outgoing>Flow_09jopgd</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:task id=\"Activity_18u6he3\" name=\"gsdfgf\">\n      <bpmn:incoming>Flow_09jopgd</bpmn:incoming>\n      <bpmn:outgoing>Flow_18bc6ut</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"Flow_09jopgd\" sourceRef=\"StartEvent_1\" targetRef=\"Activity_18u6he3\" />\n    <bpmn:endEvent id=\"Event_02oforr\" name=\"ssaas\">\n      <bpmn:incoming>Flow_18bc6ut</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_18bc6ut\" sourceRef=\"Activity_18u6he3\" targetRef=\"Event_02oforr\" />\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_nm9ewcsAAQQQ\">\n      <bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\">\n        <dc:Bounds x=\"179\" y=\"159\" width=\"36\" height=\"36\" />\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"186\" y=\"202\" width=\"22\" height=\"14\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Event_02oforr_di\" bpmnElement=\"Event_02oforr\">\n        <dc:Bounds x=\"542\" y=\"142\" width=\"36\" height=\"36\" />\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"547\" y=\"185\" width=\"29\" height=\"14\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Activity_18u6he3_di\" bpmnElement=\"Activity_18u6he3\">\n        <dc:Bounds x=\"300\" y=\"180\" width=\"100\" height=\"80\" />\n        <bpmndi:BPMNLabel />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_09jopgd_di\" bpmnElement=\"Flow_09jopgd\">\n        <di:waypoint x=\"215\" y=\"177\" />\n        <di:waypoint x=\"243\" y=\"177\" />\n        <di:waypoint x=\"243\" y=\"220\" />\n        <di:waypoint x=\"300\" y=\"220\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_18bc6ut_di\" bpmnElement=\"Flow_18bc6ut\">\n        <di:waypoint x=\"400\" y=\"220\" />\n        <di:waypoint x=\"431\" y=\"220\" />\n        <di:waypoint x=\"431\" y=\"160\" />\n        <di:waypoint x=\"542\" y=\"160\" />\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n"
@@ -92,14 +91,14 @@ export const mockstate = {
     isActive: false,
     limit: 5,
     page: 1,
-    totalForms: 50,
+    totalForms: 0,
     bpmFormLoading: false,
     sortBy: "formName",
     sortOrder: "asc",
     formType:"form",
     searchText: "",
     sort: {
-      activeKey: "formName",
+      activeKey: "formName", 
       formName: { sortOrder: "asc" },
       modified: { sortOrder: "asc" },
       submissions: { sortOrder: "asc" },
@@ -171,7 +170,7 @@ export const mockstate = {
     searchFormLoading: false,
     designerAccessDenied: false
   },
-  formDelete: {
+  formDelete: { 
     formDelete: { modalOpen: false, formId: "", formName: "" }
   },
 

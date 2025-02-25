@@ -434,6 +434,7 @@ const TaskVariableModal = React.memo(
         className="task-variable-modal"
         size={layoutNotsaved ? "sm" : "lg"}
         centered={true}
+        data-testid="task-variable-modal"
       >
         <Modal.Header>
           <Modal.Title>

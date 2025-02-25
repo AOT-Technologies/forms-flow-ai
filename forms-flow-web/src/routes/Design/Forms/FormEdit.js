@@ -1139,7 +1139,7 @@ const handleSaveLayout = () => {
                       size="md"
                       label={t("Settings")}
                       onClick={handleToggleSettingsModal}
-                      dataTestId="eidtor-settings-testid"
+                      dataTestId="editor-settings-testid"
                       ariaLabel={t("Designer Settings Button")}
                     />
                     <CustomButton
@@ -1290,6 +1290,7 @@ const handleSaveLayout = () => {
               className={`border-0 form-flow-wraper-${ isFormLayout ? "right" : "left"
               } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
+              data-testid="form-flow-wraper-button"
             >
               {isFormLayout ? t("Flow") : t("Layout")}
             </button>

@@ -1,5 +1,11 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -95,13 +101,16 @@ jest.mock("../../components/Modals/SettingsModal", () => ({
     ) : null,
 }));
 
-// Mock all required components
 jest.mock("@formsflow/components", () => {
   const actual = jest.requireActual("../../../__mocks__/@formsflow/components");
   return {
     ...actual,
-    BackToPrevIcon: () => <span>Back</span>,
-    HistoryIcon: () => <span>History Icon</span>,
+    BackToPrevIcon: () => <div data-testid="back-icon" />,
+    HistoryIcon: () => <div data-testid="history-icon" />,
+    PreviewIcon: () => <div data-testid="preview-icon" />,
+    FormBuilderModal: () => <div data-testid="form-builder-modal" />,
+    HistoryModal: () => <div data-testid="history-modal" />,
+    ImportModal: () => <div data-testid="import-modal" />,
     DuplicateIcon: () => <span>Duplicate Icon</span>,
     ImportIcon: () => <span>Import Icon</span>,
     PencilIcon: () => <span>Pencil Icon</span>,
@@ -113,6 +122,7 @@ jest.mock("@formsflow/components", () => {
     InfoIcon: actual.InfoIcon,
   };
 });
+// Mock all required components
 
 // Mock react-i18next
 jest.mock("react-i18next", () => ({
@@ -182,13 +192,8 @@ describe("working of publish button", () => {
   beforeEach(() => {
     useParams.mockReturnValue({ formId: "test-form-id" });
   });
-
-  afterEach(() => {
-    jest.clearAllMocks(); // Clears all mock calls and instances
-    jest.restoreAllMocks(); // Restores original implementations of spied methods
-  });
   //shows publish button when form is in draft state
-  test("shows publish button when form is in draft state", async () => {
+  test("shows publish button when form is in draft state", () => {
     store = configureStore(middlewares)({
       ...store.getState(),
       process: {
@@ -202,8 +207,7 @@ describe("working of publish button", () => {
     renderWithProviders(<Edit />);
     const publishBtn = screen.getByTestId("handle-publish-testid");
     expect(publishBtn).toBeInTheDocument();
-    
-
+    fireEvent.click(publishBtn);
   });
 
   test("shows unpublish button with correct state", () => {
@@ -220,7 +224,7 @@ describe("working of publish button", () => {
     renderWithProviders(<Edit />);
     const publishButton = screen.getByTestId("handle-publish-testid");
     expect(publishButton).toHaveTextContent("Unpublish");
-    
+    fireEvent.click(publishButton);
   });
 });
 
@@ -262,7 +266,7 @@ describe("save layout button working", () => {
   });
 
   //shows save layout button when changes are made
-  test("shows save layout button when changes are made",  () => {
+  test("shows save layout button when changes are made", () => {
     store = configureStore(middlewares)({
       ...store.getState(),
       form: {
@@ -272,6 +276,7 @@ describe("save layout button working", () => {
     });
     renderWithProviders(<Edit />);
     expect(screen.getByTestId("save-form-layout")).toBeInTheDocument();
+    // Wait for the modal to open and check if it is displayed
   });
 });
 
@@ -294,7 +299,7 @@ describe("discard button working", () => {
   });
 
   //shows discard changes button when changes are made
-  test("shows discard changes button when changes are made", async() => {
+  test("shows discard changes button when changes are made", async () => {
     store = configureStore(middlewares)({
       ...store.getState(),
       form: {
@@ -308,7 +313,7 @@ describe("discard button working", () => {
     const confirmModalActionBtn = screen.getByTestId("Confirm-button");
     expect(confirmModalActionBtn).toBeInTheDocument();
     await act(async () => {
-      fireEvent.click(confirmModalActionBtn); 
+      fireEvent.click(confirmModalActionBtn);
     });
   });
 });
@@ -325,79 +330,97 @@ describe("settings button working", () => {
   });
 });
 
-describe("action button button working", () => {
+describe("action button working", () => {
   beforeEach(() => {
     useParams.mockReturnValue({ formId: "test-form-id" });
   });
 
   //shows actions button for authorized users
   test("should show action button on CREATE mode", async () => {
-      renderWithProviders(<Edit />);
-      const actionBtn = screen.queryByTestId("designer-action-testid");
-      expect(actionBtn).toBeInTheDocument();
-    });
-  
-    const commonActionModalOpenStep = async () => {
-      const actionBtn = screen.queryByTestId("designer-action-testid");
-      expect(actionBtn).toBeInTheDocument();
-      await userEvent.click(actionBtn);
-      const actionModal = screen.queryByTestId("action-modal");
-      expect(actionModal).toBeInTheDocument();
-    };
-  
-    test("should show action button on EDIT mode", async () => {
-      renderWithProviders(<Edit />);
-      await commonActionModalOpenStep();
-    }); 
-    
-    test("should click action button and open on EDIT mode and perform close modal", async () => {
-      renderWithProviders(<Edit />);
-      await commonActionModalOpenStep();
-      const actionModalCloseBtn = screen.getByTestId("action-modal-close");
-      expect(actionModalCloseBtn).toBeInTheDocument();
-      await userEvent.click(actionModalCloseBtn);
-    });
-
-    test("should perform DUPLICATE btn click from ACTION modal", async () => {
-      renderWithProviders(<Edit />);
-      await commonActionModalOpenStep();
-      const duplicateBtn = screen.getByTestId("duplicate-form-button");
-      expect(duplicateBtn).toBeInTheDocument();
-      await userEvent.click(duplicateBtn);
-    });
-
-    test("should perform IMPORT btn click from ACTION modal", async () => {
-      renderWithProviders(<Edit />);
-      await commonActionModalOpenStep();
-      const importBtn = screen.getByTestId("import-form-button");
-      expect(importBtn).toBeInTheDocument();
-      await userEvent.click(importBtn);
-    });
-
-    // test("should perform EXPORT btn click from ACTION modal", async () => {
-    //   renderWithProviders(<Edit />);
-    //   await commonActionModalOpenStep();
-    //   const exportBtn = screen.getByTestId("export-form-button");
-    //   expect(exportBtn).toBeInTheDocument();
-    //   await userEvent.click(exportBtn);
-    // }); 
-    
-});
-
-describe("preview button button working", () => {
-  beforeEach(() => {
-    useParams.mockReturnValue({ formId: "test-form-id" });
+    renderWithProviders(<Edit />);
+    const actionBtn = screen.queryByTestId("designer-action-testid");
+    expect(actionBtn).toBeInTheDocument();
   });
 
-  //displays preview button in layout mode
+  const commonActionModalOpenStep = async () => {
+    const actionBtn = screen.queryByTestId("designer-action-testid");
+    expect(actionBtn).toBeInTheDocument();
+    await userEvent.click(actionBtn);
+    const actionModal = screen.queryByTestId("action-modal");
+    expect(actionModal).toBeInTheDocument();
+  };
+
+  test("should show action button on EDIT mode", async () => {
+    renderWithProviders(<Edit />);
+    await commonActionModalOpenStep();
+  });
+
+  test("should click action button and open on EDIT mode and perform close modal", async () => {
+    renderWithProviders(<Edit />);
+    await commonActionModalOpenStep();
+    const actionModalCloseBtn = screen.getByTestId("action-modal-close");
+    expect(actionModalCloseBtn).toBeInTheDocument();
+    await userEvent.click(actionModalCloseBtn);
+  });
+
+  test("should perform DUPLICATE btn click from ACTION modal", async () => {
+    renderWithProviders(<Edit />);
+    await commonActionModalOpenStep();
+    const duplicateBtn = screen.getByTestId("duplicate-form-button");
+    expect(duplicateBtn).toBeInTheDocument();
+    await userEvent.click(duplicateBtn);
+  });
+
+  test("should perform IMPORT btn click from ACTION modal", async () => {
+    renderWithProviders(<Edit />);
+    await commonActionModalOpenStep();
+    const importBtn = screen.getByTestId("import-form-button");
+    expect(importBtn).toBeInTheDocument();
+    await userEvent.click(importBtn);
+  });
+
+  // test("should perform EXPORT btn click from ACTION modal", async () => {
+  //   renderWithProviders(<Edit />);
+  //   await commonActionModalOpenStep();
+  //   const exportBtn = screen.getByTestId("export-form-button");
+  //   expect(exportBtn).toBeInTheDocument();
+  //   await userEvent.click(exportBtn);
+  // });
+});
+
+describe("preview button functionality", () => {
+  beforeEach(() => {
+    useParams.mockReturnValue({ formId: "test-form-id" });
+    window.open = jest.fn();
+  });
+
   test("displays preview button in layout mode", () => {
     renderWithProviders(<Edit />);
     expect(screen.getByTestId("handle-preview-testid")).toBeInTheDocument();
   });
-  
+
+  test("redirects to preview page when clicked", () => {
+    renderWithProviders(<Edit />, {
+      preloadedState: {
+        form: {
+          form: {
+            _id: "test-form-id",
+          },
+        },
+      },
+    });
+
+    const previewButton = screen.getByTestId("handle-preview-testid");
+    fireEvent.click(previewButton);
+
+    expect(window.open).toHaveBeenCalledWith(
+      "/formflow/test-form-id/view-edit",
+      "_blank"
+    );
+  });
 });
 
-describe("history button button working", () => {
+describe("history button working", () => {
   beforeEach(() => {
     useParams.mockReturnValue({ formId: "test-form-id" });
   });
@@ -410,4 +433,3 @@ describe("history button button working", () => {
     ).toBeInTheDocument();
   });
 });
-

@@ -19,7 +19,6 @@ import {
   ENABLE_DASHBOARDS_MODULE,
   ENABLE_FORMS_MODULE,
   ENABLE_PROCESSES_MODULE,
-  ENABLE_TASKS_MODULE,
   LANGUAGE
 } from "../constants/constants";
 import { KeycloakService, StorageService } from "@formsflow/service";
@@ -42,7 +41,7 @@ import {
 
 import SubmitFormRoutes from "./../routes/Submit/Forms";
 import DesignFormRoutes from "./../routes/Design/Forms";
-import ServiceFlow from "./ServiceFlow";
+// import ServiceFlow from "./ServiceFlow";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
@@ -95,13 +94,10 @@ const PrivateRoute = React.memo((props) => {
     createSubmissions,
     viewDesigns,
     viewSubmissions,
-    viewTasks,
-    manageTasks,
     viewDashboards,
   } = useUserRoles();
 
-  const BASE_ROUTE_PATH = (() => {
-    if (viewTasks || manageTasks) return ROUTE_TO.TASK;
+  const BASE_ROUTE_PATH = (() => { 
     if (createSubmissions) return ROUTE_TO.FORM;
     if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;
     if (admin) return ROUTE_TO.ADMIN;
@@ -245,24 +241,6 @@ const PrivateRoute = React.memo((props) => {
     [userRoles]
   );
 
-  const ReviewerRoute = useMemo(
-    () =>
-      ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              viewTasks || manageTasks || viewDashboards ? (
-                <Component {...props} />
-              ) : (
-                <AccessDenied userRoles={userRoles} />
-              )
-            }
-          />
-        ),
-    [userRoles]
-  );
-
   const ClientReviewerRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
@@ -369,12 +347,6 @@ const PrivateRoute = React.memo((props) => {
               <DashBoardRoute
                 path={ROUTE_TO.INSIGHTS}
                 component={InsightsPage}
-              />
-            )}
-            {ENABLE_TASKS_MODULE && (
-              <ReviewerRoute
-                path={ROUTE_TO.TASK}
-                component={ServiceFlow}
               />
             )}
             <Route exact path={ROUTE_TO.ADMIN} /> 

@@ -1370,6 +1370,7 @@ const handleSaveLayout = () => {
         onClose={closeHistoryModal}
         title={t("History")}
         loadMoreBtnText={t("Load More")}
+        loadMoreBtndataTestId="load-more-form-history"
         revertBtnText={t("Revert To This")}
         allHistory={formHistory}
         loadMoreBtnAction={loadMoreBtnAction}

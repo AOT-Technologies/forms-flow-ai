@@ -2,9 +2,7 @@
 
 import json
 
-from formsflow_api_utils.utils import ADMIN
-
-from tests.utilities.base_test import get_token
+from formsflow_api_utils.utils import ADMIN, get_token
 
 payload = {
     "logoName": "logo 2",

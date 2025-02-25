@@ -115,7 +115,6 @@ jest.mock("@formsflow/components", () => {
     ImportIcon: () => <span>Import Icon</span>,
     PencilIcon: () => <span>Pencil Icon</span>,
     ErrorModal: () => <div>Error Modal</div>,
-    HistoryModal: () => <div>History Modal</div>,
     CustomButton: actual.CustomButton,
     CustomInfo: actual.CustomInfo,
     FailedIcon: actual.FailedIcon,
@@ -400,15 +399,7 @@ describe("preview button functionality", () => {
   });
 
   test("redirects to preview page when clicked", () => {
-    renderWithProviders(<Edit />, {
-      preloadedState: {
-        form: {
-          form: {
-            _id: "test-form-id",
-          },
-        },
-      },
-    });
+    renderWithProviders(<Edit />); 
 
     const previewButton = screen.getByTestId("handle-preview-testid");
     fireEvent.click(previewButton);

@@ -168,6 +168,13 @@ class UsersFilterList(Resource):
     @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
     @API.doc(
+        params={
+            "filterType": {
+                "in": "query",
+                "description": "Filter type - TASK/DATE/ATTRIBUTE",
+                "default": "TASK",
+            }
+        },
         responses={
             200: "OK:- Successful request.",
             403: "FORBIDDEN:- Permission denied",

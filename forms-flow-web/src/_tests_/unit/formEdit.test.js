@@ -3,7 +3,6 @@ import {
   render,
   screen,
   fireEvent,
-  waitFor,
   act,
 } from "@testing-library/react";
 import { Provider } from "react-redux";
@@ -11,7 +10,6 @@ import configureStore from "redux-mock-store";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Edit } from "../../routes/Design/Forms/FormEdit";
 import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import thunk from "redux-thunk";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
@@ -377,14 +375,6 @@ describe("action button working", () => {
     expect(importBtn).toBeInTheDocument();
     await userEvent.click(importBtn);
   });
-
-  // test("should perform EXPORT btn click from ACTION modal", async () => {
-  //   renderWithProviders(<Edit />);
-  //   await commonActionModalOpenStep();
-  //   const exportBtn = screen.getByTestId("export-form-button");
-  //   expect(exportBtn).toBeInTheDocument();
-  //   await userEvent.click(exportBtn);
-  // });
 });
 
 describe("preview button functionality", () => {

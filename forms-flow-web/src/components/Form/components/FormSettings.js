@@ -146,7 +146,7 @@ const FormSettings = forwardRef((props, ref) => {
 
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    const sanitizedValue = value.replace(/#/g, "");
+    const sanitizedValue = value.replace(/[#+]/g, "");
     setErrors((prev) => ({ ...prev, [name]: "" }));
     blurStatus.current[name] = false;  
     let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;

@@ -70,7 +70,7 @@
     "diagram-js": "^14.3.1",
     "dmn-js": "^16.8.0",
     "dmn-js-properties-panel": "^3.7.0",
-    "dompurify": "^3.0.6",
+    "dompurify": "^3.2.4",
     "flagged": "^2.0.5",
     "i18next": "^21.6.6",
     "i18next-browser-languagedetector": "^6.1.2",

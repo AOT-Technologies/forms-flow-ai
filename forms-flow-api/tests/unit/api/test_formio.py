@@ -8,10 +8,11 @@ from formsflow_api_utils.utils import (
     CREATE_SUBMISSIONS,
     MANAGE_TASKS,
     Cache,
+    get_token,
 )
 from formsflow_api_utils.utils.enums import FormioRoles
 
-from tests.utilities.base_test import get_formio_roles, get_token
+from tests.utilities.base_test import get_formio_roles
 
 
 def get_roles(client, headers):

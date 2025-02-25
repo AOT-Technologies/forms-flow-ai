@@ -8,13 +8,13 @@ from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     VIEW_SUBMISSIONS,
+    get_token,
 )
 
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_draft_create_payload,
     get_formio_form_request_payload,
-    get_token,
 )
 
 

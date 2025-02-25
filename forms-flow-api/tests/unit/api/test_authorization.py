@@ -2,9 +2,9 @@
 
 import json
 
-from formsflow_api_utils.utils import VIEW_DASHBOARDS
+from formsflow_api_utils.utils import VIEW_DASHBOARDS, get_token
 
-from tests.utilities.base_test import factory_auth, get_token
+from tests.utilities.base_test import factory_auth
 
 
 class TestAuthorizationResource:

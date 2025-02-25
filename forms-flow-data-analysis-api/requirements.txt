@@ -64,3 +64,4 @@ transformers==4.36.2
 typing_extensions==4.8.0
 urllib3==2.0.7
 wasabi==0.10.1
+formsflow_api_utils @ git+https://github.com/auslin-aot/forms-flow-ai.git@bugfix/fwf-4352-data-analysis-api-test-lint-fix#subdirectory=forms-flow-api-utils

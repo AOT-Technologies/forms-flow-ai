@@ -49,7 +49,6 @@ class FilterService:
     def get_attribute_filters(filter_type, user):
         """Get attribute filters & create lookup table with parent filter id."""
         attribute_filters = {}
-        print(filter_type)
         if filter_type == FilterType.TASK:
             filters = Filter.find_user_filters(
                 roles=user.group_or_roles,
@@ -59,9 +58,21 @@ class FilterService:
                 filter_type=FilterType.ATTRIBUTE,
             )
             filters = filter_schema.dump(filters, many=True)
-            attribute_filters = {f["parentFilterId"]: f for f in filters}
-        print(attribute_filters)
+            # Retain only the first filter for each parentFilterId
+            for f in filters:
+                parent_filter_id = f["parentFilterId"]
+                if parent_filter_id not in attribute_filters:
+                    attribute_filters[parent_filter_id] = f
         return attribute_filters
+
+    @staticmethod
+    def set_attribute_filters(filter_item, attribute_filters):
+        """Set attribute filters for a filter item if it is of type TASK."""
+        if filter_item["filterType"] == FilterType.TASK.value:
+            matched_filter = attribute_filters.get(filter_item["id"])
+            filter_item["attributeFilters"] = (
+                [matched_filter] if matched_filter is not None else []
+            )
 
     @staticmethod
     @user_context
@@ -148,10 +159,7 @@ class FilterService:
                 var for var in default_variables if var not in filter_item["variables"]
             ]
             # Return attribute filters for task filters
-            if filter_item["filterType"] == FilterType.TASK.value:
-                filter_item["attributeFilters"] = attribute_filters.get(
-                    filter_item["id"]
-                )
+            FilterService.set_attribute_filters(filter_item, attribute_filters)
         response = {"filters": filter_data}
         # get user default filter
         user_data = User.get_user_by_user_name(user_name=user.user_name)

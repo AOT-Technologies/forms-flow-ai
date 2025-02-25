@@ -57,6 +57,8 @@ filter_request = API.model(
         "users": fields.List(
             fields.String(), description="Authorized Users to the filter"
         ),
+        "parentFilterId": fields.Integer(description="Parent filter id"),
+        "filterType": fields.String(description="Filter type"),
     },
 )
 filter_response = API.inherit(
@@ -143,7 +145,9 @@ class FilterResource(Resource):
                 "showUndefinedVariable":false
             },
             "users": [],
-            "roles": ["/formsflow/formsflow-reviewer"]
+            "roles": ["/formsflow/formsflow-reviewer"],
+            "parentFilterId": null,
+            "filterType": "TASK"
         }
         ```
         """

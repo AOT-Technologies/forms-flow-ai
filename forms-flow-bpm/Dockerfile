@@ -18,7 +18,7 @@ COPY forms-flow-bpm-utils/src ./forms-flow-bpm-utils/src/
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml install -P camunda
 
 
-FROM openjdk:25-ea-jdk
+FROM openjdk:21-ea-jdk
 
 # set label for image
 LABEL Name="formsflow"

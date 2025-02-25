@@ -17,4 +17,4 @@ markupsafe
 PyJWT
 redis
 lxml
-git+https://github.com/auslin-aot/forms-flow-ai.git@bugfix/fwf-4352-data-analysis-api-test-lint-fix#subdirectory=forms-flow-api-utils
+git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#subdirectory=forms-flow-api-utils

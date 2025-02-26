@@ -1,5 +1,5 @@
 import React from "react";
-import { FilterIcon, RefreshIcon, SortModal } from "@formsflow/components";
+import { FilterIcon, RefreshIcon, SortModal, CustomButton } from "@formsflow/components";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
@@ -21,23 +21,25 @@ const FilterSortActions = ({
 
   return (
     <>
-      <button
-        className={`button-div`}
-        data-testid={filterDataTestId}
-        aria-label={filterAriaLabel}
+      
+      <CustomButton
+        variant="outline-secondary"
+        icon={<FilterIcon />}
+        iconOnly={true}
         onClick={handleFilterIconClick}
-      >
-        <FilterIcon />
-      </button>
+        dataTestId={filterDataTestId}
+        ariaLabel={filterAriaLabel}
+      />
 
-      <button
-        className={`button-div`}
-        data-testid={refreshDataTestId}
-        aria-label={refreshAriaLabel}
+      <CustomButton
+        variant="outline-secondary"
+        icon={<RefreshIcon />}
+        iconOnly={true}
         onClick={handleRefresh}
-      >
-        <RefreshIcon />
-      </button>
+        dataTestId={refreshDataTestId}
+        ariaLabel={refreshAriaLabel}
+      />
+     
 
       {showSortModal && (
         <SortModal

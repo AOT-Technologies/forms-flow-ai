@@ -1,27 +1,35 @@
 import React, { useState } from "react";
 import { httpPOSTBlobRequest } from "../../../apiManager/httpRequestHandler";
 import API from "../../../apiManager/endpoints";
-
+import { toast } from "react-toastify";
 import { useDownloadFile } from "./useDownloadFile";
 import { ExportButton, ButtonState } from "./button";
-import { Alert, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { replaceUrl } from "../../../helper/helper";
 import { Translation } from "react-i18next";
 import { withFeature } from "flagged";
 
 const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
   const [buttonState, setButtonState] = useState(ButtonState.Primary);
-  const [showAlert, setShowAlert] = useState(false);
+  //const [showAlert, setShowAlert] = useState(false);
 
   const preDownloading = () => setButtonState(ButtonState.Loading);
   const postDownloading = () => setButtonState(ButtonState.Primary);
 
   const onErrorDownloadFile = () => {
     setButtonState(ButtonState.Primary);
-    setShowAlert(true);
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
+    //setShowAlert(true);
+    toast.error(
+      <Translation>{(t) => t("Something went wrong. Please try again!")}</Translation>
+    );
+    // {
+    //   <Translation>
+    //     {(t) => t("Something went wrong. Please try again!")}
+    //   </Translation>
+    // }
+    // setTimeout(() => {
+    //   setShowAlert(false);
+    // }, 3000);
   };
 
   const getFileName = () => {
@@ -61,18 +69,11 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
       <ExportButton
         label={<Translation>{(t) => t("Export PDF")}</Translation>}
         labelLoading={<Translation>{(t) => t("Exporting..")}</Translation>}
-        icon={<i className="fa fa-print me-2" aria-hidden="true" />}
+        // icon={<i className="fa fa-print me-2" aria-hidden="true" />}
         buttonState={buttonState}
         data-testid="export-pdf-button"
         onClick={download}
       />
-      <Alert variant="danger" show={showAlert}>
-        {
-          <Translation>
-            {(t) => t("Something went wrong. Please try again!")}
-          </Translation>
-        }
-      </Alert>
     </Container>
   );
 });

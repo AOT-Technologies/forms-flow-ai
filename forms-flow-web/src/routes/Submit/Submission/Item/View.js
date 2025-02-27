@@ -52,7 +52,7 @@ const View = React.memo((props) => {
   }
 
   return (
-    <div className="scrollable-overview  bg-white ps-3 pe-3 m-0">
+    <div className="scrollable-overview  bg-white ps-3 pe-3 m-0 form-border">
       <div className="d-flex py-2 form-title">
         <h3 className="task-head text-truncate"> {form.title}</h3>
         {showPrintButton && form?._id ? (

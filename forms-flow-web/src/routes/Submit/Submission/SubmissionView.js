@@ -1,0 +1,178 @@
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import startCase from "lodash/startCase";
+import { Card } from "react-bootstrap";
+import {
+  CustomButton,
+  BackToPrevIcon,
+  FormSubmissionHistoryModal,
+} from "@formsflow/components";
+import { getApplicationById } from "../../../apiManager/services/applicationServices";
+import Loading from "../../../containers/Loading";
+import {
+  setApplicationDetailLoader,
+  setApplicationDetailStatusCode,
+} from "../../../actions/applicationActions";
+import View from "../../../routes/Submit/Submission/Item/View";
+import { getForm, getSubmission } from "@aot-technologies/formio-react";
+import NotFound from "../../../components/NotFound";
+import { useTranslation } from "react-i18next";
+import {
+  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
+  MULTITENANCY_ENABLED,
+} from "../../../constants/constants";
+import { fetchAllBpmProcesses } from "../../../apiManager/services/processServices";
+import { getCustomSubmission } from "../../../apiManager/services/FormServices";
+import { HelperServices } from "@formsflow/service";
+import { push } from "connected-react-router";
+import DownloadPDFButton from "../../../components/Form/ExportAsPdf/downloadPdfButton";
+import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
+import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
+
+
+const ViewApplication = React.memo(() => {
+  const { t } = useTranslation();
+  const { applicationId } = useParams();
+  const dispatch = useDispatch();
+
+  const applicationDetail = useSelector(
+    (state) => state.applications.applicationDetail
+  );
+  const applicationDetailStatusCode = useSelector(
+    (state) => state.applications.applicationDetailStatusCode
+  );
+  const isApplicationDetailLoading = useSelector(
+    (state) => state.applications.isApplicationDetailLoading
+  );
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const submission = useSelector((state) => state.submission?.submission || {});
+  const form = useSelector((state) => state.form?.form || {});
+  const appHistory = useSelector((state) => state.taskAppHistory.appHistory);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const isHistoryListLoading = useSelector(
+    (state) => state.taskAppHistory.isHistoryListLoading
+  );
+
+  useEffect(() => {
+    dispatch(setUpdateHistoryLoader(true));
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(setApplicationDetailLoader(true));
+    dispatch(
+      getApplicationById(applicationId, (err, res) => {
+        if (!err) {
+          if (res.submissionId && res.formId) {
+            dispatch(getForm("form", res.formId));
+            if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+              dispatch(getCustomSubmission(res.submissionId, res.formId));
+            } else {
+              dispatch(
+                getSubmission("submission", res.submissionId, res.formId)
+              );
+            }
+          }
+        }
+      })
+    );
+
+    return () => {
+      dispatch(setApplicationDetailLoader(true));
+      dispatch(setApplicationDetailStatusCode(""));
+    };
+  }, [applicationId, dispatch]);
+
+  useEffect(() => {
+    if (tenantKey) {
+      dispatch(fetchAllBpmProcesses());
+    }
+  }, [dispatch, tenantKey]);
+
+  useEffect(() => {
+    if (applicationId && isHistoryListLoading) {
+      dispatch(fetchApplicationAuditHistoryList(applicationId));
+    }
+  }, [applicationId, isHistoryListLoading, dispatch]);
+
+  if (isApplicationDetailLoading) {
+    return <Loading />;
+  }
+
+  if (
+    Object.keys(applicationDetail).length === 0 &&
+    applicationDetailStatusCode === 403
+  ) {
+    return (
+      <NotFound
+        errorMessage={t("Access Denied")}
+        errorCode={applicationDetailStatusCode}
+      />
+    );
+  }
+
+  const backToSubmissionList = () => {
+    dispatch(push(`${redirectUrl}form`));
+  };
+
+  return (
+    <div>
+      {/* Header Section */}
+      <Card className="editor-header">
+        <Card.Body>
+          <div className="d-flex justify-content-between align-items-center">
+            {/* Left: Back Icon & Application Name */}
+            <div className="d-flex align-items-center">
+              <BackToPrevIcon onClick={backToSubmissionList} />
+              <div className="mx-4 editor-header-text">
+                {startCase(applicationDetail.applicationName)}
+              </div>
+            </div>
+
+            {/* Center: Submitted On Date - Right Aligned */}
+            <span
+              data-testid="submissions-details"
+              className="d-flex align-items-center white-text ms-auto me-4"
+            >
+              <div className="status-live"></div>
+              Submitted On:{" "}
+              {HelperServices?.getLocalDateAndTime(applicationDetail.created)}
+            </span>
+
+            {/* Right: Buttons */}
+            <div className="d-flex ms-4">
+              <CustomButton
+                variant="gray-dark"
+                size="sm"
+                label={t("History")}
+                dataTestId="handle-submission-history-testid"
+                ariaLabel={t("Submission History Button")}
+                className="me-3" // Space between buttons
+                onClick={() => setShowHistoryModal(true)}
+              />
+              <DownloadPDFButton
+                form_id={form._id}
+                submission_id={submission._id}
+                title={form.title}
+              />
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
+
+      {/* View Application Details */}
+      <View page="application-detail" showPrintButton={false} />
+        <FormSubmissionHistoryModal
+          show={showHistoryModal}
+          onClose={() => setShowHistoryModal(false)}
+          title="History"
+          allHistory={appHistory}
+          historyCount={appHistory.length}
+        />
+    </div>
+  );
+});
+
+export default ViewApplication;

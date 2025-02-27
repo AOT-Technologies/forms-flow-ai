@@ -14,7 +14,7 @@ import {
 import History from "./ApplicationHistory";
 import View from "../../routes/Submit/Submission/Item/View";
 import { getForm, getSubmission } from "@aot-technologies/formio-react";
-import NotFound from "../NotFound";
+//import NotFound from "../NotFound";
 import { Translation,useTranslation } from "react-i18next";
 import { CUSTOM_SUBMISSION_URL,CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
@@ -26,9 +26,9 @@ const ViewApplication = React.memo(() => {
   const applicationDetail = useSelector(
     (state) => state.applications.applicationDetail
   );
-  const applicationDetailStatusCode = useSelector(
-    (state) => state.applications.applicationDetailStatusCode
-  );
+  // const applicationDetailStatusCode = useSelector(
+  //   (state) => state.applications.applicationDetailStatusCode
+  // );
   const isApplicationDetailLoading = useSelector(
     (state) => state.applications.isApplicationDetailLoading
   );
@@ -68,17 +68,17 @@ const ViewApplication = React.memo(() => {
     return <Loading />;
   }
 
-  if (
-    Object.keys(applicationDetail).length === 0 &&
-    applicationDetailStatusCode === 403
-  ) {
-    return (
-      <NotFound
-        errorMessage={t("Access Denied")}
-        errorCode={applicationDetailStatusCode}
-      />
-    );
-  }
+  // if (
+  //   Object.keys(applicationDetail).length === 0 &&
+  //   applicationDetailStatusCode === 403
+  // ) {
+  //   return (
+  //     <NotFound
+  //       errorMessage={t("Access Denied")}
+  //       errorCode={applicationDetailStatusCode}
+  //     />
+  //   );
+  // }
 
   return (
     <div className="">

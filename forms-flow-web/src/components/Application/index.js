@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ApplicationList from "./List";
-//import ViewApplication from "./ViewApplication";
 import ViewApplication from "../../routes/Submit/Submission/SubmissionView";
 import "./Application.scss";
 import { setCurrentPage } from "../../actions/bpmActions";

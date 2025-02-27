@@ -23,7 +23,6 @@ import {
   CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
-import { fetchAllBpmProcesses } from "../../../apiManager/services/processServices";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { HelperServices } from "@formsflow/service";
 import { push } from "connected-react-router";
@@ -85,13 +84,8 @@ const ViewApplication = React.memo(() => {
     };
   }, [applicationId, dispatch]);
 
-  useEffect(() => {
-    if (tenantKey) {
-      dispatch(fetchAllBpmProcesses());
-    }
-  }, [dispatch, tenantKey]);
 
-  useEffect(() => {
+ useEffect(() => {
     if (applicationId && isHistoryListLoading) {
       dispatch(fetchApplicationAuditHistoryList(applicationId));
     }
@@ -126,30 +120,29 @@ const ViewApplication = React.memo(() => {
             {/* Left: Back Icon & Application Name */}
             <div className="d-flex align-items-center">
               <BackToPrevIcon onClick={backToSubmissionList} />
-              <div className="mx-4 editor-header-text">
+              <div className="ms-4 editor-header-text">
                 {startCase(applicationDetail.applicationName)}
               </div>
             </div>
 
             {/* Center: Submitted On Date - Right Aligned */}
-            <span
+            <div
               data-testid="submissions-details"
               className="d-flex align-items-center white-text ms-auto me-4"
             >
-              <div className="status-live"></div>
-              Submitted On:{" "}
+              <span className="status-live"></span>
+              {t("Submitted On")}:{" "}
               {HelperServices?.getLocalDateAndTime(applicationDetail.created)}
-            </span>
+            </div>
 
             {/* Right: Buttons */}
-            <div className="d-flex ms-4">
+            <div className="form-submission-button">
               <CustomButton
                 variant="gray-dark"
                 size="sm"
                 label={t("History")}
                 dataTestId="handle-submission-history-testid"
                 ariaLabel={t("Submission History Button")}
-                className="me-3" // Space between buttons
                 onClick={() => setShowHistoryModal(true)}
               />
               <DownloadPDFButton

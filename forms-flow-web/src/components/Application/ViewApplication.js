@@ -26,9 +26,9 @@ const ViewApplication = React.memo(() => {
   const applicationDetail = useSelector(
     (state) => state.applications.applicationDetail
   );
-  // const applicationDetailStatusCode = useSelector(
-  //   (state) => state.applications.applicationDetailStatusCode
-  // );
+  const applicationDetailStatusCode = useSelector(
+    (state) => state.applications.applicationDetailStatusCode
+  );
   const isApplicationDetailLoading = useSelector(
     (state) => state.applications.isApplicationDetailLoading
   );
@@ -68,17 +68,17 @@ const ViewApplication = React.memo(() => {
     return <Loading />;
   }
 
-  // if (
-  //   Object.keys(applicationDetail).length === 0 &&
-  //   applicationDetailStatusCode === 403
-  // ) {
-  //   return (
-  //     <NotFound
-  //       errorMessage={t("Access Denied")}
-  //       errorCode={applicationDetailStatusCode}
-  //     />
-  //   );
-  // }
+  if (
+    Object.keys(applicationDetail).length === 0 &&
+    applicationDetailStatusCode === 403
+  ) {
+    return (
+      <NotFound
+        errorMessage={t("Access Denied")}
+        errorCode={applicationDetailStatusCode}
+      />
+    );
+  }
 
   return (
     <div className="">

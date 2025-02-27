@@ -11,25 +11,15 @@ import { withFeature } from "flagged";
 
 const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
   const [buttonState, setButtonState] = useState(ButtonState.Primary);
-  //const [showAlert, setShowAlert] = useState(false);
 
   const preDownloading = () => setButtonState(ButtonState.Loading);
   const postDownloading = () => setButtonState(ButtonState.Primary);
 
   const onErrorDownloadFile = () => {
     setButtonState(ButtonState.Primary);
-    //setShowAlert(true);
     toast.error(
       <Translation>{(t) => t("Something went wrong. Please try again!")}</Translation>
     );
-    // {
-    //   <Translation>
-    //     {(t) => t("Something went wrong. Please try again!")}
-    //   </Translation>
-    // }
-    // setTimeout(() => {
-    //   setShowAlert(false);
-    // }, 3000);
   };
 
   const getFileName = () => {
@@ -69,7 +59,6 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
       <ExportButton
         label={<Translation>{(t) => t("Export PDF")}</Translation>}
         labelLoading={<Translation>{(t) => t("Exporting..")}</Translation>}
-        // icon={<i className="fa fa-print me-2" aria-hidden="true" />}
         buttonState={buttonState}
         data-testid="export-pdf-button"
         onClick={download}

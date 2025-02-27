@@ -19,8 +19,7 @@ export const fetchBPMFormList = ({
   formType,
   showForOnlyCreateSubmissionUsers,
   includeSubmissionsCount,
-  done = () => {},
-}) => {
+}, done = () => {}) => {
   return (dispatch) => {
     let sortBy = formSort.activeKey;
     let sortOrder = formSort[sortBy]?.sortOrder;

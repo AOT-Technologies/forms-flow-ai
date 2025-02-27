@@ -71,7 +71,6 @@ const SubmitList = React.memo(({ getFormsInit }) => {
       limit, 
       formSort, 
       formName: searchText, 
-      formType: "", 
       showForOnlyCreateSubmissionUsers: true, 
       includeSubmissionsCount: true
     }));

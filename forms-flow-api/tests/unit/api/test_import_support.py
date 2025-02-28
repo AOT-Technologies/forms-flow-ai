@@ -4,11 +4,11 @@ import io
 import json
 from unittest.mock import patch
 
-from formsflow_api_utils.utils import CREATE_DESIGNS
+from formsflow_api_utils.utils import CREATE_DESIGNS, get_token
 from werkzeug.datastructures import FileStorage
 
 from formsflow_api.services import ImportService
-from tests.utilities.base_test import get_formio_form_request_payload, get_token
+from tests.utilities.base_test import get_formio_form_request_payload
 
 
 def form_workflow_json_data(name="testform"):

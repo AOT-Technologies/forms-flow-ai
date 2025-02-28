@@ -1,9 +1,9 @@
 @import "../../variables.scss";
 
 .not-selected {
-  border: 3px solid $gray-500;
+  border: 3px solid $gray-medium-dark;
   padding: 10px;
-  color: $gray-500;
+  color: $gray-medium-dark;
   width: 100%;
 }
 
@@ -14,7 +14,7 @@
   position: relative;
   overflow-y: auto;
   padding-right: 15px;
-  border-right: 1px solid $gray-400;
+  border-right: 1px solid $gray-medium-dark;
 }
 .service-task-details {
   min-height: 80vh;
@@ -30,7 +30,7 @@
 }
 
 .handle-view-details{
-  color: $primary-500;
+  color: $primary;
   text-decoration: none;
 }
 .word-break{
@@ -83,15 +83,15 @@
 
 .filter-container {
   position: relative;
-  border: 1px solid $gray-700;
+  border: 1px solid $gray-dark;
   border-radius: 5px;
   width: 100%;
   padding: 0;
   margin-bottom: 4px;
   .button {
-    border: 1px solid $gray-700;
+    border: 1px solid $gray-dark;
     background-color: $white;
-    color: $gray-700;
+    color: $gray-dark;
     text-align: center;
     text-decoration: none;
     margin: 0px 5px;
@@ -131,7 +131,7 @@
 .filter-items {
   //width: 85%;
   margin: 5px;
-  border: 1px solid $gray-400;
+  border: 1px solid $gray-medium-dark;
   border-radius: 5px;
   position: absolute;
   background-color: $white;
@@ -143,13 +143,13 @@
 
 .filters {
   margin-top: 3px;
-  border-color: $gray-700;
+  border-color: $gray-dark;
 }
 .position-box {
   margin-left: 2.3rem;
 }
 .sort-items {
-  border: 1px solid $gray-600;
+  border: 1px solid $gray-dark;
   border-radius: 3%;
   position: absolute;
   background-color: $white;
@@ -172,10 +172,10 @@
   // border-left: 2px solid transparent;
 }
 .clickable:hover:not(.selected) {
-  border-left: 2px solid $primary-500 !important ;
+  border-left: 2px solid $primary !important ;
 }
 .selected {
-  border-left: 3px solid $primary-600 !important;
+  border-left: 3px solid $primary !important;
 }
 
 .font-size-16 {
@@ -184,7 +184,7 @@
 }
 
 .actionable {
-  color: $primary-500;
+  color: $primary;
   // text-decoration: underline;
   background-color: transparent;
   cursor: pointer;
@@ -204,12 +204,12 @@
   font-style: italic;
 }
 .add {
-  color: $primary-500;
+  color: $primary;
   font-size: 13px;
   cursor: pointer;
 }
 .text-color {
-  color: $dark;
+  color: $black;
   width: 100%;
   padding: 2px 5px;
   outline: none;
@@ -241,8 +241,8 @@
 }
 
 .filter-details {
-  background-color: $danger-200;
-  border-color: $danger-200;
+  background-color: $danger;
+  border-color: $danger;
   // margin: 0.5em;
   margin-top: 15px;
   margin-left: 5px;
@@ -250,7 +250,7 @@
   margin-bottom: 0;
   padding: 0 0px 4px 8px;
   font-size: 14px;
-  color: $primary-500;
+  color: $primary;
   //border-radius: 5px;
   .close-btn {
     font-size: 12px;
@@ -276,7 +276,7 @@
     background-color: $white;
     font-size: 12px;
     padding: 0 2px;
-    border: 1px solid $gray-500;
+    border: 1px solid $gray-medium-dark;
     width: 28px;
     border-radius: 0px;
   }
@@ -305,11 +305,11 @@
   .pagination {
     background-color: $white;
     li {
-      border: 1px solid $gray-200;
+      border: 1px solid $gray-medium;
       padding: 0 4px;
     }
     .active {
-      background-color: $primary-500;
+      background-color: $primary;
       a {
         color: $white;
       }
@@ -318,7 +318,7 @@
       cursor: not-allowed;
       a {
         cursor: not-allowed;
-        color: $gray-600;
+        color: $gray-dark;
       }
     }
   }
@@ -335,7 +335,7 @@
   width: 90%;
   height: 44px;
   padding: 3%;
-  border: 3px solid $gray-400;
+  border: 3px solid $gray-medium-dark;
   font-size: 18px;
 }
 
@@ -343,7 +343,7 @@
   width: 80%;
   height: 40px;
   padding: 3%;
-  border: 3px solid $gray-400;
+  border: 3px solid $gray-medium-dark;
 }
 
 .access-all{
@@ -367,7 +367,7 @@
 .varible-input-boxes {
   width: 90%;
   height: 35px;
-  border: 3px solid $gray-400;
+  border: 3px solid $gray-medium-dark;
 }
 
 .fa.fa-minus-circle {
@@ -385,7 +385,7 @@
 }
 
 .highlight {
-  color: $primary-300;
+  color: $primary-light;
 }
 
 .cursor-pointer{
@@ -398,7 +398,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba($gray-100, 0.5);
+  background-color: rgba($gray-medium, 0.5);
  z-index: 1500;
 }
 .react-datepicker__close-icon {

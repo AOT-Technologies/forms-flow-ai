@@ -4,9 +4,10 @@ from formsflow_api_utils.utils import (
     CREATE_FILTERS,
     MANAGE_ALL_FILTERS,
     VIEW_FILTERS,
+    get_token,
 )
 
-from tests.utilities.base_test import get_filter_payload, get_token
+from tests.utilities.base_test import get_filter_payload
 
 
 def test_create_filter(app, client, session, jwt):

@@ -61,6 +61,7 @@ class FilterService:
             # Retain only the first filter for each parentFilterId
             for f in filters:
                 parent_filter_id = f["parentFilterId"]
+                FilterService.set_filter_edit_permission(f, user)
                 if parent_filter_id not in attribute_filters:
                     attribute_filters[parent_filter_id] = f
         return attribute_filters
@@ -73,6 +74,13 @@ class FilterService:
             filter_item["attributeFilters"] = (
                 [matched_filter] if matched_filter is not None else []
             )
+
+    @staticmethod
+    def set_filter_edit_permission(filter_item, user):
+        """Set filter edit permission for a filter item."""
+        filter_item["editPermission"] = (
+            filter_item["createdBy"] == user.user_name or ADMIN in user.roles
+        )
 
     @staticmethod
     @user_context
@@ -150,9 +158,7 @@ class FilterService:
 
         # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
-            filter_item["editPermission"] = (
-                filter_item["createdBy"] == user.user_name or ADMIN in user.roles
-            )
+            FilterService.set_filter_edit_permission(filter_item, user)
             # Check and add default variables if not present
             filter_item["variables"] = filter_item["variables"] or []
             filter_item["variables"] += [
@@ -192,6 +198,8 @@ class FilterService:
             response["attributeFilters"] = filter_schema.dump(
                 attribute_filters, many=True
             )
+            for filter_item in response["attributeFilters"]:
+                FilterService.set_filter_edit_permission(filter_item, user)
             return response
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 

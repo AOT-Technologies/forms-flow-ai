@@ -100,7 +100,7 @@ const PrivateRoute = React.memo((props) => {
     viewDashboards,
   } = useUserRoles();
 
-  const BASE_ROUTE_PATH = (() => {
+  const BASE_ROUTE_PATH = (() => { 
     if (viewTasks || manageTasks) return ROUTE_TO.TASK;
     if (createSubmissions) return ROUTE_TO.FORM;
     if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;

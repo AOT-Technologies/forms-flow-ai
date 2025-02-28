@@ -84,9 +84,11 @@ class DraftService:
         user_id: str = user.user_name or ANONYMOUS_USER
         draft = Draft.get_by_id(draft_id, user_id)
         if draft:
-            draft.update_draft_data_and_commit(data)
-        else:
-            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
+            draft_schema = DraftSchema()
+            updated_draft_data = draft.update_draft_data_and_commit(data)
+            return draft_schema.dump(updated_draft_data)
+
+        raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
 
     @staticmethod
     @user_context

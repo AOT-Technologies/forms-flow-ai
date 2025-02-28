@@ -232,9 +232,9 @@ class DraftResourceById(Resource):
         draft_json = request.get_json()
         draft_schema = DraftSchema()
         dict_data = draft_schema.load(draft_json)
-        DraftService.update_draft(draft_id=draft_id, data=dict_data)
+        response = DraftService.update_draft(draft_id=draft_id, data=dict_data)
         return (
-            f"Updated {draft_id} successfully",
+            response,
             HTTPStatus.OK,
         )
 
@@ -349,8 +349,8 @@ class PublicDraftUpdateResourceById(Resource):
         draft_json = request.get_json()
         draft_schema = DraftSchema()
         dict_data = draft_schema.load(draft_json)
-        DraftService.update_draft(draft_id=draft_id, data=dict_data)
+        response = DraftService.update_draft(draft_id=draft_id, data=dict_data)
         return (
-            f"Updated {draft_id} successfully",
+            response,
             HTTPStatus.OK,
         )

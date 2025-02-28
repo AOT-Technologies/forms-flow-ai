@@ -319,10 +319,10 @@ class ApplicationResourceById(Resource):
             ) = get_form_and_submission_id_from_form_url(form_url)
             dict_data["latest_form_id"] = latest_form_id
             dict_data["submission_id"] = submission_id
-        ApplicationService.update_application(
+        response = ApplicationService.update_application(
             application_id=application_id, data=dict_data
         )
-        return "Updated successfully", HTTPStatus.OK
+        return response, HTTPStatus.OK
 
     @staticmethod
     @auth.has_one_of_roles([CREATE_SUBMISSIONS])

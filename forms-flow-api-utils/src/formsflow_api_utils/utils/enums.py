@@ -89,3 +89,13 @@ class Service(Enum):
 
     ENABLED = "ENABLED"
     DISABLED = "DISABLED"
+
+
+@unique
+class AIRequestType(Enum):
+    """Enumerations for chat bot request type."""
+
+    ASSIST = "ASSIST"
+    HELP = "HELP"
+    MODIFY = "MODIFY"
+    REGENERATE = "REGENERATE"

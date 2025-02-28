@@ -21,7 +21,7 @@ from .constants import (
     REVIEWER_GROUP,
     HTTP_TIMEOUT,
 )
-from .enums import ApplicationSortingParameters, Service
+from .enums import ApplicationSortingParameters, Service, AIRequestType
 from .permisions import (
     PERMISSION_DETAILS ,
     CREATE_DESIGNS,

@@ -19,7 +19,7 @@ import {
   ENABLE_DASHBOARDS_MODULE,
   ENABLE_FORMS_MODULE,
   ENABLE_PROCESSES_MODULE,
-  ENABLE_TASKS_MODULE
+  ENABLE_TASKS_MODULE,
   LANGUAGE
 } from "../constants/constants";
 import { KeycloakService, StorageService } from "@formsflow/service";

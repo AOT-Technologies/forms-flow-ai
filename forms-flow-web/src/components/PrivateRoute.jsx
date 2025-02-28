@@ -377,6 +377,7 @@ const PrivateRoute = React.memo((props) => {
                 component={ServiceFlow}
               />
             )}
+            <Route exact path={ROUTE_TO.REVIEW} /> 
             <Route exact path={ROUTE_TO.ADMIN} /> 
             <Route exact path={BASE_ROUTE}>
               {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}

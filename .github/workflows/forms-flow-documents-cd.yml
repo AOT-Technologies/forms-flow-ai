@@ -38,6 +38,11 @@ jobs:
         with:
           driver: docker-container
           install: true
+          
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
 
       - name: Set version
         if: ${{ github.ref != 'refs/heads/master' }}

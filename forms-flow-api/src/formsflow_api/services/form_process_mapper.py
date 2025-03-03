@@ -103,22 +103,32 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             and CREATE_SUBMISSIONS in user.roles
             and ignore_designer
         ):
-            current_app.logger.debug("Fetching submissions count..")
-            for mapper in mappers_response:
-                mapper["submissionsCount"] = (
-                    Application.find_applications_count_by_parent_form_id_user(
-                        mapper["parentFormId"], user.user_name, user.tenant_key
-                    )
-                )
-            if "submissionCount" in sort_by:
-                mappers_response = FormProcessMapperService.sort_results(
-                    mappers_response, sort_order, "submissionsCount"
-                )
+            mappers_response = FormProcessMapperService.get_submissions_count(
+                mappers_response, user, sort_by, sort_order
+            )
 
         return (
             mappers_response,
             get_all_mappers_count,
         )
+
+    @classmethod
+    def get_submissions_count(
+        cls, mappers_response: List, user: UserContext, sort_by: List, sort_order: List
+    ):
+        """Get submissions count."""
+        current_app.logger.debug("Fetching submissions count..")
+        for mapper in mappers_response:
+            mapper["submissionsCount"] = (
+                Application.find_applications_count_by_parent_form_id_user(
+                    mapper["parentFormId"], user.user_name, user.tenant_key
+                )
+            )
+        if "submissionCount" in sort_by:
+            mappers_response = FormProcessMapperService.sort_results(
+                mappers_response, sort_order, "submissionsCount"
+            )
+        return mappers_response
 
     @staticmethod
     def sort_results(data: List, sort_order: str, sort_by: str):

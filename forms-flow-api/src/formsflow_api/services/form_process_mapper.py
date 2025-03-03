@@ -110,11 +110,23 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                         mapper["parentFormId"], user.user_name, user.tenant_key
                     )
                 )
+            if "submissionCount" in sort_by:
+                mappers_response = FormProcessMapperService.sort_results(
+                    mappers_response, sort_order, "submissionsCount"
+                )
 
         return (
             mappers_response,
             get_all_mappers_count,
         )
+
+    @staticmethod
+    def sort_results(data: List, sort_order: str, sort_by: str):
+        """Sort results."""
+        reverse = (
+            "desc" in sort_order
+        )  # Determine if sorting should be in descending order
+        return sorted(data, key=lambda k: k.get(sort_by, 0), reverse=reverse)
 
     @staticmethod
     def get_mapper_count(form_name=None):

@@ -54,7 +54,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         is_designer: bool,
         active_forms: bool,
         include_submissions_count: bool,
-        ignore_designer: bool,
         **kwargs,
     ):  # pylint: disable=too-many-arguments, too-many-locals
         """Get all forms."""
@@ -83,7 +82,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             list_form_mappers = (
                 FormProcessMapper.find_all_forms
                 if is_designer
-                else FormProcessMapper.find_all_active_by_formid
+                else Application.find_all_active_by_formid
+            )
+            # Submissions count should return only for user with create_submissions permission
+            fetch_submissions_count = (
+                include_submissions_count and CREATE_SUBMISSIONS in user.roles
             )
             mappers, get_all_mappers_count = list_form_mappers(
                 page_number=page_number,
@@ -92,20 +95,14 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 sort_by=sort_by,
                 sort_order=sort_order,
                 form_ids=authorized_form_ids,
-                **designer_filters if is_designer else {},
+                **(
+                    designer_filters
+                    if is_designer
+                    else {"fetch_submissions_count": fetch_submissions_count}
+                ),
             )
         mapper_schema = FormProcessMapperSchema()
         mappers_response = mapper_schema.dump(mappers, many=True)
-        # Submissions count should return only for user with create_submissions permission
-        # & client form listing with showForOnlyCreateSubmissionUsers param true
-        if (
-            include_submissions_count
-            and CREATE_SUBMISSIONS in user.roles
-            and ignore_designer
-        ):
-            mappers_response = FormProcessMapperService.get_submissions_count(
-                mappers_response, user, sort_by, sort_order
-            )
 
         return (
             mappers_response,

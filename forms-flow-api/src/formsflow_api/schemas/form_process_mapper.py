@@ -32,6 +32,7 @@ class FormProcessMapperSchema(AuditDateTimeSchema):
     description = fields.Str(data_key="description")
     prompt_new_version = fields.Bool(data_key="promptNewVersion", dump_only=True)
     is_migrated = fields.Bool(data_key="isMigrated", required=False)
+    submissions_count = fields.Int(data_key="submissionsCount", required=False)
 
 
 class FormProcessMapperListReqSchema(Schema):

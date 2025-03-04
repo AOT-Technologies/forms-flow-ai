@@ -840,7 +840,9 @@ class Application(
     def sort_by_submission_count(cls, query, sort_order, submission_count_alias):
         """Sort by submission count."""
         order_func = desc if "desc" in sort_order else asc
-        return query.order_by(order_func(submission_count_alias.c.submissions_count))
+        return query.order_by(
+            order_func(func.coalesce(submission_count_alias.c.submissions_count, 0))
+        )
 
     @classmethod
     @user_context

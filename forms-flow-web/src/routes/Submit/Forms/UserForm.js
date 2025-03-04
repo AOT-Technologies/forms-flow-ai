@@ -106,7 +106,7 @@ const View = React.memo((props) => {
   const isDraftEdit = Boolean(draftId);
   const [draftData, setDraftData] = useState(isDraftEdit ? draftSubmission?.data : {} );
   const draftRef = useRef(isDraftEdit ? { data: draftSubmission?.data } : {});
-  const [isDraftCreated, setIsDraftCreated] = useState(isDraftEdit ? true : false);
+  const [isDraftCreated, setIsDraftCreated] = useState(isDraftEdit);
   const [validFormId, setValidFormId] = useState(undefined);
 
   const [showPublicForm, setShowPublicForm] = useState("checking");

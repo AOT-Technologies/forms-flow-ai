@@ -29,7 +29,6 @@ if (window._env_?.REACT_APP_CUSTOM_THEME_URL) {
       }
             // Dynamically load the font if a custom font URL is provided
             if (data["--default-font-family-url"]) {
-              console.log("entered");
               let link = document.createElement("link");
               link.href = data["--default-font-family-url"];
               link.rel = "stylesheet";

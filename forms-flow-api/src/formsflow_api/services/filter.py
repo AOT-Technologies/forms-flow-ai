@@ -54,7 +54,7 @@ class FilterService:
 
     @staticmethod
     @user_context
-    def get_user_filters(request_args, **kwargs):  # pylint: disable=too-many-locals
+    def get_user_filters(**kwargs):  # pylint: disable=too-many-locals
         """Get filters for the user."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
@@ -106,18 +106,12 @@ class FilterService:
                     },
                 )
                 filter_obj.save()
-        # If filter type is not provided, get all filters for type task
-        filter_type = (
-            request_args.get("filterType").upper()
-            if request_args.get("filterType")
-            else FilterType.TASK
-        )
         filters = Filter.find_user_filters(
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
             admin=ADMIN in user.roles,
-            filter_type=filter_type,
+            filter_type=FilterType.TASK,
         )
         filter_data = filter_schema.dump(filters, many=True)
         default_variables = [

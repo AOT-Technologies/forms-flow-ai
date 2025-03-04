@@ -59,12 +59,10 @@ import {
   getFormProcesses,
 } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
-// import SavingLoading from "../../../components/Loading/SavingLoading";
-import { renderPage } from "../../../helper/helper";
+import { renderPage,textTruncate } from "../../../helper/helper";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
-import { textTruncate } from "../../../helper/helper";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -115,7 +113,6 @@ const View = React.memo((props) => {
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const exitType = useRef("UNMOUNT");
 
-  const [showNotification, setShowNotification] = useState(false);
   const {
     isAuthenticated,
     submission,
@@ -208,9 +205,6 @@ const View = React.memo((props) => {
     if (form._id && !error) setIsValidResource(true);
     return () => setIsValidResource(false);
   }, [error, form._id]);
-
-
-
 
   /**
    * Will create a draft application when the form is selected for entry.
@@ -307,10 +301,21 @@ const View = React.memo((props) => {
   };
 
   const renderModifiedDate = () => {
-    if(isPublic)return t("New Submission");
-    return draftSubmission 
-    ? t("Last modified on: ") + new Date(draftSubmission.modified).toLocaleString()
-    : t("New Submission");
+    if (draftSubmission && !isPublic) {
+      return (
+        <>
+          <span className="status-draft"></span>{" "}
+          {t("Last modified on:")}{" "}
+          {new Date(draftSubmission.modified).toLocaleString()}
+        </>
+      );
+    } else {
+      return (
+        <>
+          <span className="status-new"></span> {t("New Submission")}
+        </>
+      );
+    }
   };
 
   const renderHeader = () => (
@@ -334,7 +339,6 @@ const View = React.memo((props) => {
           </div>
           <div className="d-flex align-items-center">
               <span className="form-modified-date me-3">
-                <span className="status-draft"></span>
                 {renderModifiedDate()}  
               </span>
           </div>
@@ -393,9 +397,6 @@ const View = React.memo((props) => {
               onChange={(data) => {
                 setDraftData(data);
                 draftRef.current = data;
-                if (isDraftEdit && !showNotification) {
-                  setShowNotification(true);
-                }
               }}
               onSubmit={(data) => {
                 setPoll(false);

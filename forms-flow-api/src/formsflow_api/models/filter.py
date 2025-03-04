@@ -46,7 +46,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         default=FilterType.TASK,
         index=True,
     )
-    parent_filter_id = db.Column(db.Integer, nullable=True)
+    parent_filter_id = db.Column(db.Integer, nullable=True, index=True)
 
     @classmethod
     def find_all_active_filters(cls, tenant: str = None) -> List[Filter]:

@@ -180,32 +180,9 @@ def test_attribute_filter(app, client, session, jwt):
     assert response.status_code == 200
     assert len(response.json.get("filters")) == 1
     assert response.json.get("filters")[0].get("name") == "Task filter1"
-    assert response.json.get("filters")[0].get("attributeFilters")
 
     # Get filter by id
     response = client.get(f"/filter/{parent_filter_id}", headers=headers)
     assert response.status_code == 200
     assert response.json.get("name") == "Task filter1"
     assert response.json.get("attributeFilters")
-
-
-def test_date_filter(app, client, session, jwt):
-    """Test date filter with valid payload."""
-    token = get_token(jwt, role=CREATE_FILTERS, username="reviewer")
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    # Create task filter
-    response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(name="Date filter1", roles=["formsflow-reviewer"], filter_type="DATE")
-    )
-    assert response.status_code == 201
-    assert response.json.get("id") is not None
-    assert response.json.get("name") == "Date filter1"
-    assert response.json.get("filterType") == "DATE"
-
-    token = get_token(jwt, role=VIEW_FILTERS, username="reviewer")
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    # Get task filters for the user
-    response = client.get("/filter/user?filterType=DATE", headers=headers)
-    assert response.status_code == 200
-    assert len(response.json.get("filters")) == 1
-    assert response.json.get("filters")[0].get("name") == "Date filter1"

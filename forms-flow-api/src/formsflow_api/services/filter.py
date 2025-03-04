@@ -46,36 +46,6 @@ class FilterService:
         return filter_schema.dump(filter_data)
 
     @staticmethod
-    def get_attribute_filters(filter_type, user):
-        """Get attribute filters & create lookup table with parent filter id."""
-        attribute_filters = {}
-        if filter_type == FilterType.TASK:
-            filters = Filter.find_user_filters(
-                roles=user.group_or_roles,
-                user=user.user_name,
-                tenant=user.tenant_key,
-                admin=ADMIN in user.roles,
-                filter_type=FilterType.ATTRIBUTE,
-            )
-            filters = filter_schema.dump(filters, many=True)
-            # Retain only the first filter for each parentFilterId
-            for f in filters:
-                parent_filter_id = f["parentFilterId"]
-                FilterService.set_filter_edit_permission(f, user)
-                if parent_filter_id not in attribute_filters:
-                    attribute_filters[parent_filter_id] = f
-        return attribute_filters
-
-    @staticmethod
-    def set_attribute_filters(filter_item, attribute_filters):
-        """Set attribute filters for a filter item if it is of type TASK."""
-        if filter_item["filterType"] == FilterType.TASK.value:
-            matched_filter = attribute_filters.get(filter_item["id"])
-            filter_item["attributeFilters"] = (
-                [matched_filter] if matched_filter is not None else []
-            )
-
-    @staticmethod
     def set_filter_edit_permission(filter_item, user):
         """Set filter edit permission for a filter item."""
         filter_item["editPermission"] = (
@@ -136,7 +106,7 @@ class FilterService:
                     },
                 )
                 filter_obj.save()
-        # If filter type is not provided, get all filters for type task and attribute
+        # If filter type is not provided, get all filters for type task
         filter_type = (
             request_args.get("filterType").upper()
             if request_args.get("filterType")
@@ -154,7 +124,6 @@ class FilterService:
             {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},
         ]
-        attribute_filters = FilterService.get_attribute_filters(filter_type, user)
 
         # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
@@ -164,8 +133,6 @@ class FilterService:
             filter_item["variables"] += [
                 var for var in default_variables if var not in filter_item["variables"]
             ]
-            # Return attribute filters for task filters
-            FilterService.set_attribute_filters(filter_item, attribute_filters)
         response = {"filters": filter_data}
         # get user default filter
         user_data = User.get_user_by_user_name(user_name=user.user_name)

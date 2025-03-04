@@ -1,3 +1,5 @@
+import { create } from "lodash";
+import applications from "../../modules/applicationsReducer";
 
 export const mockstate = {
 
@@ -111,6 +113,9 @@ export const mockstate = {
 
   user:{
     createDesigns: true,
+    viewSubmissions: true,
+    createSubmissions: true,
+    showApplications: true,
     bearerToken: "",
     roles: [
     "view_tasks",

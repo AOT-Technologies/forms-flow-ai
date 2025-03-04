@@ -3,20 +3,20 @@ import { httpPOSTBlobRequest } from "../../../apiManager/httpRequestHandler";
 import API from "../../../apiManager/endpoints";
 import { toast } from "react-toastify";
 import { useDownloadFile } from "./useDownloadFile";
-import { ExportButton, ButtonState } from "./button";
 import { Container } from "react-bootstrap";
 import { replaceUrl } from "../../../helper/helper";
 import { Translation } from "react-i18next";
 import { withFeature } from "flagged";
+import { CustomButton } from "@formsflow/components";
 
 const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
-  const [buttonState, setButtonState] = useState(ButtonState.Primary);
+  const [buttonState, setButtonState] = useState(false);
 
-  const preDownloading = () => setButtonState(ButtonState.Loading);
-  const postDownloading = () => setButtonState(ButtonState.Primary);
+  const preDownloading = () => setButtonState(true);
+  const postDownloading = () => setButtonState(false);
 
   const onErrorDownloadFile = () => {
-    setButtonState(ButtonState.Primary);
+    setButtonState(false);
     toast.error(
       <Translation>{(t) => t("Something went wrong. Please try again!")}</Translation>
     );
@@ -56,12 +56,14 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
   return (
     <Container className="d-flex flex-column">
       <a href={url} download={name} className="hidden" ref={ref} id="export-btn"/>
-      <ExportButton
+      <CustomButton
+        variant="light"
         label={<Translation>{(t) => t("Export PDF")}</Translation>}
-        labelLoading={<Translation>{(t) => t("Exporting..")}</Translation>}
-        buttonState={buttonState}
-        data-testid="export-pdf-button"
         onClick={download}
+        buttonLoading={buttonState}
+        dataTestId="export-pdf-button"
+        ariaLabel="Export PDF Button"
+        size="sm"
       />
     </Container>
   );

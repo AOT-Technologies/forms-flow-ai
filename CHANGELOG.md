@@ -18,7 +18,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added the includeSubmissionsCount=true parameter to the form list endpoint to include the submissions count.
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
-* Added filter_type parameter to filter list `/filter/user` endpoint to filter by filter type.
 
 ## 7.0.0 - 2025-01-10
 

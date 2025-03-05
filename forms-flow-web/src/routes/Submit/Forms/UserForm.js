@@ -59,7 +59,7 @@ import {
   getFormProcesses,
 } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
-import { renderPage,textTruncate } from "../../../helper/helper";
+import { renderPage, textTruncate } from "../../../helper/helper";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
@@ -70,41 +70,39 @@ const View = React.memo((props) => {
   const { formId, draftId } = useParams();
   const lang = useSelector((state) => state.user.lang);
   const pubSub = useSelector((state) => state.pubSub);
-  const draftSubmission = useSelector((state) => state.draft.submission);
-  const formStatusLoading = useSelector(
-    (state) => state.process?.formStatusLoading
-  );
-  const isFormSubmissionLoading = useSelector(
-    (state) => state.formDelete.isFormSubmissionLoading
-  );
+  const isPublic = !props.isAuthenticated;
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+  const { submission: draftSubmission, lastUpdated: lastUpdatedDraft } =
+    useSelector((state) => state.draft) || {};
+
+  const {
+    isFormSubmissionLoading,
+    formSubmitted: isFormSubmitted,
+    publicFormStatus,
+  } = useSelector((state) => state.formDelete) || {};
+
+  const draftSubmissionId =
+    useSelector((state) => state.draft.draftSubmission?.id) || draftId;
+
+  // Holds the latest data saved by the server
+  const { formStatusLoading, processLoadError } =
+    useSelector((state) => state.process) || {};
+
   const isPublicStatusLoading = useSelector(
     (state) => state.applications.isPublicStatusLoading
   );
 
-  const isFormSubmitted = useSelector(
-    (state) => state.formDelete.formSubmitted
-  );
-  const publicFormStatus = useSelector(
-    (state) => state.formDelete.publicFormStatus
-  );
-  const draftSubmissionId = useSelector(
-    (state) => state.draft.draftSubmission?.id
-  ) || draftId;
-  // Holds the latest data saved by the server
-  const processLoadError = useSelector(
-    (state) => state.process?.processLoadError
-  );
-  const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
-  const isPublic = !props.isAuthenticated;
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   /**
    * `draftData` is used for keeping the uptodate form entry,
    * this will get updated on every change the form is having.
    */
 
   const isDraftEdit = Boolean(draftId);
-  const [draftData, setDraftData] = useState(isDraftEdit ? draftSubmission?.data : {} );
+  const [draftData, setDraftData] = useState(
+    isDraftEdit ? draftSubmission?.data : {}
+  );
   const draftRef = useRef(isDraftEdit ? { data: draftSubmission?.data } : {});
   const [isDraftCreated, setIsDraftCreated] = useState(isDraftEdit);
   const [validFormId, setValidFormId] = useState(undefined);
@@ -122,7 +120,7 @@ const View = React.memo((props) => {
     options,
     form: { form, isActive, url, error },
   } = props;
- 
+
   const [isValidResource, setIsValidResource] = useState(false);
 
   const dispatch = useDispatch();
@@ -219,7 +217,7 @@ const View = React.memo((props) => {
         (!isAuthenticated && publicFormStatus?.status == "active"))
     ) {
       let payload = getDraftReqFormat(validFormId, draftData?.data);
-      dispatch(draftCreateMethod(payload, setIsDraftCreated));  
+      dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
   }, [validFormId, formStatus, publicFormStatus, isValidResource]);
 
@@ -244,7 +242,7 @@ const View = React.memo((props) => {
       let payload = getDraftReqFormat(validFormId, draftRef.current?.data);
       if (poll) saveDraft(payload, exitType.current);
     };
-  }, [validFormId, draftSubmissionId, poll,isDraftCreated, exitType.current]);
+  }, [validFormId, draftSubmissionId, poll, isDraftCreated, exitType.current]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -290,8 +288,7 @@ const View = React.memo((props) => {
     }
   }, [form, pubSub.publish]);
 
-
- // will be updated once application/draft listing page is ready
+  // will be updated once application/draft listing page is ready
   const handleBack = () => {
     if (isDraftEdit) {
       dispatch(push(`${redirectUrl}draft`));
@@ -304,8 +301,7 @@ const View = React.memo((props) => {
     if (draftSubmission && !isPublic) {
       return (
         <>
-          <span className="status-draft"></span>{" "}
-          {t("Last modified on:")}{" "}
+          <span className="status-draft"></span> {t("Last modified on:")}{" "}
           {new Date(draftSubmission.modified).toLocaleString()}
         </>
       );
@@ -338,15 +334,14 @@ const View = React.memo((props) => {
             </div>
           </div>
           <div className="d-flex align-items-center">
-              <span className="form-modified-date me-3">
-                {renderModifiedDate()}  
-              </span>
+            <span className="form-modified-date me-3">
+              {renderModifiedDate()}
+            </span>
           </div>
         </div>
       </Card.Body>
     </Card>
   );
-
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (

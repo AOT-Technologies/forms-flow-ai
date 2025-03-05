@@ -1,0 +1,10 @@
+fastapi[standard]
+strawberry-graphql[fastapi]
+motor
+beanie
+pydantic
+python-dotenv
+redis
+setuptools
+logging
+orjson

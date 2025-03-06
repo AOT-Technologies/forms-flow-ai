@@ -148,7 +148,7 @@ function TaskHead() {
           </button>
           <button
             type="button"
-            className={`btn btn-md${viewType ? "btn-secondary active" : "btn-light"}`}
+            className={`btn btn-md ${viewType ? "btn-secondary active" : "btn-light"}`}
             onClick={() => {
               changeTaskView(true);
             }}

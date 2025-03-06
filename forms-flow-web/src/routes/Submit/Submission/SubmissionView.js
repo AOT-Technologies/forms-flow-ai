@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import startCase from "lodash/startCase";
@@ -36,23 +36,25 @@ const ViewApplication = React.memo(() => {
   const { applicationId } = useParams();
   const dispatch = useDispatch();
 
-  const applicationDetail = useSelector(
-    (state) => state.applications.applicationDetail
-  );
-  const applicationDetailStatusCode = useSelector(
-    (state) => state.applications.applicationDetailStatusCode
-  );
-  const isApplicationDetailLoading = useSelector(
-    (state) => state.applications.isApplicationDetailLoading
-  );
+  const { applicationDetail, applicationDetailStatusCode, isApplicationDetailLoading } =
+   useSelector(
+    (state) => ({
+    applicationDetail: state.applications.applicationDetail,
+    applicationDetailStatusCode: state.applications.applicationDetailStatusCode,
+    isApplicationDetailLoading: state.applications.isApplicationDetailLoading,
+    })
+    );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submission = useSelector((state) => state.submission?.submission || {});
   const form = useSelector((state) => state.form?.form || {});
-  const appHistory = useSelector((state) => state.taskAppHistory.appHistory);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const isHistoryListLoading = useSelector(
-    (state) => state.taskAppHistory.isHistoryListLoading
+
+  const { appHistory, isHistoryListLoading } = useSelector(
+    useMemo(() => (state) => ({
+      appHistory: state.taskAppHistory.appHistory,
+      isHistoryListLoading: state.taskAppHistory.isHistoryListLoading,
+    }), [])
   );
 
   useEffect(() => {
@@ -156,7 +158,7 @@ const ViewApplication = React.memo(() => {
       </Card>
 
       {/* View Application Details */}
-      <View page="application-detail" showPrintButton={false} />
+      <View page="application-detail"/>
         <FormSubmissionHistoryModal
           show={showHistoryModal}
           onClose={() => setShowHistoryModal(false)}

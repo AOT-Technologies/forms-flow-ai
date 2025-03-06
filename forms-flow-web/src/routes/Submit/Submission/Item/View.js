@@ -72,7 +72,6 @@ const View = React.memo((props) => {
 View.propTypes = {
   onSubmit: PropTypes.func,
   options: PropTypes.object,
-  errors: PropTypes.array,
   form: PropTypes.object,
   submission: PropTypes.object,
 };

@@ -1,19 +1,21 @@
 // Import statements
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { push } from "connected-react-router";
 import {
   setBPMFormLimit,
   setBPMSubmitListPage,
   setBpmFormSearch,
   setBpmFormSort,
 } from "../../../actions/formActions";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+
+// import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { useTranslation, Translation } from "react-i18next";
 import { TableFooter } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { formatDate } from "../../../helper/dateTimeHelper";
+import { navigateToFormEntries } from "../../../helper/routerHelper";
+import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
 
 function ClientTable() {
   // Redux hooks and state management
@@ -22,7 +24,7 @@ function ClientTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const bpmForms = useSelector((state) => state.bpmForms);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
-  
+  const [showSubmissions, setShowSubmissions] = useState(false);
   // Local state
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
   const [search, setSearch] = useState(useSelector((state) => state.bpmForms.searchText) || "");
@@ -34,9 +36,9 @@ function ClientTable() {
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
   const searchText = useSelector((state) => state.bpmForms.searchText);
-  
+
   // Constants
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  // const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const pageOptions = [
     { text: "5", value: 5 },
     { text: "25", value: 25 },
@@ -58,24 +60,26 @@ function ClientTable() {
   };
 
   // Event handlers
- const handleSort = (key) => {
+  const handleSort = (key) => {
     const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
-  
+
     // Reset all other columns to default (ascending) except the active one
     const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
       acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
       return acc;
     }, {});
-  
+
     dispatch(setBpmFormSort({
       ...updatedSort,
       activeKey: key,
     }));
   };
 
-  const submitNewForm = (formId) => {
-    dispatch(push(`${redirectUrl}form/${formId}`));
+  const showFromEntries = (formId) => {
+    setShowSubmissions(true);
+    navigateToFormEntries(dispatch, tenantKey, formId);
   };
+
 
   const handlePageChange = (page) => {
     dispatch(setBPMSubmitListPage(page));
@@ -126,7 +130,7 @@ function ClientTable() {
     >
       <div className="min-height-400">
         <div className="custom-tables-wrapper">
-        <table className="table custom-tables table-responsive-sm" data-testid="client-table">
+          <table className="table custom-tables table-responsive-sm" data-testid="client-table">
             <thead className="table-header">
               <tr>
                 <th className="w-20" data-testid="form-name-header">
@@ -141,7 +145,7 @@ function ClientTable() {
                 <th className="w-30" scope="col" data-testid="description-header">{t("Description")}</th>
 
                 <th className="w-13" scope="col" data-testid="submission-count-header">
-                   <SortableHeader
+                  <SortableHeader
                     columnKey="submissionCount"
                     title="Submissions"
                     currentSort={formsort}
@@ -202,10 +206,11 @@ function ClientTable() {
                             <button
                               data-testid={`form-submit-button-${e._id}`}
                               className="btn btn-secondary btn-table"
-                              onClick={() => submitNewForm(e._id)}
+                              onClick={() => showFromEntries(e._id)}
                             >
                               <Translation>{(t) => t("Select")}</Translation>
                             </button>
+
                           </div>
                         </td>
                       </tr>
@@ -225,6 +230,7 @@ function ClientTable() {
                 ) : (
                   <td colSpan={3}></td>
                 )}
+
               </tbody>
             ) : !searchFormLoading ? (
               noDataFound()
@@ -233,6 +239,7 @@ function ClientTable() {
             )}
           </table>
         </div>
+        {showSubmissions && <SubmissionDrafts />}
       </div>
     </LoadingOverlay>
 

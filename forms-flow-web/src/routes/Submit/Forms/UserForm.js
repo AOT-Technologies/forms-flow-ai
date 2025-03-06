@@ -324,11 +324,11 @@ const View = React.memo((props) => {
         ></SubmissionError>
         <div className="d-flex justify-content-between align-items-center">
           <div className="icon-title-container">
-            <BackToPrevIcon
+            { !isPublic && <BackToPrevIcon
               title={t("Back to Form List")}
               data-testid="back-to-form-list"
               onClick={handleBack}
-            />
+            /> }
             <div className="user-form-header-text">
               {textTruncate(100, 97, form.title)}
             </div>

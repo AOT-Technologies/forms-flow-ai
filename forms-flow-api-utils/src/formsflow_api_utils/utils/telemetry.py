@@ -17,7 +17,7 @@ def setup_tracing(app, service_name):
     """Sets up OpenTelemetry tracing for the application."""
     # Check if OpenTelemetry tracing is enabled
     if os.getenv("ENABLE_OPENTELEMETRY", "false").lower() != "true":
-        print("OpenTelemetry tracing is disabled.")
+        app.logger.info("OpenTelemetry tracing is disabled.")
         return
 
     resource = Resource.create({"service.name": service_name})

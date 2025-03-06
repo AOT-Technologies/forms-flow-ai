@@ -47,6 +47,7 @@ import { addHiddenApplicationComponent } from "../../../constants/applicationCom
 import { navigateToDesignFormEdit } from "../../../helper/routerHelper.js";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
 import useSuccessCountdown from "../../../customHooks/useSuccessCountdown";
+import { MAX_FILE_SIZE } from "../../../constants/constants";
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
@@ -201,6 +202,12 @@ const List = React.memo((props) => {
   };
 
   const handleImport = async (fileContent, actionType) => {
+
+    if (fileContent.size > MAX_FILE_SIZE) {
+      setImportError("File size exceeds the 20MB limit. Please upload a smaller file.");
+      return;
+    }
+
     let data;
     if (
       [UploadActionType.VALIDATE, UploadActionType.IMPORT].includes(actionType)

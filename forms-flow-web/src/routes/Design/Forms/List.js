@@ -9,7 +9,7 @@ import {
   deleteForm,
 } from "@aot-technologies/formio-react";
 import Loading from "../../../containers/Loading";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { MULTITENANCY_ENABLED, MAX_FILE_SIZE } from "../../../constants/constants";
 import {
   setBPMFormListLoading,
   setFormDeleteStatus,
@@ -47,7 +47,7 @@ import { addHiddenApplicationComponent } from "../../../constants/applicationCom
 import { navigateToDesignFormEdit } from "../../../helper/routerHelper.js";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
 import useSuccessCountdown from "../../../customHooks/useSuccessCountdown";
-import { MAX_FILE_SIZE } from "../../../constants/constants";
+
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();

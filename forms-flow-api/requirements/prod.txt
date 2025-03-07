@@ -17,4 +17,4 @@ markupsafe
 PyJWT
 redis
 lxml
-git+https://github.com/AOT-Technologies/forms-flow-ai.git@release/7.0.0#subdirectory=forms-flow-api-utils
+git+https://github.com/AOT-Technologies/forms-flow-ai.git@release/7.0.1#subdirectory=forms-flow-api-utils

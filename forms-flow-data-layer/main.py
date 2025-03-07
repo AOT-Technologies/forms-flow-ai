@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.config.envs import ENVS
 
 # Import application modules
-from src import grphql_app, init_formio_db, redis_cache
+from src import grphql_app, FormioDbConnection, redis_cache
 
  
 # Logging Configuration
@@ -23,13 +23,15 @@ logger = logging.getLogger("main")
 # Environment-based CORS configuration
 ALLOWED_ORIGINS = ENVS.CORS_ALLOWED_ORIGINS.split(",")
 
+## Dbs
+formio_db = FormioDbConnection()
 @asynccontextmanager
 async def on_startup(app: FastAPI):
     """Lifespan event for startup and shutdown"""
     try:
         # Initialize database connection
         try:
-            await init_formio_db()
+            await formio_db.init_formio_db()
             logger.info("✅ FormIO Database initialized successfully")
         except Exception as db_error:
             logger.warning(f"⚠️ Database connection failed: {db_error}", exc_info=True)
@@ -84,16 +86,20 @@ app = create_app()
 @app.get("/health", tags=["Health Check"])
 async def health_check():
     """🔍 Health check endpoint with real-time DB & cache status"""
-    db_status = "connected" if await redis_cache.redis.ping() else "disconnected"
-    cache_status = "connected" if await redis_cache.redis.ping() else "disconnected"
+    try:
+        formio_db_ping = await formio_db.ping()
+        db_status = "connected" if  formio_db_ping.get("ok")  else "disconnected"
+        cache_status = "connected" if await redis_cache.redis.ping() else "disconnected"
 
-    return {
-        "status": "healthy" if db_status == "connected" and cache_status == "connected" else "unhealthy",
-        "components": {
-            "database": db_status,
-            "cache": cache_status,
-        },
-    }
+        return {
+            "status": "healthy" if db_status == "connected" and cache_status == "connected" else "unhealthy",
+            "components": {
+                "formio": db_status,
+                "cache": cache_status,
+            },
+        }
+    except Exception as e:
+         logger.error(f"🚨 Critical startup error: {e}", exc_info=True)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="info")

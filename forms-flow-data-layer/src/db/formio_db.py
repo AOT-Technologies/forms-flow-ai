@@ -7,7 +7,7 @@ from src.models.formio.form import FormModel  # Import your MongoDB models
 
 class FormioDbConnection:
     def __init__(self) -> None:
-        self.__client = None  # 
+        self.__client = None  #
         self.formio_db = None
 
     async def init_formio_db(self):
@@ -19,11 +19,15 @@ class FormioDbConnection:
     def get_db(self):
         """Get Formio DB client"""
         if self.formio_db is None:
-            raise ValueError("Database client is not initialized. Call init_formio_db() first.")
+            raise ValueError(
+                "Database client is not initialized. Call init_formio_db() first."
+            )
         return self.formio_db
 
     async def ping(self):
         """Get Formio DB client"""
         if self.formio_db is None:
-            raise ValueError("Database client is not initialized. Call init_formio_db() first.")
+            raise ValueError(
+                "Database client is not initialized. Call init_formio_db() first."
+            )
         return await self.formio_db.command("ping")

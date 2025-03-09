@@ -216,7 +216,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
                                                             {(t) => t("View")}
                                                         </Translation>
                                                     }
-                                                    onClick={() => viewOrEditForm(item._id)}
+                                                    onClick={() => viewOrEditForm()}
                                                     className="btn btn-secondary btn-table"
                                                     dataTestId={`form-view-button-${item._id}`}
                                                     ariaLabel="Form view button"

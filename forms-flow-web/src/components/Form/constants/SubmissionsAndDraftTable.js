@@ -1,7 +1,5 @@
 import React from "react";
 import { useDispatch, useSelector, } from "react-redux";
-import { push } from "connected-react-router";
-
 import {
     setApplicationListActivePage,
     // setApplicationLoading,
@@ -11,9 +9,6 @@ import {
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
 import LoadingOverlay from "react-loading-overlay-ts";
-import {
-    MULTITENANCY_ENABLED,
-} from "../../../constants/constants";
 import { useTranslation, Translation } from "react-i18next";
 import { HelperServices } from "@formsflow/service";
 import { CustomButton, TableFooter, NoDataFound } from "@formsflow/components";
@@ -21,15 +16,15 @@ import { CustomButton, TableFooter, NoDataFound } from "@formsflow/components";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
- import { navigateToDraftEdit } from "../../../helper/routerHelper";
+import { navigateToDraftEdit } from "../../../helper/routerHelper";
 
 
 
-function SubmissionsAndDraftTable() {
+const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const draftAndSubmissionsList = useSelector((state) => 
+    const draftAndSubmissionsList = useSelector((state) =>
         state.applications.draftAndSubmissionsList);
     const pageNo = useSelector((state) => state.applications?.activePage);
     const limit = useSelector((state) => state.applications?.countPerPage);
@@ -40,8 +35,7 @@ function SubmissionsAndDraftTable() {
     const searchFormLoading = useSelector(
         (state) => state.formCheckList.searchFormLoading
     );
-    const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-    const isApplicationCountLoading = useSelector((state) => 
+    const isApplicationCountLoading = useSelector((state) =>
         state.process.isApplicationCountLoading);
 
     const pageOptions = [
@@ -82,14 +76,14 @@ function SubmissionsAndDraftTable() {
     };
 
     const continueDraft = (row) => {
-        navigateToDraftEdit(dispatch, tenantKey, row.formId, row.id);        
+        navigateToDraftEdit(dispatch, tenantKey, row.formId, row.id);
     };
 
     const deleteDraft = (row) => {
         deleteDraftbyId(row.id)
             .then(() => {
                 toast.success(t("Draft Deleted Successfully"));
-                dispatch(push(`${redirectUrl}draft`));
+                fetchSubmissionsAndDrafts();
             })
             .catch((error) => {
                 toast.error(error.message);
@@ -99,12 +93,10 @@ function SubmissionsAndDraftTable() {
 
     const viewOrEditForm = () => {
         console.log("set veiw here");
-        // dispatch(resetFormProcessData());
-        // dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
+        //TBD: Redirect to view. 
     };
 
     const handlePageChange = (page) => {
-
         dispatch(setApplicationListActivePage(page));
     };
 
@@ -116,7 +108,7 @@ function SubmissionsAndDraftTable() {
     return (
         <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
             <div className="min-height-400">
-                <div className="custom-tables-wrapper">
+                <div className="custom-tables-wrapper-application">
                     <table className="table custom-tables table-responsive-sm mb-0">
                         <thead className="table-header">
                             <tr>
@@ -220,9 +212,9 @@ function SubmissionsAndDraftTable() {
                                                     variant="secondary"
                                                     size="sm"
                                                     label={
-                                                    <Translation>
-                                                    {(t) => t("View")}
-                                                    </Translation>
+                                                        <Translation>
+                                                            {(t) => t("View")}
+                                                        </Translation>
                                                     }
                                                     onClick={() => viewOrEditForm(item._id)}
                                                     className="btn btn-secondary btn-table"
@@ -256,6 +248,6 @@ function SubmissionsAndDraftTable() {
             </div>
         </LoadingOverlay>
     );
-}
+};
 
 export default SubmissionsAndDraftTable;

@@ -21,7 +21,7 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
   const { t } = useTranslation();
 
   return (
-    <div className="width-25 search-box">
+    <div className="application-search-box">
       <CustomSearch
         search={search}
         setSearch={setSearch}
@@ -51,7 +51,7 @@ const DraftsAndSubmissions = () => {
   const { formId } = useParams();
 
   // Redux state selectors
-  const searchText = useSelector((state) => state.application?.searchParams);
+  const searchText = useSelector((state) => state.applications?.searchParams);
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const formSort = useSelector((state) => state.applications.sort);
@@ -76,6 +76,12 @@ const DraftsAndSubmissions = () => {
 
   // Handlers
   const handleSelection = (label) => setSelectedItem(label);
+
+  useEffect(() => {
+    if (!search?.trim()) {
+      dispatch(setApplicationListSearchParams(""));
+    }
+  }, [search]);
 
   const handleSearch = () => {
     dispatch(setApplicationListSearchParams(search));
@@ -147,6 +153,7 @@ const DraftsAndSubmissions = () => {
       <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
         <div className="d-md-flex justify-content-start align-items-center button-align">
           <CustomButton
+            className="appliation-dropdown"
             isDropdown
             variant="primary"
             size="sm"
@@ -193,8 +200,10 @@ const DraftsAndSubmissions = () => {
         </div>
       </div>
 
-      {/* Data Table */}
-      <SubmissionsAndDraftTable />
+      {/* Applications-Drafts Table */}
+      <SubmissionsAndDraftTable
+        fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+      />
     </div>
   );
 };

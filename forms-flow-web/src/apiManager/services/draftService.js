@@ -20,6 +20,8 @@ export const draftCreate = (data, ...rest) => {
       .then((res) => {
         if (res.data) {
           dispatch(setDraftSubmission(res.data));
+          dispatch(setDraftDetail(res.data));
+
           done(true);
         } else {
           dispatch(setDraftSubmissionError("Error Posting data"));

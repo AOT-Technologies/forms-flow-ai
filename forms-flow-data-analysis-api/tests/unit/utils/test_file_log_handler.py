@@ -1,7 +1,8 @@
 """Tests for file log handler."""
 import os
+import logging
 
-from api.utils.file_log_handler import register_log_handlers
+from formsflow_api_utils.utils import register_log_handlers
 
 
 def test_file_log_valid_data(app):
@@ -12,7 +13,7 @@ def test_file_log_valid_data(app):
         log_file=log_file_path,
         when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
         interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
-        backup_count=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
+        backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
     )
     app.logger.info("Test log..")
     assert os.path.exists(log_file_path) == True
@@ -30,7 +31,8 @@ def test_file_log_with_missing_file(app, capsys):
         log_file=log_file_path,
         when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
         interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
-        backup_count=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
+        backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
     )
-    out, err = capsys.readouterr()
-    assert "Unable to configure file logging.." in out
+    # Assert that no file handler is added
+    assert len(app.logger.handlers) == 1
+    assert isinstance(app.logger.handlers[0], logging.StreamHandler)

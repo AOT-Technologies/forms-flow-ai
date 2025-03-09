@@ -7,6 +7,7 @@ from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     MANAGE_SUBFLOWS,
     MANAGE_TASKS,
+    get_token,
 )
 
 from formsflow_api.models import Process
@@ -15,7 +16,6 @@ from tests.utilities.base_test import (
     get_process_request_payload,
     get_process_request_payload_for_dmn,
     get_process_request_payload_low_code,
-    get_token,
 )
 
 

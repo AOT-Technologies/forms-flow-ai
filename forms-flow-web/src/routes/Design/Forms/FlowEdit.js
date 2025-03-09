@@ -360,6 +360,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
           onClose={handleToggleHistoryModal}
           title={t("History")}
           loadMoreBtnText={t("Load More")}
+          loadMoreBtndataTestId="load-more-flow-history"
           revertBtnText={t("Revert To This")}
           allHistory={historiesData?.processHistory || []}
           loadMoreBtnAction={loadMoreBtnAction}

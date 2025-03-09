@@ -3,12 +3,11 @@
 # from tests import skip_in_ci
 import json
 
-from formsflow_api_utils.utils import CREATE_FILTERS, VIEW_TASKS
+from formsflow_api_utils.utils import CREATE_FILTERS, VIEW_TASKS, get_token
 
 from tests.utilities.base_test import (
     get_filter_payload,
     get_locale_update_valid_payload,
-    get_token,
 )
 
 

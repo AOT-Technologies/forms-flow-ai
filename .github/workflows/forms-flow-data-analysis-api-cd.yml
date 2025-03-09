@@ -32,12 +32,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          install: true
-
+          
       - name: Set version
         if: ${{ github.ref != 'refs/heads/master' }}
         working-directory: .
@@ -67,6 +62,7 @@ jobs:
           # registry: ${{ env.REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -74,7 +70,17 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.name }}
-      
+            
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+          
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+          
       - name: Build and push Docker image
         if: ${{ github.ref != 'refs/heads/master' }}
         uses: docker/build-push-action@v4

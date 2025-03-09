@@ -1,4 +1,6 @@
-from tests.utilities.base_test import get_sentiment_analysis_api_payload, get_token
+
+from formsflow_api_utils.utils import get_token
+from tests.utilities.base_test import get_sentiment_analysis_api_payload
 
 
 def test_sentiment_analysis_api_without_bearer_token(client):

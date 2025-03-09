@@ -5,10 +5,11 @@ from http import HTTPStatus
 from flask import current_app, jsonify, request
 from flask_restx import Namespace, Resource, cors
 
+from formsflow_api_utils.utils import Service, auth, cors_preflight
+
 from api import config
 from api.services.store_sentiment_result import save_sentiment_result
 from api.services.transformers import sentiment_analysis_pipeline_transformers
-from api.utils import Service, auth, cors_preflight
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 

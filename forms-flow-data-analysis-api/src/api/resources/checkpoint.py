@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 from flask_restx import Namespace, Resource
 
-from api.utils.util import cors_preflight
+from formsflow_api_utils.utils import cors_preflight
 
 API = Namespace("Checkpoint", description="Checkpoint")
 

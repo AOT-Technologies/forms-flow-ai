@@ -40,6 +40,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
       size="sm"
       backdrop="static"
       centered
+      data-testid="settings-modal"
     >
       <Modal.Header>
         <Modal.Title>{t("Settings")}</Modal.Title>

@@ -96,7 +96,7 @@ const PrivateRoute = React.memo((props) => {
     viewDashboards,
   } = useUserRoles();
 
-  const BASE_ROUTE_PATH = (() => {
+  const BASE_ROUTE_PATH = (() => { 
     if (viewTasks || manageTasks) return ROUTE_TO.TASK;
     if (createSubmissions) return ROUTE_TO.FORM;
     if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;
@@ -394,7 +394,9 @@ const PrivateRoute = React.memo((props) => {
             {ENABLE_TASKS_MODULE && (
               <ReviewerRoute path={ROUTE_TO.TASK} component={ServiceFlow} />
             )}
-            <Route exact path={ROUTE_TO.ADMIN} />
+            <Route exact path={ROUTE_TO.REVIEW} /> 
+            <Route exact path={ROUTE_TO.ADMIN} /> 
+
             <Route exact path={BASE_ROUTE}>
               {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}
             </Route>

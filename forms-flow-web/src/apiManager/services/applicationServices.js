@@ -29,46 +29,42 @@ export const fetchApplicationsAndDrafts = ({
   onlyDrafts,
   includeDrafts,
   formId,
+  searchText,
   formSort,
   done = () => {},
 }) => {
   return (dispatch) => {
-    const sortBy = formSort.activeKey || "submissionId"; // default if needed
-    const sortOrder = formSort[sortBy]?.sortOrder || "asc";
+    const { activeKey = "submissionId" } = formSort;
+    const sortOrder = formSort[activeKey]?.sortOrder || "asc";
 
-    const params = new URLSearchParams({
+    // Construct params object and remove undefined values
+    const params = {
       pageNo,
       limit,
-      sortBy,
+      sortBy: activeKey,
       sortOrder,
       createdUserSubmissions,
       parentFormId: formId,
-    });
+      ...(includeDrafts && { includeDrafts: true }),
+      ...(onlyDrafts && { onlyDrafts: true }),
+      ...(searchText && { Id: searchText }),
+    };
 
-    if (includeDrafts) {
-      params.append("includeDrafts", true);
-    }
-    if (onlyDrafts) {
-      params.append("onlyDrafts", true);
-    }
-
-    const url = `${API.GET_APPLICATIONS_AND_DRAFTS}?${params.toString()}`;
+    const url = `${API.GET_APPLICATIONS_AND_DRAFTS}?${new URLSearchParams(params).toString()}`;
 
     RequestService.httpGETRequest(
       url,
       {},
       StorageService.get(StorageService.User.AUTH_TOKEN)
     )
-      .then((res) => {
-        if (res?.data) {
-          dispatch(setApplicationListCount(res.data.totalCount || 0));
-          dispatch(setApplicationsAndDrafts(res.data));
-          done(null, res.data);
+      .then(({ data }) => {
+        if (data) {
+          dispatch(setApplicationListCount(data.totalCount || 0));
+          dispatch(setApplicationsAndDrafts(data));
         }
+        done(null, data);
       })
-      .catch((error) => {
-        done(error);
-      });
+      .catch(done);
   };
 };
 

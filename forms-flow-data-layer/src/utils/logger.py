@@ -7,6 +7,7 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()],  # Logs to console
 )
 
+
 def get_logger(name: str):
     """Dynamically creates a logger for each module."""
     return logging.getLogger(name)

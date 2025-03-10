@@ -38,7 +38,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Submitter Last Name
    * Current User Roles
 * Added MF_FORMSFLOW_REVIEW_URL env for reviewer microfront end
-
+* Added re-designed Client Table
+* Added Draft and Submission list table
+* Redesigned user form selection screens
 **forms-flow-api**
    * Added new endpoints for:
       * Form validation: `/form/validate`

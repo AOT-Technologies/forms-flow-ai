@@ -57,6 +57,8 @@ filter_request = API.model(
         "users": fields.List(
             fields.String(), description="Authorized Users to the filter"
         ),
+        "parentFilterId": fields.Integer(description="Parent filter id"),
+        "filterType": fields.String(description="Filter type"),
     },
 )
 filter_response = API.inherit(
@@ -143,7 +145,9 @@ class FilterResource(Resource):
                 "showUndefinedVariable":false
             },
             "users": [],
-            "roles": ["/formsflow/formsflow-reviewer"]
+            "roles": ["/formsflow/formsflow-reviewer"],
+            "parentFilterId": null,
+            "filterType": "TASK"
         }
         ```
         """
@@ -187,7 +191,7 @@ class FilterResourceById(Resource):
     """Resource for managing filter by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -204,7 +208,7 @@ class FilterResourceById(Resource):
         Get filter details corresponding to a filter id for requests with ```REVIEWER_GROUP``` permission.
         """
         filter_result = FilterService.get_filter_by_id(filter_id)
-        response, status = filter_schema.dump(filter_result), HTTPStatus.OK
+        response, status = filter_result, HTTPStatus.OK
 
         return response, status
 

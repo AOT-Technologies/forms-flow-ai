@@ -16,6 +16,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added a new column, is_draft, to the application table to identify draft entries.
 * Added Alembic script to update existing active drafts by setting is_draft to true in the application table.
 * Added the includeSubmissionsCount=true parameter to the form list endpoint to include the submissions count.
+* Added columns filter_type, parent_filter_id to the filter table.
+* Added script to migrate existing filters to TASK filter type.
 
 ## 7.0.0 - 2025-01-10
 

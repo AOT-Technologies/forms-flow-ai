@@ -14,12 +14,12 @@ import {
   setApplicationDetailStatusCode,
   setApplicationStatusList,
   setApplicationError,
+  setApplicationsAndDrafts,
 } from "../../actions/applicationActions";
 import { replaceUrl } from "../../helper/helper";
 import moment from "moment";
 import { getFormattedProcess } from "./formatterService";
 import { setPublicFormStatus } from "../../actions/formActions";
-import { setApplicationsAndDrafts } from "../../actions/applicationActions";
 
 
 export const fetchApplicationsAndDrafts = ({

@@ -43,7 +43,6 @@ import InsightsPage from "./Insights";
 import Application from "./Application";
 import DesignProcessRoutes from "./../routes/Design/Process";
 import Drafts from "./Draft";
-import SubmissionDrafts from "./../routes/Submit/Forms/DraftAndSubmissions";
 import {
   BPM_API_URL_WITH_VERSION,
   WEB_BASE_URL,
@@ -310,24 +309,6 @@ const PrivateRoute = React.memo((props) => {
     [userRoles]
   );
 
-  const SubmissionDraftsRoute = useMemo(
-    () =>
-      ({ component: Component, ...rest }) =>
-        (
-          <Route
-            {...rest}
-            render={(props) =>
-              createSubmissions || viewSubmissions ? (
-                <Component {...props} />
-              ) : (
-                <AccessDenied userRoles={userRoles} />
-              )
-            }
-          />
-        ),
-    [userRoles]
-  );
-
   ClientRoute.propTypes = {
     component: PropTypes.elementType.isRequired,
   };
@@ -345,12 +326,6 @@ const PrivateRoute = React.memo((props) => {
           <Switch>
             {ENABLE_FORMS_MODULE && (
               <ClientRoute path={ROUTE_TO.FORM} component={SubmitFormRoutes} />
-            )}
-            {ENABLE_APPLICATIONS_MODULE && (
-              <SubmissionDraftsRoute
-                path={ROUTE_TO.FORM_ENTRIES}
-                component={SubmissionDrafts}
-              />
             )}
             {ENABLE_FORMS_MODULE && (
               <DesignerRoute

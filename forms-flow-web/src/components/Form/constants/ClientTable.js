@@ -8,7 +8,6 @@ import {
   setBpmFormSort,
 } from "../../../actions/formActions";
 
-// import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { useTranslation, Translation } from "react-i18next";
 import { TableFooter } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";

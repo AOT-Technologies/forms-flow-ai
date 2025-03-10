@@ -19,3 +19,6 @@ selenium
 selenium-wire
 redis
 sentry-sdk[flask]
+opentelemetry-exporter-otlp
+opentelemetry-instrumentation-flask
+opentelemetry-instrumentation-requests

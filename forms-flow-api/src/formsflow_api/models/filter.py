@@ -21,7 +21,6 @@ class FilterType(Enum):
 
     TASK = "TASK"
     ATTRIBUTE = "ATTRIBUTE"
-    DATE = "DATE"
 
 
 class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):

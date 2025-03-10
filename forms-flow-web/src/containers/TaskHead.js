@@ -136,7 +136,7 @@ function TaskHead() {
         <div>
           <button
             type="button"
-            className={`btn me-1 ${
+            className={`btn me-1 btn-md ${
               viewType ? "btn-light" : "btn-secondary active"
             }`}
             onClick={() => {
@@ -148,7 +148,7 @@ function TaskHead() {
           </button>
           <button
             type="button"
-            className={`btn ${viewType ? "btn-secondary active" : "btn-light"}`}
+            className={`btn btn-md ${viewType ? "btn-secondary active" : "btn-light"}`}
             onClick={() => {
               changeTaskView(true);
             }}

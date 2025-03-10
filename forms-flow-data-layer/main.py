@@ -1,47 +1,43 @@
-import logging
 import uvicorn
+import asyncio
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.config.envs import ENVS
-
+from src.utils import get_logger
 # Import application modules
 from src import grphql_app, FormioDbConnection, redis_cache
 
  
-# Logging Configuration
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - [%(name)s] - %(message)s",
-    handlers=[
-        logging.StreamHandler()  # Logs to console
-    ],
-)
-logger = logging.getLogger("main")
+# logger
+logger = get_logger(__name__)
 
 # Environment-based CORS configuration
 ALLOWED_ORIGINS = ENVS.CORS_ALLOWED_ORIGINS.split(",")
 
 ## Dbs
 formio_db = FormioDbConnection()
+
+async def connect_db(db_name, connection):
+    """Generic function to initialize a database/cache connection asynchronously."""
+    try:
+        await connection()
+        logger.info(f"✅ {db_name} initialized successfully")
+    except Exception as error:
+        logger.warning(f"⚠️ {db_name} connection failed: {error}", exc_info=True)
+
 @asynccontextmanager
 async def on_startup(app: FastAPI):
     """Lifespan event for startup and shutdown"""
     try:
-        # Initialize database connection
-        try:
-            await formio_db.init_formio_db()
-            logger.info("✅ FormIO Database initialized successfully")
-        except Exception as db_error:
-            logger.warning(f"⚠️ Database connection failed: {db_error}", exc_info=True)
-
-        # Connect to Redis cache
-        try:
-            await redis_cache.connect()
-            logger.info("✅ Redis cache connected successfully")
-        except Exception as redis_error:
-            logger.warning(f"⚠️ Redis connection failed: {redis_error}", exc_info=True)
+        # List of services to initialize
+        connections = {
+            "FormIO Database": formio_db.init_formio_db,
+            "Redis Cache": redis_cache.connect,
+        }
+        # Initialize all connections asynchronously
+        await asyncio.gather(*(connect_db(name, conn) for name, conn in connections.items()))
 
         yield  # Application is running
 
@@ -51,7 +47,6 @@ async def on_startup(app: FastAPI):
 
     finally:
         logger.info("🛑 Application shutdown initiated")
-
 
 def create_app() -> FastAPI:
     """Factory function to create FastAPI application"""

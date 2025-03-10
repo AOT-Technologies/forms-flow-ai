@@ -34,9 +34,15 @@ jobs:
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
         with:
+          driver: docker-container
           install: true
+          
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
 
       - name: Set version
         if: ${{ github.ref != 'refs/heads/master' }}

@@ -10,6 +10,7 @@ from formsflow_api_utils.utils import (
     DRAFT_APPLICATION_STATUS,
     NEW_APPLICATION_STATUS,
     VIEW_SUBMISSIONS,
+    get_token,
 )
 
 from formsflow_api.constants import BusinessErrorCode
@@ -20,7 +21,6 @@ from tests.utilities.base_test import (
     get_draft_create_payload,
     get_form_model_object,
     get_formio_form_request_payload,
-    get_token,
 )
 
 

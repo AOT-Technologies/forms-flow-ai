@@ -27,7 +27,7 @@ function FormTable() {
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
-  const pageNo = useSelector((state) => state.bpmForms.page);
+  const pageNo = useSelector((state) => state.bpmForms.formListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
@@ -65,12 +65,19 @@ function FormTable() {
 
   const handleSort = (key) => {
     const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
-   dispatch(setBpmFormSort({
-    ...formsort,
-    activeKey: key,
-    [key]: { sortOrder: newSortOrder },
-  }));
+  
+    // Reset all other columns to default (ascending) except the active one
+    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
+      return acc;
+    }, {});
+  
+    dispatch(setBpmFormSort({
+      ...updatedSort,
+      activeKey: key,
+    }));
   };
+  
 
   const viewOrEditForm = (formId, path) => {
     dispatch(resetFormProcessData());
@@ -97,8 +104,7 @@ function FormTable() {
 
 
   return (
-    <>
-      <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
+    <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
           <div className="custom-tables-wrapper">
             <table className="table custom-tables table-responsive-sm mb-0">
@@ -107,7 +113,7 @@ function FormTable() {
                   <th className="w-20">
                   <SortableHeader
                    columnKey="formName"
-                   title="Form Name"
+                   title="Name"
                    currentSort={formsort}
                    handleSort={handleSort}
                    className="gap-2"
@@ -157,7 +163,9 @@ function FormTable() {
                         </td>
                         <td className="w-30 cursor-pointer">
                           <span className={isExpanded ? "text-container-expand" : "text-container"}
-                            onClick={() => toggleRow(index)}>
+                            onClick={() => toggleRow(index)}
+                            data-testid="description-cell"
+                            >
                             {stripHtml(e.description ? e.description : "")}
                           </span>
                         </td>
@@ -185,7 +193,7 @@ function FormTable() {
                             }
                             onClick={() => viewOrEditForm(e._id, 'edit')}
                             className=""
-                            dataTestid={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
+                            dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
                             ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
                           /> )}
                         </td>
@@ -206,13 +214,14 @@ function FormTable() {
                     )}
                 </tbody>
               ) : !searchFormLoading ? (
-                <NoDataFound />
+                <NoDataFound
+                message={t('No forms have been found. Create a new form by clicking the "New Form" button in the top right.')}
+              />
               ) : null}
             </table>
           </div>
         </div>
       </LoadingOverlay>
-    </>
   );
 }
 

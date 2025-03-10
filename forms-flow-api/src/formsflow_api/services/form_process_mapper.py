@@ -1003,3 +1003,48 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if process:
             ProcessService.update_process_status(process, ProcessStatus.DRAFT, user)
         return {}
+
+    @user_context
+    def get_form_data(self, form_id: str, auth_type: str, is_designer: bool, **kwargs):
+        """Get form data by form_id."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        auth_type = auth_type.upper() if auth_type else AuthType.FORM.value
+        mapper_data = FormProcessMapper.find_form_by_form_id(form_id)
+        # check the mapper exists and is accessible
+        if not mapper_data:
+            raise BusinessException(BusinessErrorCode.FORM_NOT_FOUND)
+        if auth_type == AuthType.FORM.value:
+            # check the form is published
+            if mapper_data.status == FormProcessMapperStatus.INACTIVE.value:
+                raise BusinessException(BusinessErrorCode.FORM_NOT_PUBLISHED)
+            # check the user is not anonymous then the tenant must match
+            if not mapper_data.is_anonymous and mapper_data.tenant != tenant_key:
+                raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
+        auth_service = AuthorizationService()
+        auth_data = None
+        if auth_type == AuthType.APPLICATION.value:
+            auth_data = auth_service.get_application_resource_by_id(
+                auth_type=auth_type,
+                resource_id=mapper_data.parent_form_id,
+                form_id=form_id,
+                user=user,
+            )
+        else:
+            auth_data = auth_service.get_resource_by_id(
+                auth_type=auth_type,
+                resource_id=mapper_data.parent_form_id,
+                is_designer=(
+                    is_designer if auth_type == AuthType.DESIGNER.value else False
+                ),
+                user=user,
+            )
+
+        if not auth_data:
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        form_json = formio_service.get_form_by_id(form_id, form_io_token)
+
+        return form_json

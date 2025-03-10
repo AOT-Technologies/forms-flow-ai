@@ -5,7 +5,7 @@ Test-Suite to ensure that the CORS decorator is working as expected.
 
 import pytest
 
-from api.utils.util import cors_preflight
+from formsflow_api_utils.utils import cors_preflight
 
 TEST_CORS_METHODS_DATA = [
     ("GET"),

@@ -60,7 +60,10 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   // Sorting Options
   const optionSortBy = [
     { value: "formName", label: t("Form Name") },
+    { value: "submissionCount", label: t("Submissions") },
     { value: "modified", label: t("Latest Submission") },
+
+
   ];
 
   // Fetch Forms Function

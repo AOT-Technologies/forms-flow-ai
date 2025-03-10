@@ -252,7 +252,7 @@ class ApplicationsResource(Resource):
         )
 
 
-@cors_preflight("GET,PUT,OPTIONS")
+@cors_preflight("GET,PUT,DELETE,OPTIONS")
 @API.route("/<int:application_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 class ApplicationResourceById(Resource):
     """Resource for getting application by id."""

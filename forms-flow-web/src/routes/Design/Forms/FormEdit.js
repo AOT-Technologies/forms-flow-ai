@@ -219,7 +219,9 @@ const EditComponent = () => {
   ) => {
     if (fileContent.size > MAX_FILE_SIZE) {
       setImportError(
-        "File size exceeds the 20MB limit. Please upload a smaller file."
+        `File size exceeds the ${
+          MAX_FILE_SIZE / (1024 * 1024)
+        }MB limit. Please upload a smaller file.`
       );
       return;
     }

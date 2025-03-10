@@ -38,7 +38,6 @@ function ClientTable() {
   const searchText = useSelector((state) => state.bpmForms.searchText);
 
   // Constants
-  // const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const pageOptions = [
     { text: "5", value: 5 },
     { text: "25", value: 25 },

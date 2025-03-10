@@ -117,6 +117,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+      - name: Replace security-severity undefined for license-related findings
+        run: sed -i 's/"security-severity": "null"/"security-severity": "0"/g' snyk.sarif
+
+
       - name: Upload Snyk report as sarif 📦
         uses: github/codeql-action/upload-sarif@v3
         with:

@@ -10,7 +10,7 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.enums import MetricsState
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import and_, asc, desc, func, or_, text
+from sqlalchemy import and_, asc, case, desc, func, or_, text
 from sqlalchemy.orm import aliased
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -870,6 +870,22 @@ class Application(
             and_(cls.latest_form_id == formid, cls.created_by == user_name)
         )
         return query.first()
+
+    @classmethod
+    def get_draft_by_parent_form_id(cls, parent_form_id: str) -> Draft:
+        """Get all draft against one form id."""
+        get_all_mapper_id = (
+            db.session.query(FormProcessMapper.id)
+            .filter(FormProcessMapper.parent_form_id == parent_form_id)
+            .all()
+        )
+        result = cls.query.join(Draft, Draft.application_id == cls.id).filter(
+            and_(
+                cls.form_process_mapper_id.in_([id for id, in get_all_mapper_id]),
+                cls.is_draft.is_(True),
+            )
+        )
+        return FormProcessMapper.tenant_authorization(result).all()
 
     @classmethod
     def sort_by_submission_count(cls, query, sort_order, submission_count_alias):

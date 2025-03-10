@@ -23,7 +23,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v7.0.1
+    image: formsflow/forms-flow-forms:v7.0.0
 
     # The app will restart until Mongo is listening
     restart: always

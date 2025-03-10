@@ -1,6 +1,6 @@
 """This manages form process mapper Schema."""
 
-from marshmallow import EXCLUDE, Schema, fields
+from marshmallow import EXCLUDE, Schema, fields, missing
 
 from .base_schema import AuditDateTimeSchema
 
@@ -32,6 +32,23 @@ class FormProcessMapperSchema(AuditDateTimeSchema):
     description = fields.Str(data_key="description")
     prompt_new_version = fields.Bool(data_key="promptNewVersion", dump_only=True)
     is_migrated = fields.Bool(data_key="isMigrated", required=False)
+    submissions_count = fields.Int(
+        data_key="submissionsCount",
+        required=False,
+    )
+    submissions_count = fields.Method(
+        "get_submissions_count",
+        data_key="submissionsCount",
+        required=False,
+    )
+
+    def get_submissions_count(self, obj):
+        """This method is to get the submissions count."""
+        if obj and hasattr(obj, "submissions_count"):
+            if obj.submissions_count is not None:
+                return obj.submissions_count
+            return 0
+        return missing  # Exclude the field if submissions_count is not applicable
 
 
 class FormProcessMapperListReqSchema(Schema):

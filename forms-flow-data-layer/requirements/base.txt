@@ -8,3 +8,4 @@ redis
 setuptools
 logging
 orjson
+sqlalchemy

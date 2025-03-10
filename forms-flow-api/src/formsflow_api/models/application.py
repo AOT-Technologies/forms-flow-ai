@@ -5,11 +5,13 @@ from __future__ import annotations
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
     FILTER_MAPS,
+    add_sort_filter,
     validate_sort_order_and_order_by,
 )
 from formsflow_api_utils.utils.enums import MetricsState
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import and_, func, or_, text
+from sqlalchemy import and_, asc, desc, func, or_, text
+from sqlalchemy.orm import aliased
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -303,23 +305,6 @@ class Application(
         total_count = query.count()
         pagination = query.paginate(page=page_no, per_page=limit, error_out=False)
         return pagination.items, total_count
-
-    @classmethod
-    def find_applications_count_by_parent_form_id_user(
-        cls, parent_form_id, user_name, tenant
-    ):
-        """Fetch application count based on parent_form_id and user who submitted the application."""
-        count_query = (
-            db.session.query(func.count(Application.id))
-            .join(FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id)
-            .filter(
-                FormProcessMapper.parent_form_id == parent_form_id,
-                FormProcessMapper.tenant == tenant,
-                cls.created_by == user_name,
-                cls.is_draft.is_(False),
-            )
-        )
-        return count_query.scalar()
 
     @classmethod
     def find_applications_by_auth_formids_user(  # pylint: disable=too-many-arguments, too-many-positional-arguments
@@ -833,3 +818,101 @@ class Application(
             and_(cls.latest_form_id == formid, cls.created_by == user_name)
         )
         return query.first()
+
+    @classmethod
+    def sort_by_submission_count(cls, query, sort_order, submission_count_alias):
+        """Sort by submission count."""
+        order_func = desc if "desc" in sort_order else asc
+        return query.order_by(
+            order_func(func.coalesce(submission_count_alias.c.submissions_count, 0))
+        )
+
+    @classmethod
+    @user_context
+    def get_submission_count(cls, form_ids, query, sort_by, sort_order, **kwargs):
+        """Get submission count."""
+        user: UserContext = kwargs["user"]
+        # Subquery to get the submission count
+        submission_count_subquery = (
+            db.session.query(
+                FormProcessMapper.parent_form_id,
+                func.count(Application.id).label("submissions_count"),
+            )
+            .join(cls, cls.form_process_mapper_id == FormProcessMapper.id)
+            .filter(
+                FormProcessMapper.tenant == user.tenant_key,
+                cls.created_by == user.user_name,
+                cls.is_draft.is_(False),
+                FormProcessMapper.parent_form_id.in_(form_ids),
+            )
+            .group_by(FormProcessMapper.parent_form_id)
+            .subquery()
+        )
+        submission_count_alias = aliased(submission_count_subquery)
+        # Join the submission count subquery with the main query
+        query = query.outerjoin(
+            submission_count_alias,
+            FormProcessMapper.parent_form_id == submission_count_alias.c.parent_form_id,
+        )
+        # Sort by submission count
+        if "submissionCount" in sort_by:
+            query = cls.sort_by_submission_count(
+                query, sort_order, submission_count_alias
+            )
+        return query, submission_count_alias
+
+    @classmethod
+    def find_all_active_by_formid(
+        cls,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        search=None,
+        form_ids=None,
+        fetch_submissions_count=False,
+        **filters,
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        """Fetch all active form process mappers by authorized forms."""
+        # Get latest row for each form_id group
+        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
+        query = FormProcessMapper.filter_conditions(**filters)
+        query = query.filter(
+            FormProcessMapper.id.in_(filtered_form_ids),
+        )
+        query = FormProcessMapper.add_search_filter(query=query, search=search)
+        query = FormProcessMapper.access_filter(query=query)
+        query = add_sort_filter(
+            sort_by=sort_by,
+            sort_order=sort_order,
+            query=query,
+            model_name="form_process_mapper",
+        )
+
+        # Prepare the entities for the query
+        entities = [
+            FormProcessMapper.id,
+            FormProcessMapper.process_key,
+            FormProcessMapper.form_id,
+            FormProcessMapper.form_name,
+            FormProcessMapper.modified,
+            FormProcessMapper.description,
+        ]
+        if fetch_submissions_count:
+            # Get the submission count subquery
+            query, submission_count_alias = cls.get_submission_count(
+                form_ids, query, sort_by, sort_order
+            )
+            entities.append(submission_count_alias.c.submissions_count)
+
+        # Select the required columns
+        query = query.with_entities(*entities)
+
+        # Paginate the results
+        total_count = query.count()
+        limit = total_count if limit is None else limit
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
+        return query.items, total_count

@@ -54,7 +54,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         is_designer: bool,
         active_forms: bool,
         include_submissions_count: bool,
-        ignore_designer: bool,
         **kwargs,
     ):  # pylint: disable=too-many-arguments, too-many-locals
         """Get all forms."""
@@ -83,7 +82,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             list_form_mappers = (
                 FormProcessMapper.find_all_forms
                 if is_designer
-                else FormProcessMapper.find_all_active_by_formid
+                else Application.find_all_active_by_formid
+            )
+            # Submissions count should return only for user with create_submissions permission
+            fetch_submissions_count = (
+                include_submissions_count and CREATE_SUBMISSIONS in user.roles
             )
             mappers, get_all_mappers_count = list_form_mappers(
                 page_number=page_number,
@@ -92,29 +95,27 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 sort_by=sort_by,
                 sort_order=sort_order,
                 form_ids=authorized_form_ids,
-                **designer_filters if is_designer else {},
+                **(
+                    designer_filters
+                    if is_designer
+                    else {"fetch_submissions_count": fetch_submissions_count}
+                ),
             )
         mapper_schema = FormProcessMapperSchema()
         mappers_response = mapper_schema.dump(mappers, many=True)
-        # Submissions count should return only for user with create_submissions permission
-        # & client form listing with showForOnlyCreateSubmissionUsers param true
-        if (
-            include_submissions_count
-            and CREATE_SUBMISSIONS in user.roles
-            and ignore_designer
-        ):
-            current_app.logger.debug("Fetching submissions count..")
-            for mapper in mappers_response:
-                mapper["submissionsCount"] = (
-                    Application.find_applications_count_by_parent_form_id_user(
-                        mapper["parentFormId"], user.user_name, user.tenant_key
-                    )
-                )
 
         return (
             mappers_response,
             get_all_mappers_count,
         )
+
+    @staticmethod
+    def sort_results(data: List, sort_order: str, sort_by: str):
+        """Sort results."""
+        reverse = (
+            "desc" in sort_order
+        )  # Determine if sorting should be in descending order
+        return sorted(data, key=lambda k: k.get(sort_by, 0), reverse=reverse)
 
     @staticmethod
     def get_mapper_count(form_name=None):

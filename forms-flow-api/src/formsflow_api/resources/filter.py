@@ -76,6 +76,8 @@ filter_base_model = API.model(
             task_visible_attributes, description="Visible attributes in task"
         ),
         "order": fields.Integer(description="Filter display order"),
+        "parentFilterId": fields.Integer(description="Parent filter id"),
+        "filterType": fields.String(description="Filter type"),
     },
 )
 filter_request = API.inherit(
@@ -182,6 +184,8 @@ class FilterResource(Resource):
                 "followUp": true,
                 "priority": true
             }
+            "parentFilterId": null,
+            "filterType": "TASK"
         }
         ```
         """
@@ -226,7 +230,7 @@ class FilterResourceById(Resource):
     """Resource for managing filter by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
     @API.doc(
         responses={
@@ -244,7 +248,7 @@ class FilterResourceById(Resource):
         Get filter details corresponding to a filter id for requests with ```manage all filters``` permission.
         """
         filter_result = FilterService.get_filter_by_id(filter_id)
-        response, status = filter_schema.dump(filter_result), HTTPStatus.OK
+        response, status = filter_result, HTTPStatus.OK
 
         return response, status
 

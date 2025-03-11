@@ -147,3 +147,42 @@ def test_get_user_filters_by_order(app, client, session, jwt):
     assert len(response.json.get("filters")) == 2
     assert response.json.get("filters")[0].get("name") == "Reviewer Task"
     assert response.json.get("filters")[1].get("name") == "Clerk Task"
+
+
+def test_attribute_filter(app, client, session, jwt):
+    """Test attribute filter with valid payload."""
+    token = get_token(jwt, role=CREATE_FILTERS, username="reviewer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # Create task filter
+    response = client.post(
+        "/filter", headers=headers, json=get_filter_payload(name="Task filter1", roles=["formsflow-reviewer"])
+    )
+    assert response.status_code == 201
+    assert response.json.get("id") is not None
+    assert response.json.get("name") == "Task filter1"
+    assert response.json.get("filterType") == "TASK"
+    assert response.json.get("parentFilterId") is None
+
+    parent_filter_id = response.json.get("id")
+    # Create attribute filter for the task filter
+    response = client.post(
+        "/filter", headers=headers, json=get_filter_payload(name="Attribute filter1", roles=["formsflow-reviewer"], parent_filter_id=parent_filter_id, filter_type="ATTRIBUTE")
+    )
+    assert response.status_code == 201
+    assert response.json.get("id") is not None
+    assert response.json.get("name") == "Attribute filter1"
+    assert response.json.get("filterType") == "ATTRIBUTE"
+
+    token = get_token(jwt, role=VIEW_FILTERS, username="reviewer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    # Get task filters for the user
+    response = client.get("/filter/user", headers=headers)
+    assert response.status_code == 200
+    assert len(response.json.get("filters")) == 1
+    assert response.json.get("filters")[0].get("name") == "Task filter1"
+
+    # Get filter by id
+    response = client.get(f"/filter/{parent_filter_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.json.get("name") == "Task filter1"
+    assert response.json.get("attributeFilters")

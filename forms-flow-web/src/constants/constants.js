@@ -82,6 +82,7 @@ export const STAFF_DESIGNER = "formsflow-designer";
 export const STAFF_REVIEWER = "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
 export const FORMSFLOW_ADMIN = "formsflow-admin";
+export const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB in bytes
 
 export const OPERATIONS = {
   insert: {

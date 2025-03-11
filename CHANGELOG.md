@@ -21,6 +21,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Draft submit by id: `/application/<id>/submit`
    * Public draft submit by id: `/public/application/<id>/submit`
    * Delete draft by id: `/application/<id>`
+* Added columns filter_type, parent_filter_id to the filter table.
+* Added script to migrate existing filters to TASK filter type.
 
 `Modified`
 

@@ -127,7 +127,7 @@ spring:
             authorization-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}/protocol/openid-connect/auth
             token-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}/protocol/openid-connect/token
             user-info-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}/protocol/openid-connect/userinfo
-            user-name-attribute: preferred_username
+            user-name-attribute: ${USER_NAME_DISPLAY_CLAIM:preferred_username}
             jwk-set-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}/protocol/openid-connect/certs
             issuer-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
       resource-server:
@@ -182,6 +182,12 @@ plugin.identity.keycloak:
   enableClientAuth: ${KEYCLOAK_ENABLE_CLIENT_AUTH:false}
   enableMultiTenancy: ${MULTI_TENANCY_ENABLED:false}
   formsFlowAdminUrl: ${FORMSFLOW_ADMIN_URL:}
+  sharedRealmEnabled: ${SHARED_REALM:false}
+  cssApiUrl: ${CSS_API_BASE_URL:}/integrations/${CSS_INTEGRATION_ID:}/${CSS_ENV:}
+  cssApiClient: ${CSS_API_CLIENT_ID:}
+  cssApiSecret: ${CSS_API_SECRET:}
+  cssApiLogin: ${CSS_API_LOGIN_URL:}
+  
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 
@@ -241,3 +247,6 @@ logging:
       max-history: 30
   file:
     name: /logs/forms-flow-bpm.log
+
+  
+

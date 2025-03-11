@@ -44,6 +44,8 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
     private boolean enableClientAuth;
     private boolean enableMultiTenancy;
     private TenantService tenantService;
+    private BCGovSharedKeycloakService bcGovSharedKeycloakService;
+    private boolean sharedRealmEnabled;
 
     public KeycloakUserService(KeycloakConfiguration keycloakConfiguration, KeycloakRestTemplate restTemplate,
                                KeycloakContextProvider keycloakContextProvider, CustomConfig config) {
@@ -55,6 +57,8 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
         if (this.enableMultiTenancy) {
             this.tenantService = new TenantService(restTemplate, keycloakContextProvider, config);
         }
+        this.bcGovSharedKeycloakService = new BCGovSharedKeycloakService(keycloakConfiguration, restTemplate, keycloakContextProvider, config);
+        this.sharedRealmEnabled = config.isSharedRealmEnabled();
     }
 
     @Override
@@ -82,6 +86,8 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
 //            } else {
             users = this.requestUsersByClientRole();
 //            }
+        } else if (this.sharedRealmEnabled){
+            users = this.bcGovSharedKeycloakService.requestUsersWithoutGroupId(query);
         } else {
             users = super.requestUsersWithoutGroupId(query);
         }

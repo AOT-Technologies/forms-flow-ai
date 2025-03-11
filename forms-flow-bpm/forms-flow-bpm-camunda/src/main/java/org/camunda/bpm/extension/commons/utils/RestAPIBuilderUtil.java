@@ -5,6 +5,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.ANONYMOUS_USER;
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.SERVICE_ACCOUNT;
@@ -21,7 +23,8 @@ public class RestAPIBuilderUtil {
     private static String FORM_BASE_URL;
     private static final String APPLICATION_AUDIT_URL = "/application/{0}/history";
     private static final String APPLICATION_URL = "/application/{0}";
-
+    private static final String DEFAULT_USER_CLAIM = "preferred_username";
+    
     private RestAPIBuilderUtil(){}
 
     public static RestAPIBuilderUtil getInstance(String apiBaseUrl, String formBaseUrl){
@@ -59,7 +62,7 @@ public class RestAPIBuilderUtil {
         String submittedBy = null;
         if (authentication != null) {
             if (authentication instanceof JwtAuthenticationToken authToken) {
-                submittedBy = authToken.getTokenAttributes().get(userNameAttribute).toString();
+                submittedBy = getUserIdFromJwt(authToken, userNameAttribute);
                 if (submittedBy.startsWith("service-account")) {
                     submittedBy = ANONYMOUS_USER;
                 }
@@ -68,6 +71,41 @@ public class RestAPIBuilderUtil {
             submittedBy = SERVICE_ACCOUNT;
         }
         return submittedBy;
+    }
+    
+    public static String getUserIdFromJwt(Authentication authentication, String userNameAttribute) {
+        if (!(authentication instanceof JwtAuthenticationToken)) {
+            throw new IllegalArgumentException("Authentication is not of type JwtAuthenticationToken");
+        }
+
+        Map<String, Object> claims = ((JwtAuthenticationToken) authentication).getTokenAttributes();
+        Object value = resolveJsonPath(claims, userNameAttribute);
+        // If the resolved value is null, fall back to 'preferred_username'
+        if (value == null) {
+            value = resolveJsonPath(claims, DEFAULT_USER_CLAIM);
+        }
+
+        return value != null ? value.toString() : null;
+    }
+
+    private static Object resolveJsonPath(Map<String, Object> claims, String path) {
+        String[] keys = path.split("\\.");
+        Object value = claims;
+
+        for (String key : keys) {
+            if (!(value instanceof Map)) {
+                return null; // If at any point, it's not a Map, return null
+            }
+            value = ((Map<?, ?>) value).get(key);
+
+            // If the value is a List, take the first element
+            if (value instanceof List) {
+                List<?> list = (List<?>) value;
+                value = list.isEmpty() ? null : list.get(0);
+            }
+        }
+
+        return value;
     }
 
 }

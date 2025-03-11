@@ -210,6 +210,7 @@ export const ENABLE_APPLICATIONS_MODULE =
     ? false
     : true;
 
+    
 const MAIN_ROUTE = {
   DRAFT: "draft",
   FORM: "form",
@@ -241,3 +242,8 @@ export const getRoute = (tenantId) => ({
   ADMIN: getBaseRoute(tenantId) + MAIN_ROUTE.ADMIN,
   NOTFOUND: getBaseRoute(tenantId) + MAIN_ROUTE.NOTFOUND
 });
+
+export const USER_NAME_DISPLAY_CLAIM =
+  (window._env_ && window._env_.REACT_APP_USER_NAME_DISPLAY_CLAIM) ||
+  process.env.REACT_APP_USER_NAME_DISPLAY_CLAIM ||
+  "preferred_username";

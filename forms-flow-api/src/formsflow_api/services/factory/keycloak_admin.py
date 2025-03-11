@@ -2,6 +2,9 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict, List
+from typing import Any, Dict, List, Union
+
+DEFAULT_USER_CLAIM = "username"  # Default fallback claim
 
 
 class KeycloakAdmin(ABC):
@@ -97,3 +100,20 @@ class KeycloakAdmin(ABC):
     def add_user_to_tenant(self, data: Dict):
         """Add user in a tenant."""
         raise NotImplementedError("Method not implemented")
+
+    @classmethod
+    def get_user_id_from_response(cls, response: Dict[str, Any], user_name_attribute: str) -> Union[str, None]:
+        """
+        Retrieve a user ID from a response JSON
+        If the resolved value is a list, return the first element.
+        Falls back to DEFAULT_USER_CLAIM if the attribute is not found.
+        """
+        value = response.get("attributes", {}).get(user_name_attribute)
+        # If it's a list, take the first element
+        if isinstance(value, list) and value:
+            value = value[0]
+        # If not found, fall back to the default user claim (like "username")
+        if value is None:
+            value = response.get(DEFAULT_USER_CLAIM)
+
+        return str(value) if value else None

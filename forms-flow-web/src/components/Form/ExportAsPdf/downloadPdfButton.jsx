@@ -1,27 +1,24 @@
 import React, { useState } from "react";
 import { httpPOSTBlobRequest } from "../../../apiManager/httpRequestHandler";
 import API from "../../../apiManager/endpoints";
-
+import { toast } from "react-toastify";
 import { useDownloadFile } from "./useDownloadFile";
-import { ExportButton, ButtonState } from "./button";
-import { Alert, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { replaceUrl } from "../../../helper/helper";
-import { Translation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { withFeature } from "flagged";
+import { CustomButton } from "@formsflow/components";
 
 const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
-  const [buttonState, setButtonState] = useState(ButtonState.Primary);
-  const [showAlert, setShowAlert] = useState(false);
+  const [buttonState, setButtonState] = useState(false);
 
-  const preDownloading = () => setButtonState(ButtonState.Loading);
-  const postDownloading = () => setButtonState(ButtonState.Primary);
+  const preDownloading = () => setButtonState(true);
+  const postDownloading = () => setButtonState(false);
+  const { t } = useTranslation();
 
   const onErrorDownloadFile = () => {
-    setButtonState(ButtonState.Primary);
-    setShowAlert(true);
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
+    setButtonState(false);
+    toast.error(t("Something went wrong. Please try again!"));
   };
 
   const getFileName = () => {
@@ -58,21 +55,15 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
   return (
     <Container className="d-flex flex-column">
       <a href={url} download={name} className="hidden" ref={ref} id="export-btn"/>
-      <ExportButton
-        label={<Translation>{(t) => t("Export PDF")}</Translation>}
-        labelLoading={<Translation>{(t) => t("Exporting..")}</Translation>}
-        icon={<i className="fa fa-print me-2" aria-hidden="true" />}
-        buttonState={buttonState}
-        data-testid="export-pdf-button"
+      <CustomButton
+        variant="light"
+        label={t("Export PDF")}
         onClick={download}
+        buttonLoading={buttonState}
+        dataTestId="export-pdf-button"
+        ariaLabel="Export PDF Button"
+        size="sm"
       />
-      <Alert variant="danger" show={showAlert}>
-        {
-          <Translation>
-            {(t) => t("Something went wrong. Please try again!")}
-          </Translation>
-        }
-      </Alert>
     </Container>
   );
 });

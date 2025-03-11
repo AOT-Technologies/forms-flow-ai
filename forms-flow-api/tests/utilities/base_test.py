@@ -465,6 +465,8 @@ def get_filter_payload(
     roles: list = [],
     users: list = [],
     order: int = None,
+    filter_type: str = "TASK",
+    parent_filter_id: int = None,
 ):
     """Return filter create payload."""
     return {
@@ -486,6 +488,8 @@ def get_filter_payload(
             "priority": True,
             "groups": True,
         },
+        "parentFilterId": parent_filter_id,
+        "filterType": filter_type,
     }
 
 

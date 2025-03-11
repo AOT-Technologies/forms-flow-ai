@@ -1001,7 +1001,7 @@ export default function CreateNewFilterDrawer({
           <div className="d-flex align-items-center">
             {!viewMode && (
               <button
-                className="btn btn-secondary me-3"
+                className="btn btn-secondary me-3 btn-md"
                 onClick={() => {
                   toggleDrawer();
                   setShowAlert(false);
@@ -1013,7 +1013,7 @@ export default function CreateNewFilterDrawer({
 
             {!viewMode && (
               <button
-                className="btn btn-primary submitButton text-decoration-none truncate-size "
+                className="btn btn-primary submitButton text-decoration-none truncate-size btn-md"
                 disabled={
                   viewMode ||
                   !permissions ||

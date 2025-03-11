@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import ActionModal from "../../../components/Modals/ActionModal.js";
 //for save form
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { MULTITENANCY_ENABLED, MAX_FILE_SIZE } from "../../../constants/constants";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import {
@@ -211,11 +211,27 @@ const EditComponent = () => {
   });
 
 
-  const handleImport = async (fileContent, UploadActionType,
-    selectedLayoutVersion, selectedFlowVersion) => {
+  const handleImport = async (
+    fileContent,
+    UploadActionType,
+    selectedLayoutVersion,
+    selectedFlowVersion
+  ) => {
+    if (fileContent.size > MAX_FILE_SIZE) {
+      setImportError(
+        `File size exceeds the ${
+          MAX_FILE_SIZE / (1024 * 1024)
+        }MB limit. Please upload a smaller file.`
+      );
+      return;
+    }
     if (!isValidUploadActionType(UploadActionType)) return;
 
-    const data = prepareImportData(UploadActionType, selectedLayoutVersion, selectedFlowVersion);
+    const data = prepareImportData(
+      UploadActionType,
+      selectedLayoutVersion,
+      selectedFlowVersion
+    );
 
     try {
       const res = await formImport(fileContent, JSON.stringify(data));

@@ -22,7 +22,7 @@ from .constants import (
     REVIEWER_GROUP,
     HTTP_TIMEOUT,
 )
-from .enums import ApplicationSortingParameters, Service
+from .enums import ApplicationSortingParameters, Service, AIRequestType
 from .permisions import (
     PERMISSION_DETAILS ,
     CREATE_DESIGNS,
@@ -61,3 +61,4 @@ from .caching import Cache
 from .sentry import init_sentry
 from .formio import generate_formio_patch_request
 from .test_utils import get_token
+from .telemetry import setup_tracing

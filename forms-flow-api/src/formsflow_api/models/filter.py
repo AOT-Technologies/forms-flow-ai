@@ -2,16 +2,25 @@
 
 from __future__ import annotations
 
+from enum import Enum, unique
 from typing import List
 
 from formsflow_api_utils.utils.enums import FilterStatus
 from sqlalchemy import JSON, and_, asc, case, or_
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 
 from formsflow_api.models.base_model import BaseModel
 from formsflow_api.models.db import db
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
+
+
+@unique
+class FilterType(Enum):
+    """Filter type enum."""
+
+    TASK = "TASK"
+    ATTRIBUTE = "ATTRIBUTE"
 
 
 class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
@@ -30,6 +39,13 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     status = db.Column(db.String(10), nullable=True)
     task_visible_attributes = db.Column(JSON, nullable=True)
     order = db.Column(db.Integer, nullable=True, comment="Display order")
+    filter_type = db.Column(
+        ENUM(FilterType, name="FilterType"),
+        nullable=False,
+        default=FilterType.TASK,
+        index=True,
+    )
+    parent_filter_id = db.Column(db.Integer, nullable=True, index=True)
 
     @classmethod
     def find_all_active_filters(cls, tenant: str = None) -> List[Filter]:
@@ -67,23 +83,31 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             filter_obj.task_visible_attributes = filter_data.get(
                 "task_visible_attributes"
             )
+            filter_obj.filter_type = filter_data.get("filter_type")
+            filter_obj.parent_filter_id = filter_data.get("parent_filter_id")
             filter_obj.save()
             return filter_obj
         return None
 
     @classmethod
-    def find_user_filters(
+    def find_user_filters(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         roles: List[str] = None,
         user: str = None,
         tenant: str = None,
         admin: bool = False,
+        filter_type: str = None,
+        parent_filter_id: int = None,
     ):
         """Find active filters of the user."""
         query = cls._auth_query(
             roles, user, tenant, admin, filter_empty_tenant_key=True
         )
         query = query.filter(Filter.status == str(FilterStatus.ACTIVE.value))
+        if filter_type:
+            query = query.filter(Filter.filter_type == filter_type)
+        if parent_filter_id:
+            query = query.filter(Filter.parent_filter_id == parent_filter_id)
         order_by_user_first = case((Filter.created_by == user, 1), else_=2)
         query = query.order_by(
             order_by_user_first, Filter.order, Filter.created_by, asc(Filter.name)

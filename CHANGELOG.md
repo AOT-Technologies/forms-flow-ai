@@ -22,6 +22,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Public draft submit by id: `/public/application/<id>/submit`
    * Delete draft by id: `/application/<id>`
 
+* Added columns filter_type, parent_filter_id to the filter table.
+* Added script to migrate existing filters to TASK filter type.
+
 `Modified`
 
 **formsflow-api**
@@ -59,6 +62,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Submitter First Name
    * Submitter Last Name
    * Current User Roles
+* Added MF_FORMSFLOW_REVIEW_URL env for reviewer microfront end
 
 **forms-flow-api**
    * Added new endpoints for:

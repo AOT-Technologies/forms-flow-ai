@@ -68,9 +68,7 @@ const API = {
   PUBLIC_CUSTOM_SUBMISSION: `${CUSTOM_SUBMISSION_URL}/public/form/<form_id>/submission`,
   //These endpoints will be updated once the new API is ready
   DRAFT_BASE: `${WEB_BASE_URL}/draft`,
-  GET_APPLICATIONS_AND_DRAFTS: `${WEB_BASE_URL}/application`,
-  DRAFT_DELETE: `${WEB_BASE_URL}/application`, 
-  DRAFT_EDIT:`${WEB_BASE_URL}/application`, 
+  APPLICATION_DRAFT_API:`${WEB_BASE_URL}/application`,
   DRAFT_PUBLIC_CREATE: `${WEB_BASE_URL}/public/draft`,
   DRAFT_UPDATE: `${WEB_BASE_URL}/application/<application_id>`,
   DRAFT_UPDATE_PUBLIC: `${WEB_BASE_URL}/public/application/<application_id>`,

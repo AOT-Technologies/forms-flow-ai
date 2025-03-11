@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-import { RequestService, StorageService } from "@formsflow/service";
+import { RequestService } from "@formsflow/service";
 
 import API from "../endpoints";
 import {
@@ -30,12 +30,12 @@ export const fetchApplicationsAndDrafts = ({
   includeDrafts,
   formId,
   searchText,
-  formSort,
+  applicationSort,
   done = () => {},
 }) => {
   return (dispatch) => {
-    const { activeKey = "submissionId" } = formSort;
-    const sortOrder = formSort[activeKey]?.sortOrder || "asc";
+    const { activeKey = "submissionId" } = applicationSort;
+    const sortOrder = applicationSort[activeKey]?.sortOrder || "asc";
 
     // Construct params object and remove undefined values
     const params = {
@@ -50,12 +50,10 @@ export const fetchApplicationsAndDrafts = ({
       ...(searchText && { Id: searchText }),
     };
 
-    const url = `${API.GET_APPLICATIONS_AND_DRAFTS}?${new URLSearchParams(params).toString()}`;
+    const url = `${API.APPLICATION_DRAFT_API}?${new URLSearchParams(params).toString()}`;
 
     RequestService.httpGETRequest(
-      url,
-      {},
-      StorageService.get(StorageService.User.AUTH_TOKEN)
+       url
     )
       .then(({ data }) => {
         if (data) {

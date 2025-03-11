@@ -12,7 +12,7 @@ import {
   setApplicationListSearchParams
 } from "../../../actions/applicationActions";
 import { navigateToSubmitFormsListing, navigateToNewSubmission } from "../../../helper/routerHelper";
-import { CustomSearch, CustomButton, BackToPrevIcon } from "@formsflow/components";
+import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsflow/components";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
 
@@ -51,16 +51,17 @@ const DraftsAndSubmissions = () => {
   const { formId } = useParams();
 
   // Redux state selectors
-  const searchText = useSelector((state) => state.applications?.searchParams);
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const formSort = useSelector((state) => state.applications.sort);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
-  const draftAndSubmissionsList = useSelector((state) =>
-    state.applications.draftAndSubmissionsList);
-  const pageNo = useSelector((state) => state.applications?.activePage);
-  const limit = useSelector((state) => state.applications?.countPerPage);
-  const applicationSort = useSelector((state) => state.applications.sort);
+
+  const {
+    draftAndSubmissionsList,
+    activePage: pageNo,
+    countPerPage: limit,
+    searchParams: searchText,
+    sort: applicationSort
+  } = useSelector((state) => state.applications);
 
   // Local state
   const [search, setSearch] = useState(searchText || "");
@@ -69,9 +70,9 @@ const DraftsAndSubmissions = () => {
 
   // Dropdown filter options
   const dropdownItems = [
-    { label: "All", onClick: () => handleSelection("All"), dataTestId: "all-submissions-button", ariaLabel: "View all submissions" },
-    { label: "Draft", onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
-    { label: "Submissions", onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
+    { label: t("All"), onClick: () => handleSelection("All"), dataTestId: "all-submissions-button", ariaLabel: "View all submissions" },
+    { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
+    { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
   ];
 
   // Handlers
@@ -93,7 +94,7 @@ const DraftsAndSubmissions = () => {
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
     dispatch(
       setFormSubmissionSort({
-        ...formSort,
+        ...applicationSort,
         activeKey: selectedSortOption,
         [selectedSortOption]: { sortOrder: selectedSortOrder },
       })
@@ -108,7 +109,6 @@ const DraftsAndSubmissions = () => {
         limit,
         applicationSort,
         formId,
-        formSort,
         searchText,
         createdUserSubmissions: true,
         onlyDrafts: selectedItem === "Draft",
@@ -131,7 +131,7 @@ const DraftsAndSubmissions = () => {
   // Fetch data when dependencies change
   useEffect(() => {
     fetchSubmissionsAndDrafts();
-  }, [pageNo, limit, applicationSort, searchText, selectedItem, formId, formSort]);
+  }, [pageNo, limit, applicationSort, searchText, selectedItem, formId, applicationSort]);
 
   return (
     <div>
@@ -140,7 +140,7 @@ const DraftsAndSubmissions = () => {
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
-              <BackToPrevIcon onClick={redirectBackToForm} />
+              <BackToPrevIcon onClick={redirectBackToForm} data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
               <div className="mx-4 editor-header-text">
                 {draftAndSubmissionsList?.applications?.[0]?.applicationName || ""}
               </div>
@@ -159,14 +159,18 @@ const DraftsAndSubmissions = () => {
             size="sm"
             label={t(selectedItem)}
             dropdownItems={dropdownItems}
+            data-testid="submission-filter-dropdown"
+            aria-label="Submission Filter Dropdown"
           />
-          +
+          <ConnectIcon />
           <SearchBar
             search={search}
             setSearch={setSearch}
             handleSearch={handleSearch}
             handleClearSearch={handleClearSearch}
             searchLoading={searchFormLoading}
+            data-testid="search-bar"
+            aria-label="Search Submissions"
           />
         </div>
 
@@ -184,8 +188,8 @@ const DraftsAndSubmissions = () => {
               { value: "modified", label: t("Last Modified") },
               { value: "status", label: t("status") },
             ]}
-            defaultSortOption={formSort?.activeKey}
-            defaultSortOrder={formSort?.[formSort?.activeKey]?.sortOrder || "asc"}
+            defaultSortOption={applicationSort?.activeKey}
+            defaultSortOrder={applicationSort?.[applicationSort?.activeKey]?.sortOrder || "asc"}
             filterDataTestId="form-list-filter"
             refreshDataTestId="form-list-refresh"
           />

@@ -45,6 +45,12 @@ const navigateToDraftEdit = (dispatch, tenantId, formId, applicationId ) => {
   navigateTo(dispatch,`${getRoute(tenantId).FORM}/${formId}/draft/${applicationId}/edit`);
 };
 
+const navigateToViewSubmission = (dispatch, tenantId, formId, submissionId ) => {
+  navigateTo(dispatch,`${getRoute(tenantId).FORM}/${formId}/submission/${submissionId}`);
+};
+
+
+
 
 export {
   navigateToDesignFormsListing,
@@ -56,5 +62,5 @@ export {
   navigateToFormEntries,
   navigateToNewSubmission,
   navigateToDraftEdit,
-  
+  navigateToViewSubmission,  
 };

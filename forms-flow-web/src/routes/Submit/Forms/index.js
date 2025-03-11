@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import SubmitList from "./SubmitList";
 import DraftAndSubmissions from "./DraftAndSubmissions";
 import SubmitIndex from "./SubmitIndex";
+import ViewApplication from "../Submission/SubmissionView";
 import { BASE_ROUTE } from "../../../constants/constants";
 import Loading from "../../../containers/Loading";
 import AccessDenied from "../../../components/AccessDenied";
@@ -51,16 +52,16 @@ export default React.memo(() => {
         <GenericRoute
           path={`${BASE_ROUTE}form/:formId?/entries`}
           component={DraftAndSubmissions}
-          roles={['create_submission', 'view_designs']}
+          roles={['create_submissions', 'view_designs']}
         />
         <GenericRoute
           path={`${BASE_ROUTE}form/:formId/`}
           component={SubmitIndex}
         />
-        {/* <GenericRoute
-          path={`${BASE_ROUTE}formflow/:formId?/view-edit`}
-          component={FormPreview}
-        /> */}
+        <GenericRoute
+          path={`${BASE_ROUTE}form/:formId?/submission/:submissionId`}
+          component={ViewApplication}
+        />
       </Switch>
     </div>
   );

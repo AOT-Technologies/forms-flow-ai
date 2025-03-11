@@ -73,7 +73,7 @@ function ClientTable() {
     }));
   };
 
-  const showFromEntries = (formId) => {
+  const showFormEntries = (formId) => {
     setShowSubmissions(true);
     navigateToFormEntries(dispatch, tenantKey, formId);
   };
@@ -204,7 +204,7 @@ function ClientTable() {
                             <button
                               data-testid={`form-submit-button-${e._id}`}
                               className="btn btn-secondary btn-table"
-                              onClick={() => showFromEntries(e._id)}
+                              onClick={() => showFormEntries(e._id)}
                             >
                               <Translation>{(t) => t("Select")}</Translation>
                             </button>

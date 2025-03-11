@@ -9,14 +9,14 @@ import {
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
 import LoadingOverlay from "react-loading-overlay-ts";
-import { useTranslation, Translation } from "react-i18next";
-import { HelperServices } from "@formsflow/service";
+import { useTranslation } from "react-i18next";
 import { CustomButton, TableFooter, NoDataFound } from "@formsflow/components";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
-import { navigateToDraftEdit } from "../../../helper/routerHelper";
+import { navigateToDraftEdit, navigateToViewSubmission } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
+import { formatDate } from "../../../helper/dateTimeHelper";
 
 
 
@@ -24,14 +24,13 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const draftAndSubmissionsList = useSelector((state) =>
-        state.applications.draftAndSubmissionsList);
-    const pageNo = useSelector((state) => state.applications?.activePage);
-    const limit = useSelector((state) => state.applications?.countPerPage);
-    const totalForms = useSelector(
-        (state) => state.applications?.applicationCount
-    );
-    const applicationSort = useSelector((state) => state.applications.sort);
+    const {
+        draftAndSubmissionsList,
+        activePage: pageNo,
+        countPerPage: limit,
+        applicationCount: totalForms,
+        sort: applicationSort
+    } = useSelector((state) => state.applications);
     const searchFormLoading = useSelector(
         (state) => state.formCheckList.searchFormLoading
     );
@@ -74,8 +73,8 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
             });
     };
 
-    const viewOrEditForm = () => {
-        console.log("set view here");
+    const viewSubmission = (item) => {
+        navigateToViewSubmission(dispatch, tenantKey, item.formId, item.submissionId);
     };
 
     const handlePageChange = (page) => {
@@ -110,7 +109,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
                                         className="gap-2"
                                     />
                                 </th>
-                                <th className="w-13">
+                                <th className="w-20">
                                     <SortableHeader
                                         columnKey="created"
                                         title="Submitted On"
@@ -159,15 +158,15 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
                                                 <span className="text-container">{item.id}</span>
                                             </div>
                                         </td>
-                                        <td className="w-13">{HelperServices?.getLocaldate(item.created)}</td>
-                                        <td className="w-20">{item.modified}</td>
+                                        <td className="w-20">{formatDate(item.created)}</td>
+                                        <td className="w-20">{formatDate(item.modified)}</td>
                                         <td className="w-12">
                                             <span className="d-flex align-items-center">
                                                 {item.isDraft ? <span className="status-draft"></span> : <span className="status-live"></span>}
                                                 {item.isDraft ? t("Draft") : t("Submission")}
                                             </span>
                                         </td>
-                                        <td className="w-12">{item.applicationStatus}</td>
+                                        <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
 
                                         <td className="w-20 text-end">
                                             {item.isDraft ? (
@@ -178,6 +177,10 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
                                                         label={t("Delete")}
                                                         onClick={() => deleteDraft(item)}
                                                         className="btn btn-secondary btn-table"
+                                                        data-testid={
+                                                            `delete-draft-button-${item.id}`
+                                                        }
+                                                        aria-label={t("Delete Draft")}
                                                     />
                                                     <CustomButton
                                                         variant="secondary"
@@ -185,14 +188,18 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
                                                         label={t("Continue")}
                                                         onClick={() => continueDraft(item)}
                                                         className="btn btn-secondary btn-table"
+                                                        data-testid={
+                                                            `continue-draft-button-${item.id}`
+                                                        }
+                                                        aria-label={t("Continue Draft edit")}
                                                     />
                                                 </div>
                                             ) : (
                                                 <CustomButton
                                                     variant="secondary"
                                                     size="sm"
-                                                    label={<Translation>{(t) => t("View")}</Translation>}
-                                                    onClick={() => viewOrEditForm()}
+                                                    label={t("View")}
+                                                    onClick={() => viewSubmission(item)}
                                                     className="btn btn-secondary btn-table"
                                                 />
                                             )}

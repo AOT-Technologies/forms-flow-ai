@@ -141,7 +141,7 @@ export const publicDraftSubmit = (data, ...rest) => {
 
 export const getDraftById = (draftId, ...rest) => {
   const done = rest.length ? rest[0] : () => { };
-  const apiUrlgetDraft = `${API.DRAFT_EDIT}/${draftId}`;
+  const apiUrlgetDraft = `${API.APPLICATION_DRAFT_API}/${draftId}`;
   return (dispatch) => {
     RequestService.httpGETRequest(apiUrlgetDraft)
       .then((res) => {
@@ -223,6 +223,6 @@ export const fetchDrafts = (params, ...rest) => {
 };
 
 export const deleteDraftbyId = (applicationId) => {
-  let url = `${API.DRAFT_DELETE}/${applicationId}`;
+  let url = `${API.APPLICATION_DRAFT_API}/${applicationId}`;
   return RequestService.httpDELETERequest(url);
 };

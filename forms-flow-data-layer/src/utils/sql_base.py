@@ -1,6 +1,10 @@
-from sqlalchemy import MetaData, Table, create_engine
+from sqlalchemy import MetaData
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
+from src.utils import get_logger
+
+logger = get_logger(__name__)
 
 class ConnectSQLDatabase:
     _instances = {}  # Store multiple DB connections
@@ -8,49 +12,50 @@ class ConnectSQLDatabase:
     def __new__(cls, db_url: str):
         """Ensure only one connection per database URL"""
         if db_url not in cls._instances:
-            cls._instances[db_url] = super(ConnectSQLDatabase, cls).__new__(cls)
+            cls._instances[db_url] = super().__new__(cls)
         return cls._instances[db_url]
 
-    def __init__(self, db_url: str) -> None:
+    def __init__(self, db_url: str):
         if not hasattr(self, "initialized"):
-            self.__db_url = db_url
-            self.__engine = None
-            self.__session_factory = None
+            self.__db_url = db_url.replace("postgresql://", "postgresql+asyncpg://")  # Use async driver
             self.metadata = MetaData()
             self.initialized = True  # Prevent reinitialization
-
-    def init_db(self):
-        """Initialize the database connection"""
-        if not self.__engine:  # Prevent reinitialization
-            self.__engine = create_engine(
+            self.__engine = create_async_engine(
                 self.__db_url, pool_size=5, max_overflow=10, echo=True
             )
             self.__session_factory = sessionmaker(
-                autocommit=False, autoflush=False, bind=self.__engine
+                bind=self.__engine, class_=AsyncSession, expire_on_commit=False
             )
-            self.metadata.reflect(bind=self.__engine)  # Reflect all tables from DB
-            print(f"✅ Connected to Database: {self.__db_url}")
+            self._tables_cache = {}  # Cache for reflected tables
 
-    def get_session(self):
+    async def init_db(self):
+        """Initialize the database connection and reflect metadata"""
+        async with self.__engine.begin() as conn:
+            await conn.run_sync(self.metadata.reflect)  # Reflect all tables
+            self._tables_cache = self.metadata.tables  # Store tables in cache
+            logger.info(f"✅ Connected to Database: {self.__db_url}")
+
+    async def get_session(self):
         """Return a new session for the database"""
-        if not self.__session_factory:
-            raise RuntimeError(
-                "Database session is not initialized. Call `init_db()` first."
-            )
         return self.__session_factory()
 
-    def get_table(self, table_name: str):
-        """Get a reflected table object from the database"""
-        if not self.__engine:
-            raise RuntimeError(
-                "Database connection is not initialized. Call `init_db()` first."
-            )
-        return Table(table_name, self.metadata, autoload_with=self.__engine)
+    async def get_table(self, table_name: str):
+        """Get a reflected table object from the database, using cache if available"""
+        if table_name in self._tables_cache:
+            return self._tables_cache[table_name]  # Return cached table
 
-    def close_connection(self):
+        async with self.__engine.connect() as conn:
+            await conn.run_sync(self.metadata.reflect, only=[table_name])  # Reflect only if not in cache
+
+        if table_name not in self.metadata.tables:
+            raise ValueError(f"Table '{table_name}' not found in the database.")
+
+        self._tables_cache[table_name] = self.metadata.tables[table_name]  # Cache the newly reflected table
+        return self.metadata.tables[table_name]
+
+    async def close_connection(self):
         """Close the database connection"""
-        if self.__engine:
-            self.__engine.dispose()
-            print(f"❌ Connection closed for {self.__db_url}")
-            if self.__db_url in ConnectSQLDatabase._instances:
-                del ConnectSQLDatabase._instances[self.__db_url]  # Remove from cache
+        await self.__engine.dispose()
+        logger.info(f"❌ Connection closed for {self.__db_url}")
+        if self.__db_url in ConnectSQLDatabase._instances:
+            del ConnectSQLDatabase._instances[self.__db_url]  # Remove from cache

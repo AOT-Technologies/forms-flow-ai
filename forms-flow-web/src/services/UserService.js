@@ -38,7 +38,6 @@ const setKeycloakJson = (tenantKey = null, ...rest) => {
 // const KeycloakData = new Keycloak(tenantDetail);
 
 const initKeycloak = (store, ...rest) => {
-  const clientId = rest.length && rest[0];
   const done = rest.length ? rest[1] : () => {};
   KeycloakData.init({
     onLoad: "check-sso",
@@ -52,7 +51,6 @@ const initKeycloak = (store, ...rest) => {
       const tokenParsed = KeycloakData.tokenParsed || {};
       const UserRoles = tokenParsed.roles || tokenParsed.role || tokenParsed.client_roles || [];
       if (UserRoles.length > 0) {
-        // const UserRoles = KeycloakData.resourceAccess[clientId].roles;
         store.dispatch(setUserRole(UserRoles));
         store.dispatch(setUserToken(KeycloakData.token));
         store.dispatch(setLanguage(tokenParsed.locale || "en"));

@@ -118,6 +118,7 @@ services:
       - CSS_API_LOGIN_URL=${CSS_API_LOGIN_URL:-}
       - CSS_ENV=${CSS_ENV:-}
       - CSS_INTEGRATION_ID=${CSS_INTEGRATION_ID:-}
+      - USER_NAME_DISPLAY_CLAIM=${USER_NAME_DISPLAY_CLAIM:-}
     networks:
       - forms-flow-network
  
@@ -172,6 +173,7 @@ services:
       - REACT_APP_DATE_FORMAT=${DATE_FORMAT:-DD-MM-YY}
       - REACT_APP_TIME_FORMAT=${TIME_FORMAT:-hh:mm:ss A}
       - REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH=${KEYCLOAK_URL_HTTP_RELATIVE_PATH}
+      - REACT_APP_USER_NAME_DISPLAY_CLAIM=${USER_NAME_DISPLAY_CLAIM:-}
     ports:
       - '3000:8080'
     tty: true
@@ -261,6 +263,7 @@ services:
       CSS_API_LOGIN_URL: ${CSS_API_LOGIN_URL:-}
       CSS_ENV: ${CSS_ENV:-}
       CSS_INTEGRATION_ID: ${CSS_INTEGRATION_ID:-}
+      USER_NAME_DISPLAY_CLAIM: ${USER_NAME_DISPLAY_CLAIM:-}
 
     stdin_open: true # -i
     tty: true # -t

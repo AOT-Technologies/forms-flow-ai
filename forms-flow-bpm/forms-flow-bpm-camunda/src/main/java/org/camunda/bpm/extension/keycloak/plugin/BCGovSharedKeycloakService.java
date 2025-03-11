@@ -7,9 +7,12 @@ import java.util.List;
 
 import org.camunda.bpm.engine.authorization.Groups;
 import org.camunda.bpm.engine.identity.Group;
+import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.identity.IdentityProviderException;
 import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
+import org.camunda.bpm.engine.impl.persistence.entity.UserEntity;
 import org.camunda.bpm.extension.keycloak.CacheableKeycloakGroupQuery;
+import org.camunda.bpm.extension.keycloak.CacheableKeycloakUserQuery;
 import org.camunda.bpm.extension.keycloak.KeycloakConfiguration;
 import org.camunda.bpm.extension.keycloak.KeycloakContextProvider;
 import org.camunda.bpm.extension.keycloak.json.JsonException;
@@ -35,6 +38,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,6 +115,40 @@ public class BCGovSharedKeycloakService extends org.camunda.bpm.extension.keyclo
 
 		return groupList;
 	}
+	
+	/**
+	 * Here return all the roles user is part of
+	 * 
+	 * @param query the group query - including a userId criteria
+	 * @return list of matching groups
+	 */
+	public List<User> requestUsersWithoutGroupId(CacheableKeycloakUserQuery query) {
+		List<User> users = new ArrayList<User>();
+		// CSS Api doesn't provide a straight forward endpoint to get all users, so hard coding the user with just current user id.
+		UserEntity user = new UserEntity();
+		user.setId(query.getId());
+		users.add(user);
+		return users;
+	}
+	
+	private UserEntity transformUser(JsonObject result) throws JsonException {
+		UserEntity user = new UserEntity();
+		if (keycloakConfiguration.isUseEmailAsCamundaUserId()) {
+			user.setId(getJsonString(result, "email"));
+		} else if (keycloakConfiguration.isUseUsernameAsCamundaUserId()) {
+			user.setId(getJsonString(result, "username"));
+		} else {
+			user.setId(getJsonString(result, "id"));
+		}
+		user.setFirstName(getJsonString(result, "firstName"));
+		user.setLastName(getJsonString(result, "lastName"));
+		if (!StringUtils.hasLength(user.getFirstName()) && !StringUtils.hasLength(user.getLastName())) {
+			user.setFirstName(getJsonString(result, "username"));
+		}
+		user.setEmail(getJsonString(result, "email"));
+		return user;
+	}
+	
 
 	private List<Group> processRolesResponse(ResponseEntity<String> response) {
 		List<Group> groupList = new ArrayList<Group>();

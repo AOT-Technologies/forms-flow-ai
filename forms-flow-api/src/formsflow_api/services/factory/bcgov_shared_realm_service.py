@@ -67,33 +67,75 @@ class BCGovSharedRealm(KeycloakGroupService):
             **kwargs,
     ):
         """Search users in a realm."""
-        if not search:
+        if not search and not permission:
             return [], 0
+
+        if permission and not search:
+            return self.get_users(page_no, limit, role, permission, count, search)
+
         css_env = current_app.config.get("CSS_ENV")
         css_integration_id = current_app.config.get("CSS_INTEGRATION_ID")
         css_idps = current_app.config.get("CSS_IDP_LIST").split(",")
         users_list = []
         for css_idp in css_idps:
-            url = f"{css_env}/{css_idp}/users?name={search}"
+            param_name = 'name' if css_idp == 'github-bcgov' else 'firstName'
+            url = f"{css_env}/{css_idp}/users?{param_name}={search}"
             response = self.session.request("GET", f'{self.base_url}/{url}')
-            print("Users response ", response.json())
+            if response.json():
+                for user in response.json().get("data"):
+                    _user = {**{"id": user.get("username")}, **user, 'role': []}
+                    # Find roles for this user
+                    url = f"integrations/{css_integration_id}/{css_env}/users/{_user.get('username')}/roles"
+                    user_roles = self.session.request("GET", f'{self.base_url}/{url}')
+
+                    for user_role in user_roles.json().get("data"):
+                        _user['role'].append({
+                            "id": user_role.get("name"),
+                            "name": user_role.get("name"),
+                            "path": user_role.get("name"),
+                            "subGroups": []
+                        })
+
+                    users_list.append(_user)
+        return users_list, len(users_list) #TODO Fix this once API supports
+
+    @user_context
+    def get_users(
+        self, page_no, limit, role, group_name, count, search, **kwargs
+    ):
+        """Search users in a realm."""
+        if not search and not group_name:
+            return [], 0
+        if page_no == 0:
+            page_no = 1
+        if limit ==0:
+            limit = 50
+        css_env = current_app.config.get("CSS_ENV")
+        css_integration_id = current_app.config.get("CSS_INTEGRATION_ID")
+        user_name_display_claim = current_app.config.get("USER_NAME_DISPLAY_CLAIM")
+        url = f"integrations/{css_integration_id}/{css_env}/roles/{group_name}/users?page={page_no}&max={limit}"
+        response = self.session.request("GET", f'{self.base_url}/{url}')
+        current_app.logger.info(" response ")
+        current_app.logger.info(response.json())
+        users_list = []
+        if response.json():
             for user in response.json().get("data"):
-                _user = {**{"id": user.get("username")}, **user, 'role': []}
+                _id = user.get("username")
+                _user_name = self.get_user_id_from_response(user, user_name_display_claim)
+                _user = {**user, **{"id": _id, "username": _user_name},  'role': []}
                 # Find roles for this user
-                url = f"integrations/{css_integration_id}/{css_env}/users/{_user.get('username')}/roles"
+                url = f"integrations/{css_integration_id}/{css_env}/users/{_id}/roles"
                 user_roles = self.session.request("GET", f'{self.base_url}/{url}')
 
                 for user_role in user_roles.json().get("data"):
                     _user['role'].append({
-                        "id": user_role.get("path"),
-                        "name": user_role.get("path"),
-                        "path": user_role.get("path"),
+                        "id": user_role.get("name"),
+                        "name": user_role.get("name"),
+                        "path": user_role.get("name"),
                         "subGroups": []
                     })
-                print("_user ", _user)
-                users_list += _user
-                print("users_list ", users_list)
-        return users_list, len(users_list) #TODO Fix this once API supports
+                users_list.append(_user)
+        return users_list, len(users_list)  # TODO Fix this once API supports
 
 
     def add_user_to_group(self, user_id: str, group_id: str, payload: Dict):
@@ -117,11 +159,11 @@ class BCGovSharedRealm(KeycloakGroupService):
         url = f"integrations/{css_integration_id}/{css_env}/users/{user_id}/roles/{group_id}"
         response = self.session.request("DELETE", f'{self.base_url}/{url}')
         response.raise_for_status()
+        return response.status_code == 204
 
     @user_context
     def get_groups_roles(self, search: str, sort_order: str, **kwargs):
         """Get groups."""
-        print("Inside get roles from CSS")
         user: UserContext = kwargs["user"]
         css_env = current_app.config.get("CSS_ENV")
         css_integration_id = current_app.config.get("CSS_INTEGRATION_ID")
@@ -177,7 +219,6 @@ class BCGovSharedRealm(KeycloakGroupService):
             post_payload.append({"name": new_role})
         current_app.logger.debug("post_payload ", post_payload)
         response = self.session.request("POST", f'{self.base_url}/{permissions_url}', data=json.dumps(post_payload))
-        print(response)
         response.raise_for_status()
         return data
 
@@ -189,16 +230,12 @@ class BCGovSharedRealm(KeycloakGroupService):
         # First create a role, then add composite roles
         roles_url = f"integrations/{css_integration_id}/{css_env}/roles"
         response = self.session.request("POST", f'{self.base_url}/{roles_url}', data = json.dumps({'name': data.get("name")}))
-        print("response ", response)
-        print(response.json())
         response.raise_for_status()
 
         comp_role_payload = []
         for permission in data.get("permissions"):
             comp_role_payload.append({"name": permission})
-        print("comp_role_payload ", comp_role_payload)
+
         response = self.session.request("POST", f'{self.base_url}/{roles_url}/{data.get("name")}/composite-roles', data=json.dumps(comp_role_payload))
-        print("response ", response)
-        print(response.json())
         response.raise_for_status()
         return data

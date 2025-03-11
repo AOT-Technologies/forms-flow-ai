@@ -146,7 +146,7 @@ public class KeycloakGroupService extends KeycloakServiceBase {
 			// get groups of this user
 			ResponseEntity<String> response = restTemplate.exchange(keycloakConfiguration.getKeycloakAdminUrl()
 					+ "/users/" + keyCloakID + "/groups?max=" + getMaxQueryResultSize(), HttpMethod.GET, String.class);
-			if (!response.getStatusCode().equals(HttpStatus.OK)) {
+			if (response==null || !response.getStatusCode().equals(HttpStatus.OK)) {
 				throw new IdentityProviderException(
 						"Unable to read user groups from " + keycloakConfiguration.getKeycloakAdminUrl()
 								+ ": HTTP status code " + response.getStatusCodeValue());

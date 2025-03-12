@@ -52,14 +52,14 @@ export default React.memo(() => {
         <GenericRoute
           path={`${BASE_ROUTE}form/:formId?/entries`}
           component={DraftAndSubmissions}
-          roles={['create_submissions', 'view_designs']}
+          roles={['create_submissions']}
         />
         <GenericRoute
           path={`${BASE_ROUTE}form/:formId/`}
           component={SubmitIndex}
         />
         <GenericRoute
-          path={`${BASE_ROUTE}form/:formId?/submission/:submissionId`}
+          path={`${BASE_ROUTE}submission/:submissionId`}
           component={ViewApplication}
         />
       </Switch>

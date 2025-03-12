@@ -74,7 +74,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     };
 
     const viewSubmission = (item) => {
-        navigateToViewSubmission(dispatch, tenantKey, item.formId, item.submissionId);
+        navigateToViewSubmission(dispatch, tenantKey, item.formId, item.id);
     };
 
     const handlePageChange = (page) => {

@@ -63,7 +63,7 @@ import { renderPage, textTruncate } from "../../../helper/helper";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
-
+import { navigateToFormEntries } from "../../../helper/routerHelper";
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
@@ -84,7 +84,7 @@ const View = React.memo((props) => {
   } = useSelector((state) => state.formDelete) || {};
 
   const draftSubmissionId =
-    useSelector((state) => state.draft.draftSubmission?.id) || draftId;
+    useSelector((state) => state.draft.draftSubmission?.applicationId) || draftId;
 
   // Holds the latest data saved by the server
   const { formStatusLoading, processLoadError } =
@@ -290,12 +290,9 @@ const View = React.memo((props) => {
 
   // will be updated once application/draft listing page is ready
   const handleBack = () => {
-    if (isDraftEdit) {
-      dispatch(push(`${redirectUrl}draft`));
-    } else {
-      dispatch(push(`${redirectUrl}form`));
-    }
-  };
+    navigateToFormEntries(dispatch, tenantKey, formId);
+
+};
 
   const renderModifiedDate = () => {
     if (draftSubmission && !isPublic) {
@@ -420,7 +417,7 @@ const doProcessActions = (submission, ownProps) => {
     const origin = `${window.location.origin}${redirectUrl}`;
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-    let draft_id = state.draft.draftSubmission?.id;
+    let draft_id = state.draft.draftSubmission?.submissionId;
     let isDraftCreated = !!draft_id;
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,

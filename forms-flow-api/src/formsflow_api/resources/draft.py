@@ -14,7 +14,7 @@ from formsflow_api_utils.utils import (
 from formsflow_api.schemas import ApplicationSchema, DraftSchema
 from formsflow_api.services import DraftService
 
-API = Namespace("Draft", description="Manage Drafts")
+API = Namespace("Draft", description="Manage Drafts.")
 
 message = API.model("Message", {"message": fields.String()})
 
@@ -67,6 +67,10 @@ class DraftResource(Resource):
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
         """Create a new draft."""

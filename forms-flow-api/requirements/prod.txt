@@ -17,4 +17,4 @@ markupsafe
 PyJWT
 redis
 lxml
-git+https://github.com/auslin-aot/forms-flow-ai.git@feature/fwf-4277-changes-in-application-resource#subdirectory=forms-flow-api-utils
+git+https://github.com/auslin-aot/forms-flow-ai.git@feature/fwf-4315-update-api-docs#subdirectory=forms-flow-api-utils

@@ -45,7 +45,7 @@ application_create_model = API.model(
 )
 
 application_create_response_model = API.model(
-    "ApplicationCreateResponse", submission_response
+    "ApplicationCreationResponse", submission_response
 )
 
 application_model = API.inherit(
@@ -65,7 +65,6 @@ application_list_model = API.model(
         "applications": fields.List(
             fields.Nested(application_model, description="List of Applications.")
         ),
-        "draftCount": fields.Integer(),
         "totalCount": fields.Integer(),
         "limit": fields.Integer(),
         "pageNo": fields.Integer(),
@@ -95,6 +94,14 @@ application_resubmit_model = API.model(
 )
 
 message = API.model("Message", {"message": fields.String()})
+
+application_count_model = API.inherit(
+    "ApplicationCountModel",
+    message,
+    {
+        "value": fields.Integer(),
+    },
+)
 
 
 @cors_preflight("GET,POST,OPTIONS")
@@ -135,7 +142,7 @@ class ApplicationsResource(Resource):
             "Id": {
                 "in": "query",
                 "description": "Filter resources by id.",
-                "type": "int",
+                "type": "integer",
             },
             "modifiedFrom": {
                 "in": "query",
@@ -175,17 +182,17 @@ class ApplicationsResource(Resource):
             "createdUserSubmissions": {
                 "in": "query",
                 "description": "Return user created submissions.",
-                "type": "bool",
+                "type": "boolean",
             },
             "includeDrafts": {
                 "in": "query",
                 "description": "Return submissions and drafts/Specific to client permission.",
-                "type": "bool",
+                "type": "boolean",
             },
             "onlyDrafts": {
                 "in": "query",
                 "description": "Return only drafts/Specific to client permission.",
-                "type": "bool",
+                "type": "boolean",
             },
         }
     )
@@ -429,6 +436,13 @@ class ApplicationResourceCountByFormId(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=application_count_model,
+    )
     def get(form_id: str):
         """Get application count by formId."""
         application_count = ApplicationService.get_all_applications_form_id_count(
@@ -507,7 +521,7 @@ class ApplicationResourceByApplicationStatus(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get():
-        """Method to get the application status lists."""
+        """Retrieve the list of application statuses."""
         return (
             ApplicationService.get_all_application_status(),
             HTTPStatus.OK,
@@ -557,6 +571,10 @@ class DraftSubmissionResource(Resource):
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def put(application_id: str):
         """Updates the draft to actual submission."""

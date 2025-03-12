@@ -20,9 +20,13 @@ from formsflow_api.schemas import (
     ApplicationSubmissionSchema,
     DraftSchema,
 )
-from formsflow_api.services import ApplicationService, DraftService
+from formsflow_api.services import (
+    ApplicationService,
+    DraftService,
+    ThemeCustomizationService,
+)
 
-API = Namespace("Public", description="Public APIs")
+API = Namespace("Public", description="Public APIs.")
 
 application_create_model = API.model(
     "AnonymousApplicationCreate",
@@ -68,6 +72,21 @@ draft_update_model = API.model(
     {"data": fields.Raw()},
 )
 
+theme_response = API.model(
+    "ThemeResponseModel",
+    {
+        "logoName": fields.String(),
+        "type": fields.String(),
+        "value": fields.String(),
+        "applicationTitle": fields.String(),
+        "themeJson": fields.Raw(),
+        "logoData": fields.String(),
+        "id": fields.Integer(),
+        "created_by": fields.String(),
+        "tenant": fields.String(),
+    },
+)
+
 
 @cors_preflight("POST,OPTIONS")
 @API.route("/application/create", methods=["POST", "OPTIONS"])
@@ -83,6 +102,10 @@ class ApplicationAnonymousResourcesByIds(Resource):
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
         """Post a new anonymous application using the request body."""
@@ -118,6 +141,10 @@ class AnonymousResourceById(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def get(form_id: str):
         """Check if the form is anonymous and published."""
         mapper = FormProcessMapper.find_form_by_form_id(form_id)
@@ -145,6 +172,10 @@ class PublicDraftResource(Resource):
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
         """Create a new anonymous draft submission."""
@@ -174,6 +205,10 @@ class PublicDraftSubmissionResource(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def put(application_id: int):
         """Updates the draft entry to actual submission."""
         payload = request.get_json()
@@ -201,6 +236,10 @@ class PublicDraftUpdateResourceById(Resource):
         400,
         "BAD_REQUEST:- Invalid request.",
     )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
     def put(application_id: int):
         """Update draft details."""
         input_json = request.get_json()
@@ -211,3 +250,35 @@ class PublicDraftUpdateResourceById(Resource):
             f"Updated {application_id} successfully",
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/themes", methods=["GET", "OPTIONS"])
+class PublicThemeCustomizationResource(Resource):
+    """Resource to manage get theme."""
+
+    @staticmethod
+    @profiletime
+    @API.doc(
+        params={
+            "tenantKey": {
+                "in": "query",
+                "description": "Specify tenant key.",
+            }
+        },
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+            403: "FORBIDDEN:- Permission denied",
+        },
+        model=theme_response,
+    )
+    def get():
+        """Get theme by tenant key."""
+        tenant_key = request.args.get("tenantKey", default=None)
+        response, status = (
+            ThemeCustomizationService.get_theme(tenant_key),
+            HTTPStatus.OK,
+        )
+        return response, status

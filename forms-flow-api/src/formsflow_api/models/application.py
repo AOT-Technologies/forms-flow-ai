@@ -872,22 +872,6 @@ class Application(
         return query.first()
 
     @classmethod
-    def get_draft_by_parent_form_id(cls, parent_form_id: str) -> Draft:
-        """Get all draft against one form id."""
-        get_all_mapper_id = (
-            db.session.query(FormProcessMapper.id)
-            .filter(FormProcessMapper.parent_form_id == parent_form_id)
-            .all()
-        )
-        result = cls.query.join(Draft, Draft.application_id == cls.id).filter(
-            and_(
-                cls.form_process_mapper_id.in_([id for id, in get_all_mapper_id]),
-                cls.is_draft.is_(True),
-            )
-        )
-        return FormProcessMapper.tenant_authorization(result).all()
-
-    @classmethod
     def sort_by_submission_count(cls, query, sort_order, submission_count_alias):
         """Sort by submission count."""
         order_func = desc if "desc" in sort_order else asc
@@ -984,3 +968,19 @@ class Application(
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)
         return query.items, total_count
+
+    @classmethod
+    def get_draft_by_parent_form_id(cls, parent_form_id: str) -> Draft:
+        """Get all draft against one form id."""
+        get_all_mapper_id = (
+            db.session.query(FormProcessMapper.id)
+            .filter(FormProcessMapper.parent_form_id == parent_form_id)
+            .all()
+        )
+        result = cls.query.join(Draft, Draft.application_id == cls.id).filter(
+            and_(
+                cls.form_process_mapper_id.in_([id for id, in get_all_mapper_id]),
+                cls.is_draft.is_(True),
+            )
+        )
+        return FormProcessMapper.tenant_authorization(result).all()

@@ -29,6 +29,7 @@ from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     AggregatedApplicationsSchema,
     ApplicationSchema,
+    DraftSchema,
     FormProcessMapperSchema,
 )
 from formsflow_api.services.external import BPMService
@@ -359,8 +360,8 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         draft = Draft.get_draft_by_application_id(application_id)
         if draft:
             draft.update_draft_data_and_commit(draft_info=data)
-        else:
-            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
+            return draft
+        raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
 
     @staticmethod
     @user_context
@@ -375,17 +376,19 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         if application:
             if application.is_draft:
-                ApplicationService.update_draft(application_id, data)
+                draft = ApplicationService.update_draft(application_id, data)
+                response = DraftSchema().dump(draft)
+                return response
             # update_application is also used for updating drafts, including anonymous drafts.
             # To prevent public API updates to applications, ensure user_id is checked and not anonymous.
-            elif user_id == ANONYMOUS_USER:
+            if user_id == ANONYMOUS_USER:
                 raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
-            else:
-                data["modified_by"] = user.user_name
-                application.update(data)
-                application.commit()
-        else:
-            raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
+            data["modified_by"] = user.user_name
+            application.update(data)
+            application.commit()
+            response = ApplicationSchema().dump(application)
+            return response
+        raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
 
     @staticmethod
     def get_aggregated_applications(  # pylint: disable=too-many-arguments,too-many-positional-arguments

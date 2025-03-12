@@ -27,10 +27,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
 
+* Added columns filter_type, parent_filter_id to the filter table.
+* Added script to migrate existing filters to TASK filter type.
+
 `Modified`
 
 **formsflow-api**
-* Modified application get/update `/application/<id>` endpoint to support draft get and update.
+* Modified the `/application/<id>` GET and UPDATE endpoints to support draft get and update.
 * Updated the anonymous draft POST API URL from `/draft/public/create` to `/public/draft`.
 * Updated the theme GET API URL from `/themes` to `/public/themes`.
 

@@ -5,8 +5,9 @@ from src.db import webapi_db, bpmn_db
 from src.graphql.schema import SubmissionSchema
 from src.graphql.service import FormService
 
+
 class SubmissionService:
-        
+
     @staticmethod
     async def get_submissions(task_name: str, limit: int = 5) -> List[SubmissionSchema]:
         """

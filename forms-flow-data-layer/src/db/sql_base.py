@@ -6,6 +6,7 @@ from src.utils import get_logger
 
 logger = get_logger(__name__)
 
+
 class ConnectSQLDatabase:
     _instances = {}  # Store multiple DB connections
 

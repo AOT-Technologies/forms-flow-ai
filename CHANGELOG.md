@@ -16,8 +16,31 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added a new column, is_draft, to the application table to identify draft entries.
 * Added Alembic script to update existing active drafts by setting is_draft to true in the application table.
 * Added the includeSubmissionsCount=true parameter to the form list endpoint to include the submissions count.
+* Added below endpoints
+   * Public draft update: `/public/application/<id>`
+   * Draft submit by id: `/application/<id>/submit`
+   * Public draft submit by id: `/public/application/<id>/submit`
+   * Delete draft by id: `/application/<id>`
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
+
+`Modified`
+
+**formsflow-api**
+* Modified application get/update `/application/<id>` endpoint to support draft get and update.
+* Updated the anonymous draft POST API URL from `/draft/public/create` to `/public/draft`.
+* Updated the theme GET API URL from `/themes` to `/public/themes`.
+
+`Removed`
+
+**formsflow-api**
+* Removed below endpoints
+   * Get/Update/Delete draft by id: `/draft/<id>`
+   * Draft list: `/draft`
+   * Public draft update: `/draft/public/<id>`
+   * Draft submit by id: `/draft/<id>/submit`
+   * Public draft submit by id: `/draft/public/<id>/submit`
+
 
 ## 7.0.0 - 2025-01-10
 

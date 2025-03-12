@@ -48,3 +48,7 @@ FILTER_MAPS = {
 DEFAULT_PROCESS_KEY = "Defaultflow"
 DEFAULT_PROCESS_NAME = "Default Flow"
 HTTP_TIMEOUT = 30
+
+authorization_doc_params={
+        "auth_type": "Type of authorization ```dashboard/form/application/designer```"
+}

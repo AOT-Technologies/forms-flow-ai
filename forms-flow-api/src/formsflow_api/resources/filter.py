@@ -102,6 +102,14 @@ filter_response = API.inherit(
     },
 )
 
+filter_response_with_attribute_filters = API.inherit(
+     "FilterResponseWithAttributeFilter",
+     filter_response,
+     {
+         "attributeFilters": fields.List(fields.Nested(filter_response)),
+     }
+)
+
 filter_response_with_default_filter = API.model(
     "FilterResponseWithDefaultFilter",
     {
@@ -239,7 +247,7 @@ class FilterResourceById(Resource):
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
             403: "FORBIDDEN:- Permission denied",
         },
-        model=filter_response,
+        model=filter_response_with_attribute_filters,
     )
     def get(filter_id: int):
         """

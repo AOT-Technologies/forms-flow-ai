@@ -538,6 +538,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         description: str = None,
         tenant_key: str = None,
         anonymous: bool = False,
+        task_variable = None,
     ) -> dict:
         """Get form details."""
         try:
@@ -564,6 +565,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 "formDescription": description,
                 "anonymous": anonymous or False,
                 "type": scope_type,
+                "taskVariable": task_variable,
                 "content": form_json,
             }
         except Exception as e:
@@ -724,6 +726,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                     mapper.description,
                     tenant_key,
                     mapper.is_anonymous,
+                    mapper.task_variable,
                 )
             )
             workflow = self._get_workflow(

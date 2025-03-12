@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-import { RequestService } from "@formsflow/service";
+import { RequestService, StorageService } from "@formsflow/service";
 
 import API from "../endpoints";
 import {
@@ -19,10 +19,65 @@ import { replaceUrl } from "../../helper/helper";
 import moment from "moment";
 import { getFormattedProcess } from "./formatterService";
 import { setPublicFormStatus } from "../../actions/formActions";
+import { setApplicationsAndDrafts } from "../../actions/applicationActions";
+
+
+export const fetchApplicationsAndDrafts = ({
+  pageNo,
+  limit,
+  createdUserSubmissions,
+  onlyDrafts,
+  includeDrafts,
+  formId,
+  formSort,
+  done = () => {},
+}) => {
+  return (dispatch) => {
+    const sortBy = formSort.activeKey || "submissionId"; // default if needed
+    const sortOrder = formSort[sortBy]?.sortOrder || "asc";
+
+    const params = new URLSearchParams({
+      pageNo,
+      limit,
+      sortBy,
+      sortOrder,
+      createdUserSubmissions,
+      parentFormId: formId,
+    });
+
+    if (includeDrafts) {
+      params.append("includeDrafts", true);
+    }
+    if (onlyDrafts) {
+      params.append("onlyDrafts", true);
+    }
+
+    const url = `${API.GET_APPLICATIONS_AND_DRAFTS}?${params.toString()}`;
+
+    RequestService.httpGETRequest(
+      url,
+      {},
+      StorageService.get(StorageService.User.AUTH_TOKEN)
+    )
+      .then((res) => {
+        if (res?.data) {
+          dispatch(setApplicationListCount(res.data.totalCount || 0));
+          dispatch(setApplicationsAndDrafts(res.data));
+          done(null, res.data);
+        }
+      })
+      .catch((error) => {
+        done(error);
+      });
+  };
+};
+
+
+
 
 
 export const getAllApplicationsByFormId = (formId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
     RequestService.httpGETRequest(
@@ -48,7 +103,7 @@ export const getAllApplicationsByFormId = (formId, ...rest) => {
 };
 
 export const getApplicationById = (applicationId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   const apiUrlgetApplication = replaceUrl(
     API.GET_APPLICATION,
     "<application_id>",
@@ -87,7 +142,7 @@ export const getApplicationById = (applicationId, ...rest) => {
 };
 
 export const applicationCreate = (data, ...rest) => {
-  const done = rest.length ? rest[1] : () => {};
+  const done = rest.length ? rest[1] : () => { };
   const URL = API.APPLICATION_START;
   return (dispatch) => {
     RequestService.httpPOSTRequest(URL, data)
@@ -107,7 +162,7 @@ export const applicationCreate = (data, ...rest) => {
 };
 
 export const publicApplicationCreate = (data, ...rest) => {
-  const done = rest.length ? rest[1] : () => {};
+  const done = rest.length ? rest[1] : () => { };
   const URL = API.PUBLIC_APPLICATION_START;
   return (dispatch) => {
     RequestService.httpPOSTRequestWithoutToken(URL, data)
@@ -127,7 +182,7 @@ export const publicApplicationCreate = (data, ...rest) => {
 };
 
 export const publicApplicationStatus = (formId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   const URL = `${API.PUBLIC_APPLICATION_STATUS}/${formId}`;
   return (dispatch) => {
     RequestService.httpGETRequest(URL)
@@ -162,7 +217,7 @@ export const updateApplicationEvent = (applicationId, data, ...rest) => {
 }
 * */
 
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     const apiUrlAppResubmit = replaceUrl(
       API.APPLICATION_EVENT_UPDATE,
@@ -190,7 +245,7 @@ export const updateApplicationEvent = (applicationId, data, ...rest) => {
 
 export const getAllApplications = (params, ...rest) => {
 
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     const { applicationName, id, applicationStatus, modified } = params;
     let url = `${API.GET_ALL_APPLICATIONS}?pageNo=${params.page}&limit=${params.limit}`;
@@ -218,9 +273,9 @@ export const getAllApplications = (params, ...rest) => {
     }
 
     if (params.sortBy || params.sortOrder) {
-      url += `&sortBy=${params.sortBy ? params.sortBy : null}&sortOrder=${
-        params.sortOrder ? params.sortOrder : null
-      }`;
+      url += `&sortBy=${params.sortBy ? params.sortBy : null}
+      &sortOrder=${params.sortOrder ? params.sortOrder : null
+        }`;
     }
 
     RequestService.httpGETRequest(url)
@@ -246,7 +301,7 @@ export const getAllApplications = (params, ...rest) => {
 };
 
 export const getAllApplicationStatus = (params, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
     //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`

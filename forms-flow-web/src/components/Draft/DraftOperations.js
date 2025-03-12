@@ -11,7 +11,7 @@ const DraftOperations = ({ row }) => {
       setDraftDelete({
         modalOpen: true,
         draftId: row.id,
-        draftName: row.DraftName,
+        draftName: row.applicationName,
       })
     );
   };

@@ -1,10 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, {
-  useEffect,
-  Suspense,
-  useMemo,
-  useCallback
-} from "react";
+import React, { useEffect, Suspense, useMemo, useCallback } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,7 +15,7 @@ import {
   ENABLE_FORMS_MODULE,
   ENABLE_PROCESSES_MODULE,
   ENABLE_TASKS_MODULE,
-  LANGUAGE
+  LANGUAGE,
 } from "../constants/constants";
 import { KeycloakService, StorageService } from "@formsflow/service";
 import {
@@ -48,6 +43,7 @@ import InsightsPage from "./Insights";
 import Application from "./Application";
 import DesignProcessRoutes from "./../routes/Design/Process";
 import Drafts from "./Draft";
+import SubmissionDrafts from "./../routes/Submit/Forms/DraftAndSubmissions";
 import {
   BPM_API_URL_WITH_VERSION,
   WEB_BASE_URL,
@@ -110,7 +106,6 @@ const PrivateRoute = React.memo((props) => {
     return ROUTE_TO.NOTFOUND;
   })();
 
-
   const authenticate = (instance, store) => {
     setKcInstance(instance);
     store.dispatch(
@@ -120,7 +115,7 @@ const PrivateRoute = React.memo((props) => {
     store.dispatch(setUserToken(instance.getToken()));
     // Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
-  
+
     // Fetch user roles and update the local storage
     getUserRoles()
       .then((res) => {
@@ -131,7 +126,7 @@ const PrivateRoute = React.memo((props) => {
         }
       })
       .catch((error) => console.error("Error fetching roles", error));
-  
+
     // Get formio roles
     store.dispatch(
       getFormioRoleIds((err) => {
@@ -147,7 +142,6 @@ const PrivateRoute = React.memo((props) => {
       })
     );
   };
-  
 
   const keycloakInitialize = useCallback(() => {
     let instance = tenantId ? kcServiceInstance(tenantId) : kcServiceInstance();
@@ -166,7 +160,6 @@ const PrivateRoute = React.memo((props) => {
       }
     }
   }, [props.store, kcInstance, tenantId]);
-
 
   useEffect(() => {
     if (tenantId && MULTITENANCY_ENABLED) {
@@ -302,18 +295,36 @@ const PrivateRoute = React.memo((props) => {
   const ClientRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-      (
-        <Route
-          {...rest}
-          render={(props) =>
-            createSubmissions || viewSubmissions  ? (
-              <Component {...props} />
-            ) : (
-              <AccessDenied userRoles={userRoles} />
-            )
-          }
-        />
-      ),
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              createSubmissions || viewSubmissions ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
+    [userRoles]
+  );
+
+  const SubmissionDraftsRoute = useMemo(
+    () =>
+      ({ component: Component, ...rest }) =>
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              createSubmissions || viewSubmissions ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
     [userRoles]
   );
 
@@ -335,8 +346,17 @@ const PrivateRoute = React.memo((props) => {
             {ENABLE_FORMS_MODULE && (
               <ClientRoute path={ROUTE_TO.FORM} component={SubmitFormRoutes} />
             )}
+            {ENABLE_APPLICATIONS_MODULE && (
+              <SubmissionDraftsRoute
+                path={ROUTE_TO.FORM_ENTRIES}
+                component={SubmissionDrafts}
+              />
+            )}
             {ENABLE_FORMS_MODULE && (
-              <DesignerRoute path={ROUTE_TO.FORMFLOW} component={DesignFormRoutes} />
+              <DesignerRoute
+                path={ROUTE_TO.FORMFLOW}
+                component={DesignFormRoutes}
+              />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
               <DraftRoute path={ROUTE_TO.DRAFT} component={Drafts} />
@@ -372,10 +392,7 @@ const PrivateRoute = React.memo((props) => {
               />
             )}
             {ENABLE_TASKS_MODULE && (
-              <ReviewerRoute
-                path={ROUTE_TO.TASK}
-                component={ServiceFlow}
-              />
+              <ReviewerRoute path={ROUTE_TO.TASK} component={ServiceFlow} />
             )}
             <Route exact path={ROUTE_TO.REVIEW} /> 
             <Route exact path={ROUTE_TO.ADMIN} /> 

@@ -6,7 +6,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 ## 7.1.0
 
 `Added`
-
+**forms-flow-web**
+* Added re-designed Client Table
+* Added Draft and Submission list table
+* Redesigned user form selection screens
 **formsflow-api**
 * Below fields added to application list endpoint
    * Added parentFormId filter parameter to filter the submissions for a specific form

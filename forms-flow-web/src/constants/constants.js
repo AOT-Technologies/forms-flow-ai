@@ -214,6 +214,7 @@ export const ENABLE_APPLICATIONS_MODULE =
 const MAIN_ROUTE = {
   DRAFT: "draft",
   FORM: "form",
+  FORM_ENTRIES: "form/:formId/entries",
   FORMFLOW: "formflow",
   TASK: "task",
   REVIEW: "review",
@@ -242,5 +243,6 @@ export const getRoute = (tenantId) => ({
   METRICS: getBaseRoute(tenantId) + MAIN_ROUTE.METRICS,
   INSIGHTS: getBaseRoute(tenantId) + MAIN_ROUTE.INSIGHTS,
   ADMIN: getBaseRoute(tenantId) + MAIN_ROUTE.ADMIN,
-  NOTFOUND: getBaseRoute(tenantId) + MAIN_ROUTE.NOTFOUND
+  NOTFOUND: getBaseRoute(tenantId) + MAIN_ROUTE.NOTFOUND,
+  FORM_ENTRIES: getBaseRoute(tenantId) + MAIN_ROUTE.FORM_ENTRIES,
 });

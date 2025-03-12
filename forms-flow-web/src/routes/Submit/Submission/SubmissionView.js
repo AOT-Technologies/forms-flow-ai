@@ -21,14 +21,13 @@ import { useTranslation } from "react-i18next";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
-  MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { HelperServices } from "@formsflow/service";
-import { push } from "connected-react-router";
 import DownloadPDFButton from "../../../components/Form/ExportAsPdf/downloadPdfButton";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
+import { navigateToFormEntries } from "../../../helper/routerHelper";
 
 
 const ViewApplication = React.memo(() => {
@@ -45,10 +44,10 @@ const ViewApplication = React.memo(() => {
     })
     );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submission = useSelector((state) => state.submission?.submission || {});
   const form = useSelector((state) => state.form?.form || {});
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [formId,setFormId] = useState();
 
   const { appHistory, isHistoryListLoading } = useSelector(
     useMemo(() => (state) => ({
@@ -66,6 +65,7 @@ const ViewApplication = React.memo(() => {
     dispatch(
       getApplicationById(applicationId, (err, res) => {
         if (!err) {
+          setFormId(res.formId);
           if (res.submissionId && res.formId) {
             dispatch(getForm("form", res.formId));
             if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
@@ -110,7 +110,7 @@ const ViewApplication = React.memo(() => {
   }
 
   const backToSubmissionList = () => {
-    dispatch(push(`${redirectUrl}form`));
+    navigateToFormEntries(dispatch, tenantKey, formId);
   };
 
   return (

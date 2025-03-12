@@ -3,7 +3,9 @@ import { Route, Switch } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import SubmitList from "./SubmitList";
+import DraftAndSubmissions from "./DraftAndSubmissions";
 import SubmitIndex from "./SubmitIndex";
+import ViewApplication from "../Submission/SubmissionView";
 import { BASE_ROUTE } from "../../../constants/constants";
 import Loading from "../../../containers/Loading";
 import AccessDenied from "../../../components/AccessDenied";
@@ -47,19 +49,19 @@ export default React.memo(() => {
       <Switch>
         {/* <Route exact path={`${BASE_ROUTE}formflow`} component={List} /> */}
         <Route exact path={`${BASE_ROUTE}form`} component={SubmitList} />
-        {/* <GenericRoute
-          path={`${BASE_ROUTE}formflow/:formId?/edit`}
-          component={EditForm}
-          roles={['create_designs', 'view_designs']}
-        /> */}
+        <GenericRoute
+          path={`${BASE_ROUTE}form/:formId?/entries`}
+          component={DraftAndSubmissions}
+          roles={['create_submissions']}
+        />
         <GenericRoute
           path={`${BASE_ROUTE}form/:formId/`}
           component={SubmitIndex}
         />
-        {/* <GenericRoute
-          path={`${BASE_ROUTE}formflow/:formId?/view-edit`}
-          component={FormPreview}
-        /> */}
+        <GenericRoute
+          path={`${BASE_ROUTE}submission/:submissionId`}
+          component={ViewApplication}
+        />
       </Switch>
     </div>
   );

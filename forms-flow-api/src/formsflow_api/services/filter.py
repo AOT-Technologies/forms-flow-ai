@@ -6,7 +6,7 @@ from formsflow_api_utils.utils import ADMIN
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import Filter, User
+from formsflow_api.models import Filter, FilterType, User
 from formsflow_api.schemas import FilterSchema
 
 filter_schema = FilterSchema()
@@ -46,8 +46,15 @@ class FilterService:
         return filter_schema.dump(filter_data)
 
     @staticmethod
+    def set_filter_edit_permission(filter_item, user):
+        """Set filter edit permission for a filter item."""
+        filter_item["editPermission"] = (
+            filter_item["createdBy"] == user.user_name or ADMIN in user.roles
+        )
+
+    @staticmethod
     @user_context
-    def get_user_filters(**kwargs):
+    def get_user_filters(**kwargs):  # pylint: disable=too-many-locals
         """Get filters for the user."""
         user: UserContext = kwargs["user"]
         tenant_key = user.tenant_key
@@ -99,23 +106,22 @@ class FilterService:
                     },
                 )
                 filter_obj.save()
-
         filters = Filter.find_user_filters(
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
             admin=ADMIN in user.roles,
+            filter_type=FilterType.TASK,
         )
         filter_data = filter_schema.dump(filters, many=True)
         default_variables = [
             {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},
         ]
+
         # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
-            filter_item["editPermission"] = (
-                filter_item["createdBy"] == user.user_name or ADMIN in user.roles
-            )
+            FilterService.set_filter_edit_permission(filter_item, user)
             # Check and add default variables if not present
             filter_item["variables"] = filter_item["variables"] or []
             filter_item["variables"] += [
@@ -141,7 +147,21 @@ class FilterService:
             admin=ADMIN in user.roles,
         )
         if filter_result:
-            return filter_result
+            response = filter_schema.dump(filter_result)
+            attribute_filters = Filter.find_user_filters(
+                roles=user.group_or_roles,
+                user=user.user_name,
+                tenant=tenant_key,
+                admin=ADMIN in user.roles,
+                filter_type=FilterType.ATTRIBUTE,
+                parent_filter_id=response["id"],
+            )
+            response["attributeFilters"] = filter_schema.dump(
+                attribute_filters, many=True
+            )
+            for filter_item in response["attributeFilters"]:
+                FilterService.set_filter_edit_permission(filter_item, user)
+            return response
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 
     @staticmethod

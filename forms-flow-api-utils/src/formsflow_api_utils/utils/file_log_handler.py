@@ -73,7 +73,7 @@ def register_log_handlers(app, log_file, when, interval, backupCount, configure_
     """Configure console and file log handlers."""
     logs = logging.StreamHandler()
     logs.setFormatter(CustomFormatter())
-    if configure_log_file:
+    if configure_log_file and log_file:
         log_dir = os.path.dirname(log_file)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)

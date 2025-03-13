@@ -76,7 +76,7 @@ jobs:
           docker.io/formsflow/${{ matrix.service.name }}:${{ matrix.service.tag }}
 
       - name: Upload Trivy Image Scan Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trivy-${{ matrix.service.name }}-results
           path: trivy-${{ matrix.service.name }}-results.html

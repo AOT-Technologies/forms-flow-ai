@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import ActionModal from "../../../components/Modals/ActionModal.js";
 //for save form
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { MULTITENANCY_ENABLED, MAX_FILE_SIZE } from "../../../constants/constants";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import {
@@ -211,11 +211,27 @@ const EditComponent = () => {
   });
 
 
-  const handleImport = async (fileContent, UploadActionType,
-    selectedLayoutVersion, selectedFlowVersion) => {
+  const handleImport = async (
+    fileContent,
+    UploadActionType,
+    selectedLayoutVersion,
+    selectedFlowVersion
+  ) => {
+    if (fileContent.size > MAX_FILE_SIZE) {
+      setImportError(
+        `File size exceeds the ${
+          MAX_FILE_SIZE / (1024 * 1024)
+        }MB limit. Please upload a smaller file.`
+      );
+      return;
+    }
     if (!isValidUploadActionType(UploadActionType)) return;
 
-    const data = prepareImportData(UploadActionType, selectedLayoutVersion, selectedFlowVersion);
+    const data = prepareImportData(
+      UploadActionType,
+      selectedLayoutVersion,
+      selectedFlowVersion
+    );
 
     try {
       const res = await formImport(fileContent, JSON.stringify(data));
@@ -1139,7 +1155,7 @@ const handleSaveLayout = () => {
                       size="md"
                       label={t("Settings")}
                       onClick={handleToggleSettingsModal}
-                      dataTestId="eidtor-settings-testid"
+                      dataTestId="editor-settings-testid"
                       ariaLabel={t("Designer Settings Button")}
                     />
                     <CustomButton
@@ -1291,6 +1307,7 @@ const handleSaveLayout = () => {
               className={`border-0 form-flow-wraper-${ isFormLayout ? "right" : "left"
               } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
+              data-testid="form-flow-wraper-button"
             >
               {isFormLayout ? t("Flow") : t("Layout")}
             </button>
@@ -1371,6 +1388,7 @@ const handleSaveLayout = () => {
         onClose={closeHistoryModal}
         title={t("History")}
         loadMoreBtnText={t("Load More")}
+        loadMoreBtndataTestId="load-more-form-history"
         revertBtnText={t("Revert To This")}
         allHistory={formHistory}
         loadMoreBtnAction={loadMoreBtnAction}

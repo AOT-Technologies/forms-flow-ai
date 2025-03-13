@@ -108,13 +108,13 @@ const View = React.memo((props) => {
   const saveDraft = (payload, exitType) => {
     if (exitType === "SUBMIT" || processData?.status !== "active") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
-    if (draftSubmission?.id) {
-      if (String(draftSubmission?.id) !== String(draftId)) return;
+    if (draftSubmission?.applicationId) {
+      if (String(draftSubmission?.applicationId) !== String(draftId)) return;
       if (dataChanged) {
         setDraftSaved(false);
         if (!showNotification) setShowNotification(true);
         dispatch(
-          draftUpdate(payload, draftSubmission?.id, (err) => {
+          draftUpdate(payload, draftSubmission?.applicationId, (err) => {
             if (exitType === "UNMOUNT" && !err) {
               toast.success(t("Submission saved to draft."));
             }
@@ -175,7 +175,7 @@ const View = React.memo((props) => {
     dispatch(
       setDraftDelete({
         modalOpen: true,
-        draftId: draftSubmission.id,
+        draftId: draftSubmission.applicationId,
         draftName: draftSubmission.DraftName,
       })
     );
@@ -374,7 +374,7 @@ const doProcessActions = (submission, ownProps) => {
     dispatch(resetSubmissions("submission"));
     const origin = `${window.location.origin}${redirectUrl}`;
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-    let draft_id = state.draft.submission?.id;
+    let draft_id = state.draft.submission?.submissionId;
     let isDraftCreated = !!draft_id;
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,

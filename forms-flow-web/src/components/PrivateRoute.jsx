@@ -53,7 +53,6 @@ import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
 import useUserRoles from "../constants/permissions";
-import { getUserRoles } from "../apiManager/services/authorizationService"; // Assuming you have a service to get roles
 import PropTypes from "prop-types";
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -115,17 +114,7 @@ const PrivateRoute = React.memo((props) => {
     // Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
 
-    // Fetch user roles and update the local storage
-    getUserRoles()
-      .then((res) => {
-        if (res) {
-          const { data = [] } = res;
-          const roles = data.map((role) => role.name);
-          localStorage.setItem("allAvailableRoles", JSON.stringify(roles));
-        }
-      })
-      .catch((error) => console.error("Error fetching roles", error));
-
+ 
     // Get formio roles
     store.dispatch(
       getFormioRoleIds((err) => {

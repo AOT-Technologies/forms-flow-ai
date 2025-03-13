@@ -67,8 +67,10 @@ public class HTTPServiceInvoker {
 			return BPM_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(ANALYSIS_URL))) {
 			return TEXT_ANALYZER_ACCESS_HANDLER;
-		//} else if (isUrlValid(url, fetchUrlFromProperty(FORMIO_URL))) {
-		} else if (enableCustomSubmission && StringUtils.contains(url, "/submission")) {
+		} 
+                         // Commented out to bypass check service url passed and url from env is same.
+			// else if (isUrlValid(url, fetchUrlFromProperty(FORMIO_URL))) {
+		else if (enableCustomSubmission && StringUtils.contains(url, "/submission")) {
                 return CUSTOM_SUBMISSION_ACCESS_HANDLER;
             }
             else {

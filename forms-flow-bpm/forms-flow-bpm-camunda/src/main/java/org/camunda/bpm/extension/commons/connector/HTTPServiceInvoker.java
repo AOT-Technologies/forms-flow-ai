@@ -77,7 +77,7 @@ public class HTTPServiceInvoker {
 			    return FORM_ACCESS_HANDLER;
             }
        // }
- 		return "";
+ 		// return "";
     }
 	
 	private String fetchUrlFromProperty(String key) {

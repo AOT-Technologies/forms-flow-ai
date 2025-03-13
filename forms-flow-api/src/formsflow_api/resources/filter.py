@@ -103,11 +103,11 @@ filter_response = API.inherit(
 )
 
 filter_response_with_attribute_filters = API.inherit(
-     "FilterResponseWithAttributeFilter",
-     filter_response,
-     {
-         "attributeFilters": fields.List(fields.Nested(filter_response)),
-     }
+    "FilterResponseWithAttributeFilter",
+    filter_response,
+    {
+        "attributeFilters": fields.List(fields.Nested(filter_response)),
+    },
 )
 
 filter_response_with_default_filter = API.model(

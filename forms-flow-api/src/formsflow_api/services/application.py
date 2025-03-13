@@ -515,20 +515,34 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         return application_count
 
     @staticmethod
+    def pick(data, key):
+        """Pick nested data."""
+        keys = key.split(".")
+        for k in keys:
+            if not isinstance(data, dict) or k not in data:
+                return None
+            data = data[k]
+        return data
+
+    @staticmethod
     def fetch_task_variable_values(task_variable, form_data):
         """Fetch task variable values from form data."""
-        variables: Dict = {}
+        variables = {}
+
         if task_variable and form_data:
             task_keys = [val["key"] for val in task_variable]
+            print("taskvariables")
+            print(task_keys)
             variables = {
                 key: (
-                    {"value": json.dumps(form_data[key])}
-                    if isinstance(form_data[key], (dict, list))
-                    else {"value": form_data[key]}
+                    {"value": json.dumps(value)}
+                    if isinstance(value, (dict, list))
+                    else {"value": value}
                 )
                 for key in task_keys
-                if key in form_data
+                if (value := ApplicationService.pick(form_data, key)) is not None
             }
+        print(variables)
         return variables
 
     @staticmethod

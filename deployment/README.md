@@ -58,6 +58,8 @@ Follow the instructions on [docker installation guide](./docker)
  
 #### Docker Individual Service Deployment
 
+Follow the instructions on [Individual Service Deployment](./Individual-deployment/README.md)
+
 Install the components in the listed order. *(NOTE: Keycloak, form.io and redash dependencies are used on other components)*
  * [Keycloak](../forms-flow-idm/keycloak) Identity keycloak components
  * [forms-flow-forms](../forms-flow-forms) formsflow.ai integration with form.io
@@ -87,3 +89,4 @@ Install the components in the listed order. *(NOTE: Keycloak, form.io and redash
 5|`forms-flow-api`|API services|`http://localhost:5000`|`Authorization tocken from keycloak role based user credentials`
 6|`forms-flow-bpm`|Camunda integration|`http://localhost:8000/camunda`| [Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials) 
 7|`forms-flow-web`|Custom web UI|`http://localhost:3004`|[Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials)
+8|`forms-flow-data-analysis`|Sentiment|`http://localhost:6001`|[Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials)

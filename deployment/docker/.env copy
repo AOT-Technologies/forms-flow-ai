@@ -1,0 +1,36 @@
+KEYCLOAK_START_MODE=start-dev
+FORMIO_DEFAULT_PROJECT_URL=http://192.168.1.72:3001
+FORMSFLOW_API_URL=http://192.168.1.72:5002
+WEBSOCKET_SECURITY_ORIGIN=http://192.168.1.72:3000
+SESSION_COOKIE_SECURE=false
+REDIS_URL=redis://192.168.1.72:6379/0
+FORMSFLOW_DOC_API_URL=http://192.168.1.72:5006
+DATA_ANALYSIS_URL=http://192.168.1.72:6001
+WEB_BASE_URL=http://192.168.1.72:3000
+FORMSFLOW_ADMIN_URL=http://192.168.1.72:5010/api/v1
+DOCUMENT_SERVICE_URL=http://192.168.1.72:5006
+BPM_API_URL=http://192.168.1.72:8000/camunda
+FORMIO_JWT_SECRET=demo
+# KEYCLOAK_ENABLE_CLIENT_AUTH=true
+KEYCLOAK_URL=https://dev.loginproxy.gov.bc.ca
+KEYCLOAK_URL_HTTP_RELATIVE_PATH=/auth
+KEYCLOAK_URL_REALM=standard
+KEYCLOAK_WEB_CLIENT_ID=formsflow-web-sso-5942
+KEYCLOAK_BPM_CLIENT_ID=formsflow-bpm-service-account-5911
+KEYCLOAK_BPM_CLIENT_SECRET=wgNFyybkKlVXPFLLh4BJun8LiKQ5onP0
+CAMUNDA_APP_ROOT_LOG_FLAG=DEBUG
+JWT_OIDC_AUDIENCE=formsflow-web-sso-5942
+
+# Client based auth config
+SHARED_REALM=true
+# BC GOV Shared realm exp
+CSS_API_BASE_URL=https://api.loginproxy.gov.bc.ca/api/v1
+CSS_API_CLIENT_ID=service-account-team-1192-5898
+CSS_API_SECRET=1hn1YNlk9YCx9Aq4ZcPQNZqWddO4Bqlc
+CSS_API_LOGIN_URL=https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+CSS_ENV=dev
+CSS_INTEGRATION_ID=00005942
+USER_NAME_DISPLAY_CLAIM=github_username
+
+MF_FORMSFLOW_SERVICE_URL=http://localhost:3007/forms-flow-service.js
+MF_FORMSFLOW_WEB_URL=http://localhost:3004/forms-flow-web.js

@@ -230,7 +230,7 @@ services:
       - redis
     entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
-      - '5000:5000'
+      - '5002:5000'
     volumes:
       - ./:/app:rw
     environment:
@@ -285,47 +285,47 @@ services:
     networks:
       - forms-flow-network
 
-  forms-flow-documents-api:
-    container_name: forms-flow-documents-api
-    build:
-      context: ./../../forms-flow-documents/
-      dockerfile: Dockerfile
-    restart: always
-    ports:
-      - '5006:5006'
-    volumes:
-      - ./:/app:rw
-    environment:
-      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
-      FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
-      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
-      JWT_OIDC_CACHING_ENABLED: 'True'
-      KEYCLOAK_URL: ${KEYCLOAK_URL}
-      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      FORMSFLOW_API_URL: ${FORMSFLOW_API_URL}
-      FORMSFLOW_DOC_API_URL: ${DOCUMENT_SERVICE_URL}
-      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
-      FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
-      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
-      CHROME_DRIVER_PATH: ${CHROME_DRIVER_PATH}
-      CUSTOM_SUBMISSION_URL: ${CUSTOM_SUBMISSION_URL}
-      CUSTOM_SUBMISSION_ENABLED: ${CUSTOM_SUBMISSION_ENABLED}
-      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
-      MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
-      KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
-      API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
-      API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
-      API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
-      CONFIGURE_LOGS: ${CONFIGURE_LOGS:-true}
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+  # forms-flow-documents-api:
+  #   container_name: forms-flow-documents-api
+  #   build:
+  #     context: ./../../forms-flow-documents/
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   ports:
+  #     - '5006:5006'
+  #   volumes:
+  #     - ./:/app:rw
+  #   environment:
+  #     DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+  #     FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
+  #     JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+  #     JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+  #     JWT_OIDC_ISSUER: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+  #     JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+  #     JWT_OIDC_CACHING_ENABLED: 'True'
+  #     KEYCLOAK_URL: ${KEYCLOAK_URL}
+  #     KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+  #     FORMSFLOW_API_URL: ${FORMSFLOW_API_URL}
+  #     FORMSFLOW_DOC_API_URL: ${DOCUMENT_SERVICE_URL}
+  #     FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
+  #     FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+  #     FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+  #     CHROME_DRIVER_PATH: ${CHROME_DRIVER_PATH}
+  #     CUSTOM_SUBMISSION_URL: ${CUSTOM_SUBMISSION_URL}
+  #     CUSTOM_SUBMISSION_ENABLED: ${CUSTOM_SUBMISSION_ENABLED}
+  #     FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+  #     MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
+  #     KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+  #     API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
+  #     API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
+  #     API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
+  #     CONFIGURE_LOGS: ${CONFIGURE_LOGS:-true}
+  #     REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
 
-    stdin_open: true # -i
-    tty: true # -t
-    networks:
-      - forms-flow-network
+  #   stdin_open: true # -i
+  #   tty: true # -t
+  #   networks:
+  #     - forms-flow-network
 
 networks:
   forms-flow-network:

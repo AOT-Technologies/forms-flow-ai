@@ -5,7 +5,7 @@ import formCheckList from '../../modules/formCheckListReducer';
 import tenants from '../../modules/tenantReducer';
 import processReducer from '../../modules/processReducer';
 import formDelete from '../../modules/formReducer';
-import { form, forms, submission, submissions } from "@aot-technologies/formio-react";
+import { form, forms } from "@aot-technologies/formio-react";
 import formRestore from "../../modules/RestoreFormReducer";
 
 const rootReducer = combineReducers({

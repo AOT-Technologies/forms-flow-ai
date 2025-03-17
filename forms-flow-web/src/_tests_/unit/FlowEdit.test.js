@@ -1,5 +1,5 @@
 import React from 'react';
-import { render as rtlRender, screen, waitFor,render,fireEvent } from '@testing-library/react';
+import { render as rtlRender, screen, waitFor,render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import { mockstate } from "./mockState.js";
 import FlowEdit from '../../routes/Design/Forms/FlowEdit.js';
 import { createMemoryHistory } from 'history';
-import { Router, Route, Switch } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import * as processHelper from '../../helper/processHelper.js';
 import * as processServices from '../../apiManager/services/processServices.js';
  
@@ -38,20 +38,21 @@ jest.mock('../../helper/processHelper.js', () => ({
 // Add this with other component mocks
 jest.mock("../../components/modals/TaskVariableModal.js", () => ({
   __esModule: true,
-  default: ({ show, handleClose }) =>
+  default: ({ show }) =>
     show ? (
       <div data-testid="task-variable-modal">
         <div>Variables</div>
       </div>
     ) : null,
 }));
+
 jest.mock('../../apiManager/services/processServices.js', () => ({
   updateProcess: jest.fn(),
   getProcessHistory: jest.fn().mockResolvedValue({ data: { data: [] } })
 }));
 
 // Helper function to render the component with router support
-function renderWithRouterMatch(Ui, { path = '/', route = '/' ,
+function renderWithRouterMatch(Ui, {  route = '/' ,
   props = {}
 }) {
   const history = createMemoryHistory({ initialEntries: [route] });
@@ -82,7 +83,7 @@ const defaultProps = {
   isMigrationLoading:false, 
   setIsMigrationLoading:jest.fn(),
    handleUnpublishAndSaveChanges :jest.fn()
-}
+};
 // Add this wrapper definition before renderBPMNComponent
 const wrapper = ({ children }) => 
   (
@@ -137,7 +138,7 @@ describe("checking flow edit",()=>{
     await waitFor(() => {
       expect(screen.getByTestId("history-modal")).toBeInTheDocument();
     });
-  })
+  });
 
    it("render save flow button and sholud be in disabled state",()=>{
 
@@ -153,7 +154,7 @@ describe("checking flow edit",()=>{
     const saveChangesButton = screen.getByTestId('save-flow-layout');
     expect(saveChangesButton).toBeInTheDocument();
     expect(saveChangesButton).toBeDisabled();
-   })
+   });
 
    it("render discard changes button and sholud be in disabled state",()=>{
 
@@ -168,7 +169,7 @@ describe("checking flow edit",()=>{
     const discardButton = screen.getByTestId('discard-flow-changes-testid');
     expect(discardButton).toBeInTheDocument();
     expect(discardButton).toBeDisabled();
-   })
+   });
 
    it("renders save button and enables it when workflowIsChanged is true", async () => {
     // Render and store the return value for rerender
@@ -212,7 +213,7 @@ describe("checking flow edit",()=>{
     //check if save changes button exists or not 
     const bpmeditor = screen.getByTestId('wrapper');
     expect(bpmeditor).toBeInTheDocument();
-   })
+   });
 
    it("render bpmn editor and its related buttons , check if it is in the document",()=>{
     renderWithRouterMatch(FlowEdit, {
@@ -235,14 +236,14 @@ describe("checking flow edit",()=>{
     const zoomOutButton = screen.getByTestId('bpmneditor-zoomout-button');
     expect(zoomOutButton).toBeInTheDocument();
     
-   })
+   });
 
    it("save button is disabled when process is published", () => {
     renderBPMNComponent({ isPublished:true });
     const saveButton = screen.getByTestId("save-flow-layout");
     expect(saveButton).toBeDisabled();
   });
-}) 
+});
 
 describe('FlowEdit saveFlow function', () => {
   let flowEditRef;

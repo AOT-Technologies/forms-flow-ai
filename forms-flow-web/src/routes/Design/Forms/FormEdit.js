@@ -1303,7 +1303,6 @@ const handleSaveLayout = () => {
               />}
             </div>
             <button
-            data-testid={`btn-${isFormLayout ? "flow" : "layout"}`}
               className={`border-0 form-flow-wraper-${ isFormLayout ? "right" : "left"
               } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}

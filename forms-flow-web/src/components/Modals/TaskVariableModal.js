@@ -469,7 +469,7 @@ const TaskVariableModal = React.memo(
               : t("Variables for Flow, Submissions, and Tasks")}
           </Modal.Title>
           <div className="d-flex align-items-center">
-            <CloseIcon width="16.5" height="16.5" onClick={handleClose} />
+            <CloseIcon dataTestId="close-task-var-modal" width="16.5" height="16.5" onClick={handleClose} />
           </div>
         </Modal.Header>
         <Modal.Body>

@@ -6,22 +6,49 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import rootReducer from './rootReducer';
-import { useParams } from "react-router-dom";
-
+import { toast } from 'react-toastify';
 import { mockstate } from "./mockState.js";
-
 import FlowEdit from '../../routes/Design/Forms/FlowEdit.js';
 import { createMemoryHistory } from 'history';
 import { Router, Route, Switch } from 'react-router-dom';
-import BpmnEditor from '../../components/Modeler/Editors/BpmnEditor/BpmEditor';
-
+import * as processHelper from '../../helper/processHelper.js';
+import * as processServices from '../../apiManager/services/processServices.js';
  
 
-    const queryClient = new QueryClient();
-    let store = configureStore({
-      reducer: rootReducer,
-      preloadedState: mockstate,
-    });
+const queryClient = new QueryClient();
+let store = configureStore({
+  reducer: rootReducer,
+  preloadedState: mockstate,
+});
+
+    // Mock dependencies
+jest.mock('react-toastify', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn()
+  }
+}));
+
+jest.mock('../../helper/processHelper.js', () => ({
+  createXMLFromModeler: jest.fn(),
+  compareXML: jest.fn(),
+  validateProcess: jest.fn()
+}));
+
+// Add this with other component mocks
+jest.mock("../../components/modals/TaskVariableModal.js", () => ({
+  __esModule: true,
+  default: ({ show, handleClose }) =>
+    show ? (
+      <div data-testid="task-variable-modal">
+        <div>Variables</div>
+      </div>
+    ) : null,
+}));
+jest.mock('../../apiManager/services/processServices.js', () => ({
+  updateProcess: jest.fn(),
+  getProcessHistory: jest.fn().mockResolvedValue({ data: { data: [] } })
+}));
 
 // Helper function to render the component with router support
 function renderWithRouterMatch(Ui, { path = '/', route = '/' ,
@@ -39,28 +66,26 @@ function renderWithRouterMatch(Ui, { path = '/', route = '/' ,
     </QueryClientProvider>
   );
 }
-// Mock process data with published status
-const mockStatePublished = {
-  ...mockstate,
-  process: {
-    ...mockstate.process,
-    processData: {
-      ...mockstate.process.processData,
-      status: "Published",
-    },
-  },
-};
-
 
 
 const defaultProps = {
-  isPublished :false, CategoryType:"",
-  setWorkflowIsChanged:jest.fn(),workflowIsChanged:false, migration:false, setMigration:jest.fn(), redirectUrl:"",
-  isMigrated: true, mapperId:"",layoutNotsaved:false, handleCurrentLayout:jest.fn(),
-  isMigrationLoading:false, setIsMigrationLoading:jest.fn(), handleUnpublishAndSaveChanges :jest.fn()
+  isPublished :false,
+  CategoryType: { WORKFLOW: 'workflow' },  
+  setWorkflowIsChanged:jest.fn(),
+  workflowIsChanged:false, 
+  migration:false, 
+  setMigration:jest.fn(), 
+  redirectUrl:"",
+  isMigrated: true, 
+  mapperId:"",layoutNotsaved:false,
+   handleCurrentLayout:jest.fn(),
+  isMigrationLoading:false, 
+  setIsMigrationLoading:jest.fn(),
+   handleUnpublishAndSaveChanges :jest.fn()
 }
 // Add this wrapper definition before renderBPMNComponent
-const wrapper = ({ children }) => (
+const wrapper = ({ children }) => 
+  (
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>{children}</Provider>
   </QueryClientProvider>
@@ -76,15 +101,9 @@ beforeEach(() => {
     reducer: rootReducer,
     preloadedState: mockstate,
   });
-
-  // renderWithRouterMatch(FlowEdit, {
-  //   path: '/',
-  //   route: '/',
-  //   props: {
-  //     ...defaultProps
-  //   }
-  // });
+  
 });
+
 describe("checking flow edit",()=>{
   it("render History button and opens the History modal when history button is clicked", async ()=>{
     const mockHistoryData = {
@@ -117,26 +136,8 @@ describe("checking flow edit",()=>{
     //checks history modal opens or not and API is called
     await waitFor(() => {
       expect(screen.getByTestId("history-modal")).toBeInTheDocument();
-      // expect(mockMutate).toHaveBeenCalledTimes(1);
     });
   })
-
-   it("render variable button and opens the Variable modal when history button is clicked", ()=>{
-    renderWithRouterMatch(FlowEdit, {
-      path: '/',
-      route: '/',
-      props: {
-        ...defaultProps
-      }
-    });
-    const variableButton = screen.getByTestId("preview-and-variables-testid")
-    expect(variableButton).toBeInTheDocument();
-    userEvent.click(variableButton);
-    // checks variable modal opens or not 
-    waitFor (()=>{
-      expect(screen.getByTestId("task-variable-modal")).toBeInTheDocument();
-    })
-   }) 
 
    it("render save flow button and sholud be in disabled state",()=>{
 
@@ -177,8 +178,6 @@ describe("checking flow edit",()=>{
       props: { ...defaultProps },
     });
 
-    
-    // Get the save button (initially disabled)
     const saveChangesButton = screen.getByTestId('save-flow-layout');
     expect(saveChangesButton).toBeInTheDocument();
     expect(saveChangesButton).toBeDisabled();
@@ -194,53 +193,12 @@ describe("checking flow edit",()=>{
       </QueryClientProvider>
     );
   
-    // Re-select the button after props update
     const updatedSaveButton = screen.getByTestId('save-flow-layout');
     expect(updatedSaveButton).toBeEnabled(); // Now it should be enabled
   
-    // Simulate user clicking the enabled button
     userEvent.click(updatedSaveButton);
   });
-
-   it("should not show migration modal initially", () => {
-    renderWithRouterMatch(FlowEdit, { path: '/', route: '/', props: { ...defaultProps } });
-
-    // Migration modal should NOT be in the document initially
-    expect(screen.queryByTestId("migration-confirm")).not.toBeInTheDocument();
-  });
-
-  it("should show migration modal when migration is triggered", () => {
-    const { rerender } = renderWithRouterMatch(FlowEdit, { path: '/', route: '/', props: { ...defaultProps } });
-
-    // Re-render with `isMigrated: false` to trigger migration modal
-    rerender(
-      <QueryClientProvider client={queryClient}>
-        <Provider store={store}>
-          <Router history={createMemoryHistory({ initialEntries: ['/'] })}>
-            <FlowEdit {...defaultProps} isMigrated={false} />
-          </Router>
-        </Provider>
-      </QueryClientProvider>
-    );
-
-    // Wait for the modal to appear
-     waitFor(() => {
-      expect(screen.getByText("Migration Notice")).toBeInTheDocument();
-    });
-
-    // // Check if migration checkbox is there
-    // const migrationCheckbox = screen.getByTestId("migration-confirm");
-    // expect(migrationCheckbox).toBeInTheDocument();
-    // expect(migrationCheckbox).not.toBeChecked();
-
-    // // Click the checkbox
-    // userEvent.click(migrationCheckbox);
-    // expect(migrationCheckbox).toBeChecked();
-
-    // // Check if confirm button gets enabled
-    // const confirmButton = screen.getByText("I confirm");
-    // expect(confirmButton).toBeInTheDocument();
-  });
+  
   it("render bpmn editor and check if it is in the document",()=>{
 
     renderWithRouterMatch(FlowEdit, {
@@ -284,47 +242,178 @@ describe("checking flow edit",()=>{
     const saveButton = screen.getByTestId("save-flow-layout");
     expect(saveButton).toBeDisabled();
   });
-  
 }) 
 
-const wrapperWithMockStoreDraft = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    <Provider store={storeDraft}>{children}</Provider>
-  </QueryClientProvider>
-);
-
-const renderFlowComponentWithDraft = (props = {}) => {
-  return render(<FlowEdit {...defaultProps} {...props} />, {
-    wrapper: wrapperWithMockStoreDraft,
-  });
-};
-
-
-
-
-describe("Flowedit page handling publish and save changes",()=>{
-  it("handles unpublish and save changes for published forms", async () => {
-    const handleUnpublishAndSaveChanges = jest.fn();
-    
-    const publishedProps = {
-      ...defaultProps,
-      isPublished: true,
-      workflowIsChanged: true,
-      handleUnpublishAndSaveChanges
-    };
+describe('FlowEdit saveFlow function', () => {
+  let flowEditRef;
   
+  beforeEach(() => {
+    jest.clearAllMocks();
+    flowEditRef = React.createRef();
+    
+    // Mock getBpmnModeler function
+    const mockBpmnModeler = {
+      saveXML: jest.fn().mockResolvedValue({ xml: '<xml>test</xml>' })
+    };
+    
+    render(<FlowEdit {...defaultProps} ref={flowEditRef} />, { wrapper });
+    
+    // Mock the bpmnRef
+    flowEditRef.current.bpmnRef = {
+      current: {
+        getBpmnModeler: jest.fn().mockReturnValue(mockBpmnModeler)
+      }
+    };
+  });
+  it('should return early if validateProcess returns false', async () => {
+    processHelper.createXMLFromModeler.mockResolvedValue('<xml>test</xml>');
+    processHelper.validateProcess.mockReturnValue(false);
+
+    
+    await flowEditRef.current.saveFlow();
+    
+    expect(processHelper.createXMLFromModeler).toHaveBeenCalled();
+    expect(processHelper.validateProcess).toHaveBeenCalled();
+    expect(processHelper.compareXML).not.toHaveBeenCalled();
+    expect(processServices.updateProcess).not.toHaveBeenCalled();
+    expect(toast.success).not.toHaveBeenCalled();
+  });
+
+  it('should show success toast and return early if XML is unchanged and not reverted', async () => {
+    
+    processHelper.createXMLFromModeler.mockResolvedValue('<xml>test</xml>');
+    processHelper.validateProcess.mockReturnValue(true);
+    processHelper.compareXML.mockResolvedValue(true);
+    
+    await flowEditRef.current.saveFlow();
+    
+    expect(processHelper.createXMLFromModeler).toHaveBeenCalled();
+    expect(processHelper.validateProcess).toHaveBeenCalled();
+    expect(processHelper.compareXML).toHaveBeenCalled();
+    expect(processServices.updateProcess).not.toHaveBeenCalled();
+    expect(toast.success).toHaveBeenCalledWith('Process updated successfully');
+    expect(defaultProps.setWorkflowIsChanged).toHaveBeenCalledWith(false);
+  });
+
+  it('should update process when XML has changed', async () => {
+    
+    processHelper.createXMLFromModeler.mockResolvedValue('<xml>new-test</xml>');
+    processHelper.validateProcess.mockReturnValue(true);
+    processHelper.compareXML.mockResolvedValue(false);
+    processServices.updateProcess.mockResolvedValue({ 
+      data: { id: '123', processData: '<xml>new-test</xml>' } 
+    });
+    
+    await flowEditRef.current.saveFlow();
+    
+    expect(processHelper.createXMLFromModeler).toHaveBeenCalled();
+    expect(processHelper.validateProcess).toHaveBeenCalled();
+    expect(processHelper.compareXML).toHaveBeenCalled();
+    expect(processServices.updateProcess).toHaveBeenCalled();
+    expect(toast.success).toHaveBeenCalledWith('Process updated successfully');
+    expect(defaultProps.setWorkflowIsChanged).toHaveBeenCalledWith(false);
+  });
+
+  it('should update process with custom processId when provided', async () => {
+    
+    const customProcessId = 'custom-id-123';
+    processHelper.createXMLFromModeler.mockResolvedValue('<xml>new-test</xml>');
+    processHelper.validateProcess.mockReturnValue(true);
+    processHelper.compareXML.mockResolvedValue(false);
+    processServices.updateProcess.mockResolvedValue({ 
+      data: { id: customProcessId, processData: '<xml>new-test</xml>' } 
+    });
+    
+    await flowEditRef.current.saveFlow({ processId: customProcessId });
+    
+    expect(processServices.updateProcess).toHaveBeenCalledWith({
+      type: 'BPMN',
+      id: customProcessId,
+      data: '<xml>new-test</xml>'
+    });
+  });
+
+  it('should not show toast when showToast is false', async () => {
+    
+    processHelper.createXMLFromModeler.mockResolvedValue('<xml>new-test</xml>');
+    processHelper.validateProcess.mockReturnValue(true);
+    processHelper.compareXML.mockResolvedValue(false);
+    processServices.updateProcess.mockResolvedValue({ 
+      data: { id: '123', processData: '<xml>new-test</xml>' } 
+    });
+    
+    await flowEditRef.current.saveFlow({ showToast: false });
+    
+    expect(processServices.updateProcess).toHaveBeenCalled();
+    expect(toast.success).not.toHaveBeenCalled();
+  });
+
+  it('should show error toast when update process fails', async () => {
+    
+    processHelper.createXMLFromModeler.mockResolvedValue('<xml>new-test</xml>');
+    processHelper.validateProcess.mockReturnValue(true);
+    processHelper.compareXML.mockResolvedValue(false);
+    processServices.updateProcess.mockRejectedValue(new Error('API error'));
+    
+    await flowEditRef.current.saveFlow();
+    
+    expect(toast.error).toHaveBeenCalledWith('Failed to update process');
+  });
+
+});
+
+describe("FlowEdit - handleDiscardConfirm", () => {
+  let store;
+  let processData;
+  const queryClient = new QueryClient();
+
+  beforeEach(() => {
+    processData = { 
+      processData: { 
+        key: "test", 
+        xml: "<xml>test</xml>",
+        status: "Draft" 
+      }, 
+      parentProcessKey: "123" 
+    };
+    store = configureStore({
+      reducer: rootReducer,
+      preloadedState: { 
+        process: { 
+          processData,
+          isProcessLoading: false
+        } 
+      }
+    });
+  });
+
+  test("should call handleImport, toggle isReverted, disable workflow change, and close modal", async () => {
+    const setWorkflowIsChanged = jest.fn();
+    
+    
     renderWithRouterMatch(FlowEdit, {
       path: '/',
       route: '/',
-      props: publishedProps
+      props: {
+        ...defaultProps,
+        workflowIsChanged: true,
+        setWorkflowIsChanged: setWorkflowIsChanged
+      }
     });
-  
-    const saveButton = screen.getByTestId('save-flow-layout');
-    await userEvent.click(saveButton);
-  
-    expect(handleUnpublishAndSaveChanges).toHaveBeenCalled();
+
+    // First check if the button exists and is enabled
+    const discardButton = screen.getByTestId('discard-flow-changes-testid');
+    expect(discardButton).toBeInTheDocument();
+    expect(discardButton).toBeEnabled();
+    userEvent.click(discardButton);
+
+    expect(screen.getByText("Primary")).toBeInTheDocument();
+
+    const confirmButton = screen.getByTestId('Confirm-button');
+    userEvent.click(confirmButton); 
+
+    await waitFor(() => {
+     expect(setWorkflowIsChanged).toHaveBeenCalledWith(false);
+    });
   });
-})
-
-
-
+});

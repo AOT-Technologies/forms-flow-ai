@@ -78,9 +78,12 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
 
   const handleError = (err, message = "An error occurred") => {
     console.error(message, err);
-    document.getElementById("inputWorkflow").value = null;
+    // Remove or conditionally check for element
+    const inputElement = document.getElementById("inputWorkflow");
+    if (inputElement) {
+      inputElement.value = null;
+    }
   };
-
   const zoom = () => bpmnModeler?.get("zoomScroll")?.stepZoom(1);
   const zoomOut = () => bpmnModeler?.get("zoomScroll")?.stepZoom(-1);
   const zoomReset = () => bpmnModeler?.get("zoomScroll")?.reset();

@@ -182,11 +182,11 @@ const DraftsAndSubmissions = () => {
             handleRefresh={fetchSubmissionsAndDrafts}
             handleSortModalClose={() => setShowSortModal(false)}
             optionSortBy={[
-              { value: "submissionId", label: t("Submission Id") },
+              { value: "id", label: t("Submission Id") },
               { value: "submittedOn", label: t("Submitted On") },
               { value: "type", label: t("Type") },
               { value: "modified", label: t("Last Modified") },
-              { value: "status", label: t("status") },
+              { value: "applicationStatus", label: t("status") },
             ]}
             defaultSortOption={applicationSort?.activeKey}
             defaultSortOrder={applicationSort?.[applicationSort?.activeKey]?.sortOrder || "asc"}

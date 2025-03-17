@@ -84,7 +84,7 @@ const View = React.memo((props) => {
   } = useSelector((state) => state.formDelete) || {};
 
   const draftSubmissionId =
-    useSelector((state) => state.draft.draftSubmission?.applicationId) || draftId;
+    useSelector((state) => state.draft.draftSubmission?.draftId) || draftId;
 
   // Holds the latest data saved by the server
   const { formStatusLoading, processLoadError } =
@@ -393,7 +393,7 @@ const View = React.memo((props) => {
               onSubmit={(data) => {
                 setPoll(false);
                 exitType.current = "SUBMIT";
-                onSubmit(data, form._id, isPublic);
+                onSubmit(data, form._id,draftId, isPublic);
               }}
               onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
             />
@@ -407,7 +407,7 @@ const View = React.memo((props) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-const doProcessActions = (submission, ownProps) => {
+const doProcessActions = (submission, draftId, ownProps) => { 
   return (dispatch, getState) => {
     const state = getState();
     let form = state.form?.form;
@@ -416,37 +416,34 @@ const doProcessActions = (submission, ownProps) => {
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
     dispatch(resetSubmissions("submission"));
+    
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-    let draft_id = state.draft.draftSubmission?.submissionId;
-    let isDraftCreated = !!draft_id;
+    let isDraftCreated = !!draftId; 
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,
       isDraftCreated,
       DRAFT_ENABLED
     );
+    
 
     dispatch(
-      // eslint-disable-next-line no-unused-vars
-      applicationCreateAPI(data, draft_id, (err, res) => {
+      applicationCreateAPI(data, draftId, (err) => {  
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
-          toast.success(
-            <Translation>{(t) => t("Submission Saved")}</Translation>
-          );
+          toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);
           dispatch(setFormSubmitted(true));
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
             dispatch(push(`${redirectUrl}form`));
           }
         } else {
-          toast.error(
-            <Translation>{(t) => t("Submission Failed.")}</Translation>
-          );
+          toast.error(<Translation>{(t) => t("Submission Failed.")}</Translation>);
         }
       })
     );
   };
 };
+
 
 const mapStateToProps = (state) => {
   return {
@@ -481,12 +478,12 @@ View.propTypes = {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission, formId, isPublic) => {
+    onSubmit: (submission, formId, draftId, isPublic) => {
       dispatch(setFormSubmissionLoading(true));
       // this is callback function for submission
       const callBack = (err, submission) => {
         if (!err) {
-          dispatch(doProcessActions(submission, ownProps));
+          dispatch(doProcessActions(submission, draftId, ownProps));
         } else {
           const ErrorDetails = {
             modalOpen: true,

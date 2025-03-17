@@ -38,7 +38,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         """Initialize."""
         self.formio = FormioService()
         self.auth_service = AuthorizationService()
-        self.JSON_FILE_TYPE = ".json"
+        self.json_file_type = ".json"
 
     def __get_formio_access_token(self):
         """Returns formio access token."""
@@ -393,7 +393,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
 
     def import_new_form_workflow(
         self, file_data, form_json, workflow_data, process_type
-    ):
+    ):  # pylint: disable=too-many-locals
         """Import new form+workflow."""
         anonymous = file_data.get("forms")[0].get("anonymous") or False
         form_json = self.set_form_and_submission_access(form_json, anonymous)
@@ -413,7 +413,11 @@ class ImportService:  # pylint: disable=too-many-public-methods
         # special characters anywhere so clean them before setting as process key
         process_name = ProcessService.clean_form_name(process_name)
         task_variable_str = file_data.get("forms")[0].get("taskVariable")
-        task_variable = json.loads(task_variable_str) if task_variable_str else default_task_variables
+        task_variable = (
+            json.loads(task_variable_str)
+            if task_variable_str
+            else default_task_variables
+        )
         mapper_data = {
             "form_id": form_id,
             "form_name": form_response.get("title"),
@@ -572,7 +576,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
         current_app.logger.info("Form import with form+workflow json inprogress...")
         anonymous = file_data.get("forms")[0].get("anonymous") or False
         description = file_data.get("forms")[0].get("formDescription", "")
-        task_variable = file_data.get("forms")[0].get("taskVariable", mapper.task_variable)
+        task_variable = file_data.get("forms")[0].get(
+            "taskVariable", mapper.task_variable
+        )
         mapper = self.import_form(
             selected_form_version,
             form_json,
@@ -614,7 +620,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         if import_type == "new":  # pylint: disable=too-many-nested-blocks
             current_app.logger.info("Import new processing..")
             # Validate input file type whether it is json
-            if not self.validate_file_type(file.filename, (self.JSON_FILE_TYPE,)):
+            if not self.validate_file_type(file.filename, (self.json_file_type,)):
                 raise BusinessException(BusinessErrorCode.INVALID_FILE_TYPE)
             current_app.logger.info("Valid json file type.")
             file_data = self.read_json_data(file)
@@ -643,7 +649,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
         else:
             current_app.logger.info("Import edit processing..")
             edit_request = ImportEditRequestSchema().load(request_data)
-            valid_file = self.validate_file_type(file.filename, (self.JSON_FILE_TYPE, ".bpmn"))
+            valid_file = self.validate_file_type(
+                file.filename, (self.json_file_type, ".bpmn")
+            )
             mapper_id = edit_request.get("mapper_id")
             # mapper is required for edit. Add validation
             mapper = FormProcessMapperService().validate_mapper(mapper_id, tenant_key)
@@ -651,7 +659,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             if mapper.status == FormProcessMapperStatus.ACTIVE.value:
                 # Raise an exception if the user try to update published form
                 raise BusinessException(BusinessErrorCode.FORM_INVALID_OPERATION)
-            if valid_file == self.JSON_FILE_TYPE:
+            if valid_file == self.json_file_type:
                 file_data = self.read_json_data(file)
                 # Validate input json file whether only form or form+workflow
                 if self.validate_input_json(file_data, form_schema):

@@ -538,7 +538,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         description: str = None,
         tenant_key: str = None,
         anonymous: bool = False,
-        task_variable = None,
+        task_variable=None,
     ) -> dict:
         """Get form details."""
         try:

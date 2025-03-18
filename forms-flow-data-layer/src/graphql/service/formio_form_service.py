@@ -3,7 +3,7 @@ from typing import List, Optional
 from beanie import PydanticObjectId
 
 from src.graphql.schema import FormSchema
-from src.models.formio.form import FormModel
+from src.models.formio import FormModel, SubmissionsModel
 
 
 # Service Layer for Form-related Operations
@@ -88,3 +88,19 @@ class FormService:
         except Exception:
             # Handle invalid ID format or not found scenarios
             return None
+
+    @staticmethod
+    async def get_submissions(submission_id: str):
+        """
+        Service to fetch a single submission by ID
+
+        Args:
+            submission_id (str): ID of the submission to fetch
+
+        Returns:
+            Optional[FormSchema]: Matching submission or None
+        """
+        # Convert string ID back to PydanticObjectId
+        object_id = PydanticObjectId(submission_id)
+        submission = await SubmissionsModel.find_one({"_id": object_id})
+        return submission.data if submission else None  # Return data if found, otherwise None

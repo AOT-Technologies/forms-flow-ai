@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import AsyncSelect from "react-select/async";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
 import "./TaskDetail.scss";
 import { fetchUserListWithSearch } from "../../../apiManager/services/bpmTaskServices";
@@ -14,6 +14,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 
 const UserSelectionDebounce = React.memo((props) => {
   const { onClose, currentUser, onChangeClaim } = props;
+  const taskGroups = useSelector((state) => state.bpmTasks.taskGroups);
+
   const dispatch = useDispatch();
   const customThemeFn = (theme) => ({
     ...theme,
@@ -49,7 +51,7 @@ const UserSelectionDebounce = React.memo((props) => {
   const loadOptions = (inputValue = "", callback) => {
     dispatch(
       fetchUserListWithSearch(
-        { searchType: searchTypeOption.searchType, query: inputValue },
+        { searchType: searchTypeOption.searchType, query: inputValue, groups:taskGroups},
         (err, res) => {
           if (!err) {
             const userListOptions = res.map((user) => {

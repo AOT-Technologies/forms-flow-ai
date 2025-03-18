@@ -9,7 +9,8 @@ import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applica
 import {
   setFormSubmissionSort,
   setApplicationListActivePage,
-  setApplicationListSearchParams
+  setApplicationListSearchParams,
+  setApplicationLoading
 } from "../../../actions/applicationActions";
 import { navigateToSubmitFormsListing, navigateToNewSubmission } from "../../../helper/routerHelper";
 import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsflow/components";
@@ -103,6 +104,7 @@ const DraftsAndSubmissions = () => {
   };
 
   const fetchSubmissionsAndDrafts = () => {
+    dispatch(setApplicationLoading(true));
     dispatch(
       fetchApplicationsAndDrafts({
         pageNo,
@@ -182,11 +184,11 @@ const DraftsAndSubmissions = () => {
             handleRefresh={fetchSubmissionsAndDrafts}
             handleSortModalClose={() => setShowSortModal(false)}
             optionSortBy={[
-              { value: "submissionId", label: t("Submission Id") },
-              { value: "submittedOn", label: t("Submitted On") },
+              { value: "id", label: t("Submission Id") },
+              { value: "created", label: t("Submitted On") },
               { value: "type", label: t("Type") },
               { value: "modified", label: t("Last Modified") },
-              { value: "status", label: t("status") },
+              { value: "applicationStatus", label: t("Status") },
             ]}
             defaultSortOption={applicationSort?.activeKey}
             defaultSortOrder={applicationSort?.[applicationSort?.activeKey]?.sortOrder || "asc"}

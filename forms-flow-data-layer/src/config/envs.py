@@ -128,6 +128,7 @@ class ENVS:
     JWT_OIDC_JWKS_URI = os.getenv("JWT_OIDC_JWKS_URI")
     JWT_OIDC_ISSUER = os.getenv("JWT_OIDC_ISSUER")
     JWT_OIDC_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
+    SQL_ECHO = os.getenv("SQL_ECHO", "False").lower() in ("true", "1", "yes")
 
 
 # Create a singleton instance

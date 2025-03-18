@@ -28,6 +28,7 @@ const EditDraft = React.memo(() => {
         if (!err) {
           if (res.id && res.formId) {
             dispatch(getForm("form", res.formId));
+            if(res.submissionId && res.formId)
             dispatch(getSubmission("submission", res.submissionId, res.formId));
           }
         } else {

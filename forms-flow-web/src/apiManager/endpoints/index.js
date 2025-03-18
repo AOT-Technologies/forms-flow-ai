@@ -73,7 +73,7 @@ const API = {
   DRAFT_UPDATE: `${WEB_BASE_URL}/application/<application_id>`,
   DRAFT_UPDATE_PUBLIC: `${WEB_BASE_URL}/public/application/<application_id>`,
   DRAFT_APPLICATION_CREATE: `${WEB_BASE_URL}/application/<application_id>/submit`,
-  DRAFT_APPLICATION_CREATE_PUBLIC: `${WEB_BASE_URL}/public/application/<application_id>/submit`,
+  DRAFT_APPLICATION_CREATE_PUBLIC: `${WEB_BASE_URL}/public/application/<application_id>/create`,
   FORMIO_ROLES: `${WEB_BASE_URL}/formio/roles`,
   DASHBOARD_AUTHORIZATION: `${WEB_BASE_URL}/authorizations/dashboard`,
   USER_DASHBOARDS: `${WEB_BASE_URL}/authorizations/users/dashboard`,

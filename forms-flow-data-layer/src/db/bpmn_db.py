@@ -1,4 +1,4 @@
 from src.config.envs import ENVS
-from src.utils import ConnectSQLDatabase
+from src.db.sql_base import ConnectSQLDatabase
 
 bpmn_db = ConnectSQLDatabase(ENVS.BPM_DB_URL)

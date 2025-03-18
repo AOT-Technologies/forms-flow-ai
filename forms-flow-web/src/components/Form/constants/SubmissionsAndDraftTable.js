@@ -30,8 +30,8 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const searchFormLoading = useSelector(
         (state) => state.formCheckList.searchFormLoading
     );
-    const isApplicationCountLoading = useSelector((state) =>
-        state.process.isApplicationCountLoading);
+    const isApplicationLoading = useSelector((state) =>
+        state.applications.isApplicationLoading);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteDraftId, setDeleteDraftId] = useState('');
     const [isDeletionLoading, setIsDeletionLoading] = useState(false);
@@ -113,7 +113,7 @@ const noDataMessage = !searchFormLoading ? (
 ) : null;
 
 return (
-    <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
+    <LoadingOverlay active={isApplicationLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
             <div className="custom-tables-wrapper-application">
                 <table className="table custom-tables table-responsive-sm mb-0">

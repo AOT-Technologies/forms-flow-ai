@@ -15,6 +15,7 @@ import {
   setApplicationStatusList,
   setApplicationError,
   setApplicationsAndDrafts,
+  setApplicationLoading
 } from "../../actions/applicationActions";
 import { replaceUrl } from "../../helper/helper";
 import moment from "moment";
@@ -62,7 +63,10 @@ export const fetchApplicationsAndDrafts = ({
         }
         done(null, data);
       })
-      .catch(done);
+      .catch(done)
+      .finally(() => {
+        dispatch(setApplicationLoading(false));
+      });
   };
 };
 

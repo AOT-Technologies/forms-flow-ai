@@ -299,7 +299,7 @@ const View = React.memo((props) => {
       return (
         <>
           <span className="status-draft"></span> {t("Last modified on:")}{" "}
-          {new Date(draftSubmission.modified).toLocaleString()}
+          {new Date(draftSubmission?.modified).toLocaleString()}
         </>
       );
     } else {

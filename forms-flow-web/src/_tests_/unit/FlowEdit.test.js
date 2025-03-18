@@ -152,7 +152,7 @@ describe("checking flow edit",()=>{
                 modal content
               </div>
             </div>
-          </div>)
+          </div>);
           const taskVariableModal = screen.getByTestId("task-variable-modal");
           expect(taskVariableModal).toBeInTheDocument();
     }); 

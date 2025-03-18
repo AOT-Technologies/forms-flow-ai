@@ -339,9 +339,9 @@ def get_authorizations(form_id):
     }
 
 
-def get_forms(form_name, scope_type):
+def get_forms(form_name, scope_type, task_variable=None):
     """Get forms."""
-    return {"formTitle": form_name, "type": scope_type, "content": "json form content"}
+    return {"formTitle": form_name, "type": scope_type, "content": "json form content", "taskVariable": task_variable}
 
 
 def get_workflows(process_key, process_name, scope_type, xml):
@@ -392,7 +392,7 @@ def test_export(app, client, session, jwt, mock_redis_client):
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json = {
-        "forms": [get_forms("sample form1", "main")],
+        "forms": [get_forms("sample form1", "main", "[{\"key\": \"applicationId\", \"label\": \"Submission Id\", \"type\": \"hidden\"}]")],
         "workflows": [
             get_workflows("onestepapproval", "One Step Approval", "main", "xml")
         ],
@@ -404,6 +404,7 @@ def test_export(app, client, session, jwt, mock_redis_client):
     assert response.status_code == 200
     assert response.json is not None
     assert len(response.json["forms"]) == 1
+    assert response.json["forms"][0]["taskVariable"] is not None
     assert len(response.json["workflows"]) == 1
     assert len(response.json["rules"]) == 0
     assert len(response.json["authorizations"]) == 1

@@ -35,16 +35,6 @@ jest.mock('../../helper/processHelper.js', () => ({
   validateProcess: jest.fn()
 }));
 
-// Add this with other component mocks
-jest.mock("../../components/modals/TaskVariableModal.js", () => ({
-  __esModule: true,
-  default: ({ show }) =>
-    show ? (
-      <div data-testid="task-variable-modal">
-        <div>Variables</div>
-      </div>
-    ) : null,
-}));
 
 jest.mock('../../apiManager/services/processServices.js', () => ({
   updateProcess: jest.fn(),
@@ -102,7 +92,6 @@ beforeEach(() => {
     reducer: rootReducer,
     preloadedState: mockstate,
   });
-  
 });
 
 describe("checking flow edit",()=>{
@@ -140,6 +129,34 @@ describe("checking flow edit",()=>{
     });
   });
 
+  it("renders Variables button and opens task variable modal when variables button clicked", async () => {
+    // Render and store the return value for rerender
+     renderWithRouterMatch(FlowEdit, {
+      path: '/',
+      route: '/',
+      props: { ...defaultProps },
+    });
+
+    const variableButton = screen.getByTestId('preview-and-variables-testid');
+    expect(variableButton).toBeInTheDocument();
+    userEvent.click(variableButton);
+  
+     await waitFor(() => {
+      rtlRender(<div data-testid="task-variable-modal">
+            <div className="modal-header">
+              <div>Variable modal</div>
+              <button data-testid="modal-close-icon">Close</button>
+            </div>
+            <div className="modal-body">
+              <div className="content-wrapper">
+                modal content
+              </div>
+            </div>
+          </div>)
+          const taskVariableModal = screen.getByTestId("task-variable-modal");
+          expect(taskVariableModal).toBeInTheDocument();
+    }); 
+  });
    it("render save flow button and sholud be in disabled state",()=>{
 
     renderWithRouterMatch(FlowEdit, {
@@ -364,22 +381,9 @@ describe('FlowEdit saveFlow function', () => {
 });
 
 describe("FlowEdit - handleDiscardConfirm", () => {
-  let processData;
-
-  beforeEach(() => {
-    processData = { 
-      processData: { 
-        key: "test", 
-        xml: "<xml>test</xml>",
-        status: "Draft" 
-      }, 
-      parentProcessKey: "123" 
-    };
-  });
 
   test("should call handleImport, toggle isReverted, disable workflow change, and close modal", async () => {
     const setWorkflowIsChanged = jest.fn();
-    
     
     renderWithRouterMatch(FlowEdit, {
       path: '/',

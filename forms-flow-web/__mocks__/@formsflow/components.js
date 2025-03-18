@@ -991,7 +991,7 @@ export const HistoryModal = ({
           <h1>{title}</h1>
           <div className="history-content">
             {allHistory.map((entry, index) => (
-              <div key={index} className="history-entry">
+              <div key={`${entry.version}-${index}`} className="history-entry">
                 <p>Version: {entry.version}</p>
                 <p>Last Edited By: {entry.createdBy}</p>
                 <button

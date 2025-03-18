@@ -124,6 +124,10 @@ class ENVS:
     DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
     CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "*")
+    JWT_OIDC_ALGORITHMS = os.getenv("JWT_OIDC_ALGORITHMS", "RS256")
+    JWT_OIDC_JWKS_URI = os.getenv("JWT_OIDC_JWKS_URI")
+    JWT_OIDC_ISSUER = os.getenv("JWT_OIDC_ISSUER")
+    JWT_OIDC_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
 
 
 # Create a singleton instance

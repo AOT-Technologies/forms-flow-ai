@@ -9,7 +9,6 @@ from src.config.envs import ENVS
 
 class RedisCache:
     def __init__(self, redis_url: str):
-        print(redis_url)
         self.redis_url = redis_url
         self.redis = None
 

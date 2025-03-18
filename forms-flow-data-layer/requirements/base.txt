@@ -9,3 +9,7 @@ setuptools
 logging
 orjson
 sqlalchemy
+requests
+python-jose
+cachelib
+httpx

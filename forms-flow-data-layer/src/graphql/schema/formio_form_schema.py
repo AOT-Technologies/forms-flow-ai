@@ -2,6 +2,8 @@ from typing import Optional
 
 import strawberry
 
+from src.middlewares.role_check import RoleCheck
+
 
 @strawberry.type
 class FormSchema:
@@ -11,7 +13,9 @@ class FormSchema:
     """
 
     id: str
-    name: str
+    name: Optional[str] = strawberry.field(
+        extensions=[RoleCheck(["designer"])]
+    )  # Add this line
     title: str
     path: str
     type: str

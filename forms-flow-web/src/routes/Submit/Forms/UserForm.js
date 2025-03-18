@@ -407,7 +407,7 @@ const View = React.memo((props) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-const doProcessActions = (submission, draftId, ownProps) => { 
+const doProcessActions = (submission, draftId, ownProps,formId) => { 
   return (dispatch, getState) => {
     const state = getState();
     let form = state.form?.form;
@@ -434,7 +434,7 @@ const doProcessActions = (submission, draftId, ownProps) => {
           dispatch(setFormSubmitted(true));
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
-            dispatch(push(`${redirectUrl}form`));
+            navigateToFormEntries(dispatch, tenantKey, formId);
           }
         } else {
           toast.error(<Translation>{(t) => t("Submission Failed.")}</Translation>);
@@ -483,7 +483,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // this is callback function for submission
       const callBack = (err, submission) => {
         if (!err) {
-          dispatch(doProcessActions(submission, draftId, ownProps));
+          dispatch(doProcessActions(submission, draftId, ownProps,formId));
         } else {
           const ErrorDetails = {
             modalOpen: true,

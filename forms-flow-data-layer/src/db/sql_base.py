@@ -2,6 +2,7 @@ from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
+from src.config.envs import ENVS
 from src.utils import get_logger
 
 logger = get_logger(__name__)
@@ -22,7 +23,7 @@ class ConnectSQLDatabase:
             self.metadata = MetaData()
             self.initialized = True  # Prevent reinitialization
             self.__engine = create_async_engine(
-                self.__db_url, pool_size=5, max_overflow=10, echo=True
+                self.__db_url, pool_size=5, max_overflow=10, echo=ENVS.SQL_ECHO
             )
             self.__session_factory = sessionmaker(
                 bind=self.__engine, class_=AsyncSession, expire_on_commit=False

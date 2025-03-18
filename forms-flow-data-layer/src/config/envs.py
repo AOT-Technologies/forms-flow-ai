@@ -124,6 +124,7 @@ class ENVS:
     DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
     CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "*")
+    SQL_ECHO = os.getenv("SQL_ECHO", "False").lower() in ("true", "1", "yes")
 
 
 # Create a singleton instance

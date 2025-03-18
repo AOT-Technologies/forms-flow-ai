@@ -364,9 +364,7 @@ describe('FlowEdit saveFlow function', () => {
 });
 
 describe("FlowEdit - handleDiscardConfirm", () => {
-  let store;
   let processData;
-  const queryClient = new QueryClient();
 
   beforeEach(() => {
     processData = { 
@@ -377,15 +375,6 @@ describe("FlowEdit - handleDiscardConfirm", () => {
       }, 
       parentProcessKey: "123" 
     };
-    store = configureStore({
-      reducer: rootReducer,
-      preloadedState: { 
-        process: { 
-          processData,
-          isProcessLoading: false
-        } 
-      }
-    });
   });
 
   test("should call handleImport, toggle isReverted, disable workflow change, and close modal", async () => {

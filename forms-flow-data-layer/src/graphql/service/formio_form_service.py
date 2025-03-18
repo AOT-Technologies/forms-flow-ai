@@ -103,4 +103,6 @@ class FormService:
         # Convert string ID back to PydanticObjectId
         object_id = PydanticObjectId(submission_id)
         submission = await SubmissionsModel.find_one({"_id": object_id})
-        return submission.data if submission else None  # Return data if found, otherwise None
+        return (
+            submission.data if submission else None
+        )  # Return data if found, otherwise None

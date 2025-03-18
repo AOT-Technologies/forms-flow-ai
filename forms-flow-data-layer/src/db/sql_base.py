@@ -1,5 +1,5 @@
 from sqlalchemy import MetaData
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from src.config.envs import ENVS
@@ -19,7 +19,9 @@ class ConnectSQLDatabase:
 
     def __init__(self, db_url: str):
         if not hasattr(self, "initialized"):
-            self.__db_url = db_url.replace("postgresql://", "postgresql+asyncpg://")  # Use async driver
+            self.__db_url = db_url.replace(
+                "postgresql://", "postgresql+asyncpg://"
+            )  # Use async driver
             self.metadata = MetaData()
             self.initialized = True  # Prevent reinitialization
             self.__engine = create_async_engine(
@@ -47,12 +49,16 @@ class ConnectSQLDatabase:
             return self._tables_cache[table_name]  # Return cached table
 
         async with self.__engine.connect() as conn:
-            await conn.run_sync(self.metadata.reflect, only=[table_name])  # Reflect only if not in cache
+            await conn.run_sync(
+                self.metadata.reflect, only=[table_name]
+            )  # Reflect only if not in cache
 
         if table_name not in self.metadata.tables:
             raise ValueError(f"Table '{table_name}' not found in the database.")
 
-        self._tables_cache[table_name] = self.metadata.tables[table_name]  # Cache the newly reflected table
+        self._tables_cache[table_name] = self.metadata.tables[
+            table_name
+        ]  # Cache the newly reflected table
         return self.metadata.tables[table_name]
 
     async def close_connection(self):

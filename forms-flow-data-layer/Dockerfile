@@ -15,20 +15,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev &
 
 # Copy and install dependencies
 COPY requirements/base.txt .
+COPY requirements.txt .
 
 RUN python3 -m venv /venv \
     && pip install --upgrade pip \
-    && pip install -r base.txt
+    && pip install -r base.txt \
+    && pip install -r requirements.txt
 
 
 # Copy only necessary files
 COPY src/ ./src
 COPY README.md .
 COPY main.py ./main.py
-COPY requirements.txt ./requirements.txt
-
-# Install the package
-RUN pip install -r requirements.txt
 
 # Security: Add non-root user
 RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /formsflow-data-layer

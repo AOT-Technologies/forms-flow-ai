@@ -21,6 +21,7 @@ const rootReducer = combineReducers({
     taskAppHistory,
     submission: submission({ name: "submission" }),
     form: form({ name: "form" }),
+    customSubmission: () => ({}),
 });
 
 export default rootReducer;

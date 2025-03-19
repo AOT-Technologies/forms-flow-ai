@@ -179,6 +179,18 @@ export const mockstate = {
   formDelete: {
     formDelete: { modalOpen: false, formId: "", formName: "" }
   },
-
+  customSubmission:{
+    submission:{
+      data:{}
+    }
+  },
+  applications: {
+    isApplicationDataLoading: true,
+    isApplicationDetailLoading: false,
+    applicationData: {},
+    applicationDetail: {
+      applicationName: "BusinessNew",
+    },
+    applicationId: ""
+  }
 };
-

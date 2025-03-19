@@ -1,7 +1,7 @@
 import React from "react";
-import { render as rtlRender, screen, waitFor } from "@testing-library/react";
+import { render as rtlRender, screen, waitFor, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createMemoryHistory } from "history";
@@ -50,8 +50,8 @@ jest.mock("../../../../../src/actions/applicationActions", () => ({
     dispatch({ type: "APPLICATION_DETAIL_STATUS_CODE", payload: status });
   }),
 
-  setApplicationDetailLoader: jest.fn().mockImplementation((loading) => (dispatch) => {
-    dispatch({ type: "APPLICATION_DETAIL_LOADER", payload: loading });
+  setApplicationDetailLoader: jest.fn().mockImplementation(() => (dispatch) => {
+    dispatch({ type: "APPLICATION_DETAIL_LOADER", payload: true });
   }),
 }));
 
@@ -66,9 +66,57 @@ jest.mock("@formsflow/components", () => {
         History
       </button>
     ),
-    FormSubmissionHistoryModal: () => <div>Form Submission History Modal</div>,
+    FormSubmissionHistoryModal: ({ show, onClose }) => (
+      <div data-testid="history-modal" style={{ display: show ? 'block' : 'none' }}>
+        Form Submission History Modal
+        <button data-testid="close-modal" onClick={onClose}>Close</button>
+      </div>
+    ),
   };
 });
+
+// Mock application audit services
+jest.mock("../../../../../src/apiManager/services/applicationAuditServices", () => ({
+  fetchApplicationAuditHistoryList: jest.fn().mockImplementation((applicationId) => (dispatch) => {
+    dispatch({ 
+      type: "APPLICATION_HISTORY", 
+      payload: [
+        { 
+          id: 1, 
+          applicationStatus: "New", 
+          created: "2025-02-10T05:15:55.785503Z" 
+        },
+        { 
+          id: 2, 
+          applicationStatus: "Reviewed", 
+          created: "2025-02-11T05:15:55.785503Z" 
+        }
+      ] 
+    });
+    dispatch({ type: "APPLICATION_HISTORY_LOADING", payload: false });
+    return Promise.resolve();
+  }),
+}));
+
+// Mock helper functions
+jest.mock("../../../../../src/helper/routerHelper", () => ({
+  navigateToFormEntries: jest.fn(),
+}));
+
+// Mock PDF download component
+jest.mock("../../../../../src/components/Form/ExportAsPdf/downloadPdfButton", () => () => (
+  <button data-testid="download-pdf-button">Download PDF</button>
+));
+
+// Mock View component
+jest.mock("../../../../../src/routes/Submit/Submission/Item/View", () => () => (
+  <div data-testid="application-view">Application View Content</div>
+));
+
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
+  useDispatch: jest.fn(),
+}));
 
 const queryClient = new QueryClient();
 
@@ -105,7 +153,7 @@ beforeEach(() => {
       ...mockstate,
       applications: {
         applicationsList: [],
-        applicationDetail: [
+        applicationDetail:
           {
             created: "2025-02-11T05:15:55.785503Z",
             modified: "2025-02-11T05:22:34.207536Z",
@@ -124,7 +172,6 @@ beforeEach(() => {
             isResubmit: false,
             eventName: null,
           },
-        ],
         applicationProcess: {
           processName: "BusinessNew",
           formProcessMapperId: "531",
@@ -161,12 +208,59 @@ beforeEach(() => {
   });
 });
 
-describe("ViewApplication Component", () => {
-  it("renders the submission view correctly", async () => {
-    const { store } = renderWithProviders(<ViewApplication />);
+const mockDispatch = jest.fn();
 
+describe("ViewApplication Component", () => {
+  beforeEach(() => {
+    useDispatch.mockReturnValue(mockDispatch);
+    jest.clearAllMocks();
+  });
+
+  it("renders the submission view correctly", async () => {
+    renderWithProviders(<ViewApplication />);
     await waitFor(() => {
-      expect(screen.getByText("BusinessNew")).toBeInTheDocument();
+      expect(screen.getByText("Business New")).toBeInTheDocument();
     });
   });
+
+  it("displays the application status correctly", async () => {
+    renderWithProviders(<ViewApplication />);
+    await waitFor(() => {
+      expect(screen.getByTestId("submissions-details")).toBeInTheDocument();
+      expect(screen.getByText(/Submitted On/)).toBeInTheDocument();
+    });
+  });
+
+  it("shows the history modal when history button is clicked", async () => {
+    renderWithProviders(<ViewApplication />);
+    
+    await waitFor(() => {
+      expect(screen.getByTestId("handle-submission-history-testid")).toBeInTheDocument();
+    });
+    
+    fireEvent.click(screen.getByTestId("handle-submission-history-testid"));
+    
+    await waitFor(() => {
+      expect(screen.getByTestId("history-modal")).toHaveStyle("display: block");
+    });
+  });
+
+  it("renders the download PDF button", async () => {
+    renderWithProviders(<ViewApplication />);
+    
+    await waitFor(() => {
+      expect(screen.getByTestId("download-pdf-button")).toBeInTheDocument();
+    });
+  });
+
+  it("renders the application view content", async () => {
+    renderWithProviders(<ViewApplication />);
+    
+    await waitFor(() => {
+      expect(screen.getByTestId("application-view")).toBeInTheDocument();
+
+    });
+  });
+
 });
+

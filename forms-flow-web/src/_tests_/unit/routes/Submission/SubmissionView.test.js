@@ -13,7 +13,7 @@ import thunk from "redux-thunk";
 
 // Mock application services
 jest.mock("../../../../../src/apiManager/services/applicationServices", () => ({
-  getApplicationById: jest.fn().mockImplementation((applicationId) => (dispatch) => {
+  getApplicationById: jest.fn().mockImplementation(() => (dispatch) => {
     const mockData = {
       created: "2025-02-11T05:15:55.785503Z",
       modified: "2025-02-11T05:22:34.207536Z",
@@ -77,7 +77,7 @@ jest.mock("@formsflow/components", () => {
 
 // Mock application audit services
 jest.mock("../../../../../src/apiManager/services/applicationAuditServices", () => ({
-  fetchApplicationAuditHistoryList: jest.fn().mockImplementation((applicationId) => (dispatch) => {
+  fetchApplicationAuditHistoryList: jest.fn().mockImplementation(() => (dispatch) => {
     dispatch({ 
       type: "APPLICATION_HISTORY", 
       payload: [

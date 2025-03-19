@@ -1,5 +1,10 @@
 import React from "react";
-import { render as rtlRender, screen, waitFor, fireEvent } from "@testing-library/react";
+import {
+  render as rtlRender,
+  screen,
+  waitFor,
+  fireEvent,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { Provider, useDispatch } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -10,6 +15,7 @@ import rootReducer from "../../rootReducer";
 import { mockstate } from "../../mockState";
 import ViewApplication from "../../../../../src/routes/Submit/Submission/SubmissionView";
 import thunk from "redux-thunk";
+import PropTypes from "prop-types";
 
 // Mock application services
 jest.mock("../../../../../src/apiManager/services/applicationServices", () => ({
@@ -46,9 +52,11 @@ jest.mock("../../../../../src/actions/applicationActions", () => ({
     dispatch({ type: "APPLICATION_DETAIL", payload: data });
   }),
 
-  setApplicationDetailStatusCode: jest.fn().mockImplementation((status) => (dispatch) => {
-    dispatch({ type: "APPLICATION_DETAIL_STATUS_CODE", payload: status });
-  }),
+  setApplicationDetailStatusCode: jest
+    .fn()
+    .mockImplementation((status) => (dispatch) => {
+      dispatch({ type: "APPLICATION_DETAIL_STATUS_CODE", payload: status });
+    }),
 
   setApplicationDetailLoader: jest.fn().mockImplementation(() => (dispatch) => {
     dispatch({ type: "APPLICATION_DETAIL_LOADER", payload: true });
@@ -57,46 +65,71 @@ jest.mock("../../../../../src/actions/applicationActions", () => ({
 
 // Mock FormsFlow UI components
 jest.mock("@formsflow/components", () => {
+  const PropTypes = require("prop-types");
+
+  const CustomButton = ({ onClick }) => (
+    <button data-testid="handle-submission-history-testid" onClick={onClick}>
+      History
+    </button>
+  );
+
+  CustomButton.propTypes = {
+    onClick: PropTypes.func.isRequired, // Validate onClick
+  };
+
+  const FormSubmissionHistoryModal = ({ show, onClose }) => (
+    <div
+      data-testid="history-modal"
+      style={{ display: show ? "block" : "none" }}
+    >
+      Form Submission History Modal
+      <button data-testid="close-modal" onClick={onClose}>
+        Close
+      </button>
+    </div>
+  );
+
+  FormSubmissionHistoryModal.propTypes = {
+    show: PropTypes.bool.isRequired, // Validate show
+    onClose: PropTypes.func.isRequired, // Validate onClose
+  };
+
   return {
     BackToPrevIcon: () => <button data-testid="back-button">Back</button>,
     HistoryIcon: () => <span>History Icon</span>,
     CloseIcon: () => <span>Close Icon</span>,
-    CustomButton: ({ onClick }) => (
-      <button data-testid="handle-submission-history-testid" onClick={onClick}>
-        History
-      </button>
-    ),
-    FormSubmissionHistoryModal: ({ show, onClose }) => (
-      <div data-testid="history-modal" style={{ display: show ? 'block' : 'none' }}>
-        Form Submission History Modal
-        <button data-testid="close-modal" onClick={onClose}>Close</button>
-      </div>
-    ),
+    CustomButton,
+    FormSubmissionHistoryModal,
   };
 });
 
 // Mock application audit services
-jest.mock("../../../../../src/apiManager/services/applicationAuditServices", () => ({
-  fetchApplicationAuditHistoryList: jest.fn().mockImplementation(() => (dispatch) => {
-    dispatch({ 
-      type: "APPLICATION_HISTORY", 
-      payload: [
-        { 
-          id: 1, 
-          applicationStatus: "New", 
-          created: "2025-02-10T05:15:55.785503Z" 
-        },
-        { 
-          id: 2, 
-          applicationStatus: "Reviewed", 
-          created: "2025-02-11T05:15:55.785503Z" 
-        }
-      ] 
-    });
-    dispatch({ type: "APPLICATION_HISTORY_LOADING", payload: false });
-    return Promise.resolve();
-  }),
-}));
+jest.mock(
+  "../../../../../src/apiManager/services/applicationAuditServices",
+  () => ({
+    fetchApplicationAuditHistoryList: jest
+      .fn()
+      .mockImplementation(() => (dispatch) => {
+        dispatch({
+          type: "APPLICATION_HISTORY",
+          payload: [
+            {
+              id: 1,
+              applicationStatus: "New",
+              created: "2025-02-10T05:15:55.785503Z",
+            },
+            {
+              id: 2,
+              applicationStatus: "Reviewed",
+              created: "2025-02-11T05:15:55.785503Z",
+            },
+          ],
+        });
+        dispatch({ type: "APPLICATION_HISTORY_LOADING", payload: false });
+        return Promise.resolve();
+      }),
+  })
+);
 
 // Mock helper functions
 jest.mock("../../../../../src/helper/routerHelper", () => ({
@@ -104,9 +137,10 @@ jest.mock("../../../../../src/helper/routerHelper", () => ({
 }));
 
 // Mock PDF download component
-jest.mock("../../../../../src/components/Form/ExportAsPdf/downloadPdfButton", () => () => (
-  <button data-testid="download-pdf-button">Download PDF</button>
-));
+jest.mock(
+  "../../../../../src/components/Form/ExportAsPdf/downloadPdfButton",
+  () => () => <button data-testid="download-pdf-button">Download PDF</button>
+);
 
 // Mock View component
 jest.mock("../../../../../src/routes/Submit/Submission/Item/View", () => () => (
@@ -150,7 +184,6 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-
 const mockDispatch = jest.fn();
 
 describe("ViewApplication Component", () => {
@@ -176,13 +209,15 @@ describe("ViewApplication Component", () => {
 
   it("shows the history modal when history button is clicked", async () => {
     renderWithProviders(<ViewApplication />);
-    
+
     await waitFor(() => {
-      expect(screen.getByTestId("handle-submission-history-testid")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("handle-submission-history-testid")
+      ).toBeInTheDocument();
     });
-    
+
     fireEvent.click(screen.getByTestId("handle-submission-history-testid"));
-    
+
     await waitFor(() => {
       expect(screen.getByTestId("history-modal")).toHaveStyle("display: block");
     });
@@ -190,7 +225,7 @@ describe("ViewApplication Component", () => {
 
   it("renders the download PDF button", async () => {
     renderWithProviders(<ViewApplication />);
-    
+
     await waitFor(() => {
       expect(screen.getByTestId("download-pdf-button")).toBeInTheDocument();
     });
@@ -198,12 +233,9 @@ describe("ViewApplication Component", () => {
 
   it("renders the application view content", async () => {
     renderWithProviders(<ViewApplication />);
-    
+
     await waitFor(() => {
       expect(screen.getByTestId("application-view")).toBeInTheDocument();
-
     });
   });
-
 });
-

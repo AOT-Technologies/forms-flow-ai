@@ -82,6 +82,27 @@ const FormComponent = React.memo(
     /* ------------- manipulate the hidden variable to show in form ------------- */
     const [updatedForm, setUpdatedForm] = useState(null);
     const [manipulatedKeys, setManipulatedKeys] = useState(new Set());
+    const [nestedDataKeys, setNestedDataKeys] = useState({});
+
+    function getParentKeys(parentComponent) {
+      if (!parentComponent) return [];
+  
+      const parentElement = parentComponent.getAttribute("ref");
+  
+      if (parentElement === "webform") return [];
+  
+      const nestedContainer = parentElement?.slice(7);
+  
+      if (parentElement === "component") {
+          return getParentKeys(parentComponent.parentElement);
+      }
+  
+      return nestedDataKeys[nestedContainer]
+          ? [...getParentKeys(parentComponent.parentElement),nestedContainer]
+          : getParentKeys(parentComponent.parentElement);
+  }
+  
+
     useEffect(()=>{
       const data = _.cloneDeep(form);
       const manipulatedKeys = [];
@@ -93,6 +114,9 @@ const FormComponent = React.memo(
         component.logic = [];
         component.hidden = false;
         component.hideLabel = false;
+        if(component.type == "container" || component.type == "survey" ){
+          setNestedDataKeys(prev=>({...prev, [component.key]:component.type}));
+        }
         /* ---------------------------------- ---- ---------------------------------- */
         //Keys ignored for the default task variable that don't need to be displayed in the form.
         if(component.type == "hidden" && !ignoreKeywords.has(component.key)){
@@ -125,9 +149,11 @@ const FormComponent = React.memo(
         if (highlightedElement) {
           highlightedElement.classList.remove("formio-hilighted");
         }
-
-        if (formioComponent) {
-
+        const parentComponent = formioComponent.parentElement;
+        const parentKeys = getParentKeys(parentComponent);
+        
+       
+        if (formioComponent) { 
           let classes = Array.from(formioComponent.classList).filter((cls) =>
             cls.startsWith("formio-component-")
           );
@@ -173,7 +199,7 @@ const FormComponent = React.memo(
 
           // Update the selected component state
           setSelectedComponent({
-            key: componentKey,
+            key: parentKeys.length ? [...parentKeys, componentKey].join(".") : componentKey,
             type: manipulatedKeys.has(componentKey) ? "hidden" : componentType,
             label,
             altVariable: alternativeLabels[componentKey]?.altVariable || "",

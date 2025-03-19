@@ -1,4 +1,5 @@
 """This exposes form process mapper service."""
+
 # pylint: disable=too-many-lines
 
 import json
@@ -22,7 +23,6 @@ from formsflow_api.models import (
     Application,
     Authorization,
     AuthType,
-    Draft,
     FormHistory,
     FormProcessMapper,
     Process,
@@ -53,7 +53,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         is_designer: bool,
         active_forms: bool,
         include_submissions_count: bool,
-        ignore_designer: bool,
         **kwargs,
     ):  # pylint: disable=too-many-arguments, too-many-locals
         """Get all forms."""
@@ -82,7 +81,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             list_form_mappers = (
                 FormProcessMapper.find_all_forms
                 if is_designer
-                else FormProcessMapper.find_all_active_by_formid
+                else Application.find_all_active_by_formid
+            )
+            # Submissions count should return only for user with create_submissions permission
+            fetch_submissions_count = (
+                include_submissions_count and CREATE_SUBMISSIONS in user.roles
             )
             mappers, get_all_mappers_count = list_form_mappers(
                 page_number=page_number,
@@ -91,29 +94,27 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 sort_by=sort_by,
                 sort_order=sort_order,
                 form_ids=authorized_form_ids,
-                **designer_filters if is_designer else {},
+                **(
+                    designer_filters
+                    if is_designer
+                    else {"fetch_submissions_count": fetch_submissions_count}
+                ),
             )
         mapper_schema = FormProcessMapperSchema()
         mappers_response = mapper_schema.dump(mappers, many=True)
-        # Submissions count should return only for user with create_submissions permission
-        # & client form listing with showForOnlyCreateSubmissionUsers param true
-        if (
-            include_submissions_count
-            and CREATE_SUBMISSIONS in user.roles
-            and ignore_designer
-        ):
-            current_app.logger.debug("Fetching submissions count..")
-            for mapper in mappers_response:
-                mapper["submissionsCount"] = (
-                    Application.find_applications_count_by_parent_form_id_user(
-                        mapper["parentFormId"], user.user_name, user.tenant_key
-                    )
-                )
 
         return (
             mappers_response,
             get_all_mappers_count,
         )
+
+    @staticmethod
+    def sort_results(data: List, sort_order: str, sort_by: str):
+        """Sort results."""
+        reverse = (
+            "desc" in sort_order
+        )  # Determine if sorting should be in descending order
+        return sorted(data, key=lambda k: k.get(sort_by, 0), reverse=reverse)
 
     @staticmethod
     def get_mapper_count(form_name=None):
@@ -234,7 +235,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 raise BusinessException(BusinessErrorCode.RESTRICT_FORM_DELETE)
             application.mark_inactive()
             # fetching all draft application application and delete it
-            draft_applications = Draft.get_draft_by_parent_form_id(
+            draft_applications = Application.get_draft_by_parent_form_id(
                 parent_form_id=application.parent_form_id
             )
             if draft_applications:
@@ -537,6 +538,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         description: str = None,
         tenant_key: str = None,
         anonymous: bool = False,
+        task_variable=None,
     ) -> dict:
         """Get form details."""
         try:
@@ -563,6 +565,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 "formDescription": description,
                 "anonymous": anonymous or False,
                 "type": scope_type,
+                "taskVariable": task_variable,
                 "content": form_json,
             }
         except Exception as e:
@@ -723,6 +726,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                     mapper.description,
                     tenant_key,
                     mapper.is_anonymous,
+                    mapper.task_variable,
                 )
             )
             workflow = self._get_workflow(
@@ -1003,3 +1007,48 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if process:
             ProcessService.update_process_status(process, ProcessStatus.DRAFT, user)
         return {}
+
+    @user_context
+    def get_form_data(self, form_id: str, auth_type: str, is_designer: bool, **kwargs):
+        """Get form data by form_id."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        auth_type = auth_type.upper() if auth_type else AuthType.FORM.value
+        mapper_data = FormProcessMapper.find_form_by_form_id(form_id)
+        # check the mapper exists and is accessible
+        if not mapper_data:
+            raise BusinessException(BusinessErrorCode.FORM_NOT_FOUND)
+        if auth_type == AuthType.FORM.value:
+            # check the form is published
+            if mapper_data.status == FormProcessMapperStatus.INACTIVE.value:
+                raise BusinessException(BusinessErrorCode.FORM_NOT_PUBLISHED)
+            # check the user is not anonymous then the tenant must match
+            if not mapper_data.is_anonymous and mapper_data.tenant != tenant_key:
+                raise PermissionError(BusinessErrorCode.PERMISSION_DENIED)
+        auth_service = AuthorizationService()
+        auth_data = None
+        if auth_type == AuthType.APPLICATION.value:
+            auth_data = auth_service.get_application_resource_by_id(
+                auth_type=auth_type,
+                resource_id=mapper_data.parent_form_id,
+                form_id=form_id,
+                user=user,
+            )
+        else:
+            auth_data = auth_service.get_resource_by_id(
+                auth_type=auth_type,
+                resource_id=mapper_data.parent_form_id,
+                is_designer=(
+                    is_designer if auth_type == AuthType.DESIGNER.value else False
+                ),
+                user=user,
+            )
+
+        if not auth_data:
+            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        form_json = formio_service.get_form_by_id(form_id, form_io_token)
+
+        return form_json

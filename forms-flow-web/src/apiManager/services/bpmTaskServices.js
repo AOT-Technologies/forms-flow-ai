@@ -147,9 +147,12 @@ export const fetchUserList = (...rest) => {
   };
 };
 
-export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
+export const fetchUserListWithSearch = ({ searchType, query, groups}, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const paramData = { permission: "manage_tasks" };
+  let paramData = {permission: "manage_tasks"};
+  if(groups){
+    paramData = {memberOfGroup: `/${groups[0].groupId}`};
+  }
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
   //let getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
   if (searchType && query) {

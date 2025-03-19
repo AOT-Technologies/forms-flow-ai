@@ -7,7 +7,8 @@ import { getForm, getSubmission } from "@aot-technologies/formio-react";
 // import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { getDraftById } from "../../apiManager/services/draftService";
-import Edit from "./Edit";
+// import Edit from "./Edit";
+import UserForm from "../../routes/Submit/Forms/UserForm";
 import { push } from "connected-react-router";
 
 const EditDraft = React.memo(() => {
@@ -27,6 +28,7 @@ const EditDraft = React.memo(() => {
         if (!err) {
           if (res.id && res.formId) {
             dispatch(getForm("form", res.formId));
+            if(res.submissionId && res.formId)
             dispatch(getSubmission("submission", res.submissionId, res.formId));
           }
         } else {
@@ -43,7 +45,7 @@ const EditDraft = React.memo(() => {
   if (isDraftDetailLoading) {
     return <Loading />;
   }
-  return <Edit page="draft-edit" />;
+  return <UserForm page="draft-edit" />;
 });
 
 export default EditDraft;

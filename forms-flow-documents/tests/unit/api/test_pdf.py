@@ -1,7 +1,6 @@
 """Test suite for application API endpoint."""
 import pytest  # noqa
-
-from tests.utilities.base_test import get_token
+from formsflow_api_utils.utils import VIEW_SUBMISSIONS, get_token
 
 
 class TestFormResourceRenderPdf:
@@ -10,7 +9,7 @@ class TestFormResourceRenderPdf:
     def test_render_template(self, app, client, jwt, mock_redis_client):
         """Assert that API /render when passed with token returns 200 status code."""
         with app.app_context():
-            token = get_token(jwt)
+            token = get_token(jwt, role=VIEW_SUBMISSIONS)
             assert token is not None
             headers = {
                 "Authorization": f"Bearer {token}",
@@ -26,7 +25,7 @@ class TestFormResourceRenderPdf:
     def test_render_template_invalid_template(self, app, client, jwt):
         """Assert that API /render when passed with token and invalid template name returns 400 status code."""
         with app.app_context():
-            token = get_token(jwt)
+            token = get_token(jwt, role=VIEW_SUBMISSIONS)
             assert token is not None
             headers = {
                 "Authorization": f"Bearer {token}",
@@ -42,7 +41,7 @@ class TestFormResourceRenderPdf:
     def test_render_template_invalid_template_variable(self, app, client, jwt):
         """Assert that API /render when passed with token and invalid template variable name returns 400 status code."""
         with app.app_context():
-            token = get_token(jwt)
+            token = get_token(jwt, role=VIEW_SUBMISSIONS)
             assert token is not None
             headers = {
                 "Authorization": f"Bearer {token}",

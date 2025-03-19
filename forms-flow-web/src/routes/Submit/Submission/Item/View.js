@@ -6,7 +6,6 @@ import {
   saveSubmission,
   Form,
   selectError,
-  Errors,
 } from "@aot-technologies/formio-react";
 import { push } from "connected-react-router";
 import Loading from "../../../../containers/Loading";
@@ -19,17 +18,14 @@ import {
   CUSTOM_SUBMISSION_ENABLE,
 } from "../../../../constants/constants";
 import { updateCustomSubmission } from "../../../../apiManager/services/FormServices";
-import DownloadPDFButton from "../../../../components/Form/ExportAsPdf/downloadPdfButton";
 import PropTypes from "prop-types";
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const { 
     onSubmit,
     options,
-    errors,
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url },
-    showPrintButton,
   } = props;
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
@@ -53,20 +49,6 @@ const View = React.memo((props) => {
 
   return (
     <div className="scrollable-overview  bg-white ps-3 pe-3 m-0 form-border">
-      <div className="d-flex py-2 form-title">
-        <h3 className="task-head text-truncate"> {form.title}</h3>
-        {showPrintButton && form?._id ? (
-          <div className="ms-auto float-auto d-flex flex-row">
-            <DownloadPDFButton
-              form_id={form._id}
-              submission_id={updatedSubmission._id}
-              title={form.title}
-            />
-          </div>
-        ) : null}
-      </div>
-
-      <Errors errors={errors} />
       <LoadingOverlay
         active={isFormSubmissionLoading}
         spinner
@@ -87,17 +69,11 @@ const View = React.memo((props) => {
   );
 });
 
-View.defaultProps = {
-  showPrintButton: true,
-};
-
 View.propTypes = {
   onSubmit: PropTypes.func,
   options: PropTypes.object,
-  errors: PropTypes.array,
   form: PropTypes.object,
   submission: PropTypes.object,
-  showPrintButton: PropTypes.bool,
 };
 
 

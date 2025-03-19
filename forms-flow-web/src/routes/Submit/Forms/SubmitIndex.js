@@ -7,7 +7,7 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import  userRoles  from "../../../constants/permissions";
-import View from "./View";
+// import View from "./View";
 import Submission from "../Submission";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
@@ -25,6 +25,7 @@ import { getClientList, getReviewerList } from "../../../apiManager/services/aut
 import NotFound from "../../../components/NotFound";
 import { setApiCallError } from "../../../actions/ErroHandling";
 import proptypes from 'prop-types';
+import UserForm from "./UserForm";
 
 const SubmissionRoute = ({ component: Component, createSubmissions, 
   viewSubmissions, redirectUrl, ...rest }) => (
@@ -140,7 +141,7 @@ const Item = React.memo(() => {
   return (
     <div>
       <Switch>
-        <Route exact path={`${BASE_ROUTE}form/:formId`} component={View} />
+        <Route exact path={`${BASE_ROUTE}form/:formId`} component={UserForm} />
         <SubmissionRoute
           path={`${BASE_ROUTE}form/:formId/submission`}
           component={Submission}

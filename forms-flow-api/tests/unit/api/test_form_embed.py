@@ -1,12 +1,11 @@
 """Test suit for embed APIs."""
 
-from formsflow_api_utils.utils import CREATE_DESIGNS
+from formsflow_api_utils.utils import CREATE_DESIGNS, get_token
 
 from tests.utilities.base_test import (
     get_embed_application_create_payload,
     get_embed_token,
     get_form_payload,
-    get_token,
 )
 
 

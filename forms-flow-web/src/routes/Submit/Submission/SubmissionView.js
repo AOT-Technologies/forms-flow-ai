@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import startCase from "lodash/startCase";
@@ -21,14 +21,13 @@ import { useTranslation } from "react-i18next";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
-  MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { HelperServices } from "@formsflow/service";
-import { push } from "connected-react-router";
 import DownloadPDFButton from "../../../components/Form/ExportAsPdf/downloadPdfButton";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
+import { navigateToFormEntries } from "../../../helper/routerHelper";
 
 
 const ViewApplication = React.memo(() => {
@@ -36,23 +35,25 @@ const ViewApplication = React.memo(() => {
   const { applicationId } = useParams();
   const dispatch = useDispatch();
 
-  const applicationDetail = useSelector(
-    (state) => state.applications.applicationDetail
-  );
-  const applicationDetailStatusCode = useSelector(
-    (state) => state.applications.applicationDetailStatusCode
-  );
-  const isApplicationDetailLoading = useSelector(
-    (state) => state.applications.isApplicationDetailLoading
-  );
+  const { applicationDetail, applicationDetailStatusCode, isApplicationDetailLoading } =
+   useSelector(
+    (state) => ({
+    applicationDetail: state.applications.applicationDetail,
+    applicationDetailStatusCode: state.applications.applicationDetailStatusCode,
+    isApplicationDetailLoading: state.applications.isApplicationDetailLoading,
+    })
+    );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const submission = useSelector((state) => state.submission?.submission || {});
   const form = useSelector((state) => state.form?.form || {});
-  const appHistory = useSelector((state) => state.taskAppHistory.appHistory);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const isHistoryListLoading = useSelector(
-    (state) => state.taskAppHistory.isHistoryListLoading
+  const [formId,setFormId] = useState();
+
+  const { appHistory, isHistoryListLoading } = useSelector(
+    useMemo(() => (state) => ({
+      appHistory: state.taskAppHistory.appHistory,
+      isHistoryListLoading: state.taskAppHistory.isHistoryListLoading,
+    }), [])
   );
 
   useEffect(() => {
@@ -64,6 +65,7 @@ const ViewApplication = React.memo(() => {
     dispatch(
       getApplicationById(applicationId, (err, res) => {
         if (!err) {
+          setFormId(res.formId);
           if (res.submissionId && res.formId) {
             dispatch(getForm("form", res.formId));
             if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
@@ -108,7 +110,7 @@ const ViewApplication = React.memo(() => {
   }
 
   const backToSubmissionList = () => {
-    dispatch(push(`${redirectUrl}form`));
+    navigateToFormEntries(dispatch, tenantKey, formId);
   };
 
   return (
@@ -156,7 +158,7 @@ const ViewApplication = React.memo(() => {
       </Card>
 
       {/* View Application Details */}
-      <View page="application-detail" showPrintButton={false} />
+      <View page="application-detail"/>
         <FormSubmissionHistoryModal
           show={showHistoryModal}
           onClose={() => setShowHistoryModal(false)}

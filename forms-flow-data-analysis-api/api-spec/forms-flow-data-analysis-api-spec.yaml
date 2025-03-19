@@ -1,0 +1,111 @@
+openapi: 3.0.1
+info:
+  title: Sentiment-API
+  description: API endpoint for sentiment analysis component for formsflow.ai.
+  version: "1.0"
+servers:
+- url: http://{{baseurl}}
+- url: 'http://localhost:6001'
+security:
+- bearerAuth: []
+tags:
+- name: Checkpoint
+  description: Verify the application's health status.
+- name: SentimentAnalysis
+  description: API endpoint for sentiment analysis.
+paths:
+  /checkpoint:
+    get:
+      tags:
+      - Checkpoint
+      summary: Get the status of API
+      operationId: get_health_checkpoint_resource
+      responses:
+        "200":
+          description: Success
+          content: {}
+  /sentiment:
+    post:
+      tags:
+      - SentimentAnalysis
+      summary: "Returns the sentiment (positive, negative, or neutral) for the given\
+        \ text in the request body"
+      operationId: post_sentiment_analysis_transformer_resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestModel'
+        required: true
+      responses:
+        "200":
+          description: OK:- Successful request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        "400":
+          description: BAD_REQUEST:- Invalid request.
+          content: {}
+        "401":
+          description: UNAUTHORIZED:- Authorization header not provided or an invalid
+            token passed.
+          content: {}
+      x-codegen-request-body-name: payload
+components:
+  schemas:
+    RequestModel:
+      type: object
+      properties:
+        applicationId:
+          type: string
+        formUrl:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SentimentData'
+    SentimentData:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Input Text for sentiment analysis.
+        elementId:
+          type: string
+    ResponseModel:
+      type: object
+      properties:
+        applicationId:
+          type: string
+        formUrl:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponseSentimentData'
+    ResponseSentimentData:
+      allOf:
+      - $ref: '#/components/schemas/SentimentData'
+      - type: object
+        properties:
+          formUrl:
+            type: string
+          overallSentiment:
+            type: string
+            description: Overall sentiment of the input text.
+  responses:
+    ParseError:
+      description: When a mask can't be parsed
+      content: {}
+    MaskError:
+      description: When any error occurs on mask
+      content: {}
+    AuthError:
+      description: Handle Business exception
+      content: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

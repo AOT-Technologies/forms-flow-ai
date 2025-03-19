@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDownloadFile } from "./useDownloadFile";
 import { Container } from "react-bootstrap";
 import { replaceUrl } from "../../../helper/helper";
-import { Translation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { withFeature } from "flagged";
 import { CustomButton } from "@formsflow/components";
 
@@ -14,12 +14,11 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
 
   const preDownloading = () => setButtonState(true);
   const postDownloading = () => setButtonState(false);
+  const { t } = useTranslation();
 
   const onErrorDownloadFile = () => {
     setButtonState(false);
-    toast.error(
-      <Translation>{(t) => t("Something went wrong. Please try again!")}</Translation>
-    );
+    toast.error(t("Something went wrong. Please try again!"));
   };
 
   const getFileName = () => {
@@ -58,7 +57,7 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
       <a href={url} download={name} className="hidden" ref={ref} id="export-btn"/>
       <CustomButton
         variant="light"
-        label={<Translation>{(t) => t("Export PDF")}</Translation>}
+        label={t("Export PDF")}
         onClick={download}
         buttonLoading={buttonState}
         dataTestId="export-pdf-button"

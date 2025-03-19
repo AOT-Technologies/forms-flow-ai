@@ -20,8 +20,12 @@ RUN python3 -m venv /venv \
     && pip install --upgrade pip \
     && pip install -r base.txt
 
-# Copy application code
-COPY . .
+
+# Copy only necessary files
+COPY src/ ./src
+COPY README.md .
+COPY main.py ./main.py
+COPY requirements.txt ./requirements.txt
 
 # Install the package
 RUN pip install -r requirements.txt

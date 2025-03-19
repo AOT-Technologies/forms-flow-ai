@@ -13,5 +13,5 @@ sqlalchemy
 # spacy
 # nltk
 Flask-Migrate
-# python-jose
+python-jose
 git+https://github.com/aot-technologies/forms-flow-ai.git@develop#subdirectory=forms-flow-api-utils

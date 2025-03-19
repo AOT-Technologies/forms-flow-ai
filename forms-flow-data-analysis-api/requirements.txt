@@ -24,12 +24,13 @@ cffi==1.17.1
 charset-normalizer==3.4.1
 click==8.1.8
 cryptography==44.0.2
+ecdsa==0.19.1
 filelock==3.18.0
 flake8-import-order==0.18.2
 flask-jwt-oidc==0.8.0
 flask-marshmallow==1.3.0
 flask-restx==1.3.0
-formsflow_api_utils @ git+https://github.com/aot-technologies/forms-flow-ai.git@720b92d735e2adc5fa79b7f54f4502f3660720db#subdirectory=forms-flow-api-utils
+formsflow_api_utils @ git+https://github.com/aot-technologies/forms-flow-ai.git@a2c74f2c56fa1fabfda12fa6a044b81b30905950#subdirectory=forms-flow-api-utils
 fsspec==2025.3.0
 googleapis-common-protos==1.69.2
 grpcio==1.71.0
@@ -69,24 +70,26 @@ packaging==24.2
 protobuf==5.29.3
 psycopg2-binary==2.9.10
 pyOpenSSL==25.0.0
-pyasn1==0.6.1
+pyasn1==0.4.8
 pycodestyle==2.12.1
 pycparser==2.22
 pyflakes==3.2.0
 pyparsing==3.2.1
 python-dotenv==1.0.1
+python-jose==3.4.0
 pytz==2025.1
 redis==5.2.1
 referencing==0.36.2
 regex==2024.11.6
 requests==2.32.3
 rpds-py==0.23.1
+rsa==4.9
 safetensors==0.5.3
 selenium-wire==5.1.0
 selenium==4.29.0
 sentencepiece==0.2.0
 sentry-sdk==2.23.1
-setuptools==76.0.0
+setuptools==76.1.0
 six==1.17.0
 sniffio==1.3.1
 sortedcontainers==2.4.0

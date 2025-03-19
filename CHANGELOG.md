@@ -29,6 +29,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
+* Added variables(task_variables) as part of import and export.
 
 `Modified`
 

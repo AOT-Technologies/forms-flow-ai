@@ -15,7 +15,6 @@ import rootReducer from "../../rootReducer";
 import { mockstate } from "../../mockState";
 import ViewApplication from "../../../../../src/routes/Submit/Submission/SubmissionView";
 import thunk from "redux-thunk";
-import PropTypes from "prop-types";
 
 // Mock application services
 jest.mock("../../../../../src/apiManager/services/applicationServices", () => ({
@@ -78,15 +77,13 @@ jest.mock("@formsflow/components", () => {
   };
 
   const FormSubmissionHistoryModal = ({ show, onClose }) => (
-    <div
-      data-testid="history-modal"
-      style={{ display: show ? "block" : "none" }}
-    >
-      Form Submission History Modal
-      <button data-testid="close-modal" onClick={onClose}>
-        Close
-      </button>
-    </div>
+    <div data-testid="history-modal" style={{ display: show ? "block" : "none" }}>
+  Form Submission History Modal
+  <button data-testid="close-modal" onClick={onClose}>
+    Close
+  </button>
+</div>
+
   );
 
   FormSubmissionHistoryModal.propTypes = {

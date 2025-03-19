@@ -1,23 +1,52 @@
-version: '3.8'
 services:
-  postgres:
-    image: postgres:latest
-    restart: always
+  forms-flow-data-layer:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '5500:8000'
+    volumes:
+      - ./:/app:rw
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: db
-    ports:
-      - "5432:5432"
+      DEBUG: ${FORMSFLOW_DATA_LAYER_DEBUG:-false}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
+      KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+      JWT_OIDC_CACHING_ENABLED: True
+      FORMSFLOW_DATALAYER_CORS_ORIGINS: ${FORMSFLOW_DATALAYER_CORS_ORIGINS:-*}
 
-  mongo:
-    image: mongo:latest
-    restart: always
-    ports:
-      - "27017:27017"
+      # WebAPI DB URL
+      FORMSFLOW_API_DB_URL: ${FORMSFLOW_API_DB_URL:-postgresql+asyncpg://postgres:changeme@localhost:5432/webapi}
+      FORMSFLOW_API_DB_HOST: ${FORMSFLOW_API_DB_HOST:-forms-flow-webapi-db}
+      FORMSFLOW_API_DB_PORT: ${FORMSFLOW_API_DB_PORT:-5432}
+      FORMSFLOW_API_DB_USER: ${FORMSFLOW_API_DB_USER:-postgres}
+      FORMSFLOW_API_DB_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
+      FORMSFLOW_API_DB_NAME: ${FORMSFLOW_API_DB_NAME:-webapi}
+      FORMSFLOW_API_DB_OPTIONS: ${FORMSFLOW_API_DB_OPTIONS}
 
-  redis:
-    image: redis:latest
-    restart: always
-    ports:
-      - "6379:6379"
+      # Formio DB URL
+      FORMIO_DB_URI: ${FORMIO_DB_URI:-mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@localhost:27018/${FORMIO_DB_NAME:-formio}?authMechanism=SCRAM-SHA-1&authSource=admin}
+      FORMIO_DB_HOST: ${FORMIO_DB_HOST:-localhost}
+      FORMIO_DB_PORT: ${FORMIO_DB_PORT:-27017}
+      FORMIO_DB_USERNAME: ${FORMIO_DB_USERNAME:-admin}
+      FORMIO_DB_PASSWORD: ${FORMIO_DB_PASSWORD:-changeme}
+      FORMIO_DB_NAME: ${FORMIO_DB_NAME:-formio}
+      FORMIO_DB_OPTIONS: ${FORMIO_DB_OPTIONS:-authMechanism=SCRAM-SHA-1&authSource=admin}
+
+      # Camunda DB URL
+      CAMUNDA_DB_URL: ${CAMUNDA_DB_URL:-jdbc:postgresql+asyncpg://admin:change@localhost:5432/formsflow-bpm}
+      CAMUNDA_DB_USER: ${CAMUNDA_DB_USER:-admin}
+      CAMUNDA_DB_PASSWORD: ${CAMUNDA_DB_PASSWORD:-changeme}
+      CAMUNDA_DB_HOST: ${CAMUNDA_DB_HOST:-localhost}
+      CAMUNDA_DB_PORT: ${CAMUNDA_DB_PORT:-5432}
+      CAMUNDA_DB_NAME: ${CAMUNDA_DB_NAME:-formsflow-bpm}
+      CAMUNDA_DB_OPTIONS: ${CAMUNDA_DB_OPTIONS}
+
+    stdin_open: true # -i
+    tty: true # -t

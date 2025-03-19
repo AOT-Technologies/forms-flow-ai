@@ -17,7 +17,7 @@ class FormioDbConnection:
         """Initialize Beanie with document models."""
         logger.info("initialize formio db")
         self.__client = AsyncIOMotorClient(ENVS.FORMIO_MONGO_DB_URI)
-        self.formio_db = self.__client[ENVS.FORMIO_MONGO_DATABASE]
+        self.formio_db = self.__client[ENVS.FORMIO_DB_NAME]
         await init_beanie(
             database=self.formio_db, document_models=[FormModel, SubmissionsModel]
         )

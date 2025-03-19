@@ -72,7 +72,7 @@ class ENVS:
     FORMIO_DB_PASSWORD: str = os.getenv("FORMIO_DB_PASSWORD", "")
     FORMIO_DB_NAME: str = os.getenv("FORMIO_DB_NAME", "formio")
     FORMIO_DB_OPTIONS: str = os.getenv("FORMIO_MONGO_OPTIONS", "")
- 
+
     # Web API PostgreSQL Configuration
     FORMSFLOW_API_DB_HOST: str = os.getenv("FORMSFLOW_API_DB_HOST", "localhost")
     FORMSFLOW_API_DB_PORT: str = os.getenv("FORMSFLOW_API_DB_PORT", "5432")
@@ -81,7 +81,6 @@ class ENVS:
     FORMSFLOW_API_DB_NAME: str = os.getenv("FORMSFLOW_API_DB_NAME", "webapi")
     FORMSFLOW_API_DB_OPTIONS: str = os.getenv("FORMSFLOW_API_DB_OPTIONS", "")
 
-
     # BPM PostgreSQL Configuration
     CAMUNDA_DB_USER: str = os.getenv("CAMUNDA_DB_USER", "localhost")
     CAMUNDA_DB_PASSWORD: str = os.getenv("CAMUNDA_DB_PASSWORD", "5432")
@@ -89,7 +88,6 @@ class ENVS:
     CAMUNDA_DB_PORT: str = os.getenv("CAMUNDA_DB_PORT", "")
     CAMUNDA_DB_NAME: str = os.getenv("CAMUNDA_DB_NAME", "bpm")
     CAMUNDA_DB_OPTIONS: str = os.getenv("CAMUNDA_DB_OPTIONS", "")
-
 
     # Constructed Connection URIs
     FORMIO_MONGO_DB_URI: str = os.getenv(
@@ -103,18 +101,25 @@ class ENVS:
             options=FORMIO_DB_OPTIONS,
         ),
     )
-    
-    WEB_API_DB_URL: str = os.getenv("FORMSFLOW_API_DB_URL",DatabaseConfig.construct_postgres_uri(
-        host=FORMSFLOW_API_DB_HOST,
-        port=FORMSFLOW_API_DB_PORT,
-        username=FORMSFLOW_API_DB_USER,
-        password=FORMSFLOW_API_DB_PASSWORD,
-        database=FORMSFLOW_API_DB_NAME,
-        options=FORMSFLOW_API_DB_OPTIONS,
-    ))
+
+    WEB_API_DB_URL: str = os.getenv(
+        "FORMSFLOW_API_DB_URL",
+        DatabaseConfig.construct_postgres_uri(
+            host=FORMSFLOW_API_DB_HOST,
+            port=FORMSFLOW_API_DB_PORT,
+            username=FORMSFLOW_API_DB_USER,
+            password=FORMSFLOW_API_DB_PASSWORD,
+            database=FORMSFLOW_API_DB_NAME,
+            options=FORMSFLOW_API_DB_OPTIONS,
+        ),
+    )
 
     CAMUNDA_DB_URL = os.getenv("CAMUNDA_DB_URL", None)
-    CAMUNDA_DB_URL = CAMUNDA_DB_URL[len("jdbc:"):] if CAMUNDA_DB_URL and CAMUNDA_DB_URL.startswith("jdbc:") else CAMUNDA_DB_URL
+    CAMUNDA_DB_URL = (
+        CAMUNDA_DB_URL[len("jdbc:") :]
+        if CAMUNDA_DB_URL and CAMUNDA_DB_URL.startswith("jdbc:")
+        else CAMUNDA_DB_URL
+    )
     BPM_DB_URL: str = CAMUNDA_DB_URL or DatabaseConfig.construct_postgres_uri(
         host=CAMUNDA_DB_USER,
         port=CAMUNDA_DB_PASSWORD,

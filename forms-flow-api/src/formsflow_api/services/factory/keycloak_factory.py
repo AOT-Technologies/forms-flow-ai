@@ -2,10 +2,10 @@
 
 from flask import current_app
 
+from .bcgov_shared_realm_service import BCGovSharedRealm
 from .keycloak_admin import KeycloakAdmin
 from .keycloak_client_service import KeycloakClientService
 from .keycloak_group_service import KeycloakGroupService
-from .bcgov_shared_realm_service import BCGovSharedRealm
 
 
 class KeycloakFactory:  # pylint:disable=too-few-public-methods

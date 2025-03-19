@@ -97,7 +97,9 @@ def test_draft_submission_resource(app, client, session, jwt, create_mapper):
     assert draft.status_code == 201
     application_id = draft.json.get("applicationId")
     payload = get_application_create_payload()
-    response = client.put(f"/application/{application_id}/submit", headers=headers, json=payload)
+    response = client.put(
+        f"/application/{application_id}/submit", headers=headers, json=payload
+    )
     assert response.json.get("applicationStatus") == "New"
     assert response.json.get("formId") == payload["formId"]
     assert response.json.get("submissionId") == payload["submissionId"]
@@ -167,7 +169,9 @@ def test_anonymous_drafts(app, client, session, jwt):
     )
     assert response.status_code == 201
     assert response.json.get("data") == get_draft_create_payload()["data"]
-    application = Application.find_draft_application_by_user(response.json.get("applicationId"), user_id=ANONYMOUS_USER)
+    application = Application.find_draft_application_by_user(
+        response.json.get("applicationId"), user_id=ANONYMOUS_USER
+    )
     draft = Draft.query.get(response.json.get("id"))
     assert draft is not None
     assert application is not None
@@ -282,7 +286,9 @@ def test_capture_process_variables_draft_create_method(
         "applicationId": "",
         "applicationStatus": "",
     }
-    response = client.put(f"/application/{application_id}/submit", headers=headers, json=payload)
+    response = client.put(
+        f"/application/{application_id}/submit", headers=headers, json=payload
+    )
     process_instance_id = response.json.get("processInstanceId")
     assert process_instance_id is not None
     # Check variable added to process

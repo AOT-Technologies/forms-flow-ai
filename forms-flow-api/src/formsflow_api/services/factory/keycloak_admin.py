@@ -1,7 +1,6 @@
 """Keycloak Admin abstract interface."""
 
 from abc import ABC, abstractmethod
-from typing import Dict, List
 from typing import Any, Dict, List, Union
 
 DEFAULT_USER_CLAIM = "username"  # Default fallback claim
@@ -102,9 +101,12 @@ class KeycloakAdmin(ABC):
         raise NotImplementedError("Method not implemented")
 
     @classmethod
-    def get_user_id_from_response(cls, response: Dict[str, Any], user_name_attribute: str) -> Union[str, None]:
+    def get_user_id_from_response(
+        cls, response: Dict[str, Any], user_name_attribute: str
+    ) -> Union[str, None]:
         """
-        Retrieve a user ID from a response JSON
+        Retrieve a user ID from a response JSON.
+
         If the resolved value is a list, return the first element.
         Falls back to DEFAULT_USER_CLAIM if the attribute is not found.
         """

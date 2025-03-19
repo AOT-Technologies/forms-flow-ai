@@ -22,7 +22,7 @@ from formsflow_api.schemas import (
     UsersListSchema,
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
-from formsflow_api.services.factory import KeycloakFactory, KeycloakGroupService
+from formsflow_api.services.factory import KeycloakFactory
 
 API = Namespace(
     "User",

@@ -149,7 +149,7 @@ public class KeycloakGroupService extends KeycloakServiceBase {
 			if (response==null || !response.getStatusCode().equals(HttpStatus.OK)) {
 				throw new IdentityProviderException(
 						"Unable to read user groups from " + keycloakConfiguration.getKeycloakAdminUrl()
-								+ ": HTTP status code " + response.getStatusCodeValue());
+								+  ": HTTP status code " + (response == null ? "400" : response.getStatusCodeValue()));
 			}
 
 			JsonArray searchResult = parseAsJsonArray(response.getBody());

@@ -42,8 +42,13 @@ FILTER_MAPS = {
     "process_name": {"field": "name", "operator": "ilike"},
     "process_status": {"field": "status", "operator": "eq"},
     "process_type": {"field": "process_type", "operator": "eq"},
+    "parent_form_id": {"field": "parent_form_id", "operator": "eq"},
 }
 
 DEFAULT_PROCESS_KEY = "Defaultflow"
 DEFAULT_PROCESS_NAME = "Default Flow"
 HTTP_TIMEOUT = 30
+
+authorization_doc_params={
+        "auth_type": "Type of authorization ```dashboard/form/application/designer```"
+}

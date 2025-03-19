@@ -11,7 +11,7 @@ import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
-    DRAFT_APPLICATION_STATUS,
+    ANONYMOUS_USER,
     MANAGE_TASKS,
     NEW_APPLICATION_STATUS,
 )
@@ -29,6 +29,7 @@ from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     AggregatedApplicationsSchema,
     ApplicationSchema,
+    DraftSchema,
     FormProcessMapperSchema,
 )
 from formsflow_api.services.external import BPMService
@@ -183,20 +184,28 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         )
 
     @staticmethod
+    def extract_common_filters(filters: dict) -> dict:
+        """Extract common filter parameters from the filters dictionary."""
+        return {
+            "application_id": filters.get("application_id"),
+            "application_name": filters.get("application_name"),
+            "application_status": filters.get("application_status"),
+            "created_by": filters.get("created_by"),
+            "page_no": filters.get("page_no"),
+            "limit": filters.get("limit"),
+            "order_by": filters.get("order_by"),
+            "sort_order": filters.get("sort_order"),
+            "created_from": filters.get("created_from"),
+            "created_to": filters.get("created_to"),
+            "modified_from": filters.get("modified_from"),
+            "modified_to": filters.get("modified_to"),
+            "parent_form_id": filters.get("parent_form_id"),
+        }
+
+    @staticmethod
     @user_context
     def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
-        page_no: int,
-        limit: int,
-        order_by: str,
-        created_from: datetime,
-        created_to: datetime,
-        modified_from: datetime,
-        modified_to: datetime,
-        application_id: int,
-        application_name: str,
-        application_status: str,
-        created_by: str,
-        sort_order: str,
+        filters: dict,
         **kwargs,
     ):
         """Get applications only from authorized groups."""
@@ -212,30 +221,19 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         )
         for form in forms:
             form_ids.append(form.resource_id)
+
+        common_filters = ApplicationService.extract_common_filters(filters)
         (
             applications,
             get_all_applications_count,
         ) = Application.find_applications_by_auth_formids_user(
-            application_id=application_id,
-            application_name=application_name,
-            application_status=application_status,
-            created_by=created_by,
-            page_no=page_no,
-            limit=limit,
-            order_by=order_by,
-            modified_from=modified_from,
-            modified_to=modified_to,
-            sort_order=sort_order,
-            created_from=created_from,
-            created_to=created_to,
+            **common_filters,
             form_ids=form_ids,
             user_name=user_name,
         )
-        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
-            draft_count,
         )
 
     @staticmethod
@@ -256,7 +254,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             resource_id=parent_form_ref,
         )
         if application_auth:
-            application = Application.find_auth_by_id(application_id=application_id)
+            application = Application.find_auth_by_id(application_id, user.user_name)
         else:
             # Reviewer lack application permissions can still have form permissions,
             # submit and view their application.
@@ -268,54 +266,31 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
     @staticmethod
     @user_context
     def get_all_applications_by_user(  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
-        page_no: int,
-        limit: int,
-        order_by: str,
-        sort_order: str,
-        created_from: datetime,
-        created_to: datetime,
-        modified_from: datetime,
-        modified_to: datetime,
-        created_by: str,
-        application_status: str,
-        application_name: str,
-        application_id: int,
+        filters: dict,
+        include_drafts: bool,
+        only_drafts: bool,
         **kwargs,
     ):
         """Get all applications based on user."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
+        common_filters = ApplicationService.extract_common_filters(filters)
         applications, get_all_applications_count = Application.find_all_by_user(
             user_id=user_id,
-            page_no=page_no,
-            limit=limit,
-            order_by=order_by,
-            sort_order=sort_order,
-            application_id=application_id,
-            application_name=application_name,
-            application_status=application_status,
-            created_by=created_by,
-            modified_from=modified_from,
-            modified_to=modified_to,
-            created_from=created_from,
-            created_to=created_to,
+            **common_filters,
+            include_drafts=include_drafts,
+            only_drafts=only_drafts,
         )
-        draft_count = Draft.get_draft_count()
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
-            draft_count,
         )
 
     @staticmethod
     def get_all_application_status():
         """Get all application status."""
         status_list = Application.find_all_application_status()
-        status_list = [
-            x.application_status
-            for x in status_list
-            if x.application_status != DRAFT_APPLICATION_STATUS
-        ]
+        status_list = [x.application_status for x in status_list]
         current_app.logger.debug(status_list)
         return {"applicationStatus": status_list}
 
@@ -379,20 +354,41 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
         return ApplicationSchema().dump([]), HTTPStatus.FORBIDDEN
 
+    @classmethod
+    def update_draft(cls, application_id: int, data: Dict):
+        """Update draft by application id."""
+        draft = Draft.get_draft_by_application_id(application_id)
+        if draft:
+            draft.update_draft_data_and_commit(draft_info=data)
+            return draft
+        raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
+
     @staticmethod
     @user_context
     def update_application(application_id: int, data: Dict, **kwargs):
         """Update application."""
         user: UserContext = kwargs["user"]
-        data["modified_by"] = user.user_name
-        application = Application.find_by_id(application_id=application_id)
+        user_id: str = user.user_name or ANONYMOUS_USER
+        application = Application.find_by_id(
+            application_id=application_id, user_id=user_id
+        )
         if application is None and user.tenant_key is not None:
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         if application:
+            if application.is_draft:
+                draft = ApplicationService.update_draft(application_id, data)
+                response = DraftSchema().dump(draft)
+                return response
+            # update_application is also used for updating drafts, including anonymous drafts.
+            # To prevent public API updates to applications, ensure user_id is checked and not anonymous.
+            if user_id == ANONYMOUS_USER:
+                raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+            data["modified_by"] = user.user_name
             application.update(data)
             application.commit()
-        else:
-            raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
+            response = ApplicationSchema().dump(application)
+            return response
+        raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
 
     @staticmethod
     def get_aggregated_applications(  # pylint: disable=too-many-arguments,too-many-positional-arguments
@@ -519,20 +515,34 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         return application_count
 
     @staticmethod
+    def pick(data, key):
+        """Pick nested data."""
+        keys = key.split(".")
+        for k in keys:
+            if not isinstance(data, dict) or k not in data:
+                return None
+            data = data[k]
+        return data
+
+    @staticmethod
     def fetch_task_variable_values(task_variable, form_data):
         """Fetch task variable values from form data."""
-        variables: Dict = {}
+        variables = {}
+
         if task_variable and form_data:
             task_keys = [val["key"] for val in task_variable]
+            print("taskvariables")
+            print(task_keys)
             variables = {
                 key: (
-                    {"value": json.dumps(form_data[key])}
-                    if isinstance(form_data[key], (dict, list))
-                    else {"value": form_data[key]}
+                    {"value": json.dumps(value)}
+                    if isinstance(value, (dict, list))
+                    else {"value": value}
                 )
                 for key in task_keys
-                if key in form_data
+                if (value := ApplicationService.pick(form_data, key)) is not None
             }
+        print(variables)
         return variables
 
     @staticmethod
@@ -553,3 +563,38 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         except requests.exceptions.ConnectionError as err:
             current_app.logger.warning(err)
             raise BusinessException(ExternalError.BPM_SERVICE_UNAVAILABLE) from err
+
+    @classmethod
+    def _delete_draft_by_application_id(cls, application_id):
+        """Deletes draft by application id."""
+        draft = Draft.get_draft_by_application_id(application_id)
+        if draft:
+            draft.delete()
+
+    @classmethod
+    def make_submission(cls, application_id, data, user_id):
+        """Activates the application from the draft entry."""
+        application = Application.find_draft_application_by_user(
+            application_id, user_id
+        )
+        if application:
+            application.application_status = data["application_status"]
+            application.submission_id = data["submission_id"]
+            cls._delete_draft_by_application_id(application_id)
+            return application
+        return None
+
+    @classmethod
+    @user_context
+    def delete_draft_application(cls, application_id: int, **kwargs):
+        """Delete draft application."""
+        user: UserContext = kwargs["user"]
+        application = Application.find_draft_application_by_user(
+            application_id, user.user_name
+        )
+        if application:
+            # deletes the draft and application entry related to the draft.
+            cls._delete_draft_by_application_id(application_id)
+            application.delete()
+        else:
+            raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)

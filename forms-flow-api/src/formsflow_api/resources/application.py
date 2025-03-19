@@ -8,27 +8,35 @@ from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     MANAGE_TASKS,
+    NEW_APPLICATION_STATUS,
     VIEW_SUBMISSIONS,
     VIEW_TASKS,
     auth,
     cors_preflight,
     get_form_and_submission_id_from_form_url,
     profiletime,
+    submission_response,
 )
 
 from formsflow_api.schemas import (
     ApplicationListReqSchema,
     ApplicationListRequestSchema,
     ApplicationSchema,
+    ApplicationSubmissionSchema,
     ApplicationUpdateSchema,
 )
-from formsflow_api.services import ApplicationService
+from formsflow_api.services import ApplicationService, DraftService
 
-API = Namespace("Application", description="Application")
+API = Namespace(
+    "Application",
+    description="Manages form submissions, creating, retrieving, updating, managing submission data,\
+                    and tracking submission history.",
+)
 
 application_create_model = API.model(
     "ApplicationCreate",
     {
+        "data": fields.Raw(),
         "formId": fields.String(),
         "submissionId": fields.String(),
         "formUrl": fields.String(),
@@ -36,25 +44,13 @@ application_create_model = API.model(
     },
 )
 
-application_base_model = API.model(
-    "ApplicationCreateResponse",
-    {
-        "applicationStatus": fields.String(),
-        "created": fields.String(),
-        "createdBy": fields.String(),
-        "formId": fields.String(),
-        "formProcessMapperId": fields.String(),
-        "id": fields.Integer(),
-        "modified": fields.String(),
-        "modifiedBy": fields.String(),
-        "processInstanceId": fields.String(),
-        "submissionId": fields.String(),
-    },
+application_create_response_model = API.model(
+    "ApplicationCreationResponse", submission_response
 )
 
 application_model = API.inherit(
     "Application",
-    application_base_model,
+    application_create_response_model,
     {
         "applicationName": fields.String(),
         "processKey": fields.String(),
@@ -69,7 +65,6 @@ application_list_model = API.model(
         "applications": fields.List(
             fields.Nested(application_model, description="List of Applications.")
         ),
-        "draftCount": fields.Integer(),
         "totalCount": fields.Integer(),
         "limit": fields.Integer(),
         "pageNo": fields.Integer(),
@@ -78,7 +73,11 @@ application_list_model = API.model(
 
 application_update_model = API.model(
     "ApplicationUpdate",
-    {"applicationStatus": fields.String(), "formUrl": fields.String()},
+    {
+        "applicationStatus": fields.String(),
+        "formUrl": fields.String(),
+        "data": fields.Raw(),
+    },
 )
 
 application_status_list_model = API.model(
@@ -91,6 +90,16 @@ application_resubmit_model = API.model(
         "processInstanceId": fields.String(),
         "messageName": fields.String(),
         "data": fields.Raw(),
+    },
+)
+
+message = API.model("Message", {"message": fields.String()})
+
+application_count_model = API.inherit(
+    "ApplicationCountModel",
+    message,
+    {
+        "value": fields.Integer(),
     },
 )
 
@@ -130,10 +139,10 @@ class ApplicationsResource(Resource):
                 "description": "Filter resources by application name.",
                 "type": "string",
             },
-            "id": {
+            "Id": {
                 "in": "query",
                 "description": "Filter resources by id.",
-                "type": "int",
+                "type": "integer",
             },
             "modifiedFrom": {
                 "in": "query",
@@ -144,6 +153,46 @@ class ApplicationsResource(Resource):
                 "in": "query",
                 "description": "Filter resources by modified to.",
                 "type": "string",
+            },
+            "createdBy": {
+                "in": "query",
+                "description": "Filter resources by created by.",
+                "type": "string",
+            },
+            "createdFrom": {
+                "in": "query",
+                "description": "Filter resources by created from.",
+                "type": "string",
+            },
+            "createdTo": {
+                "in": "query",
+                "description": "Filter resources by created to.",
+                "type": "string",
+            },
+            "applicationStatus": {
+                "in": "query",
+                "description": "Filter resources by application status.",
+                "type": "string",
+            },
+            "parentFormId": {
+                "in": "query",
+                "description": "Filter resources by parent form id.",
+                "type": "string",
+            },
+            "createdUserSubmissions": {
+                "in": "query",
+                "description": "Return user created submissions.",
+                "type": "boolean",
+            },
+            "includeDrafts": {
+                "in": "query",
+                "description": "Return submissions and drafts/Specific to client permission.",
+                "type": "boolean",
+            },
+            "onlyDrafts": {
+                "in": "query",
+                "description": "Return only drafts/Specific to client permission.",
+                "type": "boolean",
             },
         }
     )
@@ -159,77 +208,66 @@ class ApplicationsResource(Resource):
     def get():  # pylint:disable=too-many-locals
         """Get applications."""
         dict_data = ApplicationListRequestSchema().load(request.args) or {}
-        page_no = dict_data.get("page_no")
-        limit = dict_data.get("limit")
-        order_by = dict_data.get("order_by", "id")
-        application_id = dict_data.get("application_id")
-        application_name = dict_data.get("application_name")
-        application_status = dict_data.get("application_status")
-        created_by = dict_data.get("created_by")
-        created_from_date = dict_data.get("created_from_date")
-        created_to_date = dict_data.get("created_to_date")
-        modified_from_date = dict_data.get("modified_from_date")
-        modified_to_date = dict_data.get("modified_to_date")
-        sort_order = dict_data.get("sort_order", "desc")
-        if auth.has_role([VIEW_TASKS, MANAGE_TASKS]):
+        # Common parameters
+        common_filters = {
+            "page_no": dict_data.get("page_no"),
+            "limit": dict_data.get("limit"),
+            "order_by": dict_data.get("order_by", "id"),
+            "application_id": dict_data.get("application_id"),
+            "application_name": dict_data.get("application_name"),
+            "application_status": dict_data.get("application_status"),
+            "created_by": dict_data.get("created_by"),
+            "created_from": dict_data.get("created_from_date"),
+            "created_to": dict_data.get("created_to_date"),
+            "modified_from": dict_data.get("modified_from_date"),
+            "modified_to": dict_data.get("modified_to_date"),
+            "sort_order": dict_data.get("sort_order", "desc"),
+            "parent_form_id": dict_data.get("parent_form_id"),
+        }
+
+        # Flags
+        include_drafts = dict_data.get("include_drafts", False)
+        only_drafts = dict_data.get("only_drafts", False)
+        created_user_submissions = dict_data.get("created_user_submissions", False)
+
+        if auth.has_role([VIEW_TASKS, MANAGE_TASKS]) and not created_user_submissions:
             (
                 application_schema_dump,
                 application_count,
-                draft_count,
             ) = ApplicationService.get_auth_applications_and_count(
-                created_from=created_from_date,
-                created_to=created_to_date,
-                modified_from=modified_from_date,
-                modified_to=modified_to_date,
-                order_by=order_by,
-                sort_order=sort_order,
-                created_by=created_by,
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
-                page_no=page_no,
-                limit=limit,
+                filters=common_filters
             )
         else:
             (
                 application_schema_dump,
                 application_count,
-                draft_count,
             ) = ApplicationService.get_all_applications_by_user(
-                page_no=page_no,
-                limit=limit,
-                order_by=order_by,
-                sort_order=sort_order,
-                created_from=created_from_date,
-                created_to=created_to_date,
-                modified_from=modified_from_date,
-                modified_to=modified_to_date,
-                created_by=created_by,
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
+                filters=common_filters,
+                include_drafts=include_drafts,
+                only_drafts=only_drafts,
             )
         return (
             (
                 {
                     "applications": application_schema_dump,
                     "totalCount": application_count,
-                    "draftCount": draft_count,
-                    "limit": limit,
-                    "pageNo": page_no,
+                    "limit": common_filters["limit"],
+                    "pageNo": common_filters["page_no"],
                 }
             ),
             HTTPStatus.OK,
         )
 
 
-@cors_preflight("GET,PUT,OPTIONS")
-@API.route("/<int:application_id>", methods=["GET", "PUT", "OPTIONS"])
+@cors_preflight("GET,PUT,DELETE,OPTIONS")
+@API.route("/<int:application_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 class ApplicationResourceById(Resource):
     """Resource for getting application by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([VIEW_SUBMISSIONS, VIEW_TASKS, MANAGE_TASKS])
+    @auth.has_one_of_roles(
+        [CREATE_SUBMISSIONS, VIEW_SUBMISSIONS, VIEW_TASKS, MANAGE_TASKS]
+    )
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_model)
     @API.response(
@@ -261,7 +299,11 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.doc(body=application_update_model)
+    @API.doc(
+        body=application_update_model,
+        description="Provide `applicationStatus` and `formUrl` for an application update, or\
+                    `data` for a draft update.",
+    )
     @API.response(200, "OK:- Successful request.")
     @API.response(
         400,
@@ -272,7 +314,7 @@ class ApplicationResourceById(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def put(application_id: int):
-        """Update application details."""
+        """Update either an application or a draft."""
         application_json = request.get_json()
         application_schema = ApplicationUpdateSchema()
         dict_data = application_schema.load(application_json)
@@ -284,10 +326,23 @@ class ApplicationResourceById(Resource):
             ) = get_form_and_submission_id_from_form_url(form_url)
             dict_data["latest_form_id"] = latest_form_id
             dict_data["submission_id"] = submission_id
-        ApplicationService.update_application(
+        response = ApplicationService.update_application(
             application_id=application_id, data=dict_data
         )
-        return "Updated successfully", HTTPStatus.OK
+        return response, HTTPStatus.OK
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_SUBMISSIONS])
+    @profiletime
+    @API.response(200, "OK:- Successful request.", model=message)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    def delete(application_id: int):
+        """Delete draft application."""
+        ApplicationService.delete_draft_application(application_id)
+        return {"message": "Draft deleted successfully"}, HTTPStatus.OK
 
 
 @cors_preflight("GET,OPTIONS")
@@ -381,6 +436,13 @@ class ApplicationResourceCountByFormId(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        },
+        model=application_count_model,
+    )
     def get(form_id: str):
         """Get application count by formId."""
         application_count = ApplicationService.get_all_applications_form_id_count(
@@ -406,7 +468,9 @@ class ApplicationResourcesByIds(Resource):
     @auth.has_one_of_roles([CREATE_SUBMISSIONS])
     @profiletime
     @API.doc(body=application_create_model)
-    @API.response(201, "CREATED:- Successful request.", model=application_base_model)
+    @API.response(
+        201, "CREATED:- Successful request.", model=application_create_response_model
+    )
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -457,7 +521,7 @@ class ApplicationResourceByApplicationStatus(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get():
-        """Method to get the application status lists."""
+        """Retrieve the list of application statuses."""
         return (
             ApplicationService.get_all_application_status(),
             HTTPStatus.OK,
@@ -490,3 +554,37 @@ class ApplicationResubmitById(Resource):
             application_id, resubmit_json, token=request.headers["Authorization"]
         )
         return "Message event updated successfully.", HTTPStatus.OK
+
+
+@cors_preflight("PUT, OPTIONS")
+@API.route("/<int:application_id>/submit", methods=["PUT", "OPTIONS"])
+class DraftSubmissionResource(Resource):
+    """Converts the given draft entry to actual submission."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_SUBMISSIONS])
+    @profiletime
+    @API.doc(body=application_create_model)
+    @API.response(
+        200, "OK:- Successful request.", model=application_create_response_model
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    def put(application_id: str):
+        """Updates the draft to actual submission."""
+        payload = request.get_json()
+        token = request.headers["Authorization"]
+        application_schema = ApplicationSubmissionSchema()
+        dict_data = application_schema.load(payload)
+        dict_data["application_status"] = NEW_APPLICATION_STATUS
+        response = DraftService.make_submission_from_draft(
+            dict_data, application_id, token
+        )
+        res = ApplicationSchema().dump(response)
+        return res, HTTPStatus.OK

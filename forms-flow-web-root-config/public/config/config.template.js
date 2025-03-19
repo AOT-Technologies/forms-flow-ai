@@ -4,7 +4,9 @@ window["_env_"] = {
   MF_FORMSFLOW_NAV_URL: "${MF_FORMSFLOW_NAV_URL}",
   MF_FORMSFLOW_SERVICE_URL: "${MF_FORMSFLOW_SERVICE_URL}",
   MF_FORMSFLOW_COMPONENTS_URL: "${MF_FORMSFLOW_COMPONENTS_URL}",
-  MF_FORMSFLOW_ADMIN_URL: "${MF_FORMSFLOW_ADMIN_URL}", */
+  MF_FORMSFLOW_ADMIN_URL: "${MF_FORMSFLOW_ADMIN_URL}", 
+  MF_FORMSFLOW_REVIEW_URL: "${MF_FORMSFLOW_REVIEW_URL}", 
+  */
   // To define project level configuration  possible values development,test, production
   NODE_ENV: "${NODE_ENV}",
   //Environment Variables for forms-flow-web

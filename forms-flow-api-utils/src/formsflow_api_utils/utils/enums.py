@@ -80,3 +80,22 @@ class ProcessSortingParameters:  # pylint: disable=too-few-public-methods
     Created = "created"
     Modified= "modified"
     ProcessKey = "processKey"
+
+
+# Added for data analysis api
+@unique
+class Service(Enum):
+    """Enumerations for database support status."""
+
+    ENABLED = "ENABLED"
+    DISABLED = "DISABLED"
+
+
+@unique
+class AIRequestType(Enum):
+    """Enumerations for chat bot request type."""
+
+    ASSIST = "ASSIST"
+    HELP = "HELP"
+    MODIFY = "MODIFY"
+    REGENERATE = "REGENERATE"

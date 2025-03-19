@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {
   setBPMFormLimit,
   setBPMFormListPage,
-                   
+
   setBpmFormSort,
 } from "../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -27,7 +27,7 @@ function FormTable() {
   const { t } = useTranslation();
   const bpmForms = useSelector((state) => state.bpmForms);
   const formData = (() => bpmForms.forms)() || [];
-  const pageNo = useSelector((state) => state.bpmForms.page);
+  const pageNo = useSelector((state) => state.bpmForms.formListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.sort);
@@ -38,7 +38,6 @@ function FormTable() {
   const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
   const { createDesigns, viewDesigns } = userRoles();
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [currentFormSort ,setCurrentFormSort] = useState(formsort);  
 
   const pageOptions = [
     {
@@ -65,20 +64,21 @@ function FormTable() {
 
 
   const handleSort = (key) => {
-    setCurrentFormSort((prevSort) => {
-      const newSortOrder = prevSort[key].sortOrder === "asc" ? "desc" : "asc";
-      return {
-        ...prevSort,
-        activeKey: key,
-        [key]: { sortOrder: newSortOrder },
-      };
-    });
-  };
-
-  useEffect(() => {
-    dispatch(setBpmFormSort(currentFormSort));
-  },[currentFormSort,dispatch]);
+    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
   
+    // Reset all other columns to default (ascending) except the active one
+    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
+      return acc;
+    }, {});
+  
+    dispatch(setBpmFormSort({
+      ...updatedSort,
+      activeKey: key,
+    }));
+  };
+  
+
   const viewOrEditForm = (formId, path) => {
     dispatch(resetFormProcessData());
     dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
@@ -104,44 +104,46 @@ function FormTable() {
 
 
   return (
-    <>
-      <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
+    <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
         <div className="min-height-400">
           <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
+            <table className="table custom-tables table-responsive-sm mb-0">
               <thead className="table-header">
                 <tr>
                   <th className="w-20">
                   <SortableHeader
                    columnKey="formName"
-                   title="Form Name"
-                   currentSort={currentFormSort}
+                   title="Name"
+                   currentSort={formsort}
                    handleSort={handleSort}
-                   className="ms-4"
+                   className="gap-2"
                   />
                   </th>
                   <th className="w-30" scope="col">{t("Description")}</th>
                   <th className="w-13" scope="col">
-                  <SortableHeader 
+                  <SortableHeader
                   columnKey="modified"
                   title="Last Edited"
-                  currentSort={currentFormSort}
+                  currentSort={formsort}
                   handleSort={handleSort}
+                  className="gap-2"
                   />
                   </th>
                   <th className="w-13" scope="col">
-                  <SortableHeader 
+                  <SortableHeader
                     columnKey="visibility"
                     title="Visibility"
-                    currentSort={currentFormSort}
-                    handleSort={handleSort} />
+                    currentSort={formsort}
+                    handleSort={handleSort}
+                    className="gap-2"/>
                   </th>
                   <th className="w-12" scope="col" colSpan="4">
-                    <SortableHeader 
+                    <SortableHeader
                     columnKey="status"
                     title="Status"
-                    currentSort={currentFormSort}
-                    handleSort={handleSort} />
+                    currentSort={formsort}
+                    handleSort={handleSort}
+                    className="gap-2"/>
                   </th>
                   <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>
                 </tr>
@@ -156,12 +158,14 @@ function FormTable() {
                       <tr key={index}>
                         <td className="w-20">
                           <div className="d-flex">
-                            <span className="ms-4 text-container">{e.title}</span>
+                            <span className="text-container">{e.title}</span>
                           </div>
                         </td>
                         <td className="w-30 cursor-pointer">
                           <span className={isExpanded ? "text-container-expand" : "text-container"}
-                            onClick={() => toggleRow(index)}>
+                            onClick={() => toggleRow(index)}
+                            data-testid="description-cell"
+                            >
                             {stripHtml(e.description ? e.description : "")}
                           </span>
                         </td>
@@ -177,7 +181,7 @@ function FormTable() {
                             {e.status === "active" ? t("Live") : t("Draft")}
                           </span>
                         </td>
-                        <td className="w-12">
+                        <td className="w-12 text-end">
                         {(createDesigns || viewDesigns) && (
                           <CustomButton
                             variant="secondary"
@@ -189,7 +193,7 @@ function FormTable() {
                             }
                             onClick={() => viewOrEditForm(e._id, 'edit')}
                             className=""
-                            dataTestid={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
+                            dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
                             ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
                           /> )}
                         </td>
@@ -210,13 +214,14 @@ function FormTable() {
                     )}
                 </tbody>
               ) : !searchFormLoading ? (
-                <NoDataFound />
+                <NoDataFound
+                message={t('No forms have been found. Create a new form by clicking the "New Form" button in the top right.')}
+              />
               ) : null}
             </table>
           </div>
         </div>
       </LoadingOverlay>
-    </>
   );
 }
 

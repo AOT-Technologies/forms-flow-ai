@@ -11,7 +11,7 @@
     right: 0;
     top: 2rem;
     left: auto;
-    box-shadow: 0 8px 16px 0 $dark;
+    box-shadow: 0 8px 16px 0 $black;
   }
 
   .dropdown-toggle {
@@ -26,7 +26,7 @@
     padding: 0 0 0 0;
     font-size: 2rem;
     float: right;
-    color: $primary-600;
+    color: $primary;
   }
 }
 
@@ -40,12 +40,12 @@
 
 .main-nav {
   text-decoration: none !important;
-  color:$dark !important;
+  color: $black !important;
   font-size: 20px !important;
 }
 
 .nav-user-role {
-  color: $primary-600;
+  color: $primary;
   font-size: 15px;
   font-weight: bold;
   padding: 0 0;
@@ -54,7 +54,7 @@
 .nav-user-email {
   font-size: 14px;
   padding: 0 0;
-  color: $dark;
+  color: $black;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -64,7 +64,7 @@
   font-size: 20px;
   padding: 0 0;
   font-weight: 600;
-  color: $dark;
+  color: $black;
 }
 
 .nav-logout {
@@ -74,14 +74,14 @@
 }
 
 .nav-tabs .nav-link.active {
-  color: $gray-800;
+  color: $gray-darkest;
   background-color: $white;
-  border-color: $gray-200 !important;
+  border-color: $gray-medium !important;
 }
 
 .nav-link {
   a {
-    color: $dark;
+    color: $black;
   }
 }
 
@@ -95,9 +95,9 @@
   right: 9px;
   display: inline-block;
   border-right: 7px solid transparent;
-  border-bottom: 7px solid $gray-400;
+  border-bottom: 7px solid $gray-medium-dark;
   border-left: 7px solid transparent;
-  border-bottom-color: $dark;
+  border-bottom-color: $black;
   content: "";
 }
 
@@ -151,13 +151,13 @@
 }
 
 .content {
-  background-color: $gray-100;
+  background-color: $gray-medium;
 }
 
 .custom-app-name {
   font-size: 30px;
   font-weight: 600;
-  color: $dark;
+  color: $black;
 }
 
 // overwriting default styles
@@ -188,7 +188,7 @@
     background-color: $white;
     width: 20px;
     height: 20px;
-    color: $gray-800;
+    color: $gray-darkest;
     font-weight: 100;
     cursor: pointer;
     display: inline-flex;

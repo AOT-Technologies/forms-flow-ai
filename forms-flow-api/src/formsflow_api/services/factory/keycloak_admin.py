@@ -64,7 +64,7 @@ class KeycloakAdmin(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    def remove_user_from_group(self, user_id: str, group_id: str, payload: Dict = None):
+    def remove_user_from_group(self, user_id: str, group_id: str):
         """Remove group from user."""
         raise NotImplementedError("Method not implemented")
 

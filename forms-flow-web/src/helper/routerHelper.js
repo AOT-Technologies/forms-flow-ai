@@ -32,6 +32,26 @@ const navigateToSubmitFormsListing = (dispatch,tenantId) => {
   navigateTo(dispatch,getRoute(tenantId).FORM);
 };
 
+// new navigations for client journey
+const navigateToFormEntries = (dispatch, tenantId, formId) => {
+  navigateTo(dispatch,`${getRoute(tenantId).FORM}/${formId}/entries`);
+};
+
+const navigateToNewSubmission = (dispatch, tenantId, formId) => {
+  navigateTo(dispatch,`${getRoute(tenantId).FORM}/${formId}`);
+};
+
+const navigateToDraftEdit = (dispatch, tenantId, formId, applicationId ) => {
+  navigateTo(dispatch,`${getRoute(tenantId).FORM}/${formId}/draft/${applicationId}/edit`);
+};
+
+const navigateToViewSubmission = (dispatch, tenantId, formId, applicationId ) => {
+  navigateTo(dispatch,`${getRoute(tenantId).APPLICATION}/${applicationId}`);
+};
+
+
+
+
 export {
   navigateToDesignFormsListing,
   navigateToDesignFormCreate,
@@ -39,4 +59,8 @@ export {
   navigateToSubmitFormsApplication,
   navigateToSubmitFormsDraft,
   navigateToSubmitFormsListing,
+  navigateToFormEntries,
+  navigateToNewSubmission,
+  navigateToDraftEdit,
+  navigateToViewSubmission,  
 };

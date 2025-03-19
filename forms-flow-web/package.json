@@ -1,7 +1,7 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "7.0.0",
+  "version": "7.1.0-alpha",
   "main": "single-spa-index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -17,8 +17,12 @@
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/(?!d3)/"
     ],
+    "testMatch": [
+      "**/src/_tests_/unit/**/*.test.js"
+    ],
     "moduleNameMapper": {
-      "@formsflow/service": "<rootDir>/__mocks__/@formsflow/service.js"
+      "@formsflow/service": "<rootDir>/__mocks__/@formsflow/service.js",
+      "@formsflow/components": "<rootDir>/__mocks__/@formsflow/components.js"
     }
   },
   "author": {
@@ -30,14 +34,14 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^12.1.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^12.1.5",
     "msw": "^0.36.0",
-    "redux-mock-store": "^1.5.4"
+    "redux-mock-store": "^1.5.5"
   },
   "dependencies": {
     "@aot-technologies/formio-react": "^1.0.4",
-    "@aot-technologies/formiojs": "^1.0.2",
+    "@aot-technologies/formiojs": "^1.0.3",
     "@aot-technologies/formsflow-formio-custom-elements": "^1.0.2",
     "@babel/generator": "7.24.1",
     "@babel/helper-split-export-declaration": "^7.24.7",
@@ -45,7 +49,10 @@
     "@bpmn-io/properties-panel": "^3.14.0",
     "@craco/craco": "7.1.0",
     "@material-ui/core": "^4.11.4",
+    "@reduxjs/toolkit": "^2.5.0",
     "@ronchalant/react-loading-overlay": "^1.1.0",
+    "@stomp/stompjs": "^7.0.0",
+    "@testing-library/user-event": "^14.6.1",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
     "axios": "^1.4.0",
     "bpmn-js": "^16.0.0",
@@ -64,7 +71,7 @@
     "diagram-js": "^14.3.1",
     "dmn-js": "^16.8.0",
     "dmn-js-properties-panel": "^3.7.0",
-    "dompurify": "^3.0.6",
+    "dompurify": "^3.2.4",
     "flagged": "^2.0.5",
     "i18next": "^21.6.6",
     "i18next-browser-languagedetector": "^6.1.2",
@@ -100,7 +107,6 @@
     "single-spa-react": "^5.0.0",
     "sockjs-client": "^1.5.1",
     "source-map-explorer": "^2.5.2",
-    "stompjs": "^2.3.3",
     "stream-browserify": "^3.0.0",
     "ws": "^7.4.6"
   },

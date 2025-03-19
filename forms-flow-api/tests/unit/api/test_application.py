@@ -8,13 +8,13 @@ from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     VIEW_SUBMISSIONS,
+    get_token,
 )
 
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_draft_create_payload,
     get_formio_form_request_payload,
-    get_token,
 )
 
 
@@ -86,12 +86,6 @@ class TestApplicationResource:
         self, app, client, session, jwt, pageNo, limit, filters, create_mapper
     ):
         """Tests the API/application endpoint with filter params."""
-        token = get_token(jwt, role=CREATE_DESIGNS)
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
-
         token = get_token(jwt, role=CREATE_SUBMISSIONS)
         headers = {
             "Authorization": f"Bearer {token}",
@@ -121,11 +115,6 @@ class TestApplicationResource:
         self, app, client, session, jwt, create_mapper
     ):
         """Application list should not contain draft applications."""
-        token = get_token(jwt, role=CREATE_DESIGNS)
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
         form_id = create_mapper["formId"]
         # creating a draft will create a draft application
         token = get_token(jwt, role=CREATE_SUBMISSIONS)
@@ -143,6 +132,44 @@ class TestApplicationResource:
         assert response.status_code == 200
         assert len(response.json["applications"]) == 0
 
+    def test_application_list_include_drafts_and_only_drafts(
+        self, app, client, session, jwt, create_mapper
+    ):
+        """Test Application list with includeDrafts & onlyDrafts query param."""
+        form_id = create_mapper["formId"]
+        token = get_token(jwt, role=CREATE_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # creating application
+        rv = client.post(
+            "/application/create",
+            headers=headers,
+            json=get_application_create_payload(form_id),
+        )
+
+        assert rv.status_code == 201
+        # creating a draft
+        client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # With includeDrafts=true, includes drafts in-addition to submissions
+        response = client.get("/application?includeDrafts=true", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 2
+        # With includeDrafts=false, returns only submissions
+        response = client.get("/application?includeDrafts=false", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 1
+        # With onlyDrafts=true, application list api returns only drafts
+        response = client.get("/application?onlyDrafts=true", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 1
+
 
 class TestApplicationDetailView:
     """Test suite for the API/application/<id> endpoint."""
@@ -159,12 +186,6 @@ class TestApplicationDetailView:
 
     def test_application_detailed_view(self, app, client, session, jwt, create_mapper):
         """Tests the endpoint with valid token."""
-        token = get_token(jwt, role=CREATE_DESIGNS)
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
-
         form_id = create_mapper["formId"]
         token = get_token(jwt, role=CREATE_SUBMISSIONS)
         headers = {
@@ -191,12 +212,6 @@ class TestApplicationDetailView:
 
 def test_application_resource_by_form_id(app, client, session, jwt, create_mapper):
     """Tests the application by formid endpoint with valid token."""
-    token = get_token(jwt, CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -214,12 +229,6 @@ def test_application_resource_by_form_id(app, client, session, jwt, create_mappe
 
 def test_application_status_list(app, client, session, jwt, create_mapper):
     """Tests the application status list endpoint with valid payload."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -238,12 +247,6 @@ def test_application_status_list(app, client, session, jwt, create_mapper):
 
 def test_application_create_method(app, client, session, jwt, create_mapper):
     """Tests the application create method with valid payload."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -259,12 +262,6 @@ def test_application_create_method_tenant_based(
     app, client, session, jwt, create_mapper_custom
 ):
     """Tests the tenant based application create method with valid payload."""
-    token = get_token(jwt, tenant_key="test-tenant", role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-
     payload = {
         "formId": "1234",
         "formName": "Sample form",
@@ -288,12 +285,6 @@ def test_application_create_method_tenant_based(
 
 def test_application_payload(app, client, session, jwt, create_mapper):
     """Tests the application create endpoint with valid payload."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -310,12 +301,6 @@ def test_application_payload(app, client, session, jwt, create_mapper):
 
 def test_application_update_details_api(app, client, session, jwt, create_mapper):
     """Tests the application update endpoint with valid payload."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -336,7 +321,7 @@ def test_application_update_details_api(app, client, session, jwt, create_mapper
 
     rv = client.put(f"/application/{application_id}", headers=headers, json=payload)
     assert rv.status_code == 200
-    assert rv.json == "Updated successfully"
+    assert rv.json is not None
     application = client.get(f"/application/{application_id}", headers=headers)
     assert application.status_code == 200
     assert application.json.get("formId") == "980"
@@ -345,11 +330,6 @@ def test_application_update_details_api(app, client, session, jwt, create_mapper
 
 def test_application_resubmit(app, client, session, jwt, create_mapper_custom):
     """Tests the application resubmit endpoint."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
     payload = {
         "formId": "1234",
         "formName": "Sample form",

@@ -1,8 +1,6 @@
 """Test suite for keycloak roles API endpoint."""
 
-from formsflow_api_utils.utils import ADMIN
-
-from tests.utilities.base_test import get_token
+from formsflow_api_utils.utils import ADMIN, get_token
 
 
 class TestKeycloakRolesResource:

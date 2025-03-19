@@ -9,6 +9,7 @@
 .bpmn-viewer-container{
   min-height: 400px;
   position:relative;
+  min-width: 55vw;
 }
 
  .grab-cursor {
@@ -16,7 +17,7 @@
    cursor: grab;
  }
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-    fill: $primary-400 !important;
+    fill: $primary !important;
 }
 
 .btn_zoom{

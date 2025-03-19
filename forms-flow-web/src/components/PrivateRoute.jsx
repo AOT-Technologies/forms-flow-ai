@@ -1,10 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, {
-  useEffect,
-  Suspense,
-  useMemo,
-  useCallback
-} from "react";
+import React, { useEffect, Suspense, useMemo, useCallback } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,6 +10,12 @@ import {
   KEYCLOAK_AUTH_URL,
   Keycloak_Client,
   KEYCLOAK_REALM,
+  ENABLE_APPLICATIONS_MODULE,
+  ENABLE_DASHBOARDS_MODULE,
+  ENABLE_FORMS_MODULE,
+  ENABLE_PROCESSES_MODULE,
+  ENABLE_TASKS_MODULE,
+  LANGUAGE,
 } from "../constants/constants";
 import { KeycloakService, StorageService } from "@formsflow/service";
 import {
@@ -24,13 +25,6 @@ import {
   setUserDetails,
 } from "../actions/bpmActions";
 import { setLanguage } from "../actions/languageSetAction";
-import {
-  ENABLE_APPLICATIONS_MODULE,
-  ENABLE_DASHBOARDS_MODULE,
-  ENABLE_FORMS_MODULE,
-  ENABLE_PROCESSES_MODULE,
-  ENABLE_TASKS_MODULE,
-} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
@@ -41,12 +35,13 @@ import {
 
 // Lazy imports is having issues with micro-front-end build
 
-import Form from "./Form";
+import SubmitFormRoutes from "./../routes/Submit/Forms";
+import DesignFormRoutes from "./../routes/Design/Forms";
 import ServiceFlow from "./ServiceFlow";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
-import Modeler from "./Modeler";
+import DesignProcessRoutes from "./../routes/Design/Process";
 import Drafts from "./Draft";
 import {
   BPM_API_URL_WITH_VERSION,
@@ -57,9 +52,7 @@ import {
 import { AppConfig } from "../config";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 import AccessDenied from "./AccessDenied";
-import { LANGUAGE } from "../constants/constants";
 import useUserRoles from "../constants/permissions";
-import { getUserRoles } from "../apiManager/services/authorizationService"; // Assuming you have a service to get roles
 import PropTypes from "prop-types";
 export const kcServiceInstance = (tenantId = null) => {
   return KeycloakService.getInstance(
@@ -101,7 +94,7 @@ const PrivateRoute = React.memo((props) => {
     viewDashboards,
   } = useUserRoles();
 
-  const BASE_ROUTE_PATH = (() => {
+  const BASE_ROUTE_PATH = (() => { 
     if (viewTasks || manageTasks) return ROUTE_TO.TASK;
     if (createSubmissions) return ROUTE_TO.FORM;
     if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;
@@ -110,7 +103,6 @@ const PrivateRoute = React.memo((props) => {
     if (viewDashboards) return ROUTE_TO.METRICS;
     return ROUTE_TO.NOTFOUND;
   })();
-
 
   const authenticate = (instance, store) => {
     setKcInstance(instance);
@@ -121,18 +113,8 @@ const PrivateRoute = React.memo((props) => {
     store.dispatch(setUserToken(instance.getToken()));
     // Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
-  
-    // Fetch user roles and update the local storage
-    getUserRoles()
-      .then((res) => {
-        if (res) {
-          const { data = [] } = res;
-          const roles = data.map((role) => role.name);
-          localStorage.setItem("allAvailableRoles", JSON.stringify(roles));
-        }
-      })
-      .catch((error) => console.error("Error fetching roles", error));
-  
+
+ 
     // Get formio roles
     store.dispatch(
       getFormioRoleIds((err) => {
@@ -148,7 +130,6 @@ const PrivateRoute = React.memo((props) => {
       })
     );
   };
-  
 
   const keycloakInitialize = useCallback(() => {
     let instance = tenantId ? kcServiceInstance(tenantId) : kcServiceInstance();
@@ -167,7 +148,6 @@ const PrivateRoute = React.memo((props) => {
       }
     }
   }, [props.store, kcInstance, tenantId]);
-
 
   useEffect(() => {
     if (tenantId && MULTITENANCY_ENABLED) {
@@ -303,18 +283,18 @@ const PrivateRoute = React.memo((props) => {
   const ClientRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
-      (
-        <Route
-          {...rest}
-          render={(props) =>
-            createSubmissions || viewSubmissions  ? (
-              <Component {...props} />
-            ) : (
-              <AccessDenied userRoles={userRoles} />
-            )
-          }
-        />
-      ),
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              createSubmissions || viewSubmissions ? (
+                <Component {...props} />
+              ) : (
+                <AccessDenied userRoles={userRoles} />
+              )
+            }
+          />
+        ),
     [userRoles]
   );
 
@@ -334,10 +314,13 @@ const PrivateRoute = React.memo((props) => {
         <Suspense fallback={<Loading />}>
           <Switch>
             {ENABLE_FORMS_MODULE && (
-              <ClientRoute path={ROUTE_TO.FORM} component={Form} />
+              <ClientRoute path={ROUTE_TO.FORM} component={SubmitFormRoutes} />
             )}
             {ENABLE_FORMS_MODULE && (
-              <DesignerRoute path={ROUTE_TO.FORMFLOW} component={Form} />
+              <DesignerRoute
+                path={ROUTE_TO.FORMFLOW}
+                component={DesignFormRoutes}
+              />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
               <DraftRoute path={ROUTE_TO.DRAFT} component={Drafts} />
@@ -351,13 +334,13 @@ const PrivateRoute = React.memo((props) => {
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
                 path={ROUTE_TO.SUBFLOW}
-                component={Modeler}
+                component={DesignProcessRoutes}
               />
             )}
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
                 path={ROUTE_TO.DECISIONTABLE}
-                component={Modeler}
+                component={DesignProcessRoutes}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
@@ -373,12 +356,11 @@ const PrivateRoute = React.memo((props) => {
               />
             )}
             {ENABLE_TASKS_MODULE && (
-              <ReviewerRoute
-                path={ROUTE_TO.TASK}
-                component={ServiceFlow}
-              />
+              <ReviewerRoute path={ROUTE_TO.TASK} component={ServiceFlow} />
             )}
+            <Route exact path={ROUTE_TO.REVIEW} /> 
             <Route exact path={ROUTE_TO.ADMIN} /> 
+
             <Route exact path={BASE_ROUTE}>
               {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}
             </Route>

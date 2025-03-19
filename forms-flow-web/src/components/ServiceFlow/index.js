@@ -26,7 +26,8 @@ import {
   setSelectedTaskID,
 } from "../../actions/bpmTaskActions";
 // import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
-import SocketIOService from "../../services/SocketIOService";
+// import SocketIOService from "../../services/SocketIOService";
+import SocketIOUpdatedService from "../../services/SocketIOUpdatedService";
 import isEqual from "lodash/isEqual";
 import cloneDeep from "lodash/cloneDeep";
 import { Route, Redirect, Switch } from "react-router-dom";
@@ -119,7 +120,8 @@ export default React.memo(() => {
             .then((res) => {
               dispatch(setBPMFiltersAndCount(res.data));
             })
-            .catch((err) => console.error(err))
+            .catch((err) =>
+              console.error(err))
             .finally(() => {
               dispatch(setBPMFilterLoader(false));
             });
@@ -246,21 +248,41 @@ export default React.memo(() => {
     [dispatch, currentUser, selectedFilter, searchParams, sortParams]
   );
 
-  useEffect(() => {
-    if (!SocketIOService.isConnected()) {
-      SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
-        SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
-      );
-    } else {
-      SocketIOService.disconnect();
-      SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
-        SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
-      );
-    }
-    return () => {
-      if (SocketIOService.isConnected()) SocketIOService.disconnect();
-    };
-  }, [SocketIOCallback, dispatch]);
+  // useEffect(() => {
+  //   if (!SocketIOService.isConnected()) {
+  //     SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
+  //       SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
+  //     );
+  //   } else {
+  //     SocketIOService.disconnect();
+  //     SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
+  //       SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
+  //     );
+  //   }
+  //   return () => {
+  //     if (SocketIOService.isConnected()) SocketIOService.disconnect();
+  //   };
+  // }, [SocketIOCallback, dispatch]);
+
+useEffect(() => {
+  const connectSocket = () => {
+    SocketIOUpdatedService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
+      SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
+    );
+  };
+
+  if (!SocketIOUpdatedService.isConnected()) {
+    connectSocket();
+  } else {
+    SocketIOUpdatedService.disconnect();
+    connectSocket();
+  }
+
+  return () => {
+    SocketIOUpdatedService.disconnect();
+  };
+}, [SocketIOCallback, dispatch]);
+
   //Reset the path when the 'cardView' changes
   useEffect(() => {
     dispatch(replace(`${redirectUrl.current}task`));
@@ -275,13 +297,13 @@ export default React.memo(() => {
       {cardView ? (
         <>
           <div className="row mx-0">
-           
+
             <div className="col-12 px-0 col-md-4 col-xl-3">
               <section>
                 {/* <header className="d-flex flex-wrap align-items-center p-2 bg-light shadow mb-2">
               <TaskSortSelectedList />
             </header> */}
-                <ServiceFlowTaskList 
+                <ServiceFlowTaskList
                   expandedTasks={expandedTasks}
                   setExpandedTasks={setExpandedTasks}/>
               </section>

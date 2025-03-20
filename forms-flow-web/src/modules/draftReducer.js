@@ -20,6 +20,7 @@ const initialState = {
   sortBy: "id",
   searchParams: {},
   isDraftLoading: false,
+  draftModified: '',
 };
 
 const draftSubmission = (state = initialState, action) => {
@@ -61,6 +62,8 @@ const draftSubmission = (state = initialState, action) => {
       return { ...state, isDraftLoading: action.payload };
     case ACTION_CONSTANTS.DRAFT_LIST_SEARCH_PARAMS:
       return { ...state, searchParams: action.payload };
+    case ACTION_CONSTANTS.DRAFT_MODIFIED:
+      return { ...state, draftModified: action.payload };
     default:
       return state;
   }

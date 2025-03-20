@@ -876,4 +876,158 @@ export const DownArrowIcon = ({
     </button>
 
   );
-}
+} 
+// FlowEdit test
+export const HistoryIcon = ({ 
+  onClick, 
+  dataTestId 
+}) => {
+  return (
+    <button
+      className="History-icon-container"
+      onClick={onClick}
+      data-testid={dataTestId}
+      aria-label="History Icon"
+    >
+       <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="17"
+    viewBox="0 0 16 17"
+    fill={color}
+    {...props}
+  >
+    <g clipPath="url(#clip0_1459_2724)">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 3.49996C6.91935 3.50038 5.86793 3.85089 5.00321 4.499C4.13848 5.14711 3.50701 6.05793 3.20336 7.09504C2.89972 8.13215 2.94025 9.23972 3.31889 10.2519C3.69752 11.264 4.39388 12.1262 5.30366 12.7094C6.21344 13.2926 7.28768 13.5653 8.36546 13.4867C9.44325 13.4082 10.4666 12.9825 11.2822 12.2736C12.0977 11.5646 12.6617 10.6105 12.8895 9.55416C13.1174 8.49781 12.9968 7.39607 12.546 6.41396C12.4969 6.29456 12.4959 6.1608 12.5432 6.04069C12.5906 5.92057 12.6825 5.82341 12.7998 5.76953C12.9171 5.71565 13.0507 5.70924 13.1727 5.75163C13.2946 5.79402 13.3954 5.88193 13.454 5.99696C13.995 7.17555 14.1396 8.49769 13.8661 9.76535C13.5926 11.033 12.9157 12.1779 11.9369 13.0286C10.9581 13.8793 9.73004 14.39 8.43664 14.4841C7.14325 14.5783 5.85416 14.2509 4.76247 13.5509C3.67078 12.8509 2.83526 11.8161 2.38106 10.6014C1.92686 9.38673 1.87843 8.05759 2.24303 6.81308C2.60763 5.56856 3.36563 4.47568 4.40348 3.69812C5.44134 2.92056 6.70318 2.50018 8 2.49996V3.49996Z"
+        fill={color}
+      />
+      <path
+        d="M8 4.96596V1.03396C8.00002 0.98646 8.01357 0.939945 8.03907 0.899865C8.06457 0.859785 8.10096 0.827799 8.14398 0.807653C8.187 0.787507 8.23487 0.780035 8.28198 0.786112C8.32909 0.792188 8.3735 0.811562 8.41 0.841964L10.77 2.80796C10.89 2.90796 10.89 3.09196 10.77 3.19196L8.41 5.15796C8.3735 5.18837 8.32909 5.20774 8.28198 5.21382C8.23487 5.21989 8.187 5.21242 8.14398 5.19228C8.10096 5.17213 8.06457 5.14014 8.03907 5.10006C8.01357 5.05998 8.00002 5.01347 8 4.96596Z"
+        fill={color}
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1459_2724">
+        <rect
+          width="16"
+          height="16"
+          fill={color}
+          transform="translate(0 0.5)"
+        />
+      </clipPath>
+    </defs>
+  </svg>
+    </button>
+  );
+};
+
+HistoryIcon.propTypes = {
+  onClick: PropTypes.func,
+  dataTestId: PropTypes.string
+};
+
+export const CurlyBracketsIcon = ({ 
+  onClick, 
+  dataTestId 
+}) => {
+  return (
+    <button
+      className="CurlyBrackets-icon-container"
+      onClick={onClick}
+      data-testid={dataTestId}
+      aria-label="CurlyBrackets Icon"
+    >
+    <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="18"
+    viewBox="0 0 16 18"
+    fill="none"
+  >
+    <path
+      d="M6 1.97852H5C4.44772 1.97852 4 2.42623 4 2.97852V6.52468C4 6.86428 3.82764 7.18068 3.54231 7.36485L1 9.00586L3.5547 10.709C3.8329 10.8945 4 11.2067 4 11.541V14.9785C4 15.5308 4.44772 15.9785 5 15.9785H6"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 16.0215L11 16.0215C11.5523 16.0215 12 15.5738 12 15.0215L12 11.4753C12 11.1357 12.1724 10.8193 12.4577 10.6351L15 8.99414L12.4453 7.29101C12.1671 7.10554 12 6.79331 12 6.45896L12 3.02148C12 2.4692 11.5523 2.02148 11 2.02148L10 2.02148"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+    </button>
+  );
+};
+
+
+CurlyBracketsIcon.propTypes = {
+  onClick: PropTypes.func,
+  dataTestId: PropTypes.string
+};
+
+
+export const HistoryModal = ({
+  show,
+  onClose,
+  title,
+  revertBtnAction,
+  loadMoreBtnAction,
+  revertBtnText,
+  loadMoreBtnText,
+  allHistory = [],
+  historyCount = 0
+}) => {
+  return (
+    <div data-testid="history-modal">
+      {show && (
+        <div>
+          <h1>{title}</h1>
+          <div className="history-content">
+            {allHistory.map((entry, index) => (
+              <div key={`${entry.version}-${index}`} className="history-entry">
+                <p>Version: {entry.version}</p>
+                <p>Last Edited By: {entry.createdBy}</p>
+                <button
+                  onClick={() => revertBtnAction(entry.version)}
+                  data-testid={`revert-button-${index}`}
+                >
+                  {revertBtnText}
+                </button>
+              </div>
+            ))}
+          </div>
+          {historyCount > 4 && (
+            <button onClick={loadMoreBtnAction} data-testid="load-more-button">
+              {loadMoreBtnText}
+            </button>
+          )}
+          <button onClick={onClose}>Close</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+HistoryModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  revertBtnAction: PropTypes.func.isRequired,
+  loadMoreBtnAction: PropTypes.func.isRequired,
+  revertBtnText: PropTypes.string.isRequired,
+  loadMoreBtnText: PropTypes.string.isRequired,
+  allHistory: PropTypes.arrayOf(
+    PropTypes.shape({
+      version: PropTypes.string.isRequired,
+      createdBy: PropTypes.string.isRequired,
+    })
+  ),
+  historyCount: PropTypes.number,
+};

@@ -95,4 +95,4 @@ class HealthCheck:
 
         except Exception as e:
             logger.error(f"Critical Health Check Error: {e}", exc_info=True)
-            return {"status": "unhealthy", "error": str(e)}
+            return {"status": "unhealthy"}

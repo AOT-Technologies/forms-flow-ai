@@ -1,3 +1,5 @@
+"""Manage All Environment Variables."""
+
 import os
 from urllib.parse import quote_plus
 
@@ -66,12 +68,12 @@ class DatabaseConfig:
 
 class ENVS:
     # FormIO MongoDB Configuration
-    FORMIO_DB_HOST: str = os.getenv("FORMIO_MONGO_HOST", "localhost")
-    FORMIO_DB_PORT: str = os.getenv("FORMIO_MONGO_PORT", "27017")
+    FORMIO_DB_HOST: str = os.getenv("FORMIO_DB_HOST", "localhost")
+    FORMIO_DB_PORT: str = os.getenv("FORMIO_DB_PORT", "27017")
     FORMIO_DB_USERNAME: str = os.getenv("FORMIO_DB_USERNAME", "")
     FORMIO_DB_PASSWORD: str = os.getenv("FORMIO_DB_PASSWORD", "")
     FORMIO_DB_NAME: str = os.getenv("FORMIO_DB_NAME", "formio")
-    FORMIO_DB_OPTIONS: str = os.getenv("FORMIO_MONGO_OPTIONS", "")
+    FORMIO_DB_OPTIONS: str = os.getenv("FORMIO_DB_OPTIONS", "")
 
     # Web API PostgreSQL Configuration
     FORMSFLOW_API_DB_HOST: str = os.getenv("FORMSFLOW_API_DB_HOST", "localhost")
@@ -89,31 +91,32 @@ class ENVS:
     CAMUNDA_DB_NAME: str = os.getenv("CAMUNDA_DB_NAME", "bpm")
     CAMUNDA_DB_OPTIONS: str = os.getenv("CAMUNDA_DB_OPTIONS", "")
 
-    # Constructed Connection URIs
+    # formio db uri
     FORMIO_MONGO_DB_URI: str = os.getenv(
-        "FORMIO_DB_URI",
-        DatabaseConfig.construct_mongodb_uri(
-            host=FORMIO_DB_HOST,
-            port=FORMIO_DB_PORT,
-            username=FORMIO_DB_USERNAME,
-            password=FORMIO_DB_PASSWORD,
-            database=FORMIO_DB_NAME,
-            options=FORMIO_DB_OPTIONS,
-        ),
+        "FORMIO_DB_URI", None
+    ) or DatabaseConfig.construct_mongodb_uri(
+        host=FORMIO_DB_HOST,
+        port=FORMIO_DB_PORT,
+        username=FORMIO_DB_USERNAME,
+        password=FORMIO_DB_PASSWORD,
+        database=FORMIO_DB_NAME,
+        options=FORMIO_DB_OPTIONS,
     )
 
+    # webapi db uri
     WEB_API_DB_URL: str = os.getenv(
-        "FORMSFLOW_API_DB_URL",
-        DatabaseConfig.construct_postgres_uri(
-            host=FORMSFLOW_API_DB_HOST,
-            port=FORMSFLOW_API_DB_PORT,
-            username=FORMSFLOW_API_DB_USER,
-            password=FORMSFLOW_API_DB_PASSWORD,
-            database=FORMSFLOW_API_DB_NAME,
-            options=FORMSFLOW_API_DB_OPTIONS,
-        ),
+        "FORMSFLOW_API_DB_URL", None
+    ) or DatabaseConfig.construct_postgres_uri(
+        host=FORMSFLOW_API_DB_HOST,
+        port=FORMSFLOW_API_DB_PORT,
+        username=FORMSFLOW_API_DB_USER,
+        password=FORMSFLOW_API_DB_PASSWORD,
+        database=FORMSFLOW_API_DB_NAME,
+        options=FORMSFLOW_API_DB_OPTIONS,
     )
+    print(WEB_API_DB_URL)
 
+    # camunda db uri
     CAMUNDA_DB_URL = os.getenv("CAMUNDA_DB_URL", None)
     CAMUNDA_DB_URL = (
         CAMUNDA_DB_URL[len("jdbc:") :]
@@ -121,10 +124,10 @@ class ENVS:
         else CAMUNDA_DB_URL
     )
     BPM_DB_URL: str = CAMUNDA_DB_URL or DatabaseConfig.construct_postgres_uri(
-        host=CAMUNDA_DB_USER,
-        port=CAMUNDA_DB_PASSWORD,
-        username=CAMUNDA_DB_HOST,
-        password=CAMUNDA_DB_PORT,
+        host=CAMUNDA_DB_HOST,
+        port=CAMUNDA_DB_PORT,
+        username=CAMUNDA_DB_USER,
+        password=CAMUNDA_DB_PASSWORD,
         database=CAMUNDA_DB_NAME,
         options=CAMUNDA_DB_OPTIONS,
     )

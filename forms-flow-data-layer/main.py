@@ -1,13 +1,13 @@
-import uvicorn
 import asyncio
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from src.routes import HealthCheck
 from src.config.envs import ENVS
 from src.utils import get_logger
 # Import application modules
-from src import grphql_app, FormioDbConnection, redis_cache
+from src import grphql_app, FormioDbConnection, redis_cache, webapi_db, bpmn_db
 
  
 # logger
@@ -35,6 +35,8 @@ async def on_startup(app: FastAPI):
         connections = {
             "FormIO Database": formio_db.init_formio_db,
             "Redis Cache": redis_cache.connect,
+            "Webapi Database": webapi_db.init_db,
+            "Camunda Database": bpmn_db.init_db
         }
         # Initialize all connections asynchronously
         await asyncio.gather(*(connect_db(name, conn) for name, conn in connections.items()))
@@ -80,18 +82,6 @@ app = create_app()
 
 @app.get("/health", tags=["Health Check"])
 async def health_check():
-    """🔍 Health check endpoint with real-time DB & cache status"""
-    try:
-        formio_db_ping = await formio_db.ping()
-        db_status = "connected" if  formio_db_ping.get("ok")  else "disconnected"
-        cache_status = "connected" if await redis_cache.redis.ping() else "disconnected"
+    return await HealthCheck.health_check(formio_db=formio_db, redis_cache=redis_cache, webapi_db=webapi_db, bpmn_db=bpmn_db)
+    # return await health_checker.health_check()
 
-        return {
-            "status": "healthy" if db_status == "connected" and cache_status == "connected" else "unhealthy",
-            "components": {
-                "formio": db_status,
-                "cache": cache_status,
-            },
-        }
-    except Exception as e:
-         logger.error(f"🚨 Critical startup error: {e}", exc_info=True)

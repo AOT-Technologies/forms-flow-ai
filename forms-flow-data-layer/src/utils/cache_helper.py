@@ -1,3 +1,5 @@
+"""Handle cache mechanism."""
+
 import functools
 import hashlib
 import logging

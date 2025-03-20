@@ -1,3 +1,5 @@
+"""Sql base connection config."""
+
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,6 +11,8 @@ logger = get_logger(__name__)
 
 
 class ConnectSQLDatabase:
+    """Sql databases connection handler."""
+
     _instances = {}  # Store multiple DB connections
 
     def __new__(cls, db_url: str):
@@ -37,7 +41,6 @@ class ConnectSQLDatabase:
         async with self.__engine.begin() as conn:
             await conn.run_sync(self.metadata.reflect)  # Reflect all tables
             self._tables_cache = self.metadata.tables  # Store tables in cache
-            logger.info(f"✅ Connected to Database: {self.__db_url}")
 
     async def get_session(self):
         """Return a new session for the database"""

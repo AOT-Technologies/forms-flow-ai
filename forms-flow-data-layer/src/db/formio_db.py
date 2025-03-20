@@ -1,3 +1,5 @@
+"""Formio Db config."""
+
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -9,6 +11,8 @@ logger = get_logger(__name__)
 
 
 class FormioDbConnection:
+    """Formio db connection handler."""
+
     def __init__(self) -> None:
         self.__client = None  #
         self.formio_db = None

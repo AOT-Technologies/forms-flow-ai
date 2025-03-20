@@ -14,9 +14,9 @@ class RoleCheck(FieldExtension):
         self, next: Callable[..., Any], source: Any, info: strawberry.Info, **kwargs
     ):
         """Resolver for sync process."""
-        user_roles = info.context["user"].roles
+        user = info.context["user"]
         result = next(source, info, **kwargs)
-        if any(role in user_roles for role in self.roles):
+        if user.has_any_roles(self.roles):
             return str(result)
         return None
 
@@ -24,8 +24,8 @@ class RoleCheck(FieldExtension):
         self, next: Callable[..., Any], source: Any, info: strawberry.Info, **kwargs
     ):
         """Resolve_async for async process"""
-        user_roles = info.context["user"].roles
+        user = info.context["user"]
         result = await next(source, info, **kwargs)
-        if any(role in user_roles for role in self.roles):
+        if user.has_any_roles(self.roles):
             return str(result)
         return None

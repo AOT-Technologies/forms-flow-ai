@@ -14,7 +14,7 @@ class FormSchema:
 
     id: str
     name: Optional[str] = strawberry.field(
-        extensions=[RoleCheck(["designer"])]
+        extensions=[RoleCheck(["admin"])]
     )  # Add this line
     title: str
     path: str

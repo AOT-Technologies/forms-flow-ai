@@ -1,3 +1,5 @@
+"""All db configs."""
+
 from src.db.bpmn_db import bpmn_db
 from src.db.formio_db import FormioDbConnection
 from src.db.redis_client import redis_cache

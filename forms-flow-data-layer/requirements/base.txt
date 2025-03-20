@@ -5,7 +5,6 @@ beanie
 pydantic
 python-dotenv
 redis
-setuptools
 logging
 orjson
 sqlalchemy
@@ -13,3 +12,4 @@ requests
 python-jose
 cachelib
 httpx
+asyncpg

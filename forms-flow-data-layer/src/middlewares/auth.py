@@ -56,8 +56,8 @@ class HasAnyRole(BasePermission):
         self, source: Any, info: strawberry.Info, **kwargs
     ) -> bool:
         try:
-            user_rols = info.context["user"].roles
-            return any(role in user_rols for role in self.roles)
+            user = info.context["user"]
+            return user.has_any_roles(self.roles)
         except Exception as e:
             raise GraphQLError(f"Unexpected error: {str(e)}")
 

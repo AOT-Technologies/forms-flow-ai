@@ -1,3 +1,5 @@
+"""Keycloak token Handler."""
+
 from typing import Any, Dict
 
 import httpx

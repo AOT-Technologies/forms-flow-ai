@@ -1,3 +1,5 @@
+"""Manage user context."""
+
 from typing import List
 
 from src.config.envs import ENVS
@@ -24,26 +26,32 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
 
     @property
     def tenant_key(self) -> str:
+        """Return tenantKey."""
         return self._get_attr("_tenant_key")
 
     @property
     def user_name(self) -> str:
+        """Return username."""
         return self._get_attr("_user_name")
 
     @property
     def bearer_token(self) -> str:
+        """Return token."""
         return self._get_attr("_bearer_token")
 
     @property
     def email(self) -> str:
+        """Return user email."""
         return self._get_attr("_email")
 
     @property
     def roles(self) -> List[str]:
+        """Return user's roles"""
         return self._get_attr("_roles")
 
     @property
     def groups(self) -> List[str]:
+        """Return user's groups."""
         return self._get_attr("_groups")
 
     @property
@@ -54,3 +62,7 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         ):
             return self.roles
         return self.groups
+
+    def has_any_roles(self, roles: List[str]) -> bool:
+        """Checking passed roles matching with user's roles."""
+        return any(role in self.roles for role in roles)

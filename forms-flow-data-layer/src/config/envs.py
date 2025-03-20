@@ -114,7 +114,6 @@ class ENVS:
         database=FORMSFLOW_API_DB_NAME,
         options=FORMSFLOW_API_DB_OPTIONS,
     )
-    print(WEB_API_DB_URL)
 
     # camunda db uri
     CAMUNDA_DB_URL = os.getenv("CAMUNDA_DB_URL", None)

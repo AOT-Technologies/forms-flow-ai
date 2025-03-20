@@ -305,14 +305,14 @@ class KeycloakGroupService(KeycloakAdmin):
 
     @user_context
     def search_realm_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments, too-many-locals
-            self,
-            search: str,
-            page_no: int,
-            limit: int,
-            role: bool,
-            count: bool,
-            permission: str,
-            **kwargs,
+        self,
+        search: str,
+        page_no: int,
+        limit: int,
+        role: bool,
+        count: bool,
+        permission: str,
+        **kwargs,
     ):
         """Search users in a realm."""
         user: UserContext = kwargs["user"]
@@ -348,7 +348,14 @@ class KeycloakGroupService(KeycloakAdmin):
 
         return (user_list, users_count)
 
-    def _build_search_url(self, multitenancy, tenant_key, page_no, limit, search):
+    def _build_search_url(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        multitenancy,
+        tenant_key,
+        page_no,
+        limit,
+        search,
+    ):
         """Build the search URL based on parameters."""
         if multitenancy:
             return f"users?q=tenantKey:{tenant_key}"
@@ -375,7 +382,9 @@ class KeycloakGroupService(KeycloakAdmin):
 
         return user_list
 
-    def _handle_multitenancy_and_count(self, user_list, multitenancy, search, count, page_no, limit):
+    def _handle_multitenancy_and_count(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self, user_list, multitenancy, search, count, page_no, limit
+    ):
         """Handle multitenancy-specific filtering and counting."""
         users_count = None
 

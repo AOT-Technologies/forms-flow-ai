@@ -65,7 +65,9 @@ class BCGovSharedRealm(KeycloakGroupService):
         css_integration_id = current_app.config.get("CSS_INTEGRATION_ID")
         css_idps = current_app.config.get("CSS_IDP_LIST").split(",")
 
-        users_list = self._fetch_users_from_idps(css_idps, css_env, search, css_integration_id)
+        users_list = self._fetch_users_from_idps(
+            css_idps, css_env, search, css_integration_id
+        )
         return users_list, len(users_list)
 
     def _fetch_users_from_idps(self, css_idps, css_env, search, css_integration_id):
@@ -75,31 +77,36 @@ class BCGovSharedRealm(KeycloakGroupService):
             param_name = "name" if css_idp == "github-bcgov" else "firstName"
             url = f"{css_env}/{css_idp}/users?{param_name}={search}"
             response = self.session.request("GET", f"{self.base_url}/{url}")
-            
+
             if response.json():
-                self._process_user_results(response.json().get("data"), css_env, css_integration_id, users_list)
-        
+                self._process_user_results(
+                    response.json().get("data"), css_env, css_integration_id, users_list
+                )
+
         return users_list
 
-    def _process_user_results(self, users_data, css_env, css_integration_id, users_list):
+    def _process_user_results(
+        self, users_data, css_env, css_integration_id, users_list
+    ):
         """Process user results and add roles."""
         for user in users_data:
             _user = {**{"id": user.get("username")}, **user, "role": []}
-            
+
             # Find roles for this user
             url = f"integrations/{css_integration_id}/{css_env}/users/{_user.get('username')}/roles"
             user_roles = self.session.request("GET", f"{self.base_url}/{url}")
-            
-            for user_role in user_roles.json().get("data"):
-                _user["role"].append({
-                    "id": user_role.get("name"),
-                    "name": user_role.get("name"),
-                    "path": user_role.get("name"),
-                    "subGroups": [],
-                })
-            
-            users_list.append(_user)
 
+            for user_role in user_roles.json().get("data"):
+                _user["role"].append(
+                    {
+                        "id": user_role.get("name"),
+                        "name": user_role.get("name"),
+                        "path": user_role.get("name"),
+                        "subGroups": [],
+                    }
+                )
+
+            users_list.append(_user)
 
     @user_context
     def get_users(  # pylint:disable=too-many-arguments, too-many-positional-arguments, too-many-locals

@@ -83,5 +83,3 @@ app = create_app()
 @app.get("/health", tags=["Health Check"])
 async def health_check():
     return await HealthCheck.health_check(formio_db=formio_db, redis_cache=redis_cache, webapi_db=webapi_db, bpmn_db=bpmn_db)
-    # return await health_checker.health_check()
-

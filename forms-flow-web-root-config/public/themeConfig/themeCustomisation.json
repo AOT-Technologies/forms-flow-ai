@@ -32,5 +32,6 @@
     "--sm-btn-border-radius": "4px",
     "--md-btn-border-radius": "4px",
     "--lg-btn-border-radius" : "6px",
-    "--default-danger-color": "red"
+    "--default-danger-color": "red",
+    "--custom-logo-height": "3rem"
 }

@@ -1,3 +1,5 @@
+"""Manage All Environment Variables."""
+
 import os
 from urllib.parse import quote_plus
 
@@ -66,64 +68,77 @@ class DatabaseConfig:
 
 class ENVS:
     # FormIO MongoDB Configuration
-    FORMIO_MONGO_HOST: str = os.getenv("FORMIO_MONGO_HOST", "localhost")
-    FORMIO_MONGO_PORT: str = os.getenv("FORMIO_MONGO_PORT", "27017")
-    FORMIO_MONGO_USERNAME: str = os.getenv("FORMIO_MONGO_USERNAME", "")
-    FORMIO_MONGO_PASSWORD: str = os.getenv("FORMIO_MONGO_PASSWORD", "")
-    FORMIO_MONGO_DATABASE: str = os.getenv("FORMIO_MONGO_DATABASE", "formio")
-    FORMIO_MONGO_OPTIONS: str = os.getenv("FORMIO_MONGO_OPTIONS", "")
+    FORMIO_DB_HOST: str = os.getenv("FORMIO_DB_HOST", "localhost")
+    FORMIO_DB_PORT: str = os.getenv("FORMIO_DB_PORT", "27017")
+    FORMIO_DB_USERNAME: str = os.getenv("FORMIO_DB_USERNAME", "")
+    FORMIO_DB_PASSWORD: str = os.getenv("FORMIO_DB_PASSWORD", "")
+    FORMIO_DB_NAME: str = os.getenv("FORMIO_DB_NAME", "formio")
+    FORMIO_DB_OPTIONS: str = os.getenv("FORMIO_DB_OPTIONS", "")
 
     # Web API PostgreSQL Configuration
-    WEB_API_DB_HOST: str = os.getenv("WEB_API_DB_HOST", "localhost")
-    WEB_API_DB_PORT: str = os.getenv("WEB_API_DB_PORT", "5432")
-    WEB_API_DB_USERNAME: str = os.getenv("WEB_API_DB_USERNAME", "")
-    WEB_API_DB_PASSWORD: str = os.getenv("WEB_API_DB_PASSWORD", "")
-    WEB_API_DB_NAME: str = os.getenv("WEB_API_DB_NAME", "webapi")
-    WEB_API_DB_OPTIONS: str = os.getenv("WEB_API_DB_OPTIONS", "")
+    FORMSFLOW_API_DB_HOST: str = os.getenv("FORMSFLOW_API_DB_HOST", "localhost")
+    FORMSFLOW_API_DB_PORT: str = os.getenv("FORMSFLOW_API_DB_PORT", "5432")
+    FORMSFLOW_API_DB_USER: str = os.getenv("FORMSFLOW_API_DB_USER", "")
+    FORMSFLOW_API_DB_PASSWORD: str = os.getenv("FORMSFLOW_API_DB_PASSWORD", "")
+    FORMSFLOW_API_DB_NAME: str = os.getenv("FORMSFLOW_API_DB_NAME", "webapi")
+    FORMSFLOW_API_DB_OPTIONS: str = os.getenv("FORMSFLOW_API_DB_OPTIONS", "")
 
     # BPM PostgreSQL Configuration
-    BPM_DB_HOST: str = os.getenv("BPM_DB_HOST", "localhost")
-    BPM_DB_PORT: str = os.getenv("BPM_DB_PORT", "5432")
-    BPM_DB_USERNAME: str = os.getenv("BPM_DB_USERNAME", "")
-    BPM_DB_PASSWORD: str = os.getenv("BPM_DB_PASSWORD", "")
-    BPM_DB_NAME: str = os.getenv("BPM_DB_NAME", "bpm")
-    BPM_DB_OPTIONS: str = os.getenv("BPM_DB_OPTIONS", "")
+    CAMUNDA_DB_USER: str = os.getenv("CAMUNDA_DB_USER", "localhost")
+    CAMUNDA_DB_PASSWORD: str = os.getenv("CAMUNDA_DB_PASSWORD", "5432")
+    CAMUNDA_DB_HOST: str = os.getenv("CAMUNDA_DB_HOST", "")
+    CAMUNDA_DB_PORT: str = os.getenv("CAMUNDA_DB_PORT", "")
+    CAMUNDA_DB_NAME: str = os.getenv("CAMUNDA_DB_NAME", "bpm")
+    CAMUNDA_DB_OPTIONS: str = os.getenv("CAMUNDA_DB_OPTIONS", "")
 
-    # Constructed Connection URIs
+    # formio db uri
     FORMIO_MONGO_DB_URI: str = os.getenv(
-        "FORMIO_MONGO_DB_URI",
-        DatabaseConfig.construct_mongodb_uri(
-            host=FORMIO_MONGO_HOST,
-            port=FORMIO_MONGO_PORT,
-            username=FORMIO_MONGO_USERNAME,
-            password=FORMIO_MONGO_PASSWORD,
-            database=FORMIO_MONGO_DATABASE,
-            options=FORMIO_MONGO_OPTIONS,
-        ),
+        "FORMIO_DB_URI", None
+    ) or DatabaseConfig.construct_mongodb_uri(
+        host=FORMIO_DB_HOST,
+        port=FORMIO_DB_PORT,
+        username=FORMIO_DB_USERNAME,
+        password=FORMIO_DB_PASSWORD,
+        database=FORMIO_DB_NAME,
+        options=FORMIO_DB_OPTIONS,
     )
 
-    WEB_API_DB_URL: str = DatabaseConfig.construct_postgres_uri(
-        host=WEB_API_DB_HOST,
-        port=WEB_API_DB_PORT,
-        username=WEB_API_DB_USERNAME,
-        password=WEB_API_DB_PASSWORD,
-        database=WEB_API_DB_NAME,
-        options=WEB_API_DB_OPTIONS,
+    # webapi db uri
+    WEB_API_DB_URL: str = os.getenv(
+        "FORMSFLOW_API_DB_URL", None
+    ) or DatabaseConfig.construct_postgres_uri(
+        host=FORMSFLOW_API_DB_HOST,
+        port=FORMSFLOW_API_DB_PORT,
+        username=FORMSFLOW_API_DB_USER,
+        password=FORMSFLOW_API_DB_PASSWORD,
+        database=FORMSFLOW_API_DB_NAME,
+        options=FORMSFLOW_API_DB_OPTIONS,
     )
 
-    BPM_DB_URL: str = DatabaseConfig.construct_postgres_uri(
-        host=BPM_DB_HOST,
-        port=BPM_DB_PORT,
-        username=BPM_DB_USERNAME,
-        password=BPM_DB_PASSWORD,
-        database=BPM_DB_NAME,
-        options=BPM_DB_OPTIONS,
+    # camunda db uri
+    CAMUNDA_DB_URL = os.getenv("CAMUNDA_DB_URL", None)
+    CAMUNDA_DB_URL = (
+        CAMUNDA_DB_URL[len("jdbc:") :]
+        if CAMUNDA_DB_URL and CAMUNDA_DB_URL.startswith("jdbc:")
+        else CAMUNDA_DB_URL
+    )
+    BPM_DB_URL: str = CAMUNDA_DB_URL or DatabaseConfig.construct_postgres_uri(
+        host=CAMUNDA_DB_HOST,
+        port=CAMUNDA_DB_PORT,
+        username=CAMUNDA_DB_USER,
+        password=CAMUNDA_DB_PASSWORD,
+        database=CAMUNDA_DB_NAME,
+        options=CAMUNDA_DB_OPTIONS,
     )
 
     # Other configurations
     DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
-    CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "*")
+    CORS_ALLOWED_ORIGINS = os.getenv("FORMSFLOW_DATALAYER_CORS_ORIGINS", "*")
+    JWT_OIDC_ALGORITHMS = os.getenv("JWT_OIDC_ALGORITHMS", "RS256")
+    JWT_OIDC_JWKS_URI = os.getenv("JWT_OIDC_JWKS_URI")
+    JWT_OIDC_ISSUER = os.getenv("JWT_OIDC_ISSUER")
+    JWT_OIDC_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
     SQL_ECHO = os.getenv("SQL_ECHO", "False").lower() in ("true", "1", "yes")
 
 

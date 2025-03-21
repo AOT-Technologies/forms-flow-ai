@@ -1,3 +1,5 @@
+"""Redis connection config."""
+
 import json
 import logging
 from typing import Any, Dict, Optional
@@ -8,8 +10,9 @@ from src.config.envs import ENVS
 
 
 class RedisCache:
+    """Redis connection handler."""
+
     def __init__(self, redis_url: str):
-        print(redis_url)
         self.redis_url = redis_url
         self.redis = None
 

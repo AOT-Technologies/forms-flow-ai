@@ -1,5 +1,7 @@
+"""Sql base connection config."""
+
 from sqlalchemy import MetaData
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from src.config.envs import ENVS
@@ -9,6 +11,8 @@ logger = get_logger(__name__)
 
 
 class ConnectSQLDatabase:
+    """Sql databases connection handler."""
+
     _instances = {}  # Store multiple DB connections
 
     def __new__(cls, db_url: str):
@@ -19,7 +23,9 @@ class ConnectSQLDatabase:
 
     def __init__(self, db_url: str):
         if not hasattr(self, "initialized"):
-            self.__db_url = db_url.replace("postgresql://", "postgresql+asyncpg://")  # Use async driver
+            self.__db_url = db_url.replace(
+                "postgresql://", "postgresql+asyncpg://"
+            )  # Use async driver
             self.metadata = MetaData()
             self.initialized = True  # Prevent reinitialization
             self.__engine = create_async_engine(
@@ -35,7 +41,6 @@ class ConnectSQLDatabase:
         async with self.__engine.begin() as conn:
             await conn.run_sync(self.metadata.reflect)  # Reflect all tables
             self._tables_cache = self.metadata.tables  # Store tables in cache
-            logger.info(f"✅ Connected to Database: {self.__db_url}")
 
     async def get_session(self):
         """Return a new session for the database"""
@@ -47,12 +52,16 @@ class ConnectSQLDatabase:
             return self._tables_cache[table_name]  # Return cached table
 
         async with self.__engine.connect() as conn:
-            await conn.run_sync(self.metadata.reflect, only=[table_name])  # Reflect only if not in cache
+            await conn.run_sync(
+                self.metadata.reflect, only=[table_name]
+            )  # Reflect only if not in cache
 
         if table_name not in self.metadata.tables:
             raise ValueError(f"Table '{table_name}' not found in the database.")
 
-        self._tables_cache[table_name] = self.metadata.tables[table_name]  # Cache the newly reflected table
+        self._tables_cache[table_name] = self.metadata.tables[
+            table_name
+        ]  # Cache the newly reflected table
         return self.metadata.tables[table_name]
 
     async def close_connection(self):

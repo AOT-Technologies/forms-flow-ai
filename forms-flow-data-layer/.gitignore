@@ -8,7 +8,7 @@ venv/
 env/
 .env
 *.venv
-
+/build*
 # Editor settings
 .vscode/
 .idea/
@@ -53,9 +53,6 @@ htmlcov/
 flake8.log
 pylint.log
 
-# Ignore docker files
-.dockerignore
-
 # Ignore pre-commit hooks
 .pre-commit-config.yaml
 
@@ -64,3 +61,4 @@ data/
 dump.rdb  # Redis dump
 postgres_data/
 mongo_data/
+*.egg-info/

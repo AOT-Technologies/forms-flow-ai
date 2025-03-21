@@ -1,3 +1,5 @@
+"""Bpmn db config"""
+
 from src.config.envs import ENVS
 from src.db.sql_base import ConnectSQLDatabase
 

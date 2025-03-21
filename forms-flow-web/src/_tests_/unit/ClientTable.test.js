@@ -10,7 +10,6 @@ import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
 import ClientTable from '../../components/Form/constants/ClientTable';
-import { push } from 'connected-react-router';
 
 jest.mock('connected-react-router', () => ({
   push: jest.fn(),

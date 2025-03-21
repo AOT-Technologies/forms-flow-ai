@@ -48,7 +48,6 @@ const ViewApplication = React.memo(() => {
   const form = useSelector((state) => state.form?.form || {});
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [formId,setFormId] = useState();
-
   const { appHistory, isHistoryListLoading } = useSelector(
     useMemo(() => (state) => ({
       appHistory: state.taskAppHistory.appHistory,
@@ -134,7 +133,7 @@ const ViewApplication = React.memo(() => {
             >
               <span className="status-live"></span>
               {t("Submitted On")}:{" "}
-              {HelperServices?.getLocalDateAndTime(applicationDetail.created)}
+              <span data-testid="submissions-date">{HelperServices?.getLocalDateAndTime(applicationDetail.created)}</span>
             </div>
 
             {/* Right: Buttons */}

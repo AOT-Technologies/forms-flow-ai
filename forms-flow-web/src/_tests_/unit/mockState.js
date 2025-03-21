@@ -190,6 +190,7 @@ export const mockstate = {
     applicationData: {},
     applicationDetail: {
       applicationName: "BusinessNew",
+      created: "2023-09-06T06:44:25.763Z",
     },
     applicationId: "",
   },

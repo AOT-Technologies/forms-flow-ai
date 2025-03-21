@@ -15,12 +15,19 @@ import rootReducer from "../../rootReducer";
 import { mockstate } from "../../mockState";
 import ViewApplication from "../../../../../src/routes/Submit/Submission/SubmissionView";
 import thunk from "redux-thunk";
+import { HelperServices } from "@formsflow/service";
+
+jest.mock('@formsflow/service', () => ({
+  HelperServices: {
+    getLocalDateAndTime: jest.fn()
+  }
+}));
 
 // Mock application services
 jest.mock("../../../../../src/apiManager/services/applicationServices", () => ({
   getApplicationById: jest.fn().mockImplementation(() => (dispatch) => {
     const mockData = {
-      created: "2025-02-11T05:15:55.785503Z",
+      created: "2025-03-17T04:33:05.672555Z",
       modified: "2025-02-11T05:22:34.207536Z",
       id: 804,
       applicationName: "BusinessNew",
@@ -77,13 +84,15 @@ jest.mock("@formsflow/components", () => {
   };
 
   const FormSubmissionHistoryModal = ({ show, onClose }) => (
-    <div data-testid="history-modal" style={{ display: show ? "block" : "none" }}>
-  Form Submission History Modal
-  <button data-testid="close-modal" onClick={onClose}>
-    Close
-  </button>
-</div>
-
+    <div
+      data-testid="history-modal"
+      style={{ display: show ? "block" : "none" }}
+    >
+      Form Submission History Modal
+      <button data-testid="close-modal" onClick={onClose}>
+        Close
+      </button>
+    </div>
   );
 
   FormSubmissionHistoryModal.propTypes = {
@@ -174,21 +183,15 @@ function renderWithProviders(ui, { route = "/application/804" } = {}) {
   };
 }
 
-// Initialize store before each test
-
 beforeEach(() => {
   useDispatch.mockReturnValue(mockDispatch);
   jest.clearAllMocks();
+
 });
 
 const mockDispatch = jest.fn();
 
 describe("ViewApplication Component", () => {
-  beforeEach(() => {
-    useDispatch.mockReturnValue(mockDispatch);
-    jest.clearAllMocks();
-  });
-
   it("renders the submission view correctly", async () => {
     renderWithProviders(<ViewApplication />);
     await waitFor(() => {
@@ -233,6 +236,32 @@ describe("ViewApplication Component", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("application-view")).toBeInTheDocument();
+    });
+  });
+
+  it("has a clickable and enabled export PDF button", async () => {
+    renderWithProviders(<ViewApplication />);
+    await waitFor(() => {
+      const pdfButton = screen.getByTestId("download-pdf-button");
+      expect(pdfButton).toBeInTheDocument();
+      expect(pdfButton).not.toBeDisabled();
+
+      // Verify the button is clickable by checking it has no disabled attribute
+      expect(pdfButton).not.toHaveAttribute("disabled");
+
+      // Simulate click to ensure it's clickable
+      fireEvent.click(pdfButton);
+      // No assertion needed here as we're just verifying it doesn't throw an error
+    });
+  });
+
+  it("displays the correct submitted on date and time", async () => {
+    HelperServices.getLocalDateAndTime.mockReturnValue("Feb 11, 2025, 05:15:55 AM");
+    renderWithProviders(<ViewApplication />);
+    await waitFor(() => {
+      const submissionDetails = screen.getByTestId("submissions-date");
+      expect(submissionDetails).toBeInTheDocument();
+      expect(submissionDetails).toHaveTextContent("Feb 11, 2025, 05:15:55 AM");
     });
   });
 });

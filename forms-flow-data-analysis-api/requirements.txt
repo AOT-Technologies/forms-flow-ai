@@ -64,4 +64,4 @@ transformers==4.48.0
 typing_extensions==4.8.0
 urllib3==2.2.3
 wasabi==0.10.1
-formsflow_api_utils @ git+https://github.com/auslin-aot/forms-flow-ai.git@feature/fwf-4315-update-api-docs#subdirectory=forms-flow-api-utils
+formsflow_api_utils @ git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#subdirectory=forms-flow-api-utils

@@ -31,7 +31,9 @@ class FilterSchema(AuditDateTimeSchema):
     description = fields.Str(allow_none=True)
     resource_id = fields.Str(data_key="resourceId", allow_none=True)
     criteria = fields.Dict()
-    variables = fields.List(fields.Nested(VariableSchema))
+    variables = fields.List(
+        fields.Dict()
+    )  # Add fields.Nested(VariableSchema) when fields for Variable schema is fixed
     properties = fields.Dict()
     roles = fields.List(fields.Str())
     users = fields.List(fields.Str())

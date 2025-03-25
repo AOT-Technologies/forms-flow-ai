@@ -4,13 +4,14 @@ import strawberry
 
 from src.graphql.schema import FormSchema
 from src.graphql.service import FormService
+from src.middlewares.auth import auth
 from src.utils import cache_graphql
 
 
 # GraphQL Resolver
 @strawberry.type
 class FormResolver:
-    @strawberry.field
+    @strawberry.field(extensions=[auth.auth_required()])
     @cache_graphql(expire=120, key_prefix="forms")
     async def forms(
         self, skip: int = 0, limit: int = 100, type_filter: Optional[str] = None

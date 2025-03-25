@@ -41,7 +41,7 @@ services:
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
-      MODEL_ID: ${MODEL_ID:-Seethal/sentiment_analysis_generic_dataset}
+      MODEL_ID: ${MODEL_ID:-distilbert-base-uncased-finetuned-sst-2-english}
       DATABASE_SUPPORT: ${DATABASE_SUPPORT:-DISABLED}
       API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
       API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}

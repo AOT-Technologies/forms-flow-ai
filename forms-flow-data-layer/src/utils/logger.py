@@ -1,3 +1,5 @@
+"""Handle logger."""
+
 import logging
 
 # Logging Configuration

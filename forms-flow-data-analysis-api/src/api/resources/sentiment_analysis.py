@@ -91,8 +91,7 @@ class SentimentAnalysisTransformerResource(Resource):
                         overall_sentiment=response["overallSentiment"],
                         output_response=response,
                     )
-                    return jsonify(response_json), HTTPStatus.CREATED
-                return jsonify(response_json), HTTPStatus.OK
+            return jsonify(response_json), HTTPStatus.OK
 
         except BaseException as err:  # pylint: disable=broad-except # noqa: B902
             response, status = {

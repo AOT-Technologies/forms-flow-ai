@@ -6,7 +6,7 @@ from formsflow_api_utils.utils import ADMIN
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import Filter, FilterType, User
+from formsflow_api.models import Filter, FilterPreferences, FilterType, User
 from formsflow_api.schemas import FilterSchema
 
 filter_schema = FilterSchema()
@@ -106,14 +106,33 @@ class FilterService:
                     },
                 )
                 filter_obj.save()
+        # fetch data from filter preference table
+        filter_preference = FilterPreferences.get_filters_by_user_id(
+            user.user_name, tenant_key
+        )
+        # Extract existing filter IDs to avoid redundant fetching from the filter table.
+        # The `existing_filters` variable will store the result, containing filters
+        # that are not present in the filter preference database.
+        existing_filter_ids = []
+        existing_filters = []
+        if filter_preference:
+            for preference_data in filter_preference:
+                existing_filter_ids.append(preference_data.filter_id)
+                preference_data.filter.sort_order = preference_data.sort_order
+                existing_filters.append(preference_data.filter)
+
         filters = Filter.find_user_filters(
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
+            exclude_ids=existing_filter_ids,
             admin=ADMIN in user.roles,
             filter_type=FilterType.TASK,
         )
-        filter_data = filter_schema.dump(filters, many=True)
+        # Merging existing filters with the remaining data.
+        all_filters = [*existing_filters, *filters]
+        # print(existing_filter_ids)
+        filter_data = filter_schema.dump(all_filters, many=True)
         default_variables = [
             {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},

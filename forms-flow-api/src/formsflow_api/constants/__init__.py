@@ -133,6 +133,11 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     )
     FORM_NOT_FOUND = "Form not found", HTTPStatus.BAD_REQUEST
     FORM_NOT_PUBLISHED = "Form not published", HTTPStatus.BAD_REQUEST
+    FILTER_PREFERENCE_BAD_REQUEST = ("Invalid payload data", HTTPStatus.BAD_REQUEST)
+    FILTER_PREFERENCE_DB_ERROR = (
+        "Database error while updating filter preferences",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

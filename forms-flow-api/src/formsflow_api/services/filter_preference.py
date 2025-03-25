@@ -1,0 +1,66 @@
+"""Module to handle filter preference."""
+
+from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.utils import ADMIN
+from formsflow_api_utils.utils.user_context import UserContext, user_context
+
+from formsflow_api.constants import (
+    BusinessErrorCode,
+)
+from formsflow_api.models import Filter, FilterPreferences, db
+from formsflow_api.schemas import FilterPreferenceSchema
+
+
+class FilterPreferenceService:
+    """Filter Preference Service."""
+
+    @classmethod
+    def check_authorized_filter_ids(cls, data, user):
+        """Check the payload data filter ids authorized and still active."""
+        filter_ids = [filter.get("filter_id") for filter in data]
+        print(filter_ids)
+        authorized_filter = Filter.find_active_filter_by_ids(
+            filter_ids=filter_ids,
+            roles=user.group_or_roles,
+            user=user.user_name,
+            tenant=user.tenant_key,
+            admin=ADMIN in user.roles,
+        )
+        authorized_filter_ids = {item.id for item in authorized_filter}
+        filtered_data = [
+            item for item in data if item.get("filter_id") in authorized_filter_ids
+        ]
+        return filtered_data
+
+    @staticmethod
+    @user_context
+    def create_or_update_filter_preference(payload, **kwargs):
+        """Create or Update filter preference."""
+        try:
+            user: UserContext = kwargs["user"]
+            user_name = user.user_name
+            tenant_key = user.tenant_key
+            filter_preference_schema = FilterPreferenceSchema()
+            data = filter_preference_schema.load(payload, many=True)
+            # check the filter ids are authorized which are form payload and filter unauthorized filter ids
+            data = FilterPreferenceService.check_authorized_filter_ids(
+                data=data, user=user
+            )
+            for preference in data:
+                preference["user_id"] = user_name
+                preference["tenant"] = tenant_key
+            # update or create filter preference
+            FilterPreferences.bulk_upsert_preferences(
+                preferences_list=data,
+                tenant_key=tenant_key,
+            )
+            # fetch latest data
+            result = FilterPreferences.get_filters_by_user_id(
+                user_id=user_name, tenant=tenant_key
+            )
+            return filter_preference_schema.dump(result, many=True)
+        except Exception as e:
+            db.session.rollback()
+            raise BusinessException(
+                BusinessErrorCode.FILTER_PREFERENCE_BAD_REQUEST
+            ) from e

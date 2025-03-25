@@ -30,8 +30,6 @@ jest.mock("react-router-dom", () => ({
 }));
 
 // Mock formio-react with explicit implementation of selectRoot
-const mockSelectRoot = jest.fn();
-const mockSelectError = jest.fn();
 const mockResetSubmissions = jest.fn();
 const mockSaveSubmission = jest.fn();
 const mockGetForm = jest.fn();
@@ -48,7 +46,7 @@ jest.mock("@aot-technologies/formio-react", () => {
             formSubmissionError: { modalOpen: false, message: "" },
           }
         );
-      }
+      } 
       return state[key] || {};
     },
     resetSubmissions: (...args) => mockResetSubmissions(...args),
@@ -138,13 +136,18 @@ jest.mock("../../apiManager/services/applicationServices");
 jest.mock("../../helper/routerHelper");
 
 // Mock constants
-jest.mock("../../constants/constants", () => ({
-  CUSTOM_SUBMISSION_URL: "",
-  CUSTOM_SUBMISSION_ENABLE: false,
-  MULTITENANCY_ENABLED: true,
-  DRAFT_ENABLED: true,
-  DRAFT_POLLING_RATE: 10000,
-}));
+jest.mock("../../constants/constants", () => {
+  const originalConstants = jest.requireActual("../../constants/constants");
+  return {
+    ...originalConstants,
+    // Default values that can be overridden in tests
+    CUSTOM_SUBMISSION_URL: "",
+    CUSTOM_SUBMISSION_ENABLE: false,
+    MULTITENANCY_ENABLED: true,
+    DRAFT_ENABLED: true,
+    DRAFT_POLLING_RATE: 10000,
+  };
+});
 
 const mockStore = configureStore([thunk]);
 
@@ -382,15 +385,11 @@ describe("UserForm Component", () => {
   });
 
   it("handles custom submission when enabled", async () => {
-    // Override the constants for this test
-    const originalCustomSubmissionEnable = constants.CUSTOM_SUBMISSION_ENABLE;
-    const originalCustomSubmissionUrl = constants.CUSTOM_SUBMISSION_URL;
-    Object.defineProperty(constants, "CUSTOM_SUBMISSION_ENABLE", {
-      get: () => true,
-    });
-    Object.defineProperty(constants, "CUSTOM_SUBMISSION_URL", {
-      get: () => "http://custom-url.com",
-    });
+    jest.mock("../../constants/constants", () => ({
+      ...jest.requireActual("../../constants/constants"),
+      CUSTOM_SUBMISSION_ENABLE: true,
+      CUSTOM_SUBMISSION_URL: "http://custom-url.com",
+    }));
 
     // Create a store with the necessary props for custom submission
     const customSubmissionStore = mockStore({
@@ -401,8 +400,6 @@ describe("UserForm Component", () => {
       },
     });
 
-    // Render with the custom store
-    const { container } = renderComponent(customSubmissionStore);
 
     // Setup the custom submission mock
     formServices.postCustomSubmission.mockImplementation(
@@ -440,14 +437,6 @@ describe("UserForm Component", () => {
 
     // Verify custom submission was called
     expect(formServices.postCustomSubmission).toHaveBeenCalled();
-
-    // Reset the constants
-    Object.defineProperty(constants, "CUSTOM_SUBMISSION_ENABLE", {
-      get: () => originalCustomSubmissionEnable,
-    });
-    Object.defineProperty(constants, "CUSTOM_SUBMISSION_URL", {
-      get: () => originalCustomSubmissionUrl,
-    });
   });
 
   it("handles form submission errors", async () => {
@@ -543,8 +532,10 @@ describe("UserForm Component", () => {
   });
 
   it("handles draft creation when DRAFT_ENABLED is true", async () => {
-    // Ensure DRAFT_ENABLED is true
-    Object.defineProperty(constants, "DRAFT_ENABLED", { get: () => true });
+    jest.mock("../../constants/constants", () => ({
+      ...jest.requireActual("../../constants/constants"),
+      DRAFT_ENABLED: true,
+    }));
 
     // Mock useParams to not include draftId (new form)
     require("react-router-dom").useParams.mockReturnValue({

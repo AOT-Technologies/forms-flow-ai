@@ -29,6 +29,10 @@ class LoadModel:  # pylint: disable=too-few-public-methods
     @classmethod
     def preload_models(cls):
         """Function to load the fine-tuned transformer model."""
+        # Set environment variable to cache models locally
+        os.environ["TRANSFORMERS_CACHE"] = "/app/model_cache"
+        # Make directory if it doesn't exist
+        os.makedirs("/app/model_cache", exist_ok=True)
         cls.classifier = pipeline(
             "sentiment-analysis", model=cls.model_id, truncation=True
         )

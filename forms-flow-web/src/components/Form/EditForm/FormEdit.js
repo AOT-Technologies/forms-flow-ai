@@ -60,7 +60,7 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate } from "../../../helper/helper.js";
+import { generateUniqueId, addTenantkey, textTruncate } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
@@ -354,7 +354,6 @@ const EditComponent = () => {
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
   const {
     formHistoryData = {},
-    restoredFormData,
     restoredFormId,
   } = useSelector((state) => state.formRestore);
 
@@ -625,7 +624,7 @@ const handleSaveLayout = () => {
 
   const saveFormData = async ({ showToast = true }) => {
     try {
-      const isFormChanged = true // Hardcoding the value to true to avoid situation where "Save Layout" is enabled and nothing happens on button click.
+      const isFormChanged = true; // Hardcoding the value to true to avoid situation where "Save Layout" is enabled and nothing happens on button click.
       if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
         setFormChangeState(prev => ({ ...prev, changed: false }));

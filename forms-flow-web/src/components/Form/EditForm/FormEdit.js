@@ -625,10 +625,7 @@ const handleSaveLayout = () => {
 
   const saveFormData = async ({ showToast = true }) => {
     try {
-      const isFormChanged = isFormComponentsChanged({
-        restoredFormData,
-        restoredFormId, formData, form
-      });
+      const isFormChanged = true // Hardcoding the value to true to avoid situation where "Save Layout" is enabled and nothing happens on button click.
       if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
         setFormChangeState(prev => ({ ...prev, changed: false }));

@@ -1,5 +1,7 @@
 export const mockstate = {
-  process: {
+
+  process:{
+    formStatusLoading: false,
     isProcessLoading: true,
     processStatusList: [],
     processLoadError: false,
@@ -118,6 +120,12 @@ export const mockstate = {
     createSubmissions: true,
     showApplications: true,
     bearerToken: "",
+    isAuthenticated: true,
+    lang: "en",
+    userDetail: {
+      name: "Test User",
+      email: "testuser@example.com",
+    },
     roles: [
       "view_tasks",
       "formsflow-client",
@@ -194,4 +202,33 @@ export const mockstate = {
     },
     applicationId: "",
   },
+  form: {
+    form: {
+      _id: "123",
+      title: "Test Form",
+    },
+    isActive: false,
+  },
+  formDelete: {
+    formSubmitted: false,
+  },
+  draft: {
+    draftSubmission: {
+      data: {},
+      draftId: "456",
+    },
+    draftModified: false,
+    lastUpdated: {},
+  },
+  applications: {
+    isPublicStatusLoading: false,
+  },
+  tenants: {
+    tenantId: "testTenant",
+  },
+  pubSub: {
+    publish: jest.fn(),
+  },
 };
+
+

@@ -573,7 +573,7 @@ ConfirmModal.propTypes = {
 
 
 
-export const BackToPrevIcon = ({ color = baseColor, onClick, ...props }) => (
+export const BackToPrevIcon = ({ onClick, dataTestId, ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="32"
@@ -581,6 +581,7 @@ export const BackToPrevIcon = ({ color = baseColor, onClick, ...props }) => (
     viewBox="0 0 32 33"
     fill="none"
     onClick={onClick}
+    data-testid={dataTestId}
   >
     <path
       fillRule="evenodd"

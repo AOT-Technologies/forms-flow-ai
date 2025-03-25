@@ -21,7 +21,6 @@ import * as processServices from "../../apiManager/services/processServices";
 import * as bpmFormServices from "../../apiManager/services/bpmFormServices";
 import * as applicationServices from "../../apiManager/services/applicationServices";
 import * as routerHelper from "../../helper/routerHelper";
-import * as constants from "../../constants/constants";
 
 // Mock dependencies
 jest.mock("react-router-dom", () => ({
@@ -388,7 +387,7 @@ describe("UserForm Component", () => {
     jest.mock("../../constants/constants", () => ({
       ...jest.requireActual("../../constants/constants"),
       CUSTOM_SUBMISSION_ENABLE: true,
-      CUSTOM_SUBMISSION_URL: "http://custom-url.com",
+      CUSTOM_SUBMISSION_URL: "https://custom-url.com",
     }));
 
     // Create a store with the necessary props for custom submission

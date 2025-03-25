@@ -16,6 +16,10 @@
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <title>formsflow.ai</title>
+    <script type="module">
+      import Keycloak from "%PUBLIC_URL%/js/keycloak-js-26.1.4.js";
+      window.Keycloak = Keycloak;
+    </script>
   </head>
   <body class="no-scroll">
     <div id="app" class="scrollable-page"></div>

@@ -13,7 +13,7 @@ class KeycloakTestTokenGenerator:
         self,
         issuer: str,
         audience: str,
-        kid: str = "b51__RWhyRPgFU3BzAqlCyA_L0YHXfy9GrrT22L6aFM",
+        kid: str = "oTRqtPuhJZ5R6N-AYYF79I17DWTKZT78xUzG0gLaDTw",
         algorithm: str = "RS256"
     ):
         self.issuer = issuer
@@ -51,9 +51,9 @@ class KeycloakTestTokenGenerator:
     def generate_test_token(
         self,
         subject: str = "test-user",
-        roles: Optional[Dict] = None,
-        scopes: Optional[list] = None,
+        roles: Optional[list] = ["manage_tasks"],
         exp_minutes: int = 60,
+        tenant_key: str = None,
         **custom_claims
     ) -> str:
         """Generate a test JWT token"""
@@ -70,20 +70,24 @@ class KeycloakTestTokenGenerator:
             "email": f"{subject}@test.com",
             "iat": current_time,
             "exp": current_time + (exp_minutes * 60),
-            "scope": " ".join(scopes) if scopes else "openid profile email",
+            "scope": "camunda-rest-api email profile",
+            "allowed-origins": ["*"],
             "realm_access": {
                 "roles": ["offline_access", "uma_authorization"]
             },
             "resource_access": {
+                "forms-flow-web": {"roles": [*roles]},
                 "account": {
                     "roles": ["manage-account", "view-profile"]
                 }
             },
+            "roles": [*roles],
+            "name": "Test user",
+            "given_name": "Test",
+            "family_name": "Test",
+            "tenantKey": tenant_key,
             **custom_claims
         }
-
-        if roles:
-            payload["resource_access"].update(roles)
 
         headers = {
             "alg": self.algorithm,

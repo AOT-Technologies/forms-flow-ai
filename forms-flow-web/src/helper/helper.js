@@ -62,49 +62,95 @@ const generateUniqueId = (prefix) => {
 };
 
 const isFormComponentsChanged = ({restoredFormData, restoredFormId, formData, form}) => {
+  // If restored form data exists, always consider it changed
   if (restoredFormData && restoredFormId) {
     return true;
   }
+
   // Flatten original and current form data
   const flatFormData = utils.flattenComponents(formData.components);
   const flatForm = utils.flattenComponents(form.components);
 
-  // Filter and compare datetime components (day, datetime) from both forms
-  const filterDateTimeComponents = (form) =>
-    Object.values(form).filter((component) => component.type === "day" || component.type === "datetime");
+  // Enhanced comparison for datetime and day components
+  const compareDateTimeComponent = (component1, component2) => {
+    // Special handling for datetime and day components
+    if (component1.type !== component2.type) {
+      return false;
+    }
 
-  const dateTimeOfFormData = filterDateTimeComponents(flatFormData);
-  const dateTimeOfForm = filterDateTimeComponents(flatForm);
+    // Create a clean comparison object specifically for datetime/day components
+    const cleanComponent = (comp) => {
+      const { 
+        type, 
+        key, 
+        label, 
+        format, 
+        placeholder, 
+        validateOn, 
+        widget 
+      } = comp;
 
-  // If datetime components don't match in number or type, return true
-  if (dateTimeOfFormData.length !== dateTimeOfForm.length || 
-      !dateTimeOfFormData.every((component) => 
-        dateTimeOfForm.some((comp) => comp.type === component.type))) {
-    return true;
-  }
+      return { 
+        type, 
+        key, 
+        label, 
+        format, 
+        placeholder, 
+        validateOn, 
+        widget 
+      };
+    };
+
+    return _.isEqual(cleanComponent(component1), cleanComponent(component2));
+  };
+
+  // Filter out datetime and day components
+  const dateTimeOfFormData = Object.values(flatFormData).filter(
+    (component) => component.type === "day" || component.type === "datetime"
+  );
+  const dateTimeOfForm = Object.values(flatForm).filter(
+    (component) => component.type === "day" || component.type === "datetime"
+  );
+
+  // Detailed datetime component comparison
+  const dateTimeComponentsChanged = (() => {
+    // Check if number of datetime components changed
+    if (dateTimeOfFormData.length !== dateTimeOfForm.length) {
+      return true;
+    }
+
+    // Comprehensive comparison of datetime components
+    return !dateTimeOfFormData.every((component) => 
+      dateTimeOfForm.some((comp) => compareDateTimeComponent(component, comp))
+    );
+  })();
 
   // Remove datetime components from flatFormData and flatForm for further comparison
-  const strippedFlatFormData = Object.values(flatFormData).filter(
-    (component) => component.type !== "day" && component.type !== "datetime"
-  );
-  const strippedFlatForm = Object.values(flatForm).filter(
-    (component) => component.type !== "day" && component.type !== "datetime"
-  );
+  const stripDateTimeComponents = (components) => 
+    Object.values(components).filter(
+      (component) => component.type !== "day" && component.type !== "datetime"
+    );
 
-  // Remove 'id' property from each component for comparison
-  const omitId = (components) => components.map((component) => _.omit(component, ['id']));
-  const strippedFlatFormDataWithoutId = omitId(strippedFlatFormData);
-  const strippedFlatFormWithoutId = omitId(strippedFlatForm);
+  const strippedFlatFormData = stripDateTimeComponents(flatFormData);
+  const strippedFlatForm = stripDateTimeComponents(flatForm);
 
+  // Remove unnecessary properties for comparison
+  const cleanComponent = (components) => components.map((component) => {
+    const { type, key, label } = component;
+    return { type, key, label };
+  });
 
-  // Return true if the forms are not equal or if display/type properties differ
+  const strippedFlatFormDataCleaned = cleanComponent(strippedFlatFormData);
+  const strippedFlatFormCleaned = cleanComponent(strippedFlatForm);
+
+  // Comprehensive change detection
   return (
-    !_.isEqual(strippedFlatFormDataWithoutId, strippedFlatFormWithoutId) ||
+    dateTimeComponentsChanged || // Check datetime components specifically
+    !_.isEqual(strippedFlatFormDataCleaned, strippedFlatFormCleaned) ||
     formData.display !== form.display ||
     formData.type !== form.type
   );
 };
-
 // Adding tenantKey as suffix
 const addTenantkeyAsSuffix = (value, tenantkey) => {
   if (value.toLowerCase().endsWith(`-${tenantkey}`)) {

@@ -30,33 +30,52 @@ class FormResourceRenderPdf(Resource):
     @profiletime
     def get(form_id: string, submission_id: string):
         """Form rendering method."""
+        current_app.logger.info(
+            f"Inside Get RENDER form_id : {form_id}, submission_id : {submission_id}"
+        )
         pdf_service = PDFService(form_id=form_id, submission_id=submission_id)
+        current_app.logger.info("Created PDF Service class instance")
         default_template = "index.html"
         template_name = request.args.get("template_name")
+        current_app.logger.info(f"Template name found : {template_name}")
         template_variable_name = request.args.get("template_variable")
+        current_app.logger.info(
+            f"Template variable name found : {template_variable_name}"
+        )
         use_template = bool(template_name)
-
+        current_app.logger.info(f"use_template : {use_template}")
         template_name = (
             DocUtils.url_decode(secure_filename(template_name))
             if use_template
             else default_template
         )
 
+        current_app.logger.info(f"template_name : {template_name}")
+
         template_variable_name = (
             DocUtils.url_decode(secure_filename(template_variable_name))
             if template_variable_name
             else None
         )
-        if not pdf_service.search_template(template_name):
+        current_app.logger.info(f"template_variable_name : {template_variable_name}")
+        if not pdf_service.search_template(template_name, is_temp=use_template):
+            current_app.logger.error(
+                "Template not found, raising TEMPLATE_NOT_FOUND error"
+            )
             raise BusinessException(BusinessErrorCode.TEMPLATE_NOT_FOUND)
+
         if template_variable_name and not pdf_service.search_template(
-            template_variable_name
+            template_variable_name, is_temp=use_template
         ):
+            current_app.logger.error(
+                "Template vars not found, raising TEMPLATE_VARS_NOT_FOUND error"
+            )
             raise BusinessException(BusinessErrorCode.TEMPLATE_VARS_NOT_FOUND)
 
         render_data = pdf_service.get_render_data(
             use_template, template_variable_name, request.headers.get("Authorization")
         )
+        current_app.logger.error("Render data received")
         headers = {"Content-Type": "text/html"}
         return make_response(
             render_template(template_name, **render_data), 200, headers
@@ -102,9 +121,21 @@ class FormResourceExportPdf(Resource):
                 template_name,
                 template_variable_name,
             ) = pdf_service.create_template(template, template_variables)
-            current_app.logger.info(template_name)
-            current_app.logger.info(template_variable_name)
-        assert pdf_service.get_render_status(token, template_name) == 200
+            current_app.logger.info(f"Custom template created : {template_name}")
+            current_app.logger.info(
+                f"Template variables created : {template_variable_name}"
+            )
+            return pdf_service.create_pdf_from_custom_template(
+                template_name, template_variable_name, token, timezone
+            )
+
+        status = (
+            pdf_service.get_render_status(  # pylint:disable = too-many-function-args
+                token, template_name, template_variable_name
+            )
+        )
+        current_app.logger.info(f"pdf_service.get_render_status : {status}")
+        assert status == 200
         current_app.logger.info("Generating PDF...")
         result = pdf_service.generate_pdf(
             timezone, token, template_name, template_variable_name

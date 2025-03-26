@@ -37,7 +37,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 	/** This class' logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(KeycloakAuthenticationFilter.class);
 	
-	private static List<String> HARD_CODED_ROLES = Arrays.asList("create_designs", "view_designs", "create_submissions", "view_submissions", "view_tasks", "manage_tasks", "admin");
+	private static List<String> HARD_CODED_ROLES = Arrays.asList("create_designs", "view_designs", "create_submissions", "view_submissions", "view_tasks", "manage_tasks", "admin", "resubmit_submissions");
 	
 
 	private final String userNameAttribute;

@@ -73,7 +73,7 @@ const View = React.memo((props) => {
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
+ const draftModified = useSelector((state) => state.draft.draftModified);
   const { submission: draftSubmission, lastUpdated: lastUpdatedDraft } =
     useSelector((state) => state.draft) || {};
 
@@ -84,7 +84,7 @@ const View = React.memo((props) => {
   } = useSelector((state) => state.formDelete) || {};
 
   const draftSubmissionId =
-    useSelector((state) => state.draft.draftSubmission?.draftId) || draftId;
+    useSelector((state) => state.draft.draftSubmission?.applicationId) || draftId;
 
   // Holds the latest data saved by the server
   const { formStatusLoading, processLoadError } =
@@ -295,11 +295,11 @@ const View = React.memo((props) => {
 };
 
   const renderModifiedDate = () => {
-    if (draftSubmission && !isPublic) {
+    if (draftModified && !isPublic) {
       return (
         <>
           <span className="status-draft"></span> {t("Last modified on:")}{" "}
-          {new Date(draftSubmission?.modified).toLocaleString()}
+          {new Date(draftModified?.modified).toLocaleString()}
         </>
       );
     } else {
@@ -375,7 +375,7 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className="wizard-tab service-task-details user-form-container">
+        <div className="wizard-tab user-form-container">
           {(isPublic || formStatus === "active") ? (
             <Form
               form={form}

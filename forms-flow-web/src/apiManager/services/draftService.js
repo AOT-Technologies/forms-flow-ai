@@ -9,6 +9,7 @@ import {
   setDraftSubmissionError,
   setDraftDetailStatusCode,
   saveLastUpdatedDraft,
+  setDraftModified  
 } from "../../actions/draftActions";
 import moment from "moment";
 
@@ -44,6 +45,7 @@ export const draftUpdate = (data, ...rest) => {
       .then((res) => {
         if (res.data) {
           done(null, res.data);
+          dispatch(setDraftModified(res.data));
           dispatch(saveLastUpdatedDraft({ ...data }));
         } else {
           done("Error Posting data");

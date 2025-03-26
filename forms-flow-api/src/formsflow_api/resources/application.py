@@ -229,8 +229,14 @@ class ApplicationsResource(Resource):
         include_drafts = dict_data.get("include_drafts", False)
         only_drafts = dict_data.get("only_drafts", False)
         created_user_submissions = dict_data.get("created_user_submissions", False)
-
-        if auth.has_role([VIEW_TASKS, MANAGE_TASKS]) and not created_user_submissions:
+        form_name = ApplicationService.fetch_latest_form_name_by_parent_form_id(
+            common_filters["parent_form_id"]
+        )
+        # Check if the application_id is not a valid integer, return an empty response
+        application_id = dict_data.get("application_id")
+        if application_id and not application_id.isdigit():
+            application_schema_dump, application_count = [], 0
+        elif auth.has_role([VIEW_TASKS, MANAGE_TASKS]) and not created_user_submissions:
             (
                 application_schema_dump,
                 application_count,
@@ -253,6 +259,7 @@ class ApplicationsResource(Resource):
                     "totalCount": application_count,
                     "limit": common_filters["limit"],
                     "pageNo": common_filters["page_no"],
+                    "formName": form_name,
                 }
             ),
             HTTPStatus.OK,

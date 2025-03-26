@@ -313,7 +313,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             process.set("name", process_name)
 
         # Convert the XML tree back to a string
-        updated_xml = etree.tostring(
+        updated_xml = etree.tostring(  # pylint: disable=c-extension-no-member
             root, pretty_print=True, encoding="unicode", xml_declaration=False
         )
         # Prepend the XML declaration

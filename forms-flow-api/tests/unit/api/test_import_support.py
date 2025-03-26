@@ -20,7 +20,7 @@ def form_workflow_json_data(name="testform"):
                 "formDescription": "",
                 "anonymous": False,
                 "type": "main",
-                "taskVariable": "[{\"key\": \"applicationId\", \"label\": \"Submission Id\", \"type\": \"hidden\"}]",
+                "taskVariable": '[{"key": "applicationId", "label": "Submission Id", "type": "hidden"}]',
                 "content": {
                     "title": name,
                     "name": name,
@@ -428,11 +428,7 @@ def mapper_data():
         "createdBy": "formsflow-designer",
         "modifiedBy": None,
         "taskVariables": [
-            {
-                "key": "applicationId",
-                "label": "Submission Id",
-                "type": "hidden"
-            }
+            {"key": "applicationId", "label": "Submission Id", "type": "hidden"}
         ],
         "version": "1",
         "processTenant": None,
@@ -441,7 +437,7 @@ def mapper_data():
         "promptNewVersion": False,
         "isMigrated": True,
         "majorVersion": 1,
-        "minorVersion": 0
+        "minorVersion": 0,
     }
 
 
@@ -460,7 +456,7 @@ def process_data():
         "processType": "BPMN",
         "isSubflow": False,
         "processKey": "testFormvar45",
-        "parentProcessKey": "testFormvar45"
+        "parentProcessKey": "testFormvar45",
     }
 
 
@@ -541,11 +537,7 @@ def test_import_new(app, client, session, jwt, mock_redis_client):
         assert response.json is not None
         assert response.json["mapper"] is not None
         assert response.json["mapper"]["taskVariables"] == [
-            {
-                "key": "applicationId",
-                "label": "Submission Id",
-                "type": "hidden"
-            }
+            {"key": "applicationId", "label": "Submission Id", "type": "hidden"}
         ]
         assert response.json["process"] is not None
 
@@ -641,11 +633,7 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
         assert response.json is not None
         assert response.json["mapper"] is not None
         assert response.json["mapper"]["taskVariables"] == [
-            {
-                "key": "applicationId",
-                "label": "Submission Id",
-                "type": "hidden"
-            }
+            {"key": "applicationId", "label": "Submission Id", "type": "hidden"}
         ]
         assert response.json["process"] is not None
 
@@ -677,11 +665,7 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
         assert response.json is not None
         assert response.json["mapper"] is not None
         assert response.json["mapper"]["taskVariables"] == [
-            {
-                "key": "applicationId",
-                "label": "Submission Id",
-                "type": "hidden"
-            }
+            {"key": "applicationId", "label": "Submission Id", "type": "hidden"}
         ]
 
     # Test case 4: Import edit - only workflow

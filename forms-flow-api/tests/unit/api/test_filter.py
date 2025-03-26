@@ -155,7 +155,9 @@ def test_attribute_filter(app, client, session, jwt):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # Create task filter
     response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(name="Task filter1", roles=["formsflow-reviewer"])
+        "/filter",
+        headers=headers,
+        json=get_filter_payload(name="Task filter1", roles=["formsflow-reviewer"]),
     )
     assert response.status_code == 201
     assert response.json.get("id") is not None
@@ -166,7 +168,14 @@ def test_attribute_filter(app, client, session, jwt):
     parent_filter_id = response.json.get("id")
     # Create attribute filter for the task filter
     response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(name="Attribute filter1", roles=["formsflow-reviewer"], parent_filter_id=parent_filter_id, filter_type="ATTRIBUTE")
+        "/filter",
+        headers=headers,
+        json=get_filter_payload(
+            name="Attribute filter1",
+            roles=["formsflow-reviewer"],
+            parent_filter_id=parent_filter_id,
+            filter_type="ATTRIBUTE",
+        ),
     )
     assert response.status_code == 201
     assert response.json.get("id") is not None

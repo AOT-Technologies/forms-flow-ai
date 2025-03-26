@@ -101,6 +101,15 @@ class KeycloakGroupService(KeycloakAdmin):
             group_id = group.get("id")
             url_path = f"groups/{group_id}/members"
             user_list = self.client.get_request(url_path)
+            if (
+                user_name_display_claim := current_app.config.get(
+                    "USER_NAME_DISPLAY_CLAIM"
+                )
+            ) is not None:
+                for user in user_list:
+                    user["username"] = self.get_user_id_from_response(
+                        user, user_name_display_claim
+                    )
 
         if search:
             user_list = self.user_service.user_search(search, user_list)
@@ -295,7 +304,7 @@ class KeycloakGroupService(KeycloakAdmin):
         )
 
     @user_context
-    def search_realm_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments
+    def search_realm_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments, too-many-locals
         self,
         search: str,
         page_no: int,
@@ -308,48 +317,90 @@ class KeycloakGroupService(KeycloakAdmin):
         """Search users in a realm."""
         user: UserContext = kwargs["user"]
         multitenancy = current_app.config.get("MULTI_TENANCY_ENABLED", False)
-
         tenant_key = user.tenant_key
-        # Initial url
-        url = "users?"
 
-        if page_no and limit:
-            url = f"users?first={(page_no - 1) * limit}&max={limit}"
-
-        if search:
-            # to add additional query parameter need to check url ends with nothing or any other parameter
-            url += f"{'' if url.endswith('?') else '&'}search={search}"
-
-        # if multitenancy enabled
-        if multitenancy:
-            url = f"users?q=tenantKey:{tenant_key}"
+        # Build the URL based on input parameters
+        url = self._build_search_url(multitenancy, tenant_key, page_no, limit, search)
 
         current_app.logger.debug(
             f"{'Getting tenant users...' if multitenancy else 'Getting users...'}"
         )
         user_list = self.client.get_request(url)
 
-        # checking the specific permission(roles)
+        # Process username display
+        user_list = self._process_username_display(user_list)
+
+        # Process permissions if needed
         if permission:
             users_with_roles = self.__populate_user_roles(user_list=user_list)
             user_list = self.user_service.filter_by_permission(
                 users_with_roles, permission=permission
             )
 
+        # Handle multitenancy search and counting
+        user_list, users_count = self._handle_multitenancy_and_count(
+            user_list, multitenancy, search, count, page_no, limit
+        )
+
+        # Add user groups if needed
+        if role:
+            user_list = self.__populate_user_groups(user_list)
+
+        return (user_list, users_count)
+
+    def _build_search_url(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        multitenancy,
+        tenant_key,
+        page_no,
+        limit,
+        search,
+    ):
+        """Build the search URL based on parameters."""
+        if multitenancy:
+            return f"users?q=tenantKey:{tenant_key}"
+
+        url = "users?"
+
+        if page_no and limit:
+            url = f"users?first={(page_no - 1) * limit}&max={limit}"
+
+        if search:
+            url += f"{'' if url.endswith('?') else '&'}search={search}"
+
+        return url
+
+    def _process_username_display(self, user_list):
+        """Process username display based on configured claim."""
+        user_name_display_claim = current_app.config.get("USER_NAME_DISPLAY_CLAIM")
+
+        if user_name_display_claim is not None:
+            for user in user_list:
+                user["username"] = self.get_user_id_from_response(
+                    user, user_name_display_claim
+                )
+
+        return user_list
+
+    def _handle_multitenancy_and_count(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self, user_list, multitenancy, search, count, page_no, limit
+    ):
+        """Handle multitenancy-specific filtering and counting."""
+        users_count = None
+
         if multitenancy and search:
             user_list = self.user_service.user_search(search, user_list)
-        users_count = (
-            len(user_list)
-            if current_app.config.get("MULTI_TENANCY_ENABLED")
-            else self.client.get_realm_users_count(search) if count else None
-        )
+
+        if count:
+            if current_app.config.get("MULTI_TENANCY_ENABLED"):
+                users_count = len(user_list)
+            else:
+                users_count = self.client.get_realm_users_count(search)
 
         if multitenancy and page_no and limit:
             user_list = self.user_service.paginate(user_list, page_no, limit)
 
-        if role:
-            user_list = self.__populate_user_groups(user_list)
-        return (user_list, users_count)
+        return user_list, users_count
 
     def add_user_to_tenant(self, data: Dict):
         """Add user to a tenant."""

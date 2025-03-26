@@ -114,6 +114,7 @@ const FormComponent = React.memo(
         component.logic = [];
         component.hidden = false;
         component.hideLabel = false;
+
         if(component.type == "container" || component.type == "survey" ){
           setNestedDataKeys(prev=>({...prev, [component.key]:component.type}));
         }

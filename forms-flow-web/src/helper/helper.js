@@ -69,37 +69,15 @@ const isFormComponentsChanged = ({restoredFormData, restoredFormId, formData, fo
   const flatFormData = utils.flattenComponents(formData.components);
   const flatForm = utils.flattenComponents(form.components);
 
-  // Filter and compare datetime components (day, datetime) from both forms
-  const filterDateTimeComponents = (form) =>
-    Object.values(form).filter((component) => component.type === "day" || component.type === "datetime");
-
-  const dateTimeOfFormData = filterDateTimeComponents(flatFormData);
-  const dateTimeOfForm = filterDateTimeComponents(flatForm);
-
-  // If datetime components don't match in number or type, return true
-  if (dateTimeOfFormData.length !== dateTimeOfForm.length || 
-      !dateTimeOfFormData.every((component) => 
-        dateTimeOfForm.some((comp) => comp.type === component.type))) {
-    return true;
-  }
-
-  // Remove datetime components from flatFormData and flatForm for further comparison
-  const strippedFlatFormData = Object.values(flatFormData).filter(
-    (component) => component.type !== "day" && component.type !== "datetime"
-  );
-  const strippedFlatForm = Object.values(flatForm).filter(
-    (component) => component.type !== "day" && component.type !== "datetime"
-  );
-
   // Remove 'id' property from each component for comparison
   const omitId = (components) => components.map((component) => _.omit(component, ['id']));
-  const strippedFlatFormDataWithoutId = omitId(strippedFlatFormData);
-  const strippedFlatFormWithoutId = omitId(strippedFlatForm);
+  const flatFormDataWithoutId = omitId(Object.values(flatFormData));
+  const flatFormWithoutId = omitId(Object.values(flatForm));
 
 
   // Return true if the forms are not equal or if display/type properties differ
   return (
-    !_.isEqual(strippedFlatFormDataWithoutId, strippedFlatFormWithoutId) ||
+    !_.isEqual(flatFormDataWithoutId, flatFormWithoutId) ||
     formData.display !== form.display ||
     formData.type !== form.type
   );

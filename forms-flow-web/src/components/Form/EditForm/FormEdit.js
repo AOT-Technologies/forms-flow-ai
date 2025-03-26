@@ -625,10 +625,7 @@ const handleSaveLayout = () => {
 
   const saveFormData = async ({ showToast = true }) => {
     try {
-      const isFormChanged = isFormComponentsChanged({
-        restoredFormData,
-        restoredFormId, formData, form
-      });
+      const isFormChanged = true; // Hard code the value to always make backend call on Save Layout
       if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
         setFormChangeState(prev => ({ ...prev, changed: false }));

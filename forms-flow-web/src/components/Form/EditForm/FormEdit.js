@@ -60,7 +60,7 @@ import NewVersionModal from "../../Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate } from "../../../helper/helper.js";
+import { generateUniqueId, addTenantkey, textTruncate } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
@@ -354,7 +354,6 @@ const EditComponent = () => {
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
   const {
     formHistoryData = {},
-    restoredFormData,
     restoredFormId,
   } = useSelector((state) => state.formRestore);
 

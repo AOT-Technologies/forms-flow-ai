@@ -197,74 +197,59 @@ def test_attribute_filter(app, client, session, jwt):
     assert response.json.get("attributeFilters")
 
 
-def test_filter_preference_create(app, client, session, jwt):
-    """Test create filter with valid payload."""
-    token = get_token(jwt, role=CREATE_FILTERS, username="reviewer")
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+def create_filter(client, headers, roles=["clerk"]):
+    """Create filter."""
     response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(roles=["clerk"])
+        "/filter", headers=headers, json=get_filter_payload(roles=roles)
     )
     assert response.status_code == 201
-    assert response.json.get("id") is not None
-    assert response.json.get("name") == "Test Task"
-    first_filter_id = response.json.get("id")
+    filter_data = response.json
+    assert filter_data.get("id") is not None
+    assert filter_data.get("name") == "Test Task"
+    return filter_data["id"]
 
-    response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(roles=["clerk"])
-    )
-    assert response.status_code == 201
-    assert response.json.get("id") is not None
-    assert response.json.get("name") == "Test Task"
-    second_filter_id = response.json.get("id")
+
+def test_filter_preference_create(app, client, session, jwt):
+    """Test creating filter preferences."""
+    token = get_token(jwt, role=MANAGE_ALL_FILTERS, username="reviewer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    first_filter_id = create_filter(client, headers)
+    second_filter_id = create_filter(client, headers)
 
     payload = [
         {"filterId": first_filter_id, "sortOrder": 2},
         {"filterId": second_filter_id, "sortOrder": 1},
     ]
-
     response = client.post("/filter/filter-preference", headers=headers, json=payload)
+
     assert response.status_code == 201
-    assert response.json()[0].get("filterId") == second_filter_id
+    assert response.json[0].get("filterId") == second_filter_id
 
 
 def test_filter_preference_list(app, client, session, jwt):
-    """Test create filter with valid payload."""
-    token = get_token(jwt, role=CREATE_FILTERS, username="reviewer")
+    """Test listing filter preferences."""
+    token = get_token(jwt, role=MANAGE_ALL_FILTERS, username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(roles=["clerk"])
-    )
-    assert response.status_code == 201
-    assert response.json.get("id") is not None
-    assert response.json.get("name") == "Test Task"
-    first_filter_id = response.json.get("id")
 
-    response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(roles=["clerk"])
-    )
-    assert response.status_code == 201
-    assert response.json.get("id") is not None
-    assert response.json.get("name") == "Test Task"
-    second_filter_id = response.json.get("id")
-
-    response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(roles=["clerk"])
-    )
-    assert response.status_code == 201
-    assert response.json.get("id") is not None
-    assert response.json.get("name") == "Test Task"
-    third_filter_id = response.json.get("id")
+    first_filter_id = create_filter(client, headers)
+    second_filter_id = create_filter(client, headers)
+    third_filter_id = create_filter(client, headers)
 
     payload = [
         {"filterId": first_filter_id, "sortOrder": 2, "hide": True},
         {"filterId": second_filter_id, "sortOrder": 1},
     ]
-
     response = client.post("/filter/filter-preference", headers=headers, json=payload)
     assert response.status_code == 201
-    assert response.json()[0].get("filterId") == second_filter_id
+    assert response.json[0].get("filterId") == second_filter_id
 
-    response = client.post("/filter/user", headers=headers, json=payload)
+    response = client.get("/filter/user", headers=headers)
     assert response.status_code == 200
-    assert len(response.json()) == 3
-    assert response.json()[2].get("id") == third_filter_id
+    filters = response.json.get("filters")
+    assert len(filters) == 3
+    assert filters[1]["id"] == first_filter_id
+    assert filters[1]["hide"] is True
+    assert filters[2]["id"] == third_filter_id
+    assert filters[2].get("sortOrder") is None
+    assert filters[2]["hide"] is False

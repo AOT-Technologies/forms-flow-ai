@@ -89,7 +89,6 @@ class FilterPreferences(db.Model, BaseModel, AuditDateTimeMixin):
                     hide=pref.get("hide", False),
                 )
                 db.session.add(new_record)
-
         return db.session.commit()
 
     @classmethod

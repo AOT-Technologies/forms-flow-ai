@@ -98,7 +98,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         admin: bool = False,
         filter_type: str = None,
         parent_filter_id: int = None,
-        exclude_ids=List[str],
+        exclude_ids: List[str] = None,
     ):
         """Find active filters of the user."""
         query = cls._auth_query(
@@ -168,16 +168,15 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     ) -> list[Filter]:
         """Find active filters by IDs, ensuring only active filters are returned."""
         if not filter_ids:
-            return []  # Avoids `IN ()` error
+            return []
 
-        query = cls._auth_query(
-            roles, user, tenant, admin
-        )  # Ensure this is a valid query
+        query = cls._auth_query(roles, user, tenant, admin)
 
         query = query.filter(
             and_(
                 Filter.id.in_(filter_ids),  # Properly handle multiple IDs
                 Filter.status == str(FilterStatus.ACTIVE.value),
+                Filter.filter_type == FilterType.TASK.value,
             )
         )
 

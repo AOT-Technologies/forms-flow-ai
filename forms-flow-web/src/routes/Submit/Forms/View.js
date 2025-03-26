@@ -85,7 +85,7 @@ const View = React.memo((props) => {
     (state) => state.formDelete.publicFormStatus
   );
   const draftSubmissionId = useSelector(
-    (state) => state.draft.draftSubmission?.id
+    (state) => state.draft.draftSubmission?.applicationId
   );
   // Holds the latest data saved by the server
   const processLoadError = useSelector((state) => state.process?.processLoadError);

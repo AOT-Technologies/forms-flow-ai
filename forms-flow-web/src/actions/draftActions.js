@@ -105,3 +105,10 @@ export const setDraftListSearchParams = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setDraftModified = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_MODIFIED,
+    payload: data,
+  });
+};

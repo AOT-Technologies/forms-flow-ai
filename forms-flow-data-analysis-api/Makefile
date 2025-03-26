@@ -5,7 +5,8 @@
 
 MKFILE_PATH:=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_ABS_DIR:=$(patsubst %/,%,$(dir $(MKFILE_PATH)))
-MODEL_ID=Seethal/sentiment_analysis_generic_dataset
+# MODEL_ID=Seethal/sentiment_analysis_generic_dataset
+MODEL_ID=distilbert-base-uncased-finetuned-sst-2-english
 PROJECT_NAME:=api
 
 #################################################################################
@@ -39,7 +40,7 @@ install: clean ## Install python virtrual environment
 	test -f venv/bin/activate || python3 -m venv  $(CURRENT_ABS_DIR)/venv ;\
 	. venv/bin/activate ;\
 	pip install --upgrade pip ;\
-	pip install -Ur requirements/prod-transformers.txt ;\
+	pip install --extra-index-url https://download.pytorch.org/whl/cpu -Ur requirements/prod-transformers.txt ;\
 	pip freeze | grep -v "pkg-resources" | sort > requirements.txt ;\
 	pip install -Ur requirements/dev.txt  ;\
 	touch venv/bin/activate  # update so it's as new as requirements/prod.txt

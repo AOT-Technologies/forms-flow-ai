@@ -13,7 +13,9 @@ from formsflow_api_utils.utils import (
     MANAGE_ALL_FILTERS,
     VIEW_DESIGNS,
     VIEW_FILTERS,
+    VIEW_SUBMISSIONS,
     auth,
+    authorization_list_model,
     cors_preflight,
     profiletime,
 )
@@ -30,15 +32,11 @@ from formsflow_api.services import (
     FormProcessMapperService,
 )
 
-
-class NullableString(fields.String):
-    """Extending String field to be nullable."""
-
-    __schema_type__ = ["string", "null"]
-    __schema_example__ = "nullable string"
-
-
-API = Namespace("Form", description="Form")
+API = Namespace(
+    "Form",
+    description="Manages form lifecycle, including creation, update, listing, \
+                deletion, retrieval, validation, publish, unpublish, and history.",
+)
 
 form_list_model = API.model(
     "FormList",
@@ -52,6 +50,12 @@ form_list_model = API.model(
                         "formName": fields.String(),
                         "id": fields.String(),
                         "processKey": fields.String(),
+                        "formType": fields.String(),
+                        "created": fields.String(),
+                        "modified": fields.String(),
+                        "anonymous": fields.Boolean(),
+                        "status": fields.String(),
+                        "description": fields.String(),
                     },
                 )
             )
@@ -73,25 +77,38 @@ mapper_create_model = API.model(
         "parentFormId": fields.String(),
     },
 )
-
+task_variables_model = API.model(
+    "TaskVariables",
+    {
+        "key": fields.String(),
+        "label": fields.String(),
+        "type": fields.String(),
+    },
+)
 mapper_create_response_model = API.model(
     "MapperCreateResponse",
     {
         "anonymous": fields.Boolean(),
-        "comments": NullableString(),
+        "comments": fields.String(),
         "created": fields.String(),
         "createdBy": fields.String(),
         "formId": fields.String(),
         "formName": fields.String(),
         "id": fields.String(),
         "modified": fields.String(),
-        "modifiedBy": NullableString(),
+        "modifiedBy": fields.String(),
         "processKey": fields.String(),
         "processName": fields.String(),
-        "processTenant": NullableString(),
-        "status": NullableString(),
-        "taskVariable": fields.String(),
+        "processTenant": fields.String(),
+        "status": fields.String(),
+        "taskVariables": fields.List(fields.Nested(task_variables_model)),
         "version": fields.String(),
+        "promptNewVersion": fields.Boolean(default=False),
+        "deleted": fields.Boolean(default=False),
+        "description": fields.String(),
+        "isMigrated": fields.Boolean(),
+        "majorVersion": fields.Integer(),
+        "minorVersion": fields.Integer(),
     },
 )
 
@@ -100,15 +117,35 @@ mapper_update_model = API.model(
     {
         "formId": fields.String(),
         "formName": fields.String(),
+        "description": fields.String(),
         "status": fields.String(),
         "taskVariable": fields.String(),
         "anonymous": fields.Boolean(),
         "processKey": fields.String(),
         "processName": fields.String(),
         "id": fields.String(),
+        "formType": fields.String(),
+        "majorVersion": fields.Integer(),
+        "minorVersion": fields.Integer(),
+        "parentFormId": fields.String(),
+        "taskVariables": fields.List(fields.Nested(task_variables_model)),
     },
 )
 
+mapper_update_request_model = API.model(
+    "MapperAuthorizationUpdateModel",
+    {
+        "mapper": fields.Nested(mapper_update_model),
+        "authorizations": fields.Nested(authorization_list_model),
+    },
+)
+mapper_update_response_model = API.model(
+    "MapperUpdateResponseModel",
+    {
+        "mapper": fields.Nested(mapper_create_response_model),
+        "authorizations": fields.Nested(authorization_list_model),
+    },
+)
 application_count_model = API.model(
     "ApplicationCount", {"message": fields.String(), "value": fields.Integer()}
 )
@@ -116,10 +153,12 @@ application_count_model = API.model(
 task_variable_response_model = API.model(
     "TaskVariableResponse",
     {
+        "id": fields.String(),
+        "formType": fields.String(),
         "processName": fields.String(),
         "processKey": fields.String(),
-        "processTenant": NullableString(),
-        "taskVariable": fields.String(),
+        "processTenant": fields.String(),
+        "taskVariables": fields.String(),
     },
 )
 
@@ -140,17 +179,42 @@ form_create_model = API.model(
         "access": fields.List(fields.Nested(access_model)),
     },
 )
+form_create_request_model = API.inherit(
+    "FormCreateRequest",
+    form_create_model,
+    {
+        "newVersion": fields.Boolean(),
+    },
+)
 
 form_create_response_model = API.inherit(
     "FormCreateResponse",
+    form_create_model,
     {
         "_id": fields.String(),
+        "isBundle": fields.Boolean(default=False),
         "machineName": fields.String(),
         "owner": fields.String(),
-        "created": fields.String(),
-        "modified": fields.String(),
+        "created": fields.String(description="Date string"),
+        "modified": fields.String(description="Date string"),
     },
 )
+form_update_model = API.inherit(
+    "FormUpdate",
+    form_create_response_model,
+    {
+        "parentFormId": fields.String(),
+    },
+)
+
+form_update_request_model = API.inherit(
+    "FormUpdateRequest",
+    form_update_model,
+    {
+        "componentChanged": fields.Boolean(),
+    },
+)
+
 form_history_change_log_model = API.model(
     "formHistoryChangeLog",
     {"clone_id": fields.String(), "new_version": fields.Boolean()},
@@ -171,6 +235,7 @@ form_history_response_model = API.inherit(
                         "majorVersion": fields.Integer(),
                         "minorVersion": fields.Integer(),
                         "isMajor": fields.Boolean(),
+                        "version": fields.String(),
                     },
                 )
             )
@@ -179,20 +244,27 @@ form_history_response_model = API.inherit(
     },
 )
 forms_list_model = API.model(
-    "Forms List Model",
-    {"formTitle": fields.String(), "type": fields.String(), "content": fields.Raw()},
+    "FormsListModel",
+    {
+        "formTitle": fields.String(),
+        "formDescription": fields.String(),
+        "anonymous": fields.Boolean(),
+        "type": fields.String(),
+        "content": fields.Raw(),
+    },
 )
 workflows_list_model = API.model(
-    "Workflows List",
+    "WorkflowsList",
     {
         "processKey": fields.String(),
         "processName": fields.String(),
+        "processType": fields.String(),
         "type": fields.String(),
         "content": fields.String(),
     },
 )
 dmns_list_model = API.model(
-    "DMN List",
+    "DMNList",
     {"key": fields.String(), "type": fields.String(), "content": fields.String()},
 )
 resource_details_model = API.model("resource_details", {"name": fields.String()})
@@ -207,14 +279,6 @@ authorization_model = API.model(
     },
 )
 
-authorization_list_model = API.model(
-    "Authorization List",
-    {
-        "APPLICATION": fields.Nested(authorization_model),
-        "FORM": fields.Nested(authorization_model),
-        "DESIGNER": fields.Nested(authorization_model),
-    },
-)
 export_response_model = API.model(
     "ExportResponse",
     {
@@ -262,13 +326,35 @@ class FormResourceList(Resource):
             },
             "sortOrder": {
                 "in": "query",
-                "description": "Specify sorting  order.",
+                "description": "Specify sorting order.",
                 "default": "desc",
             },
             "search": {
                 "in": "query",
                 "description": "Retrieve form list based on form name or description.",
                 "default": "",
+            },
+            "showForOnlyCreateSubmissionUsers": {
+                "in": "query",
+                "description": "Retrieve only active forms that the current user is authorized \
+                                to create submissions when set to True",
+                "default": False,
+            },
+            "isActive": {
+                "in": "query",
+                "description": "Filter authorized active/inactive forms.",
+                "default": None,
+            },
+            "activeForms": {
+                "in": "query",
+                "description": "Retrieve all active forms.",
+                "default": False,
+            },
+            "includeSubmissionsCount": {
+                "in": "query",
+                "description": "Retrieve the submission count for the form, \
+                                applicable only to users with create submission permission.",
+                "default": False,
             },
         }
     )
@@ -282,7 +368,7 @@ class FormResourceList(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get():  # pylint: disable=too-many-locals
-        """Get form process mapper."""
+        """List forms."""
         dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
         search: str = dict_data.get("search", "")
         page_no: int = dict_data.get("page_no")
@@ -321,7 +407,6 @@ class FormResourceList(Resource):
             is_designer=is_designer,
             active_forms=active_forms,
             include_submissions_count=include_submissions_count,
-            ignore_designer=ignore_designer,
         )
         return (
             (
@@ -389,9 +474,9 @@ class FormResourceById(Resource):
 
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
-    @API.doc(body=mapper_update_model)
+    @API.doc(body=mapper_update_request_model)
     @API.response(
-        200, "CREATED:- Successful request.", model=mapper_create_response_model
+        200, "CREATED:- Successful request.", model=mapper_update_response_model
     )
     @API.response(
         400,
@@ -406,7 +491,7 @@ class FormResourceById(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def put(mapper_id: int):
-        """Update form by mapper_id."""
+        """Update form details and authorization by mapper_id."""
         data = request.get_json()
 
         # Extract mapper and authorization data from the request
@@ -486,7 +571,6 @@ class FormResourceByFormId(Resource):
     @API.response(
         200, "CREATED:- Successful request.", model=mapper_create_response_model
     )
-    @API.response(204, "NO_CONTENT:- Successful request but nothing follows.")
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -500,9 +584,9 @@ class FormResourceByFormId(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def get(form_id: str):
-        """Get form by form_id.
+        """Retrieve form details using form_id.
 
-        : form_id:- Get details of only form corresponding to a particular formId
+        : form_id:- Get details of the form corresponding to a particular formId
         """
         response = FormProcessMapperService.get_mapper_by_formid(form_id=form_id)
         task_variable = response.get("taskVariables")
@@ -541,7 +625,7 @@ class FormResourceApplicationCount(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def get(mapper_id: int):
-        """The method retrieves the total application count for the given mapper id."""
+        """Retrieves the total application count for the given mapper id."""
         FormProcessMapperService.check_tenant_authorization(mapper_id=mapper_id)
         (
             response,
@@ -574,7 +658,7 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def get(application_id: int):
-        """The method retrieves task variables based on application id."""
+        """Retrieves task variables of a form based on application id."""
         return (
             ApplicationService.get_application_form_mapper_by_id(application_id),
             HTTPStatus.OK,
@@ -589,9 +673,9 @@ class FormioFormResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
-    @API.doc(body=form_create_model)
+    @API.doc(body=form_create_request_model)
     @API.response(
-        200, "CREATED:- Successful request.", model=form_create_response_model
+        201, "CREATED:- Successful request.", model=form_create_response_model
     )
     @API.response(
         400,
@@ -606,7 +690,7 @@ class FormioFormResource(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def post():
-        """Formio form creation method."""
+        """Create a form with an associated flow, authorization rules, and history tracking."""
         try:
             # form data
             data = request.get_json()
@@ -632,8 +716,22 @@ class FormioFormUpdateResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
+    @API.doc(body=form_update_request_model)
+    @API.response(200, "CREATED:- Successful request.", model=form_update_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
     def put(form_id: str):
-        """Formio form update method."""
+        """Update form design and form history."""
         try:
             data = request.get_json()
             response = FormProcessMapperService.form_design_update(data, form_id)
@@ -655,7 +753,6 @@ class FormHistoryResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
-    @API.doc(body=form_create_model)
     @API.response(200, "OK:- Successful request.", model=form_history_response_model)
     @API.response(
         400,
@@ -670,7 +767,7 @@ class FormHistoryResource(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def get(form_id: str):
-        """Getting form history."""
+        """Retrieve form history by form_id."""
         FormProcessMapperService.check_tenant_authorization_by_formid(form_id=form_id)
         form_history, count = FormHistoryService.get_all_history(form_id, request.args)
         return (
@@ -706,7 +803,7 @@ class ExportById(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def get(mapper_id: int):
-        """Export by mapper_id."""
+        """Export form and workflow by mapper_id."""
         form_service = FormProcessMapperService()
         return (
             form_service.export(mapper_id),
@@ -722,6 +819,30 @@ class ValidateFormName(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
+    @API.doc(
+        params={
+            "title": {
+                "in": "query",
+                "description": "Form title to be validated",
+            },
+            "name": {
+                "in": "query",
+                "description": "Form name to be validated",
+            },
+            "path": {
+                "in": "query",
+                "description": "Form path to be validated",
+            },
+            "parentFormId": {
+                "in": "query",
+                "description": "Used for validating title against an existing form",
+            },
+            "id": {
+                "in": "query",
+                "description": "Form ID: Used for validating the path or name against an existing form",
+            },
+        }
+    )
     @API.response(200, "OK:- Successful request.")
     @API.response(400, "BAD_REQUEST:- Invalid request.")
     @API.response(
@@ -730,10 +851,10 @@ class ValidateFormName(Resource):
     )
     @API.response(403, "FORBIDDEN:- Authorization will not help.")
     def get():
-        """Handle GET requests for validating form names.
+        """Validates the form name, path and title.
 
-        Retrieves the query parameters from the request, validates the form name,
-        and returns a response indicating whether the form name is valid or not.
+        Retrieves query parameters, validates the form name, path, and title,
+        and returns a response indicating validity..
         """
         response = FormProcessMapperService.validate_form_name_path_title(request)
         return response, HTTPStatus.OK
@@ -761,7 +882,7 @@ class PublishResource(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def post(mapper_id: int):
-        """Publish by mapper_id."""
+        """Publish form and workflow by mapper_id."""
         form_service = FormProcessMapperService()
         return (
             form_service.publish(mapper_id),
@@ -791,9 +912,43 @@ class UnpublishResource(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def post(mapper_id: int):
-        """Unpublish by mapper_id."""
+        """Unpublish form and workflow by mapper_id."""
         form_service = FormProcessMapperService()
         return (
             form_service.unpublish(mapper_id),
+            HTTPStatus.OK,
+        )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/form-data/<string:form_id>", methods=["GET", "OPTIONS"])
+@API.doc(
+    params={
+        "form_id": "Unique identifier of the form",
+        "authType": "Authorization type (form, application, designer)",
+    }
+)
+class FormDataResource(Resource):
+    """Resource to support form data."""
+
+    @staticmethod
+    @auth.has_one_of_roles(
+        [CREATE_DESIGNS, VIEW_DESIGNS, CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]
+    )
+    @profiletime
+    @API.response(200, "OK:- Successful request.")
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(403, "FORBIDDEN:- Authorization will not help.")
+    def get(form_id: str):
+        """Get form data by form_id."""
+        form_service = FormProcessMapperService()
+        auth_type = request.args.get("authType")
+        is_designer = auth.has_role([CREATE_DESIGNS])
+        return (
+            form_service.get_form_data(form_id, auth_type, is_designer),
             HTTPStatus.OK,
         )

@@ -4,11 +4,11 @@ import io
 import json
 from unittest.mock import patch
 
-from formsflow_api_utils.utils import CREATE_DESIGNS
+from formsflow_api_utils.utils import CREATE_DESIGNS, get_token
 from werkzeug.datastructures import FileStorage
 
 from formsflow_api.services import ImportService
-from tests.utilities.base_test import get_formio_form_request_payload, get_token
+from tests.utilities.base_test import get_formio_form_request_payload
 
 
 def form_workflow_json_data(name="testform"):
@@ -20,6 +20,7 @@ def form_workflow_json_data(name="testform"):
                 "formDescription": "",
                 "anonymous": False,
                 "type": "main",
+                "taskVariable": "[{\"key\": \"applicationId\", \"label\": \"Submission Id\", \"type\": \"hidden\"}]",
                 "content": {
                     "title": name,
                     "name": name,
@@ -410,6 +411,59 @@ def bpmn_data():
     return bpmn_data
 
 
+def mapper_data():
+    """Sample apper data."""
+    return {
+        "created": "2025-03-18T10:11:55.938341Z",
+        "modified": "2025-03-18T10:11:55.938379Z",
+        "id": "1",
+        "formId": "67d946ebc54f46a15460104c",
+        "formName": "test Formvar1",
+        "formType": "form",
+        "parentFormId": "67d946ebc54f46a15460104c",
+        "processKey": "testFormvar45",
+        "processName": "testFormvar45",
+        "anonymous": False,
+        "status": "inactive",
+        "createdBy": "formsflow-designer",
+        "modifiedBy": None,
+        "taskVariables": [
+            {
+                "key": "applicationId",
+                "label": "Submission Id",
+                "type": "hidden"
+            }
+        ],
+        "version": "1",
+        "processTenant": None,
+        "deleted": False,
+        "description": "",
+        "promptNewVersion": False,
+        "isMigrated": True,
+        "majorVersion": 1,
+        "minorVersion": 0
+    }
+
+
+def process_data():
+    """Sample process data."""
+    return {
+        "created": "2025-03-18T10:11:56.005489Z",
+        "modified": "2025-03-18T10:11:56.005504Z",
+        "id": 1,
+        "name": "testFormvar45",
+        "processData": "",
+        "tenant": None,
+        "createdBy": "formsflow-designer",
+        "modifiedBy": None,
+        "status": "Draft",
+        "processType": "BPMN",
+        "isSubflow": False,
+        "processKey": "testFormvar45",
+        "parentProcessKey": "testFormvar45"
+    }
+
+
 def create_file(
     form_content, filename="response_export.json", content_type="application/json"
 ):
@@ -463,6 +517,10 @@ def test_import_new(app, client, session, jwt, mock_redis_client):
 
     # Test case 2: Import new form+workflow - import
     with patch.object(ImportService, "import_form_workflow") as mock_import_service:
+        mock_response = {
+            "mapper": mapper_data(),
+            "process": process_data(),
+        }
         mock_import_service.return_value = mock_response
 
         # Prepare the file content
@@ -481,6 +539,15 @@ def test_import_new(app, client, session, jwt, mock_redis_client):
         response = client.post("/import", data=form_data, headers=headers)
         assert response.status_code == 200
         assert response.json is not None
+        assert response.json["mapper"] is not None
+        assert response.json["mapper"]["taskVariables"] == [
+            {
+                "key": "applicationId",
+                "label": "Submission Id",
+                "type": "hidden"
+            }
+        ]
+        assert response.json["process"] is not None
 
     # Test case 3: Import with invalid json.
     form_content = json.dumps(form_json_data())
@@ -547,6 +614,10 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
 
     # Test case 2: Import edit form+workflow
     with patch.object(ImportService, "import_form_workflow") as mock_import_service:
+        mock_response = {
+            "mapper": mapper_data(),
+            "process": process_data(),
+        }
         mock_import_service.return_value = mock_response
 
         # Prepare the file content
@@ -568,9 +639,21 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
         response = client.post("/import", data=form_data, headers=headers)
         assert response.status_code == 200
         assert response.json is not None
+        assert response.json["mapper"] is not None
+        assert response.json["mapper"]["taskVariables"] == [
+            {
+                "key": "applicationId",
+                "label": "Submission Id",
+                "type": "hidden"
+            }
+        ]
+        assert response.json["process"] is not None
 
     # Test case 3: Import edit - only form
     with patch.object(ImportService, "import_form_workflow") as mock_import_service:
+        mock_response = {
+            "mapper": mapper_data(),
+        }
         mock_import_service.return_value = mock_response
 
         # Prepare the file content
@@ -592,9 +675,20 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
         response = client.post("/import", data=form_data, headers=headers)
         assert response.status_code == 200
         assert response.json is not None
+        assert response.json["mapper"] is not None
+        assert response.json["mapper"]["taskVariables"] == [
+            {
+                "key": "applicationId",
+                "label": "Submission Id",
+                "type": "hidden"
+            }
+        ]
 
     # Test case 4: Import edit - only workflow
     with patch.object(ImportService, "import_form_workflow") as mock_import_service:
+        mock_response = {
+            "process": process_data(),
+        }
         mock_import_service.return_value = mock_response
 
         # Prepare the file content
@@ -620,3 +714,4 @@ def test_import_edit(app, client, session, jwt, mock_redis_client):
         response = client.post("/import", data=form_data, headers=headers)
         assert response.status_code == 200
         assert response.json is not None
+        assert response.json["process"] is not None

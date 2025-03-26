@@ -9,7 +9,7 @@ import {
   deleteForm,
 } from "@aot-technologies/formio-react";
 import Loading from "../../../containers/Loading";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { MULTITENANCY_ENABLED, MAX_FILE_SIZE } from "../../../constants/constants";
 import {
   setBPMFormListLoading,
   setFormDeleteStatus,
@@ -47,6 +47,7 @@ import { addHiddenApplicationComponent } from "../../../constants/applicationCom
 import { navigateToDesignFormEdit } from "../../../helper/routerHelper.js";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
 import useSuccessCountdown from "../../../customHooks/useSuccessCountdown";
+
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
@@ -172,9 +173,9 @@ const List = React.memo((props) => {
   }, []);
 
   const fetchForms = () => {
-    let filters = [pageNo, limit, formSort, searchText];
+    let filters = {pageNo, limit, formSort, formName:searchText};
     dispatch(setFormSearchLoading(true));
-    dispatch(fetchBPMFormList(...filters));
+    dispatch(fetchBPMFormList({...filters}));
   };
   const onClose = () => {
     setNewFormModal(false);
@@ -201,6 +202,16 @@ const List = React.memo((props) => {
   };
 
   const handleImport = async (fileContent, actionType) => {
+
+    if (fileContent.size > MAX_FILE_SIZE) {
+      setImportError(
+        `File size exceeds the ${
+          MAX_FILE_SIZE / (1024 * 1024)
+        }MB limit. Please upload a smaller file.`
+      );
+      return;
+    }
+
     let data;
     if (
       [UploadActionType.VALIDATE, UploadActionType.IMPORT].includes(actionType)
@@ -386,7 +397,7 @@ const List = React.memo((props) => {
                       label={t("New Form")}
                       onClick={() => setNewFormModal(true)}
                       className=""
-                      dataTestid="create-form-button"
+                      dataTestId="create-form-button"
                       ariaLabel="Create Form"
                     />
                   )}

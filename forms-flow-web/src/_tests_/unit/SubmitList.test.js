@@ -7,11 +7,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
-import List from '../../routes/Design/Forms/List';
+import SubmitList from '../../routes/Submit/Forms/SubmitList';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
-import { CustomButton } from '../../../__mocks__/@formsflow/components';
+
 
 const queryClient = new QueryClient();
 let store = configureStore({
@@ -20,7 +20,7 @@ let store = configureStore({
 });
 
 // Helper function to render the component with router support
-function renderWithRouterMatch(Ui, { path = '/', route = '/' ,
+function renderWithRouterMatch(Ui, { path = '/', route = '/',
   props = {}
 }) {
   const history = createMemoryHistory({ initialEntries: [route] });
@@ -44,48 +44,15 @@ beforeEach(() => {
     preloadedState: mockstate,
   });
 
-  renderWithRouterMatch(List, {
-    path: '/formflow',
-    route: '/formflow',
+  renderWithRouterMatch(SubmitList, {
+    path: '/form',
+    route: '/form',
     props: {
-      forms: {isActive:true},
-      getFormsInit:true
+      forms: { isActive: true },
+      getFormsInit: true
     }
   });
 });
-
-
-//Should render the list component and open the modal when "New Form" is clicked
-it('should render the list component and open the modal when New Form is clicked', async () => {
-  rtlRender(<CustomButton dataTestId="create-form-button" />);
-  // Check that the "New Form" button is rendered
-  const button = screen.getByTestId("create-form-button");
-  expect(button).toBeInTheDocument();
-
-  userEvent.click(button);
-  // Wait for the modal to open and check if it is displayed
-  await waitFor(() => {
-    rtlRender(<div data-testid="create-form-modal">
-      <div className="modal-header">
-        <div>Add Form</div>
-        <button data-testid="modal-close-icon">Close</button>
-      </div>
-      <div className="modal-body">
-        <div className="content-wrapper">
-          <span className="modal-content-heading">Build</span>
-          <span className="modal-content-text">Create the form from scratch</span>
-        </div>
-        <div className="content-wrapper">
-          <span className="modal-content-heading">Import</span>
-          <span className="modal-content-text">Upload form from a file</span>
-        </div>
-      </div>
-    </div>);
-    const addFormModal = screen.getByTestId('create-form-modal');
-    expect(addFormModal).toBeInTheDocument();
-  });
-});
-
 //  Should render the search input and perform a search
 it('should render the search input and perform a search', async () => {
 
@@ -107,5 +74,21 @@ it('should render the search input and perform a search', async () => {
     expect(formTitle).toBeInTheDocument();
   });
 });
+
+it('should render the sort filter button and refresh button are shown in the document', async () => {
+  const sortFilterButton = screen.getByTestId('form-list-filter');
+  expect(sortFilterButton).toBeInTheDocument();
+  const refreshButton = screen.getByTestId('form-list-refresh');
+  expect(refreshButton).toBeInTheDocument();
+//the sort modal has already been tested in the sortModal.test.js file
+});
+
+
+
+
+
+
+
+
 
 

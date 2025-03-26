@@ -63,7 +63,7 @@ class KeycloakOIDC:
             kid = headers.get("kid")
             if not kid or kid not in public_keys:
                 # Force refresh keys if kid not found (possible key rotation)
-                public_keys = await self._fetch_keys()
+                public_keys = await self.__fetch_keys()
                 self.cache.set("public_keys", public_keys)
                 kid = headers.get("kid")
                 if not kid or kid not in public_keys:

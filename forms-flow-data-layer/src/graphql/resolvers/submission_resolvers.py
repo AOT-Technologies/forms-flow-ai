@@ -4,12 +4,13 @@ import strawberry
 
 from src.graphql.schema import SubmissionSchema
 from src.graphql.service import SubmissionService
+from src.middlewares.auth import auth
 from src.utils import cache_graphql
 
 
 @strawberry.type
 class SubmissionResolver:
-    @strawberry.field
+    @strawberry.field(extensions=[auth.auth_required()])
     @cache_graphql(expire=120, key_prefix="submissions")
     async def submissions(
         self, task_name: str, limit: int = 5

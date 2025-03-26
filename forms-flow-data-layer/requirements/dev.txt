@@ -1,0 +1,11 @@
+-r base.txt
+# Development dependencies
+black
+isort
+flake8
+pylint
+pytest
+pytest-asyncio
+pytest-cov
+httpx
+pytest-mock

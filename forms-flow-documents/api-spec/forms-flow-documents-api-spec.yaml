@@ -1,0 +1,130 @@
+openapi: 3.0.1
+info:
+  title: formsflow.ai documents API
+  description: "The API for formsflow.ai to handle document realted services"
+  version: "1.0"
+servers:
+- url: http://{{baseurl}}
+- url: 'http://localhost:5006'
+security:
+- bearerAuth: []
+tags:
+- name: PDFExport
+  description: Handles API operations for exporting form as a PDF.
+- name: Checkpoint
+  description: Verify the application's health status.
+paths:
+  /checkpoint:
+    get:
+      tags:
+      - Checkpoint
+      summary: Get the status of API
+      description: Verify the application's health status.
+      operationId: get_health_checkpoint_resource
+      responses:
+        "200":
+          description: Success
+          content: {}
+  /form/{form_id}/submission/{submission_id}/export/pdf:
+    post:
+      tags:
+      - PDFExport
+      summary: PDF generation and rendering method
+      description: |-
+        e.g payload ,
+        To generate default PDF
+        ```
+        {}
+        ```
+        To generate PDFs with generic custom theme
+        ```
+        {
+            "template": "PCFET0NUWVBFIGh0bWw..." #base64 encoded jinja template.
+        }
+        ```
+        To generate PDFs with dedicated custom theme
+        ```
+        {
+            "template": "PCFET0NUWVBFIGh0bWw...", #base64 encoded jinja template.
+            "templateVars": {"invoiceNumber": 7723949372643552}
+        }
+        ```
+      operationId: post_form_resource_export_pdf
+      parameters:
+      - name: timezone
+        in: query
+        description: "Timezone of client device eg: Asia/Calcutta"
+        schema:
+          type: string
+      - name: form_id
+        in: path
+        description: Form Id.
+        required: true
+        schema:
+          type: string
+      - name: submission_id
+        in: path
+        description: Submission Id.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestModel'
+        required: true
+      responses:
+        "200":
+          description: OK:- Successful request.
+          content: {}
+        "400":
+          description: BAD_REQUEST:- Invalid request.
+          content: {}
+        "401":
+          description: UNAUTHORIZED:- Authorization header not provided or an invalid
+            token passed
+          content: {}
+      x-codegen-request-body-name: payload
+components:
+  schemas:
+    RequestModel:
+      type: object
+      properties:
+        template:
+          type: string
+          description: base64 encoded jinja template is used when generate PDF with
+            custom theme.
+          default: ""
+        templateVars:
+          type: object
+          properties: {}
+          description: JSON key-value pairs for generating PDFs with a dedicated custom
+            theme.
+  responses:
+    ParseError:
+      description: When a mask can't be parsed
+      content: {}
+    MaskError:
+      description: When any error occurs on mask
+      content: {}
+    AuthError:
+      description: Handle auth error
+      content: {}
+    BusinessException:
+      description: Handle business exception
+      content: {}
+    ValidationError:
+      description: Handle validation error
+      content: {}
+    KeyError:
+      description: Handle key error
+      content: {}
+    HTTPError:
+      description: Handle http error
+      content: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

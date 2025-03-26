@@ -7,13 +7,11 @@ import threading
 from flask import Flask
 from transformers import pipeline
 
+from formsflow_api_utils.utils import jwt, Service, register_log_handlers, setup_logging
+
 from . import config, models
 from .models import db, migrate
 from .resources import data_analysis_api
-from .utils.auth import jwt
-from .utils.enumerator import Service
-from .utils.file_log_handler import register_log_handlers
-from .utils.logging import setup_logging
 
 flask_logger = setup_logging(
     os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf")
@@ -31,6 +29,10 @@ class LoadModel:  # pylint: disable=too-few-public-methods
     @classmethod
     def preload_models(cls):
         """Function to load the fine-tuned transformer model."""
+        # Set environment variable to cache models locally
+        os.environ["TRANSFORMERS_CACHE"] = "/app/model_cache"
+        # Make directory if it doesn't exist
+        os.makedirs("/app/model_cache", exist_ok=True)
         cls.classifier = pipeline(
             "sentiment-analysis", model=cls.model_id, truncation=True
         )
@@ -48,7 +50,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
         log_file="logs/forms-flow-data-analysis-api.log",
         when=os.getenv("API_LOG_ROTATION_WHEN", "d"),
         interval=int(os.getenv("API_LOG_ROTATION_INTERVAL", "1")),
-        backup_count=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
+        backupCount=int(os.getenv("API_LOG_BACKUP_COUNT", "7")),
         configure_log_file=app.config["CONFIGURE_LOGS"],
     )
     app.logger.propagate = False

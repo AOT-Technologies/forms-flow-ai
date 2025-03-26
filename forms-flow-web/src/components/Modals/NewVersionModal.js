@@ -126,7 +126,7 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                     label={<Translation>{(t) => t(`Save as Version ${newVersion}`)}</Translation>}
                     onClick={() => createNewVersion()}
                     buttonLoading={isNewVersionLoading ? true : false}
-                    dataTestid="confirm-new-version"
+                    dataTestId="confirm-new-version"
                     ariaLabel="Confirm New Version"
                 />
                 <CustomButton
@@ -137,7 +137,7 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                         clearState();
                     }}
                     className=""
-                    dataTestid="cancel-import"
+                    dataTestId="cancel-import"
                     ariaLabel="Cancel Import"
                 />
             </Modal.Footer>

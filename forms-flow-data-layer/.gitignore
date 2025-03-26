@@ -1,0 +1,64 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.env
+*.venv
+/build*
+# Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs & database
+logs/
+*.log
+*.sqlite3
+db.sqlite3
+
+# Python dependency files
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Ignore migrations (optional)
+migrations/
+
+# Ignore coverage reports
+htmlcov/
+.coverage
+*.cover
+.coverage.*
+
+# Ignore compiled Cython files
+*.c
+*.so
+
+# Ignore mypy cache
+.mypy_cache/
+
+# Ignore pytest cache
+.pytest_cache/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore Black, Flake8, Pylint reports
+.black/
+flake8.log
+pylint.log
+
+# Ignore pre-commit hooks
+.pre-commit-config.yaml
+
+# Ignore MongoDB & PostgreSQL data (optional)
+data/
+dump.rdb  # Redis dump
+postgres_data/
+mongo_data/
+*.egg-info/

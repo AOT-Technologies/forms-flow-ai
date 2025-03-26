@@ -92,5 +92,22 @@ const addTenantkeyAsSuffix = (value, tenantkey) => {
   }
 };
 
-export { generateUniqueId, replaceUrl, addTenantkey, removeTenantKey, textTruncate, renderPage, 
-  filterSelectOptionByLabel, isFormComponentsChanged,addTenantkeyAsSuffix};
+/* ----------------- convert data from and into multiselect ----------------- */
+const convertMultiSelectOptionToValue = (selectedValues = [], key = null) => 
+  selectedValues.map(i=> i[key]);
+
+const convertSelectedValueToMultiSelectOption = (values = [], key = null) => 
+  values.map((value)=>({[key]:value, id:_.uniqueId(value)}));
+/* ----------------------------------- --- ---------------------------------- */
+export { generateUniqueId, 
+  replaceUrl, 
+  addTenantkey, 
+  removeTenantKey, 
+  textTruncate, 
+  renderPage, 
+  filterSelectOptionByLabel, 
+  isFormComponentsChanged,
+  addTenantkeyAsSuffix, 
+  convertMultiSelectOptionToValue,
+  convertSelectedValueToMultiSelectOption
+};

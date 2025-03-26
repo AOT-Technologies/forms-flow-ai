@@ -3,9 +3,13 @@
 import datetime
 
 import pytest
-from formsflow_api_utils.utils import CREATE_SUBMISSIONS, VIEW_DASHBOARDS
+from formsflow_api_utils.utils import (
+    CREATE_SUBMISSIONS,
+    VIEW_DASHBOARDS,
+    get_token,
+)
 
-from tests.utilities.base_test import get_application_create_payload, get_token
+from tests.utilities.base_test import get_application_create_payload
 
 METRICS_ORDER_BY_VALUES = ["created", "modified"]
 today = datetime.date.today().strftime("%Y-%m-%dT%H:%M:%S+00:00").replace("+", "%2B")

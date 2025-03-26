@@ -1,7 +1,7 @@
 @import "../../variables.scss";
 
 .text-blue {
-  color: $primary-500;
+  color: $primary;
 }
 
 .click-element {
@@ -18,7 +18,7 @@
   padding: 4px 8px;
   color: $white;
   position: absolute;
-  background-color: $dark;
+  background-color: $black;
   //left: 1rem;
   white-space: nowrap;
   z-index: 1;
@@ -28,12 +28,12 @@
   -moz-box-shadow: 0px 0px 4px $gray;
   -webkit-box-shadow: 0px 0px 4px $gray;
   box-shadow: 0px 0px 4px $gray;
-  background-image: -moz-linear-gradient(top, $gray-200, $gray-400);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, $gray-200),color-stop(1, $gray-400));
-  background-image: -webkit-linear-gradient(top, $gray-200, $gray-400);
-  background-image: -moz-linear-gradient(top, var$gray-200, $gray-400);
-  background-image: -ms-linear-gradient(top, $gray-200, $gray-400);
-  background-image: -o-linear-gradient(top, $gray-200, $gray-400);
+  background-image: -moz-linear-gradient(top, $gray-medium, $gray-medium-dark);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, $gray-medium),color-stop(1, $gray-medium-dark));
+  background-image: -webkit-linear-gradient(top, $gray-medium, $gray-medium-dark);
+  background-image: -moz-linear-gradient(top, var$gray-medium, $gray-medium-dark);
+  background-image: -ms-linear-gradient(top, $gray-medium, $gray-medium-dark);
+  background-image: -o-linear-gradient(top, $gray-medium, $gray-medium-dark);
 }
 
 .operator-box-container{
@@ -49,27 +49,13 @@
   //  width: 45px;
   padding: 0 0 0 3px;
   padding-right: 12px;
-  background-color: $danger-200;
+  background-color: $danger;
   outline: none;
-  color: $primary-500;
+  color: $primary;
 }
 .operator-selector select {
   display: none; /*hide original SELECT element:*/
 }
 .selection-item{
   background-color: $white;
-}
-//TODO Remove this when Semantic UI css is removed. Semantic UI css override formio css tooltip
-[data-tooltip]:before {
-  visibility: unset !important;
-  position: initial !important;
-  box-shadow: none !important;
-  opacity: 1 !important;
-  cursor:pointer !important;
-}
-[data-tooltip]:after {
-  opacity: 0 !important;
-}
-.fa-question-circle:before {
-  content: "\f059" !important;
 }

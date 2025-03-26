@@ -69,10 +69,33 @@ export const setBPMFormListPage = (page) => (dispatch) => {
   });
 };
 
+export const setBPMSubmitListPage = (page) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_PAGE_CHANGE,
+    payload: page,
+  });
+};
+
 export const setBPMFormLimit = (pageLimit) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_FORM_LIST_LIMIT_CHANGE,
     payload: pageLimit,
+  });
+};
+
+// Submission form listing pagination
+
+export const setClientSubmissionLimit = (pageLimit) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CLIENT_FORM_LIST_SUBMISSION_LIST_PAGE_CHANGE,
+    payload: pageLimit,
+  });
+};
+
+export const setClientSubmitionListPage = (page) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CLIENT_SUBMITION_LIST_PAGE_CHANGE,
+    payload: page,
   });
 };
 

@@ -54,3 +54,27 @@ jobs:
         id: flake8
         run: |
           flake8 src tests
+  Test:
+    if: always()
+    needs: setup-job
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-version: [3.12.9]
+    
+    env:
+      JWT_OIDC_JWKS_URI: "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/certs"
+      JWT_OIDC_ISSUER: "http://localhost:8081/auth/realms/forms-flow-ai"
+      JWT_OIDC_AUDIENCE: "forms-flow-web"
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: pip install -r requirements/dev.txt
+      - name: Run tests
+        run: pytest

@@ -8,7 +8,7 @@ from formsflow_api_utils.utils.enums import FilterStatus
 from sqlalchemy import Index, UniqueConstraint, tuple_
 from sqlalchemy.orm import relationship
 
-from formsflow_api.models import Filter
+from .filter import Filter
 
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel

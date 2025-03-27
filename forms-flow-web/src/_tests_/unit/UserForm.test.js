@@ -14,6 +14,7 @@ import configureStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import UserForm from "../../routes/Submit/Forms/UserForm";
 import { toast } from "react-toastify";
+import PropTypes from 'prop-types';
 import * as bpmServices from "../../apiManager/services/bpmServices";
 import * as draftService from "../../apiManager/services/draftService";
 import * as formServices from "../../apiManager/services/FormServices";
@@ -52,7 +53,7 @@ jest.mock("@aot-technologies/formio-react", () => {
     saveSubmission: (...args) => mockSaveSubmission(...args),
     Form: ({ onSubmit, onChange, onCustomEvent }) => (
       <div data-testid="formio-form">
-        Form Component
+       <span>Form Component</span>
         <button
           data-testid="form-submit-button"
           onClick={() => onSubmit({ data: { field1: "value1" } })}
@@ -125,6 +126,73 @@ jest.mock("@formsflow/components", () => ({
   ),
 }));
 
+
+// Define PropTypes for mocked components AFTER the mocks
+const MockForm = ({ onSubmit, onChange, onCustomEvent }) => (
+  <div data-testid="formio-form">
+    Form Component
+    <button
+      data-testid="form-submit-button"
+      onClick={() => onSubmit({ data: { field1: "value1" } })}
+    >
+      Submit
+    </button>
+    <button
+      data-testid="form-change-button"
+      onClick={() => onChange({ data: { field1: "changed" } })}
+    >
+      Change
+    </button>
+    <button
+      data-testid="form-custom-event-button"
+      onClick={() => onCustomEvent({ type: "CUSTOM_SUBMIT_DONE" })}
+    >
+      Custom Event
+    </button>
+  </div>
+);
+
+MockForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onCustomEvent: PropTypes.func.isRequired
+};
+
+const MockLoadingOverlay = ({ children, active }) => (
+  <div data-testid="loading-overlay" data-active={active}>
+    {children}
+  </div>
+);
+
+MockLoadingOverlay.propTypes = {
+  children: PropTypes.node,
+  active: PropTypes.bool
+};
+
+const MockSubmissionError = ({ modalOpen, message, onConfirm }) => (
+  <div data-testid="submission-error" data-open={modalOpen}>
+    {message}
+    <button data-testid="confirm-error-button" onClick={onConfirm}>
+      Confirm
+    </button>
+  </div>
+);
+
+MockSubmissionError.propTypes = {
+  modalOpen: PropTypes.bool,
+  message: PropTypes.string,
+  onConfirm: PropTypes.func
+};
+
+const MockBackToPrevIcon = ({ onClick }) => (
+  <button data-testid="back-to-form-list" onClick={onClick}>
+    Back
+  </button>
+);
+
+MockBackToPrevIcon.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
 // Mock services
 jest.mock("../../apiManager/services/bpmServices");
 jest.mock("../../apiManager/services/draftService");

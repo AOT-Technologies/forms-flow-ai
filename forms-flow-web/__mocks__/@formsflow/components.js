@@ -595,6 +595,7 @@ export const BackToPrevIcon = ({ onClick, dataTestId, ...props }) => (
 BackToPrevIcon.propTypes = {
   color: PropTypes.string,
   onClick: PropTypes.func,
+  dataTestId: PropTypes.string,
 };
 
 export const CustomInfo = () => {

@@ -2,22 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CustomProgressBar from '../../components/Modals/ProgressBar'; 
 import '@testing-library/jest-dom';
-
-import i18n from 'i18next';
-import { initReactI18next } from "react-i18next";
-
-// Add i18n mock configuration before your tests
-i18n.use(initReactI18next).init({
-  lng: 'en',
-  fallbackLng: 'en',
-  ns: ['translations'],
-  defaultNS: 'translations',
-  resources: {
-    en: {
-      translations: {},
-    },
-  },
-});
+import './utils/i18nForTests'; // import to remove warning related to i18n import
 describe('CustomProgressBar', () => {
   test('renders progress bar with the correct progress value', () => {
     render(<CustomProgressBar progress={50} />);

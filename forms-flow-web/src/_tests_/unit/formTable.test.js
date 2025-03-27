@@ -10,22 +10,7 @@ import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
 import FormTable from '../../components/Form/constants/FormTable';
-  
-import i18n from 'i18next';
-import { initReactI18next } from "react-i18next";
-
-// Add i18n mock configuration before your tests
-i18n.use(initReactI18next).init({
-  lng: 'en',
-  fallbackLng: 'en',
-  ns: ['translations'],
-  defaultNS: 'translations',
-  resources: {
-    en: {
-      translations: {},
-    },
-  },
-});
+import './utils/i18nForTests'; // import to remove warning related to i18n import
 
 jest.mock('connected-react-router', () => ({
   push: jest.fn(),

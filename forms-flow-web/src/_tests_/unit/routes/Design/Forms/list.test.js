@@ -11,22 +11,7 @@ import List from '../../../../../routes/Design/Forms/List';
 import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
-
-import i18n from 'i18next';
-import { initReactI18next } from "react-i18next";
-
-// Add i18n mock configuration before your tests
-i18n.use(initReactI18next).init({
-  lng: 'en',
-  fallbackLng: 'en',
-  ns: ['translations'],
-  defaultNS: 'translations',
-  resources: {
-    en: {
-      translations: {},
-    },
-  },
-});
+import '../../../utils/i18nForTests'; // import to remove warning related to i18n import
 const queryClient = new QueryClient();
 let store = configureStore({
   reducer: rootReducer,

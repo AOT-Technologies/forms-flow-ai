@@ -181,7 +181,7 @@ Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:6001
 
-![alt text](image-8.png)
+<img src="../../.images/image-8.png" />
 
 ## Conclusion
 

@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { Translation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { CloseIcon, CustomButton } from "@formsflow/components";
 
 const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
     newVersion, isNewVersionLoading }) => {
+    const { t } = useTranslation();
     const [checkedAll, setCheckedAll] = useState(false);
     const [acceptState, setAcceptState] = useState({
         acceptFirst: false,
@@ -123,7 +124,7 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                     variant={!checkedAll ? "dark" : "primary"}
                     disabled={!checkedAll}
                     size="md"
-                    label={<Translation>{(t) => t(`Save as Version ${newVersion}`)}</Translation>}
+                    label={t(`Save as Version ${newVersion}`)}
                     onClick={() => createNewVersion()}
                     buttonLoading={isNewVersionLoading ? true : false}
                     dataTestId="confirm-new-version"
@@ -132,7 +133,7 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                 <CustomButton
                     variant="secondary"
                     size="md"
-                    label={<Translation>{(t) => t("Cancel")}</Translation>}
+                    label={t("Cancel")}
                     onClick={() => {
                         clearState();
                     }}

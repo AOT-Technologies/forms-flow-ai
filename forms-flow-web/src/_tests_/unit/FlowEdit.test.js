@@ -14,6 +14,21 @@ import { Router } from 'react-router-dom';
 import * as processHelper from '../../helper/processHelper.js';
 import * as processServices from '../../apiManager/services/processServices.js';
  
+import i18n from 'i18next';
+import { initReactI18next } from "react-i18next";
+
+// Add i18n mock configuration before your tests
+i18n.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  ns: ['translations'],
+  defaultNS: 'translations',
+  resources: {
+    en: {
+      translations: {},
+    },
+  },
+});
 
 const queryClient = new QueryClient();
 let store = configureStore({

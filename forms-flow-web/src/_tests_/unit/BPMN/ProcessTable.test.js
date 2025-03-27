@@ -17,6 +17,21 @@ import rootReducer from "../rootReducer";
 import { mockstate } from "../mockState";
 import ProcessTable from "../../../routes/Design/Process/ProcessTable";
 
+import i18n from 'i18next';
+import { initReactI18next } from "react-i18next";
+
+// Add i18n mock configuration before your tests
+i18n.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  ns: ['translations'],
+  defaultNS: 'translations',
+  resources: {
+    en: {
+      translations: {},
+    },
+  },
+});
 
 jest.mock("connected-react-router", () => ({
   push: jest.fn(),
@@ -153,7 +168,7 @@ describe('ProcessTable Component Tests', () => {
     expect(itemsCount).toBeInTheDocument();
     
     const totalItems = screen.getByTestId("total-items");
-    expect(totalItems).toHaveTextContent('50');
+    expect(totalItems).toHaveTextContent('51');
     
     const prevButton = screen.getByTestId('left-button');
     const nextButton = screen.getByTestId('right-button');

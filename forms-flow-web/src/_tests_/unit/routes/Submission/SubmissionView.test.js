@@ -17,6 +17,23 @@ import ViewApplication from "../../../../../src/routes/Submit/Submission/Submiss
 import thunk from "redux-thunk";
 import { HelperServices } from "@formsflow/service";
 
+
+import i18n from 'i18next';
+import { initReactI18next } from "react-i18next";
+
+// Add i18n mock configuration before your tests
+i18n.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  ns: ['translations'],
+  defaultNS: 'translations',
+  resources: {
+    en: {
+      translations: {},
+    },
+  },
+});
+
 jest.mock('@formsflow/service', () => ({
   HelperServices: {
     getLocalDateAndTime: jest.fn()

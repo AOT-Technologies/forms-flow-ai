@@ -791,11 +791,7 @@ export const AngleLeftIcon = ({
   dataTestId="left-icon"
 }) => {
   return (
-    <button
-      className="left-icon-container"
-      onClick={onClick}
-      data-testid={dataTestId}
-      aria-label="Left Icon">
+ 
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="10"
@@ -811,8 +807,6 @@ export const AngleLeftIcon = ({
           strokeLinejoin="round"
         />
       </svg>
-    </button>
-
   );
 }
 
@@ -821,11 +815,7 @@ export const AngleRightIcon = ({
   dataTestId="right-icon"
 }) => {
   return (
-    <button
-      className="right-icon-container"
-      onClick={onClick}
-      data-testid={dataTestId}
-      aria-label="Right Icon">
+
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="10"
@@ -842,8 +832,6 @@ export const AngleRightIcon = ({
           strokeLinejoin="round"
         />
       </svg>
-    </button>
-
   );
 }
 

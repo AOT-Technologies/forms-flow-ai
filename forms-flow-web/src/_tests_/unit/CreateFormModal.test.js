@@ -4,6 +4,21 @@ import CreateFormModal from "../../components/Modals/CreateFormModal";
 import '@testing-library/jest-dom';
 import PropTypes from 'prop-types';  // Ensure PropTypes is imported at the top level
 
+import i18n from 'i18next';
+import { initReactI18next } from "react-i18next";
+
+// Add i18n mock configuration before your tests
+i18n.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  ns: ['translations'],
+  defaultNS: 'translations',
+  resources: {
+    en: {
+      translations: {},
+    },
+  },
+});
 // Define the CloseIcon component outside the mock
 const CloseIconComponent = ({ onClick }) => (
   <button data-testid="modal-close-icon" onClick={onClick}>

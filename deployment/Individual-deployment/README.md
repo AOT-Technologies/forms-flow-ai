@@ -44,7 +44,7 @@ Before deploying, rename `sample.env` to `.env`
 
 Wait until the service is up and running, then access it at http://localhost:8080/auth
 
-![alt text](image-1.png)
+<img src="../../.images/image-1.png" />
 
 ### Forms-flow-analytics
 [**formsflow.ai**](https://formsflow.ai/) leverages [Redash](https://github.com/getredash/redash) to build interactive
@@ -62,7 +62,7 @@ Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:7000
 
-![alt text](image-7.png)
+<img src="../../.images/image-7.png" />
 
 ### Forms-flow-forms
 
@@ -80,7 +80,8 @@ Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:3001
 
-![alt text](image-2.png)
+<img src="../../.images/image-2.png" />
+
 
 ### Forms-flow-redis
 
@@ -109,7 +110,7 @@ Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:5000
 
-![alt text](image-3.png)
+<img src="../../.images/image-3.png" />
 
 ### Forms-flow-documents-api
 
@@ -125,7 +126,7 @@ Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:5006
 
-![alt text](image-4.png)
+<img src="../../.images/image-4.png" />
 
 ### Forms-flow-bpm
 
@@ -143,7 +144,7 @@ Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:8000/camunda
 
-![alt text](image-5.png)
+<img src="../../.images/image-5.png" />
 
 ### Forms-flow-web
 
@@ -161,7 +162,7 @@ Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:3000
 
-![alt text](image-6.png)
+<img src="../../.images/image-6.png" />
 
 ### Forms-flow-data-analysis-api
 

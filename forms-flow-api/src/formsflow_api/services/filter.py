@@ -6,7 +6,7 @@ from formsflow_api_utils.utils import ADMIN
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import Filter, FilterType, User
+from formsflow_api.models import Filter, FilterPreferences, FilterType, User
 from formsflow_api.schemas import FilterSchema
 
 filter_schema = FilterSchema()
@@ -106,14 +106,33 @@ class FilterService:
                     },
                 )
                 filter_obj.save()
+        # fetch data from filter preference table
+        filter_preference = FilterPreferences.get_filters_by_user_id(
+            user.user_name, tenant_key
+        )
+        # Extract existing filter IDs to avoid redundant fetching from the filter table.
+        # The `existing_filters` variable will store the result, containing filters
+        existing_filter_ids = []
+        existing_filters = []
+        if filter_preference:
+            for preference_data in filter_preference:
+                existing_filter_ids.append(preference_data.filter_id)
+                # adding filter_preference sort order to filter data
+                preference_data.filter.sort_order = preference_data.sort_order
+                preference_data.filter.hide = preference_data.hide
+                existing_filters.append(preference_data.filter)
+
         filters = Filter.find_user_filters(
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
+            exclude_ids=existing_filter_ids,
             admin=ADMIN in user.roles,
             filter_type=FilterType.TASK,
         )
-        filter_data = filter_schema.dump(filters, many=True)
+        # Merging existing filters with the remaining data.
+        all_filters = [*existing_filters, *filters]
+        filter_data = filter_schema.dump(all_filters, many=True)
         default_variables = [
             {"name": "applicationId", "label": "Submission Id"},
             {"name": "formName", "label": "Form Name"},
@@ -127,6 +146,8 @@ class FilterService:
             filter_item["variables"] += [
                 var for var in default_variables if var not in filter_item["variables"]
             ]
+            filter_item["sortOrder"] = filter_item.get("sortOrder", None)
+            filter_item["hide"] = filter_item.get("hide", False)
         response = {"filters": filter_data}
         # get user default filter
         user_data = User.get_user_by_user_name(user_name=user.user_name)

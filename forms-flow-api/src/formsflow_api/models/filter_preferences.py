@@ -50,7 +50,7 @@ class FilterPreferences(db.Model, BaseModel, AuditDateTimeMixin):
     filter = relationship("Filter", lazy="joined", backref="filter_preferences")
 
     __table_args__ = (
-        UniqueConstraint("user_id", "filter_id", name="_filter_order_uc"),
+        UniqueConstraint("user_id", "filter_id", name="_user_filter_uc"),
         Index("idx_user_id_and_tenant", "tenant", "user_id"),
     )
 
@@ -98,7 +98,7 @@ class FilterPreferences(db.Model, BaseModel, AuditDateTimeMixin):
         """Find filter prefernce with specific user id."""
         query = cls.query.filter(
             cls.user_id == user_id,
-            cls.filter.has(Filter.status == str(FilterStatus.ACTIVE.value)),
+            cls.filter.has(Filter.status == FilterStatus.ACTIVE.value),
         )
         if tenant:
             query = query.filter(cls.tenant == tenant)

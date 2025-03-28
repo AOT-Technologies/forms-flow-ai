@@ -29,7 +29,7 @@ def upgrade():
     sa.Column('modified', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['filter_id'], ['filter.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('user_id', 'filter_id', name='_filter_order_uc')
+    sa.UniqueConstraint('user_id', 'filter_id', name='_user_filter_uc')
     )
     op.create_index('idx_user_id_and_tenant', 'filter_preferences', ['tenant', 'user_id'], unique=False)
     op.create_index(op.f('ix_filter_preferences_user_id'), 'filter_preferences', ['user_id'], unique=False)

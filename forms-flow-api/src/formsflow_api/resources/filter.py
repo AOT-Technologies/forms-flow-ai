@@ -99,6 +99,12 @@ filter_response = API.inherit(
         "modified": fields.DateTime(description="Modified time"),
         "createdBy": fields.String(),
         "modifiedBy": fields.String(),
+        "hide": fields.Boolean(
+            description="Status of this filter from filter preference data"
+        ),
+        "sortOrder": fields.Integer(
+            description="Sort order of the filter from filter preference data"
+        ),
     },
 )
 
@@ -126,34 +132,15 @@ filter_preference_model = API.model(
         "hide": fields.Boolean(description="Whether the filter is hidden"),
     },
 )
-filter_preference_request_model = API.model(
-    "FilterPreferenceRequestModel",
-    {
-        "body": fields.List(
-            fields.Nested(filter_preference_model),
-            description="List of filter preferences",
-        )
-    },
-)
 
-filter_preference_response_model = API.model(
+
+filter_preference_response_model = API.inherit(
     "BaseFilterPreferenceResponseModel",
+    filter_preference_model,
     {
-        "body": fields.List(
-            fields.Nested(
-                API.inherit(
-                    "filter_preference_response",
-                    filter_preference_model,
-                    {
-                        "id": fields.Integer(
-                            description="Unique identifier for the preference"
-                        ),
-                        "tenant": fields.String(description="Tenant identifier"),
-                        "userId": fields.String(description="User identifier"),
-                    },
-                )
-            )
-        )
+        "id": fields.Integer(description="Unique identifier for the preference"),
+        "tenant": fields.String(description="Tenant identifier"),
+        "userId": fields.String(description="User identifier"),
     },
 )
 
@@ -357,9 +344,9 @@ class FilterPreferenceResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
-    @API.doc(body=filter_preference_request_model)
+    @API.doc(body=[filter_preference_model])
     @API.response(
-        201, "CREATED:- Successful request.", model=filter_preference_response_model
+        201, "CREATED:- Successful request.", model=[filter_preference_response_model]
     )
     @API.response(400, "BAD_REQUEST:- Invalid request.")
     @API.response(

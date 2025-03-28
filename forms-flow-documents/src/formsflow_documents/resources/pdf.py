@@ -37,11 +37,8 @@ class FormResourceRenderPdf(Resource):
         current_app.logger.info("Created PDF Service class instance")
         default_template = "index.html"
         template_name = request.args.get("template_name")
-        current_app.logger.info(f"Template name found : {template_name}")
         template_variable_name = request.args.get("template_variable")
-        current_app.logger.info(
-            f"Template variable name found : {template_variable_name}"
-        )
+
         use_template = bool(template_name)
         current_app.logger.info(f"use_template : {use_template}")
         template_name = (

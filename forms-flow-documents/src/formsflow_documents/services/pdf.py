@@ -431,7 +431,7 @@ class PDFService:
             )
 
             # Set up Jinja environment with the temp directory
-            env = Environment(loader=FileSystemLoader(temp_dir))
+            env = Environment(loader=FileSystemLoader(temp_dir), autoescape=True)
             template_obj = env.get_template(template_name)
 
             # Render the template directly

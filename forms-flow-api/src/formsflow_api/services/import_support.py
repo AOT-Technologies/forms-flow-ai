@@ -559,6 +559,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 mapper.is_anonymous = anonymous
                 mapper.form_name = title
                 mapper.task_variable = task_variable
+                # if prompt_new_version already true then make it false
+                if mapper.prompt_new_version:
+                    mapper.prompt_new_version = False
                 mapper.save()
                 form_logs_data = {
                     "titleChanged": title_changed,

@@ -31,6 +31,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added script to migrate existing filters to TASK filter type.
 * Added variables(task_variables) as part of import and export.
 * Added Endpoint `/filter/filter-preference ` for saving user's filter preference data
+* Added new table called filter_preferences to handle filter preference of a user
 
 `Modified`
 

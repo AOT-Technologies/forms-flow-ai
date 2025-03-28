@@ -10,6 +10,7 @@ import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
 import ClientTable from '../../components/Form/constants/ClientTable';
+import './utils/i18nForTests'; // import to remove warning related to i18n import
 
 jest.mock('connected-react-router', () => ({
   push: jest.fn(),

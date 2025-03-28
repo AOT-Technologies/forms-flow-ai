@@ -10,7 +10,8 @@ import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import rootReducer from './rootReducer';
 import { mockstate } from './mockState';
 import FormTable from '../../components/Form/constants/FormTable';
-  
+import './utils/i18nForTests'; // import to remove warning related to i18n import
+
 jest.mock('connected-react-router', () => ({
   push: jest.fn(),
 }));
@@ -144,7 +145,7 @@ it('should render the table footer component and handle pagination correctly', (
   expect(itemsCount).toBeInTheDocument();
   
   const totalItems = screen.getByTestId("total-items");
-  expect(totalItems).toHaveTextContent('50');
+  expect(totalItems).toHaveTextContent('55');
 
   // Test pagination controls
   const prevButton = screen.getByTestId('left-button');

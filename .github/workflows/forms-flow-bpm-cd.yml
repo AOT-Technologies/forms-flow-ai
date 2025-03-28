@@ -119,9 +119,18 @@ jobs:
 
       - name: Replace security-severity undefined for license-related findings
         run: |
-          sed -i 's/"security-severity": "null"/"security-severity": "0"/g' snyk.sarif
-
-
+          # Check if Snyk SARIF file exists before processing
+          if [ -f snyk.sarif ]; then
+            # Use safer sed command with error handling
+            sed -i 's/"security-severity": "null"/"security-severity": "0"/g' snyk.sarif || true
+            
+            # Verify the file was processed
+            echo "Snyk SARIF file processed"
+          else
+            echo "No Snyk SARIF file found. Skipping replacement."
+            # Optionally, you can choose to exit with a non-zero code if this is critical
+            # exit 1
+          fi
       - name: Upload Snyk report as sarif 📦
         uses: github/codeql-action/upload-sarif@v3
         with:

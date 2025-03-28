@@ -548,6 +548,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 mapper.description = description
                 mapper.is_anonymous = anonymous
                 mapper.form_name = title
+                # if prompt_new_version already true then make it false
+                if mapper.prompt_new_version:
+                    mapper.prompt_new_version = False
                 mapper.save()
                 form_logs_data = {
                     "titleChanged": title_changed,
@@ -748,7 +751,12 @@ class ImportService:  # pylint: disable=too-many-public-methods
                         selected_workflow_version,
                     )
         if mapper_response:
+            major_version, minor_version = FormProcessMapperService.get_form_version(
+                mapper_response
+            )
             mapper_response = FormProcessMapperSchema().dump(mapper_response)
+            mapper_response["majorVersion"] = major_version
+            mapper_response["minorVersion"] = minor_version
             if task_variables := mapper_response.get("taskVariables"):
                 mapper_response["taskVariables"] = json.loads(task_variables)
             response["mapper"] = mapper_response

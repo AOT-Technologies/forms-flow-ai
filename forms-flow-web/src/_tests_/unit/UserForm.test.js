@@ -34,6 +34,37 @@ const mockSaveSubmission = jest.fn();
 const mockGetForm = jest.fn();
 
 jest.mock("@aot-technologies/formio-react", () => {
+  const PropTypes = jest.requireActual('prop-types');
+  
+  const FormComponent = ({ onSubmit, onChange, onCustomEvent }) => (
+    <div data-testid="formio-form">
+      <span>Form Component</span>
+      <button
+        data-testid="form-submit-button"
+        onClick={() => onSubmit({ data: { field1: "value1" } })}
+      >
+        Submit
+      </button>
+      <button
+        data-testid="form-change-button"
+        onClick={() => onChange({ data: { field1: "changed" } })}
+      >
+        Change
+      </button>
+      <button
+        data-testid="form-custom-event-button"
+        onClick={() => onCustomEvent({ type: "CUSTOM_SUBMIT_DONE" })}
+      >
+        Custom Event
+      </button>
+    </div>
+  );
+  
+  FormComponent.propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onCustomEvent: PropTypes.func.isRequired
+  };
   return {
     selectRoot: (key, state) => {
       if (key === "form") {
@@ -84,6 +115,7 @@ jest.mock("@aot-technologies/formio-react", () => {
   };
 });
 
+
 jest.mock("react-loading-overlay-ts", () => ({
   __esModule: true,
   default: ({ children, active }) => (
@@ -110,44 +142,23 @@ jest.mock("../../containers/SubmissionError", () => ({
   ),
 }));
 
-jest.mock("@formsflow/components", () => ({
-  BackToPrevIcon: ({ onClick }) => (
+jest.mock("@formsflow/components", () => {
+  const PropTypes = jest.requireActual('prop-types');
+  const BackToPrevIcon = ({ onClick }) => (
     <button data-testid="back-to-form-list" onClick={onClick}>
       Back
     </button>
-  ),
-}));
+  );
+  
+  BackToPrevIcon.propTypes = {
+    onClick: PropTypes.func.isRequired
+  };
+  
+  return {
+    BackToPrevIcon
+  };
+});
 
-// Define PropTypes for mocked components AFTER the mocks
-const MockForm = ({ onSubmit, onChange, onCustomEvent }) => (
-  <div data-testid="formio-form">
-    Form Component
-    <button
-      data-testid="form-submit-button"
-      onClick={() => onSubmit({ data: { field1: "value1" } })}
-    >
-      Submit
-    </button>
-    <button
-      data-testid="form-change-button"
-      onClick={() => onChange({ data: { field1: "changed" } })}
-    >
-      Change
-    </button>
-    <button
-      data-testid="form-custom-event-button"
-      onClick={() => onCustomEvent({ type: "CUSTOM_SUBMIT_DONE" })}
-    >
-      Custom Event
-    </button>
-  </div>
-);
-
-MockForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onCustomEvent: PropTypes.func.isRequired
-};
 
 const MockLoadingOverlay = ({ children, active }) => (
   <div data-testid="loading-overlay" data-active={active}>
@@ -173,39 +184,6 @@ MockSubmissionError.propTypes = {
   modalOpen: PropTypes.bool,
   message: PropTypes.string,
   onConfirm: PropTypes.func
-};
-
-const MockBackToPrevIcon = ({ onClick }) => (
-  <button data-testid="back-to-form-list" onClick={onClick}>
-    Back
-  </button>
-);
-
-MockBackToPrevIcon.propTypes = {
-  onClick: PropTypes.func.isRequired
-};
-
-// Need to add PropTypes for the mocked components inside the Jest mock functions
-// by extending the original component's PropTypes to include validation for the imported components
-const formMockPropTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onCustomEvent: PropTypes.func.isRequired
-};
-
-const loadingOverlayPropTypes = {
-  children: PropTypes.node,
-  active: PropTypes.bool
-};
-
-const submissionErrorPropTypes = {
-  modalOpen: PropTypes.bool,
-  message: PropTypes.string,
-  onConfirm: PropTypes.func
-};
-
-const backToPrevIconPropTypes = {
-  onClick: PropTypes.func.isRequired
 };
 
 // Mock services

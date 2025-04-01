@@ -35,7 +35,6 @@ const mockGetForm = jest.fn();
 
 jest.mock("@aot-technologies/formio-react", () => {
   const PropTypes = jest.requireActual('prop-types');
-  
   const FormComponent = ({ onSubmit, onChange, onCustomEvent }) => (
     <div data-testid="formio-form">
       <span>Form Component</span>
@@ -81,29 +80,7 @@ jest.mock("@aot-technologies/formio-react", () => {
     },
     resetSubmissions: (...args) => mockResetSubmissions(...args),
     saveSubmission: (...args) => mockSaveSubmission(...args),
-    Form: ({ onSubmit, onChange, onCustomEvent }) => (
-      <div data-testid="formio-form">
-        <span>Form Component</span>
-        <button
-          data-testid="form-submit-button"
-          onClick={() => onSubmit({ data: { field1: "value1" } })}
-        >
-          Submit
-        </button>
-        <button
-          data-testid="form-change-button"
-          onClick={() => onChange({ data: { field1: "changed" } })}
-        >
-          Change
-        </button>
-        <button
-          data-testid="form-custom-event-button"
-          onClick={() => onCustomEvent({ type: "CUSTOM_SUBMIT_DONE" })}
-        >
-          Custom Event
-        </button>
-      </div>
-    ),
+    Form: FormComponent,
     selectError: (key, state) => {
       return state[key]?.error || null;
     },

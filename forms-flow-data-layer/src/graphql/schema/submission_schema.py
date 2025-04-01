@@ -16,3 +16,9 @@ class SubmissionSchema:
     application_status: str
     task_name: str
     data: Optional[strawberry.scalars.JSON]  # Field to hold arbitrary JSON data
+
+
+@strawberry.type
+class QuerySubmissionsSchema:
+    id: int
+    created_by: str

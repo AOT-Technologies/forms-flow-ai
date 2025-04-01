@@ -2,7 +2,7 @@ from typing import List
 
 import strawberry
 
-from src.graphql.schema import SubmissionSchema
+from src.graphql.schema import SubmissionSchema, QuerySubmissionsSchema
 from src.graphql.service import SubmissionService
 from src.middlewares.auth import auth
 from src.utils import cache_graphql
@@ -28,3 +28,14 @@ class SubmissionResolver:
             limit=limit, task_name=task_name
         )
         return filtered_applications
+
+
+@strawberry.type
+class QuerySubmissionsResolver:
+    @strawberry.field(extensions=[auth.auth_required()])
+    @cache_graphql(expire=120, key_prefix="query-subissions")
+    async def querysubmissions(
+        self, submitted_by: str, info: strawberry.Info
+    ) -> List[QuerySubmissionsSchema]:
+        submissions = await SubmissionService.query_submissions(submitted_by, info)
+        return submissions

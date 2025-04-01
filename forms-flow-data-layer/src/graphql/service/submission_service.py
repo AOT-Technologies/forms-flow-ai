@@ -4,9 +4,10 @@ from typing import List
 from sqlalchemy.sql import select
 
 from src.db import bpmn_db, webapi_db
-from src.graphql.schema import SubmissionSchema
+from src.graphql.schema import SubmissionSchema, QuerySubmissionsSchema
 from src.graphql.service import FormService
-
+import strawberry
+from sqlalchemy import and_, or_
 
 class SubmissionService:
 
@@ -89,3 +90,64 @@ class SubmissionService:
             )
             for i, row in enumerate(applications)
         ]
+
+    @staticmethod
+    async def auth_tenant(info: strawberry.Info, table):
+        """Returns tenant auth condition"""
+        user = info.context["user"]
+        return table.c.tenant == user.tenant_key
+    
+
+    @staticmethod
+    async def query_submissions(submitted_by, info) -> List[QuerySubmissionsSchema]:
+        application_table = await webapi_db.get_table("application")
+        mapper_table = await webapi_db.get_table("form_process_mapper")
+        authorization_table = await webapi_db.get_table("authorization")
+        webapi_session = await webapi_db.get_session()
+        
+        # Get user context from token
+        user = info.context["user"]
+        username = user.token_info.get("preferred_username")
+        token_roles = user.token_info.get("roles", [])
+
+        async with webapi_session as api_session:
+            query = (
+                select(
+                    application_table,
+                    mapper_table.c.tenant,
+                    mapper_table.c.parent_form_id,
+                )
+                .join(
+                    mapper_table,
+                    application_table.c.form_process_mapper_id == mapper_table.c.id,
+                )
+                .join(
+                    authorization_table,
+                    and_(
+                        mapper_table.c.parent_form_id == authorization_table.c.resource_id,
+                        authorization_table.c.auth_type == "FORM",
+                        or_(
+                            authorization_table.c.user_name == username,
+                            *[authorization_table.c.roles.contains([role]) for role in token_roles],
+                            and_(
+                                authorization_table.c.user_name.is_(None),
+                                or_(
+                                    authorization_table.c.roles == {},
+                                    authorization_table.c.roles.is_(None)
+                                )
+                            )
+                        )
+                    )
+                )
+                
+                .where(
+                    application_table.c.created_by == submitted_by,
+                    await SubmissionService.auth_tenant(info, mapper_table),
+                ).distinct()
+            )
+            result = await api_session.execute(query)
+            applications = result.mappings().all()
+            return [
+                QuerySubmissionsSchema(id=row["id"], created_by=row["created_by"])
+                for i, row in enumerate(applications)
+            ]

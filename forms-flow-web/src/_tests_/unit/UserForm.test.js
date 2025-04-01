@@ -414,7 +414,7 @@ describe("UserForm Component", () => {
       get: () => true,
     });
     Object.defineProperty(constants, "CUSTOM_SUBMISSION_URL", {
-      get: () => "http://custom-url.com",
+      get: () => "https://custom-url.com",
     });
 
     // Create a store with the necessary props for custom submission

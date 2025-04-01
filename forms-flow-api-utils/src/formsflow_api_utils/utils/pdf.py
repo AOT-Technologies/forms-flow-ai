@@ -150,7 +150,6 @@ def get_pdf_from_html_string(html_content, chrome_driver_path=None, args=None):
         temp_url = f"file://{temp_html_path}"
         
         # Use the existing function to generate PDF from URL
-        from formsflow_api_utils.utils.pdf import get_pdf_from_html
         pdf = get_pdf_from_html(temp_url, chrome_driver_path, args)
         
         # Clean up temporary file
@@ -161,6 +160,5 @@ def get_pdf_from_html_string(html_content, chrome_driver_path=None, args=None):
             
         return pdf
     except Exception as e:
-        from flask import current_app
         current_app.logger.error(f"Error generating PDF from HTML string: {str(e)}")
         return None

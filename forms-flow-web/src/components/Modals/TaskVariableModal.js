@@ -15,11 +15,13 @@ import {
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
 import _ from "lodash";
+import { StyleServices } from "@formsflow/service";
+
 
   // Filter out applicationId and applicationStatus
   const ignoreKeywords = new Set([
-    "applicationId", 
-    "applicationStatus", 
+    "applicationId",
+    "applicationStatus",
     "currentUser",
     "submitterEmail",
     "submitterFirstName",
@@ -27,10 +29,12 @@ import _ from "lodash";
     "currentUserRole",
     "allAvailableRoles"
   ]);
- 
+
 //TBD in case of Bundle form display
 const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
+  const primaryColor = StyleServices.getCSSVariable('--ff-primary'); 
+  const primaryLight = StyleServices.getCSSVariable('--ff-primary-light'); 
 
   const filteredVariablePills = Object.values(alternativeLabels).filter(
     ({ key }) => !ignoreKeywords.has(key)
@@ -43,8 +47,8 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
             <CustomPill
               key={key}
               label={altVariable || labelOfComponent}
-              icon={<CloseIcon color="#253DF4" data-testid="pill-remove-icon" />}
-              bg="#E7E9FE"
+              icon={<CloseIcon color={primaryColor} data-testid="pill-remove-icon" />}
+              bg={primaryLight}
               onClick={() => onRemove(key)}
               secondaryLabel={key}
             />
@@ -64,8 +68,8 @@ PillList.propTypes = {
 /* ------------------------------ end pill list ----------------------------- */
 
 const FormComponent = React.memo(
-  ({ form, 
-    alternativeLabels, 
+  ({ form,
+    alternativeLabels,
     setAlternativeLabels,
     selectedComponent,
     setSelectedComponent
@@ -78,6 +82,27 @@ const FormComponent = React.memo(
     /* ------------- manipulate the hidden variable to show in form ------------- */
     const [updatedForm, setUpdatedForm] = useState(null);
     const [manipulatedKeys, setManipulatedKeys] = useState(new Set());
+    const [nestedDataKeys, setNestedDataKeys] = useState({});
+
+    function getParentKeys(parentComponent) {
+      if (!parentComponent) return [];
+  
+      const parentElement = parentComponent.getAttribute("ref");
+  
+      if (parentElement === "webform") return [];
+  
+      const nestedContainer = parentElement?.slice(7);
+  
+      if (parentElement === "component") {
+          return getParentKeys(parentComponent.parentElement);
+      }
+  
+      return nestedDataKeys[nestedContainer]
+          ? [...getParentKeys(parentComponent.parentElement),nestedContainer]
+          : getParentKeys(parentComponent.parentElement);
+  }
+  
+
     useEffect(()=>{
       const data = _.cloneDeep(form);
       const manipulatedKeys = [];
@@ -89,6 +114,10 @@ const FormComponent = React.memo(
         component.logic = [];
         component.hidden = false;
         component.hideLabel = false;
+
+        if(component.type == "container" || component.type == "survey" ){
+          setNestedDataKeys(prev=>({...prev, [component.key]:component.type}));
+        }
         /* ---------------------------------- ---- ---------------------------------- */
         //Keys ignored for the default task variable that don't need to be displayed in the form.
         if(component.type == "hidden" && !ignoreKeywords.has(component.key)){
@@ -111,19 +140,21 @@ const FormComponent = React.memo(
       "tabs",
     ]);
     const ignoredKeys = new Set([
-      "hidden", 
+      "hidden",
     ]);
     const handleClick = useCallback(
       (e) => {
         const formioComponent = e.target.closest(".formio-component");
         const highlightedElement = document.querySelector(".formio-hilighted");
-    
+
         if (highlightedElement) {
           highlightedElement.classList.remove("formio-hilighted");
         }
-    
-        if (formioComponent) {
-          
+        const parentComponent = formioComponent.parentElement;
+        const parentKeys = getParentKeys(parentComponent);
+        
+       
+        if (formioComponent) { 
           let classes = Array.from(formioComponent.classList).filter((cls) =>
             cls.startsWith("formio-component-")
           );
@@ -143,13 +174,13 @@ const FormComponent = React.memo(
               label: "",
               altVariable: "",
             });
-            return; 
+            return;
           }
-     
-    
+
+
           const labelElement = formioComponent.querySelector("label");
           let label = "";
-    
+
           if (labelElement) {
             label = Array.from(labelElement.childNodes)
               .filter(
@@ -162,14 +193,14 @@ const FormComponent = React.memo(
               .map((node) => node.textContent.trim())
               .join(" ");
           }
-              
+
           // Highlight the selected component
           formioComponent.classList.add("formio-hilighted");
           setShowElement(true);
-    
+
           // Update the selected component state
           setSelectedComponent({
-            key: componentKey,
+            key: parentKeys.length ? [...parentKeys, componentKey].join(".") : componentKey,
             type: manipulatedKeys.has(componentKey) ? "hidden" : componentType,
             label,
             altVariable: alternativeLabels[componentKey]?.altVariable || "",
@@ -192,9 +223,9 @@ const FormComponent = React.memo(
       const handleOutsideClick = (event) => {
         const clickedInsideForm = formHilighter?.contains(event.target);
         const clickedInsideDetails = detailsRef.current?.contains(event.target);
-    
+
         if (!clickedInsideForm && !clickedInsideDetails) {
-          setShowElement(false); 
+          setShowElement(false);
           const highlightedElement = document.querySelector(".formio-hilighted");
           if (highlightedElement) {
             highlightedElement.classList.remove("formio-hilighted"); // Remove the highlight class
@@ -225,7 +256,7 @@ const FormComponent = React.memo(
         if (highlightedElement) {
           highlightedElement.classList.remove("formio-hilighted");
         }
-      }     
+      }
       setShowElement(false);
     };
 
@@ -260,7 +291,7 @@ const FormComponent = React.memo(
               <FormInput
                 type="text"
                 ariaLabel="Add alternative label input"
-                dataTestid="Add-alternative-input"
+                dataTestId="Add-alternative-input"
                 label="Add Alternative Label"
                 value={selectedComponent.altVariable}
                 onChange={(e) =>
@@ -271,7 +302,7 @@ const FormComponent = React.memo(
                 }
               />
               <CustomButton
-                dataTestid="Add-alternative-btn"
+                dataTestId="Add-alternative-btn"
                 ariaLabel="Add alternative label button"
                 size="sm"
                 label={
@@ -282,7 +313,7 @@ const FormComponent = React.memo(
                 onClick={handleAddAlternative}
                 className="w-75"
                 disabled={selectedComponent.
-                    altVariable === alternativeLabels[selectedComponent.key]?.altVariable} //TBD need to create a variable to compare values 
+                    altVariable === alternativeLabels[selectedComponent.key]?.altVariable} //TBD need to create a variable to compare values
               />
             </div>
           ) : (
@@ -310,7 +341,7 @@ const TaskVariableModal = React.memo(
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
-    
+
     const form = useSelector((state) => state.form?.form || {});
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
@@ -335,7 +366,7 @@ const TaskVariableModal = React.memo(
         label: "",
         altVariable: "",
       });
-      
+
     const removeSelectedVariable = useCallback((key) => {
         setSelectedComponent((prev) => ({
             ...prev,
@@ -346,7 +377,7 @@ const TaskVariableModal = React.memo(
         delete newLabels[key];
         return newLabels;
       });
-      
+
     }, []);
 
     const handleClose = () => onClose();
@@ -356,7 +387,7 @@ const TaskVariableModal = React.memo(
         (i) => ({
           key: i.key,
           label: i.altVariable || i.labelOfComponent,    // If altVariable exists, use it, otherwise it will be  labelOfComponent
-          type: i.type 
+          type: i.type
         })
       );
       const mapper = {
@@ -383,7 +414,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Back to Layout")}
           ariaLabel="Back to Layout btn"
-          dataTestid="back-to-layout-btn"
+          dataTestId="back-to-layout-btn"
           onClick={handleBackToLayout}
         />
         <CustomButton
@@ -392,7 +423,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
-          dataTestid="cancel-btn"
+          dataTestId="cancel-btn"
           onClick={handleClose}
         />
       </>
@@ -408,7 +439,7 @@ const TaskVariableModal = React.memo(
           disabled={isPublished}
           label={t("Save")}
           ariaLabel="save task variable btn"
-          dataTestid="save-task-variable-btn"
+          dataTestId="save-task-variable-btn"
           onClick={handleSaveTaskVariable}
         />
         <CustomButton
@@ -417,7 +448,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
-          dataTestid="cancel-btn"
+          dataTestId="cancel-btn"
           onClick={handleClose}
         />
       </>
@@ -430,6 +461,7 @@ const TaskVariableModal = React.memo(
         className="task-variable-modal"
         size={layoutNotsaved ? "sm" : "lg"}
         centered={true}
+        data-testid="task-variable-modal"
       >
         <Modal.Header>
           <Modal.Title>
@@ -438,7 +470,7 @@ const TaskVariableModal = React.memo(
               : t("Variables for Flow, Submissions, and Tasks")}
           </Modal.Title>
           <div className="d-flex align-items-center">
-            <CloseIcon width="16.5" height="16.5" onClick={handleClose} />
+            <CloseIcon dataTestId="close-task-var-modal" width="16.5" height="16.5" onClick={handleClose} />
           </div>
         </Modal.Header>
         <Modal.Body>
@@ -457,10 +489,8 @@ const TaskVariableModal = React.memo(
             <>
               <div className="info-pill-container">
                 <CustomInfo
-                  heading="Note"
-                  content="To use variables in the flow, as well as sorting by them in
-                  the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed
-                 are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks."
+                  heading={t("Note")}
+                  content={t("To use variables in the flow, as well as sorting by them in the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks.")}
                 />
                 <div>
                   <label className="selected-var-text">

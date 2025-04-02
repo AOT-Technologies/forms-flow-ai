@@ -101,8 +101,8 @@ public class KeycloakGroupServiceTest {
 				configuration.getKeycloakAdminUrl() + "/users/" + userId + "/role-mappings/clients/client-id",
 				HttpMethod.GET, String.class)).thenReturn(clientRoleEntity);
 
-//		List<Group> roles = groupService.requestGroupsByUserId(cacheableKeycloakGroupQuery);
-//		assertEquals(roles.size(), 0);
+		// List<Group> roles = groupService.requestGroupsByUserId(cacheableKeycloakGroupQuery);
+		// assertEquals(roles.size(), 0);
 	}
 
 }

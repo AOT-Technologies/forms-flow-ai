@@ -3,7 +3,7 @@
 .insights {
   margin-top: 10px;
   & .line-hr {
-    border-top: 1px solid $primary-200;
+    border-top: 1px solid $primary-light;
   }
   & .card-counter {
     width: 100%;
@@ -31,7 +31,7 @@
   }
   & .insight-title {
     margin-bottom: -5px;
-    color: $dark;
+    color: $black;
   }
 }
 .div-middle

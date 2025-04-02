@@ -2,9 +2,7 @@
 
 import json
 
-from formsflow_api_utils.utils import ADMIN
-
-from tests.utilities.base_test import get_token
+from formsflow_api_utils.utils import ADMIN, get_token
 
 payload = {
     "logoName": "logo 2",
@@ -34,7 +32,7 @@ def test_get_theme(app, client, session, jwt):
     )
     assert response.status_code == 201
 
-    response = client.get("/themes")
+    response = client.get("/public/themes")
     assert response.status_code == 200
 
 
@@ -49,7 +47,7 @@ def test_theme_update(app, client, session, jwt):
     )
     assert response.status_code == 201
 
-    response = client.get("/themes", headers=headers)
+    response = client.get("/public/themes", headers=headers)
     assert response.status_code == 200
     update_payload = {
         "type": "base64",

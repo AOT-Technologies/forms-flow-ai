@@ -82,6 +82,7 @@ services:
       - CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER:-admin}
       - CAMUNDA_JDBC_PASSWORD=${CAMUNDA_JDBC_PASSWORD:-changeme}
       - CAMUNDA_JDBC_DRIVER=${CAMUNDA_JDBC_DRIVER:-org.postgresql.Driver}
+#      - SERVER_MAX_HTTP_REQUEST_HEADER_SIZE=${SERVER_MAX_HTTP_REQUEST_HEADER_SIZE:-8192}
 #      - CAMUNDA_HIKARI_CONN_TIMEOUT=${CAMUNDA_HIKARI_CONN_TIMEOUT}
 #      - CAMUNDA_HIKARI_IDLE_TIMEOUT=${CAMUNDA_HIKARI_IDLE_TIMEOUT}
 #      - CAMUNDA_HIKARI_MAX_POOLSIZE=${CAMUNDA_HIKARI_MAX_POOLSIZE}
@@ -126,7 +127,6 @@ services:
       - VAULT_PATH=${VAULT_PATH}
       - VAULT_SECRET=${VAULT_SECRET}
       - SHARED_REALM=${SHARED_REALM:-false}
-      - GROUP_PREFIX=${GROUP_PREFIX:-}
       - CSS_API_BASE_URL=${CSS_API_BASE_URL:-}
       - CSS_API_CLIENT_ID=${CSS_API_CLIENT_ID:-}
       - CSS_API_SECRET=${CSS_API_SECRET:-}
@@ -146,11 +146,12 @@ services:
       context: ./../../forms-flow-web-root-config/
       dockerfile: Dockerfile
       args:
-        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.0.1/forms-flow-web.gz.js}
-        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v7.0.1/forms-flow-nav.gz.js}
-        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v7.0.1/forms-flow-service.gz.js}
-        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.0.1/forms-flow-components.gz.js}
-        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.0.1/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.1.0-alpha/forms-flow-web.gz.js}
+        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v7.1.0-alpha/forms-flow-nav.gz.js}
+        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v7.1.0-alpha/forms-flow-service.gz.js}
+        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.1.0-alpha/forms-flow-components.gz.js}
+        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.1.0-alpha/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v7.1.0-alpha/forms-flow-review.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
     environment:
@@ -271,7 +272,6 @@ services:
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       FORMSFLOW_ADMIN_URL: ${FORMSFLOW_ADMIN_URL}
       SHARED_REALM: ${SHARED_REALM:-false}
-      GROUP_PREFIX: ${GROUP_PREFIX:-}
       CSS_API_BASE_URL: ${CSS_API_BASE_URL:-}
       CSS_API_CLIENT_ID: ${CSS_API_CLIENT_ID:-}
       CSS_API_SECRET: ${CSS_API_SECRET:-}
@@ -279,7 +279,10 @@ services:
       CSS_ENV: ${CSS_ENV:-}
       CSS_INTEGRATION_ID: ${CSS_INTEGRATION_ID:-}
       USER_NAME_DISPLAY_CLAIM: ${USER_NAME_DISPLAY_CLAIM:-}
-
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-5}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-10}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
+      
     stdin_open: true # -i
     tty: true # -t
     networks:

@@ -2,10 +2,9 @@
 
 from typing import Dict, List
 
-from formsflow_api_utils.utils import VIEW_SUBMISSIONS
+from formsflow_api_utils.utils import VIEW_SUBMISSIONS, get_token
 
 from formsflow_api.models import Application
-from tests.utilities.base_test import get_token
 
 
 def get_history_create_payload():

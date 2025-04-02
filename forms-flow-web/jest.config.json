@@ -16,8 +16,5 @@
       "lcov",
       "cobertura"
     ],
-    "testMatch": [
-      "**/*.test.js",
-      "**/*.spec.js"
-    ]
+    "verbose": true
   }

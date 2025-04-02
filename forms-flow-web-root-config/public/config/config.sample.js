@@ -71,6 +71,7 @@ window["_env_"] = {
    /* You can provide custom theme by adding json data to following path
   public/themeConfig/customTheme.json inside forms-flow-web-root-config.
   The JSON data should be formatted as specified in public/themeConfig/customCustomisation.json within the forms-flow-web-root-config directory.
+  
   */
   // REACT_APP_CUSTOM_THEME_URL: "<CUSTOM_THEME_URL>",
 

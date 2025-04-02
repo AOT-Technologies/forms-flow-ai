@@ -1,0 +1,15 @@
+fastapi[standard]
+strawberry-graphql[fastapi]
+motor
+beanie
+pydantic
+python-dotenv
+redis
+logging
+orjson
+sqlalchemy
+requests
+python-jose
+cachelib
+httpx
+asyncpg

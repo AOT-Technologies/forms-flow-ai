@@ -4,7 +4,7 @@ import string
 from http import HTTPStatus
 
 from flask import current_app, make_response, render_template, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     VIEW_SUBMISSIONS,
@@ -18,7 +18,22 @@ from formsflow_documents.services import PDFService
 from formsflow_documents.utils import DocUtils
 from formsflow_documents.utils.constants import BusinessErrorCode
 
-API = Namespace("Form", description="Form")
+API = Namespace("PDFExport", description="Handles API operations for exporting form as a PDF.")
+
+request_model = API.model(
+    "RequestModel",
+    {
+        "template": fields.String(
+            description="base64 encoded jinja template is used when generate PDF with custom theme.",
+            default="",
+            required=False,
+        ),
+        "templateVars": fields.Raw(
+            description="JSON key-value pairs for generating PDFs with a dedicated custom theme.",
+            required=False,
+        ),
+    },
+)
 
 
 @API.route("/<string:form_id>/submission/<string:submission_id>/render", doc=False)
@@ -100,8 +115,36 @@ class FormResourceExportPdf(Resource):
     @auth.require
     @auth.has_one_of_roles([VIEW_SUBMISSIONS])
     @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed",
+        },
+    )
+    @API.expect(request_model)
     def post(form_id: string, submission_id: string):
-        """PDF generation and rendering method."""
+        """PDF generation and rendering method.
+
+        e.g payload ,
+        To generate default PDF
+        ```
+        {}
+        ```
+        To generate PDFs with generic custom theme
+        ```
+        {
+            "template": "PCFET0NUWVBFIGh0bWw..." #base64 encoded jinja template.
+        }
+        ```
+        To generate PDFs with dedicated custom theme
+        ```
+        {
+            "template": "PCFET0NUWVBFIGh0bWw...", #base64 encoded jinja template.
+            "templateVars": {"invoiceNumber": 7723949372643552}
+        }
+        ```
+        """
         timezone = request.args.get("timezone")
         request_json = request.get_json()
         template = request_json.get("template")

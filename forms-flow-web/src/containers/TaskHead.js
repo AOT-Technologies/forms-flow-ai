@@ -107,14 +107,14 @@ function TaskHead() {
             selectedFilter?.id ? <div className="form-check mx-2 mb-0 form-switch">
 
             <input
-              className="form-check-input custom-switch-checkbox"
+              className="form-check-input cursor-pointer"
               onChange={defaultFilterChange}
               disabled={!selectedFilter?.id}
               checked={defaultFilter == selectedFilter?.id}
               type="checkbox"
               role="switch"
               id="defaultFilter"
-              data-testid="defaultFilter"
+              data-testid="defaultFilter" 
             />
                <label
               className="form-check-label cursor-pointer set-default-filter-label"
@@ -136,7 +136,7 @@ function TaskHead() {
         <div>
           <button
             type="button"
-            className={`btn me-1 btn-md ${
+            className={`btn me-1 btn-md${
               viewType ? "btn-light" : "btn-secondary active"
             }`}
             onClick={() => {

@@ -9,6 +9,8 @@ from formsflow_api_utils.utils import (
     CREATE_SUBMISSIONS,
     DRAFT_APPLICATION_STATUS,
     NEW_APPLICATION_STATUS,
+    VIEW_SUBMISSIONS,
+    get_token,
 )
 
 from formsflow_api.constants import BusinessErrorCode
@@ -19,14 +21,11 @@ from tests.utilities.base_test import (
     get_draft_create_payload,
     get_form_model_object,
     get_formio_form_request_payload,
-    get_token,
 )
 
 
 def test_draft_create_method(app, client, session, jwt, create_mapper):
     """Tests the draft create method with valid payload."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -37,41 +36,16 @@ def test_draft_create_method(app, client, session, jwt, create_mapper):
     assert response.json.get("id") is not None
     assert response.json.get("applicationId") is not None
     assert response.json.get("data") == get_draft_create_payload(form_id)["data"]
-
-    application_table = Application()
-    draft_application = application_table.find_by_id(response.json.get("applicationId"))
-    assert draft_application.application_status == DRAFT_APPLICATION_STATUS
-
-
-def test_draft_list(app, client, session, jwt, create_mapper):
-    """Testing draft listing API."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
+    application_id = response.json.get("applicationId")
+    token = get_token(jwt, role=VIEW_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    form_id = create_mapper["formId"]
-    token = get_token(jwt, role=CREATE_SUBMISSIONS)
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    for _ in range(2):
-        client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
-
-    response = client.get("/draft", headers=headers)
-    assert response.status_code == 200
-    assert response.json is not None
-    assert len(response.json["drafts"]) == 2
-
-    # tests if the draft listing is user specific
-    token = get_token(jwt, username="different_user", role=CREATE_SUBMISSIONS)
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.get("/draft", headers=headers)
-    assert response.status_code == 200
-    assert response.json is not None
-    assert len(response.json["drafts"]) == 0
+    rv = client.get(f"/application/{application_id}", headers=headers)
+    assert rv.status_code == 200
+    assert rv.json.get("applicationStatus") == DRAFT_APPLICATION_STATUS
 
 
 def test_draft_detail_view(app, client, session, jwt, create_mapper):
     """Testing draft details endpoint."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     form_id = create_mapper["formId"]
@@ -79,29 +53,22 @@ def test_draft_detail_view(app, client, session, jwt, create_mapper):
         "/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert response.status_code == 201
-    draft_id = response.json.get("id")
-    rv = client.get(f"/draft/{draft_id}", headers=headers)
+    application_id = response.json.get("applicationId")
+    token = get_token(jwt, role=VIEW_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.get(f"/application/{application_id}", headers=headers)
     assert rv.status_code == 200
-    assert rv.json.get("id") == draft_id
+    assert rv.json.get("id") == application_id
 
     # tests if the draft detail is user specific
-    token = get_token(jwt, username="different_user")
+    token = get_token(jwt, username="different_user", role=VIEW_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    rv = client.get(f"/draft/{draft_id}", headers=headers)
-    assert rv.status_code == 400
-    assert (
-        rv.json.get("message") == BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND.message
-    )
+    rv = client.get(f"/application/{application_id}", headers=headers)
+    assert rv.status_code == 403
 
 
 def test_draft_update_details_api(app, client, session, jwt, create_mapper):
     """Tests the draft update endpoint with valid payload."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -109,21 +76,18 @@ def test_draft_update_details_api(app, client, session, jwt, create_mapper):
         "/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert response.status_code == 201
-    draft_id = response.json.get("id")
-    rv = client.get(f"/draft/{draft_id}", headers=headers)
+    application_id = response.json.get("applicationId")
+    token = get_token(jwt, role=VIEW_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.get(f"/application/{application_id}", headers=headers)
     payload = rv.json
     payload["data"] = {"name": "sample"}
-    rv = client.put(f"/draft/{draft_id}", headers=headers, json=payload)
+    rv = client.put(f"/application/{application_id}", headers=headers, json=payload)
     assert rv.status_code == 200
 
 
 def test_draft_submission_resource(app, client, session, jwt, create_mapper):
     """Tests the '/<int: draft_id>/submit' endpoint."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -131,23 +95,21 @@ def test_draft_submission_resource(app, client, session, jwt, create_mapper):
         "/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert draft.status_code == 201
-    draft_id = draft.json.get("id")
+    application_id = draft.json.get("applicationId")
     payload = get_application_create_payload()
-    response = client.put(f"/draft/{draft_id}/submit", headers=headers, json=payload)
+    response = client.put(
+        f"/application/{application_id}/submit", headers=headers, json=payload
+    )
     assert response.json.get("applicationStatus") == "New"
     assert response.json.get("formId") == payload["formId"]
     assert response.json.get("submissionId") == payload["submissionId"]
-
-    draft = Draft().query.get(draft_id)
-    assert draft.status == "0"
-    assert draft.data == {}
-    assert draft.application_id == response.json.get("id")
+    # Check draft entry in draft table is deleted on submission
+    draft = Draft().query.get(draft.json.get("id"))
+    assert draft is None
 
 
 def test_draft_tenant_authorization(app, client, session, jwt, create_mapper_custom):
     """Tests if the draft detail is tenant authorized."""
-    token = get_token(jwt, role=CREATE_DESIGNS, tenant_key="tenant1")
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     payload = {
         "formId": "1234",
         "formName": "Sample form",
@@ -169,15 +131,17 @@ def test_draft_tenant_authorization(app, client, session, jwt, create_mapper_cus
         "/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert response.status_code == 201
-    draft_id = response.json.get("id")
-    rv = client.get(f"/draft/{draft_id}", headers=headers)
+    application_id = response.json.get("applicationId")
+    token = get_token(jwt, role=CREATE_SUBMISSIONS)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.get(f"/application/{application_id}", headers=headers)
     assert rv.status_code == 200
 
     # tests if another tenant can get the draft created by different tenant
     token = get_token(jwt, tenant_key="tenant2", role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    rv = client.get(f"/draft/{draft_id}", headers=headers)
-    assert rv.status_code == 400
+    rv = client.get(f"/application/{application_id}", headers=headers)
+    assert rv.status_code == 403
 
     # tests if a tenant can create a draft for a form created by different tenant
     response = client.post(
@@ -201,17 +165,19 @@ def test_anonymous_drafts(app, client, session, jwt):
         "content-type": "application/json",
     }
     response = client.post(
-        "/draft/public/create", headers=headers, json=get_draft_create_payload(form_id)
+        "/public/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert response.status_code == 201
     assert response.json.get("data") == get_draft_create_payload()["data"]
-    application = Application.find_by_id(response.json.get("applicationId"))
+    application = Application.find_draft_application_by_user(
+        response.json.get("applicationId"), user_id=ANONYMOUS_USER
+    )
     draft = Draft.query.get(response.json.get("id"))
     assert draft is not None
     assert application is not None
     assert application.created_by == ANONYMOUS_USER
     response = client.put(
-        f"/draft/public/{draft.id}/submit",
+        f"/public/application/{draft.application_id}/submit",
         headers=headers,
         json=get_application_create_payload(form_id),
     )
@@ -232,7 +198,7 @@ def test_anonymous_drafts(app, client, session, jwt):
         "content-type": "application/json",
     }
     response = client.post(
-        "/draft/public/create", headers=headers, json=get_draft_create_payload(form_id2)
+        "/public/draft", headers=headers, json=get_draft_create_payload(form_id2)
     )
     assert response.status_code == 403
     assert response.json == {
@@ -244,9 +210,6 @@ def test_anonymous_drafts(app, client, session, jwt):
 
 def test_delete_draft(app, client, session, jwt, create_mapper):
     """Tests the delete draft endpoint."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -254,14 +217,14 @@ def test_delete_draft(app, client, session, jwt, create_mapper):
         "/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert response.status_code == 201
-    draft_id = response.json.get("id")
-    rv = client.delete(f"/draft/{draft_id}", headers=headers)
+    application_id = response.json.get("applicationId")
+    rv = client.delete(f"/application/{application_id}", headers=headers)
     assert rv.status_code == 200
 
     # Tests if delete is user specific
     token = get_token(jwt, username="different_user", role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    rv = client.delete(f"/draft/{draft_id}", headers=headers)
+    rv = client.delete(f"/application/{application_id}", headers=headers)
     assert rv.status_code == 400
 
 
@@ -316,19 +279,21 @@ def test_capture_process_variables_draft_create_method(
         "/draft", headers=headers, json=get_draft_create_payload(form_id)
     )
     assert draft.status_code == 201
-    draft_id = draft.json.get("id")
+    application_id = draft.json.get("applicationId")
     payload = get_application_create_payload()
     payload["data"] = {
         "textField": "Test",
         "applicationId": "",
         "applicationStatus": "",
     }
-    response = client.put(f"/draft/{draft_id}/submit", headers=headers, json=payload)
-    processInstanceId = response.json.get("processInstanceId")
-    assert processInstanceId is not None
+    response = client.put(
+        f"/application/{application_id}/submit", headers=headers, json=payload
+    )
+    process_instance_id = response.json.get("processInstanceId")
+    assert process_instance_id is not None
     # Check variable added to process
     bpm_api_base = os.getenv("BPM_API_URL")
-    url = f"{bpm_api_base}/engine-rest-ext/v1/process-instance/{processInstanceId}/variables"
+    url = f"{bpm_api_base}/engine-rest-ext/v1/process-instance/{process_instance_id}/variables"
     response = requests.get(url, headers=headers)
     assert response.status_code == 200
     assert response.json().get("textField") == {"type": "String", "value": "Test"}

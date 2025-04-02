@@ -34,7 +34,7 @@ jest.mock("@formsflow/components", () => ({
       <button onClick={handleClearSearch} data-testid="clear-button" role="button" aria-label="clear">Clear</button>
     </div>
   ),
-  CustomButton: ({ label, onClick, isDropdown, dropdownItems, dataTestId, variant, size, className, ariaLabel }) => (
+  CustomButton: ({ label, onClick, isDropdown, dropdownItems, dataTestId, className, ariaLabel }) => (
     <div data-testid="mock-custom-button">
       <button
         onClick={onClick}
@@ -72,10 +72,42 @@ jest.mock("@formsflow/components", () => ({
   ConnectIcon: () => <div data-testid="mock-connect-icon">Connect Icon</div>,
 }));
 
+CustomSearch.propTypes = {
+  search: PropTypes.string.isRequired,
+  setSearch: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+  handleClearSearch: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  dataTestId: PropTypes.string,
+};
+
+CustomButton.propTypes = {
+  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  isDropdown: PropTypes.bool,
+  dropdownItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired,
+      dataTestId: PropTypes.string,
+      ariaLabel: PropTypes.string,
+    })
+  ),
+  dataTestId: PropTypes.string,
+  className: PropTypes.string,
+  ariaLabel: PropTypes.string,
+};
+
+BackToPrevIcon.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  dataTestId: PropTypes.string,
+  ariaLabel: PropTypes.string,
+};
+
+
 // Mock FilterSortActions component
-jest.mock("../../components/CustomComponents/FilterSortActions", () => ({
-  __esModule: true,
-  default: ({
+jest.mock("../../components/CustomComponents/FilterSortActions", () => {
+  const FilterSortActions = ({
     showSortModal,
     handleSortApply,
     handleFilterIconClick,
@@ -120,78 +152,54 @@ jest.mock("../../components/CustomComponents/FilterSortActions", () => ({
         </div>
       )}
     </div>
-  )
-}));
+  );
+
+  FilterSortActions.propTypes = {
+    showSortModal: PropTypes.bool.isRequired,
+    handleSortApply: PropTypes.func.isRequired,
+    handleFilterIconClick: PropTypes.func.isRequired,
+    handleRefresh: PropTypes.func.isRequired,
+    handleSortModalClose: PropTypes.func.isRequired,
+    optionSortBy: PropTypes.arrayOf(
+      PropTypes.shape({
+        value: PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+    defaultSortOption: PropTypes.string.isRequired,
+    defaultSortOrder: PropTypes.string.isRequired,
+    filterDataTestId: PropTypes.string.isRequired,
+    refreshDataTestId: PropTypes.string.isRequired,
+  };
+
+  return {
+    __esModule: true,
+    default: FilterSortActions,
+  };
+});
+
 
 // Mock SubmissionsAndDraftTable component
-jest.mock("../../components/Form/constants/SubmissionsAndDraftTable", () => ({
-  __esModule: true,
-  default: ({ fetchSubmissionsAndDrafts }) => (
+jest.mock("../../components/Form/constants/SubmissionsAndDraftTable", () => {
+  const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => (
     <div data-testid="mock-submissions-draft-table">
       Submissions and Draft Table
-      <button onClick={fetchSubmissionsAndDrafts} data-testid="refresh-table-button">Refresh Table</button>
+      <button onClick={fetchSubmissionsAndDrafts} data-testid="refresh-table-button">
+        Refresh Table
+      </button>
     </div>
-  )
-}));
+  );
 
+  SubmissionsAndDraftTable.propTypes = {
+    fetchSubmissionsAndDrafts: PropTypes.func.isRequired,
+  };
 
-const FilterSortActionsMock = jest.requireMock("../../components/CustomComponents/FilterSortActions").default;
+  return {
+    __esModule: true,
+    default: SubmissionsAndDraftTable,
+  };
+});
 
-FilterSortActionsMock.propTypes = {
-  showSortModal: PropTypes.bool,
-  handleSortApply: PropTypes.func.isRequired,
-  handleFilterIconClick: PropTypes.func.isRequired,
-  handleRefresh: PropTypes.func.isRequired,
-  handleSortModalClose: PropTypes.func.isRequired,
-  optionSortBy: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired
-  })).isRequired,
-  defaultSortOption: PropTypes.string,
-  defaultSortOrder: PropTypes.string,
-  filterDataTestId: PropTypes.string,
-  refreshDataTestId: PropTypes.string
-};
-
-const SubmissionsAndDraftTableMock = jest.requireMock("../../components/Form/constants/SubmissionsAndDraftTable").default;
-SubmissionsAndDraftTableMock.propTypes = {
-  fetchSubmissionsAndDrafts: PropTypes.func.isRequired
-};
-const formsflowComponents = jest.requireMock("@formsflow/components");
-
-formsflowComponents.CustomSearch.propTypes = {
-  search: PropTypes.string.isRequired,
-  setSearch: PropTypes.func.isRequired,
-  handleSearch: PropTypes.func.isRequired,
-  handleClearSearch: PropTypes.func.isRequired,
-  placeholder: PropTypes.string,
-  dataTestId: PropTypes.string
-};
-
-formsflowComponents.CustomButton.propTypes = {
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  onClick: PropTypes.func,
-  isDropdown: PropTypes.bool,
-  dropdownItems: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-    onClick: PropTypes.func,
-    dataTestId: PropTypes.string,
-    ariaLabel: PropTypes.string
-  })),
-  dataTestId: PropTypes.string,
-  variant: PropTypes.string,
-  size: PropTypes.string,
-  className: PropTypes.string,
-  ariaLabel: PropTypes.string
-};
-
-formsflowComponents.BackToPrevIcon.propTypes = {
-  onClick: PropTypes.func,
-  dataTestId: PropTypes.string,
-  ariaLabel: PropTypes.string
-};
-
-formsflowComponents.ConnectIcon.propTypes = {};
 
 // Create mock store with thunk middleware
 const middlewares = [thunk];

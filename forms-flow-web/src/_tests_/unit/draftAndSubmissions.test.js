@@ -71,17 +71,16 @@ jest.mock("@formsflow/components", () => ({
   ),
   ConnectIcon: () => <div data-testid="mock-connect-icon">Connect Icon</div>,
 }));
-
-CustomSearch.propTypes = {
+jest.mock("@formsflow/components").CustomSearch.propTypes = {
   search: PropTypes.string.isRequired,
   setSearch: PropTypes.func.isRequired,
   handleSearch: PropTypes.func.isRequired,
   handleClearSearch: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
-  dataTestId: PropTypes.string,
+  dataTestId: PropTypes.string
 };
 
-CustomButton.propTypes = {
+jest.mock("@formsflow/components").CustomButton.propTypes = {
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   isDropdown: PropTypes.bool,
@@ -98,7 +97,7 @@ CustomButton.propTypes = {
   ariaLabel: PropTypes.string,
 };
 
-BackToPrevIcon.propTypes = {
+jest.mock("@formsflow/components").BackToPrevIcon.propTypes = {
   onClick: PropTypes.func.isRequired,
   dataTestId: PropTypes.string,
   ariaLabel: PropTypes.string,

@@ -2,8 +2,8 @@ import strawberry
 
 from src.graphql.resolvers.formio_form_resolvers import FormResolver
 from src.graphql.resolvers.submission_resolvers import (
-    SubmissionResolver,
     QuerySubmissionsResolver,
+    SubmissionResolver,
 )
 
 

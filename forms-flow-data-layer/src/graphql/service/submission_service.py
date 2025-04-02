@@ -1,13 +1,14 @@
 import asyncio
 from typing import List
 
+import strawberry
+from sqlalchemy import and_, or_
 from sqlalchemy.sql import select
 
 from src.db import bpmn_db, webapi_db
-from src.graphql.schema import SubmissionSchema, QuerySubmissionsSchema
+from src.graphql.schema import QuerySubmissionsSchema, SubmissionSchema
 from src.graphql.service import FormService
-import strawberry
-from sqlalchemy import and_, or_
+
 
 class SubmissionService:
 
@@ -96,7 +97,36 @@ class SubmissionService:
         """Returns tenant auth condition"""
         user = info.context["user"]
         return table.c.tenant == user.tenant_key
-    
+
+    @staticmethod
+    async def form_auth_query(username: str, roles: list[str], auth_type: str):
+        """
+        Builds SQLAlchemy authorization conditions for form resources.
+
+        Constructs a composite SQL condition that checks if a user is authorized to access
+        form resources based on either:
+        - Direct username match
+        - Role-based permissions
+        - Open access (when no specific user or roles are specified)
+        - The auth_type parameter ensures the conditions only match records
+          of the specified authorization type
+        """
+        authorization_table = await webapi_db.get_table("authorization")
+        auth_conditions = and_(
+            authorization_table.c.auth_type == auth_type,
+            or_(
+                authorization_table.c.user_name == username,
+                *[authorization_table.c.roles.contains([role]) for role in roles],
+                and_(
+                    authorization_table.c.user_name.is_(None),
+                    or_(
+                        authorization_table.c.roles == {},
+                        authorization_table.c.roles.is_(None),
+                    ),
+                )
+            ),
+        )
+        return auth_conditions
 
     @staticmethod
     async def query_submissions(submitted_by, info) -> List[QuerySubmissionsSchema]:
@@ -104,11 +134,11 @@ class SubmissionService:
         mapper_table = await webapi_db.get_table("form_process_mapper")
         authorization_table = await webapi_db.get_table("authorization")
         webapi_session = await webapi_db.get_session()
-        
+
         # Get user context from token
         user = info.context["user"]
         username = user.token_info.get("preferred_username")
-        token_roles = user.token_info.get("roles", [])
+        user_roles = user.token_info.get("roles", [])
 
         async with webapi_session as api_session:
             query = (
@@ -124,26 +154,18 @@ class SubmissionService:
                 .join(
                     authorization_table,
                     and_(
-                        mapper_table.c.parent_form_id == authorization_table.c.resource_id,
-                        authorization_table.c.auth_type == "FORM",
-                        or_(
-                            authorization_table.c.user_name == username,
-                            *[authorization_table.c.roles.contains([role]) for role in token_roles],
-                            and_(
-                                authorization_table.c.user_name.is_(None),
-                                or_(
-                                    authorization_table.c.roles == {},
-                                    authorization_table.c.roles.is_(None)
-                                )
-                            )
-                        )
-                    )
+                        mapper_table.c.parent_form_id
+                        == authorization_table.c.resource_id,
+                        await SubmissionService.form_auth_query(
+                            username, user_roles, "FORM"
+                        ),
+                    ),
                 )
-                
                 .where(
                     application_table.c.created_by == submitted_by,
                     await SubmissionService.auth_tenant(info, mapper_table),
-                ).distinct()
+                )
+                .distinct()
             )
             result = await api_session.execute(query)
             applications = result.mappings().all()

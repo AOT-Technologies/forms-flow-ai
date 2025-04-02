@@ -2,7 +2,7 @@ from typing import List
 
 import strawberry
 
-from src.graphql.schema import SubmissionSchema, QuerySubmissionsSchema
+from src.graphql.schema import QuerySubmissionsSchema, SubmissionSchema
 from src.graphql.service import SubmissionService
 from src.middlewares.auth import auth
 from src.utils import cache_graphql

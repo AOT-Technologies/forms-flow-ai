@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission } from "../../helper/routerHelper";
 import '@testing-library/jest-dom';
+import PropTypes from "prop-types";
 import { 
   setApplicationListActivePage, 
   setCountPerpage, 
@@ -144,6 +145,67 @@ jest.mock("../../components/CustomComponents/SortableHeader", () => {
     );
   };
 });
+
+const formsflowComponents = jest.requireMock("@formsflow/components");
+
+formsflowComponents.CustomButton.propTypes = {
+  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  "data-testid": PropTypes.string,
+  "aria-label": PropTypes.string,
+  className: PropTypes.string,
+  disabled: PropTypes.bool,
+  variant: PropTypes.string
+};
+
+formsflowComponents.TableFooter.propTypes = {
+  limit: PropTypes.number.isRequired,
+  activePage: PropTypes.number.isRequired,
+  totalCount: PropTypes.number.isRequired,
+  handlePageChange: PropTypes.func.isRequired,
+  onLimitChange: PropTypes.func.isRequired,
+  pageOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired
+    })
+  ).isRequired,
+  className: PropTypes.string,
+  dataTestId: PropTypes.string
+};
+
+formsflowComponents.NoDataFound.propTypes = {
+  message: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  dataTestId: PropTypes.string
+};
+
+formsflowComponents.ConfirmModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  primaryBtnAction: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  message: PropTypes.node.isRequired,
+  secondayBtnAction: PropTypes.func,
+  primaryBtnText: PropTypes.string,
+  secondaryBtnText: PropTypes.string,
+  primaryBtndataTestid: PropTypes.string,
+  secondoryBtndataTestid: PropTypes.string,
+  secondaryBtnDisable: PropTypes.bool,
+  secondaryBtnLoading: PropTypes.bool,
+  className: PropTypes.string
+};
+
+const SortableHeader = jest.requireMock("../../components/CustomComponents/SortableHeader");
+
+SortableHeader.propTypes = {
+  columnKey: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  currentSort: PropTypes.object.isRequired,
+  handleSort: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  dataTestId: PropTypes.string
+};
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);

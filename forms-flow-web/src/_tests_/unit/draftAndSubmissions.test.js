@@ -8,7 +8,6 @@ import DraftsAndSubmissions from "../../routes/Submit/Forms/draftAndSubmissions"
 import * as applicationServices from "../../apiManager/services/applicationServices";
 import * as routerHelper from "../../helper/routerHelper";
 import "@testing-library/jest-dom";
-import PropTypes from "prop-types";
 
 jest.mock("../../apiManager/services/applicationServices", () => ({
   fetchApplicationsAndDrafts: jest.fn(() => () => Promise.resolve({ applications: [], totalCount: 0 }))
@@ -32,14 +31,15 @@ jest.mock("@formsflow/components", () => {
         placeholder={placeholder}
         data-testid={dataTestId}
       />
-      <button onClick={handleSearch} data-testid="search-button" role="button" aria-label="search">
+      <button onClick={handleSearch} data-testid="search-button" aria-label="search">
         Search
       </button>
-      <button onClick={handleClearSearch} data-testid="clear-button" role="button" aria-label="clear">
+      <button onClick={handleClearSearch} data-testid="clear-button" aria-label="clear">
         Clear
       </button>
     </div>
   );
+  
 
   CustomSearch.propTypes = {
     search: PropTypes.string.isRequired,
@@ -57,8 +57,8 @@ jest.mock("@formsflow/components", () => {
       </button>
       {isDropdown && dropdownItems && (
         <div className="dropdown-menu" data-testid="dropdown-menu">
-          {dropdownItems.map((item, index) => (
-            <button key={index} onClick={item.onClick} data-testid={item.dataTestId} aria-label={item.ariaLabel}>
+          {dropdownItems.map((item) => (
+            <button key={item.id} onClick={item.onClick} data-testid={item.dataTestId} aria-label={item.ariaLabel}>
               {item.label}
             </button>
           ))}

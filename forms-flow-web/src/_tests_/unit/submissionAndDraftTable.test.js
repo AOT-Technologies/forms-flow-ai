@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission } from "../../helper/routerHelper";
 import '@testing-library/jest-dom';
-import PropTypes from "prop-types";
 import { 
   setApplicationListActivePage, 
   setCountPerpage, 
@@ -16,50 +15,55 @@ import {
 } from "../../actions/applicationActions";
 
 // Mock the action creators
-jest.mock("../../actions/applicationActions", () => ({
-  setApplicationListActivePage: jest.fn((page) => ({ type: "SET_APPLICATION_LIST_ACTIVE_PAGE", payload: page })),
-  setCountPerpage: jest.fn((limit) => ({ type: "SET_COUNT_PER_PAGE", payload: limit })),
-  setFormSubmissionSort: jest.fn((sort) => ({ type: "SET_FORM_SUBMISSION_SORT", payload: sort })),
-}));
+  jest.mock("../../actions/applicationActions", () => ({
+    setApplicationListActivePage: jest.fn((page) => ({ type: "SET_APPLICATION_LIST_ACTIVE_PAGE", payload: page })),
+    setCountPerpage: jest.fn((limit) => ({ type: "SET_COUNT_PER_PAGE", payload: limit })),
+    setFormSubmissionSort: jest.fn((sort) => ({ type: "SET_FORM_SUBMISSION_SORT", payload: sort })),
+  }));
 
-// Mock dependencies
-jest.mock("react-toastify", () => ({
-  toast: {
-    success: jest.fn(),
-    error: jest.fn(),
-  },
-}));
+  // Mock dependencies
+  jest.mock("react-toastify", () => ({
+    toast: {
+      success: jest.fn(),
+      error: jest.fn(),
+    },
+  }));
 
-jest.mock("../../apiManager/services/draftService", () => ({
-  deleteDraftbyId: jest.fn(),
-}));
+  jest.mock("../../apiManager/services/draftService", () => ({
+    deleteDraftbyId: jest.fn(),
+  }));
 
-jest.mock("../../helper/routerHelper", () => ({
-  navigateToDraftEdit: jest.fn(),
-  navigateToViewSubmission: jest.fn(),
-}));
+  jest.mock("../../helper/routerHelper", () => ({
+    navigateToDraftEdit: jest.fn(),
+    navigateToViewSubmission: jest.fn(),
+  }));
 
-jest.mock("react-i18next", () => ({
-  useTranslation: () => ({ t: (key) => key }),
-}));
+  jest.mock("react-i18next", () => ({
+    useTranslation: () => ({ t: (key) => key }),
+  }));
 
-// Mock the date formatter
-jest.mock("../../helper/dateTimeHelper", () => ({
-  formatDate: (date) => date ? new Date(date).toLocaleDateString() : "",
-}));
+  // Mock the date formatter
+  jest.mock("../../helper/dateTimeHelper", () => ({
+    formatDate: (date) => date ? new Date(date).toLocaleDateString() : "",
+  }));
 
-// Mock the @formsflow/components package
-jest.mock("@formsflow/components", () => ({
-  CustomButton: ({ label, onClick, "data-testid": dataTestId, "aria-label": ariaLabel }) => (
-    <button
-      onClick={onClick}
-      data-testid={dataTestId || `button-${label}`}
-      aria-label={ariaLabel}
-    >
+
+jest.mock("@formsflow/components", () => {
+  const PropTypes = require("prop-types"); 
+  const CustomButton = ({ label, onClick, "data-testid": dataTestId, "aria-label": ariaLabel }) => (
+    <button onClick={onClick} data-testid={dataTestId || `button-${label}`} aria-label={ariaLabel}>
       {label}
     </button>
-  ),
-  TableFooter: ({ limit, activePage, totalCount, handlePageChange, onLimitChange, pageOptions }) => (
+  );
+
+  CustomButton.propTypes = {
+    label: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+    "data-testid": PropTypes.string,
+    "aria-label": PropTypes.string,
+  };
+
+  const TableFooter = ({ limit, activePage, totalCount, handlePageChange, onLimitChange, pageOptions }) => (
     <tr data-testid="table-footer">
       <td colSpan="6">
         <div className="pagination-controls">
@@ -78,11 +82,7 @@ jest.mock("@formsflow/components", () => ({
           >
             Next
           </button>
-          <select
-            data-testid="limit-selector"
-            value={limit}
-            onChange={(e) => onLimitChange(Number(e.target.value))}
-          >
+          <select data-testid="limit-selector" value={limit} onChange={(e) => onLimitChange(Number(e.target.value))}>
             {pageOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.text}
@@ -92,9 +92,29 @@ jest.mock("@formsflow/components", () => ({
         </div>
       </td>
     </tr>
-  ),
-  NoDataFound: ({ message }) => <div data-testid="no-data-found">{message}</div>,
-  ConfirmModal: ({
+  );
+
+  TableFooter.propTypes = {
+    limit: PropTypes.number.isRequired,
+    activePage: PropTypes.number.isRequired,
+    totalCount: PropTypes.number.isRequired,
+    handlePageChange: PropTypes.func.isRequired,
+    onLimitChange: PropTypes.func.isRequired,
+    pageOptions: PropTypes.arrayOf(
+      PropTypes.shape({
+        value: PropTypes.number.isRequired,
+        text: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+  };
+
+  const NoDataFound = ({ message }) => <div data-testid="no-data-found">{message}</div>;
+
+  NoDataFound.propTypes = {
+    message: PropTypes.string.isRequired,
+  };
+
+  const ConfirmModal = ({
     show,
     primaryBtnAction,
     onClose,
@@ -106,33 +126,51 @@ jest.mock("@formsflow/components", () => ({
     primaryBtndataTestid,
     secondoryBtndataTestid,
     secondaryBtnDisable,
-    secondaryBtnLoading
-  }) => (
+    secondaryBtnLoading,
+  }) =>
     show ? (
       <div data-testid="confirm-modal">
         <h2 data-testid="modal-title">{title}</h2>
         <p data-testid="modal-message">{message}</p>
-        <button
-          data-testid={primaryBtndataTestid}
-          onClick={primaryBtnAction}
-        >
+        <button data-testid={primaryBtndataTestid} onClick={primaryBtnAction}>
           {primaryBtnText}
         </button>
-        <button
-          data-testid={secondoryBtndataTestid}
-          onClick={secondayBtnAction}
-          disabled={secondaryBtnDisable}
-        >
+        <button data-testid={secondoryBtndataTestid} onClick={secondayBtnAction} disabled={secondaryBtnDisable}>
           {secondaryBtnLoading ? "Loading..." : secondaryBtnText}
         </button>
       </div>
-    ) : null
-  ),
-}));
+    ) : null;
+
+  ConfirmModal.propTypes = {
+    show: PropTypes.bool.isRequired,
+    primaryBtnAction: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+    secondayBtnAction: PropTypes.func.isRequired,
+    primaryBtnText: PropTypes.string.isRequired,
+    secondaryBtnText: PropTypes.string.isRequired,
+    primaryBtndataTestid: PropTypes.string.isRequired,
+    secondoryBtndataTestid: PropTypes.string.isRequired,
+    secondaryBtnDisable: PropTypes.bool,
+    secondaryBtnLoading: PropTypes.bool,
+  };
+
+  return {
+    CustomButton,
+    TableFooter,
+    NoDataFound,
+    ConfirmModal,
+  };
+});
+
+
 
 // Mock SortableHeader component
 jest.mock("../../components/CustomComponents/SortableHeader", () => {
-  return function MockSortableHeader({ columnKey, title, currentSort, handleSort }) {
+  const PropTypes = require("prop-types");
+
+  function MockSortableHeader({ columnKey, title, currentSort, handleSort }) {
     return (
       <div>
         <button
@@ -143,69 +181,20 @@ jest.mock("../../components/CustomComponents/SortableHeader", () => {
         </button>
       </div>
     );
+  }
+
+  MockSortableHeader.propTypes = {
+    columnKey: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    currentSort: PropTypes.object.isRequired,
+    handleSort: PropTypes.func.isRequired,
   };
+
+  return MockSortableHeader;
 });
 
-const formsflowComponents = jest.requireMock("@formsflow/components");
 
-formsflowComponents.CustomButton.propTypes = {
-  label: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  "data-testid": PropTypes.string,
-  "aria-label": PropTypes.string,
-  className: PropTypes.string,
-  disabled: PropTypes.bool,
-  variant: PropTypes.string
-};
 
-formsflowComponents.TableFooter.propTypes = {
-  limit: PropTypes.number.isRequired,
-  activePage: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  handlePageChange: PropTypes.func.isRequired,
-  onLimitChange: PropTypes.func.isRequired,
-  pageOptions: PropTypes.arrayOf(
-    PropTypes.shape({
-      value: PropTypes.number.isRequired,
-      text: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  className: PropTypes.string,
-  dataTestId: PropTypes.string
-};
-
-formsflowComponents.NoDataFound.propTypes = {
-  message: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  dataTestId: PropTypes.string
-};
-
-formsflowComponents.ConfirmModal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  primaryBtnAction: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  message: PropTypes.node.isRequired,
-  secondayBtnAction: PropTypes.func,
-  primaryBtnText: PropTypes.string,
-  secondaryBtnText: PropTypes.string,
-  primaryBtndataTestid: PropTypes.string,
-  secondoryBtndataTestid: PropTypes.string,
-  secondaryBtnDisable: PropTypes.bool,
-  secondaryBtnLoading: PropTypes.bool,
-  className: PropTypes.string
-};
-
-const SortableHeader = jest.requireMock("../../components/CustomComponents/SortableHeader");
-
-SortableHeader.propTypes = {
-  columnKey: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  currentSort: PropTypes.object.isRequired,
-  handleSort: PropTypes.func.isRequired,
-  className: PropTypes.string,
-  dataTestId: PropTypes.string
-};
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);

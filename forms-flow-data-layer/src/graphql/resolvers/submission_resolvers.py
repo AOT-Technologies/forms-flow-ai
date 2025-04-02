@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import strawberry
 
@@ -33,9 +33,31 @@ class SubmissionResolver:
 @strawberry.type
 class QuerySubmissionsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
-    @cache_graphql(expire=120, key_prefix="query-subissions")
+    @cache_graphql(expire=120, key_prefix="query-submissions")
     async def querysubmissions(
-        self, submitted_by: str, info: strawberry.Info
+        self,
+        info: strawberry.Info,
+        sort_by: str,
+        sort_order: str,
+        location: Optional[str],
+        submitted_by: Optional[str] = None,
+        limit: int = 5,
     ) -> List[QuerySubmissionsSchema]:
-        submissions = await SubmissionService.query_submissions(submitted_by, info)
+        """
+        GraphQL resolver for querying submissions with advanced filtering.
+
+        Args:
+            info: Strawberry context containing request metadata
+            sort_by: Field to sort by (must match SQL table columns)
+            sort_order: 'asc' or 'desc' sort direction
+            location: Filter submissions by location (matches MongoDB data.location)
+            submitted_by: Optional filter for submissions by specific user
+            limit: Pagination limit (default: 5)
+
+        Returns:
+            List of submission objects containing combined SQL and MongoDB data
+        """
+        submissions = await SubmissionService.query_submissions(
+            info, sort_by, sort_order, limit, location, submitted_by
+        )
         return submissions

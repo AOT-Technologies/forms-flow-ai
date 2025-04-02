@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from beanie import PydanticObjectId
+from bson import ObjectId
 
 from src.graphql.schema import FormSchema
 from src.models.formio import FormModel, SubmissionsModel
@@ -106,3 +107,25 @@ class FormService:
         return (
             submission.data if submission else None
         )  # Return data if found, otherwise None
+
+    @staticmethod
+    async def query_submissions(submission_ids, location, limit):
+        """Query submissions."""
+        pipeline = [
+            {
+                "$match": {
+                    "_id": {"$in": [ObjectId(id) for id in submission_ids]},
+                    "data.location": location,
+                }
+            },
+            {"$limit": limit},
+            {
+                "$project": {
+                    "_id": {"$toString": "$_id"},
+                    "data": "$data",
+                }
+            },
+        ]
+
+        search_results = await SubmissionsModel.aggregate(pipeline).to_list()
+        return search_results

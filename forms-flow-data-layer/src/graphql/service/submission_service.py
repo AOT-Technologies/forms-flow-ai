@@ -2,7 +2,7 @@ import asyncio
 from typing import List
 
 import strawberry
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, desc
 from sqlalchemy.sql import select
 
 from src.db import bpmn_db, webapi_db
@@ -129,7 +129,33 @@ class SubmissionService:
         return auth_conditions
 
     @staticmethod
-    async def query_submissions(submitted_by, info) -> List[QuerySubmissionsSchema]:
+    async def query_submissions(
+        info, sort_by, sort_order, limit, location, submitted_by=None
+    ) -> List[QuerySubmissionsSchema]:
+        """
+        Retrieve filtered and paginated submissions with authorization checks.
+
+        This service method performs a multi-database query to:
+        1. Fetch authorized application records from SQL database
+        2. Filter corresponding submission data from MongoDB
+        3. Combine results with proper sorting and pagination
+
+        Args:
+            info (strawberry.Info): GraphQL resolver context containing:
+                - context: Authentication/user information
+                - database sessions
+            sort_by (str): Field to sort results by (e.g., 'created_at')
+            sort_order (str): Sort direction ('asc' or 'desc')
+            limit (int): Maximum number of results to return
+            location (str): Location filter for submissions
+            submitted_by (Optional[str]): Filter by submitter ID. When None, returns
+                                        submissions for all authorized users.
+
+        Returns:
+            List[QuerySubmissionsSchema]: Combined results containing:
+                - Application metadata from SQL
+                - Submission details from MongoDB
+        """
         application_table = await webapi_db.get_table("application")
         mapper_table = await webapi_db.get_table("form_process_mapper")
         authorization_table = await webapi_db.get_table("authorization")
@@ -138,7 +164,7 @@ class SubmissionService:
         # Get user context from token
         user = info.context["user"]
         username = user.token_info.get("preferred_username")
-        user_roles = user.token_info.get("roles", [])
+        user_roles = user.token_info.get("role", [])
 
         async with webapi_session as api_session:
             query = (
@@ -162,14 +188,56 @@ class SubmissionService:
                     ),
                 )
                 .where(
-                    application_table.c.created_by == submitted_by,
+                    application_table.c.is_draft.is_(False),
                     await SubmissionService.auth_tenant(info, mapper_table),
                 )
                 .distinct()
             )
+
+            # Conditionally add created_by filter
+            if submitted_by is not None:
+                query = query.where(application_table.c.created_by == submitted_by)
+
+            # Apply sorting at the database level
+            if sort_by:
+                if sort_order.lower() == "desc":
+                    query = query.order_by(desc(getattr(application_table.c, sort_by)))
+                else:
+                    query = query.order_by(getattr(application_table.c, sort_by))
+            # Get all potential applications first
             result = await api_session.execute(query)
             applications = result.mappings().all()
+
+            # Extract just the submission IDs
+            submission_ids = [
+                app["submission_id"] for app in applications if app["submission_id"]
+            ]
+            # Get filtered submissions from MongoDB
+            submission_data = await FormService.query_submissions(
+                submission_ids=submission_ids,
+                location=location,
+                limit=limit,
+            )
+
+            # Create mapping of submission_id to submission data
+            submission_map = {sub["_id"]: sub for sub in submission_data}
+
+            # Merge and filter results
+            final_results = []
+            count = 0
+            for app in applications:
+                if count >= limit:
+                    break
+                if app["submission_id"] in submission_map:
+                    final_results.append(
+                        {**app, "submission_data": submission_map[app["submission_id"]]}
+                    )
+                    count += 1
             return [
-                QuerySubmissionsSchema(id=row["id"], created_by=row["created_by"])
-                for i, row in enumerate(applications)
+                QuerySubmissionsSchema(
+                    id=row["id"],
+                    created_by=row["created_by"],
+                    application_status=row["application_status"],
+                )
+                for row in final_results
             ]

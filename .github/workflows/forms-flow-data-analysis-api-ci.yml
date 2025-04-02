@@ -17,7 +17,7 @@ defaults:
 
 jobs:
   setup-job:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
 
   Lint:
     needs: setup-job
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
@@ -71,7 +71,7 @@ jobs:
       USE_DOCKER_MOCK: "True"
       JWT_OIDC_TEST_PRIVATE_KEY_PEM: ${{ secrets.JWT_OIDC_TEST_PRIVATE_KEY_PEM }}
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
@@ -108,7 +108,7 @@ jobs:
 
   Build:
     if: always()
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:

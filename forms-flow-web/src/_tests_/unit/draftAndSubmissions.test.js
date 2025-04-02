@@ -180,26 +180,74 @@ jest.mock("../../components/CustomComponents/FilterSortActions", () => {
 
 
 // Mock SubmissionsAndDraftTable component
-jest.mock("../../components/Form/constants/SubmissionsAndDraftTable", () => {
-  const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => (
+jest.mock("../../components/Form/constants/SubmissionsAndDraftTable", () => ({
+  __esModule: true,
+  default: ({ fetchSubmissionsAndDrafts }) => (
     <div data-testid="mock-submissions-draft-table">
       Submissions and Draft Table
-      <button onClick={fetchSubmissionsAndDrafts} data-testid="refresh-table-button">
-        Refresh Table
-      </button>
+      <button onClick={fetchSubmissionsAndDrafts} data-testid="refresh-table-button">Refresh Table</button>
     </div>
-  );
+  )
+}));
 
-  SubmissionsAndDraftTable.propTypes = {
-    fetchSubmissionsAndDrafts: PropTypes.func.isRequired,
-  };
 
-  return {
-    __esModule: true,
-    default: SubmissionsAndDraftTable,
-  };
-});
+const FilterSortActionsMock = jest.requireMock("../../components/CustomComponents/FilterSortActions").default;
 
+FilterSortActionsMock.propTypes = {
+  showSortModal: PropTypes.bool,
+  handleSortApply: PropTypes.func.isRequired,
+  handleFilterIconClick: PropTypes.func.isRequired,
+  handleRefresh: PropTypes.func.isRequired,
+  handleSortModalClose: PropTypes.func.isRequired,
+  optionSortBy: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired
+  })).isRequired,
+  defaultSortOption: PropTypes.string,
+  defaultSortOrder: PropTypes.string,
+  filterDataTestId: PropTypes.string,
+  refreshDataTestId: PropTypes.string
+};
+
+const SubmissionsAndDraftTableMock = jest.requireMock("../../components/Form/constants/SubmissionsAndDraftTable").default;
+SubmissionsAndDraftTableMock.propTypes = {
+  fetchSubmissionsAndDrafts: PropTypes.func.isRequired
+};
+const formsflowComponents = jest.requireMock("@formsflow/components");
+
+formsflowComponents.CustomSearch.propTypes = {
+  search: PropTypes.string.isRequired,
+  setSearch: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+  handleClearSearch: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  dataTestId: PropTypes.string
+};
+
+formsflowComponents.CustomButton.propTypes = {
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  onClick: PropTypes.func,
+  isDropdown: PropTypes.bool,
+  dropdownItems: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    onClick: PropTypes.func,
+    dataTestId: PropTypes.string,
+    ariaLabel: PropTypes.string
+  })),
+  dataTestId: PropTypes.string,
+  variant: PropTypes.string,
+  size: PropTypes.string,
+  className: PropTypes.string,
+  ariaLabel: PropTypes.string
+};
+
+formsflowComponents.BackToPrevIcon.propTypes = {
+  onClick: PropTypes.func,
+  dataTestId: PropTypes.string,
+  ariaLabel: PropTypes.string
+};
+
+formsflowComponents.ConnectIcon.propTypes = {};
 
 // Create mock store with thunk middleware
 const middlewares = [thunk];

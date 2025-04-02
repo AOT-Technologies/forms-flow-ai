@@ -188,7 +188,6 @@ jest.mock("../../components/Form/constants/SubmissionsAndDraftTable", () => {
 
   const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => (
     <div data-testid="mock-submissions-draft-table">
-      Submissions and Draft Table
       <button onClick={fetchSubmissionsAndDrafts} data-testid="refresh-table-button">
         Refresh Table
       </button>

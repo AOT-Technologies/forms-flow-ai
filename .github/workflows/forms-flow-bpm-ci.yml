@@ -21,7 +21,7 @@ defaults:
 
 jobs:
   setup-job:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v2
@@ -29,7 +29,7 @@ jobs:
   Test:
     if: always()
     needs: setup-job
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     name: Test
     steps:
       - uses: actions/checkout@v2
@@ -48,7 +48,7 @@ jobs:
   Build:
     if: always()
     needs: setup-job
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     name: Build
     steps:
       - uses: actions/checkout@v2

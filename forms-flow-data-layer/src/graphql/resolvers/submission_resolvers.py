@@ -39,7 +39,7 @@ class QuerySubmissionsResolver:
         info: strawberry.Info,
         sort_by: str,
         sort_order: str,
-        location: Optional[str],
+        location: Optional[str] = None,
         submitted_by: Optional[str] = None,
         limit: int = 5,
     ) -> List[QuerySubmissionsSchema]:

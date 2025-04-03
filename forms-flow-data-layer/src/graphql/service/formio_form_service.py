@@ -109,23 +109,48 @@ class FormService:
         )  # Return data if found, otherwise None
 
     @staticmethod
-    async def query_submissions(submission_ids, location, limit):
-        """Query submissions."""
-        pipeline = [
-            {
-                "$match": {
-                    "_id": {"$in": [ObjectId(id) for id in submission_ids]},
-                    "data.location": location,
-                }
-            },
-            {"$limit": limit},
-            {
-                "$project": {
-                    "_id": {"$toString": "$_id"},
-                    "data": "$data",
-                }
-            },
-        ]
+    async def query_submissions(
+        submission_ids, location, limit, sort_by=None, sort_order=None
+    ):
+        """
+        Query submissions from MongoDB with flexible sorting options.
 
-        search_results = await SubmissionsModel.aggregate(pipeline).to_list()
-        return search_results
+        Args:
+            submission_ids: List of submission IDs to filter by
+            location: Location value to match in data.location
+            limit: Maximum number of documents to return
+            sort_by: Field to sort by (None for no sorting, can be nested like 'data.location')
+            sort_order: Sort direction ('asc' or 'desc'), default 'asc'
+
+        Returns:
+            List of submission documents with projected fields
+        """
+        match_stage = {"_id": {"$in": [ObjectId(id) for id in submission_ids]}}
+
+        # Only add location filter if location parameter is provided
+        if location is not None:
+            match_stage["data.location"] = location
+
+        pipeline = [{"$match": match_stage}]
+
+        # Add sorting if sort_by is specified
+        if sort_by:
+            # Handle nested fields (like data.location)
+            sort_field = f"{sort_by}" if "." in sort_by else sort_by
+            sort_value = 1 if sort_order.lower() == "asc" else -1
+            pipeline.append({"$sort": {sort_field: sort_value}})
+
+        # Always include location in projection, even if not filtered by it
+        pipeline.extend(
+            [
+                {"$limit": limit},
+                {
+                    "$project": {
+                        "_id": {"$toString": "$_id"},
+                        "location": "$data.location",
+                    }
+                },
+            ]
+        )
+
+        return await SubmissionsModel.aggregate(pipeline).to_list()

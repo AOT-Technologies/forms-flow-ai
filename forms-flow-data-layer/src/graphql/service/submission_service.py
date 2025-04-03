@@ -2,7 +2,7 @@ import asyncio
 from typing import List
 
 import strawberry
-from sqlalchemy import and_, or_, desc
+from sqlalchemy import and_, desc, or_
 from sqlalchemy.sql import select
 
 from src.db import bpmn_db, webapi_db
@@ -123,14 +123,63 @@ class SubmissionService:
                         authorization_table.c.roles == {},
                         authorization_table.c.roles.is_(None),
                     ),
-                )
+                ),
             ),
         )
         return auth_conditions
 
     @staticmethod
+    async def _apply_sorting(query, application_table, sort_by, sort_order):
+        """Apply sorting to the query and determine sort parameters."""
+        webapi_fields = ["created_by", "application_status", "id"]
+        sort_params = {}
+        mongo_sorted = False
+
+        if sort_by and sort_by in webapi_fields:
+            if sort_order.lower() == "desc":
+                query = query.order_by(desc(getattr(application_table.c, sort_by)))
+            else:
+                query = query.order_by(getattr(application_table.c, sort_by))
+        elif sort_by:
+            sort_params = {"sort_by": sort_by, "sort_order": sort_order}
+            mongo_sorted = True
+
+        return query, sort_params, mongo_sorted
+
+    @staticmethod
+    async def _process_results(applications, submission_data, mongo_sorted, limit):
+        """Process results and merge with MongoDB data."""
+        final_results = []
+        # Build final results maintaining the correct order
+        if mongo_sorted:
+            # Create mapping from submission_id to SQL application data
+            app_map = {
+                app["submission_id"]: app
+                for app in applications
+                if app["submission_id"]
+            }
+            # When sorted in MongoDB, use that exact order
+            for sub in submission_data:
+                if sub["_id"] in app_map:
+                    final_results.append(
+                        {**app_map[sub["_id"]], "submission_data": sub}
+                    )
+        else:
+            # When sorted in SQL, process in SQL order with limit
+            submission_map = {sub["_id"]: sub for sub in submission_data}
+            for app in applications:
+                if len(final_results) >= limit:
+                    break
+                if app["submission_id"] in submission_map:
+                    final_results.append(
+                        {**app, "submission_data": submission_map[app["submission_id"]]}
+                    )
+
+        return final_results
+
+    @staticmethod
     async def query_submissions(
-        info, sort_by, sort_order, limit, location, submitted_by=None
+        info, sort_by, sort_order, limit, location=None, submitted_by=None
     ) -> List[QuerySubmissionsSchema]:
         """
         Retrieve filtered and paginated submissions with authorization checks.
@@ -198,46 +247,42 @@ class SubmissionService:
             if submitted_by is not None:
                 query = query.where(application_table.c.created_by == submitted_by)
 
-            # Apply sorting at the database level
-            if sort_by:
-                if sort_order.lower() == "desc":
-                    query = query.order_by(desc(getattr(application_table.c, sort_by)))
-                else:
-                    query = query.order_by(getattr(application_table.c, sort_by))
+            # Apply sorting and get sort parameters
+            query, sort_params, mongo_sorted = await SubmissionService._apply_sorting(
+                query, application_table, sort_by, sort_order
+            )
             # Get all potential applications first
             result = await api_session.execute(query)
             applications = result.mappings().all()
 
-            # Extract just the submission IDs
-            submission_ids = [
-                app["submission_id"] for app in applications if app["submission_id"]
-            ]
-            # Get filtered submissions from MongoDB
-            submission_data = await FormService.query_submissions(
-                submission_ids=submission_ids,
-                location=location,
-                limit=limit,
-            )
-
-            # Create mapping of submission_id to submission data
-            submission_map = {sub["_id"]: sub for sub in submission_data}
-
-            # Merge and filter results
             final_results = []
-            count = 0
-            for app in applications:
-                if count >= limit:
-                    break
-                if app["submission_id"] in submission_map:
-                    final_results.append(
-                        {**app, "submission_data": submission_map[app["submission_id"]]}
-                    )
-                    count += 1
+            if applications:
+                # Extract the submission IDs
+                submission_ids = [
+                    app["submission_id"] for app in applications if app["submission_id"]
+                ]
+                # Get filtered submissions from MongoDB
+                submission_data = await FormService.query_submissions(
+                    submission_ids=submission_ids,
+                    location=location,
+                    limit=limit,
+                    **sort_params,
+                )
+
+                # Process results and merge with MongoDB data
+                final_results = await SubmissionService._process_results(
+                    applications, submission_data, mongo_sorted, limit
+                )
             return [
                 QuerySubmissionsSchema(
-                    id=row["id"],
-                    created_by=row["created_by"],
-                    application_status=row["application_status"],
+                    id=row.get("id"),
+                    created_by=row.get("created_by"),
+                    application_status=row.get("application_status"),
+                    location=(
+                        row.get("submission_data", {}).get("location")
+                        if "submission_data" in row
+                        else None
+                    ),
                 )
                 for row in final_results
             ]

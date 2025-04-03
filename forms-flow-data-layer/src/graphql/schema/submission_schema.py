@@ -23,3 +23,4 @@ class QuerySubmissionsSchema:
     id: int
     created_by: str
     application_status: str
+    location: Optional[str]

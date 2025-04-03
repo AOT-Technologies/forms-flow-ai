@@ -38,7 +38,7 @@ export const validateBpmnLintErrors = (lintErrors, translation = (i) => i) => {
     const err = lintErrors[key];
     err.forEach((x) => {
       // Only toast errors, not warnings
-      if (x.category === "error" || x.category === "warn") {
+      if (x.category === "error") {
         hasErrors = true;
         toast[x.category](translation(x.message));
       }

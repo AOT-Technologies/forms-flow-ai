@@ -1,12 +1,16 @@
 import asyncio
-from typing import List
+from typing import List, Optional
 
 import strawberry
-from sqlalchemy import and_, desc, or_
+from sqlalchemy import and_, desc, func, or_
 from sqlalchemy.sql import select
 
 from src.db import bpmn_db, webapi_db
-from src.graphql.schema import QuerySubmissionsSchema, SubmissionSchema
+from src.graphql.schema import (
+    PaginatedSubmissionResponse,
+    QuerySubmissionsSchema,
+    SubmissionSchema,
+)
 from src.graphql.service import FormService
 from src.utils import get_logger
 
@@ -150,6 +154,44 @@ class SubmissionService:
         return query, sort_params, mongo_sorted
 
     @staticmethod
+    async def _execute_with_pagination_strategy(
+        query,
+        api_session,
+        location: Optional[str],
+        page_no: Optional[int],
+        limit: Optional[int],
+    ) -> tuple[list[dict], int, dict]:
+        """
+        Execute query with appropriate pagination strategy based on formio submission data filter.
+
+        If there is  filter/search on form submission data, pagination done in mongo side, else in webapi
+
+        Returns:
+            tuple: (applications, total_count, pagination_params)
+        """
+        if not location:
+            # SQL-side pagination
+            items_per_page = limit or 5
+            current_page = page_no or 1
+            paginated_query = query.limit(items_per_page).offset(
+                (current_page - 1) * items_per_page
+            )
+
+            paginated_results = await api_session.execute(paginated_query)
+            applications = paginated_results.mappings().all()
+            total_count = (
+                await api_session.execute(
+                    select(func.count()).select_from(query.subquery())
+                )
+            ).scalar_one()
+            return applications, total_count, {}
+
+        # MongoDB-side pagination
+        result = await api_session.execute(query)
+        applications = result.mappings().all()
+        return applications, len(applications), {"page_no": page_no, "limit": limit}
+
+    @staticmethod
     async def _process_results(applications, submission_data, mongo_sorted, limit):
         """Process results and merge with MongoDB data."""
         final_results = []
@@ -185,10 +227,11 @@ class SubmissionService:
         info,
         sort_by,
         sort_order,
+        page_no,
         limit,
         parent_form_id,
-        location=None,
-        submitted_by=None,
+        location,
+        submitted_by,
     ) -> List[QuerySubmissionsSchema]:
         """
         Retrieve filtered and paginated submissions with authorization checks.
@@ -261,39 +304,47 @@ class SubmissionService:
             query, sort_params, mongo_sorted = await SubmissionService._apply_sorting(
                 query, application_table, sort_by, sort_order
             )
-            # Get all potential applications first
-            result = await api_session.execute(query)
-            applications = result.mappings().all()
+            # Execute with appropriate pagination strategy
+            submissions, total_count, pagination_params = (
+                await SubmissionService._execute_with_pagination_strategy(
+                    query, api_session, location, page_no, limit
+                )
+            )
 
-            final_results = []
-            if applications and parent_form_id:
+            if submissions and parent_form_id:
                 logger.info("Fetching submission data from formio.")
                 # Extract the submission IDs
                 submission_ids = [
-                    app["submission_id"] for app in applications if app["submission_id"]
+                    app["submission_id"] for app in submissions if app["submission_id"]
                 ]
                 # Get filtered submissions from MongoDB
                 submission_data = await FormService.query_submissions(
                     submission_ids=submission_ids,
                     location=location,
-                    limit=limit,
+                    **pagination_params,
                     **sort_params,
                 )
 
                 # Process results and merge with MongoDB data
-                final_results = await SubmissionService._process_results(
-                    applications, submission_data, mongo_sorted, limit
+                submissions = await SubmissionService._process_results(
+                    submissions,
+                    submission_data.get("submissions", []),
+                    mongo_sorted,
+                    limit,
                 )
-            return [
-                QuerySubmissionsSchema(
-                    id=row.get("id"),
-                    created_by=row.get("created_by"),
-                    application_status=row.get("application_status"),
-                    location=(
-                        row.get("submission_data", {}).get("location")
-                        if "submission_data" in row
-                        else None
-                    ),
-                )
-                for row in final_results
-            ]
+            return PaginatedSubmissionResponse(
+                submissions=[
+                    QuerySubmissionsSchema(
+                        id=row.get("id"),
+                        created_by=row.get("created_by"),
+                        application_status=row.get("application_status"),
+                        location=row.get("submission_data", {}).get("location"),
+                    )
+                    for row in submissions
+                ],
+                total_count=(
+                    total_count if not location else submission_data.get("total_count")
+                ),
+                page_no=page_no,
+                limit=limit,
+            )

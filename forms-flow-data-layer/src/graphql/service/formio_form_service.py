@@ -1,10 +1,13 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from beanie import PydanticObjectId
 from bson import ObjectId
 
 from src.graphql.schema import FormSchema
 from src.models.formio import FormModel, SubmissionsModel
+from src.utils import get_logger
+
+logger = get_logger(__name__)
 
 
 # Service Layer for Form-related Operations
@@ -110,24 +113,18 @@ class FormService:
 
     @staticmethod
     async def query_submissions(
-        submission_ids, location, limit, sort_by=None, sort_order=None
-    ):
+        submission_ids: List[str],
+        location: Optional[str] = None,
+        page_no: Optional[int] = None,
+        limit: Optional[int] = None,
+        sort_by: Optional[str] = None,
+        sort_order: str = "asc",
+    ) -> Dict[str, Any]:
         """
-        Query submissions from MongoDB with flexible sorting options.
-
-        Args:
-            submission_ids: List of submission IDs to filter by
-            location: Location value to match in data.location
-            limit: Maximum number of documents to return
-            sort_by: Field to sort by (None for no sorting, can be nested like 'data.location')
-            sort_order: Sort direction ('asc' or 'desc'), default 'asc'
-
-        Returns:
-            List of submission documents with projected fields
+        Query submissions from MongoDB with optional pagination and sorting.
         """
+        # Build match stage
         match_stage = {"_id": {"$in": [ObjectId(id) for id in submission_ids]}}
-
-        # Only add location filter if location parameter is provided
         if location is not None:
             match_stage["data.location"] = location
 
@@ -135,22 +132,51 @@ class FormService:
 
         # Add sorting if sort_by is specified
         if sort_by:
-            # Handle nested fields (like data.location)
-            sort_field = f"{sort_by}" if "." in sort_by else sort_by
+            # Convert field name to proper MongoDB path
+            sort_field = f"data.{sort_by}"
             sort_value = 1 if sort_order.lower() == "asc" else -1
             pipeline.append({"$sort": {sort_field: sort_value}})
+            logger.info(f"Sorting by: {sort_field} in {sort_order} order")  # Debug log
 
-        # Always include location in projection, even if not filtered by it
-        pipeline.extend(
-            [
-                {"$limit": limit},
+        # Only add pagination if page_no and limit specified
+        if page_no is not None and limit is not None:
+            facet_stage = {
+                "$facet": {
+                    "items": [
+                        {"$skip": (page_no - 1) * limit},
+                        {"$limit": limit},
+                        {
+                            "$project": {
+                                "_id": {"$toString": "$_id"},
+                                "location": "$data.location",
+                            }
+                        },
+                    ],
+                    "total": [{"$count": "count"}],
+                }
+            }
+            pipeline.append(facet_stage)
+
+            results = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = results[0]["items"] if results else []
+            total = (
+                results[0]["total"][0]["count"]
+                if results and results[0]["total"]
+                else 0
+            )
+        else:
+            pipeline.append(
                 {
                     "$project": {
                         "_id": {"$toString": "$_id"},
                         "location": "$data.location",
                     }
-                },
-            ]
-        )
+                }
+            )
+            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            total = len(items)
 
-        return await SubmissionsModel.aggregate(pipeline).to_list()
+        return {
+            "submissions": items,
+            "total_count": total,
+        }

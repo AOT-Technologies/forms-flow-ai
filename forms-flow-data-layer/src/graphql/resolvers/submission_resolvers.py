@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import strawberry
 
-from src.graphql.schema import QuerySubmissionsSchema, SubmissionSchema
+from src.graphql.schema import PaginatedSubmissionResponse, SubmissionSchema
 from src.graphql.service import SubmissionService
 from src.middlewares.auth import auth
 from src.utils import cache_graphql
@@ -42,8 +42,9 @@ class QuerySubmissionsResolver:
         parent_form_id: Optional[str] = None,
         location: Optional[str] = None,
         submitted_by: Optional[str] = None,
+        page_no: int = 1,
         limit: int = 5,
-    ) -> List[QuerySubmissionsSchema]:
+    ) -> PaginatedSubmissionResponse:
         """
         GraphQL resolver for querying submissions with advanced filtering.
 
@@ -60,6 +61,13 @@ class QuerySubmissionsResolver:
             List of submission objects containing combined SQL and MongoDB data
         """
         submissions = await SubmissionService.query_submissions(
-            info, sort_by, sort_order, limit, parent_form_id, location, submitted_by
+            info,
+            sort_by,
+            sort_order,
+            page_no,
+            limit,
+            parent_form_id,
+            location,
+            submitted_by,
         )
         return submissions

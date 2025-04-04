@@ -70,7 +70,7 @@ const View = React.memo((props) => {
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const draftSubmission = useSelector((state) => state.draft.submission);
+  const draftSubmission = useSelector((state) => state.draft.draftSubmission);
   const [draftSaved, setDraftSaved] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   /**

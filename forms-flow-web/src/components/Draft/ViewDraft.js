@@ -19,7 +19,7 @@ import { setDraftDetail } from "../../actions/draftActions";
 const ViewDraft = React.memo(() => {
   const { t } = useTranslation();
   const { draftId } = useParams();
-  const draftDetail = useSelector((state) => state.draft.submission);
+  const draftDetail = useSelector((state) => state.draft.draftSubmission);
   const draftDetailStatusCode = useSelector(
     (state) => state.draft.draftDetailStatusCode
   );

@@ -64,12 +64,6 @@ export const setDraftDetailStatusCode = (data) => (dispatch) => {
   });
 };
 
-export const saveLastUpdatedDraft = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.DRAFT_LAST_UPDATED,
-    payload: data,
-  });
-};
 
 export const setDraftDelete = (data) => (dispatch) => {
   dispatch({

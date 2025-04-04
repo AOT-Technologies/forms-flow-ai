@@ -192,10 +192,9 @@ return (
                                             <div className="d-flex justify-content-end gap-2">
                                                 <CustomButton
                                                     variant="secondary"
-                                                    size="sm"
+                                                    size="table"
                                                     label={t("Delete")}
                                                     onClick={() => deleteDraft(item)}
-                                                    className="btn btn-secondary btn-table"
                                                     data-testid={
                                                         `delete-draft-button-${item.id}`
                                                     }
@@ -203,10 +202,9 @@ return (
                                                 />
                                                 <CustomButton
                                                     variant="secondary"
-                                                    size="sm"
+                                                    size="table"
                                                     label={t("Continue")}
                                                     onClick={() => continueDraft(item)}
-                                                    className="btn btn-secondary btn-table"
                                                     data-testid={
                                                         `continue-draft-button-${item.id}`
                                                     }
@@ -216,10 +214,9 @@ return (
                                         ) : (
                                             <CustomButton
                                                 variant="secondary"
-                                                size="sm"
+                                                size="table"
                                                 label={t("View")}
                                                 onClick={() => viewSubmission(item)}
-                                                className="btn btn-secondary btn-table"
                                             />
                                         )}
                                     </td>

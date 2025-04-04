@@ -8,8 +8,8 @@ import {
   setBpmFormSort,
 } from "../../../actions/formActions";
 
-import { useTranslation, Translation } from "react-i18next";
-import { TableFooter } from "@formsflow/components";
+import { useTranslation } from "react-i18next";
+import { TableFooter, CustomButton } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { formatDate } from "../../../helper/dateTimeHelper";
@@ -201,14 +201,14 @@ function ClientTable() {
 
                         <td className=" w-12 ">
                           <div className="d-flex justify-content-end">
-                            <button
-                              data-testid={`form-submit-button-${e._id}`}
-                              className="btn btn-secondary btn-table"
-                              onClick={() => showFormEntries(e._id)}
-                            >
-                              <Translation>{(t) => t("Select")}</Translation>
-                            </button>
-
+                            <CustomButton
+                                variant="secondary"
+                                size="table"
+                                label={t("Select")}
+                                onClick={() => showFormEntries(e._id)}
+                                data-testid={`form-submit-button-${e._id}`}
+                                aria-label={t("Select a form")}
+                            />
                           </div>
                         </td>
                       </tr>

@@ -39,6 +39,7 @@ class QuerySubmissionsResolver:
         info: strawberry.Info,
         sort_by: str,
         sort_order: str,
+        parent_form_id: Optional[str] = None,
         location: Optional[str] = None,
         submitted_by: Optional[str] = None,
         limit: int = 5,
@@ -48,9 +49,10 @@ class QuerySubmissionsResolver:
 
         Args:
             info: Strawberry context containing request metadata
-            sort_by: Field to sort by (must match SQL table columns)
+            sort_by: Field to sort by
             sort_order: 'asc' or 'desc' sort direction
-            location: Filter submissions by location (matches MongoDB data.location)
+            parent_form_id: Optional filter for submissions by specific ID
+            location: Filter submissions by location
             submitted_by: Optional filter for submissions by specific user
             limit: Pagination limit (default: 5)
 
@@ -58,6 +60,6 @@ class QuerySubmissionsResolver:
             List of submission objects containing combined SQL and MongoDB data
         """
         submissions = await SubmissionService.query_submissions(
-            info, sort_by, sort_order, limit, location, submitted_by
+            info, sort_by, sort_order, limit, parent_form_id, location, submitted_by
         )
         return submissions

@@ -8,6 +8,9 @@ from sqlalchemy.sql import select
 from src.db import bpmn_db, webapi_db
 from src.graphql.schema import QuerySubmissionsSchema, SubmissionSchema
 from src.graphql.service import FormService
+from src.utils import get_logger
+
+logger = get_logger(__name__)
 
 
 class SubmissionService:
@@ -179,7 +182,13 @@ class SubmissionService:
 
     @staticmethod
     async def query_submissions(
-        info, sort_by, sort_order, limit, location=None, submitted_by=None
+        info,
+        sort_by,
+        sort_order,
+        limit,
+        parent_form_id,
+        location=None,
+        submitted_by=None,
     ) -> List[QuerySubmissionsSchema]:
         """
         Retrieve filtered and paginated submissions with authorization checks.
@@ -192,13 +201,12 @@ class SubmissionService:
         Args:
             info (strawberry.Info): GraphQL resolver context containing:
                 - context: Authentication/user information
-                - database sessions
-            sort_by (str): Field to sort results by (e.g., 'created_at')
+            sort_by (str): Field to sort results by
             sort_order (str): Sort direction ('asc' or 'desc')
             limit (int): Maximum number of results to return
-            location (str): Location filter for submissions
-            submitted_by (Optional[str]): Filter by submitter ID. When None, returns
-                                        submissions for all authorized users.
+            parent_form_id (Optional[str]): Filter submissions by parent form ID
+            location (Optional[str]): Location filter for submissions
+            submitted_by (Optional[str]): Filter by submitter ID.
 
         Returns:
             List[QuerySubmissionsSchema]: Combined results containing:
@@ -246,6 +254,8 @@ class SubmissionService:
             # Conditionally add created_by filter
             if submitted_by is not None:
                 query = query.where(application_table.c.created_by == submitted_by)
+            if parent_form_id:
+                query = query.where(mapper_table.c.parent_form_id == parent_form_id)
 
             # Apply sorting and get sort parameters
             query, sort_params, mongo_sorted = await SubmissionService._apply_sorting(
@@ -256,7 +266,8 @@ class SubmissionService:
             applications = result.mappings().all()
 
             final_results = []
-            if applications:
+            if applications and parent_form_id:
+                logger.info("Fetching submission data from formio.")
                 # Extract the submission IDs
                 submission_ids = [
                     app["submission_id"] for app in applications if app["submission_id"]

@@ -3,6 +3,7 @@
 from typing import List, Optional
 
 import strawberry
+from strawberry.scalars import JSON
 
 
 @strawberry.type
@@ -23,7 +24,7 @@ class QuerySubmissionsSchema:
     id: int
     created_by: str
     application_status: str
-    location: Optional[str]
+    data: JSON
 
 
 @strawberry.type

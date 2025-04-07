@@ -114,7 +114,8 @@ class FormService:
     @staticmethod
     async def query_submissions(
         submission_ids: List[str],
-        location: Optional[str] = None,
+        search: Optional[dict] = None,
+        project_fields: Optional[List[str]] = None,
         page_no: Optional[int] = None,
         limit: Optional[int] = None,
         sort_by: Optional[str] = None,
@@ -125,8 +126,10 @@ class FormService:
         """
         # Build match stage
         match_stage = {"_id": {"$in": [ObjectId(id) for id in submission_ids]}}
-        if location is not None:
-            match_stage["data.location"] = location
+        if search:
+            for field, value in search.items():
+                mongo_field = f"data.{field}"
+                match_stage[mongo_field] = value
 
         pipeline = [{"$match": match_stage}]
 
@@ -136,7 +139,13 @@ class FormService:
             sort_field = f"data.{sort_by}"
             sort_value = 1 if sort_order.lower() == "asc" else -1
             pipeline.append({"$sort": {sort_field: sort_value}})
-            logger.info(f"Sorting by: {sort_field} in {sort_order} order")  # Debug log
+            logger.info(f"Sorting by: {sort_field} in {sort_order} order")
+        # Projection stage
+        project_stage = {"$project": {"_id": {"$toString": "$_id"}}}
+        if project_fields:
+            for field in project_fields:
+                project_stage["$project"][field] = f"$data.{field}"
+        pipeline.append(project_stage)
 
         # Only add pagination if page_no and limit specified
         if page_no is not None and limit is not None:
@@ -145,12 +154,6 @@ class FormService:
                     "items": [
                         {"$skip": (page_no - 1) * limit},
                         {"$limit": limit},
-                        {
-                            "$project": {
-                                "_id": {"$toString": "$_id"},
-                                "location": "$data.location",
-                            }
-                        },
                     ],
                     "total": [{"$count": "count"}],
                 }
@@ -165,14 +168,6 @@ class FormService:
                 else 0
             )
         else:
-            pipeline.append(
-                {
-                    "$project": {
-                        "_id": {"$toString": "$_id"},
-                        "location": "$data.location",
-                    }
-                }
-            )
             items = await SubmissionsModel.aggregate(pipeline).to_list()
             total = len(items)
 

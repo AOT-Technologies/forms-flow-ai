@@ -1,5 +1,5 @@
 import asyncio
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import strawberry
 from sqlalchemy import and_, desc, func, or_
@@ -136,9 +136,27 @@ class SubmissionService:
         return auth_conditions
 
     @staticmethod
-    async def _apply_sorting(query, application_table, sort_by, sort_order):
+    async def split_search_criteria(
+        search: Optional[Dict[str, Any]], webapi_fields: List[str]
+    ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """Splits search criteria into webapi and mongo search dictionaries."""
+        webapi_search = {}
+        mongo_search = {}
+
+        if search:
+            for field, value in search.items():
+                if field in webapi_fields:
+                    webapi_search[field] = value
+                else:
+                    mongo_search[field] = value
+
+        return webapi_search, mongo_search
+
+    @staticmethod
+    async def _apply_sorting(
+        query, application_table, webapi_fields, sort_by, sort_order
+    ):
         """Apply sorting to the query and determine sort parameters."""
-        webapi_fields = ["created_by", "application_status", "id"]
         sort_params = {}
         mongo_sorted = False
 
@@ -157,7 +175,7 @@ class SubmissionService:
     async def _execute_with_pagination_strategy(
         query,
         api_session,
-        location: Optional[str],
+        mongo_search: Optional[dict],
         page_no: Optional[int],
         limit: Optional[int],
     ) -> tuple[list[dict], int, dict]:
@@ -169,7 +187,7 @@ class SubmissionService:
         Returns:
             tuple: (applications, total_count, pagination_params)
         """
-        if not location:
+        if not mongo_search:
             # SQL-side pagination
             items_per_page = limit or 5
             current_page = page_no or 1
@@ -227,11 +245,11 @@ class SubmissionService:
         info,
         sort_by,
         sort_order,
+        parent_form_id,
+        search,
+        project_fields,
         page_no,
         limit,
-        parent_form_id,
-        location,
-        submitted_by,
     ) -> List[QuerySubmissionsSchema]:
         """
         Retrieve filtered and paginated submissions with authorization checks.
@@ -248,8 +266,9 @@ class SubmissionService:
             sort_order (str): Sort direction ('asc' or 'desc')
             limit (int): Maximum number of results to return
             parent_form_id (Optional[str]): Filter submissions by parent form ID
-            location (Optional[str]): Location filter for submissions
-            submitted_by (Optional[str]): Filter by submitter ID.
+            search Optional[JSON]: Dictionary of field-value pairs to search across both SQL and MongoDB field
+            project_fields Optional[List[str]]: List of specific fields to retrieve from MongoDB documents
+            page_no (int): Pagination page number (default: 1)
 
         Returns:
             List[QuerySubmissionsSchema]: Combined results containing:
@@ -265,6 +284,12 @@ class SubmissionService:
         user = info.context["user"]
         username = user.token_info.get("preferred_username")
         user_roles = user.token_info.get("role", [])
+
+        webapi_fields = ["created_by", "application_status", "id"]
+        # Split search criteria
+        webapi_search, mongo_search = await SubmissionService.split_search_criteria(
+            search, webapi_fields
+        )
 
         async with webapi_session as api_session:
             query = (
@@ -294,23 +319,25 @@ class SubmissionService:
                 .distinct()
             )
 
-            # Conditionally add created_by filter
-            if submitted_by is not None:
-                query = query.where(application_table.c.created_by == submitted_by)
+            if webapi_search:
+                for field, value in webapi_search.items():
+                    if hasattr(application_table.c, field):
+                        col = getattr(application_table.c, field)
+                        query = query.where(col == value)
             if parent_form_id:
                 query = query.where(mapper_table.c.parent_form_id == parent_form_id)
 
             # Apply sorting and get sort parameters
             query, sort_params, mongo_sorted = await SubmissionService._apply_sorting(
-                query, application_table, sort_by, sort_order
+                query, application_table, webapi_fields, sort_by, sort_order
             )
             # Execute with appropriate pagination strategy
             submissions, total_count, pagination_params = (
                 await SubmissionService._execute_with_pagination_strategy(
-                    query, api_session, location, page_no, limit
+                    query, api_session, mongo_search, page_no, limit
                 )
             )
-
+            submission_data = {}
             if submissions and parent_form_id:
                 logger.info("Fetching submission data from formio.")
                 # Extract the submission IDs
@@ -320,7 +347,8 @@ class SubmissionService:
                 # Get filtered submissions from MongoDB
                 submission_data = await FormService.query_submissions(
                     submission_ids=submission_ids,
-                    location=location,
+                    search=mongo_search,
+                    project_fields=project_fields,
                     **pagination_params,
                     **sort_params,
                 )
@@ -332,18 +360,24 @@ class SubmissionService:
                     mongo_sorted,
                     limit,
                 )
+
             return PaginatedSubmissionResponse(
                 submissions=[
                     QuerySubmissionsSchema(
                         id=row.get("id"),
                         created_by=row.get("created_by"),
                         application_status=row.get("application_status"),
-                        location=row.get("submission_data", {}).get("location"),
+                        data={
+                            field: row.get("submission_data", {}).get(field)
+                            for field in (project_fields or [])
+                        },
                     )
                     for row in submissions
                 ],
                 total_count=(
-                    total_count if not location else submission_data.get("total_count")
+                    submission_data.get("total_count")
+                    if mongo_search and parent_form_id
+                    else total_count
                 ),
                 page_no=page_no,
                 limit=limit,

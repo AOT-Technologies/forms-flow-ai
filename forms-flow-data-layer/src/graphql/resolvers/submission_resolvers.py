@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 import strawberry
+from strawberry.scalars import JSON
 
 from src.graphql.schema import PaginatedSubmissionResponse, SubmissionSchema
 from src.graphql.service import SubmissionService
@@ -39,8 +40,8 @@ class QuerySubmissionsResolver:
         sort_by: str,
         sort_order: str,
         parent_form_id: Optional[str] = None,
-        location: Optional[str] = None,
-        submitted_by: Optional[str] = None,
+        search: Optional[JSON] = None,
+        mongo_project_fields: Optional[List[str]] = None,
         page_no: int = 1,
         limit: int = 5,
     ) -> PaginatedSubmissionResponse:
@@ -52,8 +53,9 @@ class QuerySubmissionsResolver:
             sort_by: Field to sort by
             sort_order: 'asc' or 'desc' sort direction
             parent_form_id: Optional filter for submissions by specific ID
-            location: Filter submissions by location
-            submitted_by: Optional filter for submissions by specific user
+            search: Optional Dictionary of field-value pairs to search across both SQL and MongoDB field
+            mongo_project_fields: Optional field for specifying fields to retrieve from MongoDB
+            page_no: Pagination page number (default: 1)
             limit: Pagination limit (default: 5)
 
         Returns:
@@ -63,10 +65,10 @@ class QuerySubmissionsResolver:
             info,
             sort_by,
             sort_order,
+            parent_form_id,
+            search,
+            mongo_project_fields,
             page_no,
             limit,
-            parent_form_id,
-            location,
-            submitted_by,
         )
         return submissions

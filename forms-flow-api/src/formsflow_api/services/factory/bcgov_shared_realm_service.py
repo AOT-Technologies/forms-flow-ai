@@ -66,7 +66,12 @@ class BCGovSharedRealm(KeycloakGroupService):
         css_idps = current_app.config.get("CSS_IDP_LIST").split(",")
         users_list = []
         for css_idp in css_idps:
-            param_name = "name" if css_idp == "github-bcgov" else "firstName"
+            param_name = "firstName"
+            if css_idp in ('github-bcgov','github-public'):
+                param_name = "name"
+            elif css_idp in ('basic-bceid','business-bceid', 'basic-business-bceid'):
+                param_name = "guid"
+
             url = f"{css_env}/{css_idp}/users?{param_name}={search}"
             response = self.session.request("GET", f"{self.base_url}/{url}")
             if response.json():

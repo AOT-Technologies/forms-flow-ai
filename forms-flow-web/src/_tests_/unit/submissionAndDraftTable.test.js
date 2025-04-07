@@ -8,48 +8,48 @@ import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission } from "../../helper/routerHelper";
 import '@testing-library/jest-dom';
-import { 
-  setApplicationListActivePage, 
-  setCountPerpage, 
-  setFormSubmissionSort 
+import {
+  setApplicationListActivePage,
+  setCountPerpage,
+  setFormSubmissionSort
 } from "../../actions/applicationActions";
 
 // Mock the action creators
-  jest.mock("../../actions/applicationActions", () => ({
-    setApplicationListActivePage: jest.fn((page) => ({ type: "SET_APPLICATION_LIST_ACTIVE_PAGE", payload: page })),
-    setCountPerpage: jest.fn((limit) => ({ type: "SET_COUNT_PER_PAGE", payload: limit })),
-    setFormSubmissionSort: jest.fn((sort) => ({ type: "SET_FORM_SUBMISSION_SORT", payload: sort })),
-  }));
+jest.mock("../../actions/applicationActions", () => ({
+  setApplicationListActivePage: jest.fn((page) => ({ type: "SET_APPLICATION_LIST_ACTIVE_PAGE", payload: page })),
+  setCountPerpage: jest.fn((limit) => ({ type: "SET_COUNT_PER_PAGE", payload: limit })),
+  setFormSubmissionSort: jest.fn((sort) => ({ type: "SET_FORM_SUBMISSION_SORT", payload: sort })),
+}));
 
-  // Mock dependencies
-  jest.mock("react-toastify", () => ({
-    toast: {
-      success: jest.fn(),
-      error: jest.fn(),
-    },
-  }));
+// Mock dependencies
+jest.mock("react-toastify", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
-  jest.mock("../../apiManager/services/draftService", () => ({
-    deleteDraftbyId: jest.fn(),
-  }));
+jest.mock("../../apiManager/services/draftService", () => ({
+  deleteDraftbyId: jest.fn(),
+}));
 
-  jest.mock("../../helper/routerHelper", () => ({
-    navigateToDraftEdit: jest.fn(),
-    navigateToViewSubmission: jest.fn(),
-  }));
+jest.mock("../../helper/routerHelper", () => ({
+  navigateToDraftEdit: jest.fn(),
+  navigateToViewSubmission: jest.fn(),
+}));
 
-  jest.mock("react-i18next", () => ({
-    useTranslation: () => ({ t: (key) => key }),
-  }));
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (key) => key }),
+}));
 
-  // Mock the date formatter
-  jest.mock("../../helper/dateTimeHelper", () => ({
-    formatDate: (date) => date ? new Date(date).toLocaleDateString() : "",
-  }));
+// Mock the date formatter
+jest.mock("../../helper/dateTimeHelper", () => ({
+  formatDate: (date) => date ? new Date(date).toLocaleDateString() : "",
+}));
 
 
 jest.mock("@formsflow/components", () => {
-  const PropTypes = require("prop-types"); 
+  const PropTypes = require("prop-types");
   const CustomButton = ({ label, onClick, "data-testid": dataTestId, "aria-label": ariaLabel }) => (
     <button onClick={onClick} data-testid={dataTestId || `button-${label}`} aria-label={ariaLabel}>
       {label}
@@ -63,7 +63,14 @@ jest.mock("@formsflow/components", () => {
     "aria-label": PropTypes.string,
   };
 
-  const TableFooter = ({ limit, activePage, totalCount, handlePageChange, onLimitChange, pageOptions }) => (
+  const TableFooter = ({
+    limit,
+    activePage,
+    totalCount,
+    handlePageChange,
+    onLimitChange,
+    pageOptions
+  }) => (
     <tr data-testid="table-footer">
       <td colSpan="6">
         <div className="pagination-controls">
@@ -108,7 +115,10 @@ jest.mock("@formsflow/components", () => {
     ).isRequired,
   };
 
-  const NoDataFound = ({ message }) => <div data-testid="no-data-found">{message}</div>;
+  const NoDataFound = ({ message }) => <div
+    data-testid="no-data-found">
+    {message}
+  </div>;
 
   NoDataFound.propTypes = {
     message: PropTypes.string.isRequired,
@@ -117,7 +127,6 @@ jest.mock("@formsflow/components", () => {
   const ConfirmModal = ({
     show,
     primaryBtnAction,
-    onClose,
     title,
     message,
     secondayBtnAction,
@@ -135,7 +144,9 @@ jest.mock("@formsflow/components", () => {
         <button data-testid={primaryBtndataTestid} onClick={primaryBtnAction}>
           {primaryBtnText}
         </button>
-        <button data-testid={secondoryBtndataTestid} onClick={secondayBtnAction} disabled={secondaryBtnDisable}>
+        <button data-testid={secondoryBtndataTestid}
+          onClick={secondayBtnAction}
+          disabled={secondaryBtnDisable}>
           {secondaryBtnLoading ? "Loading..." : secondaryBtnText}
         </button>
       </div>
@@ -144,7 +155,6 @@ jest.mock("@formsflow/components", () => {
   ConfirmModal.propTypes = {
     show: PropTypes.bool.isRequired,
     primaryBtnAction: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     secondayBtnAction: PropTypes.func.isRequired,
@@ -397,10 +407,10 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     // Click on the "Delete" button for a draft
     fireEvent.click(screen.getByTestId("delete-draft-button-123"));
-   
+
     // Click on the "No, Keep This Draft" button
     fireEvent.click(screen.getByTestId("no-delete-button"));
-   
+
     // Modal should be closed and deleteDraftbyId should not be called
     expect(screen.queryByTestId("confirm-modal")).not.toBeInTheDocument();
     expect(deleteDraftbyId).not.toHaveBeenCalled();
@@ -408,7 +418,7 @@ describe("SubmissionsAndDraftTable Component", () => {
 
   test("deletes draft when 'Yes, Delete this Draft' is clicked", async () => {
     deleteDraftbyId.mockResolvedValueOnce({});
-   
+
     render(
       <Provider store={store}>
         <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
@@ -417,10 +427,10 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     // Click on the "Delete" button for a draft
     fireEvent.click(screen.getByTestId("delete-draft-button-123"));
-   
+
     // Click on the "Yes, Delete this Draft" button
     fireEvent.click(screen.getByTestId("yes-delete-button"));
-   
+
     // Wait for the delete operation to complete
     await waitFor(() => {
       expect(deleteDraftbyId).toHaveBeenCalledWith("123");
@@ -441,10 +451,10 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     // Click on the "Delete" button for a draft
     fireEvent.click(screen.getByTestId("delete-draft-button-123"));
-   
+
     // Click on the "Yes, Delete this Draft" button
     fireEvent.click(screen.getByTestId("yes-delete-button"));
-   
+
     // Wait for the delete operation to fail
     await waitFor(() => {
       expect(deleteDraftbyId).toHaveBeenCalledWith("123");
@@ -458,9 +468,9 @@ describe("SubmissionsAndDraftTable Component", () => {
     const deletePromise = new Promise(resolve => {
       resolveDeletePromise = resolve;
     });
-    
+
     deleteDraftbyId.mockReturnValueOnce(deletePromise);
-    
+
     render(
       <Provider store={store}>
         <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
@@ -469,17 +479,17 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     // Click on the "Delete" button for a draft
     fireEvent.click(screen.getByTestId("delete-draft-button-123"));
-    
+
     // Click on the "Yes, Delete this Draft" button
     fireEvent.click(screen.getByTestId("yes-delete-button"));
-    
+
     // The button should be disabled and show loading state
     const deleteButton = screen.getByTestId("yes-delete-button");
     expect(deleteButton).toBeDisabled();
-    
+
     // Now resolve the promise to complete the deletion
     resolveDeletePromise({});
-    
+
     // Wait for the delete operation to complete
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith("Draft Deleted Successfully");
@@ -492,7 +502,7 @@ describe("SubmissionsAndDraftTable Component", () => {
         <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
       </Provider>
     );
- 
+
     // Check if TableFooter is rendered with correct props
     expect(screen.getByTestId("table-footer")).toBeInTheDocument();
     expect(screen.getByTestId("current-page").textContent).toBe("1");
@@ -507,7 +517,7 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     // Change the items per page
     fireEvent.change(screen.getByTestId("limit-selector"), { target: { value: "25" } });
-   
+
     // Check if the correct actions were dispatched
     expect(setCountPerpage).toHaveBeenCalledWith(25);
     expect(setApplicationListActivePage).toHaveBeenCalledWith(1);
@@ -528,7 +538,7 @@ describe("SubmissionsAndDraftTable Component", () => {
       new Date("2023-01-03T12:00:00").toLocaleDateString(),
       new Date("2023-01-04T12:00:00").toLocaleDateString()
     ];
-    
+
     dates.forEach(date => {
       expect(screen.getByText(date)).toBeInTheDocument();
     });

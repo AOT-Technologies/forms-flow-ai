@@ -94,9 +94,10 @@ class KeycloakGroupService(KeycloakAdmin):
         user_count = None
         user_list = []
         if group_name:
-            if current_app.config.get("MULTI_TENANCY_ENABLED"):
-                if not group_name.startswith(f"/{user.tenant_key}-"):
-                    group_name = group_name.replace("/", f"/{user.tenant_key}-", 1)
+            if current_app.config.get(
+                "MULTI_TENANCY_ENABLED"
+            ) and not group_name.startswith(f"/{user.tenant_key}-"):
+                group_name = group_name.replace("/", f"/{user.tenant_key}-", 1)
 
             group = self.client.get_request(url_path=f"group-by-path/{group_name}")
             group_id = group.get("id")

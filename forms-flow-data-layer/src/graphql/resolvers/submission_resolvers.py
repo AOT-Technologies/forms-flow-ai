@@ -33,7 +33,6 @@ class SubmissionResolver:
 @strawberry.type
 class QuerySubmissionsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
-    @cache_graphql(expire=120, key_prefix="query-submissions")
     async def querysubmissions(
         self,
         info: strawberry.Info,

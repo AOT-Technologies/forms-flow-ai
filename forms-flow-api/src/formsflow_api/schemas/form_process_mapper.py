@@ -78,3 +78,4 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     include_submissions_count = fields.Bool(
         data_key="includeSubmissionsCount", required=False
     )
+    parentFormId = fields.Str(data_key="parentFormId", required=False)

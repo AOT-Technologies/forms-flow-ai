@@ -376,7 +376,7 @@ class SubmissionService:
                 ],
                 total_count=(
                     submission_data.get("total_count")
-                    if mongo_search and parent_form_id
+                    if mongo_search and parent_form_id and submissions
                     else total_count
                 ),
                 page_no=page_no,

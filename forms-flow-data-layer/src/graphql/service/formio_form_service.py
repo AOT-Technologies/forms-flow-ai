@@ -112,6 +112,34 @@ class FormService:
         )  # Return data if found, otherwise None
 
     @staticmethod
+    async def _build_match_stage(submission_ids: List[str], search: Optional[dict]) -> dict:
+        """Build the MongoDB match stage."""
+        match_stage = {"_id": {"$in": [ObjectId(id) for id in submission_ids]}}
+        if search:
+            for field, value in search.items():
+                match_stage[f"data.{field}"] = value
+        return match_stage
+
+    @staticmethod
+    def _build_sort_stage(sort_by: str, sort_order: str) -> Optional[dict]:
+        """Build the MongoDB sort stage if needed."""
+        if not sort_by:
+            return None
+        sort_field = f"data.{sort_by}"
+        sort_value = 1 if sort_order.lower() == "asc" else -1
+        logger.info(f"Sorting by: {sort_field} in {sort_order} order")
+        return {"$sort": {sort_field: sort_value}}
+
+    @staticmethod
+    def _build_projection_stage(project_fields: Optional[List[str]]) -> dict:
+        """Build the MongoDB projection stage."""
+        project_stage = {"$project": {"_id": {"$toString": "$_id"}}}
+        if project_fields:
+            for field in project_fields:
+                project_stage["$project"][field] = f"$data.{field}"
+        return project_stage
+
+    @staticmethod
     async def query_submissions(
         submission_ids: List[str],
         search: Optional[dict] = None,
@@ -125,27 +153,15 @@ class FormService:
         Query submissions from MongoDB with optional pagination and sorting.
         """
         # Build match stage
-        match_stage = {"_id": {"$in": [ObjectId(id) for id in submission_ids]}}
-        if search:
-            for field, value in search.items():
-                mongo_field = f"data.{field}"
-                match_stage[mongo_field] = value
-
+        match_stage = await FormService._build_match_stage(submission_ids, search)
         pipeline = [{"$match": match_stage}]
 
         # Add sorting if sort_by is specified
-        if sort_by:
-            # Convert field name to proper MongoDB path
-            sort_field = f"data.{sort_by}"
-            sort_value = 1 if sort_order.lower() == "asc" else -1
-            pipeline.append({"$sort": {sort_field: sort_value}})
-            logger.info(f"Sorting by: {sort_field} in {sort_order} order")
+        if sort_stage := FormService._build_sort_stage(sort_by, sort_order):
+            pipeline.append(sort_stage)
+
         # Projection stage
-        project_stage = {"$project": {"_id": {"$toString": "$_id"}}}
-        if project_fields:
-            for field in project_fields:
-                project_stage["$project"][field] = f"$data.{field}"
-        pipeline.append(project_stage)
+        pipeline.append(FormService._build_projection_stage(project_fields))
 
         # Only add pagination if page_no and limit specified
         if page_no is not None and limit is not None:

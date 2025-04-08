@@ -117,12 +117,16 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Replace security-severity undefined for license-related findings
         run: |
           # Check if Snyk SARIF file exists before processing
           if [ -f snyk.sarif ]; then
-            # Use safer sed command with error handling
-            sed -i 's/"security-severity": "null"/"security-severity": "0"/g' snyk.sarif || true
+            # Use jq to properly handle JSON and replace null values with 0
+            jq 'walk(if type == "object" and has("security-severity") and ."security-severity" == null then ."security-severity" = "0" else . end)' snyk.sarif > snyk_processed.sarif
+            mv snyk_processed.sarif snyk.sarif
             
             # Verify the file was processed
             echo "Snyk SARIF file processed"

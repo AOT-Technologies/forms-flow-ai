@@ -313,7 +313,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
             process.set("name", process_name)
 
         # Convert the XML tree back to a string
-        updated_xml = etree.tostring(
+        updated_xml = etree.tostring(  # pylint: disable=c-extension-no-member
             root, pretty_print=True, encoding="unicode", xml_declaration=False
         )
         # Prepend the XML declaration
@@ -559,6 +559,9 @@ class ImportService:  # pylint: disable=too-many-public-methods
                 mapper.is_anonymous = anonymous
                 mapper.form_name = title
                 mapper.task_variable = task_variable
+                # if prompt_new_version already true then make it false
+                if mapper.prompt_new_version:
+                    mapper.prompt_new_version = False
                 mapper.save()
                 form_logs_data = {
                     "titleChanged": title_changed,

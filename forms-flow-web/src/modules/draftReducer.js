@@ -13,13 +13,12 @@ const initialState = {
   draftCount: 0,
   activePage: 1,
   isDraftDetailLoading: true,
-  submission: {},
   draftDetailStatusCode: "",
-  lastUpdated: {},
   sortOrder: "desc",
   sortBy: "id",
   searchParams: {},
   isDraftLoading: false,
+  draftModified: {},
 };
 
 const draftSubmission = (state = initialState, action) => {
@@ -31,7 +30,7 @@ const draftSubmission = (state = initialState, action) => {
     case ACTION_CONSTANTS.DRAFT_DETAIL:
       return {
         ...state,
-        submission: action.payload,
+        draftSubmission: action.payload,
         isDraftDetailLoading: action.payload?.isDraftDetailLoading || false,
       };
     case ACTION_CONSTANTS.DRAFT_COUNT:
@@ -49,8 +48,6 @@ const draftSubmission = (state = initialState, action) => {
       };
     case ACTION_CONSTANTS.DRAFT_DETAIL_STATUS_CODE:
       return { ...state, draftDetailStatusCode: action.payload };
-    case ACTION_CONSTANTS.DRAFT_LAST_UPDATED:
-      return { ...state, lastUpdated: action.payload };
     case ACTION_CONSTANTS.DRAFT_DELETE:
       return { ...state, draftDelete: action.payload };
     case ACTION_CONSTANTS.DRAFT_LIST_SORT_ORDER:
@@ -61,6 +58,8 @@ const draftSubmission = (state = initialState, action) => {
       return { ...state, isDraftLoading: action.payload };
     case ACTION_CONSTANTS.DRAFT_LIST_SEARCH_PARAMS:
       return { ...state, searchParams: action.payload };
+    case ACTION_CONSTANTS.DRAFT_MODIFIED:
+      return { ...state, draftModified: action.payload };
     default:
       return state;
   }

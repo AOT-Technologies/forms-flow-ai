@@ -87,8 +87,8 @@ class ENVS:
     CAMUNDA_DB_USER: str = os.getenv("CAMUNDA_DB_USER", "localhost")
     CAMUNDA_DB_PASSWORD: str = os.getenv("CAMUNDA_DB_PASSWORD", "5432")
     CAMUNDA_DB_HOST: str = os.getenv("CAMUNDA_DB_HOST", "")
-    CAMUNDA_DB_PORT: str = os.getenv("CAMUNDA_DB_PORT", "")
-    CAMUNDA_DB_NAME: str = os.getenv("CAMUNDA_DB_NAME", "bpm")
+    CAMUNDA_DB_PORT: str = os.getenv("CAMUNDA_DB_PORT", "6432")
+    CAMUNDA_DB_NAME: str = os.getenv("CAMUNDA_DB_NAME", "formsflow-bpm")
     CAMUNDA_DB_OPTIONS: str = os.getenv("CAMUNDA_DB_OPTIONS", "")
 
     # formio db uri

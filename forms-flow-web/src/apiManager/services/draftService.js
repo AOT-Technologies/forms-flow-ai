@@ -8,7 +8,7 @@ import {
   setDraftCount,
   setDraftSubmissionError,
   setDraftDetailStatusCode,
-  saveLastUpdatedDraft,
+  setDraftModified
 } from "../../actions/draftActions";
 import moment from "moment";
 
@@ -20,8 +20,6 @@ export const draftCreate = (data, ...rest) => {
       .then((res) => {
         if (res.data) {
           dispatch(setDraftSubmission(res.data));
-          dispatch(setDraftDetail(res.data));
-
           done(true);
         } else {
           dispatch(setDraftSubmissionError("Error Posting data"));
@@ -44,7 +42,8 @@ export const draftUpdate = (data, ...rest) => {
       .then((res) => {
         if (res.data) {
           done(null, res.data);
-          dispatch(saveLastUpdatedDraft({ ...data }));
+          dispatch(setDraftModified(res.data));
+          dispatch(setDraftSubmission(res.data)); 
         } else {
           done("Error Posting data");
         }
@@ -104,7 +103,7 @@ export const publicDraftUpdate = (data, ...rest) => {
       .then((res) => {
         if (res.data) {
           done(null, res.data);
-          dispatch(saveLastUpdatedDraft({ ...data }));
+          dispatch(setDraftSubmission(res.data)); 
         } else {
           done("Error Posting data");
         }
@@ -147,28 +146,22 @@ export const getDraftById = (draftId, ...rest) => {
       .then((res) => {
         if (res.data && Object.keys(res.data).length) {
           const draft = res.data;
-          // const processData = getFormattedProcess(application);
           dispatch(setDraftDetail(draft));
-          // dispatch(setApplicationProcess(processData));
+          dispatch(setDraftModified(draft));
           dispatch(setDraftDetailStatusCode(res.status));
           done(null, draft);
         } else {
-          // dispatch(serviceActionError(res));
           dispatch(setDraftDetail({}));
           dispatch(setDraftDetailStatusCode(403));
           done("No data");
-          // dispatch(setDraftDetailLoader(false));
         }
         done(null, res.data);
-        // dispatch(setDraftDetailLoader(false));
       })
       .catch((error) => {
         console.log("Error", error);
-        // dispatch(serviceActionError(error));
         dispatch(setDraftDetail({}));
         dispatch(setDraftDetailStatusCode(403));
         done(error);
-        // dispatch(setDraftDetailLoader(false));
       });
   };
 };

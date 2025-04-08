@@ -11,10 +11,18 @@ import org.camunda.bpm.engine.identity.Tenant;
 import org.camunda.bpm.engine.identity.TenantQuery;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.interceptor.CommandContext;
-import org.camunda.bpm.extension.keycloak.*;
+import org.camunda.bpm.extension.keycloak.CacheableKeycloakCheckPasswordCall;
+import org.camunda.bpm.extension.keycloak.CacheableKeycloakGroupQuery;
+import org.camunda.bpm.extension.keycloak.CacheableKeycloakUserQuery;
+import org.camunda.bpm.extension.keycloak.KeycloakConfiguration;
+import org.camunda.bpm.extension.keycloak.KeycloakContextProvider;
+import org.camunda.bpm.extension.keycloak.KeycloakGroupQuery;
+import org.camunda.bpm.extension.keycloak.KeycloakUserQuery;
 import org.camunda.bpm.extension.keycloak.cache.QueryCache;
 import org.camunda.bpm.extension.keycloak.rest.KeycloakRestTemplate;
 import org.camunda.bpm.extension.keycloak.util.KeycloakPluginLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 /**
@@ -23,7 +31,7 @@ import org.springframework.util.StringUtils;
  */
 public class KeycloakIdentityProviderSession
 		extends org.camunda.bpm.extension.keycloak.KeycloakIdentityProviderSession {
-
+	private static final Logger LOG = LoggerFactory.getLogger(KeycloakIdentityProviderSession.class);
 	private CustomConfig config;
 	private TenantService tenantService;
 	protected QueryCache<CacheableKeycloakTenantQuery, List<Tenant>> tenantQueryCache;
@@ -36,8 +44,12 @@ public class KeycloakIdentityProviderSession
 			QueryCache<CacheableKeycloakCheckPasswordCall, Boolean> checkPasswordCache, CustomConfig config) {
 		super(keycloakConfiguration, restTemplate, keycloakContextProvider, userQueryCache, groupQueryCache, checkPasswordCache);
 		this.config = config;
-		this.groupService = new KeycloakGroupService(keycloakConfiguration, restTemplate, keycloakContextProvider,
-				config);
+		LOG.info("config.isSharedRealmEnabled() %s", config.isSharedRealmEnabled());
+		if (config.isSharedRealmEnabled())
+			this.groupService = new BCGovSharedKeycloakService(keycloakConfiguration, restTemplate, keycloakContextProvider, config);
+		else
+			this.groupService = new KeycloakGroupService(keycloakConfiguration, restTemplate, keycloakContextProvider, config);
+		
 		this.userService = new KeycloakUserService(keycloakConfiguration, restTemplate, keycloakContextProvider,
 				config);
 		this.tenantService = new TenantService(restTemplate, keycloakContextProvider, config);
@@ -57,6 +69,7 @@ public class KeycloakIdentityProviderSession
 	 * @see org.camunda.bpm.extension.keycloak.KeycloakGroupService#getKeycloakAdminGroupId(java.lang.String)
 	 */
 	public String getKeycloakAdminGroupId(String configuredAdminGroupName) {
+		LOG.info(" getKeycloakAdminGroupId " + groupService.getKeycloakAdminGroupId(configuredAdminGroupName));
 		return groupService.getKeycloakAdminGroupId(configuredAdminGroupName);
 	}
 

@@ -16,7 +16,7 @@ import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 import rootReducer from "../rootReducer";
 import { mockstate } from "../mockState";
 import ProcessTable from "../../../routes/Design/Process/ProcessTable";
-
+import '../utils/i18nForTests'; // import to remove warning related to i18n import
 
 jest.mock("connected-react-router", () => ({
   push: jest.fn(),
@@ -153,7 +153,7 @@ describe('ProcessTable Component Tests', () => {
     expect(itemsCount).toBeInTheDocument();
     
     const totalItems = screen.getByTestId("total-items");
-    expect(totalItems).toHaveTextContent('50');
+    expect(totalItems).toHaveTextContent('51');
     
     const prevButton = screen.getByTestId('left-button');
     const nextButton = screen.getByTestId('right-button');

@@ -73,18 +73,16 @@ const View = React.memo((props) => {
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
-  const { submission: draftSubmission, lastUpdated: lastUpdatedDraft } =
-    useSelector((state) => state.draft) || {};
-
+  const draftSubmission = useSelector((state) => state.draft.draftSubmission || {});
   const {
     isFormSubmissionLoading,
     formSubmitted: isFormSubmitted,
     publicFormStatus,
   } = useSelector((state) => state.formDelete) || {};
 
-  const draftSubmissionId =
-    useSelector((state) => state.draft.draftSubmission?.draftId) || draftId;
+  const draftSubmissionId = draftSubmission?.applicationId || draftId;
+  //modified date
+  const draftModified = useSelector((state)=>state.draft.draftModified?.modified);
 
   // Holds the latest data saved by the server
   const { formStatusLoading, processLoadError } =
@@ -103,7 +101,7 @@ const View = React.memo((props) => {
   const [draftData, setDraftData] = useState(
     isDraftEdit ? draftSubmission?.data : {}
   );
-  const draftRef = useRef(isDraftEdit ? { data: draftSubmission?.data } : {});
+  const formRef = useRef(isDraftEdit ? { data: draftSubmission?.data } : {});
   const [isDraftCreated, setIsDraftCreated] = useState(isDraftEdit);
   const [validFormId, setValidFormId] = useState(undefined);
 
@@ -185,7 +183,7 @@ const View = React.memo((props) => {
    */
   const saveDraft = (payload, exitType) => {
     if (exitType === "SUBMIT") return;
-    let dataChanged = !isEqual(payload?.data, lastUpdatedDraft?.data);
+    let dataChanged = !isEqual(payload?.data, draftSubmission.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         dispatch(
@@ -239,7 +237,7 @@ const View = React.memo((props) => {
    */
   useEffect(() => {
     return () => {
-      let payload = getDraftReqFormat(validFormId, draftRef.current?.data);
+      let payload = getDraftReqFormat(validFormId, formRef.current?.data);
       if (poll) saveDraft(payload, exitType.current);
     };
   }, [validFormId, draftSubmissionId, poll, isDraftCreated, exitType.current]);
@@ -295,11 +293,11 @@ const View = React.memo((props) => {
 };
 
   const renderModifiedDate = () => {
-    if (draftSubmission && !isPublic) {
+    if (draftModified && !isPublic) {
       return (
         <>
           <span className="status-draft"></span> {t("Last modified on:")}{" "}
-          {new Date(draftSubmission?.modified).toLocaleString()}
+          {new Date(draftModified).toLocaleString()}
         </>
       );
     } else {
@@ -375,21 +373,23 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className="wizard-tab service-task-details user-form-container">
+        <div className="wizard-tab user-form-container">
           {(isPublic || formStatus === "active") ? (
             <Form
               form={form}
-              submission={isDraftEdit ? draftSubmission : submission}
+              submission={isDraftEdit ? draftData : submission}
               url={url}
               options={{
                 ...options,
                 language: lang,
                 i18n: RESOURCE_BUNDLES_DATA,
               }}
-              onChange={(data) => {
-                setDraftData(data);
-                draftRef.current = data;
+              onChange={() => {
+                if(formRef.current?.data){
+                  setDraftData({data:formRef.current?.data});
+                }
               }}
+              formReady={(e)=>formRef.current = e}
               onSubmit={(data) => {
                 setPoll(false);
                 exitType.current = "SUBMIT";

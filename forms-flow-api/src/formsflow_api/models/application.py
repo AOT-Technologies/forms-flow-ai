@@ -952,6 +952,7 @@ class Application(
             FormProcessMapper.form_name,
             FormProcessMapper.modified,
             FormProcessMapper.description,
+            FormProcessMapper.parent_form_id,
         ]
         if fetch_submissions_count:
             # Get the submission count subquery

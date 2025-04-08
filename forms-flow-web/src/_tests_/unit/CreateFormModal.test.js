@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import CreateFormModal from "../../components/Modals/CreateFormModal";
 import '@testing-library/jest-dom';
 import PropTypes from 'prop-types';  // Ensure PropTypes is imported at the top level
-
+import './utils/i18nForTests'; // import to remove warning related to i18n import
 // Define the CloseIcon component outside the mock
 const CloseIconComponent = ({ onClick }) => (
   <button data-testid="modal-close-icon" onClick={onClick}>

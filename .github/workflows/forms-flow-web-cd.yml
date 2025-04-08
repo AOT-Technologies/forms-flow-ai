@@ -18,7 +18,7 @@ jobs:
   build:
     if: github.repository == 'AOT-Technologies/forms-flow-ai'
     name: Build and push artifacts to s3
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3

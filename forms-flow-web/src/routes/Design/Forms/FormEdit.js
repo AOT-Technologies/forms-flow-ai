@@ -297,6 +297,8 @@ const EditComponent = () => {
       });
       setFormTitle(formExtracted.forms[0]?.formTitle || "");
     }else{
+      // while import and save need to false this variable to avoid the confirmation modal
+      if(promptNewVersion) setPromptNewVersion(false);
       /* ------------------------- if the form id changed ------------------------- */
       const formId = responseData.mapper?.formId;
       if(formId && formData._id != formId){

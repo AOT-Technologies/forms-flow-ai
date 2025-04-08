@@ -17,6 +17,8 @@ import ViewApplication from "../../../../../src/routes/Submit/Submission/Submiss
 import thunk from "redux-thunk";
 import { HelperServices } from "@formsflow/service";
 
+import '../../utils/i18nForTests'; // import to remove warning related to i18n import
+
 jest.mock('@formsflow/service', () => ({
   HelperServices: {
     getLocalDateAndTime: jest.fn()

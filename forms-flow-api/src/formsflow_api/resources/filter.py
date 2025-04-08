@@ -14,7 +14,7 @@ from formsflow_api_utils.utils import (
 )
 
 from formsflow_api.schemas import FilterSchema
-from formsflow_api.services import FilterService
+from formsflow_api.services import FilterPreferenceService, FilterService
 
 filter_schema = FilterSchema()
 
@@ -99,6 +99,12 @@ filter_response = API.inherit(
         "modified": fields.DateTime(description="Modified time"),
         "createdBy": fields.String(),
         "modifiedBy": fields.String(),
+        "hide": fields.Boolean(
+            description="Status of this filter from filter preference data"
+        ),
+        "sortOrder": fields.Integer(
+            description="Sort order of the filter from filter preference data"
+        ),
     },
 )
 
@@ -115,6 +121,26 @@ filter_response_with_default_filter = API.model(
     {
         "filters": fields.List(fields.Nested(filter_response)),
         "defaultFilter": fields.String(description="Default filter"),
+    },
+)
+
+filter_preference_model = API.model(
+    "FilterPreferenceItem",
+    {
+        "filterId": fields.Integer(description="ID of the filter"),
+        "sortOrder": fields.Integer(description="Sort order for the filter"),
+        "hide": fields.Boolean(description="Whether the filter is hidden"),
+    },
+)
+
+
+filter_preference_response_model = API.inherit(
+    "BaseFilterPreferenceResponseModel",
+    filter_preference_model,
+    {
+        "id": fields.Integer(description="Unique identifier for the preference"),
+        "tenant": fields.String(description="Tenant identifier"),
+        "userId": fields.String(description="User identifier"),
     },
 )
 
@@ -308,3 +334,45 @@ class FilterResourceById(Resource):
         response, status = "Deleted", HTTPStatus.OK
 
         return response, status
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/filter-preference", methods=["POST", "OPTIONS"])
+class FilterPreferenceResource(Resource):
+    """Resource for managing filter preferences."""
+
+    @staticmethod
+    @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
+    @profiletime
+    @API.doc(body=[filter_preference_model])
+    @API.response(
+        201, "CREATED:- Successful request.", model=[filter_preference_response_model]
+    )
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(
+        401, "UNAUTHORIZED:- Authorization header not provided or invalid token."
+    )
+    def post():
+        """Create a new filter preference.
+
+        Creates a new user preference for filter ordering and visibility.
+
+        Request Body:
+            filterId (str): The ID of the filter to set preferences for
+            sortOrder (int): The order in which the filter should appear (1 being first)
+            hide (bool): Whether to hide the filter from view
+
+        Returns:
+            List: [dict] containing:
+                - Filter preference data including id, tenant and userId
+                - HTTP 201 status code
+
+        Raises:
+            400: If request body is invalid
+            401: If user is not authenticated
+        """
+        data = request.get_json()
+        return (
+            FilterPreferenceService.create_or_update_filter_preference(data),
+            HTTPStatus.CREATED,
+        )

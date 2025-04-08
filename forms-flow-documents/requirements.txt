@@ -4,7 +4,7 @@ Flask-Migrate==4.0.7
 Flask-Moment==1.0.6
 Flask-SQLAlchemy==3.1.1
 Flask==2.3.3
-Jinja2==3.1.5
+Jinja2==3.1.6
 Mako==1.3.8
 MarkupSafe==3.0.2
 PyJWT==2.10.1
@@ -26,7 +26,7 @@ ecdsa==0.19.0
 flask-jwt-oidc==0.7.0
 flask-marshmallow==1.2.1
 flask-restx==1.3.0
-formsflow_api_utils @ git+https://github.com/auslin-aot/forms-flow-ai.git@feature/fwf-4315-update-api-docs#subdirectory=forms-flow-api-utils
+formsflow_api_utils @ git+https://github.com/AOT-Technologies/forms-flow-ai.git@develop#subdirectory=forms-flow-api-utils
 gunicorn==23.0.0
 h11==0.14.0
 h2==4.1.0

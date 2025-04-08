@@ -1,5 +1,6 @@
 export const mockstate = {
-  process: {
+
+  process:{
     isProcessLoading: true,
     processStatusList: [],
     processLoadError: false,
@@ -120,6 +121,11 @@ export const mockstate = {
     createSubmissions: true,
     showApplications: true,
     bearerToken: "",
+    isAuthenticated: true,
+    userDetail: {
+      name: "Test User",
+      email: "testuser@example.com",
+    },
     roles: [
       "view_tasks",
       "formsflow-client",
@@ -152,8 +158,6 @@ export const mockstate = {
       REVIEWER: "65f6845b5a0b7bdb4eabddd4",
       RESOURCE_ID: "65f6845c5a0b7bdb4eabdde1",
     },
-    userDetail: {},
-    isAuthenticated: true,
     currentPage: "",
     lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : null,
     selectLanguages: [],
@@ -166,7 +170,7 @@ export const mockstate = {
     isTenantDetailLoading: false,
     tenantData: {},
     tenantDetail: null,
-    tenantId: "",
+    tenantId: "testTenant",
   },
 
   formCheckList: {
@@ -180,6 +184,7 @@ export const mockstate = {
   },
   formDelete: {
     formDelete: { modalOpen: false, formId: "", formName: "" },
+    formSubmitted: false,
   },
   customSubmission: {
     submission: {
@@ -195,5 +200,27 @@ export const mockstate = {
       created: "2023-09-06T06:44:25.763Z",
     },
     applicationId: "",
+    isPublicStatusLoading: false,
+  },
+  form: {
+    form: {
+      _id: "123",
+      title: "Test Form",
+    },
+    isActive: false,
+  },
+  
+  draft: {
+    draftSubmission: {
+      data: {},
+      draftId: "456",
+    },
+    draftModified: false,
+    lastUpdated: {},
+  },
+  pubSub: {
+    publish: jest.fn(),
   },
 };
+
+

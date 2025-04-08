@@ -183,7 +183,7 @@ const View = React.memo((props) => {
    */
   const saveDraft = (payload, exitType) => {
     if (exitType === "SUBMIT") return;
-    let dataChanged = !isEqual(payload.data, draftSubmission.data);
+    let dataChanged = !isEqual(payload?.data, draftSubmission.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         dispatch(

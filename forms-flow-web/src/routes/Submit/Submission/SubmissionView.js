@@ -140,7 +140,7 @@ const ViewApplication = React.memo(() => {
             <div className="form-submission-button">
               <CustomButton
                 variant="gray-dark"
-                size="sm"
+                size="table"
                 label={t("History")}
                 dataTestId="handle-submission-history-testid"
                 ariaLabel={t("Submission History Button")}

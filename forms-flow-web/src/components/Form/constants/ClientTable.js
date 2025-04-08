@@ -206,7 +206,7 @@ function ClientTable() {
                                 size="table"
                                 label={t("Select")}
                                 onClick={() => showFormEntries(e._id)}
-                                data-testid={`form-submit-button-${e._id}`}
+                                dataTestId={`form-submit-button-${e._id}`}
                                 aria-label={t("Select a form")}
                             />
                           </div>

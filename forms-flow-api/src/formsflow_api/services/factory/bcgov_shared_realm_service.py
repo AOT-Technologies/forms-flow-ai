@@ -75,9 +75,9 @@ class BCGovSharedRealm(KeycloakGroupService):
         users_list = []
         for css_idp in css_idps:
             param_name = "firstName"
-            if css_idp in ('github-bcgov','github-public'):
+            if css_idp in ('github-bcgov', 'github-public'):
                 param_name = "name"
-            elif css_idp in ('basic-bceid','business-bceid', 'basic-business-bceid'):
+            elif css_idp in ('basic-bceid', 'business-bceid', 'basic-business-bceid'):
                 param_name = "guid"
 
             url = f"{css_env}/{css_idp}/users?{param_name}={search}"

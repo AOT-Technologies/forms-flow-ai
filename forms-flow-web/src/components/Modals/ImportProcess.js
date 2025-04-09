@@ -24,7 +24,7 @@ const ImportProcess = React.memo(({
   // Determine redirect URL and text based on file type
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const baseUrl = fileType === ".bpmn" ? "subflow/edit/" : "decision-table/edit/";
-  const defaultPrimaryBtnText = fileType === ".bpmn" ? t("Create And Edit BPMN") : t("Create And Edit DMN");
+  const defaultPrimaryBtnText = fileType === ".bpmn" ? t("Create and Edit BPMN") : t("Create and Edit DMN");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);

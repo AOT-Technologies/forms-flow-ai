@@ -84,7 +84,7 @@ const ActionModal = React.memo(
                   disabled={published || !isMigrated}
                   size="sm"
                   label={t("Import")}
-                  icon={<ImportIcon />}
+                  icon={<ImportIcon disabled={published} />}
                   className=""
                   dataTestId="import-form-button"
                   ariaLabel="Import Form"
@@ -107,7 +107,7 @@ const ActionModal = React.memo(
                   disabled={published}
                   size="sm"
                   label={t("Delete")}
-                  icon={<TrashIcon />}
+                  icon={<TrashIcon disabled={published} />}
                   className=""
                   dataTestId="delete-form-button"
                   ariaLabel="Delete Form"
@@ -135,7 +135,7 @@ const ActionModal = React.memo(
                   disabled={published}
                   size="sm"
                   label={t("Import")}
-                  icon={<ImportIcon />}
+                  icon={<ImportIcon disabled={published}  />}
                   className=""
                   dataTestId="import-workflow-button"
                   ariaLabel="Import Workflow"

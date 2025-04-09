@@ -436,7 +436,7 @@ const List = React.memo((props) => {
                       onClose={onCloseimportModal}
                       handleImport={handleImport}
                       headerText={t("Import New Form")}
-                      primaryButtonText={t("Confirm and Edit form")}
+                      primaryButtonText={t("Confirm and Edit Form")}
                       fileType=".json"
                     />
                   )}

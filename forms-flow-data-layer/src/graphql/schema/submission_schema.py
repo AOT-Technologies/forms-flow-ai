@@ -24,7 +24,7 @@ class QuerySubmissionsSchema:
     id: int
     created_by: str
     application_status: str
-    data: JSON
+    data: Optional[JSON] = None
 
 
 @strawberry.type

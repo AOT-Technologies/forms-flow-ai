@@ -62,8 +62,6 @@ const SubmitList = React.memo(({ getFormsInit }) => {
     { value: "formName", label: t("Form Name") },
     { value: "submissionCount", label: t("Submissions") },
     { value: "modified", label: t("Latest Submission") },
-
-
   ];
 
   // Fetch Forms Function
@@ -82,8 +80,12 @@ const SubmitList = React.memo(({ getFormsInit }) => {
 
   // Handle Sorting
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+    const resetSortOrders = optionSortBy.reduce((acc, option) => {
+      acc[option.value] = { sortOrder: "asc" }; // Reset all to ascending
+      return acc;
+    }, {});
     dispatch(setBpmFormSort({
-      ...formSort,
+      ...resetSortOrders,
       activeKey: selectedSortOption,
       [selectedSortOption]: { sortOrder: selectedSortOrder },
     }));

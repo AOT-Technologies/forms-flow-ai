@@ -128,8 +128,12 @@ const ProcessTable = React.memo(() => {
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
     setIsLoading(true);
     const action = isBPMN ? setBpmSort : setDmnSort;
+    const resetSortOrders = optionSortBy.reduce((acc, option) => {
+      acc[option.value] = { sortOrder: "asc" }; // Reset all to ascending
+      return acc;
+    }, {});
     dispatch(action({
-      ...sortConfig,
+      ...resetSortOrders,
       activeKey: selectedSortOption,
       [selectedSortOption]: { sortOrder: selectedSortOrder },
     }));
@@ -249,8 +253,11 @@ const ProcessTable = React.memo(() => {
       body: t(`Upload ${ProcessContents.processType} from a file`),
       onClick: showImportModal,
     },
-  ];
+  ]; 
 
+  
+  
+ console.log("sortconfig",sortConfig);
   return (
     <>
       <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
@@ -280,6 +287,7 @@ const ProcessTable = React.memo(() => {
             filterAriaLabel={ProcessContents.filterAriaLabel}
             refreshDataTestId={ProcessContents.refreshDataTestId}
             refreshAriaLabel={ProcessContents.refreshAriaLabel}
+            sortState = {sortConfig}
           />
           {createDesigns && (<CustomButton
             variant="primary"

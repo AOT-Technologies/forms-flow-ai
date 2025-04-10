@@ -75,7 +75,14 @@ const DraftsAndSubmissions = () => {
     { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
     { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
   ];
-
+ //options for sortmodal
+ const optionSortBy = [   
+    { value: "id", label: t("Submission Id") },
+    { value: "created", label: t("Submitted On") },
+    { value: "type", label: t("Type") },
+    { value: "modified", label: t("Last Modified") },
+    { value: "applicationStatus", label: t("Status") },
+  ];
   // Handlers
   const handleSelection = (label) => setSelectedItem(label);
 
@@ -93,9 +100,13 @@ const DraftsAndSubmissions = () => {
   const handleClearSearch = () => setSearch("");
 
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+    const resetSortOrders = optionSortBy.reduce((acc, option) => {
+      acc[option.value] = { sortOrder: "asc" }; // Reset all to ascending
+      return acc;
+    }, {});
     dispatch(
       setFormSubmissionSort({
-        ...applicationSort,
+        ...resetSortOrders,
         activeKey: selectedSortOption,
         [selectedSortOption]: { sortOrder: selectedSortOrder },
       })
@@ -183,13 +194,7 @@ const DraftsAndSubmissions = () => {
             handleFilterIconClick={() => setShowSortModal(true)}
             handleRefresh={fetchSubmissionsAndDrafts}
             handleSortModalClose={() => setShowSortModal(false)}
-            optionSortBy={[
-              { value: "id", label: t("Submission Id") },
-              { value: "created", label: t("Submitted On") },
-              { value: "type", label: t("Type") },
-              { value: "modified", label: t("Last Modified") },
-              { value: "applicationStatus", label: t("Status") },
-            ]}
+            optionSortBy={optionSortBy}
             defaultSortOption={applicationSort?.activeKey}
             defaultSortOrder={applicationSort?.[applicationSort?.activeKey]?.sortOrder || "asc"}
             filterDataTestId="form-list-filter"

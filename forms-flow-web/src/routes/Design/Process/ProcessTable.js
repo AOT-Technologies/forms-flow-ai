@@ -253,11 +253,8 @@ const ProcessTable = React.memo(() => {
       body: t(`Upload ${ProcessContents.processType} from a file`),
       onClick: showImportModal,
     },
-  ]; 
+  ];
 
-  
-  
- console.log("sortconfig",sortConfig);
   return (
     <>
       <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
@@ -287,7 +284,6 @@ const ProcessTable = React.memo(() => {
             filterAriaLabel={ProcessContents.filterAriaLabel}
             refreshDataTestId={ProcessContents.refreshDataTestId}
             refreshAriaLabel={ProcessContents.refreshAriaLabel}
-            sortState = {sortConfig}
           />
           {createDesigns && (<CustomButton
             variant="primary"

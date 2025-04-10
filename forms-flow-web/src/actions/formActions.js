@@ -232,3 +232,27 @@ export const setClientFormSearch = ( data ) => (dispatch) => {
     payload: data,
     });
 };
+//////////////////////////////
+
+export const setClientFormListPage = (page) => (dispatch) => {
+  dispatch({
+    //done
+    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_PAGE_CHANGE,
+    payload: page,
+  });
+};
+
+export const setClientFormLimit = (pageLimit) => (dispatch) => {
+  dispatch({
+    //done
+    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_LIMIT_CHANGE,
+    payload: pageLimit,
+  });
+};
+
+export const setClientFormListSort = (sort) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_SORT_CHANGE,
+    payload: sort,
+  });
+};

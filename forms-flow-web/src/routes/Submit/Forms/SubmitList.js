@@ -48,8 +48,8 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   const create_submissions = userRoles.includes("create_submissions");
 
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
-  const limit = useSelector((state) => state.bpmForms.limit);
-  const formSort = useSelector((state) => state.bpmForms.sort);
+  const limit = useSelector((state) => state.bpmForms.submitFormLimit);
+  const formSort = useSelector((state) => state.bpmForms.submitFormSort);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );

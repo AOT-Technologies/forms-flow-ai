@@ -7,6 +7,7 @@ const initialState = {
     error: null,
     message: null,
   },
+  draftId: null,
   draftList: [],
   countPerPage: 5,
   isDraftListLoading: true,
@@ -24,14 +25,17 @@ const initialState = {
 const draftSubmission = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.SAVE_DRAFT_DATA:
+      console.log(action.payload, "=============sdfg=");
       return { ...state, draftSubmission: action.payload };
     case ACTION_CONSTANTS.DRAFT_LIST:
       return { ...state, draftList: action.payload, isDraftListLoading: false };
     case ACTION_CONSTANTS.DRAFT_DETAIL:
+      console.log(action.payload, "==============");
       return {
         ...state,
         draftSubmission: action.payload,
         isDraftDetailLoading: action.payload?.isDraftDetailLoading || false,
+        draftId: action.payload?.applicationId || null,
       };
     case ACTION_CONSTANTS.DRAFT_COUNT:
       return { ...state, draftCount: action.payload };

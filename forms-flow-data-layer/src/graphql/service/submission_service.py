@@ -119,20 +119,26 @@ class SubmissionService:
           of the specified authorization type
         """
         authorization_table = await webapi_db.get_table("authorization")
-        auth_conditions = and_(
-            authorization_table.c.auth_type == auth_type,
-            or_(
-                authorization_table.c.user_name == username,
-                *[authorization_table.c.roles.contains([role]) for role in roles],
-                and_(
-                    authorization_table.c.user_name.is_(None),
-                    or_(
-                        authorization_table.c.roles == {},
-                        authorization_table.c.roles.is_(None),
+        role_conditions = [authorization_table.c.roles.contains([role]) for role in roles]
+        if auth_type == "APPLICATION":
+            auth_conditions = or_(
+                *role_conditions,
+            )
+        else:
+            auth_conditions = and_(
+                authorization_table.c.auth_type == auth_type,
+                or_(
+                    authorization_table.c.user_name == username,
+                    *role_conditions,
+                    and_(
+                        authorization_table.c.user_name.is_(None),
+                        or_(
+                            authorization_table.c.roles == {},
+                            authorization_table.c.roles.is_(None),
+                        ),
                     ),
                 ),
-            ),
-        )
+            )
         return auth_conditions
 
     @staticmethod
@@ -283,7 +289,7 @@ class SubmissionService:
         # Get user context from token
         user = info.context["user"]
         username = user.token_info.get("preferred_username")
-        user_roles = user.token_info.get("role", [])
+        user_groups = user.token_info.get("groups", [])
 
         webapi_fields = ["created_by", "application_status", "id"]
         # Split search criteria
@@ -308,7 +314,7 @@ class SubmissionService:
                         mapper_table.c.parent_form_id
                         == authorization_table.c.resource_id,
                         await SubmissionService.form_auth_query(
-                            username, user_roles, "FORM"
+                            username, user_groups, "APPLICATION"
                         ),
                     ),
                 )

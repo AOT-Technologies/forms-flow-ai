@@ -119,7 +119,7 @@ class FormService:
         match_stage = {"_id": {"$in": [ObjectId(id) for id in submission_ids]}}
         if search:
             for field, value in search.items():
-                match_stage[f"data.{field}"] = {"$regex": value}
+                match_stage[f"data.{field}"] = {"$regex": value, "$options": "i"}
         return match_stage
 
     @staticmethod

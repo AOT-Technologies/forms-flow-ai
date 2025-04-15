@@ -112,12 +112,14 @@ class FormService:
         )  # Return data if found, otherwise None
 
     @staticmethod
-    async def _build_match_stage(submission_ids: List[str], search: Optional[dict]) -> dict:
+    async def _build_match_stage(
+        submission_ids: List[str], search: Optional[dict]
+    ) -> dict:
         """Build the MongoDB match stage."""
         match_stage = {"_id": {"$in": [ObjectId(id) for id in submission_ids]}}
         if search:
             for field, value in search.items():
-                match_stage[f"data.{field}"] = value
+                match_stage[f"data.{field}"] = {"$regex": value}
         return match_stage
 
     @staticmethod

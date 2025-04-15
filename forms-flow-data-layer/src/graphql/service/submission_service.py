@@ -323,7 +323,7 @@ class SubmissionService:
                 for field, value in webapi_search.items():
                     if hasattr(application_table.c, field):
                         col = getattr(application_table.c, field)
-                        query = query.where(col == value)
+                        query = query.where(col.like(f"%{value}%"))
             if parent_form_id:
                 query = query.where(mapper_table.c.parent_form_id == parent_form_id)
 

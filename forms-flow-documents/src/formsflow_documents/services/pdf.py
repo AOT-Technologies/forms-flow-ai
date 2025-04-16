@@ -2,15 +2,21 @@
 
 import json
 import os
+import tempfile
 import urllib.parse
 import uuid
 from typing import Any, Tuple, Union
 
 import requests
-from flask import current_app
+from flask import current_app, make_response
 from formsflow_api_utils.services import FormioService
 from formsflow_api_utils.utils import HTTP_TIMEOUT
-from formsflow_api_utils.utils.pdf import get_pdf_from_html, pdf_response
+from formsflow_api_utils.utils.pdf import (
+    get_pdf_from_html,
+    get_pdf_from_html_string,
+    pdf_response,
+)
+from jinja2 import Environment, FileSystemLoader
 from nested_lookup import get_occurrences_and_values
 
 from formsflow_documents.utils import DocUtils
@@ -144,13 +150,20 @@ class PDFService:
         return f"{str(uuid.uuid4())}.json"
 
     @staticmethod
-    def __get_template_path() -> str:
+    def get_template_path(is_temp: bool = False) -> str:
         """Returns the path to template directory."""
-        path = os.path.dirname(__file__)
-        path = path.replace("services", "templates")
-        return path
+        if is_temp:
+            temp_dir = os.path.join(tempfile.gettempdir(), "templates")
+            # Create the directory if it doesn't exist
+            if not os.path.exists(temp_dir):
+                os.makedirs(temp_dir)
+        else:
+            temp_dir = os.path.dirname(__file__)
+            temp_dir = temp_dir.replace("services", "templates")
 
-    def __generate_pdf_file_name(self) -> str:
+        return temp_dir
+
+    def generate_pdf_file_name(self) -> str:
         """Generated the PDF file name."""
         return "Application_" + self.form_id + "_" + self.submission_id + "_export.pdf"
 
@@ -191,18 +204,21 @@ class PDFService:
 
     def __read_json(self, file_name: str) -> Any:
         """Reads the json file contents to a variable."""
-        path = self.__get_template_path()
+        path = self.get_template_path(is_temp=True)
         with open(f"{path}/{file_name}", encoding="utf-8") as file:
             data = json.load(file)
             file.close()
             return data
 
     def get_render_status(
-        self, token: str, template_name: Union[str, None] = None
+        self,
+        token: str,
+        template_name: Union[str, None] = None,
+        template_variable_name: Union[str, None] = None,
     ) -> int:
         """Returns the render status code."""
         res = requests.get(
-            url=self.__get_render_url(template_name),
+            url=self.__get_render_url(template_name, template_variable_name),
             headers={"Authorization": token},
             timeout=HTTP_TIMEOUT,
         )
@@ -265,12 +281,14 @@ class PDFService:
         self, template_name: str, content: Union[str, dict], is_json: bool = False
     ) -> None:
         """Write data to file."""
-        path = self.__get_template_path()
+        path = self.get_template_path(is_temp=True)
+        current_app.logger.info(f" PATH ->> {path}")
         with open(f"{path}/{template_name}", "w", encoding="utf-8") as file:
             # disabling pylint warning since it is a function call
-            json.dump(  # pylint: disable=expression-not-assigned
-                content, file
-            ) if is_json else file.write(content)
+            if is_json:
+                json.dump(content, file)
+            else:
+                file.write(content)
             file.close()
 
     def create_template(
@@ -291,15 +309,33 @@ class PDFService:
             self.__write_to_file(template_var_name, content=template_var, is_json=True)
         return (template_name, template_var_name)
 
-    def search_template(self, file_name: str) -> bool:
+    def search_template(self, file_name: str, is_temp: bool = False) -> bool:
         """
         Check if the given file exists in the template directory.
 
         file_name: name of the file to check with extension.
         """
-        path = self.__get_template_path()
-        current_app.logger.info("Searching for template...")
-        return os.path.isfile(f"{path}/{file_name}")
+        current_app.logger.info(f"Looking for {file_name}")
+        path = self.get_template_path(is_temp=is_temp)
+        current_app.logger.info(f"Searching for template... {path}")
+
+        # Print all files in the directory to help debug
+        current_app.logger.info("Files in template directory:")
+        if os.path.exists(path):
+            for root, dirs, files in os.walk(path):
+                for file in files:
+                    current_app.logger.info(f"- {os.path.join(root, file)}")
+                for _dir in dirs:
+                    current_app.logger.info(f"- [DIR] {os.path.join(root, _dir)}")
+        else:
+            current_app.logger.info(f"Template directory does not exist: {path}")
+
+        # Check if the file exists
+        file_path = os.path.join(path, file_name)
+        exists = os.path.isfile(file_path)
+        current_app.logger.info(f"Checking file: {file_path}, exists: {exists}")
+
+        return exists
 
     def delete_template(self, file_name: str) -> None:
         """
@@ -308,7 +344,7 @@ class PDFService:
         file_name: name of the file with extension.
         """
         try:
-            path = self.__get_template_path()
+            path = self.get_template_path(is_temp=True)
             os.remove(f"{path}/{file_name}")
         except BaseException as err:  # pylint: disable=broad-except
             current_app.logger.error(err)
@@ -329,4 +365,91 @@ class PDFService:
             self.__get_chrome_driver_path(),
             args=self.__get_render_args(timezone, token, bool(template_name)),
         )
-        return pdf_response(pdf, self.__generate_pdf_file_name()) if pdf else False
+        return pdf_response(pdf, self.generate_pdf_file_name()) if pdf else False
+
+    def get_pdf_from_html_content(self, html_content, timezone, token):
+        """Generate PDF directly from HTML content instead of URL.
+
+        This method bypasses the need to call the render endpoint by
+        directly converting HTML content to PDF.
+
+        Args:
+            html_content: The rendered HTML content as a string
+            timezone: Timezone for PDF generation
+            token: Authentication token
+
+        Returns:
+            The generated PDF as bytes
+        """
+        try:
+            # Use the PDF utility to convert HTML string to PDF
+            pdf = get_pdf_from_html_string(
+                html_content,
+                self.__get_chrome_driver_path(),
+                args=self.__get_render_args(timezone, token, True),
+            )
+            return pdf
+        except Exception as e:  # pylint:disable=broad-exception-caught
+            current_app.logger.error(
+                f"Error generating PDF from HTML content: {str(e)}"
+            )
+            return None
+
+    def create_pdf_response(self, pdf, filename):
+        """Create a PDF response with appropriate headers.
+
+        This is a duplicate of the imported pdf_response function to make
+        it directly accessible from the service class.
+
+        Args:
+            pdf: PDF content as bytes
+            filename: Name for the download file
+
+        Returns:
+            Flask response object with PDF content
+        """
+        response = make_response(pdf)
+        response.headers["Content-Type"] = "application/pdf"
+        response.headers["Content-Disposition"] = (
+            f"attachment; filename={filename}"  # noqa
+        )
+        return response
+
+    def create_pdf_from_custom_template(
+        self, template_name, template_variable_name, token, timezone
+    ):
+        """Directly render the template instead of calling the additional endpoint."""
+        try:
+            # Get the template path
+            temp_dir = self.get_template_path(is_temp=True)
+            current_app.logger.info(f"Template directory: {temp_dir}")
+
+            # Get render data
+            render_data = self.get_render_data(True, template_variable_name, token)
+            current_app.logger.info(
+                "Render data received for direct template rendering"
+            )
+
+            # Set up Jinja environment with the temp directory
+            env = Environment(loader=FileSystemLoader(temp_dir), autoescape=True)
+            template_obj = env.get_template(template_name)
+
+            # Render the template directly
+            rendered_html = template_obj.render(**render_data)
+
+            # Generate PDF from the rendered HTML
+            pdf = self.get_pdf_from_html_content(rendered_html, timezone, token)
+
+            if pdf:
+                # Clean up temporary files
+                current_app.logger.info("Cleaning up temporary template files...")
+                self.delete_template(template_name)
+                if template_variable_name:
+                    self.delete_template(template_variable_name)
+
+                # Return the PDF
+                return self.create_pdf_response(pdf, self.generate_pdf_file_name())
+
+        except Exception as e:  # pylint:disable=broad-exception-caught
+            current_app.logger.error(f"Error in direct template rendering: {str(e)}")
+        return None

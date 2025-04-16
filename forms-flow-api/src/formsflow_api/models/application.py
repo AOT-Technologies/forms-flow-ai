@@ -1,6 +1,10 @@
 """This manages Application submission Data."""
 
+# pylint: disable=too-many-lines
+
 from __future__ import annotations
+
+from datetime import datetime
 
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
@@ -872,11 +876,17 @@ class Application(
         return query.first()
 
     @classmethod
-    def sort_by_submission_count(cls, query, sort_order, submission_count_alias):
-        """Sort by submission count."""
+    def apply_submission_sorting(cls, query, sort_by, sort_order, submission_alias):
+        """Sort by submission count or latest submission time."""
         order_func = desc if "desc" in sort_order else asc
+        if "latestSubmission" in sort_by:
+            return query.order_by(
+                order_func(
+                    func.coalesce(submission_alias.c.latest_submission, datetime.min)
+                )
+            )
         return query.order_by(
-            order_func(func.coalesce(submission_count_alias.c.submissions_count, 0))
+            order_func(func.coalesce(submission_alias.c.submissions_count, 0))
         )
 
     @classmethod
@@ -885,10 +895,11 @@ class Application(
         """Get submission count."""
         user: UserContext = kwargs["user"]
         # Subquery to get the submission count
-        submission_count_subquery = (
+        submission_subquery = (
             db.session.query(
                 FormProcessMapper.parent_form_id,
                 func.count(Application.id).label("submissions_count"),
+                func.max(Application.modified).label("latest_submission"),
             )
             .join(cls, cls.form_process_mapper_id == FormProcessMapper.id)
             .filter(
@@ -900,18 +911,18 @@ class Application(
             .group_by(FormProcessMapper.parent_form_id)
             .subquery()
         )
-        submission_count_alias = aliased(submission_count_subquery)
+        submission_alias = aliased(submission_subquery)
         # Join the submission count subquery with the main query
         query = query.outerjoin(
-            submission_count_alias,
-            FormProcessMapper.parent_form_id == submission_count_alias.c.parent_form_id,
+            submission_alias,
+            FormProcessMapper.parent_form_id == submission_alias.c.parent_form_id,
         )
-        # Sort by submission count
-        if "submissionCount" in sort_by:
-            query = cls.sort_by_submission_count(
-                query, sort_order, submission_count_alias
+        # Sort by submission count or latestSubmission
+        if "submissionCount" in sort_by or "latestSubmission" in sort_by:
+            query = cls.apply_submission_sorting(
+                query, sort_by, sort_order, submission_alias
             )
-        return query, submission_count_alias
+        return query, submission_alias
 
     @classmethod
     def find_all_active_by_formid(
@@ -956,10 +967,15 @@ class Application(
         ]
         if fetch_submissions_count:
             # Get the submission count subquery
-            query, submission_count_alias = cls.get_submission_count(
+            query, submission_alias = cls.get_submission_count(
                 form_ids, query, sort_by, sort_order
             )
-            entities.append(submission_count_alias.c.submissions_count)
+            entities.extend(
+                [
+                    submission_alias.c.submissions_count,
+                    submission_alias.c.latest_submission,
+                ]
+            )
 
         # Select the required columns
         query = query.with_entities(*entities)

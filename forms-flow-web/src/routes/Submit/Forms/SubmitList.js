@@ -17,6 +17,7 @@ import { CustomSearch } from "@formsflow/components";
 import { navigateToSubmitFormsApplication } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
+import { HelperServices } from '@formsflow/service';
 
 // Extracted Search Component
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
@@ -80,10 +81,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
 
   // Handle Sorting
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-    const resetSortOrders = optionSortBy.reduce((acc, option) => {
-      acc[option.value] = { sortOrder: "asc" }; // Reset all to ascending
-      return acc;
-    }, {});
+    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
     dispatch(setBpmFormSort({
       ...resetSortOrders,
       activeKey: selectedSortOption,

@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
 import {
   setFormSubmissionSort,
@@ -14,6 +13,7 @@ import {
 } from "../../../actions/applicationActions";
 import { navigateToSubmitFormsListing, navigateToNewSubmission } from "../../../helper/routerHelper";
 import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsflow/components";
+import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
 
@@ -100,10 +100,7 @@ const DraftsAndSubmissions = () => {
   const handleClearSearch = () => setSearch("");
 
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-    const resetSortOrders = optionSortBy.reduce((acc, option) => {
-      acc[option.value] = { sortOrder: "asc" }; // Reset all to ascending
-      return acc;
-    }, {});
+    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
     dispatch(
       setFormSubmissionSort({
         ...resetSortOrders,

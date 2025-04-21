@@ -383,7 +383,7 @@ const View = React.memo((props) => {
               url={url}
               options={{
                 ...options,
-                language: lang,
+                language: lang ?? "en",
                 i18n: RESOURCE_BUNDLES_DATA,
               }}
               onChange={() => {

@@ -2,7 +2,7 @@
 
 import datetime
 
-from marshmallow import EXCLUDE, Schema, fields
+from marshmallow import EXCLUDE, Schema, fields, post_dump
 
 
 class AuditDateTimeSchema(Schema):
@@ -49,4 +49,13 @@ class AuditDateTimeSchema(Schema):
         else:
             data = format_datetime_fields(data)
 
+        return data
+
+    @post_dump
+    def remove_none_fields(
+        self, data, many, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Exclude 'latest_submission' if it's None."""
+        if data.get("latestSubmission") is None:
+            data.pop("latestSubmission", None)
         return data

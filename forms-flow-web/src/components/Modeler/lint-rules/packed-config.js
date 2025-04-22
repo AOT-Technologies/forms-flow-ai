@@ -1211,7 +1211,7 @@ helper.disallowNodeType = disallowNodeType$2;
 
 const disallowNodeType$1 = helper.disallowNodeType;
 
-var noComplexGateway = disallowNodeType$1('bpmn:ComplexGateway');
+// var noComplexGateway = disallowNodeType$1('bpmn:ComplexGateway');
 
 const {
   isAny: isAny$2,
@@ -1361,6 +1361,8 @@ const {
  * A rule that checks, whether a gateway forks and joins
  * at the same time.
  */
+
+// eslint-disable-next-line no-unused-vars
 var noGatewayJoinFork = function() {
 
   function check(node, reporter) {
@@ -1436,7 +1438,7 @@ function isDefaultFlow(node, flow) {
 
 const disallowNodeType = helper.disallowNodeType;
 
-var noInclusiveGateway = disallowNodeType('bpmn:InclusiveGateway');
+// var noInclusiveGateway = disallowNodeType('bpmn:InclusiveGateway');
 
 const {
   is: is$4
@@ -1653,12 +1655,12 @@ const rules = {
   "fake-join": "warn",
   "label-required": "warn",
   "no-bpmndi": "error",
-  "no-complex-gateway": "error",
+  // "no-complex-gateway": "error",
   "no-disconnected": "error",
   "no-duplicate-sequence-flows": "error",
-  "no-gateway-join-fork": "error",
+  // "no-gateway-join-fork": "error",
   "no-implicit-split": "error",
-  "no-inclusive-gateway": "error",
+  // "no-inclusive-gateway": "error",
   "single-blank-start-event": "error",
   "single-event-definition": "error",
   "start-event-required": "error",
@@ -1680,12 +1682,12 @@ cache['bpmnlint/event-sub-process-typed-start-event'] = eventSubProcessTypedStar
 cache['bpmnlint/fake-join'] = fakeJoin;
 cache['bpmnlint/label-required'] = labelRequired;
 cache['bpmnlint/no-bpmndi'] = noBpmndi;
-cache['bpmnlint/no-complex-gateway'] = noComplexGateway;
+// cache['bpmnlint/no-complex-gateway'] = noComplexGateway;
 cache['bpmnlint/no-disconnected'] = noDisconnected;
 cache['bpmnlint/no-duplicate-sequence-flows'] = noDuplicateSequenceFlows;
-cache['bpmnlint/no-gateway-join-fork'] = noGatewayJoinFork;
+// cache['bpmnlint/no-gateway-join-fork'] = noGatewayJoinFork;
 cache['bpmnlint/no-implicit-split'] = noImplicitSplit;
-cache['bpmnlint/no-inclusive-gateway'] = noInclusiveGateway;
+// cache['bpmnlint/no-inclusive-gateway'] = noInclusiveGateway;
 cache['bpmnlint/single-blank-start-event'] = singleBlankStartEvent;
 cache['bpmnlint/single-event-definition'] = singleEventDefinition;
 cache['bpmnlint/start-event-required'] = startEventRequired;

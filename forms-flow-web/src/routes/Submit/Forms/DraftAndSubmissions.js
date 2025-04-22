@@ -56,16 +56,15 @@ const DraftsAndSubmissions = () => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
 
-  const {
-    draftAndSubmissionsList,
+  const {    
+    formName,
     activePage: pageNo,
     countPerPage: limit,
-    searchParams: searchText,
     sort: applicationSort
   } = useSelector((state) => state.applications);
 
   // Local state
-  const [search, setSearch] = useState(searchText || "");
+  const [search, setSearch] = useState("");
   const [selectedItem, setSelectedItem] = useState("All");
   const [showSortModal, setShowSortModal] = useState(false);
 
@@ -93,7 +92,6 @@ const DraftsAndSubmissions = () => {
   }, [search]);
 
   const handleSearch = () => {
-    dispatch(setApplicationListSearchParams(search));
     dispatch(setApplicationListActivePage(1));
   };
 
@@ -119,7 +117,7 @@ const DraftsAndSubmissions = () => {
         limit,
         applicationSort,
         formId,
-        searchText,
+        search,
         createdUserSubmissions: true,
         onlyDrafts: selectedItem === "Draft",
         includeDrafts: selectedItem === "All",
@@ -135,13 +133,11 @@ const DraftsAndSubmissions = () => {
     navigateToSubmitFormsListing(dispatch, tenantId);
   };
 
-  // Sync local search state with global searchText
-  useEffect(() => setSearch(searchText), [searchText]);
 
   // Fetch data when dependencies change
   useEffect(() => {
     fetchSubmissionsAndDrafts();
-  }, [pageNo, limit, applicationSort, searchText, selectedItem, formId, applicationSort]);
+  }, [pageNo, limit, applicationSort, search, selectedItem, formId, applicationSort]);
 
   return (
     <div>
@@ -152,7 +148,7 @@ const DraftsAndSubmissions = () => {
             <div className="d-flex align-items-center">
               <BackToPrevIcon onClick={redirectBackToForm} data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
               <div className="mx-4 editor-header-text">
-                {draftAndSubmissionsList?.applications?.[0]?.applicationName || ""}
+                {formName}
               </div>
             </div>
           </div>

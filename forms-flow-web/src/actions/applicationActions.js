@@ -87,6 +87,12 @@ export const setApplicationListCount = (data) => (dispatch) => {
     payload: data,
   });
 };
+export const setSubmissionFormName = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_SUBMISSION_FORM_NAME,
+    payload: data,
+  });
+};
 
 export const setApplicationListActivePage = (data) => (dispatch) => {
   dispatch({

@@ -195,6 +195,7 @@ return (
                                                     size="table"
                                                     label={t("Delete")}
                                                     onClick={() => deleteDraft(item)}
+                                                    className="btn btn-secondary btn-table"
                                                     data-testid={
                                                         `delete-draft-button-${item.id}`
                                                     }
@@ -205,6 +206,7 @@ return (
                                                     size="table"
                                                     label={t("Continue")}
                                                     onClick={() => continueDraft(item)}
+                                                    className="btn btn-secondary btn-table"
                                                     data-testid={
                                                         `continue-draft-button-${item.id}`
                                                     }
@@ -217,6 +219,7 @@ return (
                                                 size="table"
                                                 label={t("View")}
                                                 onClick={() => viewSubmission(item)}
+                                                className="btn btn-secondary btn-table"
                                             />
                                         )}
                                     </td>

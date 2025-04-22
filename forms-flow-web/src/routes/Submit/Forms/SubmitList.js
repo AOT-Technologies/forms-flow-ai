@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
-  setBPMSubmitListPage,
+  setClientFormListPage,
   setBpmFormSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
@@ -49,8 +49,8 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   const create_submissions = userRoles.includes("create_submissions");
 
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
-  const limit = useSelector((state) => state.bpmForms.limit);
-  const formSort = useSelector((state) => state.bpmForms.sort);
+  const limit = useSelector((state) => state.bpmForms.submitFormLimit);
+  const formSort = useSelector((state) => state.bpmForms.submitFormSort);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
@@ -105,7 +105,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   }, [search]);
   const handleSearch = () => {
     dispatch(setClientFormSearch(search));
-    dispatch(setBPMSubmitListPage(1));
+    dispatch(setClientFormListPage(1));
   };
   const handleClearSearch = () => {
     setSearch("");

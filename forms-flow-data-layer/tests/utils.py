@@ -1,9 +1,12 @@
 import time
 from base64 import urlsafe_b64encode
 from typing import Dict, Optional
-
 import rsa
 from jose import jwt
+
+# Class-level variables for shared keys
+_CLASS_PRIVATE_KEY = None
+_CLASS_PUBLIC_KEY = None
 
 
 class KeycloakTestTokenGenerator:
@@ -21,11 +24,26 @@ class KeycloakTestTokenGenerator:
         self.kid = kid
         self.algorithm = algorithm
 
-        # Generate RSA key pair
-        (self.public_key, self.private_key) = rsa.newkeys(2048)
+        # Initialize class-level keys if they don't exist
+        self._init_class_keys()
 
         # Prepare JWKS
         self.public_jwk = self._get_public_jwk()
+
+    @classmethod
+    def _init_class_keys(cls):
+        """Initialize the shared RSA keys once"""
+        global _CLASS_PRIVATE_KEY, _CLASS_PUBLIC_KEY
+        if _CLASS_PRIVATE_KEY is None or _CLASS_PUBLIC_KEY is None:
+            (_CLASS_PUBLIC_KEY, _CLASS_PRIVATE_KEY) = rsa.newkeys(2048)
+
+    @property
+    def private_key(self):
+        return _CLASS_PRIVATE_KEY
+
+    @property
+    def public_key(self):
+        return _CLASS_PUBLIC_KEY
 
     def _int_to_base64(self, value: int) -> str:
         """Convert integer to Base64URL encoded string"""

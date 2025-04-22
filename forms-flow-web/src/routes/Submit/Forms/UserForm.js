@@ -64,6 +64,7 @@ import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
+import { cloneDeep } from "lodash";
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
@@ -101,9 +102,10 @@ const View = React.memo((props) => {
 
   const isDraftEdit = Boolean(draftId);
   const [draftData, setDraftData] = useState(
-    isDraftEdit ? draftSubmission?.data : {}
+    isDraftEdit ? cloneDeep(draftSubmission?.data) : {}
   );
-  const formRef = useRef(isDraftEdit ? { data: draftSubmission?.data } : {});
+  // deeply clone the draft data to avoid mutating the original object
+  const formRef = useRef(isDraftEdit ? { data: cloneDeep(draftSubmission?.data) } : {});
   const [isDraftCreated, setIsDraftCreated] = useState(isDraftEdit);
   const [validFormId, setValidFormId] = useState(undefined);
 
@@ -383,7 +385,7 @@ const View = React.memo((props) => {
               url={url}
               options={{
                 ...options,
-                language: lang,
+                language: lang ?? "en",
                 i18n: RESOURCE_BUNDLES_DATA,
               }}
               onChange={() => {

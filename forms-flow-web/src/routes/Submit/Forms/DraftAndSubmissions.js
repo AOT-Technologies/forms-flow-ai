@@ -57,7 +57,7 @@ const DraftsAndSubmissions = () => {
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
 
   const {    
-    formName: formName,
+    formName,
     activePage: pageNo,
     countPerPage: limit,
     sort: applicationSort

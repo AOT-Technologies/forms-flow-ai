@@ -69,13 +69,6 @@ export const setBPMFormListPage = (page) => (dispatch) => {
   });
 };
 
-export const setBPMSubmitListPage = (page) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_PAGE_CHANGE,
-    payload: page,
-  });
-};
-
 export const setBPMFormLimit = (pageLimit) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_FORM_LIST_LIMIT_CHANGE,
@@ -235,7 +228,7 @@ export const setClientFormSearch = ( data ) => (dispatch) => {
 
 export const setClientFormListPage = (page) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_PAGE_CHANGE,
+    type: ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_PAGE_CHANGE,
     payload: page,
   });
 };
@@ -249,7 +242,7 @@ export const setClientFormLimit = (pageLimit) => (dispatch) => {
 
 export const setClientFormListSort = (sort) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_SORT_CHANGE,
+    type: ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_SORT_CHANGE,
     payload: sort,
   });
 };

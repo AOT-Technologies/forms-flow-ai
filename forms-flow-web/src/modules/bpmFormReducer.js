@@ -42,11 +42,11 @@ const bpmForms = (state = initialState, action) => {
         forms: formatForms(action.payload.forms),
         totalForms: action.payload.totalCount,
       };
-    case ACTION_CONSTANTS.BPM_SUBMIT_LIST_LIMIT_CHANGE:
+    case ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_LIMIT_CHANGE:
       return { ...state, submitFormLimit: action.payload };
-    case ACTION_CONSTANTS.BPM_SUBMIT_LIST_SORT_CHANGE:
+    case ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_SORT_CHANGE:
       return { ...state, submitFormSort: action.payload };
-    case ACTION_CONSTANTS.BPM_SUBMIT_LIST_PAGE_CHANGE:
+    case ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_PAGE_CHANGE:
       return { ...state, submitListPage: action.payload };
     case ACTION_CONSTANTS.BPM_FORM_LIST_PAGE_CHANGE:
       return { ...state, formListPage: action.payload };

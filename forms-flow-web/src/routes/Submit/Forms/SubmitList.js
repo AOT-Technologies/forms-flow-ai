@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
-  setBPMSubmitListPage,
+  setClientFormListPage,
   setBpmFormSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
@@ -105,7 +105,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   }, [search]);
   const handleSearch = () => {
     dispatch(setClientFormSearch(search));
-    dispatch(setBPMSubmitListPage(1));
+    dispatch(setClientFormListPage(1));
   };
   const handleClearSearch = () => {
     setSearch("");

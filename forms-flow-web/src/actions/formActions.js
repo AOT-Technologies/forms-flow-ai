@@ -232,11 +232,9 @@ export const setClientFormSearch = ( data ) => (dispatch) => {
     payload: data,
     });
 };
-//////////////////////////////
 
 export const setClientFormListPage = (page) => (dispatch) => {
   dispatch({
-    //done
     type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_PAGE_CHANGE,
     payload: page,
   });
@@ -244,8 +242,7 @@ export const setClientFormListPage = (page) => (dispatch) => {
 
 export const setClientFormLimit = (pageLimit) => (dispatch) => {
   dispatch({
-    //done
-    type: ACTION_CONSTANTS.BPM_SUBMIT_LIST_LIMIT_CHANGE,
+    type: ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_LIMIT_CHANGE,
     payload: pageLimit,
   });
 };

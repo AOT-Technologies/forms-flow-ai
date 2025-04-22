@@ -185,7 +185,7 @@ const View = React.memo((props) => {
    */
   const saveDraft = (payload, exitType) => {
     if (exitType === "SUBMIT") return;
-    let dataChanged = !isEqual(payload.data, draftSubmission.data);
+    let dataChanged = !isEqual(payload?.data, draftSubmission?.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         dispatch(
@@ -410,7 +410,6 @@ const View = React.memo((props) => {
 
 // eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, draftId, ownProps, formId) => {
-  console.log("formId", formId, draftId, "===============================================================");
   return (dispatch, getState) => {
     const state = getState();
     let form = state.form?.form;
@@ -432,7 +431,6 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
 
     dispatch(
       applicationCreateAPI(data, draftId, (err) => {
-        console.log(isDraftCreated, isAuth, DRAFT_ENABLED, "draft====================");
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
           toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);

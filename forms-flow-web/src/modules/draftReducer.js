@@ -25,12 +25,10 @@ const initialState = {
 const draftSubmission = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.SAVE_DRAFT_DATA:
-      console.log(action.payload, "=============sdfg=");
       return { ...state, draftSubmission: action.payload };
     case ACTION_CONSTANTS.DRAFT_LIST:
       return { ...state, draftList: action.payload, isDraftListLoading: false };
     case ACTION_CONSTANTS.DRAFT_DETAIL:
-      console.log(action.payload, "==============");
       return {
         ...state,
         draftSubmission: action.payload,

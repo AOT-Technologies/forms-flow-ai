@@ -85,7 +85,6 @@ const DraftsAndSubmissions = () => {
   }, [search]);
 
   const handleSearch = () => {
-    setSearch(search);
     dispatch(setApplicationListActivePage(1));
   };
 

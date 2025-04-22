@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
 import {
   setFormSubmissionSort,
@@ -14,6 +13,7 @@ import {
 } from "../../../actions/applicationActions";
 import { navigateToSubmitFormsListing, navigateToNewSubmission } from "../../../helper/routerHelper";
 import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsflow/components";
+import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
 
@@ -75,7 +75,14 @@ const DraftsAndSubmissions = () => {
     { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
     { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
   ];
-
+ //options for sortmodal
+ const optionSortBy = [   
+    { value: "id", label: t("Submission Id") },
+    { value: "created", label: t("Submitted On") },
+    { value: "type", label: t("Type") },
+    { value: "modified", label: t("Last Modified") },
+    { value: "applicationStatus", label: t("Status") },
+  ];
   // Handlers
   const handleSelection = (label) => setSelectedItem(label);
 
@@ -93,9 +100,10 @@ const DraftsAndSubmissions = () => {
   const handleClearSearch = () => setSearch("");
 
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
     dispatch(
       setFormSubmissionSort({
-        ...applicationSort,
+        ...resetSortOrders,
         activeKey: selectedSortOption,
         [selectedSortOption]: { sortOrder: selectedSortOrder },
       })
@@ -183,13 +191,7 @@ const DraftsAndSubmissions = () => {
             handleFilterIconClick={() => setShowSortModal(true)}
             handleRefresh={fetchSubmissionsAndDrafts}
             handleSortModalClose={() => setShowSortModal(false)}
-            optionSortBy={[
-              { value: "id", label: t("Submission Id") },
-              { value: "created", label: t("Submitted On") },
-              { value: "type", label: t("Type") },
-              { value: "modified", label: t("Last Modified") },
-              { value: "applicationStatus", label: t("Status") },
-            ]}
+            optionSortBy={optionSortBy}
             defaultSortOption={applicationSort?.activeKey}
             defaultSortOrder={applicationSort?.[applicationSort?.activeKey]?.sortOrder || "asc"}
             filterDataTestId="form-list-filter"

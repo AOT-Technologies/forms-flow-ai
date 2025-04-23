@@ -312,6 +312,21 @@
       "clientRoles": {
         "forms-flow-web": ["view_dashboards"]
       }
+    },
+    {
+      "name": "default-submission-group",
+      "path": "/default-submission-group",
+      "subGroups": [],
+      "attributes": {
+        "description": ["Default Submission Group For A New User."]
+      },
+      "realmRoles": [],
+      "clientRoles": {
+        "forms-flow-web": [
+          "create_submissions",
+          "view_submissions"
+        ]
+      }
     }
   ],
   "users": [
@@ -1258,6 +1273,9 @@
     "address",
     "phone",
     "microprofile-jwt"
+  ],
+  "defaultGroups": [
+    "/default-submission-group"
   ],
   "eventsEnabled": true,
   "eventsExpiration": 1800,

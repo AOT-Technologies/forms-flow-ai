@@ -11,7 +11,7 @@ from src.middlewares.auth import auth
 @strawberry.type
 class QuerySubmissionsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
-    async def getSubmissions(
+    async def get_submissions(
         self,
         info: strawberry.Info,
         sort_by: str = "created",
@@ -37,7 +37,7 @@ class QuerySubmissionsResolver:
         Returns:
             Submission object containing combined SQL and MongoDB data
         """
-        submission = await SubmissionService.getSubmissions(
+        submission = await SubmissionService.get_submissions(
             info=info,
             sort_by=sort_by,
             sort_order=sort_order,

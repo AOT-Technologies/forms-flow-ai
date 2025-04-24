@@ -81,7 +81,7 @@ class SubmissionService:
         return final_results
 
     @staticmethod
-    async def getSubmissions(
+    async def get_submissions(
         info: strawberry.Info,
         sort_by: str,
         sort_order: str,
@@ -123,7 +123,7 @@ class SubmissionService:
         sort_params = {"sort_by": sort_by, "sort_order": sort_order}
         webapi_side_submissions, total_count = (
             await Application.get_authorized_applications(
-                tenantKey=tenant_key,
+                tenant_key=tenant_key,
                 username=username,
                 roles=user_groups,
                 is_paginate=is_paginate_on_webapi_side,

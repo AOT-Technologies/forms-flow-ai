@@ -21,7 +21,7 @@ class MockSubmission:
 
 
 @pytest.mark.asyncio
-async def test_getSubmissions(schema_tester, token_generator, mock_jwks):
+async def test_get_submissions(schema_tester, token_generator, mock_jwks):
     """Test querying submissions with mocked authentication and service response.
 
     This test verifies that:
@@ -66,7 +66,7 @@ async def test_getSubmissions(schema_tester, token_generator, mock_jwks):
     # Mock the service method
     with patch.object(
         SubmissionService,
-        "getSubmissions",
+        "get_submissions",
         new=AsyncMock(return_value=mock_service_response),
     ):
         response = await schema_tester(

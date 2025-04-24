@@ -37,7 +37,7 @@ class Application(BaseModel):
     @classmethod
     async def get_authorized_applications(
         cls,
-        tenantKey: str,
+        tenant_key: str,
         username: str,
         roles: list[str],
         parent_form_id: str,
@@ -54,10 +54,6 @@ class Application(BaseModel):
         application_table = await cls.get_table()
         mapper_table = await FormProcessMapper.get_table()
         authorization_table = await Authorization.get_table()
-        query = select(application_table.c.id, mapper_table.c.parent_form_id)
-        role_conditions = await Authorization.get_role_conditions(
-            authorization_table=authorization_table, roles=roles
-        )
 
         query = select(application_table, mapper_table.c.parent_form_id)
 
@@ -78,7 +74,7 @@ class Application(BaseModel):
                 application_table.c.form_process_mapper_id == mapper_table.c.id,
                 parent_form_id_condition,  # Ensure parent form ID matches if provided
                 mapper_table.c.tenant
-                == tenantKey,  # Ensure tenant key matches in both tables
+                == tenant_key,  # Ensure tenant key matches in both tables
             ),
         )
 
@@ -86,7 +82,7 @@ class Application(BaseModel):
             authorization_table,
             and_(
                 mapper_table.c.parent_form_id == authorization_table.c.resource_id,
-                authorization_table.c.tenant == tenantKey,
+                authorization_table.c.tenant == tenant_key,
                 or_(*role_conditions),  # ⬅️ Role conditions
                 authorization_table.c.auth_type == AuthType.APPLICATION.value,
             ),
@@ -120,11 +116,6 @@ class Application(BaseModel):
             else:
                 query = query.order_by(getattr(application_table.c, sort_by))
 
-        if parent_form_id:
-            query = query.where(mapper_table.c.parent_form_id == parent_form_id)
-
-        paginated_results = await cls.execute(query)
-        result = paginated_results.mappings().all()
         total_count = None
         if is_paginate:
             # If pagination is enabled, we need to count the total number of records

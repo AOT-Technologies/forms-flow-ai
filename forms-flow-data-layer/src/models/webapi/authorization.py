@@ -42,7 +42,7 @@ class Authorization(BaseModel):
     async def get_authorization(
         cls,
         resource_id: str,
-        tenantKey: str,
+        tenant_key: str,
         username: str,
         roles: list[str],
         auth_type: str,
@@ -56,9 +56,9 @@ class Authorization(BaseModel):
             authorization_table=authorization_table, roles=roles
         )
         query = select(authorization_table)
-        # Add tenantKey condition if provided
-        if tenantKey:
-            query = query.where(authorization_table.c.tenant_key == tenantKey)
+        # Add tenant_key condition if provided
+        if tenant_key:
+            query = query.where(authorization_table.c.tenant == tenant_key)
 
         # If resource_id (e.g., parent form ID) is provided, filter early to reduce row traversal
         if resource_id:

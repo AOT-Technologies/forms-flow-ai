@@ -137,7 +137,10 @@ class SubmissionService:
 
         mongo_side_submissions = {}
         final_out_puts = None
-        if webapi_side_submissions and parent_form_id:
+        needs_mongo_submissions = (
+            webapi_side_submissions and parent_form_id
+        )  # if parent_form_id and webapi side submission is non empty then only go to mongo side
+        if needs_mongo_submissions:
             logger.info("Fetching submission data from formio.")
             # Extract the submission IDs
             submission_ids = [
@@ -160,6 +163,8 @@ class SubmissionService:
                 is_sort_on_webapi_side,
                 limit,
             )
+        # sometimes webapi_side_submission will be no empty but mongo side submission will be empty
+        data = final_out_puts if needs_mongo_submissions else webapi_side_submissions
         return PaginatedSubmissionResponse(
             submissions=[
                 SubmissionDetailsWithSubmissionData(
@@ -169,11 +174,12 @@ class SubmissionService:
                     application_status=row.get("application_status"),
                     data=row.get("submission_data", {}),
                 )
-                for row in (final_out_puts or webapi_side_submissions)
+                for row in data
             ],
             total_count=(
                 mongo_side_submissions.get("total_count")
                 if mongo_search
+                and parent_form_id  # if mongo side submission is empty then use webapi side submission count
                 else total_count
             ),
             page_no=page_no,

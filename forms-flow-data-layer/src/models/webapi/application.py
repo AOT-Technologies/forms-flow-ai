@@ -127,10 +127,12 @@ class Application(BaseModel):
         result = paginated_results.mappings().all()
         total_count = None
         if is_paginate:
-            query = cls.paginationed_query(query, page_no, limit)
+            # If pagination is enabled, we need to count the total number of records
+            # without the pagination limit and offset taking the count
             total_count = (
                 await cls.execute(select(func.count()).select_from(query.subquery()))
             ).scalar_one()
+            query = cls.paginationed_query(query, page_no, limit)
 
         result = await cls.execute(query)
         applications = result.mappings().all()

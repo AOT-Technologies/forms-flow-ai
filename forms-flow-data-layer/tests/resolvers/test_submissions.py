@@ -19,6 +19,7 @@ class MockSubmission:
     task_name: str
     data: dict
 
+
 @pytest.mark.asyncio
 async def test_getSubmissions(schema_tester, token_generator, mock_jwks):
     """Test querying submissions with mocked authentication and service response.

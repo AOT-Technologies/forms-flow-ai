@@ -2,6 +2,7 @@
 
 from flask import current_app
 
+from .bcgov_shared_realm_service import BCGovSharedRealm
 from .keycloak_admin import KeycloakAdmin
 from .keycloak_client_service import KeycloakClientService
 from .keycloak_group_service import KeycloakGroupService
@@ -14,7 +15,9 @@ class KeycloakFactory:  # pylint:disable=too-few-public-methods
     def get_instance() -> KeycloakAdmin:
         """Get instance for keycloak implementation."""
         _instance: KeycloakAdmin = None
-        if current_app.config.get("KEYCLOAK_ENABLE_CLIENT_AUTH"):
+        if current_app.config.get("SHARED_REALM"):
+            _instance = BCGovSharedRealm()
+        elif current_app.config.get("KEYCLOAK_ENABLE_CLIENT_AUTH"):
             _instance = KeycloakClientService()
         else:
             _instance = KeycloakGroupService()

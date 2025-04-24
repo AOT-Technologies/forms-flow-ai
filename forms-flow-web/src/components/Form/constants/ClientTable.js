@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setBPMFormLimit,
-  setBPMSubmitListPage,
-  setBpmFormSearch,
-  setBpmFormSort,
+  setClientFormLimit,
+  setClientFormListPage,
+  setClientFormSearch,
+  setClientFormListSort
 } from "../../../actions/formActions";
 
-import { useTranslation, Translation } from "react-i18next";
-import { TableFooter } from "@formsflow/components";
+import { useTranslation } from "react-i18next";
+import { TableFooter, CustomButton } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { formatDate } from "../../../helper/dateTimeHelper";
@@ -31,10 +31,10 @@ function ClientTable() {
   // Derived state from Redux
   const formData = bpmForms?.forms || [];
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
-  const limit = useSelector((state) => state.bpmForms.limit);
+  const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
-  const formsort = useSelector((state) => state.bpmForms.sort);
-  const searchText = useSelector((state) => state.bpmForms.searchText);
+  const formsort = useSelector((state) => state.bpmForms.submitFormSort);
+  const searchText = useSelector((state) => state.bpmForms.clientFormSearch);
 
   // Constants
   const pageOptions = [
@@ -67,25 +67,25 @@ function ClientTable() {
       return acc;
     }, {});
 
-    dispatch(setBpmFormSort({
+    dispatch(setClientFormListSort({
       ...updatedSort,
       activeKey: key,
     }));
   };
 
-  const showFormEntries = (formId) => {
+  const showFormEntries = (parentFormId) => {
     setShowSubmissions(true);
-    navigateToFormEntries(dispatch, tenantKey, formId);
+    navigateToFormEntries(dispatch, tenantKey, parentFormId);
   };
 
 
   const handlePageChange = (page) => {
-    dispatch(setBPMSubmitListPage(page));
+    dispatch(setClientFormListPage(page));
   };
 
   const onSizePerPageChange = (newLimit) => {
-    dispatch(setBPMFormLimit(newLimit));
-    dispatch(setBPMSubmitListPage(1));
+    dispatch(setClientFormLimit(newLimit));
+    dispatch(setClientFormListPage(1));
   };
 
   const toggleRow = (index) => {
@@ -115,7 +115,7 @@ function ClientTable() {
 
   useEffect(() => {
     if (!search?.trim()) {
-      dispatch(setBpmFormSearch(""));
+      dispatch(setClientFormSearch(""));
     }
   }, [search]);
 
@@ -201,14 +201,14 @@ function ClientTable() {
 
                         <td className=" w-12 ">
                           <div className="d-flex justify-content-end">
-                            <button
-                              data-testid={`form-submit-button-${e._id}`}
-                              className="btn btn-secondary btn-table"
-                              onClick={() => showFormEntries(e._id)}
-                            >
-                              <Translation>{(t) => t("Select")}</Translation>
-                            </button>
-
+                            <CustomButton
+                                variant="secondary"
+                                size="table"
+                                label={t("Select")}
+                                onClick={() => showFormEntries(e.parentFormId)}
+                                dataTestId={`form-submit-button-${e.parentFormId}`}
+                                aria-label={t("Select a form")}
+                            />
                           </div>
                         </td>
                       </tr>

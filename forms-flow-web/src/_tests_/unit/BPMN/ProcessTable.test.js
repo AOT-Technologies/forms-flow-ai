@@ -16,11 +16,30 @@ import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 import rootReducer from "../rootReducer";
 import { mockstate } from "../mockState";
 import ProcessTable from "../../../routes/Design/Process/ProcessTable";
-
+import '../utils/i18nForTests'; // import to remove warning related to i18n import
 
 jest.mock("connected-react-router", () => ({
   push: jest.fn(),
 }));
+
+jest.mock('@formsflow/service', () => {
+  const actualService = jest.requireActual('@formsflow/service');
+  
+  return {
+    ...actualService, 
+    HelperServices: {
+      ...actualService.HelperServices, 
+      getResetSortOrders: jest.fn(() => ({
+        activeKey: "name",
+        name: { sortOrder: "asc" },
+        processKey: { sortOrder: "asc" },
+        status: { sortOrder: "asc" },
+        modified: { sortOrder: "asc" },
+      })),
+    }
+  };
+});
+
 jest.mock("@formsflow/components", () => ({
   ...jest.requireActual("../../../__mocks__/@formsflow/components"),
   FilterIcon: () => <div>Filter Icon</div>,
@@ -153,7 +172,7 @@ describe('ProcessTable Component Tests', () => {
     expect(itemsCount).toBeInTheDocument();
     
     const totalItems = screen.getByTestId("total-items");
-    expect(totalItems).toHaveTextContent('50');
+    expect(totalItems).toHaveTextContent('51');
     
     const prevButton = screen.getByTestId('left-button');
     const nextButton = screen.getByTestId('right-button');

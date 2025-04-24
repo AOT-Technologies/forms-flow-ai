@@ -98,11 +98,15 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         admin: bool = False,
         filter_type: str = None,
         parent_filter_id: int = None,
+        exclude_ids: List[str] = None,
     ):
         """Find active filters of the user."""
         query = cls._auth_query(
             roles, user, tenant, admin, filter_empty_tenant_key=True
         )
+        # exclude filter ids
+        if exclude_ids:
+            query = query.filter(Filter.id.notin_(exclude_ids))
         query = query.filter(Filter.status == str(FilterStatus.ACTIVE.value))
         if filter_type:
             query = query.filter(Filter.filter_type == filter_type)
@@ -157,6 +161,26 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 Filter.id == filter_id, Filter.status == str(FilterStatus.ACTIVE.value)
             )
         ).first()
+
+    @classmethod
+    def find_active_filter_by_ids(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+        cls, filter_ids, roles, user, tenant, admin
+    ) -> list[Filter]:
+        """Find active filters by IDs, ensuring only active filters are returned."""
+        if not filter_ids:
+            return []
+
+        query = cls._auth_query(roles, user, tenant, admin)
+
+        query = query.filter(
+            and_(
+                Filter.id.in_(filter_ids),  # Properly handle multiple IDs
+                Filter.status == str(FilterStatus.ACTIVE.value),
+                Filter.filter_type == FilterType.TASK.value,
+            )
+        )
+
+        return query.all()  # Fetch results properly
 
     @classmethod
     def find_active_auth_filter_by_id(cls, filter_id, user, admin) -> Filter:

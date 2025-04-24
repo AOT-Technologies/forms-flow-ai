@@ -1,5 +1,6 @@
 export const mockstate = {
-  process: {
+
+  process:{
     isProcessLoading: true,
     processStatusList: [],
     processLoadError: false,
@@ -8,7 +9,8 @@ export const mockstate = {
       {
         created: "2025-02-10T09:01:11.971172Z",
         modified: "2025-02-10T09:01:11.971190Z",
-        id: 4676,
+        _id: "4676",
+        id: "4676",
         name: "AAA123 asdfas fasdfasdfasdf asdf",
         tenant: null,
         createdBy: "formsflow-designer",
@@ -24,7 +26,8 @@ export const mockstate = {
       {
         created: "2025-02-10T09:00:27.522600Z",
         modified: "2025-02-10T09:00:27.522617Z",
-        id: 4674,
+        _id: "4674",
+        id: "4674",
         name: "abilaaadddghaagccalexaaaffcxdfvdff",
         tenant: null,
         createdBy: "formsflow-designer",
@@ -55,8 +58,8 @@ export const mockstate = {
     dmnSearchText: "",
     isPublicDiagram: null,
     processHistoryData: {},
-    totalBpmnCount: 50,
-    totalDmnCount: 50,
+    totalBpmnCount: 51,
+    totalDmnCount: 52,
     bpmsort: {
       activeKey: "name",
       name: { sortOrder: "asc" },
@@ -95,7 +98,7 @@ export const mockstate = {
     isActive: false,
     limit: 5,
     page: 1,
-    totalForms: 50,
+    totalForms: 55,
     bpmFormLoading: false,
     sortBy: "formName",
     sortOrder: "asc",
@@ -118,6 +121,11 @@ export const mockstate = {
     createSubmissions: true,
     showApplications: true,
     bearerToken: "",
+    isAuthenticated: true,
+    userDetail: {
+      name: "Test User",
+      email: "testuser@example.com",
+    },
     roles: [
       "view_tasks",
       "formsflow-client",
@@ -150,8 +158,6 @@ export const mockstate = {
       REVIEWER: "65f6845b5a0b7bdb4eabddd4",
       RESOURCE_ID: "65f6845c5a0b7bdb4eabdde1",
     },
-    userDetail: {},
-    isAuthenticated: true,
     currentPage: "",
     lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : null,
     selectLanguages: [],
@@ -164,7 +170,7 @@ export const mockstate = {
     isTenantDetailLoading: false,
     tenantData: {},
     tenantDetail: null,
-    tenantId: "",
+    tenantId: "testTenant",
   },
 
   formCheckList: {
@@ -178,6 +184,7 @@ export const mockstate = {
   },
   formDelete: {
     formDelete: { modalOpen: false, formId: "", formName: "" },
+    formSubmitted: false,
   },
   customSubmission: {
     submission: {
@@ -193,5 +200,27 @@ export const mockstate = {
       created: "2023-09-06T06:44:25.763Z",
     },
     applicationId: "",
+    isPublicStatusLoading: false,
+  },
+  form: {
+    form: {
+      _id: "123",
+      title: "Test Form",
+    },
+    isActive: false,
+  },
+  
+  draft: {
+    draftSubmission: {
+      data: {},
+      draftId: "456",
+    },
+    draftModified: false,
+    lastUpdated: {},
+  },
+  pubSub: {
+    publish: jest.fn(),
   },
 };
+
+

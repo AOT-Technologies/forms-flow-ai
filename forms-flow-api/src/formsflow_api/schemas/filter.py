@@ -44,6 +44,8 @@ class FilterSchema(AuditDateTimeSchema):
     isMyTasksEnabled = fields.Bool(load_only=True)
     isTasksForCurrentUserGroupsEnabled = fields.Bool(load_only=True)
     order = fields.Int(data_key="order", allow_none=True)
+    sort_order = fields.Int(data_key="sortOrder", allow_none=True, dump_only=True)
+    hide = fields.Bool(data_key="hide", default=False, allow_none=True, dump_only=True)
     filter_type = fields.Method(
         "get_filter_type",
         deserialize="load_filter_type",

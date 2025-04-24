@@ -38,7 +38,6 @@ const setKeycloakJson = (tenantKey = null, ...rest) => {
 // const KeycloakData = new Keycloak(tenantDetail);
 
 const initKeycloak = (store, ...rest) => {
-  const clientId = rest.length && rest[0];
   const done = rest.length ? rest[1] : () => {};
   KeycloakData.init({
     onLoad: "check-sso",
@@ -49,11 +48,12 @@ const initKeycloak = (store, ...rest) => {
     checkLoginIframe: false,
   }).then((authenticated) => {
     if (authenticated) {
-      if (KeycloakData.resourceAccess[clientId]) {
-        const UserRoles = KeycloakData.resourceAccess[clientId].roles;
+      const tokenParsed = KeycloakData.tokenParsed || {};
+      const UserRoles = tokenParsed.roles || tokenParsed.role || tokenParsed.client_roles || [];
+      if (UserRoles.length > 0) {
         store.dispatch(setUserRole(UserRoles));
         store.dispatch(setUserToken(KeycloakData.token));
-        store.dispatch(setLanguage(KeycloakData.tokenParsed.locale || "en"));
+        store.dispatch(setLanguage(tokenParsed.locale || "en"));
         //Set Cammunda/Formio Base URL
         setApiBaseUrlToLocalStorage();
         // get formio roles

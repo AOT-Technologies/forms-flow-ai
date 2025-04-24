@@ -2,6 +2,8 @@
 
 import base64
 import json
+import os
+import tempfile
 
 from flask import current_app, make_response
 from selenium.common.exceptions import TimeoutException
@@ -123,3 +125,40 @@ def save_pdf_local(result, file_name="Pdf.pdf"):
     """Save html content as pdf response."""
     with open(file_name, "wb") as file:
         file.write(result)
+
+
+
+def get_pdf_from_html_string(html_content, chrome_driver_path=None, args=None):
+    """
+    Generate PDF from HTML content string using Chrome/Chromium.
+    
+    Args:
+        html_content (str): HTML content to convert to PDF
+        chrome_driver_path (str): Path to chrome driver
+        args (dict): Dictionary of arguments to pass to Chrome
+        
+    Returns:
+        bytes: PDF content as bytes
+    """
+    try:
+        # Create a temporary file to store the HTML content
+        fd, temp_html_path = tempfile.mkstemp(suffix='.html')
+        with os.fdopen(fd, 'w') as f:
+            f.write(html_content)
+        
+        # Use file:// protocol to access the temporary file
+        temp_url = f"file://{temp_html_path}"
+        
+        # Use the existing function to generate PDF from URL
+        pdf = get_pdf_from_html(temp_url, chrome_driver_path, args)
+        
+        # Clean up temporary file
+        try:
+            os.unlink(temp_html_path)
+        except Exception:
+            pass  # Ignore cleanup errors
+            
+        return pdf
+    except Exception as e:
+        current_app.logger.error(f"Error generating PDF from HTML string: {str(e)}")
+        return None

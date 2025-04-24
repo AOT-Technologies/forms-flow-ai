@@ -174,11 +174,7 @@ import rootReducer from "./rootReducer";
 import { QueryClient, QueryClientProvider } from "react-query"; // Add this import at the top
 import { mockstate } from "./mockState";
 import userEvent from "@testing-library/user-event";
-// import {
-//   setProcessData,
-// } from "../../actions/processActions";
-// import * as processServices from "../../apiManager/services/processServices";
-
+import './utils/i18nForTests'; // import to remove warning related to i18n import
 const queryClient = new QueryClient();
 const store = configureStore({
   reducer: rootReducer,

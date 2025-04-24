@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.keycloak.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 	/** This class' logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(KeycloakAuthenticationFilter.class);
 	
-	private static List<String> HARD_CODED_ROLES = Arrays.asList("create_designs", "view_designs", "create_submissions", "view_submissions", "view_tasks", "manage_tasks", "admin");
+	private static List<String> HARD_CODED_ROLES = Arrays.asList("create_designs", "view_designs", "create_submissions", "view_submissions", "view_tasks", "manage_tasks", "admin", "resubmit_submissions");
 	
 
 	private final String userNameAttribute;
@@ -80,7 +81,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 		String userId = null;
 		Map<String, Object> claims;
 		if (authentication instanceof JwtAuthenticationToken) {
-			userId = ((JwtAuthenticationToken) authentication).getTokenAttributes().get(userNameAttribute).toString();
+			userId = RestAPIBuilderUtil.getUserIdFromJwt(authentication, userNameAttribute);
 			claims = ((JwtAuthenticationToken) authentication).getToken().getClaims();
 		} else if (authentication.getPrincipal() instanceof OidcUser) {
 			userId = ((OidcUser)authentication.getPrincipal()).getPreferredUsername();
@@ -155,9 +156,11 @@ public class KeycloakAuthenticationFilter implements Filter {
 		}
 		// Set the permission roles to match with the authorizations.
 		// Iterate the user's roles with HARD_CODED_ROLES, and set the matching ones as groups.
-		if (claims != null &&  claims.containsKey("roles")) {
+		if (claims != null &&  (claims.containsKey("roles") || claims.containsKey("role") || claims.containsKey("client_roles")) ) {
 
-			List<String> roles = getKeys(claims, "roles");
+			List<String> roles = (List<String>) claims.getOrDefault("roles", 
+	                  claims.getOrDefault("role", 
+	                  claims.getOrDefault("client_roles", Collections.emptyList())));
 			for (String role : roles) {
 				if (HARD_CODED_ROLES.contains(role)) {
 					if (enableMultiTenancy) {
@@ -185,5 +188,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 		}
 		return keys;
 	}
+	
+	
 
 }

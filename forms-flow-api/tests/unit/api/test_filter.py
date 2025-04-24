@@ -155,7 +155,9 @@ def test_attribute_filter(app, client, session, jwt):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # Create task filter
     response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(name="Task filter1", roles=["formsflow-reviewer"])
+        "/filter",
+        headers=headers,
+        json=get_filter_payload(name="Task filter1", roles=["formsflow-reviewer"]),
     )
     assert response.status_code == 201
     assert response.json.get("id") is not None
@@ -166,7 +168,14 @@ def test_attribute_filter(app, client, session, jwt):
     parent_filter_id = response.json.get("id")
     # Create attribute filter for the task filter
     response = client.post(
-        "/filter", headers=headers, json=get_filter_payload(name="Attribute filter1", roles=["formsflow-reviewer"], parent_filter_id=parent_filter_id, filter_type="ATTRIBUTE")
+        "/filter",
+        headers=headers,
+        json=get_filter_payload(
+            name="Attribute filter1",
+            roles=["formsflow-reviewer"],
+            parent_filter_id=parent_filter_id,
+            filter_type="ATTRIBUTE",
+        ),
     )
     assert response.status_code == 201
     assert response.json.get("id") is not None
@@ -186,3 +195,61 @@ def test_attribute_filter(app, client, session, jwt):
     assert response.status_code == 200
     assert response.json.get("name") == "Task filter1"
     assert response.json.get("attributeFilters")
+
+
+def create_filter(client, headers, roles=["clerk"]):
+    """Create filter."""
+    response = client.post(
+        "/filter", headers=headers, json=get_filter_payload(roles=roles)
+    )
+    assert response.status_code == 201
+    filter_data = response.json
+    assert filter_data.get("id") is not None
+    assert filter_data.get("name") == "Test Task"
+    return filter_data["id"]
+
+
+def test_filter_preference_create(app, client, session, jwt):
+    """Test creating filter preferences."""
+    token = get_token(jwt, role=MANAGE_ALL_FILTERS, username="reviewer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    first_filter_id = create_filter(client, headers)
+    second_filter_id = create_filter(client, headers)
+
+    payload = [
+        {"filterId": first_filter_id, "sortOrder": 2},
+        {"filterId": second_filter_id, "sortOrder": 1},
+    ]
+    response = client.post("/filter/filter-preference", headers=headers, json=payload)
+
+    assert response.status_code == 201
+    assert response.json[0].get("filterId") == second_filter_id
+
+
+def test_filter_preference_list(app, client, session, jwt):
+    """Test listing filter preferences."""
+    token = get_token(jwt, role=MANAGE_ALL_FILTERS, username="reviewer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    first_filter_id = create_filter(client, headers)
+    second_filter_id = create_filter(client, headers)
+    third_filter_id = create_filter(client, headers)
+
+    payload = [
+        {"filterId": first_filter_id, "sortOrder": 2, "hide": True},
+        {"filterId": second_filter_id, "sortOrder": 1},
+    ]
+    response = client.post("/filter/filter-preference", headers=headers, json=payload)
+    assert response.status_code == 201
+    assert response.json[0].get("filterId") == second_filter_id
+
+    response = client.get("/filter/user", headers=headers)
+    assert response.status_code == 200
+    filters = response.json.get("filters")
+    assert len(filters) == 3
+    assert filters[1]["id"] == first_filter_id
+    assert filters[1]["hide"] is True
+    assert filters[2]["id"] == third_filter_id
+    assert filters[2].get("sortOrder") is None
+    assert filters[2]["hide"] is False

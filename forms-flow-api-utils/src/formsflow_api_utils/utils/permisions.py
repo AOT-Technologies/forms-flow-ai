@@ -18,6 +18,7 @@ ADMIN= "admin"
 CREATE_BPMN_FLOWS = "create_bpmn_flows"
 MANAGE_SUBFLOWS = "manage_subflows"
 MANAGE_DECISION_TABLES = "manage_decision_tables"
+CAN_RESUBMIT_SUBMISSION = "resubmit_submissions"
 
 
 PERMISSION_DETAILS = [
@@ -34,6 +35,7 @@ PERMISSION_DETAILS = [
     {"name": MANAGE_ALL_FILTERS , "description": "Manage all filters", "depends_on": [ VIEW_FILTERS , CREATE_FILTERS ]},
     {"name": CREATE_FILTERS , "description": "Access to create filters", "depends_on": [ VIEW_FILTERS ]},
     {"name": VIEW_FILTERS , "description": "Access to view filters", "depends_on": []},
+    {"name": CAN_RESUBMIT_SUBMISSION , "description": "Access to re-submit submissions", "depends_on": [CREATE_SUBMISSIONS]},
     {"name": MANAGE_INTEGRATIONS , "description": "Access to Integrations", "depends_on": []},
     {"name": MANAGE_DASHBOARD_AUTHORIZATIONS , "description": "Manage Dashboard Authorization", "depends_on": [ VIEW_DASHBOARDS ]},
     {"name": MANAGE_USERS , "description": "Manage Users", "depends_on": []},

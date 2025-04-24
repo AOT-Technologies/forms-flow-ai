@@ -42,6 +42,7 @@ import {
   CustomSearch,
   CustomButton,
 } from "@formsflow/components";
+import { HelperServices } from '@formsflow/service';
 import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { navigateToDesignFormEdit } from "../../../helper/routerHelper.js";
@@ -72,9 +73,11 @@ const List = React.memo((props) => {
   };
 
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+    
+    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
     dispatch(
       setBpmFormSort({
-        ...formSort,
+        ...resetSortOrders,
         activeKey: selectedSortOption,
         [selectedSortOption]: { sortOrder: selectedSortOrder },
       })
@@ -436,7 +439,7 @@ const List = React.memo((props) => {
                       onClose={onCloseimportModal}
                       handleImport={handleImport}
                       headerText={t("Import New Form")}
-                      primaryButtonText={t("Confirm and Edit form")}
+                      primaryButtonText={t("Confirm and Edit Form")}
                       fileType=".json"
                     />
                   )}

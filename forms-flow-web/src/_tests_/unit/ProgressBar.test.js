@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CustomProgressBar from '../../components/Modals/ProgressBar'; 
 import '@testing-library/jest-dom';
-
+import './utils/i18nForTests'; // import to remove warning related to i18n import
 describe('CustomProgressBar', () => {
   test('renders progress bar with the correct progress value', () => {
     render(<CustomProgressBar progress={50} />);

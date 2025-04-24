@@ -62,7 +62,7 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
         buttonLoading={buttonState}
         dataTestId="export-pdf-button"
         ariaLabel="Export PDF Button"
-        size="sm"
+        size="table"
       />
     </Container>
   );

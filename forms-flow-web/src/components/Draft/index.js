@@ -11,13 +11,13 @@ export default React.memo(() => {
     <Switch>
       <>
         <Route exact path={`${BASE_ROUTE}draft`} component={DraftList} />
-        <Route path={`${BASE_ROUTE}draft/:draftId`}>
+        <Route exact path={`${BASE_ROUTE}draft/:draftId`}>
           <ViewDraft />
         </Route>
         <Route path={`${BASE_ROUTE}draft/:draftId/:notavailable`}>
           <Redirect exact to="/404" />
         </Route>
-        <Route path={`${BASE_ROUTE}form/:formId/draft/:draftId/edit`}>
+        <Route exact path={`${BASE_ROUTE}form/:formId/draft/:draftId/edit`}>
           <EditDraft />
         </Route>
       </>

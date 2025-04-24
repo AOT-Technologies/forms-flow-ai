@@ -7,20 +7,19 @@ const initialState = {
     error: null,
     message: null,
   },
+  draftId: null,
   draftList: [],
   countPerPage: 5,
   isDraftListLoading: true,
   draftCount: 0,
   activePage: 1,
   isDraftDetailLoading: true,
-  submission: {},
   draftDetailStatusCode: "",
-  lastUpdated: {},
   sortOrder: "desc",
   sortBy: "id",
   searchParams: {},
   isDraftLoading: false,
-  draftModified: '',
+  draftModified: {},
 };
 
 const draftSubmission = (state = initialState, action) => {
@@ -32,8 +31,9 @@ const draftSubmission = (state = initialState, action) => {
     case ACTION_CONSTANTS.DRAFT_DETAIL:
       return {
         ...state,
-        submission: action.payload,
+        draftSubmission: action.payload,
         isDraftDetailLoading: action.payload?.isDraftDetailLoading || false,
+        draftId: action.payload?.applicationId || null,
       };
     case ACTION_CONSTANTS.DRAFT_COUNT:
       return { ...state, draftCount: action.payload };
@@ -50,8 +50,6 @@ const draftSubmission = (state = initialState, action) => {
       };
     case ACTION_CONSTANTS.DRAFT_DETAIL_STATUS_CODE:
       return { ...state, draftDetailStatusCode: action.payload };
-    case ACTION_CONSTANTS.DRAFT_LAST_UPDATED:
-      return { ...state, lastUpdated: action.payload };
     case ACTION_CONSTANTS.DRAFT_DELETE:
       return { ...state, draftDelete: action.payload };
     case ACTION_CONSTANTS.DRAFT_LIST_SORT_ORDER:

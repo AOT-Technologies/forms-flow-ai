@@ -573,7 +573,7 @@ ConfirmModal.propTypes = {
 
 
 
-export const BackToPrevIcon = ({ color = baseColor, onClick, ...props }) => (
+export const BackToPrevIcon = ({ onClick, dataTestId, ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="32"
@@ -581,6 +581,7 @@ export const BackToPrevIcon = ({ color = baseColor, onClick, ...props }) => (
     viewBox="0 0 32 33"
     fill="none"
     onClick={onClick}
+    data-testid={dataTestId}
   >
     <path
       fillRule="evenodd"
@@ -594,6 +595,7 @@ export const BackToPrevIcon = ({ color = baseColor, onClick, ...props }) => (
 BackToPrevIcon.propTypes = {
   color: PropTypes.string,
   onClick: PropTypes.func,
+  dataTestId: PropTypes.string,
 };
 
 export const CustomInfo = () => {
@@ -791,11 +793,7 @@ export const AngleLeftIcon = ({
   dataTestId="left-icon"
 }) => {
   return (
-    <button
-      className="left-icon-container"
-      onClick={onClick}
-      data-testid={dataTestId}
-      aria-label="Left Icon">
+ 
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="10"
@@ -811,8 +809,6 @@ export const AngleLeftIcon = ({
           strokeLinejoin="round"
         />
       </svg>
-    </button>
-
   );
 }
 
@@ -821,11 +817,7 @@ export const AngleRightIcon = ({
   dataTestId="right-icon"
 }) => {
   return (
-    <button
-      className="right-icon-container"
-      onClick={onClick}
-      data-testid={dataTestId}
-      aria-label="Right Icon">
+
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="10"
@@ -842,8 +834,6 @@ export const AngleRightIcon = ({
           strokeLinejoin="round"
         />
       </svg>
-    </button>
-
   );
 }
 

@@ -1,9 +1,13 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from beanie import PydanticObjectId
+from bson import ObjectId
 
 from src.graphql.schema import FormSchema
 from src.models.formio import FormModel, SubmissionsModel
+from src.utils import get_logger
+
+logger = get_logger(__name__)
 
 
 # Service Layer for Form-related Operations
@@ -106,3 +110,86 @@ class FormService:
         return (
             submission.data if submission else None
         )  # Return data if found, otherwise None
+
+    @staticmethod
+    async def _build_match_stage(
+        submission_ids: List[str], search: Optional[dict]
+    ) -> dict:
+        """Build the MongoDB match stage."""
+        match_stage = {"_id": {"$in": [ObjectId(id) for id in submission_ids]}}
+        if search:
+            for field, value in search.items():
+                match_stage[f"data.{field}"] = {"$regex": value, "$options": "i"}
+        return match_stage
+
+    @staticmethod
+    def _build_sort_stage(sort_by: str, sort_order: str) -> Optional[dict]:
+        """Build the MongoDB sort stage if needed."""
+        if not sort_by:
+            return None
+        sort_field = f"data.{sort_by}"
+        sort_value = 1 if sort_order.lower() == "asc" else -1
+        logger.info(f"Sorting by: {sort_field} in {sort_order} order")
+        return {"$sort": {sort_field: sort_value}}
+
+    @staticmethod
+    def _build_projection_stage(project_fields: Optional[List[str]]) -> dict:
+        """Build the MongoDB projection stage."""
+        project_stage = {"$project": {"_id": {"$toString": "$_id"}}}
+        if project_fields:
+            for field in project_fields:
+                project_stage["$project"][field] = f"$data.{field}"
+        return project_stage
+
+    @staticmethod
+    async def query_submissions(
+        submission_ids: List[str],
+        search: Optional[dict] = None,
+        project_fields: Optional[List[str]] = None,
+        page_no: Optional[int] = None,
+        limit: Optional[int] = None,
+        sort_by: Optional[str] = None,
+        sort_order: str = "asc",
+    ) -> Dict[str, Any]:
+        """
+        Query submissions from MongoDB with optional pagination and sorting.
+        """
+        # Build match stage
+        match_stage = await FormService._build_match_stage(submission_ids, search)
+        pipeline = [{"$match": match_stage}]
+
+        # Add sorting if sort_by is specified
+        if sort_stage := FormService._build_sort_stage(sort_by, sort_order):
+            pipeline.append(sort_stage)
+
+        # Projection stage
+        pipeline.append(FormService._build_projection_stage(project_fields))
+
+        # Only add pagination if page_no and limit specified
+        if page_no is not None and limit is not None:
+            facet_stage = {
+                "$facet": {
+                    "items": [
+                        {"$skip": (page_no - 1) * limit},
+                        {"$limit": limit},
+                    ],
+                    "total": [{"$count": "count"}],
+                }
+            }
+            pipeline.append(facet_stage)
+
+            results = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = results[0]["items"] if results else []
+            total = (
+                results[0]["total"][0]["count"]
+                if results and results[0]["total"]
+                else 0
+            )
+        else:
+            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            total = len(items)
+
+        return {
+            "submissions": items,
+            "total_count": total,
+        }

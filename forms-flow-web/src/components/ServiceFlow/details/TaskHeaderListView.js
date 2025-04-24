@@ -24,10 +24,26 @@ import UserSelectionDebounce from "./UserSelectionDebounce";
 import { useTranslation } from "react-i18next";
 import  userRoles   from "../../../constants/permissions";
 
+import {
+  USER_NAME_DISPLAY_CLAIM
+} from "../../../constants/constants";
+import get from "lodash/get";
+
 const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
-  const username = useSelector(
-    (state) => state.user?.userDetail?.preferred_username || ""
-  );
+  const username = useSelector((state) => {
+    let value = get(state.user?.userDetail, USER_NAME_DISPLAY_CLAIM, undefined);
+    // If value is undefined, fallback to 'preferred_username'
+    if (value === undefined) {
+      value = get(state.user?.userDetail, "preferred_username", "");
+    }
+    // If the resolved value is an array, take the first item
+    if (Array.isArray(value)) {
+      return value.length > 0 ? value[0] : "";
+    }
+    
+    return value || "";
+  });
+  
   const taskGroups = useSelector((state) => state.bpmTasks.taskGroups);
   // const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);

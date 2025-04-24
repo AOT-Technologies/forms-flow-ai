@@ -13,7 +13,7 @@ import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import * as processHelper from '../../helper/processHelper.js';
 import * as processServices from '../../apiManager/services/processServices.js';
- 
+import './utils/i18nForTests'; // import to remove warning related to i18n import
 
 const queryClient = new QueryClient();
 let store = configureStore({

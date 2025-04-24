@@ -1,9 +1,17 @@
+import asyncio
 import os
 import sys
+from unittest.mock import patch
+
+import httpx
 import pytest
-import asyncio
-from src.db import webapi_db, bpmn_db
-from src.db.formio_db import FormioDbConnection
+import strawberry
+from starlette.requests import Request
+
+from src.config.envs import ENVS
+from src.graphql.resolvers import Query
+
+from .utils import KeycloakTestTokenGenerator
 
 # Add the project root directory to Python path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,35 +34,41 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture(scope="session")
-async def async_webapi_db():
-    """
-    Session-scoped fixture to initialize the WebAPI PostgreSQL database.
-    """
-    await webapi_db.init_db()
-    try:
-        yield webapi_db  # Yield the actual database connection object
-    finally:
-        await webapi_db.close_connection()
+@pytest.fixture
+def schema_tester():
+    """Fixture to execute GraphQL queries directly on the schema."""
+    schema = strawberry.Schema(query=Query)
+
+    async def execute_query(query: str, variables=None, headers=None):
+        """Execute GraphQL queries directly on the schema with a simulated request."""
+        request = Request(scope={"type": "http", "headers": [(b"authorization", headers.get("Authorization", "").encode())]})
+        context = {"request": request}
+        return await schema.execute(query, variable_values=variables, context_value=context)
+
+    return execute_query  # ✅ Returns the callable function
 
 
-@pytest.fixture(scope="session")
-async def async_bpm_db():
-    """
-    Session-scoped fixture to initialize the BPM PostgreSQL database.
-    """
-    await bpmn_db.init_db()
-    yield bpmn_db
-    await bpmn_db.close_connection()
+@pytest.fixture
+def token_generator():
+    return KeycloakTestTokenGenerator(
+        issuer=ENVS.JWT_OIDC_ISSUER,
+        audience="forms-flow-web"
+    )
 
 
-@pytest.fixture(scope="session")
-async def async_formio_db():
-    """
-    Session-scoped fixture to initialize the MongoDB connection for Formio.
-    """
-    formio_conn = FormioDbConnection()
-    await formio_conn.init_formio_db()
-    yield formio_conn.get_db()
-    # Cleanup: close the underlying Motor client connection.
-    formio_conn._FormioDbConnection__client.close()
+@pytest.fixture
+def mock_jwks(token_generator):
+    """Fixture to automatically mock JWKS endpoint for all tests"""
+    test_jwks = token_generator.get_test_jwks()
+
+    async def mock_jwks_response(*args, **kwargs):
+        # Create a proper mock response with all needed attributes
+        response = httpx.Response(
+            status_code=200,
+            json=test_jwks,
+            request=httpx.Request("GET", ENVS.JWT_OIDC_JWKS_URI)
+        )
+        return response
+
+    with patch.object(httpx.AsyncClient, 'get', new=mock_jwks_response):
+        yield

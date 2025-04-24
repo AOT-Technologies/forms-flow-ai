@@ -134,6 +134,17 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Admin url
     ADMIN_URL = os.getenv("FORMSFLOW_ADMIN_URL")
 
+    # Shared realm config
+    SHARED_REALM = str(os.getenv("SHARED_REALM", default="false")).lower() == "true"
+    CSS_API_BASE_URL = os.getenv("CSS_API_BASE_URL")
+    CSS_INTEGRATION_ID = os.getenv("CSS_INTEGRATION_ID")
+    CSS_ENV = os.getenv("CSS_ENV")
+    CSS_API_CLIENT_ID = os.getenv("CSS_API_CLIENT_ID")
+    CSS_API_SECRET = os.getenv("CSS_API_SECRET")
+    CSS_API_LOGIN_URL = os.getenv("CSS_API_LOGIN_URL")
+    CSS_IDP_LIST = os.getenv("CSS_IDP_LIST")
+    USER_NAME_DISPLAY_CLAIM = os.getenv("USER_NAME_DISPLAY_CLAIM")
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

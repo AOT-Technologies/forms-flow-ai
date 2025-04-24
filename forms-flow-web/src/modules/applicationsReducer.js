@@ -21,8 +21,9 @@ export const initialState = {
   sortBy: "id",
   searchParams: "",
   isApplicationLoading: false,
+  formName: "",
   sort: {
-    activeKey: "submissionId",
+    activeKey: "id",
     id: { sortOrder: "asc" },
     created: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
@@ -66,6 +67,8 @@ const applications = (state = initialState, action) => {
       return { ...state, applicationProcess: action.payload };
     case ACTION_CONSTANTS.SET_APPLICATION_LIST_COUNT:
       return { ...state, applicationCount: action.payload };
+    case ACTION_CONSTANTS.SET_SUBMISSION_FORM_NAME:
+      return { ...state, formName: action.payload };
     case ACTION_CONSTANTS.APPLICATION_DETAIL_STATUS_CODE:
       return { ...state, applicationDetailStatusCode: action.payload };
     case ACTION_CONSTANTS.APPLICATION_LIST_ACTIVE_PAGE:

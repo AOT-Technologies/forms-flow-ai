@@ -15,7 +15,8 @@ import {
   setApplicationStatusList,
   setApplicationError,
   setApplicationsAndDrafts,
-  setApplicationLoading
+  setApplicationLoading,
+  setSubmissionFormName
 } from "../../actions/applicationActions";
 import { replaceUrl } from "../../helper/helper";
 import moment from "moment";
@@ -30,7 +31,7 @@ export const fetchApplicationsAndDrafts = ({
   onlyDrafts,
   includeDrafts,
   formId,
-  searchText,
+  search,
   applicationSort,
   done = () => {},
 }) => {
@@ -48,7 +49,7 @@ export const fetchApplicationsAndDrafts = ({
       parentFormId: formId,
       ...(includeDrafts && { includeDrafts: true }),
       ...(onlyDrafts && { onlyDrafts: true }),
-      ...(searchText && { Id: searchText }),
+      ...(search && { Id: search }),
     };
 
     const url = `${API.APPLICATION_DRAFT_API}?${new URLSearchParams(params).toString()}`;
@@ -59,6 +60,7 @@ export const fetchApplicationsAndDrafts = ({
       .then(({ data }) => {
         if (data) {
           dispatch(setApplicationListCount(data.totalCount || 0));
+          dispatch(setSubmissionFormName(data?.formName || ""));
           dispatch(setApplicationsAndDrafts(data));
         }
         done(null, data);

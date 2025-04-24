@@ -10,6 +10,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added re-designed Client Table
 * Added Draft and Submission list table
 * Redesigned user form selection screens
+* Added new permission for submitter to work on resubmissions
 **formsflow-api**
 * Below fields added to application list endpoint
    * Added parentFormId filter parameter to filter the submissions for a specific form
@@ -30,6 +31,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
 * Added variables(task_variables) as part of import and export.
+* Added Endpoint `/filter/filter-preference ` for saving user's filter preference data
+* Added new table called filter_preferences to handle filter preference of a user
 
 `Modified`
 

@@ -37,11 +37,21 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 	 */
 	private String formsFlowAdminUrl;
 	
+	private boolean sharedRealmEnabled;
+	
+	private String cssApiUrl;
+	
+	private String cssApiClient;
+	
+	private String cssApiSecret;
+	
+	private String cssApiLogin;
+	
 	
 	@Override
 	public void preInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
 		super.preInit(processEngineConfiguration);
-		CustomConfig config = new CustomConfig(webClientId, enableClientAuth, enableMultiTenancy, formsFlowAdminUrl);
+		CustomConfig config = new CustomConfig(webClientId, enableClientAuth, enableMultiTenancy, formsFlowAdminUrl, sharedRealmEnabled, cssApiUrl, cssApiClient, cssApiSecret, cssApiLogin);
 		keycloakIdentityProviderFactory = new KeycloakIdentityProviderFactory(this, customHttpRequestInterceptors, config);
 		processEngineConfiguration.setIdentityProviderSessionFactory(keycloakIdentityProviderFactory);
 		processEngineConfiguration.setTenantIdProvider(new TenantProvider());
@@ -86,5 +96,45 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 
 	public void setFormsFlowAdminUrl(String formsFlowAdminUrl) {
 		this.formsFlowAdminUrl = formsFlowAdminUrl;
+	}
+
+	public String getCssApiUrl() {
+		return cssApiUrl;
+	}
+
+	public void setCssApiUrl(String cssApiUrl) {
+		this.cssApiUrl = cssApiUrl;
+	}
+
+	public boolean isSharedRealmEnabled() {
+		return sharedRealmEnabled;
+	}
+
+	public void setSharedRealmEnabled(boolean sharedRealmEnabled) {
+		this.sharedRealmEnabled = sharedRealmEnabled;
+	}
+
+	public String getCssApiClient() {
+		return cssApiClient;
+	}
+
+	public void setCssApiClient(String cssApiClient) {
+		this.cssApiClient = cssApiClient;
+	}
+
+	public String getCssApiSecret() {
+		return cssApiSecret;
+	}
+
+	public void setCssApiSecret(String cssApiSecret) {
+		this.cssApiSecret = cssApiSecret;
+	}
+
+	public String getCssApiLogin() {
+		return cssApiLogin;
+	}
+
+	public void setCssApiLogin(String cssApiLogin) {
+		this.cssApiLogin = cssApiLogin;
 	}
 }

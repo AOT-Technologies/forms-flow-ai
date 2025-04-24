@@ -1,48 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Loading from "../../containers/Loading";
-import { getForm, getSubmission } from "@aot-technologies/formio-react";
-// import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { getDraftById } from "../../apiManager/services/draftService";
-// import Edit from "./Edit";
 import UserForm from "../../routes/Submit/Forms/UserForm";
 import { push } from "connected-react-router";
 
 const EditDraft = React.memo(() => {
   const { draftId } = useParams();
 
-  const isDraftDetailLoading = useSelector(
-    (state) => state.draft.isDraftDetailLoading
-  );
-
+  const [draftLoading, setDraftLoading] = useState(true);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
-  useEffect(() => {
+  useEffect(() => { 
     dispatch(
-      getDraftById(draftId, (err, res) => {
-        if (!err) {
-          if (res.id && res.formId) {
-            dispatch(getForm("form", res.formId));
-            if(res.submissionId && res.formId)
-            dispatch(getSubmission("submission", res.submissionId, res.formId));
-          }
-        } else {
+      getDraftById(draftId, (err) => {
+        setDraftLoading(false);
+        if (err) {
           dispatch(push(`${redirectUrl}404`));
-        }
+        }  
       })
     );
-    return () => {
-      //   dispatch(setApplicationDetailLoader(true));
-      //   dispatch(setApplicationDetailStatusCode(""));
-    };
   }, [draftId, dispatch]);
 
-  if (isDraftDetailLoading) {
+  // loading till draft data get
+  if (draftLoading) {
     return <Loading />;
   }
   return <UserForm page="draft-edit" />;

@@ -35,7 +35,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.12.7]
+        python-version: [3.12.10]
 
     steps:
       - uses: actions/checkout@v2
@@ -61,7 +61,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.12.9]
+        python-version: [3.12.10]
     
     env:
       JWT_OIDC_JWKS_URI: "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/certs"

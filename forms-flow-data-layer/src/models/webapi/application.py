@@ -86,21 +86,10 @@ class Application(BaseModel):
                 or_(*role_conditions),  # ⬅️ Role conditions
                 authorization_table.c.auth_type == AuthType.APPLICATION.value,
             ),
-            isouter=True,  # Left join to include all applications even if no authorization exists
         )
 
         # Combine conditions
-        query = query.where(
-            and_(
-                application_table.c.is_draft.is_(False),  # ⬅️ Exclude drafts,
-                or_(
-                    authorization_table.c.resource_id.isnot(
-                        None
-                    ),  # ⬅️ Authorization check
-                    application_table.c.created_by == username,  # ⬅️ created_by fallback
-                ),
-            )
-        )
+        query = query.where(application_table.c.is_draft.is_(False))
 
         if (
             filter

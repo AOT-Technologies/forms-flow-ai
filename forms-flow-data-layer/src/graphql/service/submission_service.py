@@ -154,7 +154,7 @@ class SubmissionService:
                 filter=mongo_search,
                 selected_form_fields=selected_form_fields,
                 page_no=not is_paginate_on_webapi_side and page_no or None,
-                limit=is_paginate_on_webapi_side and limit or None,
+                limit=not is_paginate_on_webapi_side and limit or None,
                 **(sort_params if not is_sort_on_webapi_side else {}),
             )
             final_out_puts = SubmissionService._process_results(

@@ -81,7 +81,7 @@ class SubmissionService:
         return final_results
 
     @staticmethod
-    async def get_submissions(
+    async def get_submission(
         info: strawberry.Info,
         sort_by: str,
         sort_order: str,
@@ -149,7 +149,7 @@ class SubmissionService:
                 if app["submission_id"]
             ]
             # Get filtered submissions from MongoDB
-            mongo_side_submissions = await SubmissionsModel.query_submissions(
+            mongo_side_submissions = await SubmissionsModel.query_submission(
                 submission_ids=submission_ids,
                 filter=mongo_search,
                 selected_form_fields=selected_form_fields,

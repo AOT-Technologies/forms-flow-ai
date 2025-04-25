@@ -11,7 +11,7 @@ from src.middlewares.auth import auth
 @strawberry.type
 class QuerySubmissionsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
-    async def get_submissions(
+    async def get_submission(
         self,
         info: strawberry.Info,
         sort_by: str = "created",
@@ -23,7 +23,7 @@ class QuerySubmissionsResolver:
         limit: int = 5,
     ) -> Optional[PaginatedSubmissionResponse]:
         """
-        GraphQL resolver for querying a single submission by ID.
+        GraphQL resolver for querying submission.
 
         Args:
             info (strawberry.Info): GraphQL context information
@@ -37,7 +37,7 @@ class QuerySubmissionsResolver:
         Returns:
             Submission object containing combined SQL and MongoDB data
         """
-        submission = await SubmissionService.get_submissions(
+        submission = await SubmissionService.get_submission(
             info=info,
             sort_by=sort_by,
             sort_order=sort_order,

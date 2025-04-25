@@ -21,7 +21,7 @@ class MockSubmission:
 
 
 @pytest.mark.asyncio
-async def test_get_submissions(schema_tester, token_generator, mock_jwks):
+async def test_get_submission(schema_tester, token_generator, mock_jwks):
     """Test querying submissions with mocked authentication and service response.
 
     This test verifies that:
@@ -66,13 +66,13 @@ async def test_get_submissions(schema_tester, token_generator, mock_jwks):
     # Mock the service method
     with patch.object(
         SubmissionService,
-        "get_submissions",
+        "get_submission",
         new=AsyncMock(return_value=mock_service_response),
     ):
         response = await schema_tester(
             """
             query {
-                getSubmissions(
+                getSubmission(
                     limit: 5
                     sortOrder: "desc"
                     sortBy: "location"
@@ -98,11 +98,11 @@ async def test_get_submissions(schema_tester, token_generator, mock_jwks):
 
     # Assertions
     assert response.errors is None
-    assert response.data["querysubmissions"]["totalCount"] == 2
-    assert response.data["querysubmissions"]["pageNo"] == 1
-    assert response.data["querysubmissions"]["limit"] == 5
+    assert response.data["getSubmission"]["totalCount"] == 2
+    assert response.data["getSubmission"]["pageNo"] == 1
+    assert response.data["getSubmission"]["limit"] == 5
 
-    submissions = response.data["querysubmissions"]["submissions"]
+    submissions = response.data["getSubmission"]["submissions"]
     assert len(submissions) == 2
     assert submissions[0] == {
         "id": 18,
@@ -113,7 +113,7 @@ async def test_get_submissions(schema_tester, token_generator, mock_jwks):
 
 
 @pytest.mark.asyncio
-async def test_querysubmissions_without_form_selection(
+async def test_get_submission_without_form_selection(
     schema_tester, token_generator, mock_jwks
 ):
     """Test querying submissions without specifying parent_form_id parameter.
@@ -159,13 +159,13 @@ async def test_querysubmissions_without_form_selection(
     # Mock the service method
     with patch.object(
         SubmissionService,
-        "query_submissions",
+        "get_submission",
         new=AsyncMock(return_value=mock_service_response),
     ):
         response = await schema_tester(
             """
             query {
-                getSubmissions(
+                getSubmission(
                     limit: 5
                     sortOrder: "desc"
                     sortBy: "id"
@@ -188,11 +188,11 @@ async def test_querysubmissions_without_form_selection(
 
     # Assertions
     assert response.errors is None
-    assert response.data["querysubmissions"]["totalCount"] == 2
-    assert response.data["querysubmissions"]["pageNo"] == 1
-    assert response.data["querysubmissions"]["limit"] == 5
+    assert response.data["getSubmission"]["totalCount"] == 2
+    assert response.data["getSubmission"]["pageNo"] == 1
+    assert response.data["getSubmission"]["limit"] == 5
 
-    submissions = response.data["querysubmissions"]["submissions"]
+    submissions = response.data["getSubmission"]["submissions"]
     assert len(submissions) == 2
     assert submissions[0] == {
         "id": 20,
@@ -207,7 +207,7 @@ async def test_querysubmissions_no_auth(schema_tester):
     response = await schema_tester(
         """
         query {
-           getSubmissions(
+           getSubmission(
                     limit: 5
                     sortOrder: "desc"
                     sortBy: "location"

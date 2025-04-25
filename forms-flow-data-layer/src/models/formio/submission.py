@@ -43,7 +43,7 @@ class SubmissionsModel(Document):
         return project_stage
 
     @staticmethod
-    async def query_submissions(
+    async def query_submission(
         submission_ids: List[str],
         filter: Optional[dict] = None,
         selected_form_fields: Optional[List[str]] = None,

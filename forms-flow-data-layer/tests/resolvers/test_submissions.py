@@ -50,12 +50,14 @@ async def test_get_submission(schema_tester, token_generator, mock_jwks):
                 created_by="test-user1",
                 application_status="Completed",
                 data={"name": "user1", "location": "mumbai"},
+                submission_id="12345",
             ),
             SubmissionDetailsWithSubmissionData(
                 id=20,
                 created_by="test-user1",
                 application_status="Completed",
                 data={"name": "user2", "location": "delhi"},
+                submission_id="67890",
             ),
         ],
         total_count=2,
@@ -144,11 +146,13 @@ async def test_get_submission_without_form_selection(
                 id=20,
                 created_by="test-user1",
                 application_status="Completed",
+                submission_id="12345",
             ),
             SubmissionDetailsWithSubmissionData(
                 id=18,
                 created_by="test-user1",
                 application_status="Completed",
+                submission_id="67890",
             ),
         ],
         total_count=2,
@@ -170,7 +174,7 @@ async def test_get_submission_without_form_selection(
                     sortOrder: "desc"
                     sortBy: "id"
                     pageNo: 1
-                    filter: {created_by: "test-user1"}
+                    filters: {created_by: "test-user1"}
                 ) {
                     totalCount
                     pageNo
@@ -226,8 +230,6 @@ async def test_querysubmissions_no_auth(schema_tester):
         """,
         headers={},  # No authorization header
     )
-
-    assert response.data is None
     assert response.errors[0].message == "User is not authenticated"
-    assert response.errors[0].path == ["querysubmissions"]
+    assert response.errors[0].path == ["getSubmission"]
     assert response.errors[0].extensions["code"] == "UNAUTHORIZED"

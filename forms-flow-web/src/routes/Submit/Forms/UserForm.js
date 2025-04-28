@@ -68,13 +68,15 @@ import { cloneDeep } from "lodash";
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
-  const { formId, draftId } = useParams();
+  const { formId } = useParams();
   const lang = useSelector((state) => state.user.lang);
   const pubSub = useSelector((state) => state.pubSub);
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const draftSubmission = useSelector((state) => state.draft.draftSubmission || {});
+  const draftId = draftSubmission?.id;
+
   const {
     isFormSubmissionLoading,
     formSubmitted: isFormSubmitted,
@@ -83,7 +85,7 @@ const View = React.memo((props) => {
 
   const draftSubmissionId = draftSubmission?.applicationId || draftId;
   //modified date
-  const draftModified = useSelector((state)=>state.draft.draftModified?.modified);
+  const draftModified = useSelector((state) => state.draft.draftModified?.modified);
 
   // Holds the latest data saved by the server
   const { formStatusLoading, processLoadError } =
@@ -184,8 +186,8 @@ const View = React.memo((props) => {
    * Draft is updated only if the form is updated from the last saved form data.
    */
   const saveDraft = (payload, exitType) => {
-    if (exitType === "SUBMIT") return; 
-    let dataChanged = !isEqual(payload?.data, draftSubmission.data);
+    if (exitType === "SUBMIT") return;
+    let dataChanged = !isEqual(payload?.data, draftSubmission?.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         dispatch(
@@ -292,7 +294,7 @@ const View = React.memo((props) => {
   const handleBack = () => {
     navigateToFormEntries(dispatch, tenantKey, formId);
 
-};
+  };
 
   const renderModifiedDate = () => {
     if (draftModified && !isPublic) {
@@ -321,11 +323,11 @@ const View = React.memo((props) => {
         ></SubmissionError>
         <div className="d-flex justify-content-between align-items-center">
           <div className="icon-title-container">
-            { !isPublic && <BackToPrevIcon
+            {!isPublic && <BackToPrevIcon
               title={t("Back to Form List")}
               data-testid="back-to-form-list"
               onClick={handleBack}
-            /> }
+            />}
             <div className="user-form-header-text">
               {textTruncate(100, 97, form.title)}
             </div>
@@ -383,19 +385,19 @@ const View = React.memo((props) => {
               url={url}
               options={{
                 ...options,
-                language: lang,
+                language: lang ?? "en",
                 i18n: RESOURCE_BUNDLES_DATA,
               }}
               onChange={() => {
-                if(formRef.current?.data){
-                  setDraftData({data:formRef.current?.data});
+                if (formRef.current?.data) {
+                  setDraftData({ data: formRef.current?.data });
                 }
               }}
-              formReady={(e)=>formRef.current = e}
+              formReady={(e) => formRef.current = e}
               onSubmit={(data) => {
                 setPoll(false);
                 exitType.current = "SUBMIT";
-                onSubmit(data, form._id,draftId, isPublic);
+                onSubmit(data, form._id, draftId, isPublic);
               }}
               onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
             />
@@ -409,7 +411,7 @@ const View = React.memo((props) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-const doProcessActions = (submission, draftId, ownProps,formId) => { 
+const doProcessActions = (submission, draftId, ownProps, formId) => {
   return (dispatch, getState) => {
     const state = getState();
     let form = state.form?.form;
@@ -418,18 +420,19 @@ const doProcessActions = (submission, draftId, ownProps,formId) => {
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
     dispatch(resetSubmissions("submission"));
-    
+
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-    let isDraftCreated = !!draftId; 
+
+    let isDraftCreated = !!draftId;
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,
       isDraftCreated,
       DRAFT_ENABLED
     );
-    
+
 
     dispatch(
-      applicationCreateAPI(data, draftId, (err) => {  
+      applicationCreateAPI(data, draftId, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
           toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);
@@ -485,7 +488,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // this is callback function for submission
       const callBack = (err, submission) => {
         if (!err) {
-          dispatch(doProcessActions(submission, draftId, ownProps,formId));
+          dispatch(doProcessActions(submission, draftId, ownProps, formId));
         } else {
           const ErrorDetails = {
             modalOpen: true,

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
-  setBPMSubmitListPage,
+  setClientFormListPage,
   setBpmFormSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
@@ -17,6 +17,7 @@ import { CustomSearch } from "@formsflow/components";
 import { navigateToSubmitFormsApplication } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
+import { HelperServices } from '@formsflow/service';
 
 // Extracted Search Component
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
@@ -48,8 +49,8 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   const create_submissions = userRoles.includes("create_submissions");
 
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
-  const limit = useSelector((state) => state.bpmForms.limit);
-  const formSort = useSelector((state) => state.bpmForms.sort);
+  const limit = useSelector((state) => state.bpmForms.submitFormLimit);
+  const formSort = useSelector((state) => state.bpmForms.submitFormSort);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
@@ -62,8 +63,6 @@ const SubmitList = React.memo(({ getFormsInit }) => {
     { value: "formName", label: t("Form Name") },
     { value: "submissionCount", label: t("Submissions") },
     { value: "modified", label: t("Latest Submission") },
-
-
   ];
 
   // Fetch Forms Function
@@ -82,8 +81,9 @@ const SubmitList = React.memo(({ getFormsInit }) => {
 
   // Handle Sorting
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
     dispatch(setBpmFormSort({
-      ...formSort,
+      ...resetSortOrders,
       activeKey: selectedSortOption,
       [selectedSortOption]: { sortOrder: selectedSortOrder },
     }));
@@ -105,7 +105,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   }, [search]);
   const handleSearch = () => {
     dispatch(setClientFormSearch(search));
-    dispatch(setBPMSubmitListPage(1));
+    dispatch(setClientFormListPage(1));
   };
   const handleClearSearch = () => {
     setSearch("");

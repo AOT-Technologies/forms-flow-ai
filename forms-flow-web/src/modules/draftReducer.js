@@ -7,6 +7,7 @@ const initialState = {
     error: null,
     message: null,
   },
+  draftId: null,
   draftList: [],
   countPerPage: 5,
   isDraftListLoading: true,
@@ -32,6 +33,7 @@ const draftSubmission = (state = initialState, action) => {
         ...state,
         draftSubmission: action.payload,
         isDraftDetailLoading: action.payload?.isDraftDetailLoading || false,
+        draftId: action.payload?.applicationId || null,
       };
     case ACTION_CONSTANTS.DRAFT_COUNT:
       return { ...state, draftCount: action.payload };

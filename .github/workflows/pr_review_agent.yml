@@ -1,7 +1,7 @@
 name: PR Review Agent
 on:
   pull_request:
-    types: [opened, reopened, ready_for_review]
+    types: [opened, reopened, ready_for_review, synchronize]
     branches:
       - develop
       - master

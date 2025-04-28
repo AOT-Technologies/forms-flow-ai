@@ -8,13 +8,11 @@
 .bpmn-main-container {
   width: 100%;
   display: flex;
-  margin-bottom: 20px;
   margin-top: 10px;
-  height: auto;
   resize: vertical;
   overflow: hidden;
-  max-height: 600px;
-  min-height: 450px;
+  max-height: calc(100vh - 15.45rem);
+  min-height: calc(100vh - 16rem);
 }
 
 /* ------------------- this is for diagram settings icons start  ------------------- */
@@ -53,6 +51,18 @@
   width: 100%;
 }
 
+.tjs-table-container::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: transparent;
+  display: block;
+  opacity: 0;
+  scrollbar-width:8px !important;
+}
+.tjs-table-container {
+  scrollbar-width: 8px; 
+  scrollbar-color: #888  #E2E1FC; 
+}
 .properties-panel-parent {
   border: 1px solid $black;
   border-left: none;

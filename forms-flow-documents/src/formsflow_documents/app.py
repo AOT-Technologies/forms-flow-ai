@@ -6,6 +6,7 @@ Initialize app and the dependencies.
 import json
 import logging
 import os
+import tempfile
 from http import HTTPStatus
 
 from flask import Flask, current_app, g, request
@@ -25,6 +26,7 @@ from formsflow_api_utils.utils.startup import (
     collect_user_resource_ids,
     setup_jwt_manager,
 )
+from jinja2 import ChoiceLoader, FileSystemLoader
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from formsflow_documents import config
@@ -116,6 +118,9 @@ def create_app(
             return response
 
     app.jinja_env.globals.update(is_signature=is_b64image)  # pylint: disable=no-member
+    # Configure template paths
+    temp_dir = os.path.join(tempfile.gettempdir(), "templates")
+    app.jinja_loader = ChoiceLoader([app.jinja_loader, FileSystemLoader(temp_dir)])
 
     register_shellcontext(app)
     if not app.config["MULTI_TENANCY_ENABLED"]:

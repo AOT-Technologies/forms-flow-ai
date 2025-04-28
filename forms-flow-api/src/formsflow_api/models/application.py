@@ -879,7 +879,7 @@ class Application(
     @classmethod
     def apply_submission_sorting(cls, query, sort_by, sort_order, submission_alias):
         """Sort by submission count or latest submission time."""
-        order_func = desc if sort_order.lower() == "desc" else asc
+        order_func = desc if "desc" in sort_order else asc
         if "latestSubmission" in sort_by:
             # Sort by latest submission time, treating NULLs as max datetime
             return query.order_by(

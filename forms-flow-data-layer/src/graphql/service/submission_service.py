@@ -110,7 +110,7 @@ class SubmissionService:
         username = user.token_info.get("preferred_username")
         user_groups = user.token_info.get("groups", [])
         webapi_fields = ["created_by", "application_status", "id", "created"]
-        # dirived filter mongo serach and webapi search
+        # drived filter mongo serach and webapi search
         webapi_search, mongo_search = await SubmissionService.split_search_criteria(
             filters, webapi_fields
         )

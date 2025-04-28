@@ -38,7 +38,6 @@ class Application(BaseModel):
     async def get_authorized_applications(
         cls,
         tenant_key: str,
-        username: str,
         roles: list[str],
         parent_form_id: str,
         filter: dict = None,

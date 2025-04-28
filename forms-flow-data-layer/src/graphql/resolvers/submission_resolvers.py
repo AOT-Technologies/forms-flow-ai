@@ -31,7 +31,7 @@ class QuerySubmissionsResolver:
             sort_order (str): Order of sorting (default: "desc")
             parent_form_id (Optional[str]): ID of the parent form
             filters (Optional[JSON]): Filters to apply to the query
-            selected_form_fields (Optional[List[str]]): Fields to include in the response
+            selected_form_fields (Optional[List[str]]): Form fields to include in the response
             page_no (int): Page number for pagination (default: 1)
             limit (int): Number of items per page (default: 5)
         Returns:

@@ -26,7 +26,7 @@ import NotFound from "../../../components/NotFound";
 import { setApiCallError } from "../../../actions/ErroHandling";
 import proptypes from 'prop-types';
 import UserForm from "./UserForm";
-import { setDraftModified } from "../../../actions/draftActions";
+import { setDraftModified, setDraftSubmission } from "../../../actions/draftActions";
 
 const SubmissionRoute = ({ component: Component, createSubmissions, 
   viewSubmissions, redirectUrl, ...rest }) => (
@@ -78,6 +78,7 @@ const Item = React.memo(() => {
     dispatch(setFormAuthVerifyLoading(true));
     dispatch(resetFormData("form", formId));
     // reset draft modified for new submission
+    dispatch(setDraftSubmission({}));
     dispatch(setDraftModified({}));
     Formio.cache = {}; //clearing formio cache
     dispatch(clearSubmissionError("submission"));

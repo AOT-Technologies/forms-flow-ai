@@ -7,6 +7,9 @@ on:
       - develop
       - master
       - release/**
+    paths:
+      - "forms-flow-data-layer/**"
+      - "VERSION"
   pull_request:
     branches:
       - develop

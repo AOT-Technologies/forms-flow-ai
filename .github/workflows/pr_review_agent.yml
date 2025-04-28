@@ -1,4 +1,4 @@
-name: PR-REVIWW-AGENT
+name: PR Review Agent
 on:
   pull_request:
     types: [opened, reopened, ready_for_review]

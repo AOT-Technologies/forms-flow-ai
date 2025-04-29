@@ -52,39 +52,6 @@ No specific client creation is required. Audience has been added for clients
 * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
 * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
-> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`INSIGHT_API_URL`:triangular_flag_on_post: | The forms-flow-analytics Api base end-point | | <http://{your-ip-address}:7000> |
-`INSIGHT_API_KEY` :triangular_flag_on_post: | The forms-flow-analytics admin API key | | `Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from [here](../forms-flow-analytics/README.md#get-the-redash-api-key)`
-`FORMSFLOW_API_DB_USER`|formsflow database postgres user|Used on installation to create the database.Choose your own|`postgres`
-`FORMSFLOW_API_DB_PASSWORD`|formsflow database postgres password|Used on installation to create the database.Choose your own|`changeme`
-`FORMSFLOW_API_DB_NAME`|formsflow database name|Used on installation to create the database.Choose your own|`FORMSFLOW_API_DB`
-`FORMSFLOW_API_DB_HOST`|formsflow database host|Used on installation to create the database.Choose your own||`localhost`
-`FORMSFLOW_API_DB_PORT`|formsflow database port|Used on installation to create the database.Choose your own||`5432`
-`FORMSFLOW_API_DB_URL`|JDBC DB Connection URL for formsflow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi`
-`KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
-`KEYCLOAK_URL_REALM`|The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
-`KEYCLOAK_BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
-`KEYCLOAK_BPM_CLIENT_SECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`e4bdbd25-1467-4f7f-b993-bc4b1944c943` <br><br>`To generate a new keycloak client seceret by yourself follow the steps from` [here](../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
-`KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
-`BPM_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
-`FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
-`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
-`FORMSFLOW_ADMIN_URL`|To fetch formio roles in multi tenancy||`http://{your-ip-address}:5010/api/v1`
-`REDIS_URL`| Redis url||`redis://{your-ip-address}:6379/0`
-`REDIS_CLUSTER`|To support single/cluster node|`true`/`false`|`false`
-`DATABASE_URL`|Database Connection URL||postgresql://postgres:changeme@forms-flow-webapi-db:5432
-`DATABASE_USERNAME`|Database username(This is not needed if we are having DATABASE_URL)| `postgres` 
-`DATABASE_PASSWORD`|Database password(This is not needed if we are having DATABASE_URL)|`changeme`
-`DATABASE_HOST`|Database host(This is not needed if we are having DATABASE_URL)|`forms-flow-webapi-db`
-`DATABASE_PORT`|Database port(This is not needed if we are having DATABASE_URL)|`5432`
-`DATABASE_NAME`|Database name(This is not needed if we are having DATABASE_URL)|`webapi`
-
-
-**NOTE : Default realm is `forms-flow-ai`**
-
 ### Running the Application
 
 * forms-flow-api service uses port 5000, make sure the port is available.
@@ -141,28 +108,14 @@ Authorization: Bearer {access token}
 
 ## API Documentation
 
-The API docs can be accessed by checking the **/** root endpoint.
+The API docs can be accessed by checking the http://localhost:5000 .
 
 ![image](https://user-images.githubusercontent.com/70306694/130730233-cf443a84-7716-4be6-b196-cb340509c495.png)
 
 Further documentation and associated postman collection for API endpoint
 can found in the [docs folder](./docs)
 
-## Unit Testing
-
-We have implemented unit tests with pytest.
-
-* Test cases are provided in the [tests folder](./tests).
-* Run the tests by ensuring appropriate test environment variables are
-setup in the [.env file](./sample.env).
-* Using the make command, run the tests by running `make test`.
-
-Things to note when writing tests:
-
-* Isolated: Each test should be an introvert, working in their own isolated bubble. You should never have to think about what other tests have put in the database.
-* Tests functions should contain always `app, client, session`
-
-## Migration Script for existing users
+## Migration Script for existing users (For users below v5.2.0)
 
 #### To display existing forms and applications for clients and reviewers, it is necessary to migrate the current Camunda authorizations. Additionally, to transfer existing task filters from forms-flow-bpm to forms-flow-api
 
@@ -191,3 +144,7 @@ In the case of running the web API with Flask locally, you should activate the v
 * [Real Python Unit Testing with Pytest](https://realpython.com/pytest-python-testing/)
 * [More about similar test config we have used](http://alexmic.net/flask-sqlalchemy-pytest/)
 
+
+### Additional reference
+
+Check out the [installation documentation](https://aot-technologies.github.io/forms-flow-installation-doc/) for installation instructions and [features documentation](https://aot-technologies.github.io/forms-flow-ai-doc) to explore features and capabilities in detail.

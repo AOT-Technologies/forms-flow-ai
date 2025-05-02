@@ -42,7 +42,7 @@ PERMISSION_DETAILS = [
     {"name": MANAGE_USERS , "description": "Manage Users", "depends_on": []},
     {"name": MANAGE_ROLES , "description": "Manage Roles", "depends_on": [ MANAGE_USERS ]},
     {"name": ADMIN , "description": "Administrator Role", "depends_on": [ MANAGE_ROLES , MANAGE_USERS ]},
-    {"name": VIEW_PROCESS_DIAGRAM, "description": "Access to view process diagram", "depends_on": []},
+    {"name": VIEW_PROCESS_DIAGRAM, "description": "Access to view process diagram", "depends_on": [ VIEW_HISTORY ]},
     {"name": VIEW_HISTORY, "description": "Access to view history", "depends_on": []}
 ]
 

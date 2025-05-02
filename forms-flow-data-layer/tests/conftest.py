@@ -41,9 +41,18 @@ def schema_tester():
 
     async def execute_query(query: str, variables=None, headers=None):
         """Execute GraphQL queries directly on the schema with a simulated request."""
-        request = Request(scope={"type": "http", "headers": [(b"authorization", headers.get("Authorization", "").encode())]})
+        request = Request(
+            scope={
+                "type": "http",
+                "headers": [
+                    (b"authorization", headers.get("Authorization", "").encode())
+                ],
+            }
+        )
         context = {"request": request}
-        return await schema.execute(query, variable_values=variables, context_value=context)
+        return await schema.execute(
+            query, variable_values=variables, context_value=context
+        )
 
     return execute_query  # ✅ Returns the callable function
 
@@ -51,8 +60,7 @@ def schema_tester():
 @pytest.fixture
 def token_generator():
     return KeycloakTestTokenGenerator(
-        issuer=ENVS.JWT_OIDC_ISSUER,
-        audience="forms-flow-web"
+        issuer=ENVS.JWT_OIDC_ISSUER, audience="forms-flow-web"
     )
 
 
@@ -66,9 +74,9 @@ def mock_jwks(token_generator):
         response = httpx.Response(
             status_code=200,
             json=test_jwks,
-            request=httpx.Request("GET", ENVS.JWT_OIDC_JWKS_URI)
+            request=httpx.Request("GET", ENVS.JWT_OIDC_JWKS_URI),
         )
         return response
 
-    with patch.object(httpx.AsyncClient, 'get', new=mock_jwks_response):
+    with patch.object(httpx.AsyncClient, "get", new=mock_jwks_response):
         yield

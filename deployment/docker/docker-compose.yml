@@ -152,6 +152,7 @@ services:
         - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.1.0-alpha/forms-flow-components.gz.js}
         - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.1.0-alpha/forms-flow-admin.gz.js}
         - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v7.1.0-alpha/forms-flow-review.gz.js}
+        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v7.1.0-alpha/forms-flow-submissions.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
     environment:

@@ -4,7 +4,7 @@ import {
   setBPMFormListLoading,
   setClientFormSearch,
   setClientFormListPage,
-  setBpmFormSort,
+  setClientFormListSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -82,7 +82,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   // Handle Sorting
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
     const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
-    dispatch(setBpmFormSort({
+    dispatch(setClientFormListSort({
       ...resetSortOrders,
       activeKey: selectedSortOption,
       [selectedSortOption]: { sortOrder: selectedSortOrder },

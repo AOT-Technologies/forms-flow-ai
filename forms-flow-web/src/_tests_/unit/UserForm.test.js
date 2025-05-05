@@ -488,20 +488,39 @@ describe("UserForm Component", () => {
   });
 
   it("handles form changes and updates draft data", async () => {
-    renderComponent();
-
+    // Mock the necessary state and conditions
+    jest.mock("../../constants/constants", () => ({
+      ...jest.requireActual("../../constants/constants"),
+      DRAFT_ENABLED: true,
+    }));
+  
+    // Create a store with draft enabled and other necessary conditions
+    const draftEnabledStore = mockStore({
+      ...store.getState(),
+      draft: {
+        ...store.getState().draft,
+        draftSubmission: {
+          id: "test-draft-id",
+          data: { field1: "value1" },
+        },
+      },
+    });
+  
+    // Render with the updated store
+    renderComponent(draftEnabledStore);
+  
     // Simulate form change
     fireEvent.click(screen.getByTestId("form-change-button"));
-
+  
     // Verify draft update is called when component unmounts
     await act(async () => {
       // Unmount component
       history.push("/another-route");
     });
-
+  
     // Verify draft update was called
     expect(draftService.draftUpdate).toHaveBeenCalled();
-  });
+  }); 
 
   it("handles custom events from the form", async () => {
     renderComponent();

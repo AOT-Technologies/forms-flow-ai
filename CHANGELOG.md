@@ -51,6 +51,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Draft submit by id: `/draft/<id>/submit`
    * Public draft submit by id: `/draft/public/<id>/submit`
 
+**formsflow-tools**
+* Added Git management tools
+   * Added a shell script for interactive commits
+   * Added pre-push check for testing changes
+
 
 ## 7.0.0 - 2025-01-10
 

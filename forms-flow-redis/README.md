@@ -27,7 +27,11 @@ This repository contains a Docker Compose configuration to set up a lightweight 
 
 The forms-flow-redis service must be up and running before installing and starting the following services:
 
-- forms-flow-api
-- forms-flow-documents-api
+- [forms-flow-api](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-api/README.md)
+- [forms-flow-documents-api](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-documents/README.md)
 
 Ensure that Redis is functional and accessible on port 6379 before proceeding with the installation of these dependent services. Failure to start forms-flow-redis first may result in errors during the initialization or runtime of the dependent applications.
+
+### Additional reference
+
+Check out the [installation documentation](https://aot-technologies.github.io/forms-flow-installation-doc/) for installation instructions and [features documentation](https://aot-technologies.github.io/forms-flow-ai-doc) to explore features and capabilities in detail.

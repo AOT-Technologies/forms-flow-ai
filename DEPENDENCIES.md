@@ -67,7 +67,7 @@ In the following document, we’ll describe the details of dependencies of vario
    | Component | Version |
    |  --- | --- |
    | React  | 17.0.2 |
-   | Formio | 2.4.1 |
+   | Formio | 4.21.4 |
    <br>
 
 ## 7. forms-flow-web-root-config
@@ -77,6 +77,6 @@ In the following document, we’ll describe the details of dependencies of vario
    | Component | Version |
    |  --- | --- |
    | React  | 17.0.2 |
-   | Formio | 2.4.1 |
+   | Formio | 4.21.4 |
    | Webpack| 5.94.0|
    <br>

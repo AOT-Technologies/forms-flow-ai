@@ -37,20 +37,6 @@ Not applicable.
 * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
 * **NOTE : `{your-ip-address}` given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
-> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
-
-|Variable name | Meaning | Possible values | Default value |
-|--- | --- | --- | ---
-|`FORMIO_DB_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
-|`FORMIO_DB_PASSWORD`|Mongo Root Password||`changeme`
-|`FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
-|`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
-|`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
-|`NO_INSTALL`|to enable/disable UI for Formio client| 1 or 0 | `1`
-|`FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|forms-flow-forms default url||`http://{your-ip-address}:3001`
-|`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
-|`MULTI_TENANCY_ENABLED`|To enable multit tenancy |true / false|`false`
-
 **Additionally, you may want to change these**
 
 * The value of Mongo database details (especially if this instance is not just for testing purposes)
@@ -116,3 +102,7 @@ In this example:
 We have build formsflow.ai form management platform leveraging [formio](https://github.com/formio/formio).
 We use the OSL-v3 license similar to formio to ensure appropriate attribution is
 provided to form.io. Please read the [license](./LICENSE.txt) for more information.
+
+### Additional reference
+
+Check out the [installation documentation](https://aot-technologies.github.io/forms-flow-installation-doc/) for installation instructions and [features documentation](https://aot-technologies.github.io/forms-flow-ai-doc) to explore features and capabilities in detail.

@@ -1,16 +1,16 @@
 """Task_outcome_configuration_table
 
-Revision ID: 47d590c1d289
+Revision ID: 5ecbbfc545ba
 Revises: a5d9bbf7b5ac
-Create Date: 2025-05-05 17:50:42.349349
+Create Date: 2025-05-07 11:29:25.237479
 
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
+
 
 # revision identifiers, used by Alembic.
-revision = 'ac75256dc5c9'
+revision = '5ecbbfc545ba'
 down_revision = 'a5d9bbf7b5ac'
 branch_labels = None
 depends_on = None
@@ -21,8 +21,10 @@ def upgrade():
     op.create_table('task_outcome_configuration',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('task_id', sa.String(length=100), nullable=False, comment='Task ID'),
-    sa.Column('task_outcome', postgresql.ARRAY(sa.JSON()), nullable=True, comment='Task outcome'),
-    sa.Column('created_by', sa.String(length=100), nullable=True, comment='Created by'),
+    sa.Column('task_name', sa.String(length=100), nullable=True, comment='Task name'),
+    sa.Column('task_transition_map', sa.JSON(), nullable=False, comment='Task transition configuration'),
+    sa.Column('transition_map_type', sa.String(length=100), nullable=False, server_default="select", comment='Task transition configuration type'),
+    sa.Column('created_by', sa.String(length=100), nullable=False, comment='Created by'),
     sa.Column('tenant', sa.String(length=100), nullable=True, comment='Tenant key'),
     sa.Column('created', sa.DateTime(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id')

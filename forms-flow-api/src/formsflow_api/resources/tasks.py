@@ -18,20 +18,23 @@ task_outcome_request = API.model(
     "TaskOutcomeRequest",
     {
         "taskId": fields.String(description="Task ID", required=True),
-        "taskOutcome": fields.List(
-            fields.Raw(description="Task outcome"), required=True, min_items=1
+        "taskName": fields.String(
+            description="Task name", required=True, allow_none=True
+        ),
+        "transitionMapType": fields.String(
+            description="Task transition map type - select/input/radio", required=True
+        ),
+        "taskTransitionMap": fields.Raw(
+            description="Determines the next step in workflow", required=True
         ),
     },
 )
 
-task_outcome_response = API.model(
+task_outcome_response = API.inherit(
     "TaskOutcomeResponse",
+    task_outcome_request,
     {
-        "id": fields.Integer(description="Task outcome ID"),
-        "taskId": fields.String(description="Task ID"),
-        "taskOutcome": fields.List(
-            fields.Raw(description="Task outcome"), required=True, min_items=1
-        ),
+        "id": fields.Integer(description="Task outcome configuration ID"),
         "createdBy": fields.String(description="Created by"),
         "tenant": fields.String(description="Tenant key"),
         "created": fields.DateTime(description="Created date"),
@@ -40,7 +43,7 @@ task_outcome_response = API.model(
 
 
 @cors_preflight("POST, OPTIONS")
-@API.route("/task-outcome", methods=["POST", "OPTIONS"])
+@API.route("/task-outcome-configuration", methods=["POST", "OPTIONS"])
 class TaskOutcomeResource(Resource):
     """Resource to create task outcome configuration."""
 
@@ -60,19 +63,18 @@ class TaskOutcomeResource(Resource):
         data = request.get_json()
         if not data:
             return {"message": "Invalid input"}, HTTPStatus.BAD_REQUEST
-        response = TaskService().create_task_outcome(data)
+        response = TaskService().create_task_outcome_configuration(data)
         return response, HTTPStatus.CREATED
 
 
 @cors_preflight("GET, OPTIONS")
-@API.route("/task-outcome/<string:task_id>", methods=["GET", "OPTIONS"])
+@API.route("/task-outcome-configuration/<string:task_id>", methods=["GET", "OPTIONS"])
 @API.param("task_id", "Task ID")
 class TaskOutcomeByIdResource(Resource):
     """Resource to get task outcome configuration by task ID."""
 
     @staticmethod
     @auth.require
-    @profiletime
     @profiletime
     @API.doc(
         responses={
@@ -83,5 +85,5 @@ class TaskOutcomeByIdResource(Resource):
     )
     def get(task_id: str):
         """Get task outcome configuration by task ID."""
-        response = TaskService().get_task_outcome(task_id)
+        response = TaskService().get_task_outcome_configuration(task_id)
         return response, HTTPStatus.OK

@@ -17,6 +17,8 @@ class TaskOutcomeConfigurationSchema(AuditDateTimeSchema):
     tenant = fields.Str(dump_only=True)
     task_id = fields.Str(data_key="taskId", required=True)
     task_name = fields.Str(data_key="taskName", required=True, allow_none=True)
-    task_transition_map = fields.Raw(data_key="taskTransitionMap", required=True)
+    task_transition_map = fields.Raw(
+        data_key="taskTransitionMap", required=True
+    )  # Accepts list, dict, string
     transition_map_type = fields.Str(data_key="transitionMapType", required=True)
     created_by = fields.Str(data_key="createdBy", dump_only=True)

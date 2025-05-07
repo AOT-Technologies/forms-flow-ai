@@ -25,7 +25,8 @@ task_outcome_request = API.model(
             description="Task transition map type - select/input/radio", required=True
         ),
         "taskTransitionMap": fields.Raw(
-            description="Determines the next step in workflow", required=True
+            description="Determines the next step in workflow - accepts list, dict, string",
+            required=True,
         ),
     },
 )

@@ -35,7 +35,7 @@ class TaskOutcomeConfiguration(ApplicationAuditDateTimeMixin, BaseModel, db.Mode
     ) -> TaskOutcomeConfiguration | None:
         """Get task outcome configuration by task ID."""
         query = cls.query.filter_by(task_id=task_id)
-        if tenant:
+        if tenant is not None:
             query = query.filter_by(tenant=tenant)
         task_outcome = query.first()
         return task_outcome if task_outcome else None

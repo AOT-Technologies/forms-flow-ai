@@ -18,11 +18,64 @@
 }
 
 /* ------------------- this is for diagram settings icons start  ------------------- */
+
+/*
 .card-body {
-  padding-top: 16px !important;
-  padding-bottom: 16px !important;
-  color: $black;
+  padding: 0;
+
+  .icon-back {
+    // @include clickableFeedback1();
+
+    display: flex;
+    align-items: center;
+
+    padding-right: var(--spacer-150);
+    padding-left: var(--spacer-200);
+
+    cursor: pointer;
+  }
+
+  .editor-header-text {
+    display: flex;
+    margin: 0;
+    align-items: center;
+  }
+
+  .navbar-description {
+    display: flex;
+    flex-grow: 1;
+
+    margin-right: var(--spacer-150);
+
+    gap: var(--spacer-150);
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+
+    margin: 0;
+
+    color: white;
+  }
+
+  & > div {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .buttons {
+    padding: 1rem 0;
+    padding-right: 2rem;
+  }
+
+  .btn-dark,
+  .btn-light {
+    padding: 0.5rem 1rem !important;
+  }
 }
+
+*/
 
 .card-overflow {
   padding-left: 14px !important;

@@ -83,12 +83,12 @@ const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle 
     >
       <Modal.Header>
         <Modal.Title>
-          <b>
+          <p>
             <Translation>{(t) => t("Export Form")}</Translation>
-          </b>
+          </p>
         </Modal.Title>
-        <div className="d-flex align-items-center">
-          <CloseIcon width="16.5" height="16.5" onClick={onClose} />
+        <div className="icon-close" onClick={onClose}>
+          <CloseIcon />
         </div>
       </Modal.Header>
       <Modal.Body className="build-modal-body">

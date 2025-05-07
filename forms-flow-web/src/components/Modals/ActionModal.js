@@ -58,10 +58,10 @@ const ActionModal = React.memo(
         <Modal show={newActionModal} onHide={onClose} centered={true} size="sm" data-testid="action-modal">
           <Modal.Header>
             <Modal.Title className="modal-headder">
-              <div>{t("Action")}</div>
+              <p>{t("Action")}</p>
             </Modal.Title>
-            <div className="d-flex align-items-center">
-              <CloseIcon onClick={onClose} color={primaryColor}  dataTestId="action-modal-close"/>
+            <div className="icon-close" onClick={onClose}>
+              <CloseIcon dataTestId="action-modal-close"/>
             </div>
           </Modal.Header>
           <Modal.Body className="action-modal-body">

@@ -1098,7 +1098,9 @@ export default function CreateNewFilterDrawer({
       <Modal show={showDeleteModal} onHide={hideDeleteConfirmation}>
         <Modal.Header>
           <Modal.Title>
+            <p>
             <Translation>{(t) => t("Delete Confirmation")}</Translation>
+            </p>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

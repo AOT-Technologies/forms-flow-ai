@@ -10,7 +10,7 @@ const SubmissionError = React.memo((props) => {
     <>
       <Modal show={modalOpen}>
         <Modal.Header>
-          <Modal.Title>Error</Modal.Title>
+          <Modal.Title><p>Error</p></Modal.Title>
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>

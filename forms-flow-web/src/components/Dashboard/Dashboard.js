@@ -26,7 +26,7 @@ import {
 } from "../../actions/metricsActions";
 import LoadingOverlay from "@ronchalant/react-loading-overlay";
 import { Dropdown, FormControl } from "react-bootstrap";
-import { CustomSearch } from "@formsflow/components"; 
+import { CustomSearch, CloseIcon } from "@formsflow/components"; 
 
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
@@ -350,10 +350,12 @@ const Dashboard = React.memo(() => {
               >
                 <Modal.Header>
                   <Modal.Title id="example-custom-modal-styling-title">
-                    {t("Submission Status")}
+                    <p>{t("Submission Status")}</p>
                   </Modal.Title>
-                  <button type="button" className="btn-close me-2" onClick={() => setShow(false)}></button>
-                  </Modal.Header>
+                  <div className="icon-close" onClick={() => setShow(false)} aria-label="Close">
+                    <CloseIcon/>
+                  </div>
+                </Modal.Header>
                 <Modal.Body>
                   <StatusChart
                     submissionsStatusList={submissionsStatusList}

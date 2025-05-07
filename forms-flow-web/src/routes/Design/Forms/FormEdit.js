@@ -389,7 +389,7 @@ const EditComponent = () => {
   const [isPublished, setIsPublished] = useState(
     processListData?.status == "active"
   );
-  const [isPublishLoading, setIsPublishLoading] = useState(false);
+  // const [isPublishLoading, setIsPublishLoading] = useState(false);
   const publishText = isPublished ? "Unpublish" : "Publish";
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -802,7 +802,7 @@ const handleSaveLayout = () => {
     try {
       const actionFunction = isPublished ? unPublish : publish;
       closeModal();
-      setIsPublishLoading(true);
+      // setIsPublishLoading(true);
       if (!isPublished) {
 
         await flowRef.current.saveFlow({processId: processData.id,showToast: false});
@@ -819,7 +819,7 @@ const handleSaveLayout = () => {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
     } finally {
-      setIsPublishLoading(false);
+      // setIsPublishLoading(false);
     }
   };
 
@@ -1023,7 +1023,7 @@ const handleSaveLayout = () => {
         const error = err.response?.data || err.message;
         dispatch(setFormFailureErrorData("form", error));
       } finally {
-        setIsPublishLoading(false);
+        // setIsPublishLoading(false);
       }
     }
   };
@@ -1132,57 +1132,88 @@ const handleSaveLayout = () => {
 
           <Errors errors={errors} />
 
-          <Card className="editor-header">
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center justify-content-between">
-                  <BackToPrevIcon onClick={backToForm} />
-                  <div className="mx-4 editor-header-text">
-                    {textTruncate(75,75,formData.title)}
-                  </div>
-                  <span
-                    data-testid={`form-status-${form._id}`}
-                    className="d-flex align-items-center white-text mx-3"
-                  >
-                    <div
-                      className={`status-${isPublished ? "live" : "draft"}`}
-                    ></div>
-                    {isPublished ? t("Live") : t("Draft")}
-                  </span>
-                </div>
-                {createDesigns && (
-                  <div>
-                    <CustomButton
-                      variant="dark"
-                      size="md"
-                      label={t("Settings")}
-                      onClick={handleToggleSettingsModal}
-                      dataTestId="editor-settings-testid"
-                      ariaLabel={t("Designer Settings Button")}
-                    />
-                    <CustomButton
-                      variant="dark"
-                      size="md"
-                      className="mx-2"
-                      label={t("Actions")}
-                      onClick={editorActions}
-                      dataTestId="designer-action-testid"
-                      ariaLabel={(t) => t("Designer Actions Button")}
-                    />
-                    <CustomButton
-                      variant="light"
-                      size="md"
-                      label={t(publishText)}
-                      buttonLoading={isPublishLoading}
-                      onClick={handlePublishClick}
-                      dataTestId="handle-publish-testid"
-                      ariaLabel={`${t(publishText)} ${t("Button")}`}
-                    />
-                  </div>
-                )}
+          <div className="nav-bar">
+            
+              <div className="icon-back" onClick={backToForm}>
+                <BackToPrevIcon/>
               </div>
-            </Card.Body>
-          </Card>
+
+              <div className="description">
+                <p className="text-main">
+                  {textTruncate(300,300,formData.title)}
+                </p>
+
+                <p className="status" data-testid={`form-status-${form._id}`}>
+                  <span className={`status-${isPublished ? "live" : "draft"}`}></span>
+
+                  {isPublished ? t("Live") : t("Draft")}
+                </p>
+              </div>
+
+              {createDesigns && (
+                <div className="buttons">
+                  <button
+                    className="button-dark"
+                    onClick={editorActions}
+                    aria-label={(t) => t("Designer Actions Button")}
+                    data-testid="designer-action-testid"
+                    >
+                      {t("Actions")}
+                  </button>
+
+                  <button
+                    className="button-dark"
+                    onClick={handleToggleSettingsModal}
+                    aria-label={t("Designer Settings Button")}
+                    data-testid="editor-settings-testid"
+                    >
+                      {t("Settings")}
+                  </button>
+
+                  <button
+                    className="button-dark-primary "
+                    onClick={handlePublishClick}
+                    aria-label={`${t(publishText)} ${t("Button")}`}
+                    data-testid="handle-publish-testid"
+                    >
+                      {t(publishText)}
+                  </button>
+
+
+                  {/* <CustomButton
+                    variant=""
+                    size=""
+                    className="button-dark"
+                    label={t("Settings")}
+                    onClick={handleToggleSettingsModal}
+                    dataTestId="editor-settings-testid"
+                    ariaLabel={t("Designer Settings Button")}
+                  /> */}
+
+                  {/* <CustomButton
+                    variant=""
+                    size=""
+                    className="button-dark"
+                    label={t("Actions")}
+                    onClick={editorActions}
+                    dataTestId="designer-action-testid"
+                    ariaLabel={(t) => t("Designer Actions Button")}
+                  /> */}
+                  {/* <CustomButton
+                    variant=""
+                    size=""
+                    className="button-dark-primary"
+                    label={t(publishText)}
+                    buttonLoading={isPublishLoading}
+                    onClick={handlePublishClick}
+                    dataTestId="handle-publish-testid"
+                    ariaLabel={`${t(publishText)} ${t("Button")}`}
+                  /> */}
+                </div>
+              )}
+            
+          </div>
+
           <div className="d-flex mb-3">
             <div
               className={`wraper form-wraper ${isFormLayout ? "visible" : ""}`}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Card } from "react-bootstrap";
+// import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
@@ -138,18 +138,17 @@ const DraftsAndSubmissions = () => {
   return (
     <div>
       {/* Header */}
-      <Card className="editor-header">
-        <Card.Body>
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
-              <BackToPrevIcon onClick={redirectBackToForm} data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
-              <div className="mx-4 editor-header-text">
-                {draftAndSubmissionsList?.applications?.[0]?.applicationName || ""}
-              </div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+      <div className="nav-bar">
+        <div className="icon-back" onClick={redirectBackToForm}>
+          <BackToPrevIcon data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
+        </div>
+
+        <div className="description">
+          <p className="text-main">
+            {draftAndSubmissionsList?.applications?.[0]?.applicationName || ""}
+          </p>
+        </div>
+      </div>
 
       {/* Actions */}
       <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">

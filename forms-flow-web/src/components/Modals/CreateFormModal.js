@@ -15,10 +15,10 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
         <Modal show={newFormModal} onHide={onClose} centered={true} data-testid="create-form-modal" >
                 <Modal.Header>
                     <Modal.Title className="modal-headder">
-                        <div>{t("Add Form")}</div>
+                        <p>{t("Add Form")}</p>
                     </Modal.Title>
-                    <div className="d-flex align-items-center">
-                        <CloseIcon width="16.5" height="16.5" onClick={onClose} data-testid="modal-close-icon" />
+                    <div className="icon-close" onClick={onClose}>
+                        <CloseIcon data-testid="modal-close-icon" />
                     </div>
                 </Modal.Header>
                 <Modal.Body className="create-form-modal-body d-flex justify-content-around">

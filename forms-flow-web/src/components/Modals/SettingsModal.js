@@ -43,7 +43,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
       data-testid="settings-modal"
     >
       <Modal.Header>
-        <Modal.Title>{t("Settings")}</Modal.Title>
+        <Modal.Title><p>{t("Settings")}</p></Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-0">
         <FormSettings

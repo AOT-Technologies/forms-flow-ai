@@ -15,11 +15,11 @@ const MessageModal = React.memo((props) => {
         <>
             <Modal data-testid="Warning-modal" show={modalOpen}>
                 <Modal.Header>
-                    <div>
+                    <p>
                         <Modal.Title id="example-custom-modal-styling-title warning">
                             {modalTitle}
                         </Modal.Title>
-                    </div>
+                    </p>
                 </Modal.Header>
                 <Modal.Body>{message}</Modal.Body>
                 <Modal.Footer>

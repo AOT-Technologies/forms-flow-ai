@@ -61,7 +61,7 @@ import {
 import { setFormStatusLoading } from "../../../actions/processActions";
 import { renderPage, textTruncate } from "../../../helper/helper";
 import PropTypes from "prop-types";
-import { Card } from "react-bootstrap";
+// import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 const View = React.memo((props) => {
@@ -310,14 +310,30 @@ const View = React.memo((props) => {
   };
 
   const renderHeader = () => (
-    <Card className="user-form-header">
-      <Card.Body>
+    <div className="nav-bar">
         <SubmissionError
           modalOpen={props.submissionError.modalOpen}
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        <div className="d-flex justify-content-between align-items-center">
+        
+        { !isPublic && 
+        <div className="icon-back" onClick={handleBack}>
+          <BackToPrevIcon data-testid="back-to-form-list" ariaLabel="Back to Form List" />
+        </div>
+        }
+
+        <div className="description">
+          <p className="text-main">
+            {textTruncate(100, 97, form.title)}
+          </p>
+
+          <p className="status" data-testid={`form-status-${form._id}`}>
+            {renderModifiedDate()}
+          </p>
+        </div>
+
+        {/* <div className="d-flex justify-content-between align-items-center">
           <div className="icon-title-container">
             { !isPublic && <BackToPrevIcon
               title={t("Back to Form List")}
@@ -328,14 +344,14 @@ const View = React.memo((props) => {
               {textTruncate(100, 97, form.title)}
             </div>
           </div>
+
           <div className="d-flex align-items-center">
             <span className="form-modified-date me-3">
               {renderModifiedDate()}
             </span>
           </div>
-        </div>
-      </Card.Body>
-    </Card>
+        </div> */}
+    </div>
   );
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {

@@ -549,58 +549,81 @@ const ProcessCreateEdit = ({ type }) => {
         secondaryBtnText={modalContent.secondaryBtnText}
         size="md"
       />
-      <Card className="editor-header">
-        <Card.Body>
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
-              <BackToPrevIcon
-                onClick={cancel}
-                data-testid="back-to-prev-icon-testid"
-                aria-label={t("Back to Previous")}
-              />
-              <div
-                className="mx-4 editor-header-text"
-                data-testid="deployment-name"
-              >
-                {isCreate ? t(`Unsaved ${diagramType}`) : processName}
-              </div>
-              {!isCreate && (
-                <span className="d-flex align-items-center white-text mx-3">
-                  <div
-                    className={`status-${isPublished ? "live" : "draft"}`}
-                  ></div>
-                  {isPublished ? t("Live") : t("Draft")}
+
+      <div className="nav-bar">
+        <div className="icon-back" onClick={cancel}>
+          <BackToPrevIcon
+            onClick={cancel}
+            data-testid="back-to-prev-icon-testid"
+            aria-label={t("Back to Previous")}
+          />
+        </div>
+
+        <div className="description">
+          <p className="text-main">
+            {isCreate ? t(`Unsaved ${diagramType}`) : processName}
+          </p>
+
+          <p className="status">
+            {!isCreate && (
+              <>
+                <span className={`status-${isPublished ? "live" : "draft"}`}>
                 </span>
-              )}
-            </div>
-            <div>
-              <CustomButton
-                variant="dark"
-                size="md"
-                className="mx-2"
-                label={t("Actions")}
-                onClick={editorActions}
-                dataTestId="designer-action-testid"
-                ariaLabel={t("Designer Actions Button")}
-              />
-              <CustomButton
-                variant="light"
-                size="md"
-                label={t(publishText)}
-                buttonLoading={isPublishLoading}
-                onClick={() => {
-                  isPublished
-                    ? openConfirmModal("unpublish")
-                    : openConfirmModal("publish");
-                }}
-                disabled={isPublishLoading}
-                dataTestId={isPublished ? "handle-unpublish-testid" : "handle-publish-testid"}
-                ariaLabel={`${t(publishText)} ${t("Button")}`}
-              />
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+                {isPublished ? t("Live") : t("Draft")}
+              </>
+            )}
+          </p>
+        </div>
+
+        <div className="buttons">
+          <button
+            className="button-dark"
+            onClick={editorActions}
+            aria-label={t("Designer Actions Button")}
+            data-testid="designer-action-testid"
+            >
+              {t("Actions")}
+          </button>
+
+          <button
+            className="button-dark-primary"
+            onClick={() => {
+              isPublished
+                ? openConfirmModal("unpublish")
+                : openConfirmModal("publish");
+            }}
+            aria-label={`${t(publishText)} ${t("Button")}`}
+            data-testid={isPublished ? "handle-unpublish-testid" : "handle-publish-testid"}
+            disabled={isPublishLoading}
+            >
+              {t(publishText)}
+          </button>
+
+          {/* <CustomButton
+            variant="dark"
+            size="md"
+            className="mx-2"
+            label={t("Actions")}
+            onClick={editorActions}
+            dataTestId="designer-action-testid"
+            ariaLabel={t("Designer Actions Button")}
+          /> */}
+          {/* <CustomButton
+            variant="light"
+            size="md"
+            label={t(publishText)}
+            buttonLoading={isPublishLoading}
+            onClick={() => {
+              isPublished
+                ? openConfirmModal("unpublish")
+                : openConfirmModal("publish");
+            }}
+            disabled={isPublishLoading}
+            dataTestId={isPublished ? "handle-unpublish-testid" : "handle-publish-testid"}
+            ariaLabel={`${t(publishText)} ${t("Button")}`}
+          /> */}
+        </div>
+      </div>
 
       <Card>
         <div className="wraper">

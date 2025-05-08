@@ -60,7 +60,32 @@ class TaskOutcomeResource(Resource):
         }
     )
     def post():
-        """Create task outcome configuration."""
+        """Create task outcome configuration.
+
+        Accepts a JSON payload containing workflow configuration details.
+        The configuration includes transition rules and transition rules type for task outcomes.
+
+        Request Body:
+            dict: Required JSON payload with structure:
+                {
+                    "taskId": str,
+                    "taskName": str,
+                    "transitionMapType": str,     # "select", "radio", or "input"
+                    "taskTransitionMap": dict     # Outcome-to-step mappings supporting list, dict, string
+                }
+        Returns:
+            dict: Task outcome configuration with structure:
+                {
+                    "id": int,
+                    "taskId": str,
+                    "taskName": str,
+                    "tenant": str,
+                    "transitionMapType": str,  # "select", "radio", or "input"
+                    "taskTransitionMap": dict,  # mapping outcomes to subsequent workflow steps
+                    "created": str,
+                    "createdBy": str,
+                }
+        """
         data = request.get_json()
         if not data:
             return {"message": "Invalid input"}, HTTPStatus.BAD_REQUEST
@@ -85,6 +110,27 @@ class TaskOutcomeByIdResource(Resource):
         }
     )
     def get(task_id: str):
-        """Get task outcome configuration by task ID."""
+        """Retrieves task outcome configuration by task ID.
+
+        Fetches the complete workflow configuration for a specified task, including
+        workflow routing rules (taskTransitionMap) and interface display preferences (transitionMapType),
+        supporting 'select', 'radio', or 'input'
+
+        Args:
+        task_id (str): Unique identifier of the task (required)
+
+        Returns:
+            dict: Task outcome configuration with structure:
+                {
+                    "id": int,
+                    "taskId": str,
+                    "taskName": str,
+                    "tenant": str,
+                    "transitionMapType": str,  # "select", "radio", or "input"
+                    "taskTransitionMap": dict,  # mapping outcomes to subsequent workflow steps
+                    "created": str,
+                    "createdBy": str,
+                }
+        """
         response = TaskService().get_task_outcome_configuration(task_id)
         return response, HTTPStatus.OK

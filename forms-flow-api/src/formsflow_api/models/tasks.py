@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from sqlalchemy import JSON
+from sqlalchemy import JSON, Index
 
 from .audit_mixin import ApplicationAuditDateTimeMixin
 from .base_model import BaseModel
@@ -27,7 +27,9 @@ class TaskOutcomeConfiguration(ApplicationAuditDateTimeMixin, BaseModel, db.Mode
         comment="Task transition configuration type",
     )
     created_by = db.Column(db.String(100), nullable=False, comment="Created by")
-    tenant = db.Column(db.String(100), nullable=True, comment="Tenant key", index=True)
+    tenant = db.Column(db.String(100), nullable=True, comment="Tenant key")
+
+    __table_args__ = (Index("idx_task_id_and_tenant", "tenant", "task_id"),)
 
     @classmethod
     def get_task_outcome_configuration_by_task_id(

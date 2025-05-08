@@ -1,6 +1,6 @@
 import { Route, Switch, Redirect, useParams, useLocation } from "react-router-dom";
 import React, { useEffect } from "react";
-import { Formio, getForm } from "@aot-technologies/formio-react";
+import { Formio, getForm,resetSubmission  } from "@aot-technologies/formio-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
@@ -15,7 +15,6 @@ import {
   setFormRequestData,
   setFormSuccessData,
   resetFormData,
-  clearSubmissionError,
   setFormAuthVerifyLoading,
 } from "../../../actions/formActions";
 
@@ -80,8 +79,8 @@ const Item = React.memo(() => {
     // reset draft modified for new submission
     dispatch(setDraftSubmission({}));
     dispatch(setDraftModified({}));
+    dispatch(resetSubmission("submission")); //resetting submission data and its errors
     Formio.cache = {}; //clearing formio cache
-    dispatch(clearSubmissionError("submission"));
     if (checkIsObjectId(formId)) {
       dispatch(getForm("form", formId,(err,res)=>{
         if(err){

@@ -493,7 +493,7 @@ NoDataFound.propTypes = {};
 
 export const ConfirmModal = ({show,
   onClose,
-  secondayBtnAction,
+  secondaryBtnAction,
   title,
   message,
   messageSecondary = '',
@@ -553,7 +553,7 @@ export const ConfirmModal = ({show,
 ConfirmModal.propTypes = {
   show: PropTypes.bool,
   onClose: PropTypes.func,
-  secondayBtnAction: PropTypes.func,
+  secondaryBtnAction: PropTypes.func,
   title: PropTypes.string,
   message: PropTypes.string,
   messageSecondary: PropTypes.string,

@@ -247,7 +247,7 @@ return (
                 onClose={handleCloseActionModal}
                 title={t("Are You Sure You Want to Delete This Draft?")}
                 message={t("This action cannot be undone.")}
-                secondayBtnAction={confirmDraftDelete}
+                secondaryBtnAction={confirmDraftDelete}
                 primaryBtnText={t("No, Keep This Draft")}
                 secondaryBtnText={t("Yes, Delete this Draft")}
                 secondoryBtndataTestid="yes-delete-button"

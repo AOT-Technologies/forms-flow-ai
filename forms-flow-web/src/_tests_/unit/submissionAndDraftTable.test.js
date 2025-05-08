@@ -129,7 +129,7 @@ jest.mock("@formsflow/components", () => {
     primaryBtnAction,
     title,
     message,
-    secondayBtnAction,
+    secondaryBtnAction,
     primaryBtnText,
     secondaryBtnText,
     primaryBtndataTestid,
@@ -145,7 +145,7 @@ jest.mock("@formsflow/components", () => {
           {primaryBtnText}
         </button>
         <button data-testid={secondoryBtndataTestid}
-          onClick={secondayBtnAction}
+          onClick={secondaryBtnAction}
           disabled={secondaryBtnDisable}>
           {secondaryBtnLoading ? "Loading..." : secondaryBtnText}
         </button>
@@ -157,7 +157,7 @@ jest.mock("@formsflow/components", () => {
     primaryBtnAction: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
-    secondayBtnAction: PropTypes.func.isRequired,
+    secondaryBtnAction: PropTypes.func.isRequired,
     primaryBtnText: PropTypes.string.isRequired,
     secondaryBtnText: PropTypes.string.isRequired,
     primaryBtndataTestid: PropTypes.string.isRequired,

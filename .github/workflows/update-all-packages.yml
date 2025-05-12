@@ -59,6 +59,8 @@ jobs:
           git fetch origin
           git checkout ${{ env.BRANCH_NAME }}
           git rebase origin/develop
-          git stash pop
+          if git stash list | grep -q .; then
+            git stash pop
+          fi
           git status
           git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}

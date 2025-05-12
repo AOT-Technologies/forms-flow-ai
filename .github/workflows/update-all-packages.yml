@@ -61,5 +61,7 @@ jobs:
         run: |
           git fetch origin
           git checkout ${{ env.BRANCH_NAME }}
-          git pull --rebase origin ${{ env.BRANCH_NAME }}
-          git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }} 
+          git status
+          git pull --rebase origin ${{ env.BRANCH_NAME }}  # Rebase the branch
+          git status  # Check the status after rebase
+          git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}

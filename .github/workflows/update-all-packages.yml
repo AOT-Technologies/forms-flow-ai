@@ -57,11 +57,9 @@ jobs:
         run: |
           git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          title: "chore: update dependencies across packages"
-          body: "Automated update of dependencies in all sub-packages."
-          branch: ${{ env.BRANCH_NAME }}
-          base: develop 
+      - name: Push branch
+        run: |
+          git fetch origin
+          git checkout ${{ env.BRANCH_NAME }}
+          git pull --rebase origin ${{ env.BRANCH_NAME }}
+          git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }} 

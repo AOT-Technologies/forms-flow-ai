@@ -55,9 +55,14 @@ jobs:
 
       - name: Push branch (with rebase)
         run: |
+          git stash save "Temporary changes"
+
           git fetch origin
-          git checkout ${{ env.BRANCH_NAME }}
-          git status
+
           git pull --rebase origin ${{ env.BRANCH_NAME }}
+
+          git stash pop
+
           git status
+
           git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}

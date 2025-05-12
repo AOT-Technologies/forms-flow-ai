@@ -63,5 +63,5 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           title: "chore: update dependencies across packages"
           body: "Automated update of dependencies in all sub-packages."
-          head: ${{ env.BRANCH_NAME }}
-          base: develop  # or master if you prefer
+          branch: ${{ env.BRANCH_NAME }}
+          base: develop 

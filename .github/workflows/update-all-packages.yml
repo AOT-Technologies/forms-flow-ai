@@ -1,0 +1,67 @@
+name: Update all package dependencies
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight UTC
+  workflow_dispatch:
+  push:
+    branches: [ master, develop, release/* ]
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Configure git
+        run: |
+          git config user.name "Dependency Bot"
+          git config user.email "bot@yourdomain.com"
+
+      - name: Create update branch
+        run: |
+          BRANCH_NAME="dependency-update-$(date +'%Y%m%d')"
+          git checkout -b $BRANCH_NAME
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Update dependencies in all components
+        run: |
+          for dir in forms-flow-*; do
+            if [ -f "$dir/package.json" ]; then
+              echo "Updating packages in $dir"
+              cd "$dir"
+              npm install
+              npm update
+              cd -
+            fi
+          done
+
+      - name: Commit changes
+        run: |
+          git add .
+          git diff --cached --quiet || git commit -m "chore: update dependencies across packages"
+
+      - name: Push branch
+        run: |
+          git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          title: "chore: update dependencies across packages"
+          body: "Automated update of dependencies in all sub-packages."
+          head: ${{ env.BRANCH_NAME }}
+          base: develop  # or master if you prefer

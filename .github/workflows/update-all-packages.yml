@@ -44,7 +44,7 @@ jobs:
               cd "$dir"
               npm install
               npm update
-              cd -
+              cd - 
             fi
           done
 
@@ -53,15 +53,11 @@ jobs:
           git add .
           git diff --cached --quiet || git commit -m "chore: update dependencies across packages"
 
-      - name: Push branch
-        run: |
-          git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}
-
-      - name: Push branch
+      - name: Push branch (with rebase)
         run: |
           git fetch origin
           git checkout ${{ env.BRANCH_NAME }}
           git status
-          git pull --rebase origin ${{ env.BRANCH_NAME }}  # Rebase the branch
-          git status  # Check the status after rebase
+          git pull --rebase origin ${{ env.BRANCH_NAME }}
+          git status
           git push https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}

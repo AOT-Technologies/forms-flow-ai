@@ -169,6 +169,7 @@ class SubmissionService:
             submissions=[
                 SubmissionDetailsWithSubmissionData(
                     id=row.get("id"),
+                    form_name=row.get("form_name"),
                     submission_id=row.get("submission_id"),
                     created_by=row.get("created_by"),
                     application_status=row.get("application_status"),

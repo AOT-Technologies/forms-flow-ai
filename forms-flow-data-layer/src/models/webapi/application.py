@@ -54,7 +54,9 @@ class Application(BaseModel):
         mapper_table = await FormProcessMapper.get_table()
         authorization_table = await Authorization.get_table()
 
-        query = select(application_table, mapper_table.c.parent_form_id)
+        query = select(
+            application_table, mapper_table.c.parent_form_id, mapper_table.c.form_name
+        )
 
         # Role conditions
         role_conditions = await Authorization.get_role_conditions(

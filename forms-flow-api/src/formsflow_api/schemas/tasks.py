@@ -20,5 +20,9 @@ class TaskOutcomeConfigurationSchema(AuditDateTimeSchema):
     task_transition_map = fields.Raw(
         data_key="taskTransitionMap", required=True
     )  # Accepts list, dict, string
-    transition_map_type = fields.Str(data_key="transitionMapType", required=True)
+    transition_map_type = fields.Str(
+        data_key="transitionMapType",
+        validate=lambda x: x in ["select", "radio", "checkbox", "text", "number"],
+        required=True,
+    )
     created_by = fields.Str(data_key="createdBy", dump_only=True)

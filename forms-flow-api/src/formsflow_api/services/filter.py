@@ -80,10 +80,7 @@ class FilterService:
             if not all_tasks_filter:
                 filter_obj = Filter(
                     name="All Tasks",
-                    variables=[
-                        {"name": "applicationId", "label": "Submission Id"},
-                        {"name": "formName", "label": "Form Name"},
-                    ],
+                    variables=[],
                     status="active",
                     created_by="system",
                     created="now()",
@@ -133,19 +130,11 @@ class FilterService:
         # Merging existing filters with the remaining data.
         all_filters = [*existing_filters, *filters]
         filter_data = filter_schema.dump(all_filters, many=True)
-        default_variables = [
-            {"name": "applicationId", "label": "Submission Id"},
-            {"name": "formName", "label": "Form Name"},
-        ]
 
         # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
             FilterService.set_filter_edit_permission(filter_item, user)
-            # Check and add default variables if not present
             filter_item["variables"] = filter_item["variables"] or []
-            filter_item["variables"] += [
-                var for var in default_variables if var not in filter_item["variables"]
-            ]
             filter_item["sortOrder"] = filter_item.get("sortOrder", None)
             filter_item["hide"] = filter_item.get("hide", False)
         response = {"filters": filter_data}

@@ -36,7 +36,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added variables(task_variables) as part of import and export.
 * Added Endpoint `/filter/filter-preference ` for saving user's filter preference data
 * Added new table called filter_preferences to handle filter preference of a user
-* Added new table TaskOutcomeConfiguration to store workflow transition rules
+* Added new table task_outcome_configuration to store workflow transition rules
 * Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
 * Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
 

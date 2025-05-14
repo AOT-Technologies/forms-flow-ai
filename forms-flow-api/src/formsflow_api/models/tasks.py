@@ -40,4 +40,4 @@ class TaskOutcomeConfiguration(ApplicationAuditDateTimeMixin, BaseModel, db.Mode
         if tenant is not None:
             query = query.filter_by(tenant=tenant)
         task_outcome = query.first()
-        return task_outcome if task_outcome else None
+        return task_outcome

@@ -1,12 +1,14 @@
 name: Check Dependency PR
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: write
 
 jobs:
   update_dependency_status:
-    if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     steps:
       - name: Extract and update PR with Dependency PR status

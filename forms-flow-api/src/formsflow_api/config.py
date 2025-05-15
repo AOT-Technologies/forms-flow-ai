@@ -116,7 +116,19 @@ class _Config:  # pylint: disable=too-few-public-methods
     )
 
     # Formio JWT Secret
+    # Formio JWT Expire
+    formio_jwt_expire_str = os.getenv(
+        "FORMIO_JWT_EXPIRE", "240"
+    )  # default as string for consistency
+    try:
+        formio_jwt_expire = int(formio_jwt_expire_str)
+    except ValueError:
+        formio_jwt_expire = 240  # if this is not number
+    jwt_expire_seconds = formio_jwt_expire * 60
+
     FORMIO_JWT_SECRET = os.getenv("FORMIO_JWT_SECRET", "--- change me now ---")
+    FORMIO_JWT_EXPIRE = jwt_expire_seconds
+
     # Form embed JWT Secret for custom authentication
     FORM_EMBED_JWT_SECRET = os.getenv(
         "FORM_EMBED_JWT_SECRET", "f6a69a42-7f8a-11ed-a1eb-0242ac120002"

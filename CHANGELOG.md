@@ -39,6 +39,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added new table task_outcome_configuration to store workflow transition rules
 * Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
 * Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
+* Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
 
 `Modified`
 

@@ -1,0 +1,75 @@
+name: Check Dependency PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-dependency:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check and update dependency PR status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            const body = pr.data.body || '';
+            const regex = /DEPENDECY PR:\s*(https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)\/pull\/(\d+))/i;
+            const match = body.match(regex);
+
+            if (!match) {
+              console.log('No DEPENDECY PR link found.');
+              return;
+            }
+
+            const [fullLink, url, depOwner, depRepo, depNumberStr] = match;
+            const depNumber = parseInt(depNumberStr);
+
+            let depStatus = '';
+            try {
+              const depPR = await github.rest.pulls.get({
+                owner: depOwner,
+                repo: depRepo,
+                pull_number: depNumber,
+              });
+
+              if (depPR.data.merged) {
+                depStatus = '✅ Merged';
+              } else {
+                depStatus = '❌ Not Merged';
+              }
+            } catch (error) {
+              console.log('Error fetching dependency PR:', error.message);
+              depStatus = '⚠️ Not Found';
+            }
+
+            // Update PR body with status line
+            let newBody;
+            const statusLine = `Dependency PR Status: ${depStatus}`;
+            const statusRegex = /Dependency PR Status:.*$/m;
+
+            if (body.match(statusRegex)) {
+              newBody = body.replace(statusRegex, statusLine);
+            } else {
+              newBody = `${body.trim()}\n\n${statusLine}`;
+            }
+
+            // Only update if changed
+            if (newBody !== body) {
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                body: newBody,
+              });
+              console.log('Updated PR description with dependency status.');
+            } else {
+              console.log('No change in PR description.');
+            }

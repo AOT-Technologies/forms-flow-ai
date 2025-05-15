@@ -57,7 +57,8 @@ class Application(BaseModel):
         sortable_fields = {
             "application_status": application_table.c.application_status,
             "id": application_table.c.id,
-            "created_by": application_table.c.created,
+            "created_by": application_table.c.created_by,
+            "created": application_table.c.created,
             "form_name": mapper_table.c.form_name,
         }
 

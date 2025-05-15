@@ -3,18 +3,209 @@
 import datetime
 from typing import Dict, List
 
+from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils.user_context import UserContext, user_context
+from sqlalchemy.orm.attributes import flag_modified
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models import Application, Authorization, AuthType
+from formsflow_api.models import Application, Authorization, AuthType, db
 from formsflow_api.schemas import ApplicationSchema
+from formsflow_api.services.external.analytics_api import RedashAPIService
 
 application_schema = ApplicationSchema()
 
 
 class AuthorizationService:
     """This class manages authorization service."""
+
+    def check_and_update_name_mismatch(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        auth_name: str,
+        dashboard_id: str,
+        dashboard: Dict[str, str],
+        auth_record: Authorization,
+        updates_needed: List[Dict],
+        result: List[Dict],
+    ):
+        """Check if the name in auth record matches the dashboard name and update if needed."""
+        if auth_name != dashboard["name"]:
+            current_app.logger.info(
+                f"Name mismatch detected for {dashboard_id}: "
+                f"Auth has '{auth_name}', Dashboard has '{dashboard['name']}'"
+            )
+            updates_needed.append(
+                {
+                    "resource_id": dashboard_id,
+                    "new_name": dashboard["name"],
+                    "auth_record": auth_record,
+                }
+            )
+            auth_record.resource_details["name"] = dashboard["name"]
+        # Always add to result (even if no update needed)
+        result.append(self._as_dict(auth_record))
+        return updates_needed, result
+
+    def update_auth_records(self, auth_records):
+        """Update dashboard authorization records."""
+        try:
+            current_app.logger.info("Updating auth records in the database")
+            for auth_record in auth_records:
+                current_app.logger.log(
+                    f"Updating auth record: {auth_record['resource_id']} with new name: {auth_record['new_name']}"
+                )
+                auth_record = auth_record["auth_record"]
+                auth_record.resource_details = {"name": auth_record["new_name"]}
+                flag_modified(
+                    auth_record, "resource_details"
+                )  # Required for JSON field updates
+                auth_record.save()
+            db.session.commit()
+            current_app.logger.info("Updates committed successfully")
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            db.session.rollback()
+            current_app.logger.error(f"Update failed: {str(e)}")
+
+    def process_dashboard_data(  # pylint: disable-msg=too-many-locals
+        self,
+        analytics_response,
+        dashboard_auth_details,
+        user: UserContext,
+    ):
+        """
+        Process and returns updated auth records.
+
+        - Updates names in auth records when mismatches are found
+        - Creates new auth records for dashboards without existing auth
+        - Preserves all existing authorization data
+        - Filters out archived dashboards
+        - Returns a list of updated auth records.
+        """
+
+        # Initialize lists
+        updates_needed = []
+        creates_needed = []
+        result = []
+
+        # Create lookup for existing auths
+        auth_lookup = {auth.resource_id: auth for auth in dashboard_auth_details}
+
+        # Process and merge data
+        for dashboard in analytics_response["results"]:
+            current_app.logger.info(
+                f"Processing dashboard: {dashboard['name']} with ID: {dashboard['id']}"
+            )
+            dashboard_id = str(dashboard["id"])
+            auth_record = auth_lookup.get(dashboard_id)
+
+            if auth_record:
+                # Check for name mismatch
+                auth_name = auth_record.resource_details.get("name")
+                updates_needed, result = self.check_and_update_name_mismatch(
+                    auth_name,
+                    dashboard_id,
+                    dashboard,
+                    auth_record,
+                    updates_needed,
+                    result,
+                )
+            else:
+                # Create new auth record
+                new_auth = {
+                    "resource_id": dashboard["id"],
+                    "resource_details": {"name": dashboard["name"]},
+                    "roles": [],
+                    "user_name": None,
+                    "auth_type": AuthType.DASHBOARD,
+                    "tenant": user.tenant_key,
+                    "created_by": user.user_name,
+                }
+                creates_needed.append(new_auth)
+                result.append(self._as_dict(new_auth))
+
+        # Save updates and creates dashboard authorization entry
+        try:
+            if updates_needed:
+                current_app.logger.info(
+                    "Updating existing auth records in the database"
+                )
+                self.update_auth_records(updates_needed)
+            # Create new records
+            if creates_needed:
+                current_app.logger.info("Creating new auth records in the database")
+                for data in creates_needed:
+                    auth_record = Authorization(**data)
+                    auth_record.save()
+
+            db.session.commit()
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            db.session.rollback()
+            current_app.logger.error(f"Failed to update auth names: {str(e)}")
+        return result
+
+    def get_user_dashboards(
+        self,
+        analytics_response,
+        user_auth_details,  # Already filtered to user-specific auths
+    ):
+        """Process only dashboards the current user has access to.
+
+        Get filtered dashboards with authorization data (user-specific view)
+        - Updates names in auth records when mismatches are found
+        - Preserves all existing authorization data
+        - Filters out archived dashboards
+        - Returns a list of updated auth records
+        """
+        updates_needed = []
+        result = []
+
+        # Create lookup of dashboards
+        dashboard_lookup = {str(d["id"]): d for d in analytics_response["results"]}
+
+        for auth_record in user_auth_details:
+            dashboard_id = auth_record.resource_id
+            dashboard = dashboard_lookup.get(dashboard_id)
+
+            if not dashboard:
+                # Dashboard might have been deleted/archived, skip
+                current_app.logger.debug(
+                    f"Dashboard {dashboard_id} not found in analytics data, skipping"
+                )
+                continue
+
+            # Check and update for name mismatch
+            auth_name = auth_record.resource_details.get("name")
+            updates_needed, result = self.check_and_update_name_mismatch(
+                auth_name, dashboard_id, dashboard, auth_record, updates_needed, result
+            )
+
+        # Process updates if any
+        if updates_needed:
+            self.update_auth_records(updates_needed)
+        return result
+
+    @user_context
+    def get_all_dashboards(
+        self,
+        analytics_dashboard_data,
+        **kwargs,
+    ):
+        """Get all dashboards with authorization data."""
+        user: UserContext = kwargs["user"]
+        # Fetch all dashboard authorizations
+        current_app.logger.info("Fetching all dashboard authorizations")
+        dashboard_auth_details = Authorization.find_all_authorizations(
+            auth_type=AuthType.DASHBOARD, tenant=user.tenant_key
+        )
+        # Filter out archived dashboards from the response
+        # Update dashboard names if any mismatch.
+        response = self.process_dashboard_data(
+            analytics_dashboard_data,
+            dashboard_auth_details,
+            user,
+        )
+
+        return response
 
     @user_context
     def get_authorizations(self, auth_type: str, **kwargs) -> List[Dict]:
@@ -43,6 +234,16 @@ class AuthorizationService:
             user_name=user.user_name,
             tenant=user.tenant_key,
         )
+        if auth_type == AuthType.DASHBOARD:
+            # Fetch all dashboards from analytics API and merge with authorization details
+            # to get the latest dashboard names
+            # and update the authorization records in the database if there are any changes.
+            # Filter out archived dashboards from the response.
+            # This is done to ensure that the dashboard names are up-to-date.
+            analytics_service = RedashAPIService()
+            analytics_response = analytics_service.get_request(url_path="dashboards")
+            response = self.get_user_dashboards(analytics_response, authz)
+            return response
         for auth in authz:
             response.append(self._as_dict(auth))
         return response
@@ -75,7 +276,7 @@ class AuthorizationService:
         resource: Dict[str, str],
         is_designer: bool,
         edit_import_designer=False,
-        **kwargs
+        **kwargs,
     ) -> Dict[str, any]:
         """Create authorization record."""
         user: UserContext = kwargs["user"]

@@ -121,10 +121,10 @@ class _Config:  # pylint: disable=too-few-public-methods
         "FORMIO_JWT_EXPIRE", "240"
     )  # default as string for consistency
     try:
-        formio_jwt_expire = int(formio_jwt_expire_str)
+        formio_jwt_expire_value = int(formio_jwt_expire_str)
     except ValueError:
-        formio_jwt_expire = 240  # if this is not number
-    jwt_expire_seconds = formio_jwt_expire * 60
+        formio_jwt_expire_value = 240  # if this is not number
+    jwt_expire_seconds = formio_jwt_expire_value * 60
 
     FORMIO_JWT_SECRET = os.getenv("FORMIO_JWT_SECRET", "--- change me now ---")
     FORMIO_JWT_EXPIRE = jwt_expire_seconds

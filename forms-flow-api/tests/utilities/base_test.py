@@ -617,3 +617,15 @@ def get_process_request_payload_low_code(name="Lowcode workflow", status="Draft"
             },
         ],
     }
+
+
+def task_outcome_config_payload():
+    """Return task outcome configuration payload."""
+    return {
+        "taskId": "19c06cb9-fb49-11ef-af3f-66318ba5bc56",
+        "taskName": "Test Task",
+        "taskTransitionMap": [
+                {"key": "approve", "label": "Approve"},
+                {"key": "reject", "label": "Reject"},],
+        "transitionMapType": "select",
+    }

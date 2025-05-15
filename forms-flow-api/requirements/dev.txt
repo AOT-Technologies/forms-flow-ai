@@ -17,3 +17,4 @@ pytest-mock
 pyflakes
 pylint
 lovely-pytest-docker
+snowballstemmer==2.2.0 # flake8-docstrings has incompatibility with snowballstemmer>=3

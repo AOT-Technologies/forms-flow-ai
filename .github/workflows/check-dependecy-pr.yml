@@ -1,0 +1,61 @@
+name: Check Dependency PR
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  update_dependency_status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract and update PR with Dependency PR status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const body = context.payload.pull_request.body || "";
+
+            const regex = /(https:\/\/github\.com\/[\w-]+\/[\w-]+\/pull\/\d+)/;
+            const match = body.match(regex);
+
+            if (!match) {
+              console.log("No dependency PR found.");
+              return;
+            }
+
+            const depPrUrl = match[1];
+            const parts = depPrUrl.match(/github\.com\/([^\/]+)\/([^\/]+)\/pull\/(\d+)/);
+            const [_, depOwner, depRepo, depPrNumber] = parts;
+
+            const depPr = await github.rest.pulls.get({
+              owner: depOwner,
+              repo: depRepo,
+              pull_number: depPrNumber
+            });
+
+            const status = depPr.data.merged
+              ? "✅ Merged"
+              : depPr.data.state === "closed"
+                ? "❌ Closed"
+                : "🕐 Open";
+
+            const statusBlock = `### 🔗 Dependency PR Status\n- **Link**: [#${depPrNumber}](${depPrUrl})\n- **Status**: ${status}`;
+
+            let updatedBody;
+            const statusRegex = /### 🔗 Dependency PR Status[\s\S]*?(?=\n###|$)/;
+            if (statusRegex.test(body)) {
+              updatedBody = body.replace(statusRegex, statusBlock);
+            } else {
+              updatedBody = `${body.trim()}\n\n${statusBlock}`;
+            }
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              body: updatedBody
+            });

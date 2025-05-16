@@ -1,6 +1,12 @@
 #!/bin/sh
 set -eu
 
+# Check if we have an interactive terminal
+if ! [ -t 0 ] || ! [ -t 1 ]; then
+    echo "Non-interactive environment detected. Skipping interactive checks." >&2
+    exit 0
+fi
+
 # Function to validate yes/no input
 is_valid_yes() {
 	case "$1" in

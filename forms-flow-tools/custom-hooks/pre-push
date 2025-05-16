@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 # Function to validate yes/no input
 is_valid_yes() {
@@ -17,7 +18,8 @@ is_valid_no() {
 
 # Function to get push confirmation
 get_push_confirmation() {
-	message="$1"
+	local message="$1"
+	local answer
 	while true; do
 		printf "%s (y/n): " "$message" > /dev/tty
 		read -r answer < /dev/tty
@@ -26,7 +28,7 @@ get_push_confirmation() {
 		elif is_valid_no "$answer"; then
 			return 1
 		else
-			echo "Please answer with Yes or No" > /dev/tty
+			printf "Please answer with Yes or No\n" > /dev/tty
 		fi
 	done
 }

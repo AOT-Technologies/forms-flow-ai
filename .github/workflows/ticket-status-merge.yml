@@ -3,11 +3,11 @@ name: Move Jira Ticket to QA on Merge to Development
 on:
   pull_request:
     types:
-      - closed
+      - merged
 
 jobs:
   move-to-qa:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'development'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Extract Jira Ticket ID from PR Body

@@ -15,21 +15,21 @@ is_valid_no() {
 	esac
 }
 
-# Function to get user confirmation (Original - will be removed later)
-# get_user_confirmation() {
-# 	dir="$1"
-# 	while true; do
-# 		printf "Run linting and tests for '%s'? (y/n): " "$dir" > /dev/tty
-# 		read -r answer < /dev/tty
-# 		if is_valid_yes "$answer"; then
-# 			return 0
-# 		elif is_valid_no "$answer"; then
-# 			return 1
-# 		else
-# 			echo "Please answer with Yes or No" > /dev/tty
-# 		fi
-# 	done
-# }
+# Function to get push confirmation
+get_push_confirmation() {
+	message="$1"
+	while true; do
+		printf "%s (y/n): " "$message" > /dev/tty
+		read -r answer < /dev/tty
+		if is_valid_yes "$answer"; then
+			return 0
+		elif is_valid_no "$answer"; then
+			return 1
+		else
+			echo "Please answer with Yes or No" > /dev/tty
+		fi
+	done
+}
 
 remote="$1"
 url="$2"
@@ -75,7 +75,6 @@ if [ "$changelog_updated_in_push" -eq 0 ]; then
 	else
 		echo "ℹ️  Continuing push without CHANGELOG.md update as per user confirmation." > /dev/tty
 	fi
-# else: Changelog was updated in at least one pushed ref, proceed silently.
 fi
 
 # --- Web Linting & Testing ---
@@ -107,7 +106,7 @@ if [ "$run_web_tests" -eq 1 ]; then
 			echo "✅ forms-flow-web linting passed" > /dev/tty
 		else
 			echo "❌ forms-flow-web linting failed. Aborting push" > /dev/tty
-			cd .. # Go back to original directory before exiting
+			cd .. || exit 1 # Go back to original directory before exiting
 			exit 1
 		fi
 
@@ -117,12 +116,12 @@ if [ "$run_web_tests" -eq 1 ]; then
 			echo "✅ forms-flow-web tests passed" > /dev/tty
 		else
 			echo "❌ forms-flow-web tests failed. Aborting push" > /dev/tty
-			cd .. # Go back to original directory before exiting
+			cd .. || exit 1 # Go back to original directory before exiting
 			exit 1
 		fi
 
 		# Go back to the original directory
-		cd ..
+		cd .. || exit 1
 
 		echo "✅ All checks passed successfully!" > /dev/tty
 	fi

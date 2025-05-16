@@ -81,7 +81,6 @@ class AuthorizationService:
         - Filters out archived dashboards
         - Returns a list of updated auth records.
         """
-
         # Initialize lists
         updates_needed = []
         creates_needed = []
@@ -120,6 +119,7 @@ class AuthorizationService:
                     "tenant": user.tenant_key,
                     "created_by": user.user_name,
                 }
+                new_auth = Authorization(**new_auth)
                 creates_needed.append(new_auth)
                 result.append(self._as_dict(new_auth))
 

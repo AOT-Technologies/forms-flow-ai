@@ -1,0 +1,39 @@
+name: Move Jira Ticket to QA on Merge to Development
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  move-to-qa:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'development'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Jira Ticket ID from PR Body
+        id: extract
+        run: |
+          PR_BODY="${{ github.event.pull_request.body }}"
+          echo "PR_BODY=$PR_BODY" >> $GITHUB_ENV
+          
+          # Extract the line that starts with 'JIRA:'
+          JIRA_LINE=$(echo "$PR_BODY" | grep -i '^JIRA:')
+          
+          # Extract the ticket ID from the URL (e.g., FWF-4648)
+          TICKET_ID=$(echo "$JIRA_LINE" | grep -oE '[A-Z]+-[0-9]+')
+          
+          echo "Found Ticket ID: $TICKET_ID"
+          echo "TICKET_ID=$TICKET_ID" >> $GITHUB_ENV
+
+      - name: Transition Jira Issue to QA
+        if: env.TICKET_ID != ''
+        run: |
+          curl -X POST \
+            -u "${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --url "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ env.TICKET_ID }}/transitions" \
+            -d '{
+              "transition": {
+                "id": "'"${{ secrets.JIRA_TRANSITION_ID }}"'"
+              }
+            }'

@@ -25,12 +25,16 @@ jobs:
       - name: Transition Jira Issue to QA (opensource)
         if: env.TICKET_ID != ''
         run: |
+          cat <<EOF > payload.json
+          {
+            "transition": {
+              "id": ${JIRA_TRANSITION_ID}
+            }
+          }
+          EOF
+
           curl -X POST \
             -u "${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             --url "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ env.TICKET_ID }}/transitions" \
-            -d '{
-              "transition": {
-                "id": '${{ secrets.JIRA_TRANSITION_ID }}'
-              }
-            }'
+            --data @payload.json

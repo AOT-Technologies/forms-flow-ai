@@ -13,7 +13,6 @@ HOOKS_DIR="$GIT_ROOT/.git/hooks"
 SCRIPT_DIR=$(dirname "$0")
 SCRIPT_DIR=$(cd "$SCRIPT_DIR" && pwd)  # Convert to absolute path
 CUSTOM_HOOKS_DIR="$SCRIPT_DIR/custom-hooks"
-# TEMPLATE_FILE="$SCRIPT_DIR/commit-template.txt" - REMOVED
 
 # Check if the custom hooks directory exists
 if [ ! -d "$CUSTOM_HOOKS_DIR" ]; then
@@ -31,13 +30,7 @@ if [ ! -d "$HOOKS_DIR" ]; then
   mkdir -p "$HOOKS_DIR"
 fi
 
-# if [ ! -f "$TEMPLATE_FILE" ]; then
-#   echo "❌ Error: Commit template file not found"
-#   exit 1
-# fi
-
 # Copy hooks and make them executable
-# cp "$CUSTOM_HOOKS_DIR"/* "$HOOKS_DIR"/ >/dev/null 2>&1
 # Copy only the pre-push hook
 if [ -f "$CUSTOM_HOOKS_DIR/pre-push" ]; then
     cp "$CUSTOM_HOOKS_DIR/pre-push" "$HOOKS_DIR/pre-push"
@@ -46,9 +39,6 @@ if [ -f "$CUSTOM_HOOKS_DIR/pre-push" ]; then
 else
     echo "⚠️  Warning: pre-push hook not found in $CUSTOM_HOOKS_DIR"
 fi
-
-# Copy commit template - REMOVED
-# cp "$TEMPLATE_FILE" "$HOOKS_DIR"/ >/dev/null 2>&1
 
 # Create the git ffcommit alias globally
 echo "ℹ️  Setting up 'git ffcommit' alias..."

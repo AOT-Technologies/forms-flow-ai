@@ -420,10 +420,9 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
     dispatch(resetSubmissions("submission"));
-
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-
-    let isDraftCreated = !!draftId;
+    const draftIdToUse = draftId || state.draft?.draftSubmission?.applicationId;
+    let isDraftCreated = Boolean(draftIdToUse);
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,
       isDraftCreated,
@@ -432,7 +431,7 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
 
 
     dispatch(
-      applicationCreateAPI(data, draftId, (err) => {
+      applicationCreateAPI(data, draftIdToUse, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
           toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);

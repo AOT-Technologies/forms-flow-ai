@@ -31,6 +31,6 @@ jobs:
             --url "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ env.TICKET_ID }}/transitions" \
             -d '{
               "transition": {
-                "id": "'"${{ secrets.JIRA_TRANSITION_ID }}"'"
+                "id": '${{ secrets.JIRA_TRANSITION_ID }}'
               }
             }'

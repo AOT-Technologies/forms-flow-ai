@@ -175,16 +175,22 @@ class TestApplicationResource:
         assert len(response.json["applications"]) == 2
         assert response.json["applications"][0]["isDraft"] is True
         assert response.json["formName"] == "Sample form"
+        assert response.json["formId"] is not None
+        assert response.json["parentFormId"] is not None
         # Assert sortBy=type with sortOrder=desc returns Submissions(isDraft=False first
         response = client.get("/application?includeDrafts=true&createdUserSubmissions=true&parentFormId=1234&sortBy=type&sortOrder=desc", headers=headers)
         assert response.status_code == 200
         assert len(response.json["applications"]) == 2
         assert response.json["applications"][0]["isDraft"] is False
         assert response.json["formName"] == "Sample form"
-        # Assert if parentFormId not provided returns formName as null
+        assert response.json["formId"] is not None
+        assert response.json["parentFormId"] is not None
+        # Assert if parentFormId not provided returns formName, formId, parentFormId as null
         response = client.get("/application?includeDrafts=true&createdUserSubmissions=true", headers=headers)
         assert response.status_code == 200
         assert response.json["formName"] is None
+        assert response.json["formId"] is None
+        assert response.json["parentFormId"] is None
         # Assert search by Id with string value returns empty result instead of error
         response = client.get("/application?pageNo=1&limit=5&includeDrafts=true&createdUserSubmissions=true&parentFormId=1234&Id=a", headers=headers)
         assert response.status_code == 200
@@ -193,7 +199,9 @@ class TestApplicationResource:
             "totalCount": 0,
             "limit": 5,
             "pageNo": 1,
-            "formName": "Sample form"
+            "formName": "Sample form",
+            "formId": "1234",
+            "parentFormId": "1234",
         }
 
 

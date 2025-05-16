@@ -600,11 +600,11 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             raise BusinessException(BusinessErrorCode.DRAFT_APPLICATION_NOT_FOUND)
 
     @classmethod
-    def fetch_latest_form_name_by_parent_form_id(cls, parent_form_id):
-        """Get latest form name by parent_form_id."""
-        current_app.logger.info("Fetching form name by parent id..")
+    def fetch_latest_form_name_formid_by_parent_form_id(cls, parent_form_id):
+        """Get latest form name and form id by parent_form_id."""
+        current_app.logger.info("Fetching form name & formId by parent id..")
         if parent_form_id and (
             mapper := FormProcessMapper.get_latest_by_parent_form_id(parent_form_id)
         ):
-            return mapper.form_name
-        return None
+            return mapper.form_name, mapper.form_id
+        return None, None

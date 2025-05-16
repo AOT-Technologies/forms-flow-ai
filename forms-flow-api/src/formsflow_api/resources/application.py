@@ -229,8 +229,10 @@ class ApplicationsResource(Resource):
         include_drafts = dict_data.get("include_drafts", False)
         only_drafts = dict_data.get("only_drafts", False)
         created_user_submissions = dict_data.get("created_user_submissions", False)
-        form_name = ApplicationService.fetch_latest_form_name_by_parent_form_id(
-            common_filters["parent_form_id"]
+        form_name, form_id = (
+            ApplicationService.fetch_latest_form_name_formid_by_parent_form_id(
+                common_filters["parent_form_id"]
+            )
         )
         # Check if the application_id is not a valid integer, return an empty response
         application_id = dict_data.get("application_id")
@@ -260,6 +262,8 @@ class ApplicationsResource(Resource):
                     "limit": common_filters["limit"],
                     "pageNo": common_filters["page_no"],
                     "formName": form_name,
+                    "formId": form_id,
+                    "parentFormId": common_filters["parent_form_id"],
                 }
             ),
             HTTPStatus.OK,

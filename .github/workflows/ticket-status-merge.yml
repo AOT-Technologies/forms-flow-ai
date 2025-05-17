@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: kiranka123/jira-transition-action@v1
-        with:
+        env:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-          TRANSITION_ID: ${{ secrets.JIRA_TRANSITION_ID }}
+          JIRA_TRANSITION_ID: ${{ secrets.JIRA_TRANSITION_ID }}
+          PR_BODY: ${{ github.event.pull_request.body }}

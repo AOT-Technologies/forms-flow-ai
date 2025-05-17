@@ -1,4 +1,4 @@
-name: Move Jira Ticket to QA (opensource) on Merge to Development
+name: Transition Jira Issue to QA
 
 on:
   pull_request:
@@ -6,31 +6,8 @@ on:
       - closed
 
 jobs:
-  move-to-qa:
+  transition:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
     runs-on: ubuntu-latest
     steps:
-      - name: Extract Jira Ticket ID from PR Body
-        id: extract
-        run: |
-          PR_BODY="${{ github.event.pull_request.body }}"
-          PR_BODY=$(echo "$PR_BODY" | tr -d '\r')  # remove carriage returns
-
-          # Extract the ticket ID from the Jira URL
-          TICKET_ID=$(echo "$PR_BODY" | grep -oE 'https://[a-zA-Z0-9.-]+/browse/([A-Z]+-[0-9]+)' | grep -oE '[A-Z]+-[0-9]+')
-
-          echo "Found Ticket ID: $TICKET_ID"
-          echo "TICKET_ID=$TICKET_ID" >> $GITHUB_ENV
-
-      - name: Transition Jira Issue to QA (opensource)
-        if: env.TICKET_ID != ''
-        run: |
-          curl -X POST \
-            -u "${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            --url "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ env.TICKET_ID }}/transitions" \
-            -d '{
-              "transition": {
-                "id": ${{ secrets.JIRA_TRANSITION_ID }}
-              }
-            }'
+      - uses: kiranka123/jira-transition-action@v1

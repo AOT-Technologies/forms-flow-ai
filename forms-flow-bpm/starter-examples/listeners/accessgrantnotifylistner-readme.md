@@ -29,6 +29,6 @@ Below snapshot shows how to configure the **AccessGrantNotifyListener** to a tas
 
 ![Access Grant Notify listener (excludeGroup) - Snapshot](./images/accessgrantnotify-listner-snp1.jpg)
 
-![Access Grant Notify listener (messageId) - Snapshot](./images/accessgrantnotify-listner-snp2.jpg.jpg)
+![Access Grant Notify listener (messageId) - Snapshot](./images/accessgrantnotify-listner-snp2.jpg)
 
-![Access Grant Notify listener (messageId) - Snapshot](./images/accessgrantnotify-listner-snp3.jpg.jpg)
+![Access Grant Notify listener (messageId) - Snapshot](./images/accessgrantnotify-listner-snp3.jpg)

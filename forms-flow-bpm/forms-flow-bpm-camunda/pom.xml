@@ -416,8 +416,6 @@
                         <exclude>org/camunda/bpm/extension/commons/utils/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/hooks/exceptions/*.class</exclude>
-                        <exclude>
-                            org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class</exclude>
                         <exclude>org/camunda/bpm/extension/hooks/rest/exception/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
                         <exclude>org/camunda/bpm/extension/commons/config/*.class</exclude>

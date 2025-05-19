@@ -24,6 +24,7 @@ class SubmissionDetailsWithSubmissionData:
     id: int
     created_by: str
     submission_id: str
+    form_name: str
     application_status: str
     data: Optional[JSON] = (
         None  # this data is the submission data from mongodb or we can pass any json data

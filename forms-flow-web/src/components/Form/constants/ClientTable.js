@@ -32,7 +32,7 @@ function ClientTable() {
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
-  //const searchText = useSelector((state) => state.bpmForms.clientFormSearch);
+
 
   // Constants
   const pageOptions = [

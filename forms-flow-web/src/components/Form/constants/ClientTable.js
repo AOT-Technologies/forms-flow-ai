@@ -196,7 +196,7 @@ function ClientTable() {
                         </td>
                         <td
                           data-testid={`latest-submission-${e._id}`} className="w-13">
-                          {formatDate(e.modified)}
+                          {formatDate(e.latestSubmission)}
                         </td>
 
                         <td className=" w-12 ">

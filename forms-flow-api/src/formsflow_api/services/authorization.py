@@ -38,7 +38,7 @@ class AuthorizationService:
                 {
                     "resource_id": dashboard_id,
                     "new_name": dashboard["name"],
-                    "auth_record": auth_record,
+                    "auth_object": auth_record,
                 }
             )
             auth_record.resource_details["name"] = dashboard["name"]
@@ -48,23 +48,18 @@ class AuthorizationService:
 
     def update_auth_records(self, auth_records):
         """Update dashboard authorization records."""
-        try:
-            current_app.logger.info("Updating auth records in the database")
-            for auth_record in auth_records:
-                current_app.logger.log(
-                    f"Updating auth record: {auth_record['resource_id']} with new name: {auth_record['new_name']}"
-                )
-                auth_record = auth_record["auth_record"]
-                auth_record.resource_details = {"name": auth_record["new_name"]}
-                flag_modified(
-                    auth_record, "resource_details"
-                )  # Required for JSON field updates
-                auth_record.save()
-            db.session.commit()
-            current_app.logger.info("Updates committed successfully")
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            db.session.rollback()
-            current_app.logger.error(f"Update failed: {str(e)}")
+        current_app.logger.info("Updating auth records in the database")
+        for auth_record in auth_records:
+            current_app.logger.info(
+                f"Updating auth record: {auth_record['resource_id']} with new name: {auth_record['new_name']}"
+            )
+            auth_object = auth_record["auth_object"]
+            auth_object.resource_details = {"name": auth_record["new_name"]}
+            flag_modified(
+                auth_object, "resource_details"
+            )  # Required for JSON field updates
+            auth_object.save()
+        current_app.logger.info("Updates committed successfully")
 
     def process_dashboard_data(  # pylint: disable-msg=too-many-locals
         self,
@@ -111,7 +106,7 @@ class AuthorizationService:
             else:
                 # Create new auth record
                 new_auth = {
-                    "resource_id": dashboard["id"],
+                    "resource_id": str(dashboard["id"]),
                     "resource_details": {"name": dashboard["name"]},
                     "roles": [],
                     "user_name": None,
@@ -121,8 +116,8 @@ class AuthorizationService:
                 }
                 new_auth = Authorization(**new_auth)
                 creates_needed.append(new_auth)
+                # Convert to API response format
                 result.append(self._as_dict(new_auth))
-
         # Save updates and creates dashboard authorization entry
         try:
             if updates_needed:
@@ -133,9 +128,7 @@ class AuthorizationService:
             # Create new records
             if creates_needed:
                 current_app.logger.info("Creating new auth records in the database")
-                for data in creates_needed:
-                    auth_record = Authorization(**data)
-                    auth_record.save()
+                db.session.add_all(creates_needed)
 
             db.session.commit()
         except Exception as e:  # pylint: disable=broad-exception-caught
@@ -242,6 +235,7 @@ class AuthorizationService:
             # This is done to ensure that the dashboard names are up-to-date.
             analytics_service = RedashAPIService()
             analytics_response = analytics_service.get_request(url_path="dashboards")
+            assert analytics_response is not None
             response = self.get_user_dashboards(analytics_response, authz)
             return response
         for auth in authz:

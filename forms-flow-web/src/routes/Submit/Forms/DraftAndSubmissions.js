@@ -15,6 +15,7 @@ import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsf
 import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
+import { useParams } from "react-router-dom";
 
 // SearchBar Component
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
@@ -48,9 +49,11 @@ SearchBar.propTypes = {
 const DraftsAndSubmissions = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
-  const formId = useSelector((state) => state.applications.formId);
-  const parentFormId = useSelector((state) => state.applications.parentFormId);
+  const { parentFormId } = useParams();
+  const formId = useSelector(
+    (state) => state.applications.draftAndSubmissionsList?.formId
+  );
+  
   // Redux state selectors
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -124,7 +127,7 @@ const DraftsAndSubmissions = () => {
       })
     );
   };
-
+ 
   const submitNewForm = () => {
     navigateToNewSubmission(dispatch, tenantKey, formId);
   };
@@ -137,7 +140,7 @@ const DraftsAndSubmissions = () => {
   // Fetch data when dependencies change
   useEffect(() => {
     fetchSubmissionsAndDrafts();
-  }, [pageNo, limit, applicationSort, search, selectedItem, formId, applicationSort]);
+  }, [pageNo, limit, applicationSort, search, selectedItem, parentFormId, applicationSort,formId]);
 
   return (
     <div>

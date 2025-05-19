@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
@@ -68,7 +67,11 @@ import { cloneDeep } from "lodash";
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
-  const { formId } = useParams();
+  const parentFormId = useSelector(
+    (state) => state.applications.draftAndSubmissionsList?.parentFormId
+  );
+  const formId = useSelector((state) => state.applications.draftAndSubmissionsList?.formId);
+
   const lang = useSelector((state) => state.user.lang);
   const pubSub = useSelector((state) => state.pubSub);
   const isPublic = !props.isAuthenticated;
@@ -292,7 +295,7 @@ const View = React.memo((props) => {
 
   // will be updated once application/draft listing page is ready
   const handleBack = () => {
-    navigateToFormEntries(dispatch, tenantKey, formId);
+    navigateToFormEntries(dispatch, tenantKey, parentFormId);
 
   };
 

@@ -58,6 +58,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Draft submit by id: `/draft/<id>/submit`
    * Public draft submit by id: `/draft/public/<id>/submit`
 
+**formsflow-bpm**
+* FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](https://github.com/AOT-Technologies/forms-flow-ai/blob/develop/CHANGELOG.md#405---2022-04-19))
 
 ## 7.0.0 - 2025-01-10
 

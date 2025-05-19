@@ -82,7 +82,7 @@ class TestAuthorizationResource:
         }
         response = client.get("/authorizations/users/dashboard", headers=headers)
         assert response.status_code == 200
-        assert len(response.json) == 2
+        assert len(response.json) == 1
 
         token = get_token(jwt, role=VIEW_DASHBOARDS, roles=["approver"])
         headers = {

@@ -107,9 +107,14 @@ class SubmissionService:
         # Get user context from token
         user = info.context["user"]
         tenant_key = user.tenant_key
-        username = user.token_info.get("preferred_username")
         user_groups = user.token_info.get("groups", [])
-        webapi_fields = ["created_by", "application_status", "id", "created"]
+        webapi_fields = [
+            "created_by",
+            "application_status",
+            "id",
+            "created",
+            "form_name",
+        ]
         # drived filter mongo serach and webapi search
         webapi_search, mongo_search = await SubmissionService.split_search_criteria(
             filters, webapi_fields
@@ -124,7 +129,6 @@ class SubmissionService:
         webapi_side_submissions, total_count = (
             await Application.get_authorized_applications(
                 tenant_key=tenant_key,
-                username=username,
                 roles=user_groups,
                 is_paginate=is_paginate_on_webapi_side,
                 filter=webapi_search,
@@ -169,6 +173,7 @@ class SubmissionService:
             submissions=[
                 SubmissionDetailsWithSubmissionData(
                     id=row.get("id"),
+                    form_name=row.get("form_name"),
                     submission_id=row.get("submission_id"),
                     created_by=row.get("created_by"),
                     application_status=row.get("application_status"),

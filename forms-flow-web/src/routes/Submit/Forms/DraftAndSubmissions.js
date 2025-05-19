@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -49,8 +48,9 @@ SearchBar.propTypes = {
 const DraftsAndSubmissions = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { formId } = useParams();
 
+  const formId = useSelector((state) => state.applications.formId);
+  const parentFormId = useSelector((state) => state.applications.parentFormId);
   // Redux state selectors
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -116,7 +116,7 @@ const DraftsAndSubmissions = () => {
         pageNo,
         limit,
         applicationSort,
-        formId,
+        parentFormId,
         search,
         createdUserSubmissions: true,
         onlyDrafts: selectedItem === "Draft",

@@ -423,8 +423,8 @@ const List = React.memo((props) => {
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
                     buildForm={true}
-                    showSuccess={successState.showSuccess} // ✅ Pass success state
-                    successCountdown={successState.countdown} // ✅ Pass countdown
+                    showSuccess={successState?.showSuccess} // ✅ Pass success state
+                    successCountdown={successState?.countdown} // ✅ Pass countdown
                   />
                   {importFormModal && (
                     <ImportModal

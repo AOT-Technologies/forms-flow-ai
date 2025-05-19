@@ -12,6 +12,16 @@ import { createMemoryHistory } from 'history';
 import { Router, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import '../../../utils/i18nForTests'; // import to remove warning related to i18n import
+
+// Mock the useSuccessCountdown hook
+jest.mock('@formsflow/components', () => ({
+  ...jest.requireActual('../../../__mocks__/@formsflow/components'),
+  useSuccessCountdown: () => [false, jest.fn()],
+  showSuccess: jest.fn()
+}));
+
+
+
 const queryClient = new QueryClient();
 let store = configureStore({
   reducer: rootReducer,
@@ -83,6 +93,7 @@ it('should render the list component and open the modal when New Form is clicked
     expect(addFormModal).toBeInTheDocument();
   });
 });
+
 
 //  Should render the search input and perform a search
 it('should render the search input and perform a search', async () => {

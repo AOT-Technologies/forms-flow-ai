@@ -253,6 +253,7 @@ describe("DraftsAndSubmissions Component", () => {
         searchFormLoading: false,
       },
       applications: {
+        formId: "test-form-id",
         draftAndSubmissionsList: {
           applications: [
             {

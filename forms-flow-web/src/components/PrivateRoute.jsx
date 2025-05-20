@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, useMemo, useCallback } from "react";
+import React, { useEffect, Suspense, useMemo, useCallback, useState } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -81,7 +81,8 @@ const PrivateRoute = React.memo((props) => {
   const tenant = useSelector((state) => state.tenants);
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
-  const [tenantValid, setTenantValid] = React.useState(true); // State to track tenant validity
+  const [tenantValid, setTenantValid] = React.useState(true);
+  const [formioTokenSet, setFormioTokenSet] = useState(false);
   const ROUTE_TO = getRoute(tenantId);
   const {
     admin,
@@ -114,18 +115,19 @@ const PrivateRoute = React.memo((props) => {
     // Set Cammunda/Formio Base URL
     setApiBaseUrlToLocalStorage();
 
- 
     // Get formio roles
     store.dispatch(
       getFormioRoleIds((err) => {
         if (err) {
           console.error(err);
+          setFormioTokenSet(false);
         } else {
           store.dispatch(
             setUserDetails(
               JSON.parse(StorageService.get(StorageService.User.USER_DETAILS))
             )
           );
+          setFormioTokenSet(true);
         }
       })
     );
@@ -189,6 +191,14 @@ const PrivateRoute = React.memo((props) => {
       dispatch(setLanguage(lang));
     }
   }, [kcInstance, tenant?.tenantData]);
+
+  // Add effect to check for formio token on mount and when isAuth changes
+  useEffect(() => {
+    if (isAuth) {
+      const formioToken = localStorage.getItem("formioToken");
+      setFormioTokenSet(!!formioToken);
+    }
+  }, [isAuth]);
 
   const DesignerRoute = useMemo(
     () =>
@@ -313,8 +323,13 @@ const PrivateRoute = React.memo((props) => {
       ) : isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>
-            {ENABLE_FORMS_MODULE && (
+            {ENABLE_FORMS_MODULE && formioTokenSet && (
               <ClientRoute path={ROUTE_TO.FORM} component={SubmitFormRoutes} />
+            )}
+            {ENABLE_FORMS_MODULE && !formioTokenSet && (
+              <Route path={ROUTE_TO.FORM}>
+                <Loading />
+              </Route>
             )}
             {ENABLE_FORMS_MODULE && (
               <DesignerRoute

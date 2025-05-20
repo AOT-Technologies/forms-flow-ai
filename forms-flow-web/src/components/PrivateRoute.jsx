@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, Suspense, useMemo, useCallback, useState } from "react";
+import React, { useEffect, Suspense, useMemo, useCallback } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -82,7 +82,7 @@ const PrivateRoute = React.memo((props) => {
   const [authError, setAuthError] = React.useState(false);
   const [kcInstance, setKcInstance] = React.useState(getKcInstance());
   const [tenantValid, setTenantValid] = React.useState(true);
-  const [formioTokenSet, setFormioTokenSet] = useState(false);
+  const [formioTokenSet, setFormioTokenSet] = React.useState(false);
   const ROUTE_TO = getRoute(tenantId);
   const {
     admin,

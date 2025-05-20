@@ -16,9 +16,12 @@ import '../../../utils/i18nForTests'; // import to remove warning related to i18
 // Mock the useSuccessCountdown hook
 jest.mock('@formsflow/components', () => ({
   ...jest.requireActual('../../../__mocks__/@formsflow/components'),
-  useSuccessCountdown: () => [false, jest.fn()],
-  showSuccess: jest.fn()
+  useSuccessCountdown: () => ({
+    successState: { showSuccess: false, countdown: 0 },
+    startSuccessCountdown: jest.fn()
+  })
 }));
+
 
 
 

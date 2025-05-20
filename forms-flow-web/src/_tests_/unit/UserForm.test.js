@@ -92,7 +92,6 @@ jest.mock("@aot-technologies/formio-react", () => {
   };
 });
 
-
 jest.mock("react-loading-overlay-ts", () => ({
   __esModule: true,
   default: ({ children, active }) => (
@@ -135,7 +134,6 @@ jest.mock("@formsflow/components", () => {
     BackToPrevIcon
   };
 });
-
 
 const MockLoadingOverlay = ({ children, active }) => (
   <div data-testid="loading-overlay" data-active={active}>
@@ -193,7 +191,8 @@ describe("UserForm Component", () => {
   let history;
   const mockFormId = "test-form-id";
   const mockDraftId = "test-draft-id";
-
+  const parentFormId = "test-parent-id"; 
+  
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -229,11 +228,11 @@ describe("UserForm Component", () => {
       draft: {
         draftSubmission: {
           draftId: mockDraftId,
-          data: { field1: "value1" }, // Ensure this is defined
+          data: { field1: "value1" },
           modified: new Date().toISOString(),
         },
         lastUpdated: {
-          data: { field1: "value1" }, // Ensure this is defined
+          data: { field1: "value1" },
         },
       },
       process: {
@@ -241,6 +240,28 @@ describe("UserForm Component", () => {
         processLoadError: null,
       },
       applications: {
+        draftAndSubmissionsList: {
+          applications: [
+            {
+              applicationName: "Test Form",
+              id: "app-123",
+              created: "2023-01-01",
+              modified: "2023-01-02",
+              applicationStatus: "Submitted",
+              type: "Submission",
+            },
+          ],
+          totalCount: 1,
+          formId: "test-form-id",
+          parentFormId: parentFormId, 
+        },
+        activePage: 1,
+        countPerPage: 10,
+        searchParams: "",
+        sort: {
+          activeKey: "created",
+          created: { sortOrder: "desc" },
+        },
         isPublicStatusLoading: false,
       },
       tenants: {
@@ -250,7 +271,7 @@ describe("UserForm Component", () => {
         publish: jest.fn(),
       },
       submission: {
-        submission: { data: {} }, // Ensure this is defined
+        submission: { data: {} },
         error: null,
       },
     });
@@ -409,16 +430,6 @@ describe("UserForm Component", () => {
     expect(screen.getByText("New Submission")).toBeInTheDocument();
   });
 
-  it("navigates back to form entries when back button is clicked", () => {
-    renderComponent();
-    fireEvent.click(screen.getByTestId("back-to-form-list"));
-    expect(routerHelper.navigateToFormEntries).toHaveBeenCalledWith(
-      expect.anything(),
-      "test-tenant",
-      mockFormId
-    );
-  });
-
   it("handles custom submission when enabled", async () => {
     jest.mock("../../constants/constants", () => ({
       ...jest.requireActual("../../constants/constants"),
@@ -445,6 +456,7 @@ describe("UserForm Component", () => {
     // Find the onSubmit prop in the connected component
     // Since we can't directly access props, we'll simulate the submission flow
     await act(async () => {
+      // Dispatch actions that would happen
       // Dispatch actions that would happen during form submission
       customSubmissionStore.dispatch({
         type: "SET_FORM_SUBMISSION_LOADING",
@@ -591,5 +603,24 @@ describe("UserForm Component", () => {
     await waitFor(() => {
       expect(draftService.draftCreate).toHaveBeenCalled();
     });
+  });
+
+  it("navigates back to form entries when back button is clicked", async () => {
+    // Render the component
+    renderComponent();
+    
+    // Find and click the back button
+    const backButton = screen.getByTestId("back-to-form-list");
+    fireEvent.click(backButton);
+    
+    // Verify that navigateToFormEntries was called with the correct parameters
+    expect(routerHelper.navigateToFormEntries).toHaveBeenCalledWith(
+      expect.any(Function), // dispatch function
+      "test-tenant", // tenantKey
+      parentFormId // parentFormId
+    );
+    
+    // Verify the function was called exactly once
+    expect(routerHelper.navigateToFormEntries).toHaveBeenCalledTimes(1);
   });
 });

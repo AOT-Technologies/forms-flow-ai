@@ -140,7 +140,7 @@ const DraftsAndSubmissions = () => {
   // Fetch data when dependencies change
   useEffect(() => {
     fetchSubmissionsAndDrafts();
-  }, [pageNo, limit, applicationSort, search, selectedItem, parentFormId, applicationSort,formId]);
+  }, [pageNo, limit, applicationSort, search, selectedItem, parentFormId,formId]);
 
   return (
     <div>

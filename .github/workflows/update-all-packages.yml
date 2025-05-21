@@ -2,7 +2,7 @@ name: Update all package dependencies
 
 on:
   schedule:
-    - cron: '0 0 1,15 * *'  
+    - cron: '0 0 1,15 * *'  # Runs at midnight (UTC) on the 1st and 15th of each month
   workflow_dispatch:
   push:
     branches: [ master, develop, release/* ]
@@ -28,7 +28,7 @@ jobs:
       - name: Configure git
         run: |
           git config user.name "Dependency Bot"
-          git config user.email "bot@yourdomain.com"
+          git config user.email "${{ secrets.BOT_EMAIL }}"
 
       - name: Create update branch
         run: |
@@ -36,31 +36,62 @@ jobs:
           git checkout -b $BRANCH_NAME
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
       - name: Update dependencies in all components
         run: |
+          set -e  # Exit on any error
+          ANY_UPDATES=0
           for dir in forms-flow-*; do
             if [ -f "$dir/package.json" ]; then
-              echo "Updating packages in $dir"
+              echo "Checking for outdated packages in $dir"
               cd "$dir"
-              npm install
-              npm update
-              cd - 
+              if [ -n "$(npm outdated || true)" ]; then
+                echo "Updating packages in $dir"
+                npm install || { echo "npm install failed in $dir"; exit 1; }
+                npm update || { echo "npm update failed in $dir"; exit 1; }
+                npm audit fix --force || echo "npm audit fix failed in $dir"
+                ANY_UPDATES=1
+              else
+                echo "No outdated packages in $dir"
+              fi
+              cd -
             fi
           done
+          if [ "$ANY_UPDATES" -eq 0 ]; then
+            echo "No updates needed. Exiting."
+            exit 0
+          fi
 
       - name: Commit changes
         run: |
           git add .
-          git diff --cached --quiet || git commit -m "chore: update dependencies across packages"
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore: update dependencies across packages on $(date +'%Y-%m-%d')"
 
       - name: Push branch (with rebase)
         run: |
           git stash
           git fetch origin
           git checkout ${{ env.BRANCH_NAME }}
-          git rebase origin/develop
+          git rebase origin/develop || { echo "Git rebase failed"; exit 1; }
           if git stash list | grep -q .; then
             git stash pop
           fi
-          git status
           git push --force https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: "chore: update dependencies across packages"
+          branch: ${{ env.BRANCH_NAME }}
+          title: "chore: update dependencies ($(date +'%Y-%m-%d'))"
+          body: |
+            Automated dependency update triggered by GitHub Actions.
+
+            Target branch: `develop`
+          base: develop

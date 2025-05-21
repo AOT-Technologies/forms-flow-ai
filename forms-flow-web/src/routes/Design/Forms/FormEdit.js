@@ -1259,7 +1259,8 @@ const handleSaveLayout = () => {
                           options={{
                             disableAlerts: true,
                             noAlerts: true,
-                            language: lang, i18n: RESOURCE_BUNDLES_DATA
+                            language: lang, i18n: RESOURCE_BUNDLES_DATA,
+                            buttonSettings: { showCancel: false },
                           }}
                         />
                       </div>

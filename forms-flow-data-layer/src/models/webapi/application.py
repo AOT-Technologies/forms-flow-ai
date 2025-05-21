@@ -53,8 +53,18 @@ class Application(BaseModel):
         application_table = await cls.get_table()
         mapper_table = await FormProcessMapper.get_table()
         authorization_table = await Authorization.get_table()
+        # ["created_by", "application_status", "id", "created", "form_name"]
+        sortable_fields = {
+            "application_status": application_table.c.application_status,
+            "id": application_table.c.id,
+            "created_by": application_table.c.created_by,
+            "created": application_table.c.created,
+            "form_name": mapper_table.c.form_name,
+        }
 
-        query = select(application_table, mapper_table.c.parent_form_id)
+        query = select(
+            application_table, mapper_table.c.parent_form_id, mapper_table.c.form_name
+        )
 
         # Role conditions
         role_conditions = await Authorization.get_role_conditions(
@@ -99,10 +109,11 @@ class Application(BaseModel):
                     query = query.where(col.ilike(f"%{value}%"))
 
         if sort_by and sort_order:
+            col = sortable_fields[sort_by]
             if sort_order.lower() == "desc":
-                query = query.order_by(desc(getattr(application_table.c, sort_by)))
+                query = query.order_by(desc(col))
             else:
-                query = query.order_by(getattr(application_table.c, sort_by))
+                query = query.order_by(col)
 
         total_count = None
         if is_paginate:

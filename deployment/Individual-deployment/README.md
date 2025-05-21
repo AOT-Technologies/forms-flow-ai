@@ -126,7 +126,7 @@ NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local
 ``"Export PDF"`` feature must be enabled by setting ``Export PDF`` to ``true`` in the env of  forms-flow-web-root-config.
 
 ```bash
-cd forms-flow-documents-api
+cd forms-flow-documents
 docker-compose up --build -d
 ```
 

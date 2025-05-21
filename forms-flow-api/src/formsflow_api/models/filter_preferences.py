@@ -8,11 +8,10 @@ from formsflow_api_utils.utils.enums import FilterStatus
 from sqlalchemy import Index, UniqueConstraint, tuple_
 from sqlalchemy.orm import relationship
 
-from .filter import Filter
-
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
 from .db import db
+from .filter import Filter
 
 
 class FilterPreferences(db.Model, BaseModel, AuditDateTimeMixin):

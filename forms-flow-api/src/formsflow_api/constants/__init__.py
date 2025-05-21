@@ -138,6 +138,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Database error while updating filter preferences",
         HTTPStatus.BAD_REQUEST,
     )
+    TASK_OUTCOME_NOT_FOUND = (
+        "Task outcome configuration not found for the given task Id",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

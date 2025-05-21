@@ -387,6 +387,7 @@ const View = React.memo((props) => {
                 ...options,
                 language: lang ?? "en",
                 i18n: RESOURCE_BUNDLES_DATA,
+                buttonSettings: { showCancel: false },
               }}
               onChange={() => {
                 if (formRef.current?.data) {

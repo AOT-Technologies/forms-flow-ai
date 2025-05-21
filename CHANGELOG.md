@@ -36,6 +36,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added variables(task_variables) as part of import and export.
 * Added Endpoint `/filter/filter-preference ` for saving user's filter preference data
 * Added new table called filter_preferences to handle filter preference of a user
+* Added new table task_outcome_configuration to store workflow transition rules
+* Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
+* Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
+* Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
 
 `Modified`
 
@@ -54,6 +58,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Draft submit by id: `/draft/<id>/submit`
    * Public draft submit by id: `/draft/public/<id>/submit`
 
+**formsflow-bpm**
+* FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](https://github.com/AOT-Technologies/forms-flow-ai/blob/develop/CHANGELOG.md#405---2022-04-19))
 
 ## 7.0.0 - 2025-01-10
 

@@ -34,6 +34,7 @@ class AuthorizationService:
                 f"Name mismatch detected for {dashboard_id}: "
                 f"Auth has '{auth_name}', Dashboard has '{dashboard['name']}'"
             )
+            auth_record.resource_details = {"name": dashboard["name"]}
             updates_needed.append(
                 {
                     "resource_id": dashboard_id,
@@ -41,7 +42,6 @@ class AuthorizationService:
                     "auth_object": auth_record,
                 }
             )
-            auth_record.resource_details["name"] = dashboard["name"]
         # Always add to result (even if no update needed)
         result.append(self._as_dict(auth_record))
         return updates_needed, result
@@ -54,7 +54,6 @@ class AuthorizationService:
                 f"Updating auth record: {auth_record['resource_id']} with new name: {auth_record['new_name']}"
             )
             auth_object = auth_record["auth_object"]
-            auth_object.resource_details = {"name": auth_record["new_name"]}
             flag_modified(
                 auth_object, "resource_details"
             )  # Required for JSON field updates

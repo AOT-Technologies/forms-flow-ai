@@ -13,8 +13,7 @@ import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
-import { formatDate } from "../../../helper/dateTimeHelper";
-
+import { HelperServices } from "@formsflow/service";
 
 const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -177,8 +176,8 @@ return (
                                             <span className="text-container">{item.id}</span>
                                         </div>
                                     </td>
-                                    <td className="w-20">{formatDate(item.created)}</td>
-                                    <td className="w-20">{formatDate(item.modified)}</td>
+                                    <td className="w-20">{HelperServices.getLocalDateAndTime(item.created)}</td>
+                                    <td className="w-20">{HelperServices.getLocalDateAndTime(item.modified)}</td>
                                     <td className="w-12">
                                         <span className="d-flex align-items-center">
                                             {item.isDraft ? <span className="status-draft"></span> : <span className="status-live"></span>}

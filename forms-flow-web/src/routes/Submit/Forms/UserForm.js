@@ -65,6 +65,8 @@ import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import { cloneDeep } from "lodash";
+import { HelperServices } from "@formsflow/service";
+
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
@@ -301,7 +303,7 @@ const View = React.memo((props) => {
       return (
         <>
           <span className="status-draft"></span> {t("Last modified on:")}{" "}
-          {new Date(draftModified).toLocaleString()}
+          {HelperServices.getLocalDateAndTime(draftModified)}
         </>
       );
     } else {

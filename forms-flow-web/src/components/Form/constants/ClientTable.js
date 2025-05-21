@@ -7,12 +7,11 @@ import {
   setClientFormSearch,
   setClientFormListSort
 } from "../../../actions/formActions";
-
+import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
 import { TableFooter, CustomButton } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import SortableHeader from '../../CustomComponents/SortableHeader';
-import { formatDate } from "../../../helper/dateTimeHelper";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
 
@@ -196,7 +195,7 @@ function ClientTable() {
                         </td>
                         <td
                           data-testid={`latest-submission-${e._id}`} className="w-13">
-                          {formatDate(e.latestSubmission)}
+                         {HelperServices?.getLocaldate(e.latestSubmission)}
                         </td>
 
                         <td className=" w-12 ">

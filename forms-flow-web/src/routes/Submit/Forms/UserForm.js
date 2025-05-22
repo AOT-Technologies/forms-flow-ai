@@ -65,15 +65,16 @@ import { BackToPrevIcon } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import { cloneDeep } from "lodash";
 import { HelperServices } from "@formsflow/service";
+import { useParams } from "react-router-dom";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
-  const parentFormId = useSelector(
-    (state) => state.applications.draftAndSubmissionsList?.parentFormId
-  );
-  const formId = useSelector((state) => state.applications.draftAndSubmissionsList?.formId);
 
+  const parentFormId = useSelector(
+    (state) => state.form.form?.parentFormId
+  );
+  const { formId } = useParams();
   const lang = useSelector((state) => state.user.lang);
   const pubSub = useSelector((state) => state.pubSub);
   const isPublic = !props.isAuthenticated;
@@ -425,6 +426,7 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
     const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
+    let parentFormId = form?.parentFormId; 
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, origin, submission?.data);
     const draftIdToUse = draftId || state.draft?.draftSubmission?.applicationId;
@@ -444,7 +446,7 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
           dispatch(setFormSubmitted(true));
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
-            navigateToFormEntries(dispatch, tenantKey, formId);
+            navigateToFormEntries(dispatch, tenantKey, parentFormId);
           }
         } else {
           toast.error(<Translation>{(t) => t("Submission Failed.")}</Translation>);

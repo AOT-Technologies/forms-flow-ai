@@ -214,6 +214,7 @@ describe("UserForm Component", () => {
           _id: mockFormId,
           title: "Test Form",
           components: [],
+          parentFormId: parentFormId,
         },
         isActive: false,
         url: "http://localhost:3001/form/test-form-id",

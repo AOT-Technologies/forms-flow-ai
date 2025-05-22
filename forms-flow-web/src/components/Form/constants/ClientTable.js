@@ -140,7 +140,7 @@ function ClientTable() {
 
                 <th className="w-13" scope="col" data-testid="latest-submission-header">
                   <SortableHeader
-                    columnKey="modified"
+                    columnKey="latestSubmission"
                     title={t("Latest Submission")}
                     currentSort={formsort}
                     handleSort={handleSort}

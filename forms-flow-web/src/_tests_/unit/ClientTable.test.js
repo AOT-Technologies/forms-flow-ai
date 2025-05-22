@@ -80,7 +80,7 @@ beforeEach(() => {
       submitFormSort: {
         activeKey: "formName",
         formName: { sortOrder: "asc" },
-        modified: { sortOrder: "asc" },
+        latestSubmission: { sortOrder: "asc" },
         submissionCount: { sortOrder: "asc" },
       }
     },
@@ -142,7 +142,7 @@ it('should handle form name column sorting', async () => {
         formName: expect.objectContaining({
           sortOrder: 'desc', // Adjust this based on expected sort order
         }),
-        modified: expect.objectContaining({
+        latestSubmission: expect.objectContaining({
           sortOrder: 'asc',
         }),
         submissionCount: expect.objectContaining({
@@ -173,7 +173,7 @@ it('should handle submission count column sorting', async () => {
         formName: expect.objectContaining({
           sortOrder: 'asc', // Adjust this based on expected sort order
         }),
-        modified: expect.objectContaining({
+        latestSubmission: expect.objectContaining({
           sortOrder: 'asc',
         }),
         submissionCount: expect.objectContaining({
@@ -184,26 +184,28 @@ it('should handle submission count column sorting', async () => {
   );
 });
 
-it('should handle latest submission (Modified) column sorting', async () => {
+it('should handle latest submission column sorting', async () => {
   const sortButton = screen.getByTestId('Latest Submission-header-btn');
   fireEvent.click(sortButton);
+  
   // The first call should be a function (thunk)
   const dispatchedFunction = store.dispatch.mock.calls[0][0];
-  expect(typeof dispatchedFunction).toBe('function');  // Confirm it's a function (thunk)
-
+  expect(typeof dispatchedFunction).toBe('function');
+  
+  // Confirm it's a function (thunk)
   // Now invoke the thunk with store.dispatch
   dispatchedFunction(store.dispatch);
-
+  
   // Now we can check the second call to dispatch
   expect(store.dispatch).toHaveBeenCalledWith(
     expect.objectContaining({
       type: 'CLIENT_SUBMIT_LIST_SORT_CHANGE', // Updated to match the actual action type
       payload: expect.objectContaining({
-        activeKey: 'modified',
+        activeKey: 'latestSubmission',
         formName: expect.objectContaining({
           sortOrder: 'asc',
         }),
-        modified: expect.objectContaining({
+        latestSubmission: expect.objectContaining({
           sortOrder: 'desc',
         }),
         submissionCount: expect.objectContaining({
@@ -213,6 +215,7 @@ it('should handle latest submission (Modified) column sorting', async () => {
     })
   );
 });
+
 it('should render the selected form correctly', () => {
   // Create a spy on the navigateToFormEntries function
   const navigateSpy = jest.spyOn(require('../../helper/routerHelper'), 'navigateToFormEntries');

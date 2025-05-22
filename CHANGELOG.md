@@ -53,7 +53,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **formsflow-tools**
 * Added Git management tools
-   * Added a shell script for interactive commits
    * Added pre-push check for testing changes
 
 

@@ -126,7 +126,7 @@ class DashboardList(Resource):
             return {"message": "Error"}, HTTPStatus.SERVICE_UNAVAILABLE
 
         assert response is not None
-        return response, HTTPStatus.OK
+        return AuthorizationService().get_all_dashboards(response), HTTPStatus.OK
 
 
 @cors_preflight("GET,OPTIONS")

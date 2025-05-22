@@ -1,10 +1,9 @@
 // Import statements
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setClientFormLimit,
   setClientFormListPage,
-  setClientFormSearch,
   setClientFormListSort
 } from "../../../actions/formActions";
 import { HelperServices } from "@formsflow/service";
@@ -25,7 +24,6 @@ function ClientTable() {
   const [showSubmissions, setShowSubmissions] = useState(false);
   // Local state
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [search, setSearch] = useState(useSelector((state) => state.bpmForms.searchText) || "");
 
   // Derived state from Redux
   const formData = bpmForms?.forms || [];
@@ -33,7 +31,7 @@ function ClientTable() {
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
-  const searchText = useSelector((state) => state.bpmForms.clientFormSearch);
+
 
   // Constants
   const pageOptions = [
@@ -107,16 +105,6 @@ function ClientTable() {
     );
   };
 
-  // Effects
-  useEffect(() => {
-    setSearch(searchText);
-  }, [searchText]);
-
-  useEffect(() => {
-    if (!search?.trim()) {
-      dispatch(setClientFormSearch(""));
-    }
-  }, [search]);
 
   return (
 

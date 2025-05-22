@@ -23,10 +23,10 @@ export const initialState = {
   isApplicationLoading: false,
   formName: "",
   sort: {
-    activeKey: "id",
+    activeKey: "modified",
     id: { sortOrder: "asc" },
     created: { sortOrder: "asc" },
-    modified: { sortOrder: "asc" },
+    modified: { sortOrder: "desc" },
     applicationStatus: { sortOrder: "asc" },
     type: { sortOrder: "asc" },
   }

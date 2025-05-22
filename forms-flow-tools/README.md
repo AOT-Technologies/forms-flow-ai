@@ -4,7 +4,7 @@ This directory contains custom Git hooks and scripts for the forms-flow-ai proje
 
 ## Installation
 
-To install the custom pre-push hook and set up the interactive commit alias (`ffcommit`), run the installation script from the **root of the repository**:
+To install the custom pre-push hook, run the installation script from the **root of the repository**:
 
 ```bash
 sh forms-flow-tools/install-hooks.sh
@@ -13,26 +13,10 @@ sh forms-flow-tools/install-hooks.sh
 This script will:
 1. Copy the `pre-push` hook from `forms-flow-tools/custom-hooks/` into your local `.git/hooks/` directory.
 2. Make the `pre-push` hook executable.
-3. Create the global Git alias `ffcommit` which runs the `forms-flow-tools/custom-hooks/interactive-commit.sh` script.
 
 **Note:** Ensure you run this script from the repository root, not from within the `forms-flow-tools` directory itself.
 
 ## Development Tools & Usage
-
-### Interactive Commit (`git ffcommit`)
-
-After running the installation script, a global Git alias `ffcommit` is created.
-
-**Usage:**
-
-Instead of `git commit`, use `git ffcommit` after staging your changes (`git add`). This command will launch an interactive prompt to help you build a correctly formatted commit message, bypassing the need for a text editor.
-
-```bash
-git add .
-git ffcommit
-```
-
-This utilizes the `forms-flow-tools/custom-hooks/interactive-commit.sh` script.
 
 ### Pre-push Hook
 

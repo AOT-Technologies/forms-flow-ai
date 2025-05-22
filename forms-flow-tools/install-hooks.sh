@@ -40,20 +40,5 @@ else
     echo "⚠️  Warning: pre-push hook not found in $CUSTOM_HOOKS_DIR"
 fi
 
-# Create the git ffcommit alias globally
-echo "ℹ️  Setting up 'git ffcommit' alias..."
-# We need the absolute path to the script for the alias
-INTERACTIVE_COMMIT_SCRIPT="$CUSTOM_HOOKS_DIR/interactive-commit.sh"
-# Ensure the path in the alias command uses forward slashes, even on Windows (Git Bash handles this)
-INTERACTIVE_COMMIT_SCRIPT_GIT_PATH=$(echo "$INTERACTIVE_COMMIT_SCRIPT" | sed 's_\\_/_g')
-
-git config --global alias.ffcommit "!sh \"$INTERACTIVE_COMMIT_SCRIPT_GIT_PATH\""
-if [ $? -eq 0 ]; then
-    echo "✅ 'git ffcommit' alias created successfully!"
-else
-    echo "⚠️  Warning: Failed to create 'git ffcommit' alias. You may need to create it manually:"
-    echo "   git config --global alias.ffcommit '!sh \"$INTERACTIVE_COMMIT_SCRIPT_GIT_PATH\"'"
-fi
-
-echo "✅ Git hooks and alias setup complete!"
+echo "✅ Git hooks setup complete!"
 exit 0 

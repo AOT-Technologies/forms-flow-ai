@@ -30,7 +30,7 @@ export const fetchApplicationsAndDrafts = ({
   createdUserSubmissions,
   onlyDrafts,
   includeDrafts,
-  formId,
+  parentFormId,
   search,
   applicationSort,
   done = () => {},
@@ -38,7 +38,6 @@ export const fetchApplicationsAndDrafts = ({
   return (dispatch) => {
     const { activeKey = "submissionId" } = applicationSort;
     const sortOrder = applicationSort[activeKey]?.sortOrder || "asc";
-
     // Construct params object and remove undefined values
     const params = {
       pageNo,
@@ -46,7 +45,7 @@ export const fetchApplicationsAndDrafts = ({
       sortBy: activeKey,
       sortOrder,
       createdUserSubmissions,
-      parentFormId: formId,
+      parentFormId: parentFormId,
       ...(includeDrafts && { includeDrafts: true }),
       ...(onlyDrafts && { onlyDrafts: true }),
       ...(search && { Id: search }),

@@ -156,6 +156,7 @@ Variable name | Meaning | Possible values | Default value |
 ` DRAFT_ENABLED`|Enable draft feature| true/false 
 `DRAFT_POLLING_RATE`|Control draft timing|           |15000
 `EXPORT_PDF_ENABLED`|Manage export to pdf feature| true/false 
+`ENABLE_COMPACT_FORM_VIEW`|Enable compact form view| true/false
 `PUBLIC_WORKFLOW_ENABLED`|Enable creating workflow for all tenants
 `DOCUMENT_SERVICE_URL`|Formsflow document service api url|           |`http://{your-ip-address}:5006`
 `MT_ADMIN_BASE_URL`|Multitenancy admin url|           |`http://{your-ip-address}:5010/api`

@@ -6,7 +6,7 @@ from enum import Enum, unique
 from typing import List
 
 from formsflow_api_utils.utils.enums import FilterStatus
-from sqlalchemy import JSON, and_, asc, case, or_
+from sqlalchemy import JSON, and_, or_
 from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 
 from formsflow_api.models.base_model import BaseModel
@@ -29,16 +29,12 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tenant = db.Column(db.String, index=True, nullable=True)
     name = db.Column(db.String, nullable=False)
-    description = db.Column(db.String, nullable=True)
-    resource_id = db.Column(db.String, nullable=True)
     criteria = db.Column(JSON, nullable=True)
     variables = db.Column(ARRAY(JSON), nullable=True)
     properties = db.Column(JSON, nullable=True)
     roles = db.Column(ARRAY(db.String), nullable=True, comment="Applicable roles")
     users = db.Column(ARRAY(db.String), nullable=True, comment="Applicable users")
     status = db.Column(db.String(10), nullable=True)
-    task_visible_attributes = db.Column(JSON, nullable=True)
-    order = db.Column(db.Integer, nullable=True, comment="Display order")
     filter_type = db.Column(
         ENUM(FilterType, name="FilterType"),
         nullable=False,
@@ -71,18 +67,12 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             filter_obj.tenant = filter_data.get("tenant")
             filter_obj.name = filter_data.get("name")
             filter_obj.created_by = filter_data.get("created_by")
-            filter_obj.description = filter_data.get("description")
-            filter_obj.resource_id = filter_data.get("resource_id")
             filter_obj.criteria = filter_data.get("criteria")
             filter_obj.variables = filter_data.get("variables")
             filter_obj.properties = filter_data.get("properties")
             filter_obj.roles = filter_data.get("roles")
             filter_obj.users = filter_data.get("users")
-            filter_obj.order = filter_data.get("order")
             filter_obj.status = str(FilterStatus.ACTIVE.value)
-            filter_obj.task_visible_attributes = filter_data.get(
-                "task_visible_attributes"
-            )
             filter_obj.filter_type = filter_data.get("filter_type")
             filter_obj.parent_filter_id = filter_data.get("parent_filter_id")
             filter_obj.save()
@@ -112,10 +102,6 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             query = query.filter(Filter.filter_type == filter_type)
         if parent_filter_id:
             query = query.filter(Filter.parent_filter_id == parent_filter_id)
-        order_by_user_first = case((Filter.created_by == user, 1), else_=2)
-        query = query.order_by(
-            order_by_user_first, Filter.order, Filter.created_by, asc(Filter.name)
-        )
         return query.all()
 
     @classmethod

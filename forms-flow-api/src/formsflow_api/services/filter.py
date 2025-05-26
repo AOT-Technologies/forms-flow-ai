@@ -24,24 +24,12 @@ class FilterService:
         return filter_schema.dump(filters, many=True)
 
     @staticmethod
-    def update_payload(filter_payload):
-        """Update filter payload."""
-        if filter_payload.get("isMyTasksEnabled", False):
-            filter_payload["criteria"]["assigneeExpression"] = "${ currentUser() }"
-        if filter_payload.get("isTasksForCurrentUserGroupsEnabled", False):
-            filter_payload["criteria"][
-                "candidateGroupsExpression"
-            ] = "${currentUserGroups()}"
-        return filter_payload
-
-    @staticmethod
     @user_context
     def create_filter(filter_payload, **kwargs):
         """Create Filter."""
         user: UserContext = kwargs["user"]
         filter_payload["tenant"] = user.tenant_key
         filter_payload["created_by"] = user.user_name
-        filter_payload = FilterService.update_payload(filter_payload)
         filter_data = Filter.create_filter_from_dict(filter_payload)
         return filter_schema.dump(filter_data)
 
@@ -80,7 +68,71 @@ class FilterService:
             if not all_tasks_filter:
                 filter_obj = Filter(
                     name="All Tasks",
-                    variables=[],
+                    variables=[
+                        {
+                            "key": "applicationId",
+                            "label": "Submission Id",
+                            "type": "number",
+                            "name": "applicationId",
+                            "isChecked": True,
+                            "sortOrder": 1,
+                            "isFormVariable": False,
+                        },
+                        {
+                            "key": "submitterName",
+                            "label": "Submitter Name",
+                            "type": "textfield",
+                            "name": "submitterName",
+                            "isChecked": True,
+                            "sortOrder": 2,
+                            "isFormVariable": False,
+                        },
+                        {
+                            "key": "assignee",
+                            "label": "Assignee",
+                            "type": "textfield",
+                            "name": "assignee",
+                            "isChecked": True,
+                            "sortOrder": 3,
+                            "isFormVariable": False,
+                        },
+                        {
+                            "key": "roles",
+                            "label": "Roles",
+                            "type": "textfield",
+                            "name": "roles",
+                            "isChecked": True,
+                            "sortOrder": 4,
+                            "isFormVariable": False,
+                        },
+                        {
+                            "key": "name",
+                            "label": "Task",
+                            "type": "textfield",
+                            "name": "name",
+                            "isChecked": True,
+                            "sortOrder": 5,
+                            "isFormVariable": False,
+                        },
+                        {
+                            "key": "created",
+                            "label": "Created Date",
+                            "type": "datetime",
+                            "name": "created",
+                            "isChecked": True,
+                            "sortOrder": 6,
+                            "isFormVariable": False,
+                        },
+                        {
+                            "key": "formName",
+                            "label": "Form Name",
+                            "type": "textfield",
+                            "name": "formName",
+                            "isChecked": True,
+                            "sortOrder": 7,
+                            "isFormVariable": False,
+                        },
+                    ],
                     status="active",
                     created_by="system",
                     created="now()",
@@ -91,16 +143,6 @@ class FilterService:
                     users={},
                     roles={},
                     tenant=tenant_key,
-                    task_visible_attributes={
-                        "applicationId": True,
-                        "dueDate": True,
-                        "priority": True,
-                        "assignee": True,
-                        "taskTitle": True,
-                        "createdDate": True,
-                        "groups": True,
-                        "followUp": True,
-                    },
                 )
                 filter_obj.save()
         # fetch data from filter preference table
@@ -216,7 +258,6 @@ class FilterService:
                 and filter_result.tenant is not None
             ):
                 raise PermissionError("Tenant authentication failed.")
-            filter_data = FilterService.update_payload(filter_data)
             filter_result.update(filter_data)
             return filter_result
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)

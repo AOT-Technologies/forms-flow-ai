@@ -36,7 +36,10 @@ class SubmissionsModel(Document):
     @staticmethod
     def _build_projection_stage(project_fields: Optional[List[str]]) -> dict:
         """Build the MongoDB projection stage."""
-        project_stage = {"$project": {"_id": {"$toString": "$_id"}}}
+        project_stage = {"$project": {
+            "_id": {"$toString": "$_id"},
+            "created": 1
+        }}
         if project_fields:
             for field in project_fields:
                 project_stage["$project"][field] = f"$data.{field}"

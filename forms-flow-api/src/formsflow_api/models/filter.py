@@ -191,7 +191,6 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         self.update_from_dict(
             [
                 "name",
-                "description",
                 "criteria",
                 "variables",
                 "properties",
@@ -199,8 +198,6 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "users",
                 "modified_by",
                 "status",
-                "task_visible_attributes",
-                "order",
             ],
             filter_info,
         )

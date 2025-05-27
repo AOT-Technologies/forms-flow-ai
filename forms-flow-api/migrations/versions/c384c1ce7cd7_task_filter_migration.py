@@ -8,7 +8,7 @@ Create Date: 2025-05-21 15:14:15.252972
 from alembic import op
 import sqlalchemy as sa
 import json
-
+from formsflow_api.constants import STATIC_TASK_FILTER_VARIABLES
 # revision identifiers, used by Alembic.
 revision = 'c384c1ce7cd7'
 down_revision = '5ecbbfc545ba'
@@ -21,7 +21,7 @@ def upgrade():
     op.drop_column('filter', 'description')
     op.drop_column('filter', 'resource_id')
     op.drop_column('filter', 'order')
-    
+
     conn = op.get_bind()
 
     def get_updated_criteria(criteria):
@@ -68,73 +68,6 @@ def upgrade():
                 new_variables.append(new_var)
         return new_variables
 
-    def get_static_variables():
-        return [
-            { 
-            "key": "applicationId",
-            "label": "Submission Id",
-            "type": "number",
-            "name": 'applicationId',
-            "isChecked": True,
-            "sortOrder": 1,
-            "isFormVariable": False
-            },
-            {
-            "key": "submitterName",
-            "label": "Submitter Name",
-            "type": "textfield",
-            "name": "submitterName",
-            "isChecked": True,
-            "sortOrder": 2,
-            "isFormVariable": False
-            },
-            { 
-            "key": "assignee",
-            "label": "Assignee",
-            "type": "textfield", 
-            "name": "assignee",
-            "isChecked": True,
-            "sortOrder": 3,
-            "isFormVariable": False
-            },
-            { 
-            "key": "roles",
-            "label": "Roles", 
-            "type": "textfield",
-            "name": "roles",
-            "isChecked": True,
-            "sortOrder":4,
-            "isFormVariable": False
-            },
-            { 
-            "key": "name",
-            "label": "Task",
-            "type": "textfield",
-            "name": "name",
-            "isChecked": True,
-            "sortOrder": 5,
-            "isFormVariable": False
-            },
-            { 
-            "key": "created", 
-            "label": "Created Date",
-            "type": "datetime", 
-            "name": "created", 
-            "isChecked": True, 
-            "sortOrder": 6,
-            "isFormVariable": False 
-            },
-            { 
-            "key": "formName",
-            "label": "Form Name",
-            "type": "textfield",
-            "name": "formName",
-            "isChecked": True,
-            "sortOrder": 7,
-            "isFormVariable": False 
-            }
-        ]
-
     def process_task_filter(conn, task_filter):
         filter_id = task_filter.id
         criteria = task_filter.criteria or {}
@@ -143,8 +76,7 @@ def upgrade():
         updated_criteria = get_updated_criteria(criteria)
         filtered_variables = filter_variables(variables)
         old_variables = convert_variables(filtered_variables)
-        static_variables = get_static_variables()
-        final_variables = static_variables + old_variables
+        final_variables = STATIC_TASK_FILTER_VARIABLES + old_variables
         
         # Convert variables to properly formatted PostgreSQL JSON array
         array_elements = [f"'{json.dumps(var)}'::json" for var in final_variables]
@@ -163,13 +95,13 @@ def upgrade():
         stmt = sa.text(query)
         conn.execute(stmt, {"filter_id": filter_id})
 
+    # Process each task filter to update criteria and variables
+    # and remove unnecessary fields
     task_filters = conn.execute(
         sa.text("""SELECT * FROM public.Filter 
         WHERE filter_type = 'TASK' AND status='active' """)).fetchall()
-
-    if task_filters:
-        for task_filter in task_filters:
-            process_task_filter(conn, task_filter)
+    for task_filter in task_filters:
+        process_task_filter(conn, task_filter)
     
     op.drop_column('filter', 'task_visible_attributes')
     # ### end Alembic commands ###

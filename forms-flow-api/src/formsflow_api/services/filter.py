@@ -5,7 +5,10 @@ from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import ADMIN
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.constants import BusinessErrorCode
+from formsflow_api.constants import (
+    STATIC_TASK_FILTER_VARIABLES,
+    BusinessErrorCode,
+)
 from formsflow_api.models import Filter, FilterPreferences, FilterType, User
 from formsflow_api.schemas import FilterSchema
 
@@ -68,71 +71,7 @@ class FilterService:
             if not all_tasks_filter:
                 filter_obj = Filter(
                     name="All Tasks",
-                    variables=[
-                        {
-                            "key": "applicationId",
-                            "label": "Submission Id",
-                            "type": "number",
-                            "name": "applicationId",
-                            "isChecked": True,
-                            "sortOrder": 1,
-                            "isFormVariable": False,
-                        },
-                        {
-                            "key": "submitterName",
-                            "label": "Submitter Name",
-                            "type": "textfield",
-                            "name": "submitterName",
-                            "isChecked": True,
-                            "sortOrder": 2,
-                            "isFormVariable": False,
-                        },
-                        {
-                            "key": "assignee",
-                            "label": "Assignee",
-                            "type": "textfield",
-                            "name": "assignee",
-                            "isChecked": True,
-                            "sortOrder": 3,
-                            "isFormVariable": False,
-                        },
-                        {
-                            "key": "roles",
-                            "label": "Roles",
-                            "type": "textfield",
-                            "name": "roles",
-                            "isChecked": True,
-                            "sortOrder": 4,
-                            "isFormVariable": False,
-                        },
-                        {
-                            "key": "name",
-                            "label": "Task",
-                            "type": "textfield",
-                            "name": "name",
-                            "isChecked": True,
-                            "sortOrder": 5,
-                            "isFormVariable": False,
-                        },
-                        {
-                            "key": "created",
-                            "label": "Created Date",
-                            "type": "datetime",
-                            "name": "created",
-                            "isChecked": True,
-                            "sortOrder": 6,
-                            "isFormVariable": False,
-                        },
-                        {
-                            "key": "formName",
-                            "label": "Form Name",
-                            "type": "textfield",
-                            "name": "formName",
-                            "isChecked": True,
-                            "sortOrder": 7,
-                            "isFormVariable": False,
-                        },
-                    ],
+                    variables=STATIC_TASK_FILTER_VARIABLES,
                     status="active",
                     created_by="system",
                     created="now()",

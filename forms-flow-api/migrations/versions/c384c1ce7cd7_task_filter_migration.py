@@ -78,22 +78,27 @@ def upgrade():
         old_variables = convert_variables(filtered_variables)
         final_variables = STATIC_TASK_FILTER_VARIABLES + old_variables
         
-        # Convert variables to properly formatted PostgreSQL JSON array
-        array_elements = [f"'{json.dumps(var)}'::json" for var in final_variables]
-        
+        # Convert final variables to JSON string
+        # Use PostgreSQL's jsonb_array_elements to reconstruct the array
+        variables_json = json.dumps([var for var in final_variables])
+
         # Convert criteria to JSON string
         criteria_json = json.dumps(updated_criteria)
-
-        # Update the filter entry in the database        
-        query = f"""
-            UPDATE public.Filter
-            SET criteria = '{criteria_json}'::jsonb,
-            variables = ARRAY[{', '.join(array_elements)}]
+        stmt = sa.text("""
+            UPDATE public.filter
+            SET criteria = CAST(:criteria AS jsonb),
+                variables = (
+                    SELECT array_agg(elem::jsonb)
+                    FROM jsonb_array_elements(CAST(:variables AS jsonb)) AS elem
+                )::jsonb[]
             WHERE id = :filter_id
-        """
-        
-        stmt = sa.text(query)
-        conn.execute(stmt, {"filter_id": filter_id})
+        """)
+        # Execute the update statement with parameters
+        conn.execute(stmt, {
+            "criteria": criteria_json,
+            "variables": variables_json,
+            "filter_id": filter_id
+        })
 
     # Process each task filter to update criteria and variables
     # and remove unnecessary fields

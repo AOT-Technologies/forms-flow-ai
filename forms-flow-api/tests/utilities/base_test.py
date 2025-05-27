@@ -464,30 +464,17 @@ def get_filter_payload(
     name: str = "Test Task",
     roles: list = [],
     users: list = [],
-    order: int = None,
     filter_type: str = "TASK",
     parent_filter_id: int = None,
 ):
     """Return filter create payload."""
     return {
         "name": name,
-        "description": "Test task",
         "variables": [{"name": "name", "label": "userName"}],
-        "criteria": {"processDefinitionName": "onestepapproval", "condition": "ALL"},
+        "criteria": {"candidateGroupsExpression": "${currentUserGroups()}", "includeAssignedTasks": True},
         "properties": {"priority": 10},
         "users": users,
         "roles": roles,
-        "order": order,
-        "taskVisibleAttributes": {
-            "applicationId": True,
-            "assignee": True,
-            "taskTitle": True,
-            "createdDate": True,
-            "dueDate": True,
-            "followUp": True,
-            "priority": True,
-            "groups": True,
-        },
         "parentFilterId": parent_filter_id,
         "filterType": filter_type,
     }

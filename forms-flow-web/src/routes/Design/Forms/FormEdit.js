@@ -985,6 +985,7 @@ const handleSaveLayout = () => {
           message:
           (
             <CustomInfo
+              dataTestId="unpublish-before-saving"
               heading="Note"
               content="This form is currently live. To save the changes to your form, you need to unpublish it first.    By unpublishing this form, you will make it unavailable for new submissions. You can republish this form after making your edits."
             />
@@ -1101,6 +1102,7 @@ const handleSaveLayout = () => {
           secondoryBtnariaLabel="Yes, Delete the Form"
           secondaryBtnDisable={isDeletionLoading}
           secondaryBtnLoading={isDeletionLoading}
+          datatestId="delete-form-modal-message"
         />
       );
     }
@@ -1119,7 +1121,7 @@ const handleSaveLayout = () => {
   };
 
   return (
-    <div>
+    <div data-testid="form-editor">
       <div>
         <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={t("You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side.")} />
         <LoadingOverlay active={formSubmitted || loadingVersioning} spinner text={t("Loading...")}>
@@ -1136,8 +1138,8 @@ const handleSaveLayout = () => {
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center justify-content-between">
-                  <BackToPrevIcon onClick={backToForm} />
-                  <div className="mx-4 editor-header-text">
+                  <BackToPrevIcon onClick={backToForm} data-testid="back-to-prev"/>
+                  <div className="mx-4 editor-header-text" >
                     {textTruncate(75,75,formData.title)}
                   </div>
                   <span

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import {
   DuplicateIcon,
   ImportIcon,
+  ExportIcon,
   PencilIcon,
   CloseIcon,
   TrashIcon,
@@ -55,19 +56,21 @@ const ActionModal = React.memo(
 
     return (
       <>
-        <Modal show={newActionModal} onHide={onClose} centered={true} size="sm" data-testid="action-modal">
+        <Modal show={newActionModal} onHide={onClose} size="sm" data-testid="action-modal">
           <Modal.Header>
             <Modal.Title className="modal-headder">
-              <p>{t("Action")}</p>
+              <p>{t("Actions")}</p>
             </Modal.Title>
             <div className="icon-close" onClick={onClose}>
               <CloseIcon dataTestId="action-modal-close"/>
             </div>
           </Modal.Header>
+
           <Modal.Body className="action-modal-body">
-          {customInfo && <CustomInfo heading={customInfo.heading} content={customInfo.content} />}
+            {customInfo && <CustomInfo heading={customInfo.heading} content={customInfo.content} />}
+
             {CategoryType === "FORM" && (
-              <div className="custom-action-flex action-form">
+              <div className="buttons-row">
                 <CustomButton
                   variant="secondary"
                   size="sm"
@@ -95,7 +98,7 @@ const ActionModal = React.memo(
                   variant="secondary"
                   size="sm"
                   label={t("Export")}
-                  icon={<PencilIcon />}
+                  icon={<ExportIcon />}
                   className=""
                   dataTestId="export-form-button"
                   ariaLabel="Export Form"
@@ -117,7 +120,7 @@ const ActionModal = React.memo(
             )}
 
             {CategoryType === "WORKFLOW" && (
-              <div className="d-flex custom-action-flex action-form">
+              <div className="buttons-row">
                 <CustomButton
                   variant="secondary"
                   size="sm"

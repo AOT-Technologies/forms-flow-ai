@@ -359,10 +359,10 @@ const List = React.memo((props) => {
           <Loading />
         </div>
       ) : (
-        <div>
+        <>
           {(
-              <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-                <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+              <div className="table-bar">
+                <div className="filters">
                   <CustomSearch
                     search={search}
                     setSearch={setSearch}
@@ -374,7 +374,7 @@ const List = React.memo((props) => {
                     dataTestId="form-search-input"
                   />
                 </div>
-                <div className="d-md-flex justify-content-end align-items-center button-align">
+                <div className="actions">
                   <FilterSortActions
                     showSortModal={showSortModal}
                     handleFilterIconClick={handleFilterIconClick}
@@ -392,13 +392,11 @@ const List = React.memo((props) => {
 
                   {createDesigns && (
                     <CustomButton
-                      variant="primary"
-                      size="sm"
                       label={t("New Form")}
                       onClick={() => setNewFormModal(true)}
-                      className=""
                       dataTestId="create-form-button"
                       ariaLabel="Create Form"
+                      action
                     />
                   )}
                   <CreateFormModal
@@ -444,7 +442,7 @@ const List = React.memo((props) => {
               </div>
           )}
          {renderTable()}
-        </div>
+        </>
       )}
     </>
   );

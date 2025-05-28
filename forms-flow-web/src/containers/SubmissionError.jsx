@@ -14,9 +14,11 @@ const SubmissionError = React.memo((props) => {
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>
-          <Button type="button" className="btn btn-default" onClick={onConfirm}>
-            {t("Ok")}
-          </Button>
+          <div className="buttons-row">
+            <Button type="button" className="btn btn-default" onClick={onConfirm}>
+              {t("Ok")}
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
     </>

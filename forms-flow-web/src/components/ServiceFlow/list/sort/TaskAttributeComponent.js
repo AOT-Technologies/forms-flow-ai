@@ -233,13 +233,15 @@ function TaskAttributeComponent({
       </Modal.Body>
       { !viewMode &&
         <Modal.Footer>
-        <button className="btn btn-link text-dark " onClick={onHide}>
-          {t("Cancel")}
-        </button>
-        <button className="btn btn-primary" onClick={handleSave}>
-          {t("Save")}
-        </button>
-      </Modal.Footer>
+          <div className="buttons-row">
+            <button className="btn btn-link text-dark " onClick={onHide}>
+              {t("Cancel")}
+            </button>
+            <button className="btn btn-primary" onClick={handleSave}>
+              {t("Save")}
+            </button>
+          </div>
+        </Modal.Footer>
       }
       
     </Modal>

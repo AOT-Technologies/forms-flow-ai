@@ -345,7 +345,6 @@ const Dashboard = React.memo(() => {
                 size="sm"
                 onHide={() => setShow(false)}
                 aria-labelledby="example-custom-modal-styling-title"
-                centered
                 className="align-content-center"
               >
                 <Modal.Header>

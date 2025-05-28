@@ -23,14 +23,15 @@ const MessageModal = React.memo((props) => {
                 </Modal.Header>
                 <Modal.Body>{message}</Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        data-testid="ok-button"
-                        onClick={onNo}>
-                        {t("Ok")}
-                    </button>
-
+                    <div className="buttons-row">
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            data-testid="ok-button"
+                            onClick={onNo}>
+                            {t("Ok")}
+                        </button>
+                    </div>
                 </Modal.Footer>
             </Modal>
         </>

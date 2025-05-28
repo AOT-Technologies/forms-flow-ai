@@ -628,9 +628,8 @@ const ProcessCreateEdit = ({ type }) => {
       <Card>
         <div className="wraper">
           <Card.Header>
-            <div className="d-flex justify-content-between align-items-center w-100">
-              <div className="d-flex align-items-center">
-                <div className="mx-2 builder-header-text">{t("Flow")}</div>
+              <div>
+                <h2>{t("Flow")}</h2>
                 {!isCreate && (
                   <CustomButton
                     variant="secondary"
@@ -665,7 +664,6 @@ const ProcessCreateEdit = ({ type }) => {
                   ariaLabel={t(`Discard ${diagramType} Changes`)}
                 />
               </div>
-            </div>
           </Card.Header>
         </div>
         <Card.Body>

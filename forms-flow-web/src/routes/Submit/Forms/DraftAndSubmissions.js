@@ -136,7 +136,7 @@ const DraftsAndSubmissions = () => {
   }, [pageNo, limit, applicationSort, searchText, selectedItem, formId, applicationSort]);
 
   return (
-    <div>
+    <>
       {/* Header */}
       <div className="nav-bar">
         <div className="icon-back" onClick={redirectBackToForm}>
@@ -151,8 +151,8 @@ const DraftsAndSubmissions = () => {
       </div>
 
       {/* Actions */}
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <div className="d-md-flex justify-content-start align-items-center button-align">
+      <div className="table-bar">
+        <div className="filters">
           <CustomButton
             className="appliation-dropdown"
             isDropdown
@@ -175,7 +175,7 @@ const DraftsAndSubmissions = () => {
           />
         </div>
 
-        <div className="d-md-flex justify-content-end align-items-center button-align">
+        <div className="actions">
           <FilterSortActions
             showSortModal={showSortModal}
             handleSortApply={handleSortApply}
@@ -195,12 +195,11 @@ const DraftsAndSubmissions = () => {
             refreshDataTestId="form-list-refresh"
           />
           <CustomButton
-            variant="primary"
-            size="sm"
             label={t("New Submission")}
             onClick={submitNewForm}
             dataTestId="create-form-button"
             ariaLabel="Create Form"
+            action
           />
         </div>
       </div>
@@ -209,7 +208,7 @@ const DraftsAndSubmissions = () => {
       <SubmissionsAndDraftTable
         fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
       />
-    </div>
+    </>
   );
 };
 

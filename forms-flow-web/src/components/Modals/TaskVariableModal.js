@@ -522,7 +522,6 @@ const TaskVariableModal = React.memo(
         onHide={handleClose}
         className="task-variable-modal"
         size={layoutNotsaved ? "sm" : "lg"}
-        centered={true}
         data-testid="task-variable-modal"
       >
         <Modal.Header>
@@ -577,7 +576,9 @@ const TaskVariableModal = React.memo(
           )}
         </Modal.Body>
         <Modal.Footer>
-          {layoutNotsaved ? layoutNotSavedContent : layoutSavedContent}
+          <div className="buttons-row">
+            {layoutNotsaved ? layoutNotSavedContent : layoutSavedContent}
+          </div>
         </Modal.Footer>
       </Modal>
     );

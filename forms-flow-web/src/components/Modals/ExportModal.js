@@ -77,7 +77,6 @@ const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle 
       show={showExportModal}
       onHide={onClose}
       dialogClassName="modal-50w" // This will control the modal width
-      centered // Center the modal on the screen
       aria-labelledby="contained-modal-title-vcenter"
       scrollable // Ensures content is scrollable on small screens
     >

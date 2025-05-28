@@ -80,7 +80,6 @@ const ExportDiagram = React.memo(
       <Modal
         show={showExportModal}
         onHide={onClose}
-        centered
         aria-labelledby="contained-modal-title-vcenter"
         scrollable
         size="sm"
@@ -133,25 +132,27 @@ const ExportDiagram = React.memo(
             </div>
           )}
         </Modal.Body>
-        {isError && <Modal.Footer className="d-flex justify-content-start flex-wrap">
-            <CustomButton
-              variant="primary"
-              size="md"
-              label={<Translation>{(t) => t(retryButtonText)}</Translation>}
-              onClick={exportData}
-              className="mb-2"
-              dataTestId="try-again"
-              ariaLabel="Try Again"
-            />
-            <CustomButton
-              variant="secondary"
-              size="md"
-              label={<Translation>{(t) => t(cancelButtonText)}</Translation>}
-              onClick={onClose}
-              className="mb-2"
-              dataTestId="cancel"
-              ariaLabel="Cancel"
-            />
+        {isError && <Modal.Footer>
+            <div className="buttons-row">
+              <CustomButton
+                variant="primary"
+                size="md"
+                label={<Translation>{(t) => t(retryButtonText)}</Translation>}
+                onClick={exportData}
+                className="mb-2"
+                dataTestId="try-again"
+                ariaLabel="Try Again"
+              />
+              <CustomButton
+                variant="secondary"
+                size="md"
+                label={<Translation>{(t) => t(cancelButtonText)}</Translation>}
+                onClick={onClose}
+                className="mb-2"
+                dataTestId="cancel"
+                ariaLabel="Cancel"
+              />
+            </div>
         </Modal.Footer>}
       </Modal>
     );

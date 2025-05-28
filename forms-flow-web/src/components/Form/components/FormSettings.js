@@ -237,7 +237,7 @@ const FormSettings = forwardRef((props, ref) => {
       eventKey: "Basic",
       title: "Basic",
       content: (
-        <div className="settings-sections">
+        <>
         <FormInput
           required
           value={formDetails.title}
@@ -276,14 +276,14 @@ const FormSettings = forwardRef((props, ref) => {
           onChange={handleFormDetailsChange}
           className="field-label"
         />
-        </div>
+        </>
       ),
     },
     {
       eventKey: "Permissions",
       title: "Permissions",
       content: (
-        <div className="settings-sections">
+        <>
         <DropdownMultiSelect
           dropdownLabel="Who Can View/Edit This Form"
           enableMultiSelect= { 
@@ -381,14 +381,14 @@ const FormSettings = forwardRef((props, ref) => {
           dataTestId="application-permission"
         />
 
-        </div>
+        </>
       ),
     },
     {
       eventKey :"Link",
       title : "Link",
       content : (
-        <div className="settings-sections">
+        <>
         <CustomInfo heading={t("Note")}
         content={t("Making changes to your form URL will make your form inaccessible from your current URL.")} />
         <Form.Group className="settings-input w-100" controlId="url-input">
@@ -413,19 +413,18 @@ const FormSettings = forwardRef((props, ref) => {
           {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
 
         </Form.Group>
-        </div>
+        </>
       )
     }
   ];
   return (
-    <div className="settings-tab-container">
+    <div className="tabs">
       <CustomTabs
        defaultActiveKey={key}
        onSelect={setKey}
        tabs={tabs}
        dataTestId="template-form-flow-tabs"
        ariaLabel="Template forms flow  tabs"
-       className="custom-tab"
        /> 
     </div>     
   );

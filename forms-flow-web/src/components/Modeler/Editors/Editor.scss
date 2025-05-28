@@ -6,15 +6,11 @@
 }
 
 .bpmn-main-container {
+  overflow: hidden;
   width: 100%;
   display: flex;
-  margin-bottom: 20px;
-  margin-top: 10px;
-  height: auto;
+  height: 100%;
   resize: vertical;
-  overflow: hidden;
-  max-height: 600px;
-  min-height: 450px;
 }
 
 /* ------------------- this is for diagram settings icons start  ------------------- */
@@ -107,8 +103,8 @@
 }
 
 .properties-panel-parent {
-  border: 1px solid $black;
-  border-left: none;
+  border-left: 1px solid $gray-medium;
+  // border-left: none;
 }
 
 .grab-cursor {

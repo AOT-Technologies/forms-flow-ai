@@ -16,7 +16,6 @@ const Confirm = React.memo((props) => {
   return (
     <>
       <Modal  
-        centered
         data-testid="delete-modal" 
         show={modalOpen}>
         <Modal.Header>
@@ -24,17 +23,18 @@ const Confirm = React.memo((props) => {
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-link text-dark"
-            data-testid="delete-cancel-button"
-            onClick={onNo}>
-            {noText}</button>
+          <div className="buttons-row">
+            <button
+              type="button"
+              className="btn btn-link text-dark"
+              data-testid="delete-cancel-button"
+              onClick={onNo}>
+              {noText}</button>
 
-          <button className="btn btn-danger" onClick={onYes} data-testid="delete-confirm-button">
-            {yesText}
-          </button>
-
+            <button className="btn btn-danger" onClick={onYes} data-testid="delete-confirm-button">
+              {yesText}
+            </button>
+          </div>
         </Modal.Footer>
       </Modal>
     </>

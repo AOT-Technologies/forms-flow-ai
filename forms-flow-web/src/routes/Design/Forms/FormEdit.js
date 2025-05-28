@@ -17,7 +17,8 @@ import {
   FormBuilderModal,
   HistoryModal,
   ImportModal,
-  CustomInfo
+  CustomInfo,
+  CardsSwitchIcon
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -1214,71 +1215,67 @@ const handleSaveLayout = () => {
             
           </div>
 
-          <div className="d-flex mb-3">
+          <div className="d-flex">
             <div
               className={`wraper form-wraper ${isFormLayout ? "visible" : ""}`}
             >
               <Card>
                 <Card.Header>
-                  <div
-                    className="d-flex justify-content-between align-items-center"
-                    style={{ width: "100%" }}
-                  >
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="mx-2 builder-header-text">{t("Layout")}</div>
-                      {createDesigns && (
-                        <div>
-                          <CustomButton
-                            variant="secondary"
-                            size="md"
-                            icon={<HistoryIcon />}
-                            label={t("History")}
-                            onClick={() => handleFormHistory()}
-                            dataTestId="handle-form-history-testid"
-                            ariaLabel={t("Form History Button")}
-                          />
-                          <CustomButton
-                            variant="secondary"
-                            size="md"
-                            className="mx-2"
-                            icon={<PreviewIcon />}
-                            label={t("Preview")}
-                            onClick={handlePreview}
-                            dataTestId="handle-preview-testid"
-                            ariaLabel={t("Preview Button")}
-                          />
-                        </div>
-                      )}
-                    </div>
-                    {createDesigns && (
-                      <div>
-                        <CustomButton
-                          variant="primary"
-                          size="md"
-                          className="mx-2"
-                          disabled={!formChangeState.changed}
-                          label={t("Save Layout")}
-                          onClick={
-                            isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
+                  {createDesigns && (
+                    <div>
+                      <h2>{t("Layout")}</h2>
 
-                          }
-                          dataTestId="save-form-layout"
-                          ariaLabel={t("Save Form Layout")}
-                        />
-                        <CustomButton
-                          variant="secondary"
-                          size="md"
-                          label={t("Discard Changes")}
-                          onClick={() => {
-                            openConfirmModal("discard");
-                          }}
-                          disabled={!formChangeState.changed}
-                          dataTestId="discard-button-testid"
-                          ariaLabel={t("cancelBtnariaLabel")}
-                        />
-                      </div>
-                    )}
-                  </div>
+                      <CustomButton
+                        variant="secondary"
+                        size="md"
+                        icon={<HistoryIcon />}
+                        label={t("History")}
+                        onClick={() => handleFormHistory()}
+                        dataTestId="handle-form-history-testid"
+                        ariaLabel={t("Form History Button")}
+                      />
+
+                      <CustomButton
+                        variant="secondary"
+                        size="md"
+                        className="mx-2"
+                        icon={<PreviewIcon />}
+                        label={t("Preview")}
+                        onClick={handlePreview}
+                        dataTestId="handle-preview-testid"
+                        ariaLabel={t("Preview Button")}
+                      />
+                    </div>
+                  )}
+
+                  {createDesigns && (
+                    <div>
+                      <CustomButton
+                        variant="primary"
+                        size="md"
+                        className="mx-2"
+                        disabled={!formChangeState.changed}
+                        label={t("Save Layout")}
+                        onClick={
+                          isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
+
+                        }
+                        dataTestId="save-form-layout"
+                        ariaLabel={t("Save Form Layout")}
+                      />
+                      <CustomButton
+                        variant="secondary"
+                        size="md"
+                        label={t("Discard Changes")}
+                        onClick={() => {
+                          openConfirmModal("discard");
+                        }}
+                        disabled={!formChangeState.changed}
+                        dataTestId="discard-button-testid"
+                        ariaLabel={t("cancelBtnariaLabel")}
+                      />
+                    </div>
+                  )}
                 </Card.Header>
                 <div className="form-edit">
                 <Card.Body>
@@ -1336,12 +1333,15 @@ const handleSaveLayout = () => {
               />}
             </div>
             <button
-              className={`border-0 form-flow-wraper-${ isFormLayout ? "right" : "left"
+              className={`form-flow-wraper ${ isFormLayout ? "right" : "left"
               } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
               data-testid="form-flow-wraper-button"
             >
-              {isFormLayout ? t("Flow") : t("Layout")}
+              <span>
+                {isFormLayout ? t("Flow") : t("Layout")}
+              </span>
+              <CardsSwitchIcon />
             </button>
           </div>
         </LoadingOverlay>

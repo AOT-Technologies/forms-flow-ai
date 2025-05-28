@@ -482,9 +482,7 @@ export const TableFooter = ({
 
 export const NoDataFound = ({message,dataTestId}) => {
   return (
-    <div>
-      <span className="no-data-text" data-testid={dataTestId}>{message}</span>
-    </div>
+    <p className="empty-message" data-testid={dataTestId}>{message}</p>
   );
 };
 
@@ -658,9 +656,9 @@ export const ReusableProcessTableRow = ({ item, buttonLabel, dataTestId="reusabl
       <td className="w-25">
         <span className="d-flex justify-content-end">
           <button
-            className="btn btn-secondary btn-sm"
             aria-label={`Edit ${item.processKey} Button`}
             data-testid={`edit-button-${item.processKey}`}
+            actionTable
           >
             Edit
           </button>
@@ -789,18 +787,11 @@ export const AngleLeftIcon = ({
  
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="10"
-        height="15"
         viewBox="0 0 10 15"
-        fill="none"
         onClick={onClick}
+        className="svgIcon-primary"
       >
-        <path
-          d="M8.2501 14.0005L1.74951 7.4999L8.24951 0.999901"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="M11.7503 1.99971L5.24972 8.50029L11.7497 15.0003"/>
       </svg>
   );
 }

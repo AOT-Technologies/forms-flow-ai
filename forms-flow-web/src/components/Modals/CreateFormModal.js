@@ -12,7 +12,7 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
         USE_AI: "USE_AI"
     };
     return (
-        <Modal show={newFormModal} onHide={onClose} centered={true} data-testid="create-form-modal" >
+        <Modal size="sm" show={newFormModal} onHide={onClose} data-testid="create-form-modal">
                 <Modal.Header>
                     <Modal.Title className="modal-headder">
                         <p>{t("Add Form")}</p>
@@ -21,15 +21,15 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
                         <CloseIcon data-testid="modal-close-icon" />
                     </div>
                 </Modal.Header>
-                <Modal.Body className="create-form-modal-body d-flex justify-content-around">
-                    <div className="content-wrapper" onClick={() => onAction(ActionType.BUILD)}>
-                        <span className="modal-content-heading">{t("Build")}</span>
-                        <span className="modal-content-text">{t("Create the form from scratch")}</span>
-                    </div>
-                    <div className="content-wrapper" onClick={() => onAction(ActionType.IMPORT)}>
-                        <span className="modal-content-heading">{t("Import")}</span>
-                        <span className="modal-content-text">{t("Upload form from a file")}</span>
-                    </div>
+                <Modal.Body className="choice">
+                    <button onClick={() => onAction(ActionType.BUILD)}>
+                        <h3>{t("Build")}</h3>
+                        <p>{t("Create the form from scratch")}</p>
+                    </button>
+                    <button onClick={() => onAction(ActionType.IMPORT)}>
+                        <h3>{t("Import")}</h3>
+                        <p>{t("Upload form from a file")}</p>
+                    </button>
                 </Modal.Body>
             </Modal>
     );

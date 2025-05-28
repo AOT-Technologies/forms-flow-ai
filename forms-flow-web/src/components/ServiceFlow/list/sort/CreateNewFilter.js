@@ -1113,16 +1113,18 @@ export default function CreateNewFilterDrawer({
           <Translation>{(t) => t("filter?")}</Translation>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant=""
-            className="btn-link text-dark"
-            onClick={hideDeleteConfirmation}
-          >
-            <Translation>{(t) => t("Cancel")}</Translation>
-          </Button>
-          <Button variant="danger" onClick={FilterDelete}>
-            <Translation>{(t) => t("Delete")}</Translation>
-          </Button>
+          <div className="buttons-row">
+            <Button
+              variant=""
+              className="btn-link text-dark"
+              onClick={hideDeleteConfirmation}
+            >
+              <Translation>{(t) => t("Cancel")}</Translation>
+            </Button>
+            <Button variant="danger" onClick={FilterDelete}>
+              <Translation>{(t) => t("Delete")}</Translation>
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
     </div>

@@ -12,7 +12,7 @@ import {
   HistoryModal,
   CurlyBracketsIcon,
 } from "@formsflow/components";
-import { Card } from "react-bootstrap";
+// import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "react-query";
@@ -200,7 +200,8 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
     setShowMigrationModal(false);
   };return (
       <>
-        <Card>
+        {/* <Card> */}
+        <div className="card-molecule">
           <ConfirmModal
             show={showDiscardModal}
             title={t(`Discard Flow Changes?`)}
@@ -215,61 +216,62 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
             secondayBtnAction={handleDiscardModal}
             size="sm"
           />
-          <Card.Header>
-            <div className="d-flex justify-content-between align-items-center w-100">
-              <div className="d-flex align-items-center justify-content-between">
-                <div className="mx-2 builder-header-text">{t("Flow")}</div>
-                {createDesigns && (
-                  <div>
-                    <CustomButton
-                      variant="secondary"
-                      size="md"
-                      icon={<HistoryIcon />}
-                      label={t("History")}
-                      onClick={handleProcessHistory}
-                      dataTestId="flow-history-button-testid"
-                      ariaLabel={t("Flow History Button")}
-                    />
-                    <CustomButton
-                      variant="secondary"
-                      size="md"
-                      className="mx-2"
-                      icon={<CurlyBracketsIcon />}
-                      label={t("Variables")}
-                      onClick={() => handlePreviewAndVariables()}
-                      dataTestId="preview-and-variables-testid"
-                      ariaLabel={t("{Preview and Variables Button}")}
-                    />
-                  </div>
-                )}
+          {/* <Card.Header> */}
+          <div className="head">
+            {createDesigns && (
+              <div>
+                <h2>{t("Flow")}</h2>
+                <CustomButton
+                  variant="secondary"
+                  size="md"
+                  icon={<HistoryIcon />}
+                  label={t("History")}
+                  onClick={handleProcessHistory}
+                  dataTestId="flow-history-button-testid"
+                  ariaLabel={t("Flow History Button")}
+                />
+                <CustomButton
+                  variant="secondary"
+                  size="md"
+                  className="mx-2"
+                  icon={<CurlyBracketsIcon />}
+                  label={t("Variables")}
+                  onClick={() => handlePreviewAndVariables()}
+                  dataTestId="preview-and-variables-testid"
+                  ariaLabel={t("{Preview and Variables Button}")}
+                />
               </div>
-              {createDesigns && (
-                <div>
-                  <CustomButton
-                    variant="primary"
-                    size="md"
-                    className="mx-2"
-                    label={t("Save Flow")}
-                    onClick={isPublished ? handleUnpublishAndSaveChanges : handleSaveFlowClick}
-                    disabled={!workflowIsChanged}
-                    dataTestId="save-flow-layout"
-                    ariaLabel={t("Save Flow Layout")}
-                    buttonLoading={savingFlow}
-                  />
-                  <CustomButton
-                    variant="secondary"
-                    size="md"
-                    label={t("Discard Changes")}
-                    onClick={handleDiscardModal}
-                    disabled={!workflowIsChanged}
-                    dataTestId="discard-flow-changes-testid"
-                    ariaLabel={t("Discard Flow Changes")}
-                  />
-                </div>
-              )}
-            </div>
-          </Card.Header>
-          <Card.Body>
+            )}
+
+            {createDesigns && (
+              <div>
+                <CustomButton
+                  variant="primary"
+                  size="md"
+                  className="mx-2"
+                  label={t("Save Flow")}
+                  onClick={isPublished ? handleUnpublishAndSaveChanges : handleSaveFlowClick}
+                  disabled={!workflowIsChanged}
+                  dataTestId="save-flow-layout"
+                  ariaLabel={t("Save Flow Layout")}
+                  buttonLoading={savingFlow}
+                />
+                <CustomButton
+                  variant="secondary"
+                  size="md"
+                  label={t("Discard Changes")}
+                  onClick={handleDiscardModal}
+                  disabled={!workflowIsChanged}
+                  dataTestId="discard-flow-changes-testid"
+                  ariaLabel={t("Discard Flow Changes")}
+                />
+              </div>
+            )}
+
+          {/* </Card.Header> */}
+          </div>
+          <div className="body">
+          {/* <Card.Body> */}
             <LoadingOverlay
               active={historyLoading}
               spinner
@@ -292,8 +294,10 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                 )}
               </div>
             </LoadingOverlay>
-          </Card.Body>
-        </Card>
+          {/* </Card.Body> */}
+          </div>
+        {/* </Card> */}
+        </div>
         {showMigrationModal && <ConfirmModal
         show={showMigrationModal}
         title={t("***Migration Notice***")}

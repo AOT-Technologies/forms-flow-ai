@@ -18,19 +18,20 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
     };
   
     return (
-      <button
-        className={`button-as-div ${className}`}
-        onClick={() => handleSort(columnKey)}
-        onKeyDown={handleKeyDown} 
-        aria-pressed={isSorted}
-        data-testid = {`${title}-header-btn`}
-        aria-label={`${title}-header-btn`}
-      >
-        <span className="mt-1">{t(title)}</span>
-        <span className={sortedOrder === "asc" ? "arrow-up" : "arrow-down"}>
-        <SortIcon color={iconColor}/>
-      </span>
-      </button>
+      <th className={`header-sortable ${className}`}>
+        <button
+          onClick={() => handleSort(columnKey)}
+          onKeyDown={handleKeyDown} 
+          aria-pressed={isSorted}
+          data-testid = {`${title}-header-btn`}
+          aria-label={`${title}-header-btn`}
+        >
+          <span>{t(title)}</span>
+          <span className={sortedOrder === "asc" ? "arrow-up" : "arrow-down"}>
+          <SortIcon color={iconColor}/>
+        </span>
+        </button>
+      </th>
     );
   };
   SortableHeader.propTypes = {

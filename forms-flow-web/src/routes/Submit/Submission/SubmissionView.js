@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import startCase from "lodash/startCase";
 import { Card } from "react-bootstrap";
@@ -27,8 +27,6 @@ import { HelperServices } from "@formsflow/service";
 import DownloadPDFButton from "../../../components/Form/ExportAsPdf/downloadPdfButton";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
-import { useHistory } from "react-router-dom";
-
 
 const ViewApplication = React.memo(() => {
   const { t } = useTranslation();

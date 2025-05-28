@@ -2,6 +2,10 @@ from typing import Optional
 
 from beanie import Document
 
+from .constants import FormioTables
+
+# currently this file is not used in the codebase, but it is kept for future use
+
 
 class FormModel(Document):
     title: str
@@ -14,4 +18,4 @@ class FormModel(Document):
     updated_at: Optional[str] = None
 
     class Settings:
-        name = "forms"
+        name = FormioTables.FORMS.value

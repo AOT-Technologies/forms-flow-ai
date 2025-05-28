@@ -59,9 +59,14 @@ const View = React.memo((props) => {
           <Form
             form={form}
             submission={updatedSubmission}
-            url={url} 
+            url={url}
             onSubmit={onSubmit}
-            options={{ ...options, i18n: RESOURCE_BUNDLES_DATA, viewAsHtml: true }}
+            options={{
+              ...options,
+              i18n: RESOURCE_BUNDLES_DATA,
+              viewAsHtml: true,
+              buttonSettings: { showCancel: false },
+            }}
           />
         </div>
       </LoadingOverlay>

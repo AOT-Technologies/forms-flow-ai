@@ -2,7 +2,7 @@
 
 import datetime
 
-from marshmallow import EXCLUDE, Schema, fields
+from marshmallow import EXCLUDE, Schema, fields, post_dump
 
 
 class AuditDateTimeSchema(Schema):
@@ -19,6 +19,10 @@ class AuditDateTimeSchema(Schema):
     modified = fields.DateTime(
         format="iso", data_key="modified", required=False, dump_only=True
     )
+    # Used in form listing to get the latest submission
+    latest_submission = fields.DateTime(
+        format="iso", data_key="latestSubmission", required=False, dump_only=True
+    )
 
     def dump(self, obj, many=False, **kwargs):
         """Override the dump method to format datetime fields."""
@@ -26,7 +30,7 @@ class AuditDateTimeSchema(Schema):
 
         def format_datetime_fields(record):
             """Helper to format datetime fields for a single record."""
-            for field in ["created", "modified"]:
+            for field in ["created", "modified", "latestSubmission"]:
                 field_value = record.get(field)
                 if field_value is not None and isinstance(field_value, str):
                     # Convert the string to datetime
@@ -45,4 +49,13 @@ class AuditDateTimeSchema(Schema):
         else:
             data = format_datetime_fields(data)
 
+        return data
+
+    @post_dump
+    def remove_none_fields(
+        self, data, many, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Exclude 'latest_submission' if it's None."""
+        if data.get("latestSubmission") is None:
+            data.pop("latestSubmission", None)
         return data

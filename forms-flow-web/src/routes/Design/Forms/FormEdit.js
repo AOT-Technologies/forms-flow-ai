@@ -946,7 +946,7 @@ const handleSaveLayout = () => {
           message:
             t("Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions."),
           primaryBtnAction: saveFormData,
-          secondayBtnAction: handleShowVersionModal,
+          secondaryBtnAction: handleShowVersionModal,
           primaryBtnText: `${t("Save as Version")} ${version.minor}`,
           secondaryBtnText: `${t("Save as Version")} ${version.major}`,
         };
@@ -955,7 +955,7 @@ const handleSaveLayout = () => {
           title: t("Confirm Publish"),
           message: t("Publishing will save any unsaved changes and lock the entire form, including the layout and the flow. To perform any additional changes you will need to unpublish the form again."),
           primaryBtnAction: confirmPublishOrUnPublish,
-          secondayBtnAction: closeModal,
+          secondaryBtnAction: closeModal,
           primaryBtnText: t("Publish This Form"),
           secondaryBtnText: t("Cancel"),
         };
@@ -964,7 +964,7 @@ const handleSaveLayout = () => {
           title: t("Confirm Unpublish"),
           message: t( "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailable for new submissions to those who currently have access to it. You can republish the form after making your edits."),
           primaryBtnAction: confirmPublishOrUnPublish,
-          secondayBtnAction: closeModal,
+          secondaryBtnAction: closeModal,
           primaryBtnText: t("Unpublish and Edit This Form"),
           secondaryBtnText: t("Cancel, Keep This Form Unpublished"),
         };
@@ -975,7 +975,7 @@ const handleSaveLayout = () => {
             t("Are you sure you want to discard all the changes to the layout of the form?"),
           messageSecondary: t("This action cannot be undone."),
           primaryBtnAction: discardChanges,
-          secondayBtnAction: closeModal,
+          secondaryBtnAction: closeModal,
           primaryBtnText: t("Yes, Discard Changes"),
           secondaryBtnText: t("No, Keep My Changes"),
         };
@@ -990,7 +990,7 @@ const handleSaveLayout = () => {
             />
           ),
           primaryBtnAction: handleConfirmUnpublishAndSave,
-          secondayBtnAction: closeModal,
+          secondaryBtnAction: closeModal,
           primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",
           secondaryBtnText: "Cancel, Keep This Form Published",
           };
@@ -1077,7 +1077,7 @@ const handleSaveLayout = () => {
           messageSecondary={t(
             "You may not delete a form that has submissions associated with it."
           )}
-          secondayBtnAction={unPublishActiveForm}
+          secondaryBtnAction={unPublishActiveForm}
           primaryBtnText={t("Keep This Form")}
           secondaryBtnText={t("Unpublish This Form")}
           secondoryBtndataTestid="unpublish-button"
@@ -1092,7 +1092,7 @@ const handleSaveLayout = () => {
           {...commonProps}
           title={t("Are You Sure You Want to Delete This Form?")}
           message={t("This action cannot be undone.")}
-          secondayBtnAction={deleteModal}
+          secondaryBtnAction={deleteModal}
           primaryBtnText={t("No, Keep This Form")}
           secondaryBtnText={t("Yes, Delete the Form")}
           secondoryBtndataTestid="yes-delete-button"
@@ -1259,7 +1259,8 @@ const handleSaveLayout = () => {
                           options={{
                             disableAlerts: true,
                             noAlerts: true,
-                            language: lang, i18n: RESOURCE_BUNDLES_DATA
+                            language: lang, i18n: RESOURCE_BUNDLES_DATA,
+                            buttonSettings: { showCancel: false },
                           }}
                         />
                       </div>
@@ -1377,7 +1378,7 @@ const handleSaveLayout = () => {
           messageSecondary={modalContent.messageSecondary || ""}
           primaryBtnAction={modalContent.primaryBtnAction}
           onClose={closeModal}
-          secondayBtnAction={modalContent.secondayBtnAction}
+          secondaryBtnAction={modalContent.secondaryBtnAction}
           primaryBtnText={modalContent.primaryBtnText}
           secondaryBtnText={modalContent.secondaryBtnText}
           size="md"

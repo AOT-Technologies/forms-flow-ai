@@ -3,8 +3,11 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from src.graphql.schema import (
+    PaginatedSubmissionResponse,
+    SubmissionDetailsWithSubmissionData,
+)
 from src.graphql.service import SubmissionService
-from src.graphql.schema import PaginatedSubmissionResponse, QuerySubmissionsSchema
 
 
 @dataclass
@@ -18,73 +21,7 @@ class MockSubmission:
 
 
 @pytest.mark.asyncio
-async def test_submissions_query(schema_tester, token_generator, mock_jwks):
-    """
-    Test the GraphQL submissions query with mocked authentication and data.
-
-    This test verifies that:
-    1. The submissions query returns properly formatted data
-    2. Authentication works correctly with a valid JWT token
-    3. The response matches the expected structure and values
-
-    Args:
-        schema_tester: Pytest fixture for testing GraphQL queries
-        token_generator: Fixture that creates valid JWT test tokens
-        mock_jwks: Fixture that mocks the JWKS endpoint responses
-    """
-
-    dummy_token = token_generator.generate_test_token(subject="test-user")
-    # Create mock response with dataclass objects
-    mock_response = [
-        MockSubmission(
-            id=1,
-            application_status="Pending",
-            task_name="Review Application",
-            data={"name": "John Doe", "age": 30}
-        ),
-        MockSubmission(
-            id=2,
-            application_status="Approved",
-            task_name="Review Application",
-            data={"name": "Jane Smith", "age": 25}
-        )
-    ]
-
-    # Patch the get_submissions method with mock data
-    with (
-        patch.object(SubmissionService, "get_submissions", new=AsyncMock(return_value=mock_response))
-    ):
-
-        response = await schema_tester(
-            """
-            query {
-                submissions(taskName: "Review Application", limit: 5) {
-                    applicationStatus
-                    taskName
-                    data
-                }
-            }
-            """, headers={"Authorization": f"Bearer {dummy_token}"}
-        )
-
-    # Assertions
-    assert response.errors is None
-    assert response.data["submissions"] == [
-        {
-            "applicationStatus": "Pending",
-            "taskName": "Review Application",
-            "data": {"name": "John Doe", "age": 30}
-        },
-        {
-            "applicationStatus": "Approved",
-            "taskName": "Review Application",
-            "data": {"name": "Jane Smith", "age": 25}
-        },
-    ]
-
-
-@pytest.mark.asyncio
-async def test_querysubmissions(schema_tester, token_generator, mock_jwks):
+async def test_get_submission(schema_tester, token_generator, mock_jwks):
     """Test querying submissions with mocked authentication and service response.
 
     This test verifies that:
@@ -108,17 +45,21 @@ async def test_querysubmissions(schema_tester, token_generator, mock_jwks):
     # Create mock response
     mock_service_response = PaginatedSubmissionResponse(
         submissions=[
-            QuerySubmissionsSchema(
+            SubmissionDetailsWithSubmissionData(
                 id=18,
                 created_by="test-user1",
                 application_status="Completed",
+                form_name="testform",
                 data={"name": "user1", "location": "mumbai"},
+                submission_id="12345",
             ),
-            QuerySubmissionsSchema(
+            SubmissionDetailsWithSubmissionData(
                 id=20,
                 created_by="test-user1",
+                form_name="testform",
                 application_status="Completed",
                 data={"name": "user2", "location": "delhi"},
+                submission_id="67890",
             ),
         ],
         total_count=2,
@@ -129,20 +70,20 @@ async def test_querysubmissions(schema_tester, token_generator, mock_jwks):
     # Mock the service method
     with patch.object(
         SubmissionService,
-        "query_submissions",
+        "get_submission",
         new=AsyncMock(return_value=mock_service_response),
     ):
         response = await schema_tester(
             """
             query {
-                querysubmissions(
+                getSubmission(
                     limit: 5
                     sortOrder: "desc"
                     sortBy: "location"
                     pageNo: 1
-                    mongoProjectFields: ["name", "location"]
+                    selectedFormFields: ["name", "location"]
                     parentFormId: "67eced6a11e3ea332946080e"
-                    search: {created_by: "test-user1"}
+                    filters: {created_by: "test-user1"}
                 ) {
                     totalCount
                     pageNo
@@ -161,11 +102,11 @@ async def test_querysubmissions(schema_tester, token_generator, mock_jwks):
 
     # Assertions
     assert response.errors is None
-    assert response.data["querysubmissions"]["totalCount"] == 2
-    assert response.data["querysubmissions"]["pageNo"] == 1
-    assert response.data["querysubmissions"]["limit"] == 5
+    assert response.data["getSubmission"]["totalCount"] == 2
+    assert response.data["getSubmission"]["pageNo"] == 1
+    assert response.data["getSubmission"]["limit"] == 5
 
-    submissions = response.data["querysubmissions"]["submissions"]
+    submissions = response.data["getSubmission"]["submissions"]
     assert len(submissions) == 2
     assert submissions[0] == {
         "id": 18,
@@ -176,7 +117,9 @@ async def test_querysubmissions(schema_tester, token_generator, mock_jwks):
 
 
 @pytest.mark.asyncio
-async def test_querysubmissions_without_form_selection(schema_tester, token_generator, mock_jwks):
+async def test_get_submission_without_form_selection(
+    schema_tester, token_generator, mock_jwks
+):
     """Test querying submissions without specifying parent_form_id parameter.
 
     Verifies that the submissions query works correctly when:
@@ -201,15 +144,19 @@ async def test_querysubmissions_without_form_selection(schema_tester, token_gene
     # Create mock response
     mock_service_response = PaginatedSubmissionResponse(
         submissions=[
-            QuerySubmissionsSchema(
+            SubmissionDetailsWithSubmissionData(
                 id=20,
                 created_by="test-user1",
+                form_name="testform",
                 application_status="Completed",
+                submission_id="12345",
             ),
-            QuerySubmissionsSchema(
+            SubmissionDetailsWithSubmissionData(
                 id=18,
                 created_by="test-user1",
+                form_name="testform",
                 application_status="Completed",
+                submission_id="67890",
             ),
         ],
         total_count=2,
@@ -220,18 +167,18 @@ async def test_querysubmissions_without_form_selection(schema_tester, token_gene
     # Mock the service method
     with patch.object(
         SubmissionService,
-        "query_submissions",
+        "get_submission",
         new=AsyncMock(return_value=mock_service_response),
     ):
         response = await schema_tester(
             """
             query {
-                querysubmissions(
+                getSubmission(
                     limit: 5
                     sortOrder: "desc"
                     sortBy: "id"
                     pageNo: 1
-                    search: {created_by: "test-user1"}
+                    filters: {created_by: "test-user1"}
                 ) {
                     totalCount
                     pageNo
@@ -249,11 +196,11 @@ async def test_querysubmissions_without_form_selection(schema_tester, token_gene
 
     # Assertions
     assert response.errors is None
-    assert response.data["querysubmissions"]["totalCount"] == 2
-    assert response.data["querysubmissions"]["pageNo"] == 1
-    assert response.data["querysubmissions"]["limit"] == 5
+    assert response.data["getSubmission"]["totalCount"] == 2
+    assert response.data["getSubmission"]["pageNo"] == 1
+    assert response.data["getSubmission"]["limit"] == 5
 
-    submissions = response.data["querysubmissions"]["submissions"]
+    submissions = response.data["getSubmission"]["submissions"]
     assert len(submissions) == 2
     assert submissions[0] == {
         "id": 20,
@@ -268,7 +215,7 @@ async def test_querysubmissions_no_auth(schema_tester):
     response = await schema_tester(
         """
         query {
-           querysubmissions(
+           getSubmission(
                     limit: 5
                     sortOrder: "desc"
                     sortBy: "location"
@@ -287,8 +234,6 @@ async def test_querysubmissions_no_auth(schema_tester):
         """,
         headers={},  # No authorization header
     )
-
-    assert response.data is None
     assert response.errors[0].message == "User is not authenticated"
-    assert response.errors[0].path == ["querysubmissions"]
+    assert response.errors[0].path == ["getSubmission"]
     assert response.errors[0].extensions["code"] == "UNAUTHORIZED"

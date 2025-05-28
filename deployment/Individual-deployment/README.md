@@ -18,7 +18,9 @@ git clone https://github.com/AOT-Technologies/forms-flow-ai.git
 cd forms-flow-ai
 ```
 
-#### Download ZIP file:
+### OR
+
+## Download ZIP file:
 Alternatively, you can download the ZIP file from the following link:
 [Download ZIP](https://github.com/AOT-Technologies/forms-flow-ai/archive/refs/heads/master.zip)
 Extract the ZIP file and navigate into the project directory:
@@ -40,9 +42,11 @@ The [**formsflow.ai**](https://formsflow.ai/) framework could be hooked up with 
 cd forms-flow-idm/keycloak
 docker-compose up -d
 ```
-Before deploying, rename `sample.env` to `.env`
 
 Wait until the service is up and running, then access it at http://localhost:8080/auth
+
+Default username = ``admin``
+Default password = ``changeme``
 
 <img src="../../.images/image-1.png" />
 
@@ -51,18 +55,19 @@ Wait until the service is up and running, then access it at http://localhost:80
 dashboards and gain insights. To create meaningful visualization for
 your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.io/help/).
 
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
 ```bash
 cd forms-flow-analytics
 docker-compose run --rm server create_db
 docker-compose up --build -d
 ```
-Before deploying, rename `sample.env` to `.env`
-
-Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:7000
 
 <img src="../../.images/image-7.png" />
+
+The user is responsible for creating a new account in Redash and generating the necessary credentials for login.
 
 ### Forms-flow-forms
 
@@ -70,15 +75,16 @@ Wait until it's up and running, then access it at http://localhost:7000
 
 To know more about form.io, go to  <https://form.io>.
 
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
 ```bash
 cd forms-flow-forms
 docker-compose up --build -d
 ```
-Before deploying, rename `sample.env` to `.env`
-
-Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:3001
+
+The system is expected to display an ``unauthorized`` message, since we have disabled the formio UI.
 
 <img src="../../.images/image-2.png" />
 
@@ -100,29 +106,29 @@ docker-compose up -d
 The goal of the REST API is to provide access to all relevant interfaces of
 the system. It is built using Python.
 
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
 ```bash
 cd forms-flow-api
 docker-compose up --build -d
 ```
-Before deploying, rename `sample.env` to `.env` and update the values in `.env`
-
-Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:5000
 
 <img src="../../.images/image-3.png" />
 
-### Forms-flow-documents-api
+### Forms-flow-documents
 
 The goal of the document API is to generate pdf with form submission data. It is built using Python.
 
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
+``"Export PDF"`` feature must be enabled by setting ``Export PDF`` to ``true`` in the env of  forms-flow-web-root-config.
+
 ```bash
-cd forms-flow-documents-api
+cd forms-flow-documents
 docker-compose up --build -d
 ```
-Before deploying, rename `sample.env` to `.env` and update the values in `.env`
-
-Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:5006
 
@@ -134,50 +140,51 @@ Wait until it's up and running, then access it at http://localhost:5006
 
 To know more about Camunda, visit https://camunda.com/.
 
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
 ```bash
 cd forms-flow-bpm
 docker-compose up --build -d
 ```
-Before deploying, rename `sample.env` to `.env` and update the values in `.env`
-
-Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:8000/camunda
 
 <img src="../../.images/image-5.png" />
 
-### Forms-flow-web
+### Forms-flow-web-root-config
 
 A React library for rendering out forms based on the form.io platform.
 
 Also [**formsflow.ai**](https://formsflow.ai/) provides a Vue.js based web user interface for easy integration of **formsflow.ai with your existing UI based on Vue**.
 
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
+NOTE: ``The Redash API key must be added to the env for Dashboards to function``
+
+Enable ``Export PDF`` to ``true`` in the env.
+
 ```bash
 cd forms-flow-web-root-config
 docker-compose up --build -d
 ```
-Before deploying, rename `sample.env` to `.env` and update the values in `.env`
-
-Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:3000
 
 <img src="../../.images/image-6.png" />
 
-### Forms-flow-data-analysis-api
+### Forms-flow-data-analysis-api (Optional)
 
 Sentiment Analysisis used to understand the sentiments of the customer for products, movies, and other such things, whether they feel positive, negative, or neutral about it. BERT is a very good pre-trained language model which helps machines learn excellent representations of text with respect to context in many natural language tasks. 
 
 The goal of the Data Analysis API is to provide access to all relevant interfaces of
 the system. It is built using Python
 
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
 ```bash
 cd forms-flow-data-analysis-api
 docker-compose up --build -d
 ```
-Before deploying, rename `sample.env` to `.env` and update the values in `.env`
-
-Replace `{your-ip-address}` with your local IP address
 
 Wait until it's up and running, then access it at http://localhost:6001
 

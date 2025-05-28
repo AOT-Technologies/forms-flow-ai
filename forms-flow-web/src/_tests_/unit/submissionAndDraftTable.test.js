@@ -6,19 +6,32 @@ import thunk from "redux-thunk";
 import SubmissionsAndDraftTable from "../../components/Form/constants/SubmissionsAndDraftTable";
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
-import { navigateToDraftEdit, navigateToViewSubmission } from "../../helper/routerHelper";
-import '@testing-library/jest-dom';
+import {
+  navigateToDraftEdit,
+  navigateToViewSubmission,
+} from "../../helper/routerHelper";
+import "@testing-library/jest-dom";
 import {
   setApplicationListActivePage,
   setCountPerpage,
-  setFormSubmissionSort
+  setFormSubmissionSort,
 } from "../../actions/applicationActions";
+import { HelperServices } from "@formsflow/service";
 
 // Mock the action creators
 jest.mock("../../actions/applicationActions", () => ({
-  setApplicationListActivePage: jest.fn((page) => ({ type: "SET_APPLICATION_LIST_ACTIVE_PAGE", payload: page })),
-  setCountPerpage: jest.fn((limit) => ({ type: "SET_COUNT_PER_PAGE", payload: limit })),
-  setFormSubmissionSort: jest.fn((sort) => ({ type: "SET_FORM_SUBMISSION_SORT", payload: sort })),
+  setApplicationListActivePage: jest.fn((page) => ({
+    type: "SET_APPLICATION_LIST_ACTIVE_PAGE",
+    payload: page,
+  })),
+  setCountPerpage: jest.fn((limit) => ({
+    type: "SET_COUNT_PER_PAGE",
+    payload: limit,
+  })),
+  setFormSubmissionSort: jest.fn((sort) => ({
+    type: "SET_FORM_SUBMISSION_SORT",
+    payload: sort,
+  })),
 }));
 
 // Mock dependencies
@@ -43,15 +56,26 @@ jest.mock("react-i18next", () => ({
 }));
 
 // Mock the date formatter
-jest.mock("../../helper/dateTimeHelper", () => ({
-  formatDate: (date) => date ? new Date(date).toLocaleDateString() : "",
+// Add this mock at the top of your test file with the other mocks
+jest.mock("@formsflow/service", () => ({
+  HelperServices: {
+    getLocalDateAndTime: jest.fn((date) => `Formatted Date: ${date}`),
+  },
 }));
-
 
 jest.mock("@formsflow/components", () => {
   const PropTypes = require("prop-types");
-  const CustomButton = ({ label, onClick, "data-testid": dataTestId, "aria-label": ariaLabel }) => (
-    <button onClick={onClick} data-testid={dataTestId || `button-${label}`} aria-label={ariaLabel}>
+  const CustomButton = ({
+    label,
+    onClick,
+    "data-testid": dataTestId,
+    "aria-label": ariaLabel,
+  }) => (
+    <button
+      onClick={onClick}
+      data-testid={dataTestId || `button-${label}`}
+      aria-label={ariaLabel}
+    >
       {label}
     </button>
   );
@@ -69,7 +93,7 @@ jest.mock("@formsflow/components", () => {
     totalCount,
     handlePageChange,
     onLimitChange,
-    pageOptions
+    pageOptions,
   }) => (
     <tr data-testid="table-footer">
       <td colSpan="6">
@@ -89,7 +113,11 @@ jest.mock("@formsflow/components", () => {
           >
             Next
           </button>
-          <select data-testid="limit-selector" value={limit} onChange={(e) => onLimitChange(Number(e.target.value))}>
+          <select
+            data-testid="limit-selector"
+            value={limit}
+            onChange={(e) => onLimitChange(Number(e.target.value))}
+          >
             {pageOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.text}
@@ -115,10 +143,9 @@ jest.mock("@formsflow/components", () => {
     ).isRequired,
   };
 
-  const NoDataFound = ({ message }) => <div
-    data-testid="no-data-found">
-    {message}
-  </div>;
+  const NoDataFound = ({ message }) => (
+    <div data-testid="no-data-found">{message}</div>
+  );
 
   NoDataFound.propTypes = {
     message: PropTypes.string.isRequired,
@@ -129,7 +156,7 @@ jest.mock("@formsflow/components", () => {
     primaryBtnAction,
     title,
     message,
-    secondayBtnAction,
+    secondaryBtnAction,
     primaryBtnText,
     secondaryBtnText,
     primaryBtndataTestid,
@@ -144,9 +171,11 @@ jest.mock("@formsflow/components", () => {
         <button data-testid={primaryBtndataTestid} onClick={primaryBtnAction}>
           {primaryBtnText}
         </button>
-        <button data-testid={secondoryBtndataTestid}
-          onClick={secondayBtnAction}
-          disabled={secondaryBtnDisable}>
+        <button
+          data-testid={secondoryBtndataTestid}
+          onClick={secondaryBtnAction}
+          disabled={secondaryBtnDisable}
+        >
           {secondaryBtnLoading ? "Loading..." : secondaryBtnText}
         </button>
       </div>
@@ -157,7 +186,7 @@ jest.mock("@formsflow/components", () => {
     primaryBtnAction: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
-    secondayBtnAction: PropTypes.func.isRequired,
+    secondaryBtnAction: PropTypes.func.isRequired,
     primaryBtnText: PropTypes.string.isRequired,
     secondaryBtnText: PropTypes.string.isRequired,
     primaryBtndataTestid: PropTypes.string.isRequired,
@@ -173,8 +202,6 @@ jest.mock("@formsflow/components", () => {
     ConfirmModal,
   };
 });
-
-
 
 // Mock SortableHeader component
 jest.mock("../../components/CustomComponents/SortableHeader", () => {
@@ -203,16 +230,16 @@ jest.mock("../../components/CustomComponents/SortableHeader", () => {
   return MockSortableHeader;
 });
 
-
-
-
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 
 describe("SubmissionsAndDraftTable Component", () => {
   let store;
   const fetchSubmissionsAndDrafts = jest.fn();
-
+  const mockDates = {
+    created: "2023-01-01T12:00:00",
+    modified: "2023-01-02T12:00:00",
+  };
   beforeEach(() => {
     store = mockStore({
       tenants: { tenantId: "test-tenant" },
@@ -222,16 +249,16 @@ describe("SubmissionsAndDraftTable Component", () => {
             {
               id: "123",
               formId: "form-123",
-              created: "2023-01-01T12:00:00",
-              modified: "2023-01-02T12:00:00",
+              created: mockDates.created,
+              modified: mockDates.modified,
               isDraft: true,
               applicationStatus: "",
             },
             {
               id: "456",
               formId: "form-456",
-              created: "2023-01-03T12:00:00",
-              modified: "2023-01-04T12:00:00",
+              created: mockDates.created,
+              modified: mockDates.modified,
               isDraft: false,
               applicationStatus: "Submitted",
             },
@@ -265,14 +292,18 @@ describe("SubmissionsAndDraftTable Component", () => {
   test("renders the component with submissions and drafts", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
     // Check if table headers are rendered
     expect(screen.getByTestId("Submission ID-header-btn")).toBeInTheDocument();
     expect(screen.getByTestId("Submitted On-header-btn")).toBeInTheDocument();
-    expect(screen.getByTestId("Last Modified On-header-btn")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("Last Modified On-header-btn")
+    ).toBeInTheDocument();
     expect(screen.getByTestId("Type-header-btn")).toBeInTheDocument();
     expect(screen.getByTestId("Status-header-btn")).toBeInTheDocument();
     // Check if action buttons are rendered
@@ -292,7 +323,9 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     render(
       <Provider store={loadingStore}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -311,20 +344,24 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     render(
       <Provider store={emptyStore}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
     expect(screen.getByTestId("no-data-found")).toBeInTheDocument();
     expect(screen.getByTestId("no-data-found")).toHaveTextContent(
-      "No Submissions or Draft have been found. Create a new submission by clicking the \"New Submission \" button in the top right."
+      'No Submissions or Draft have been found. Create a new submission by clicking the "New Submission " button in the top right.'
     );
   });
 
   test("handles sorting when a sortable header is clicked", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -332,20 +369,24 @@ describe("SubmissionsAndDraftTable Component", () => {
     fireEvent.click(screen.getByTestId("Submitted On-header-btn"));
 
     // Check if setFormSubmissionSort was called with correct parameters
-    expect(setFormSubmissionSort).toHaveBeenCalledWith(expect.objectContaining({
-      created: { sortOrder: "desc" },
-      id: { sortOrder: "asc" },
-      modified: { sortOrder: "asc" },
-      type: { sortOrder: "asc" },
-      applicationStatus: { sortOrder: "asc" },
-      activeKey: "created"
-    }));
+    expect(setFormSubmissionSort).toHaveBeenCalledWith(
+      expect.objectContaining({
+        created: { sortOrder: "desc" },
+        id: { sortOrder: "asc" },
+        modified: { sortOrder: "asc" },
+        type: { sortOrder: "asc" },
+        applicationStatus: { sortOrder: "asc" },
+        activeKey: "created",
+      })
+    );
   });
 
   test("handles continue draft button click", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -364,7 +405,9 @@ describe("SubmissionsAndDraftTable Component", () => {
   test("handles view submission button click", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -383,7 +426,9 @@ describe("SubmissionsAndDraftTable Component", () => {
   test("opens delete confirmation modal when delete button is clicked", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -392,16 +437,26 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     // Confirm modal should be visible
     expect(screen.getByTestId("confirm-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("Are You Sure You Want to Delete This Draft?");
-    expect(screen.getByTestId("modal-message")).toHaveTextContent("This action cannot be undone.");
-    expect(screen.getByTestId("no-delete-button")).toHaveTextContent("No, Keep This Draft");
-    expect(screen.getByTestId("yes-delete-button")).toHaveTextContent("Yes, Delete this Draft");
+    expect(screen.getByTestId("modal-title")).toHaveTextContent(
+      "Are You Sure You Want to Delete This Draft?"
+    );
+    expect(screen.getByTestId("modal-message")).toHaveTextContent(
+      "This action cannot be undone."
+    );
+    expect(screen.getByTestId("no-delete-button")).toHaveTextContent(
+      "No, Keep This Draft"
+    );
+    expect(screen.getByTestId("yes-delete-button")).toHaveTextContent(
+      "Yes, Delete this Draft"
+    );
   });
 
   test("closes delete confirmation modal when 'No, Keep This Draft' is clicked", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -421,7 +476,9 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -445,7 +502,9 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -465,7 +524,7 @@ describe("SubmissionsAndDraftTable Component", () => {
   test("shows loading state during draft deletion", async () => {
     // Create a promise that we can resolve manually to control the timing
     let resolveDeletePromise;
-    const deletePromise = new Promise(resolve => {
+    const deletePromise = new Promise((resolve) => {
       resolveDeletePromise = resolve;
     });
 
@@ -473,7 +532,9 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -499,7 +560,9 @@ describe("SubmissionsAndDraftTable Component", () => {
   test("passes correct props to TableFooter for pagination", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -511,12 +574,16 @@ describe("SubmissionsAndDraftTable Component", () => {
   test("handles items per page change", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
     // Change the items per page
-    fireEvent.change(screen.getByTestId("limit-selector"), { target: { value: "25" } });
+    fireEvent.change(screen.getByTestId("limit-selector"), {
+      target: { value: "25" },
+    });
 
     // Check if the correct actions were dispatched
     expect(setCountPerpage).toHaveBeenCalledWith(25);
@@ -526,22 +593,19 @@ describe("SubmissionsAndDraftTable Component", () => {
   test("displays formatted dates correctly", () => {
     render(
       <Provider store={store}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
-    // Since we mocked formatDate to return a localized date string,
-    // we should check that the dates are displayed
-    const dates = [
-      new Date("2023-01-01T12:00:00").toLocaleDateString(),
-      new Date("2023-01-02T12:00:00").toLocaleDateString(),
-      new Date("2023-01-03T12:00:00").toLocaleDateString(),
-      new Date("2023-01-04T12:00:00").toLocaleDateString()
-    ];
-
-    dates.forEach(date => {
-      expect(screen.getByText(date)).toBeInTheDocument();
-    });
+    // Check that the HelperServices.getLocalDateAndTime was called with the correct dates
+    expect(HelperServices.getLocalDateAndTime).toHaveBeenCalledWith(
+      mockDates.created
+    );
+    expect(HelperServices.getLocalDateAndTime).toHaveBeenCalledWith(
+      mockDates.modified
+    );
   });
 
   test("handles search form loading state", () => {
@@ -558,7 +622,9 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     render(
       <Provider store={loadingSearchStore}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 
@@ -577,7 +643,9 @@ describe("SubmissionsAndDraftTable Component", () => {
 
     render(
       <Provider store={undefinedApplicationsStore}>
-        <SubmissionsAndDraftTable fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts} />
+        <SubmissionsAndDraftTable
+          fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
+        />
       </Provider>
     );
 

@@ -74,7 +74,7 @@ class Authorization(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if roles:
             role_condition = [Authorization.roles.contains([role]) for role in roles]
         query = cls.query.filter(Authorization.auth_type == auth_type)
-        if auth_type == AuthType.APPLICATION:
+        if auth_type in [AuthType.APPLICATION, AuthType.DASHBOARD]:
             # if the authtype is application then need to fetch the resource id associated with roles
             query = query.filter(
                 or_(

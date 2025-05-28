@@ -47,7 +47,9 @@ const ViewApplication = React.memo(() => {
   const submission = useSelector((state) => state.submission?.submission || {});
   const form = useSelector((state) => state.form?.form || {});
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [formId,setFormId] = useState();
+  const parentFormId = useSelector(
+    (state) => state.form.form?.parentFormId
+  );
   const { appHistory, isHistoryListLoading } = useSelector(
     useMemo(() => (state) => ({
       appHistory: state.taskAppHistory.appHistory,
@@ -64,7 +66,6 @@ const ViewApplication = React.memo(() => {
     dispatch(
       getApplicationById(applicationId, (err, res) => {
         if (!err) {
-          setFormId(res.formId);
           if (res.submissionId && res.formId) {
             dispatch(getForm("form", res.formId));
             if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
@@ -109,7 +110,7 @@ const ViewApplication = React.memo(() => {
   }
 
   const backToSubmissionList = () => {
-    navigateToFormEntries(dispatch, tenantKey, formId);
+    navigateToFormEntries(dispatch, tenantKey, parentFormId);
   };
 
   return (

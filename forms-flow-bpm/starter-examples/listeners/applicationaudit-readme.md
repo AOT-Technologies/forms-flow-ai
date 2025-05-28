@@ -24,6 +24,10 @@ The component is dependent on listed variables from camunda context,
 2. applicationStatus
 3. formUrl
 
+Optional camunda variables for audit visibility (UI not yet implemented)
+* color -  Status highlight
+* percentage - Progress or completion metric
+
 ### How to Use
 
 Below snapshot shows how to configure the **ApplicationAuditListener** to a task. 

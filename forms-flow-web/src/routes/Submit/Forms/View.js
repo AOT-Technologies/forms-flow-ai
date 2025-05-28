@@ -404,6 +404,7 @@ const View = React.memo((props) => {
           ...options,
           language: lang,
           i18n: RESOURCE_BUNDLES_DATA,
+          buttonSettings: { showCancel: false },
         }}
         onChange={(data) => {
           setDraftData(data);

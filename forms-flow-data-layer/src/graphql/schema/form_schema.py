@@ -4,6 +4,8 @@ import strawberry
 
 from src.middlewares.role_check import RoleCheck
 
+# currently this file is not used in the codebase, but it is kept for future use
+
 
 @strawberry.type
 class FormSchema:

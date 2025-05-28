@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
@@ -65,16 +64,25 @@ import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import { cloneDeep } from "lodash";
+import { HelperServices } from "@formsflow/service";
+import { useParams } from "react-router-dom";
+
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
-  const { formId, draftId } = useParams();
+
+  const parentFormId = useSelector(
+    (state) => state.form.form?.parentFormId
+  );
+  const { formId } = useParams();
   const lang = useSelector((state) => state.user.lang);
   const pubSub = useSelector((state) => state.pubSub);
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const draftSubmission = useSelector((state) => state.draft.draftSubmission || {});
+  const draftId = draftSubmission?.id;
+
   const {
     isFormSubmissionLoading,
     formSubmitted: isFormSubmitted,
@@ -83,7 +91,7 @@ const View = React.memo((props) => {
 
   const draftSubmissionId = draftSubmission?.applicationId || draftId;
   //modified date
-  const draftModified = useSelector((state)=>state.draft.draftModified?.modified);
+  const draftModified = useSelector((state) => state.draft.draftModified?.modified);
 
   // Holds the latest data saved by the server
   const { formStatusLoading, processLoadError } =
@@ -184,8 +192,8 @@ const View = React.memo((props) => {
    * Draft is updated only if the form is updated from the last saved form data.
    */
   const saveDraft = (payload, exitType) => {
-    if (exitType === "SUBMIT") return; 
-    let dataChanged = !isEqual(payload?.data, draftSubmission.data);
+    if (exitType === "SUBMIT") return;
+    let dataChanged = !isEqual(payload?.data, draftSubmission?.data);
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         dispatch(
@@ -290,16 +298,16 @@ const View = React.memo((props) => {
 
   // will be updated once application/draft listing page is ready
   const handleBack = () => {
-    navigateToFormEntries(dispatch, tenantKey, formId);
+    navigateToFormEntries(dispatch, tenantKey, parentFormId);
 
-};
+  };
 
   const renderModifiedDate = () => {
     if (draftModified && !isPublic) {
       return (
         <>
           <span className="status-draft"></span> {t("Last modified on:")}{" "}
-          {new Date(draftModified).toLocaleString()}
+          {HelperServices.getLocalDateAndTime(draftModified)}
         </>
       );
     } else {
@@ -321,11 +329,11 @@ const View = React.memo((props) => {
         ></SubmissionError>
         <div className="d-flex justify-content-between align-items-center">
           <div className="icon-title-container">
-            { !isPublic && <BackToPrevIcon
+            {!isPublic && <BackToPrevIcon
               title={t("Back to Form List")}
               data-testid="back-to-form-list"
               onClick={handleBack}
-            /> }
+            />}
             <div className="user-form-header-text">
               {textTruncate(100, 97, form.title)}
             </div>
@@ -385,17 +393,18 @@ const View = React.memo((props) => {
                 ...options,
                 language: lang ?? "en",
                 i18n: RESOURCE_BUNDLES_DATA,
+                buttonSettings: { showCancel: false },
               }}
               onChange={() => {
-                if(formRef.current?.data){
-                  setDraftData({data:formRef.current?.data});
+                if (formRef.current?.data) {
+                  setDraftData({ data: formRef.current?.data });
                 }
               }}
-              formReady={(e)=>formRef.current = e}
+              formReady={(e) => formRef.current = e}
               onSubmit={(data) => {
                 setPoll(false);
                 exitType.current = "SUBMIT";
-                onSubmit(data, form._id,draftId, isPublic);
+                onSubmit(data, form._id, draftId, isPublic);
               }}
               onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
             />
@@ -409,7 +418,7 @@ const View = React.memo((props) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-const doProcessActions = (submission, draftId, ownProps,formId) => { 
+const doProcessActions = (submission, draftId, ownProps, formId) => {
   return (dispatch, getState) => {
     const state = getState();
     let form = state.form?.form;
@@ -417,26 +426,27 @@ const doProcessActions = (submission, draftId, ownProps,formId) => {
     const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
+    let parentFormId = form?.parentFormId; 
     dispatch(resetSubmissions("submission"));
-    
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-    let isDraftCreated = !!draftId; 
+    const draftIdToUse = draftId || state.draft?.draftSubmission?.applicationId;
+    let isDraftCreated = Boolean(draftIdToUse);
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,
       isDraftCreated,
       DRAFT_ENABLED
     );
-    
+
 
     dispatch(
-      applicationCreateAPI(data, draftId, (err) => {  
+      applicationCreateAPI(data, draftIdToUse, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
           toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);
           dispatch(setFormSubmitted(true));
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
-            navigateToFormEntries(dispatch, tenantKey, formId);
+            navigateToFormEntries(dispatch, tenantKey, parentFormId);
           }
         } else {
           toast.error(<Translation>{(t) => t("Submission Failed.")}</Translation>);
@@ -485,7 +495,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // this is callback function for submission
       const callBack = (err, submission) => {
         if (!err) {
-          dispatch(doProcessActions(submission, draftId, ownProps,formId));
+          dispatch(doProcessActions(submission, draftId, ownProps, formId));
         } else {
           const ErrorDetails = {
             modalOpen: true,

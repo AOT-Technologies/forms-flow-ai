@@ -1,145 +1,20 @@
-import asyncio
 from typing import Any, Dict, List, Optional, Tuple
 
 import strawberry
-from sqlalchemy import and_, desc, func, or_
-from sqlalchemy.sql import select
 
-from src.db import bpmn_db, webapi_db
 from src.graphql.schema import (
     PaginatedSubmissionResponse,
-    QuerySubmissionsSchema,
-    SubmissionSchema,
+    SubmissionDetailsWithSubmissionData,
 )
-from src.graphql.service import FormService
+from src.models.formio.submission import SubmissionsModel
+from src.models.webapi.application import Application
 from src.utils import get_logger
 
 logger = get_logger(__name__)
 
 
 class SubmissionService:
-
-    @staticmethod
-    async def get_submissions(task_name: str, limit: int = 5) -> List[SubmissionSchema]:
-        """
-        Retrieve applications and their corresponding submission data based on a specified task name.
-
-        This method performs the following operations:
-        1. Fetches `process_instance_id` values from the `act_ru_task` table in the BPM database
-        where the `name_` column matches the provided `task_name`.
-        2. Retrieves records from the `application` table in the WebAPI database that have
-        `process_instance_id` values matching those obtained in step 1, limited to the specified number.
-        3. For each application record, fetches the corresponding submission data from formio database `submissions` table based on the `submission_id`.
-
-        Parameters:
-        -----------
-        task_name : str
-            The name of the task to filter `process_instance_id` values in the BPM database.
-        limit : int, optional
-            The maximum number of application records to retrieve (default is 5).
-
-        Returns:
-        --------
-        List[SubmissionSchema]
-            A list of `SubmissionSchema` instances, each containing:
-            - id: The unique identifier of the application.
-            - application_status: The status of the application.
-            - task_name: The name of the task associated with the application.
-            - data: The submission data corresponding to the application's `submission_id`.
-        """
-        application_table = await webapi_db.get_table("application")
-        task_table = await bpmn_db.get_table("act_ru_task")
-
-        webapi_session = await webapi_db.get_session()
-        bpm_session = await bpmn_db.get_session()
-
-        async with webapi_session as api_session, bpm_session as bpm_conn:
-            # Fetch only the process_instance_ids that match the user-input task_name
-            task_result = await bpm_conn.execute(
-                select(task_table.c.proc_inst_id_).where(
-                    task_table.c.name_ == task_name
-                )
-            )
-            process_instance_ids = [
-                row["proc_inst_id_"] for row in task_result.mappings().all()
-            ]
-
-            if not process_instance_ids:
-                return []  # No matching tasks, return empty list
-
-            # Fetch applications that have a matching process_instance_id, limited by the specified number
-            application_result = await api_session.execute(
-                select(application_table)
-                .where(
-                    application_table.c.process_instance_id.in_(process_instance_ids)
-                )
-                .limit(limit)
-            )
-            applications = application_result.mappings().all()
-
-        # Fetch submission data in parallel using asyncio.gather
-        submission_tasks = [
-            (
-                FormService.get_submissions(row["submission_id"])
-                if row["submission_id"]
-                else None
-            )
-            for row in applications
-        ]
-        submissions = await asyncio.gather(*submission_tasks)
-
-        # Construct response
-        return [
-            SubmissionSchema(
-                id=row["id"],
-                application_status=row["application_status"],
-                task_name=task_name,
-                data=submissions[i],
-            )
-            for i, row in enumerate(applications)
-        ]
-
-    @staticmethod
-    async def auth_tenant(info: strawberry.Info, table):
-        """Returns tenant auth condition"""
-        user = info.context["user"]
-        return table.c.tenant == user.tenant_key
-
-    @staticmethod
-    async def form_auth_query(username: str, roles: list[str], auth_type: str):
-        """
-        Builds SQLAlchemy authorization conditions for form resources.
-
-        Constructs a composite SQL condition that checks if a user is authorized to access
-        form resources based on either:
-        - Direct username match
-        - Role-based permissions
-        - Open access (when no specific user or roles are specified)
-        - The auth_type parameter ensures the conditions only match records
-          of the specified authorization type
-        """
-        authorization_table = await webapi_db.get_table("authorization")
-        role_conditions = [authorization_table.c.roles.contains([role]) for role in roles]
-        if auth_type == "APPLICATION":
-            auth_conditions = or_(
-                *role_conditions,
-            )
-        else:
-            auth_conditions = and_(
-                authorization_table.c.auth_type == auth_type,
-                or_(
-                    authorization_table.c.user_name == username,
-                    *role_conditions,
-                    and_(
-                        authorization_table.c.user_name.is_(None),
-                        or_(
-                            authorization_table.c.roles == {},
-                            authorization_table.c.roles.is_(None),
-                        ),
-                    ),
-                ),
-            )
-        return auth_conditions
+    """Service class for handling submission related operations on mongo and webapi side."""
 
     @staticmethod
     async def split_search_criteria(
@@ -159,232 +34,159 @@ class SubmissionService:
         return webapi_search, mongo_search
 
     @staticmethod
-    async def _apply_sorting(
-        query, application_table, webapi_fields, sort_by, sort_order
+    def _process_results(
+        webapi_side_submissions, mongo_side_submissions, is_sort_on_webapi_side, limit
     ):
-        """Apply sorting to the query and determine sort parameters."""
-        sort_params = {}
-        mongo_sorted = False
-
-        if sort_by and sort_by in webapi_fields:
-            if sort_order.lower() == "desc":
-                query = query.order_by(desc(getattr(application_table.c, sort_by)))
-            else:
-                query = query.order_by(getattr(application_table.c, sort_by))
-        elif sort_by:
-            sort_params = {"sort_by": sort_by, "sort_order": sort_order}
-            mongo_sorted = True
-
-        return query, sort_params, mongo_sorted
-
-    @staticmethod
-    async def _execute_with_pagination_strategy(
-        query,
-        api_session,
-        mongo_search: Optional[dict],
-        page_no: Optional[int],
-        limit: Optional[int],
-    ) -> tuple[list[dict], int, dict]:
-        """
-        Execute query with appropriate pagination strategy based on formio submission data filter.
-
-        If there is  filter/search on form submission data, pagination done in mongo side, else in webapi
-
-        Returns:
-            tuple: (applications, total_count, pagination_params)
-        """
-        if not mongo_search:
-            # SQL-side pagination
-            items_per_page = limit or 5
-            current_page = page_no or 1
-            paginated_query = query.limit(items_per_page).offset(
-                (current_page - 1) * items_per_page
-            )
-
-            paginated_results = await api_session.execute(paginated_query)
-            applications = paginated_results.mappings().all()
-            total_count = (
-                await api_session.execute(
-                    select(func.count()).select_from(query.subquery())
-                )
-            ).scalar_one()
-            return applications, total_count, {}
-
-        # MongoDB-side pagination
-        result = await api_session.execute(query)
-        applications = result.mappings().all()
-        return applications, len(applications), {"page_no": page_no, "limit": limit}
-
-    @staticmethod
-    async def _process_results(applications, submission_data, mongo_sorted, limit):
         """Process results and merge with MongoDB data."""
-        final_results = []
-        # Build final results maintaining the correct order
-        if mongo_sorted:
-            # Create mapping from submission_id to SQL application data
-            app_map = {
+
+        # Pre-process MongoDB submissions once (convert _id to submission_id and create lookup dict)
+        mongo_dict = {}
+        lookup_key = "submission_id"
+        for sub in mongo_side_submissions:
+            submission_id = sub.pop(
+                "_id"
+            )  # Remove the _id field from the submission data
+            mongo_dict[submission_id] = sub
+
+        # Create a single processing path regardless of sort origin
+        if is_sort_on_webapi_side:
+            source_data = webapi_side_submissions
+            lookup_dict = mongo_dict
+        else:
+            source_data = [
+                {"submission_id": sid} for sid in mongo_dict.keys()
+            ]  # instead of full data just mock the data by giving the value as submission_id
+            lookup_dict = {
                 app["submission_id"]: app
-                for app in applications
+                for app in webapi_side_submissions
                 if app["submission_id"]
             }
-            # When sorted in MongoDB, use that exact order
-            for sub in submission_data:
-                if sub["_id"] in app_map:
-                    final_results.append(
-                        {**app_map[sub["_id"]], "submission_data": sub}
-                    )
-        else:
-            # When sorted in SQL, process in SQL order with limit
-            submission_map = {sub["_id"]: sub for sub in submission_data}
-            for app in applications:
-                if len(final_results) >= limit:
+
+        # Single merging logic
+        final_results = []
+        for item in source_data:
+            submission_id = item[lookup_key]
+            if submission_id in lookup_dict:
+                # the variable item and lookup_dict[submission_id] are same in the case of webapi side sort
+                base_data = (
+                    item if is_sort_on_webapi_side else lookup_dict[submission_id]
+                )
+                final_results.append(
+                    {**base_data, "submission_data": mongo_dict[submission_id]}
+                )
+                # Apply limit if provided
+                if limit and len(final_results) >= limit:
                     break
-                if app["submission_id"] in submission_map:
-                    final_results.append(
-                        {**app, "submission_data": submission_map[app["submission_id"]]}
-                    )
 
         return final_results
 
     @staticmethod
-    async def query_submissions(
-        info,
-        sort_by,
-        sort_order,
-        parent_form_id,
-        search,
-        project_fields,
-        page_no,
-        limit,
-    ) -> List[QuerySubmissionsSchema]:
+    async def get_submission(
+        info: strawberry.Info,
+        sort_by: str,
+        sort_order: str,
+        parent_form_id: str,
+        filters: Dict,
+        selected_form_fields: List[str],
+        page_no: int,
+        limit: int,
+    ) -> Optional[PaginatedSubmissionResponse]:
         """
-        Retrieve filtered and paginated submissions with authorization checks.
-
-        This service method performs a multi-database query to:
-        1. Fetch authorized application records from SQL database
-        2. Filter corresponding submission data from MongoDB
-        3. Combine results with proper sorting and pagination
-
-        Args:
-            info (strawberry.Info): GraphQL resolver context containing:
-                - context: Authentication/user information
-            sort_by (str): Field to sort results by
-            sort_order (str): Sort direction ('asc' or 'desc')
-            limit (int): Maximum number of results to return
-            parent_form_id (Optional[str]): Filter submissions by parent form ID
-            search Optional[JSON]: Dictionary of field-value pairs to search across both SQL and MongoDB field
-            project_fields Optional[List[str]]: List of specific fields to retrieve from MongoDB documents
-            page_no (int): Pagination page number (default: 1)
-
+        Fetches submissions from both webapi and MongoDB, merges them, and returns a paginated response.
+        Args:sort_by: Field to sort by (default: "created")
+            sort_order: Order of sorting (default: "desc")
+            parent_form_id: ID of the parent form
+            filters: Filters to apply to the query
+            selected_form_fields: Fields to select from MongoDB
+            page_no: Page number for pagination
+            limit: Number of records per page
         Returns:
-            List[QuerySubmissionsSchema]: Combined results containing:
-                - Application metadata from SQL
-                - Submission details from MongoDB
+            PaginatedSubmissionResponse: A paginated response containing submissions
+            and total count.
         """
-        application_table = await webapi_db.get_table("application")
-        mapper_table = await webapi_db.get_table("form_process_mapper")
-        authorization_table = await webapi_db.get_table("authorization")
-        webapi_session = await webapi_db.get_session()
-
         # Get user context from token
         user = info.context["user"]
-        username = user.token_info.get("preferred_username")
+        tenant_key = user.tenant_key
         user_groups = user.token_info.get("groups", [])
-
-        webapi_fields = ["created_by", "application_status", "id"]
-        # Split search criteria
+        webapi_fields = [
+            "created_by",
+            "application_status",
+            "id",
+            "created",
+            "form_name",
+        ]
+        # drived filter mongo serach and webapi search
         webapi_search, mongo_search = await SubmissionService.split_search_criteria(
-            search, webapi_fields
+            filters, webapi_fields
+        )
+        logger.info(
+            f"extracted filter by mongo {mongo_search} and webapi {webapi_search}"
         )
 
-        async with webapi_session as api_session:
-            query = (
-                select(
-                    application_table,
-                    mapper_table.c.tenant,
-                    mapper_table.c.parent_form_id,
-                )
-                .join(
-                    mapper_table,
-                    application_table.c.form_process_mapper_id == mapper_table.c.id,
-                )
-                .join(
-                    authorization_table,
-                    and_(
-                        mapper_table.c.parent_form_id
-                        == authorization_table.c.resource_id,
-                        await SubmissionService.form_auth_query(
-                            username, user_groups, "APPLICATION"
-                        ),
-                    ),
-                )
-                .where(
-                    application_table.c.is_draft.is_(False),
-                    await SubmissionService.auth_tenant(info, mapper_table),
-                )
-                .distinct()
-            )
-
-            if webapi_search:
-                for field, value in webapi_search.items():
-                    if hasattr(application_table.c, field):
-                        col = getattr(application_table.c, field)
-                        query = query.where(col.ilike(f"%{value}%"))
-            if parent_form_id:
-                query = query.where(mapper_table.c.parent_form_id == parent_form_id)
-
-            # Apply sorting and get sort parameters
-            query, sort_params, mongo_sorted = await SubmissionService._apply_sorting(
-                query, application_table, webapi_fields, sort_by, sort_order
-            )
-            # Execute with appropriate pagination strategy
-            submissions, total_count, pagination_params = (
-                await SubmissionService._execute_with_pagination_strategy(
-                    query, api_session, mongo_search, page_no, limit
-                )
-            )
-            submission_data = {}
-            if submissions and parent_form_id:
-                logger.info("Fetching submission data from formio.")
-                # Extract the submission IDs
-                submission_ids = [
-                    app["submission_id"] for app in submissions if app["submission_id"]
-                ]
-                # Get filtered submissions from MongoDB
-                submission_data = await FormService.query_submissions(
-                    submission_ids=submission_ids,
-                    search=mongo_search,
-                    project_fields=project_fields,
-                    **pagination_params,
-                    **sort_params,
-                )
-
-                # Process results and merge with MongoDB data
-                submissions = await SubmissionService._process_results(
-                    submissions,
-                    submission_data.get("submissions", []),
-                    mongo_sorted,
-                    limit,
-                )
-
-            return PaginatedSubmissionResponse(
-                submissions=[
-                    QuerySubmissionsSchema(
-                        id=row.get("id"),
-                        created_by=row.get("created_by"),
-                        application_status=row.get("application_status"),
-                        data={
-                            field: row.get("submission_data", {}).get(field)
-                            for field in (project_fields or [])
-                        },
-                    )
-                    for row in submissions
-                ],
-                total_count=(
-                    submission_data.get("total_count")
-                    if mongo_search and parent_form_id and submissions
-                    else total_count
-                ),
+        is_paginate_on_webapi_side = not mongo_search
+        is_sort_on_webapi_side = sort_by in webapi_fields
+        sort_params = {"sort_by": sort_by, "sort_order": sort_order}
+        webapi_side_submissions, total_count = (
+            await Application.get_authorized_applications(
+                tenant_key=tenant_key,
+                roles=user_groups,
+                is_paginate=is_paginate_on_webapi_side,
+                filter=webapi_search,
                 page_no=page_no,
                 limit=limit,
+                parent_form_id=parent_form_id,
+                **(sort_params if is_sort_on_webapi_side else {}),
             )
+        )
+
+        mongo_side_submissions = {}
+        final_out_puts = None
+        needs_mongo_submissions = (
+            webapi_side_submissions and parent_form_id
+        )  # if parent_form_id and webapi side submission is non empty then only go to mongo side
+        if needs_mongo_submissions:
+            logger.info("Fetching submission data from formio.")
+            # Extract the submission IDs
+            submission_ids = [
+                app["submission_id"]
+                for app in webapi_side_submissions
+                if app["submission_id"]
+            ]
+            # Get filtered submissions from MongoDB
+            mongo_side_submissions = await SubmissionsModel.query_submission(
+                submission_ids=submission_ids,
+                filter=mongo_search,
+                selected_form_fields=selected_form_fields,
+                page_no=not is_paginate_on_webapi_side and page_no or None,
+                limit=not is_paginate_on_webapi_side and limit or None,
+                **(sort_params if not is_sort_on_webapi_side else {}),
+            )
+            final_out_puts = SubmissionService._process_results(
+                webapi_side_submissions,
+                mongo_side_submissions.get("submissions", []),
+                is_sort_on_webapi_side,
+                limit,
+            )
+        # sometimes webapi_side_submission will be no empty but mongo side submission will be empty
+        data = final_out_puts if needs_mongo_submissions else webapi_side_submissions
+        return PaginatedSubmissionResponse(
+            submissions=[
+                SubmissionDetailsWithSubmissionData(
+                    id=row.get("id"),
+                    form_name=row.get("form_name"),
+                    submission_id=row.get("submission_id"),
+                    created_by=row.get("created_by"),
+                    application_status=row.get("application_status"),
+                    data=row.get("submission_data", {}),
+                )
+                for row in data
+            ],
+            total_count=(
+                mongo_side_submissions.get("total_count")
+                if mongo_search
+                and parent_form_id  # if mongo side submission is empty then use webapi side submission count
+                else total_count
+            ),
+            page_no=page_no,
+            limit=limit,
+        )

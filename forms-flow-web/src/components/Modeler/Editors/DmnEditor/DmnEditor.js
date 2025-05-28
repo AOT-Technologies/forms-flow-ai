@@ -62,9 +62,13 @@ const DmnEditor = forwardRef(({ dmnXml, onChange = ()=>{} }, ref) => {
           if (warnings.length) {
             console.warn("Import Warnings:", warnings);
           }
-         const eventBus = dmnModeler?.getActiveViewer()?.get("eventBus");
-         eventBus.off("element.changed",onChange);
-         eventBus.on("element.changed", onChange);
+          // when the view change [drd, decitionTable] need to listen the event
+          dmnModeler.on('views.changed', () => {            
+           const eventBus = dmnModeler?.getActiveViewer()?.get("eventBus");
+           // remove the event listener if listener is already added
+           eventBus.off("commandStack.changed",onChange);
+           eventBus.on('commandStack.changed', onChange);
+          });
         })
         .catch((err) => {
           handleError(err, "DMN Import Error: ");

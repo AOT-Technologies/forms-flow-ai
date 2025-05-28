@@ -493,7 +493,7 @@ NoDataFound.propTypes = {};
 
 export const ConfirmModal = ({show,
   onClose,
-  secondayBtnAction,
+  secondaryBtnAction,
   title,
   message,
   messageSecondary = '',
@@ -553,7 +553,7 @@ export const ConfirmModal = ({show,
 ConfirmModal.propTypes = {
   show: PropTypes.bool,
   onClose: PropTypes.func,
-  secondayBtnAction: PropTypes.func,
+  secondaryBtnAction: PropTypes.func,
   title: PropTypes.string,
   message: PropTypes.string,
   messageSecondary: PropTypes.string,
@@ -1021,3 +1021,41 @@ HistoryModal.propTypes = {
   ),
   historyCount: PropTypes.number,
 };
+
+
+export const useSuccessCountdownPropTypes = {
+  options: PropTypes.shape({
+    intervalDelay: PropTypes.number
+  }),
+  successState: PropTypes.shape({
+    showSuccess: PropTypes.bool.isRequired,
+    countdown: PropTypes.number.isRequired
+  }).isRequired,
+  startSuccessCountdown: PropTypes.func.isRequired
+};
+
+// The mock implementation remains the same
+export const useSuccessCountdown = (options = {}) => {
+  const mockSuccessState = {
+    showSuccess: false,
+    countdown: 0
+  };
+
+  const startSuccessCountdown = (callback, initialCount = 2) => {
+    mockSuccessState.showSuccess = true;
+    mockSuccessState.countdown = initialCount;
+    
+    if (callback) {
+      callback();
+    }
+  };
+
+  return {
+    successState: mockSuccessState,
+    startSuccessCountdown
+  };
+};
+
+useSuccessCountdown.propTypes = useSuccessCountdownPropTypes;
+
+export default useSuccessCountdown;

@@ -474,7 +474,7 @@ const ProcessCreateEdit = ({ type }) => {
         primaryBtnText,
         secondaryBtnText,
         primaryBtnAction: primaryAction,
-        secondayBtnAction: secondaryAction,
+        secondaryBtnAction: secondaryAction,
       };
     };
     
@@ -544,7 +544,7 @@ const ProcessCreateEdit = ({ type }) => {
         messageSecondary={modalContent.messageSecondary || ""}
         primaryBtnAction={modalContent.primaryBtnAction}
         onClose={closeModal}
-        secondayBtnAction={modalContent.secondayBtnAction}
+        secondaryBtnAction={modalContent.secondaryBtnAction}
         primaryBtnText={modalContent.primaryBtnText}
         secondaryBtnText={modalContent.secondaryBtnText}
         size="md"

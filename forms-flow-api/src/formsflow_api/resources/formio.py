@@ -1,5 +1,6 @@
 """API endpoints for managing formio resource."""
 
+import datetime
 import json
 from http import HTTPStatus
 from typing import Dict
@@ -143,6 +144,12 @@ class FormioResource(Resource):
             }
             if project_id:
                 payload["project"] = {"_id": project_id}
+
+            # Adding expire time
+            payload["exp"] = datetime.datetime.now(
+                datetime.timezone.utc
+            ) + datetime.timedelta(seconds=current_app.config.get("FORMIO_JWT_EXPIRE"))
+
             response.headers["x-jwt-token"] = jwt.encode(
                 payload=payload,
                 key=current_app.config.get("FORMIO_JWT_SECRET"),

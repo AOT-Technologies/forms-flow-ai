@@ -177,7 +177,7 @@ class SubmissionService:
                     submission_id=row.get("submission_id"),
                     created_by=row.get("created_by"),
                     application_status=row.get("application_status"),
-                    created = row.get("created"),
+                    created=row.get("created"),
                     data=row.get("submission_data", {}),
                 )
                 for row in data

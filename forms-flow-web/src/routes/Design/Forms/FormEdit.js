@@ -1121,7 +1121,7 @@ const handleSaveLayout = () => {
   };
 
   return (
-    <div data-testid="form-editor">
+    <div>
       <div>
         <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={t("You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side.")} />
         <LoadingOverlay active={formSubmitted || loadingVersioning} spinner text={t("Loading...")}>

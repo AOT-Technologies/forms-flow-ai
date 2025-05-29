@@ -35,7 +35,6 @@ def upgrade():
             updated_criteria['candidateGroupsExpression'] = '${currentUserGroups()}'
         updated_criteria.pop("processDefinitionKey", None)
         updated_criteria.pop("assigneeExpression", None)
-        updated_criteria.pop("assignee", None)
         return updated_criteria
 
     def filter_variables(variables):

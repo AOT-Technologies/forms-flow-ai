@@ -7,7 +7,6 @@ import {
 
   setBpmFormSort,
 } from "../../../actions/formActions";
-import LoadingOverlay from "react-loading-overlay-ts";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
@@ -20,6 +19,7 @@ import { HelperServices } from "@formsflow/service";
 import { CustomButton,TableFooter ,NoDataFound } from "@formsflow/components";
 import userRoles from "../../../constants/permissions";
 import SortableHeader from '../../CustomComponents/SortableHeader';
+import TableSkeleton from '../../SkeletonLoading/TableSkeleton';
 
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -102,10 +102,12 @@ function FormTable() {
     setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
   };
 
+  if (searchFormLoading || isApplicationCountLoading) {
+    return <TableSkeleton columns={5} rows={7} />;
+  }
 
   return (
-    <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400">
+   <div className="min-height-400">
           <div className="custom-tables-wrapper">
             <table className="table custom-tables table-responsive-sm mb-0">
               <thead className="table-header">
@@ -221,7 +223,6 @@ function FormTable() {
             </table>
           </div>
         </div>
-      </LoadingOverlay>
   );
 }
 

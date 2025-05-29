@@ -5,7 +5,6 @@ import {
     setCountPerpage,
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
-import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
 import { CustomButton, TableFooter, NoDataFound, ConfirmModal } from "@formsflow/components";
 import SortableHeader from '../../CustomComponents/SortableHeader';
@@ -14,6 +13,7 @@ import { deleteDraftbyId } from "../../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import { HelperServices } from "@formsflow/service";
+import TableSkeleton from '../../SkeletonLoading/TableSkeleton';
 
 const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -111,9 +111,12 @@ const noDataMessage = !searchFormLoading ? (
     />
 ) : null;
 
+if (isApplicationLoading) {
+  return <TableSkeleton columns={5} rows={7} />;
+}
+
 return (
-    <LoadingOverlay active={isApplicationLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400">
+ <div className="min-height-400">
             <div className="custom-tables-wrapper-application">
                 <table className="table custom-tables table-responsive-sm mb-0">
                     <thead className="table-header">
@@ -258,7 +261,6 @@ return (
             />
             </div>
         </div>
-    </LoadingOverlay>
 );
 };
 

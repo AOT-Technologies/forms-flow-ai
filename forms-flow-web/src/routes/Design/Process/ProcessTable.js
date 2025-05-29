@@ -7,6 +7,7 @@ import {
   TableFooter,
   NoDataFound,
   BuildModal,
+  TableSkeleton
 } from "@formsflow/components";
 import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
@@ -25,7 +26,6 @@ import {
   setDmnSort
 } from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
-import TableSkeleton from '../../../components/SkeletonLoading/TableSkeleton';
 const ProcessTable = React.memo(() => {
   const { viewType } = useParams();
   const isBPMN = viewType === "subflow";

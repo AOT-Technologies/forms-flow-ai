@@ -16,10 +16,9 @@ import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
-import { CustomButton,TableFooter ,NoDataFound } from "@formsflow/components";
+import { CustomButton,TableFooter ,NoDataFound, TableSkeleton } from "@formsflow/components";
 import userRoles from "../../../constants/permissions";
 import SortableHeader from '../../CustomComponents/SortableHeader';
-import TableSkeleton from '../../SkeletonLoading/TableSkeleton';
 
 function FormTable() {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -103,7 +102,7 @@ function FormTable() {
   };
 
   if (searchFormLoading || isApplicationCountLoading) {
-    return <TableSkeleton columns={5} rows={7} />;
+    return <TableSkeleton columns={5} rows={7} pagination={7} />;
   }
 
   return (

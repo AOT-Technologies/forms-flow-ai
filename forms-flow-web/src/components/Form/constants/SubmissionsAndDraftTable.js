@@ -6,14 +6,13 @@ import {
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
 import { useTranslation } from "react-i18next";
-import { CustomButton, TableFooter, NoDataFound, ConfirmModal } from "@formsflow/components";
+import { CustomButton, TableFooter, NoDataFound, ConfirmModal, TableSkeleton } from "@formsflow/components";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import { HelperServices } from "@formsflow/service";
-import TableSkeleton from '../../SkeletonLoading/TableSkeleton';
 
 const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -112,7 +111,7 @@ const noDataMessage = !searchFormLoading ? (
 ) : null;
 
 if (isApplicationLoading) {
-  return <TableSkeleton columns={5} rows={7} />;
+  return <TableSkeleton columns={5} rows={7} pagination={7} />;
 }
 
 return (

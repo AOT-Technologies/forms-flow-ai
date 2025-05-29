@@ -8,11 +8,10 @@ import {
 } from "../../../actions/formActions";
 import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
-import { TableFooter, CustomButton } from "@formsflow/components";
+import { TableFooter, CustomButton, TableSkeleton } from "@formsflow/components";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
-import TableSkeleton from '../../SkeletonLoading/TableSkeleton';
 
 
 function ClientTable() {
@@ -108,7 +107,7 @@ function ClientTable() {
 
   //Skeleton Loading
   if (searchFormLoading) {
-    return <TableSkeleton columns={5} rows={7} />;
+    return <TableSkeleton columns={5} rows={7} pagination={7} />;
   }
 
   return (

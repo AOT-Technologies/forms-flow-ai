@@ -41,6 +41,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
 * Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
 
+**forms-flow-idm**
+* Added view_submissions permission to the service account roles to support export PDF with service account token
+
 `Modified`
 
 **formsflow-api**

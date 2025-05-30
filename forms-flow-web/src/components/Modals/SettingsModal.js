@@ -55,8 +55,6 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
       <Modal.Footer>
         <div className="buttons-row">
           <CustomButton
-            variant="primary"
-            size="md"
             disabled={isSaving || isSaveButtonDisabled}
             buttonLoading={isSaving || isValidating}
             label={t("Save Changes")}
@@ -66,12 +64,11 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           />
 
           <CustomButton
-            variant="secondary"
-            size="md"
             label={t("Discard Changes")}
             onClick={handleClose}
             dataTestId="cancel-form-settings"
             ariaLabel={t("Cancel Form Settings")}
+            secondary
           />
         </div>
       </Modal.Footer>

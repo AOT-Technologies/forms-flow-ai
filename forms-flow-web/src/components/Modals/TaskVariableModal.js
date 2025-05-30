@@ -471,22 +471,17 @@ const TaskVariableModal = React.memo(
     const layoutNotSavedContent = (
       <>
         <CustomButton
-          variant="primary"
-          size="md"
-          className=""
           label={t("Back to Layout")}
           ariaLabel="Back to Layout btn"
           dataTestId="back-to-layout-btn"
           onClick={handleBackToLayout}
         />
         <CustomButton
-          variant="secondary"
-          size="md"
-          className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
           dataTestId="cancel-btn"
           onClick={handleClose}
+          secondary
         />
       </>
     );
@@ -495,9 +490,6 @@ const TaskVariableModal = React.memo(
     const layoutSavedContent = (
       <>
         <CustomButton
-          variant="primary"
-          size="md"
-          className=""
           disabled={isPublished}
           label={t("Save")}
           ariaLabel="save task variable btn"
@@ -505,13 +497,11 @@ const TaskVariableModal = React.memo(
           onClick={handleSaveTaskVariable}
         />
         <CustomButton
-          variant="secondary"
-          size="md"
-          className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
           dataTestId="cancel-btn"
           onClick={handleClose}
+          secondary
         />
       </>
     );

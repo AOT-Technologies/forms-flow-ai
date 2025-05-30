@@ -135,22 +135,17 @@ const ExportDiagram = React.memo(
         {isError && <Modal.Footer>
             <div className="buttons-row">
               <CustomButton
-                variant="primary"
-                size="md"
                 label={<Translation>{(t) => t(retryButtonText)}</Translation>}
                 onClick={exportData}
-                className="mb-2"
                 dataTestId="try-again"
                 ariaLabel="Try Again"
               />
               <CustomButton
-                variant="secondary"
-                size="md"
                 label={<Translation>{(t) => t(cancelButtonText)}</Translation>}
                 onClick={onClose}
-                className="mb-2"
                 dataTestId="cancel"
                 ariaLabel="Cancel"
+                secondary
               />
             </div>
         </Modal.Footer>}

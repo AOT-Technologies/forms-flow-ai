@@ -1153,63 +1153,30 @@ const handleSaveLayout = () => {
 
               {createDesigns && (
                 <div className="buttons">
-                  <button
-                    className="button-dark"
-                    onClick={editorActions}
-                    aria-label={(t) => t("Designer Actions Button")}
-                    data-testid="designer-action-testid"
-                    >
-                      {t("Actions")}
-                  </button>
 
-                  <button
-                    className="button-dark"
-                    onClick={handleToggleSettingsModal}
-                    aria-label={t("Designer Settings Button")}
-                    data-testid="editor-settings-testid"
-                    >
-                      {t("Settings")}
-                  </button>
-
-                  <button
-                    className="button-dark-primary "
-                    onClick={handlePublishClick}
-                    aria-label={`${t(publishText)} ${t("Button")}`}
-                    data-testid="handle-publish-testid"
-                    >
-                      {t(publishText)}
-                  </button>
-
-
-                  {/* <CustomButton
-                    variant=""
-                    size=""
-                    className="button-dark"
-                    label={t("Settings")}
-                    onClick={handleToggleSettingsModal}
-                    dataTestId="editor-settings-testid"
-                    ariaLabel={t("Designer Settings Button")}
-                  /> */}
-
-                  {/* <CustomButton
-                    variant=""
-                    size=""
-                    className="button-dark"
+                  <CustomButton
                     label={t("Actions")}
                     onClick={editorActions}
                     dataTestId="designer-action-testid"
                     ariaLabel={(t) => t("Designer Actions Button")}
-                  /> */}
-                  {/* <CustomButton
-                    variant=""
-                    size=""
-                    className="button-dark-primary"
+                    dark
+                  />
+
+                  <CustomButton
+                    label={t("Settings")}
+                    onClick={handleToggleSettingsModal}
+                    dataTestId="editor-settings-testid"
+                    ariaLabel={t("Designer Settings Button")}
+                    dark
+                  />
+
+                  <CustomButton
                     label={t(publishText)}
-                    buttonLoading={isPublishLoading}
                     onClick={handlePublishClick}
                     dataTestId="handle-publish-testid"
                     ariaLabel={`${t(publishText)} ${t("Button")}`}
-                  /> */}
+                    darkPrimary
+                  />
                 </div>
               )}
             
@@ -1226,24 +1193,22 @@ const handleSaveLayout = () => {
                       <h2>{t("Layout")}</h2>
 
                       <CustomButton
-                        variant="secondary"
-                        size="md"
                         icon={<HistoryIcon />}
                         label={t("History")}
                         onClick={() => handleFormHistory()}
                         dataTestId="handle-form-history-testid"
                         ariaLabel={t("Form History Button")}
+                        iconWithText
                       />
 
                       <CustomButton
-                        variant="secondary"
-                        size="md"
                         className="mx-2"
                         icon={<PreviewIcon />}
                         label={t("Preview")}
                         onClick={handlePreview}
                         dataTestId="handle-preview-testid"
                         ariaLabel={t("Preview Button")}
+                        iconWithText
                       />
                     </div>
                   )}
@@ -1251,9 +1216,6 @@ const handleSaveLayout = () => {
                   {createDesigns && (
                     <div>
                       <CustomButton
-                        variant="primary"
-                        size="md"
-                        className="mx-2"
                         disabled={!formChangeState.changed}
                         label={t("Save Layout")}
                         onClick={
@@ -1261,11 +1223,10 @@ const handleSaveLayout = () => {
 
                         }
                         dataTestId="save-form-layout"
-                        ariaLabel={t("Save Form Layout")}
+                        ariaLabel={t("Save Form Layout")
+                        }
                       />
                       <CustomButton
-                        variant="secondary"
-                        size="md"
                         label={t("Discard Changes")}
                         onClick={() => {
                           openConfirmModal("discard");
@@ -1273,6 +1234,7 @@ const handleSaveLayout = () => {
                         disabled={!formChangeState.changed}
                         dataTestId="discard-button-testid"
                         ariaLabel={t("cancelBtnariaLabel")}
+                        secondary
                       />
                     </div>
                   )}

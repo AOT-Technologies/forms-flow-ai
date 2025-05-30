@@ -632,21 +632,17 @@ const ProcessCreateEdit = ({ type }) => {
                 <h2>{t("Flow")}</h2>
                 {!isCreate && (
                   <CustomButton
-                    variant="secondary"
-                    size="md"
                     icon={<HistoryIcon />}
                     onClick={handleProcessHistory}
                     label={t("History")}
                     dataTestId={`${diagramType.toLowerCase()}-history-button-testid`}
                     ariaLabel={t(`${diagramType} History Button`)}
+                    iconWithText
                   />
                 )}
               </div>
               <div>
                 <CustomButton
-                  variant="primary"
-                  size="md"
-                  className="mx-2"
                   onClick={saveFlow}
                   label={t(`Save ${diagramType}`)}
                   buttonLoading={savingFlow}
@@ -655,13 +651,12 @@ const ProcessCreateEdit = ({ type }) => {
                   ariaLabel={t(`Save ${diagramType} Layout`)}
                 />
                 <CustomButton
-                  variant="secondary"
-                  size="md"
                   onClick={() => openConfirmModal("discard")}
                   label={t("Discard Changes")}
                   disabled={!isWorkflowChanged}
                   dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
                   ariaLabel={t(`Discard ${diagramType} Changes`)}
+                  secondary
                 />
               </div>
           </Card.Header>

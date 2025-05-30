@@ -72,8 +72,6 @@ const ActionModal = React.memo(
             {CategoryType === "FORM" && (
               <div className="buttons-row">
                 <CustomButton
-                  variant="secondary"
-                  size="sm"
                   label={t("Duplicate")}
                   disabled={!isMigrated}
                   icon={<DuplicateIcon color={primaryColor} />}
@@ -81,40 +79,35 @@ const ActionModal = React.memo(
                   dataTestId="duplicate-form-button"
                   ariaLabel="Duplicate Button"
                   onClick={() => handleAction("DUPLICATE")}
+                  iconWithText
                 />
                 <CustomButton
-                  variant="secondary"
                   disabled={published || !isMigrated}
-                  size="sm"
                   label={t("Import")}
                   icon={<ImportIcon disabled={published} />}
-                  className=""
                   dataTestId="import-form-button"
                   ariaLabel="Import Form"
                   onClick={() => handleAction("IMPORT")}
+                  iconWithText
                 />
 
                 <CustomButton
-                  variant="secondary"
-                  size="sm"
                   label={t("Export")}
                   icon={<ExportIcon />}
-                  className=""
                   dataTestId="export-form-button"
                   ariaLabel="Export Form"
                   onClick={() => handleAction("EXPORT")}
+                  iconWithText
                 />
 
                 <CustomButton
-                  variant="secondary"
                   disabled={published}
-                  size="sm"
                   label={t("Delete")}
                   icon={<TrashIcon disabled={published} />}
-                  className=""
                   dataTestId="delete-form-button"
                   ariaLabel="Delete Form"
                   onClick={() => handleAction("DELETE")}
+                  iconWithText
                 />
               </div>
             )}
@@ -122,38 +115,32 @@ const ActionModal = React.memo(
             {CategoryType === "WORKFLOW" && (
               <div className="buttons-row">
                 <CustomButton
-                  variant="secondary"
-                  size="sm"
                   label={t("Duplicate")}
                   icon={<DuplicateIcon />}
-                  className=""
                   dataTestId="duplicate-workflow-button"
                   ariaLabel="Duplicate Workflow"
                   disabled={isCreate}
                   onClick={() => handleAction("DUPLICATE")}
+                  iconWithText
                 />
 
                 <CustomButton
-                  variant="secondary"
                   disabled={published}
-                  size="sm"
                   label={t("Import")}
                   icon={<ImportIcon disabled={published}  />}
-                  className=""
                   dataTestId="import-workflow-button"
                   ariaLabel="Import Workflow"
                   onClick={() => handleAction("IMPORT")}
+                  iconWithText
                 />
 
                 <CustomButton
-                  variant="secondary"
-                  size="sm"
                   label={t("Export")}
                   icon={<PencilIcon />}
-                  className=""
                   dataTestId="export-workflow-button"
                   ariaLabel="Export Workflow"
                   onClick={() => handleAction("EXPORT")}
+                  iconWithText
                 />
               </div>
             )}

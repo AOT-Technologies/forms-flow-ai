@@ -144,7 +144,7 @@ function FormTable() {
                     handleSort={handleSort}
                     className="w-12"/>
                   
-                  <th className="w-12" aria-label="Search Forms by form title"></th>
+                  <th className="text-end" aria-label="Search Forms by form title"></th>
                 </tr>
               </thead>
 
@@ -182,7 +182,7 @@ function FormTable() {
                                 {e.status === "active" ? t("Live") : t("Draft")}
                               </span>
                             </td>
-                            <td className="w-12 text-end">
+                            <td className="text-end">
                             {(createDesigns || viewDesigns) && (
                               <CustomButton
                                 label={
@@ -200,7 +200,7 @@ function FormTable() {
                         );
                       })}
                     </div>
-                    <div className="custom-scrollbar"><div></div></div>
+                    <div className="custom-scrollbar"></div>
                   </tbody>
                   <tfoot>
                     {formData.length ? (

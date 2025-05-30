@@ -154,7 +154,7 @@ return (
                                   handleSort={handleSort}
                                   className="w-12"
                               />
-                            <th className="w-20" colSpan="4"></th>
+                            <th className="text-end" colSpan="4"></th>
                         </tr>
                     </thead>
 
@@ -179,7 +179,7 @@ return (
                                 </td>
                                 <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
 
-                                <td className="w-20 text-end">
+                                <td className="text-end">
                                   {item.isDraft ? (
                                     <div className="d-flex justify-content-end gap-2">
                                       <CustomButton

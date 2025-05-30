@@ -222,23 +222,20 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
               <div>
                 <h2>{t("Flow")}</h2>
                 <CustomButton
-                  variant="secondary"
-                  size="md"
                   icon={<HistoryIcon />}
                   label={t("History")}
                   onClick={handleProcessHistory}
                   dataTestId="flow-history-button-testid"
                   ariaLabel={t("Flow History Button")}
+                  iconWithText
                 />
                 <CustomButton
-                  variant="secondary"
-                  size="md"
-                  className="mx-2"
                   icon={<CurlyBracketsIcon />}
                   label={t("Variables")}
                   onClick={() => handlePreviewAndVariables()}
                   dataTestId="preview-and-variables-testid"
                   ariaLabel={t("{Preview and Variables Button}")}
+                  iconWithText
                 />
               </div>
             )}
@@ -246,9 +243,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
             {createDesigns && (
               <div>
                 <CustomButton
-                  variant="primary"
-                  size="md"
-                  className="mx-2"
                   label={t("Save Flow")}
                   onClick={isPublished ? handleUnpublishAndSaveChanges : handleSaveFlowClick}
                   disabled={!workflowIsChanged}
@@ -257,13 +251,12 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
                   buttonLoading={savingFlow}
                 />
                 <CustomButton
-                  variant="secondary"
-                  size="md"
                   label={t("Discard Changes")}
                   onClick={handleDiscardModal}
                   disabled={!workflowIsChanged}
                   dataTestId="discard-flow-changes-testid"
                   ariaLabel={t("Discard Flow Changes")}
+                  secondary
                 />
               </div>
             )}

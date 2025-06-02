@@ -235,7 +235,7 @@ const FormSettings = forwardRef((props, ref) => {
   const tabs = [
     {
       eventKey: "Basic",
-      title: "Basic",
+      title: <span data-testid="tab-title-basic">Basic</span>,
       content: (
         <div className="settings-sections">
         <FormInput
@@ -243,7 +243,7 @@ const FormSettings = forwardRef((props, ref) => {
           value={formDetails.title}
           label={t("Name")}
           onChange={handleFormDetailsChange}
-          dataTestId="form-name"
+          dataTestId="basic-form-settings"
           name="title"
           ariaLabel={t("Form Name")}
           isInvalid = {!!errors.title}
@@ -281,7 +281,7 @@ const FormSettings = forwardRef((props, ref) => {
     },
     {
       eventKey: "Permissions",
-      title: "Permissions",
+      title: <span data-testid="tab-title-permissions">Permissions</span>,
       content: (
         <div className="settings-sections">
         <DropdownMultiSelect
@@ -386,14 +386,14 @@ const FormSettings = forwardRef((props, ref) => {
     },
     {
       eventKey :"Link",
-      title : "Link",
+      title : <span data-testid="tab-title-link">Link</span>,
       content : (
         <div className="settings-sections">
-        <CustomInfo heading={t("Note")}
+        <CustomInfo heading={t("Note")} dataTestId={"form-url-info"}
         content={t("Making changes to your form URL will make your form inaccessible from your current URL.")} />
         <Form.Group className="settings-input w-100" controlId="url-input">
           <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
-          <InputGroup className="url-input">
+          <InputGroup className="url-input" data-testid="url-input-group">
             <InputGroup.Text className="url-non-edit">
               {urlPath}
             </InputGroup.Text>

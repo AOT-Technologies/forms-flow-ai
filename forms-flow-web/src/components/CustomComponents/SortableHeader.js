@@ -28,7 +28,7 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
       >
         <span className="mt-1">{t(title)}</span>
         <span className={sortedOrder === "asc" ? "arrow-up" : "arrow-down"}>
-        <SortIcon color={iconColor}/>
+        <SortIcon color={iconColor} dataTestId={`${(title).toLowerCase()}-sort`}/>
       </span>
       </button>
     );

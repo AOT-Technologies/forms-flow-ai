@@ -23,11 +23,11 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
                 </Modal.Header>
                 <Modal.Body className="create-form-modal-body d-flex justify-content-around">
                     <div className="content-wrapper" onClick={() => onAction(ActionType.BUILD)}>
-                        <span className="modal-content-heading">{t("Build")}</span>
+                        <span className="modal-content-heading" data-testid="build-new-form">{t("Build")}</span>
                         <span className="modal-content-text">{t("Create the form from scratch")}</span>
                     </div>
                     <div className="content-wrapper" onClick={() => onAction(ActionType.IMPORT)}>
-                        <span className="modal-content-heading">{t("Import")}</span>
+                        <span className="modal-content-heading" data-testid="import-new-form">{t("Import")}</span>
                         <span className="modal-content-text">{t("Upload form from a file")}</span>
                     </div>
                 </Modal.Body>

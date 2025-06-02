@@ -56,7 +56,7 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                     <b>{title}</b>
                 </Modal.Title>
                 <div className="d-flex align-items-center">
-                    <CloseIcon width="16.5" height="16.5" onClick={() => {
+                    <CloseIcon width="16.5" height="16.5" data-testid="modal-close-icon" onClick={() => {
                         clearState();
                     }} />
                 </div>

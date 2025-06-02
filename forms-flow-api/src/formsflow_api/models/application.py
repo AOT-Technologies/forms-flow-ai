@@ -4,8 +4,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
     FILTER_MAPS,
@@ -881,11 +879,11 @@ class Application(
         """Sort by submission count or latest submission time."""
         order_func = desc if "desc" in sort_order else asc
         if "latestSubmission" in sort_by:
-            # Sort by latest submission time, treating NULLs as min datetime
+            # Sort by latest submission time, treating NULLs first while ascending & last while descending
             return query.order_by(
-                order_func(
-                    func.coalesce(submission_alias.c.latest_submission, datetime.min)
-                )
+                order_func(submission_alias.c.latest_submission).nulls_last()
+                if order_func == desc
+                else order_func(submission_alias.c.latest_submission).nulls_first()
             )
         # Default: sort by submission count, treating NULLs as 0
         return query.order_by(

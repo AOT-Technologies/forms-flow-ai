@@ -881,10 +881,10 @@ class Application(
         """Sort by submission count or latest submission time."""
         order_func = desc if "desc" in sort_order else asc
         if "latestSubmission" in sort_by:
-            # Sort by latest submission time, treating NULLs as max datetime
+            # Sort by latest submission time, treating NULLs as min datetime
             return query.order_by(
                 order_func(
-                    func.coalesce(submission_alias.c.latest_submission, datetime.max)
+                    func.coalesce(submission_alias.c.latest_submission, datetime.min)
                 )
             )
         # Default: sort by submission count, treating NULLs as 0

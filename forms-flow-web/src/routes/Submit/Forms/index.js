@@ -45,7 +45,7 @@ export default React.memo(() => {
   }
 
   return (
-    <div data-testid="Form-index">
+    // <div data-testid="Form-index">
       <Switch>
         {/* <Route exact path={`${BASE_ROUTE}formflow`} component={List} /> */}
         <Route exact path={`${BASE_ROUTE}form`} component={SubmitList} />
@@ -63,6 +63,6 @@ export default React.memo(() => {
           component={ViewApplication}
         />
       </Switch>
-    </div>
+    // </div>
   );
 });

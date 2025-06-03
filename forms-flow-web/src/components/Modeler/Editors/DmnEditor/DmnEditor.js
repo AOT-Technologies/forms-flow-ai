@@ -103,7 +103,7 @@ const DmnEditor = forwardRef(({ dmnXml, onChange = ()=>{} }, ref) => {
         <div
           id="canvas"
           ref={containerRef}
-          className="bpm-modeler-container border border-dark border-1"
+          className="bpm-modeler-container"
         ></div>
         <div className="d-flex justify-content-end zoom-container" id="zoom-id">
           <div className="d-flex flex-column gap-3">

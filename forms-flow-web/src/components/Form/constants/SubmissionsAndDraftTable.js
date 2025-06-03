@@ -113,130 +113,119 @@ const noDataMessage = !searchFormLoading ? (
 
 return (
     <LoadingOverlay active={isApplicationLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400">
-            <div className="custom-tables-wrapper-application">
+        
+            <div className="custom-tables-wrapper">
                 <table className="table custom-tables table-responsive-sm mb-0">
                     <thead className="table-header">
                         <tr>
-                            <th className="w-20">
-                                <SortableHeader
-                                    columnKey="id"
-                                    title="Submission ID"
-                                    currentSort={applicationSort}
-                                    handleSort={handleSort}
-                                    className="gap-2"
-                                />
-                            </th>
-                            <th className="w-20">
-                                <SortableHeader
-                                    columnKey="created"
-                                    title="Submitted On"
-                                    currentSort={applicationSort}
-                                    handleSort={handleSort}
-                                    className="gap-2"
-                                />
-                            </th>
-                            <th className="w-20">
-                                <SortableHeader
-                                    columnKey="modified"
-                                    title="Last Modified On"
-                                    currentSort={applicationSort}
-                                    handleSort={handleSort}
-                                    className="gap-2"
-                                />
-                            </th>
-                            <th className="w-12" colSpan="4">
-                                <SortableHeader
-                                    columnKey="type"
-                                    title="Type"
-                                    currentSort={applicationSort}
-                                    handleSort={handleSort}
-                                    className="gap-2"
-                                />
-                            </th>
-                            <th className="w-12" colSpan="4">
-                                <SortableHeader
-                                    columnKey="applicationStatus"
-                                    title="Status"
-                                    currentSort={applicationSort}
-                                    handleSort={handleSort}
-                                    className="gap-2"
-                                />
-                            </th>
-                            <th className="w-20" colSpan="4"></th>
+                              <SortableHeader
+                                  columnKey="id"
+                                  title="Submission ID"
+                                  currentSort={applicationSort}
+                                  handleSort={handleSort}
+                                  className="w-20"
+                              />
+                              <SortableHeader
+                                  columnKey="created"
+                                  title="Submitted On"
+                                  currentSort={applicationSort}
+                                  handleSort={handleSort}
+                                  className="w-20"
+                              />
+                              <SortableHeader
+                                  columnKey="modified"
+                                  title="Last Modified On"
+                                  currentSort={applicationSort}
+                                  handleSort={handleSort}
+                                  className="w-20"
+                              />
+                              <SortableHeader
+                                  columnKey="type"
+                                  title="Type"
+                                  currentSort={applicationSort}
+                                  handleSort={handleSort}
+                                  className="w-12"
+                              />
+                              <SortableHeader
+                                  columnKey="applicationStatus"
+                                  title="Status"
+                                  currentSort={applicationSort}
+                                  handleSort={handleSort}
+                                  className="w-12"
+                              />
+                            <th className="text-end" colSpan="4"></th>
                         </tr>
                     </thead>
 
                     {draftAndSubmissionsList?.applications?.length ? (
-                        <tbody>
+                        <>
+                          <tbody>
+                          <div className="table-scroll-container">
                             {draftAndSubmissionsList?.applications?.map((item) => (
-                                <tr key={item.id}>
-                                    <td className="w-20">
-                                        <div className="d-flex">
-                                            <span className="text-container">{item.id}</span>
-                                        </div>
-                                    </td>
-                                    <td className="w-20">{HelperServices.getLocalDateAndTime(item.created)}</td>
-                                    <td className="w-20">{HelperServices.getLocalDateAndTime(item.modified)}</td>
-                                    <td className="w-12">
-                                        <span className="d-flex align-items-center">
-                                            {item.isDraft ? <span className="status-draft"></span> : <span className="status-live"></span>}
-                                            {item.isDraft ? t("Draft") : t("Submission")}
-                                        </span>
-                                    </td>
-                                    <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
+                              <tr key={item.id}>
+                                <td className="w-20">
+                                  <div className="d-flex">
+                                    <span className="text-container">{item.id}</span>
+                                  </div>
+                                </td>
+                                <td className="w-20">{HelperServices.getLocalDateAndTime(item.created)}</td>
+                                <td className="w-20">{HelperServices.getLocalDateAndTime(item.modified)}</td>
+                                <td className="w-12">
+                                  <span className="d-flex align-items-center">
+                                    {item.isDraft ? <span className="status-draft"></span> : <span className="status-live"></span>}
+                                    {item.isDraft ? t("Draft") : t("Submission")}
+                                  </span>
+                                </td>
+                                <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
 
-                                    <td className="w-20 text-end">
-                                        {item.isDraft ? (
-                                            <div className="d-flex justify-content-end gap-2">
-                                                <CustomButton
-                                                    variant="secondary"
-                                                    size="table"
-                                                    label={t("Delete")}
-                                                    onClick={() => deleteDraft(item)}
-                                                    className="btn btn-secondary btn-table"
-                                                    data-testid={
-                                                        `delete-draft-button-${item.id}`
-                                                    }
-                                                    aria-label={t("Delete Draft")}
-                                                />
-                                                <CustomButton
-                                                    variant="secondary"
-                                                    size="table"
-                                                    label={t("Continue")}
-                                                    onClick={() => continueDraft(item)}
-                                                    className="btn btn-secondary btn-table"
-                                                    data-testid={
-                                                        `continue-draft-button-${item.id}`
-                                                    }
-                                                    aria-label={t("Continue Draft edit")}
-                                                />
-                                            </div>
-                                        ) : (
-                                            <CustomButton
-                                                variant="secondary"
-                                                size="table"
-                                                label={t("View")}
-                                                onClick={() => viewSubmission(item)}
-                                                className="btn btn-secondary btn-table"
-                                            />
-                                        )}
-                                    </td>
-                                </tr>
+                                <td className="text-end">
+                                  {item.isDraft ? (
+                                    <div className="d-flex justify-content-end gap-2">
+                                      <CustomButton
+                                        variant="secondary"
+                                        size="table"
+                                        label={t("Delete")}
+                                        onClick={() => deleteDraft(item)}
+                                        data-testid={`delete-draft-button-${item.id}`}
+                                        aria-label={t("Delete Draft")}
+                                        actionTable />
+                                      <CustomButton
+                                        variant="secondary"
+                                        size="table"
+                                        label={t("Continue")}
+                                        onClick={() => continueDraft(item)}
+                                        data-testid={`continue-draft-button-${item.id}`}
+                                        aria-label={t("Continue Draft edit")}
+                                        actionTable />
+                                    </div>
+                                  ) : (
+                                    <CustomButton
+                                      variant="secondary"
+                                      size="table"
+                                      label={t("View")}
+                                      onClick={() => viewSubmission(item)} 
+                                      actionTable />
+                                  )}
+                                </td>
+                              </tr>
                             ))}
-                            {draftAndSubmissionsList?.applications?.length ? (
-                                <TableFooter
-                                    limit={limit}
-                                    activePage={pageNo}
-                                    totalCount={totalForms}
-                                    handlePageChange={handlePageChange}
-                                    onLimitChange={onSizePerPageChange}
-                                    pageOptions={pageOptions}
-                                />
-                            ) : (
-                                <td colSpan={3}></td>
-                            )}
+                          </div>
+                          <div className="custom-scrollbar"></div>
                         </tbody>
+                        <tfoot>
+                          {draftAndSubmissionsList?.applications?.length ? (
+                            <TableFooter
+                              limit={limit}
+                              activePage={pageNo}
+                              totalCount={totalForms}
+                              handlePageChange={handlePageChange}
+                              onLimitChange={onSizePerPageChange}
+                              pageOptions={pageOptions} />
+                          ) : (
+                            <></>
+                          )}
+                        </tfoot>
+                        </>
                     ) : noDataMessage}
                 </table>
                 
@@ -257,7 +246,7 @@ return (
                 secondaryBtnLoading={isDeletionLoading}
             />
             </div>
-        </div>
+        
     </LoadingOverlay>
 );
 };

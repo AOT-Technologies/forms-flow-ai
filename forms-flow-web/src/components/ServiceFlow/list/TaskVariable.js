@@ -33,14 +33,14 @@ const TaskVariable = ({ expandedTasks, setExpandedTasks,taskId, variables }) => 
   };
 
   const filterTaskVariables = (taskvariable)=>{
-    if(!vissibleAttributes.taskVisibleAttributes.applicationId){
+    if(!vissibleAttributes?.taskVisibleAttributes?.applicationId){
       return taskvariable = taskvariable.filter((item) => item.label !== 'Application Id');
     }
     return taskvariable;
   };
 
   const filterVariables = (variables)=>{
-    if(!vissibleAttributes.taskVisibleAttributes.applicationId){
+    if(!vissibleAttributes?.taskVisibleAttributes?.applicationId){
       return variables = variables.filter((item) => item.label !== 'applicationId');
     }
     return variables;

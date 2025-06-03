@@ -4,6 +4,10 @@ import Modal from "react-bootstrap/Modal";
 import ModalTitle from "react-bootstrap/ModalTitle";
 import Form from "react-bootstrap/Form";
 import { Translation, useTranslation } from "react-i18next";
+
+import {
+  CloseIcon
+} from "@formsflow/components";
  
 function TaskAttributeComponent({
   show,
@@ -88,15 +92,12 @@ function TaskAttributeComponent({
       backdrop="static"
     >
       <Modal.Header className="bg-light">
-        <ModalTitle as={"h3"}>
-          <Translation>{(t) => t("Task Attribute")}</Translation>
+        <ModalTitle>
+          <p><Translation>{(t) => t("Task Attribute")}</Translation></p>
         </ModalTitle>
-        <button
-          type="button"
-          className="btn-close"
-          aria-label="Close"
-          onClick={onHide}
-        ></button>
+        <div className="icon-close" onClick={onHide} aria-label="Close">
+          <CloseIcon />
+        </div>
       </Modal.Header>
       <Modal.Body className="p-4">
         <p>
@@ -232,13 +233,15 @@ function TaskAttributeComponent({
       </Modal.Body>
       { !viewMode &&
         <Modal.Footer>
-        <button className="btn btn-link text-dark " onClick={onHide}>
-          {t("Cancel")}
-        </button>
-        <button className="btn btn-primary" onClick={handleSave}>
-          {t("Save")}
-        </button>
-      </Modal.Footer>
+          <div className="buttons-row">
+            <button className="btn btn-link text-dark " onClick={onHide}>
+              {t("Cancel")}
+            </button>
+            <button className="btn btn-primary" onClick={handleSave}>
+              {t("Save")}
+            </button>
+          </div>
+        </Modal.Footer>
       }
       
     </Modal>

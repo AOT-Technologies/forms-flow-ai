@@ -66,7 +66,7 @@ const ProcessTable = React.memo(() => {
   const sortConfig = useSelector((state) =>
     isBPMN ? state.process.bpmsort : state.process.dmnSort
   );
-
+  
   const [bpmnState, setBpmnState] = useState({
     activePage: 1,
     limit: 5,
@@ -255,8 +255,8 @@ const ProcessTable = React.memo(() => {
 
   return (
     <>
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+      <div className="table-bar">
+        <div className="filters">
           <CustomSearch
             search={search}
             setSearch={isBPMN ? setSearchBPMN : setSearchDMN}
@@ -268,7 +268,7 @@ const ProcessTable = React.memo(() => {
             dataTestId={`${ProcessContents.processType}-search-input`}
           />
         </div>
-        <div className="d-md-flex justify-content-end align-items-center button-align">
+        <div className="actions">
           <FilterSortActions
             showSortModal={showSortModal}
             handleFilterIconClick={handleFilterIconClick}
@@ -284,66 +284,58 @@ const ProcessTable = React.memo(() => {
             refreshAriaLabel={ProcessContents.refreshAriaLabel}
           />
           {createDesigns && (<CustomButton
-            variant="primary"
-            size="sm"
             label={t(`New ${ProcessContents.processType}`)}
             onClick={handleCreateProcess}
             dataTestid={`create-${ProcessContents.processType}-button`}
             ariaLabel={` Create ${ProcessContents.processType}`}
+            action
           />)}
         </div>
       </div>
       <LoadingOverlay active={isLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400 pt-3">
-          <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
-              <thead className="table-header">
-                <tr>
-                  <th className="w-25" scope="col">
-                    <SortableHeader
-                      columnKey="name"
-                      title="Name"
-                      currentSort={sortConfig}
-                      handleSort={handleSort}
-                      className="gap-2"
-                    />
-                  </th>
-                  <th className="w-20" scope="col">
-                    <SortableHeader
-                      columnKey="processKey"
-                      title="ID"
-                      currentSort={sortConfig}
-                      handleSort={handleSort}
-                      className="gap-2"
-                    />
-                  </th>
-                  <th className="w-15" scope="col">
-                    <SortableHeader
-                      columnKey="modified"
-                      title="Last Edited"
-                      currentSort={sortConfig}
-                      handleSort={handleSort}
-                      className="gap-2"
-                    />
-                  </th>
-                  <th className="w-15" scope="col">
-                    <SortableHeader
-                      columnKey="status"
-                      title="Status"
-                      currentSort={sortConfig}
-                      handleSort={handleSort}
-                      className="gap-2"
-                    />
-                  </th>
-                  <th
+        <div className="custom-tables-wrapper">
+          <table className="table custom-tables table-responsive-sm">
+            <thead className="table-header">
+              <tr>
+                  <SortableHeader
+                    columnKey="name"
+                    title="Name"
+                    currentSort={sortConfig}
+                    handleSort={handleSort}
                     className="w-25"
-                    colSpan="4"
-                    aria-label="edit-button"
-                  ></th>
-                </tr>
-              </thead>
-              {processList.length ? (
-                <tbody>
+                  />
+                  <SortableHeader
+                    columnKey="processKey"
+                    title="ID"
+                    currentSort={sortConfig}
+                    handleSort={handleSort}
+                    className="w-20"
+                  />
+                  <SortableHeader
+                    columnKey="modified"
+                    title="Last Edited"
+                    currentSort={sortConfig}
+                    handleSort={handleSort}
+                    className="w-15"
+                  />
+                  <SortableHeader
+                    columnKey="status"
+                    title="Status"
+                    currentSort={sortConfig}
+                    handleSort={handleSort}
+                    className="w-15"
+                  />
+                <th
+                  className="w-25"
+                  colSpan="4"
+                  aria-label="edit-button"
+                ></th>
+              </tr>
+            </thead>
+            {processList.length ? (
+              <>
+              <tbody>
+                <div className="table-scroll-container">
                   {processList.map((processItem) => (
                     <ReusableProcessTableRow
                       key={processItem.id}
@@ -352,7 +344,11 @@ const ProcessTable = React.memo(() => {
                       buttonLabel={ProcessContents.processType}
                     />
                   ))}
-                  <TableFooter
+                </div>
+                <div className="custom-scrollbar"><div></div></div>
+              </tbody>
+              <tfoot>
+                <TableFooter
                     limit={currentState.limit}
                     activePage={currentState.activePage}
                     totalCount={totalCount}
@@ -367,12 +363,16 @@ const ProcessTable = React.memo(() => {
                       { text: "All", value: totalCount },
                     ]}
                   />
-                </tbody>
-              ) : (
-                !isLoading &&  <NoDataFound message={t(`${ProcessContents.message}`)} />
-              )}
-            </table>
-          </div>
+              </tfoot>
+              </>
+            ) : !isLoading ? (
+              <tbody className="table-empty">
+                <div className="table-scroll-container">
+                  <NoDataFound message={t(`${ProcessContents.message}`)} />
+                </div>
+              </tbody>
+            ) : null}
+          </table>
         </div>
       </LoadingOverlay>
       <BuildModal

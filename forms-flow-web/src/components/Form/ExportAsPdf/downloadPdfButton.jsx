@@ -3,7 +3,7 @@ import { httpPOSTBlobRequest } from "../../../apiManager/httpRequestHandler";
 import API from "../../../apiManager/endpoints";
 import { toast } from "react-toastify";
 import { useDownloadFile } from "./useDownloadFile";
-import { Container } from "react-bootstrap";
+// import { Container } from "react-bootstrap";
 import { replaceUrl } from "../../../helper/helper";
 import { useTranslation } from "react-i18next";
 import { withFeature } from "flagged";
@@ -53,18 +53,17 @@ const DownloadPDFButton = React.memo(({ form_id, submission_id, title }) => {
   });
 
   return (
-    <Container className="d-flex flex-column">
+    <div>
       <a href={url} download={name} className="hidden" ref={ref} id="export-btn"/>
       <CustomButton
-        variant="light"
         label={t("Export PDF")}
         onClick={download}
         buttonLoading={buttonState}
         dataTestId="export-pdf-button"
         ariaLabel="Export PDF Button"
-        size="table"
+        darkPrimary
       />
-    </Container>
+    </div>
   );
 });
 

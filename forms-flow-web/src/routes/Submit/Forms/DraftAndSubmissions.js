@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
-import { Card } from "react-bootstrap";
+// import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
 import {
@@ -143,24 +143,23 @@ const DraftsAndSubmissions = () => {
   }, [pageNo, limit, applicationSort, search, selectedItem, parentFormId,formId]);
 
   return (
-    <div>
+    <>
       {/* Header */}
-      <Card className="editor-header">
-        <Card.Body>
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
-              <BackToPrevIcon onClick={redirectBackToForm} data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
-              <div className="mx-4 editor-header-text">
-                {formName}
-              </div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+      <div className="nav-bar">
+        <div className="icon-back" onClick={redirectBackToForm}>
+          <BackToPrevIcon data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
+        </div>
+
+        <div className="description">
+          <p className="text-main">
+            {formName || ""}
+          </p>
+        </div>
+      </div>
 
       {/* Actions */}
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <div className="d-md-flex justify-content-start align-items-center button-align">
+      <div className="table-bar">
+        <div className="filters">
           <CustomButton
             className="appliation-dropdown"
             isDropdown
@@ -183,7 +182,7 @@ const DraftsAndSubmissions = () => {
           />
         </div>
 
-        <div className="d-md-flex justify-content-end align-items-center button-align">
+        <div className="actions">
           <FilterSortActions
             showSortModal={showSortModal}
             handleSortApply={handleSortApply}
@@ -197,12 +196,11 @@ const DraftsAndSubmissions = () => {
             refreshDataTestId="form-list-refresh"
           />
           <CustomButton
-            variant="primary"
-            size="sm"
             label={t("New Submission")}
             onClick={submitNewForm}
             dataTestId="create-form-button"
             ariaLabel="Create Form"
+            action
           />
         </div>
       </div>
@@ -211,7 +209,7 @@ const DraftsAndSubmissions = () => {
       <SubmissionsAndDraftTable
         fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
       />
-    </div>
+    </>
   );
 };
 

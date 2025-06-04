@@ -264,6 +264,7 @@ class Application(
     def find_all_by_user(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         user_id: str,
+        view_only_submission: bool,
         page_no: int,
         limit: int,
         order_by: str,
@@ -276,7 +277,16 @@ class Application(
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(Application.created_by == user_id)
-        if only_drafts:  # only draft applications
+        # if view_only_submission is True, then we need to filter out drafts and resubmissions
+        if view_only_submission:
+            query = query.filter(
+                ~or_(
+                    cls.is_draft.is_(True),  # Exclude drafts
+                    cls.is_resubmit.is_(True),
+                    cls.application_status.in_(["Resubmit", "Awaiting Acknowledgement"])
+                )
+            )
+        elif only_drafts:  # only draft applications
             query = query.filter(Application.is_draft.is_(True))
         elif not include_drafts:  # only submissions
             query = cls.filter_draft_applications(query=query)

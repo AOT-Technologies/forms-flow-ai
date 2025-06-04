@@ -52,7 +52,7 @@ export default React.memo(() => {
         <GenericRoute
           path={`${BASE_ROUTE}form/:parentFormId?/entries`}
           component={DraftAndSubmissions}
-          roles={['create_submissions']}
+          roles={['create_submissions','view_submissions']}
         />
         <GenericRoute
           path={`${BASE_ROUTE}form/:formId/`}

@@ -13,6 +13,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added new permission for submitter to work on resubmissions
 * Added new permission to view process diagram
 * Added new permission to view history
+* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
 
 **formsflow-api**
 * Below fields added to application list endpoint
@@ -40,6 +41,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
 * Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
 * Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
+
+
+**formsflow-documents**
+* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
 
 **forms-flow-idm**
 * Added view_submissions permission to the service account roles to support export PDF with service account token

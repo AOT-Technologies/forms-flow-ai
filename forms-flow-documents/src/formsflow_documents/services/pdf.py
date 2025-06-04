@@ -27,6 +27,7 @@ class PDFService:
 
     __slots__ = (
         "__is_form_adaptor",
+        "__is_enable_compact_form_view",
         "__custom_submission_url",
         "__form_io_url",
         "__host_name",
@@ -44,6 +45,7 @@ class PDFService:
         submission_id: submissionid corresponding to the PDF.
         """
         self.__is_form_adaptor = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
+        self.__is_enable_compact_form_view = current_app.config.get("ENABLE_COMPACT_FORM_VIEW")
         self.__custom_submission_url = current_app.config.get("CUSTOM_SUBMISSION_URL")
         self.__form_io_url = current_app.config.get("FORMIO_URL")
         self.__host_name = current_app.config.get("FORMSFLOW_DOC_API_URL")
@@ -55,6 +57,10 @@ class PDFService:
     def __is_form_adapter(self) -> bool:
         """Returns whether th eapplication is using a form adaptor."""
         return self.__is_form_adaptor
+
+    def __is_enabled_compact_form_view(self) -> bool:
+        """Returns whether thE application is using a COMPACT_FORM_VIEW."""
+        return self.__is_enable_compact_form_view
 
     def __get_custom_submission_url(self) -> str:
         """Returns the custom submission url based on config."""
@@ -136,6 +142,7 @@ class PDFService:
                 "token": self.__get_formio_access_token(),
                 "form_adapter": self.__is_form_adapter(),
                 "submission_data": submission_data,
+                "compact_form_view": self.__is_enabled_compact_form_view(),
             }
         }
 

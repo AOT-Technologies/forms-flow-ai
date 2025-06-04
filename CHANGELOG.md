@@ -2,6 +2,13 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.0.2 - 2025-06-04
+
+`Added`
+
+**forms-flow-bpm**
+* Addition of ssl certificate in bpm layer to work on secured environments and updated the docker file
+
 ## 7.0.1 - 2025-03-15
 
 `Added`

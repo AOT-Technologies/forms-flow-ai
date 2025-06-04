@@ -138,6 +138,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Database error while updating filter preferences",
         HTTPStatus.BAD_REQUEST,
     )
+    PROCESS_NOT_INITIALIZED = (
+        "Process not initialized",
+        HTTPStatus.SERVICE_UNAVAILABLE
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

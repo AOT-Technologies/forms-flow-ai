@@ -38,17 +38,11 @@ variable = API.model(
     {
         "name": fields.String(description="Variable name"),
         "label": fields.String(description="Display name"),
-    },
-)
-task_visible_attributes = API.model(
-    "taskVisibleAttributes",
-    {
-        "applicationId": fields.Boolean(),
-        "assignee": fields.Boolean(),
-        "createdDate": fields.Boolean(),
-        "dueDate": fields.Boolean(),
-        "followUp": fields.Boolean(),
-        "priority": fields.Boolean(),
+        "key": fields.String(description="Variable key"),
+        "type": fields.String(description="Variable type"),
+        "isChecked": fields.Boolean(description="Is variable checked"),
+        "sortOrder": fields.Integer(description="Sort order of the variable"),
+        "isFormVariable": fields.Boolean(description="Is this a form variable"),
     },
 )
 properties = API.model(
@@ -60,7 +54,6 @@ filter_base_model = API.model(
     "FilterBaseModel",
     {
         "name": fields.String(description="Name of the filter"),
-        "description": fields.String(description="Description about filter"),
         "criteria": fields.Nested(criteria, description="Filter criteria"),
         "variables": fields.List(
             fields.Nested(variable, description=" Variables shown in the tasks list"),
@@ -72,10 +65,6 @@ filter_base_model = API.model(
         "users": fields.List(
             fields.String(), description="Authorized Users to the filter"
         ),
-        "taskVisibleAttributes": fields.Nested(
-            task_visible_attributes, description="Visible attributes in task"
-        ),
-        "order": fields.Integer(description="Filter display order"),
         "parentFilterId": fields.Integer(description="Parent filter id"),
         "filterType": fields.String(description="Filter type"),
     },
@@ -191,7 +180,6 @@ class FilterResource(Resource):
         ```
         {
             "name": "Test Task",
-            "description": "Filter creation test task",
             "variables":[
                     {
                     "name": "name",
@@ -209,15 +197,6 @@ class FilterResource(Resource):
             "roles": ["/formsflow/formsflow-reviewer"],
             "isTasksForCurrentUserGroupsEnabled":true,
             "isMyTasksEnabled":true,
-            "order": 1,
-            "taskVisibleAttributes": {
-                "applicationId": true,
-                "assignee": true,
-                "createdDate": true,
-                "dueDate": true,
-                "followUp": true,
-                "priority": true
-            }
             "parentFilterId": null,
             "filterType": "TASK"
         }

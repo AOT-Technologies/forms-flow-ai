@@ -28,8 +28,6 @@ class FilterSchema(AuditDateTimeSchema):
     id = fields.Int()
     tenant = fields.Str(allow_none=True)
     name = fields.Str()
-    description = fields.Str(allow_none=True)
-    resource_id = fields.Str(data_key="resourceId", allow_none=True)
     criteria = fields.Dict()
     variables = fields.List(
         fields.Dict()
@@ -40,10 +38,8 @@ class FilterSchema(AuditDateTimeSchema):
     status = fields.Str()
     created_by = fields.Str(data_key="createdBy", dump_only=True)
     modified_by = fields.Str(data_key="modifiedBy", dump_only=True)
-    task_visible_attributes = fields.Dict(data_key="taskVisibleAttributes")
     isMyTasksEnabled = fields.Bool(load_only=True)
     isTasksForCurrentUserGroupsEnabled = fields.Bool(load_only=True)
-    order = fields.Int(data_key="order", allow_none=True)
     sort_order = fields.Int(data_key="sortOrder", allow_none=True, dump_only=True)
     hide = fields.Bool(data_key="hide", default=False, allow_none=True, dump_only=True)
     filter_type = fields.Method(

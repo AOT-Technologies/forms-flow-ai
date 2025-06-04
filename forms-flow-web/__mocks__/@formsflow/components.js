@@ -599,7 +599,7 @@ BackToPrevIcon.propTypes = {
 };
 
 export const CustomInfo = () => {
-  return <div className={`info-panel`}>
+  return <div className={`info-panel`} data-testid="custom-info-panel">
   <div className="d-flex align-items-center">
     <InfoIcon />
     <div className="field-label ms-2">Note</div>

@@ -377,6 +377,7 @@
           "manage-clients",
           "realm-admin"
         ],
+        "forms-flow-web": ["view_submissions"],
         "account": ["view-profile", "manage-account"]
       },
       "notBefore": 0,

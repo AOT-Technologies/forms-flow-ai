@@ -224,6 +224,7 @@ const MAIN_ROUTE = {
   DECISIONTABLE: "decision-table",
   METRICS: "metrics",
   INSIGHTS: "insights",
+  ANALYZESUBMISSIONS: "analyzesubmissions",
   ADMIN: "admin",
   NOTFOUND: "404"
 };
@@ -242,6 +243,7 @@ export const getRoute = (tenantId) => ({
   SUBFLOW: getBaseRoute(tenantId) + MAIN_ROUTE.SUBFLOW,
   DECISIONTABLE: getBaseRoute(tenantId) + MAIN_ROUTE.DECISIONTABLE,
   METRICS: getBaseRoute(tenantId) + MAIN_ROUTE.METRICS,
+  ANALYZESUBMISSIONS: getBaseRoute(tenantId) + MAIN_ROUTE.ANALYZESUBMISSIONS,
   INSIGHTS: getBaseRoute(tenantId) + MAIN_ROUTE.INSIGHTS,
   ADMIN: getBaseRoute(tenantId) + MAIN_ROUTE.ADMIN,
   NOTFOUND: getBaseRoute(tenantId) + MAIN_ROUTE.NOTFOUND,

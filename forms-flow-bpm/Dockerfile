@@ -32,12 +32,12 @@ EXPOSE 8080
 RUN test ! -d /app && mkdir /app || :
 # Add spring boot application
 RUN mkdir -p /app
-COPY sslcom.crt /app/sslcom.crt
+COPY sslcom.cer /app/sslcom.cer
 COPY --from=MAVEN_TOOL_CHAIN /tmp/forms-flow-bpm-camunda/target/forms-flow-bpm.jar ./app
 RUN chmod a+rwx -R /app
 RUN keytool -import -trustcacerts \
     -alias sslcom-cert \
-    -file /app/sslcom.crt \
+    -file /app/sslcom.cer \
     -keystore  /usr/java/openjdk-21/lib/security/cacerts \
     -storepass changeit \
     -noprompt

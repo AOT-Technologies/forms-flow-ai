@@ -275,7 +275,9 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         user_roles = user.roles
-        view_only_submission = 'view_submissions' in user_roles and 'create_submissions' not in user_roles
+        view_only_submission = (
+            "view_submissions" in user_roles and "create_submissions" not in user_roles
+        )
         if only_drafts and view_only_submission:
             # View-only users should not see anything unless only_drafts is True
             return [], 0

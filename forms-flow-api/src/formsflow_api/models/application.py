@@ -283,7 +283,9 @@ class Application(
                 ~or_(
                     cls.is_draft.is_(True),  # Exclude drafts
                     cls.is_resubmit.is_(True),
-                    cls.application_status.in_(["Resubmit", "Awaiting Acknowledgement"])
+                    cls.application_status.in_(
+                        ["Resubmit", "Awaiting Acknowledgement"]
+                    ),
                 )
             )
         elif only_drafts:  # only draft applications

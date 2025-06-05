@@ -5,9 +5,11 @@ import React, {
   forwardRef,
   useRef
 } from "react";
-import { Form, FormControl, InputGroup } from "react-bootstrap";
+// import { Form, FormControl, InputGroup } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import {
   CopyIcon,
+  CheckIcon,
   CustomInfo,
   FormInput,
   FormTextArea,
@@ -251,7 +253,9 @@ const FormSettings = forwardRef((props, ref) => {
           turnOnLoader={isValidating.name}
           onBlur={() => handleBlur('title', formDetails.title)}   
           maxLength={200} 
+          id="formflow-name"
           />
+
         <FormTextArea
           dataTestId="form-description"
           label={t("Description")}
@@ -309,7 +313,7 @@ const FormSettings = forwardRef((props, ref) => {
          displayValue={multiSelectOptionKey}
          ariaLabel="design-permission"
          dataTestId="design-permission"
-         
+          id="who-can-view"
         />
 
         <DropdownMultiSelect
@@ -339,7 +343,7 @@ const FormSettings = forwardRef((props, ref) => {
           displayValue={multiSelectOptionKey}
           ariaLabel="form-permission"
           dataTestId="form-permission"
-
+          id="who-can-create"
         />
         <Form.Check
           type="checkbox"
@@ -379,6 +383,7 @@ const FormSettings = forwardRef((props, ref) => {
          onMultiSelectionChange={handleRoleSelectForApplication}
           displayValue={multiSelectOptionKey}
           dataTestId="application-permission"
+          id="who-can-submit"
         />
 
         </>
@@ -389,30 +394,47 @@ const FormSettings = forwardRef((props, ref) => {
       title : <span data-testid="tab-title-link">Link</span>,
       content : (
         <>
-        <CustomInfo heading={t("Note")} dataTestId={"form-url-info"}
-        content={t("Making changes to your form URL will make your form inaccessible from your current URL.")} />
-        <Form.Group className="settings-input w-100" controlId="url-input">
-          <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
-          <InputGroup className="url-input" data-testid="url-input-group">
-            <InputGroup.Text className="url-non-edit">
-              {urlPath}
-            </InputGroup.Text>
+          <CustomInfo heading={t("Note")} dataTestId={"form-url-info"}
+            content={t("Making changes to your form URL will make your form inaccessible from your current URL.")}
+          />
 
-            <FormControl
-              type="text"
-              data-test-id="url-edit-input"
-              value={formDetails.path}
-              className="url-edit"
-              name="path"
-              onChange={handleFormDetailsChange}
-              onBlur={() => handleBlur('path', formDetails.path)}           />
-            <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
-              {copied ? <i className="fa fa-check" /> : <CopyIcon />}
-            </InputGroup.Text>
-          </InputGroup>
-          {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
+          <FormInput
+            value={t(formDetails.path)}
+            label={urlPath}
+            onChange={handleFormDetailsChange}
+            data-test-id="url-edit-input"
+            name="path"
+            type="text"
+            ariaLabel={t("Form Url")}
+            onBlur={() => handleBlur('title', formDetails.title)} 
+            icon={copied ? <CheckIcon className="svgIcon-success" /> : <CopyIcon />}
+            onIconClick={copyPublicUrl}
+            id="formflow-url"
+            feedback={errors.path ? errors.path : ""}
+          />
 
-        </Form.Group>
+          {/* Below code is not removed . Can be used for reference */}
+          {/* <Form.Group className="settings-input w-100" controlId="url-input">
+            <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
+            <InputGroup className="url-input" data-testid="url-input-group">
+              <InputGroup.Text className="url-non-edit">
+                {urlPath}
+              </InputGroup.Text>
+
+              <FormControl
+                type="text"
+                data-test-id="url-edit-input"
+                value={formDetails.path}
+                className="url-edit"
+                name="path"
+                onChange={handleFormDetailsChange}
+                onBlur={() => handleBlur('path', formDetails.path)}           />
+              <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
+                {copied ? <i className="fa fa-check" /> : <CopyIcon />}
+              </InputGroup.Text>
+            </InputGroup>
+            {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
+          </Form.Group> */}
         </>
       )
     }

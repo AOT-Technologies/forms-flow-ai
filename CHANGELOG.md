@@ -49,6 +49,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **forms-flow-idm**
 * Added view_submissions permission to the service account roles to support export PDF with service account token
+* Added new permissions to the forms-flow-ai realm
 
 `Modified`
 

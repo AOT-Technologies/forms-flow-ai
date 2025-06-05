@@ -1,38 +1,87 @@
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.form.io/formiojs/formio.full.min.css"
+    />
+    <style type="text/css" media="print">
+      .formio-component {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
 
-<head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-  <style type="text/css" media="print">
-    .formio-component {
-      break-inside: avoid;
-      page-break-inside: avoid;
-    }
+      .formio-component-button,
+      .signature-pad-refresh,
+      .input-group-append,
+      .field-required:after,
+      .signature-pad-footer,
+      .fa-question-circle {
+        display: none;
+      }
 
-    .formio-component-button,
-    .signature-pad-refresh,
-    .input-group-append,
-    .field-required:after,
-    .signature-pad-footer,
-    .fa-question-circle {
-      display: none;
-    }
-  </style>
+        {
+        % if form.compact_form_view %
+      }
 
-  <script defer src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
-  <script defer src="https://unpkg.com/formsflow-formio-custom-elements/dist/customformio.js"></script>
-  <script defer src="{{ url_for('static', filename='js/from_io_render.js') }}"></script>
-  <script defer type="text/javascript">
-    form_info = {{ form | tojson }}
-  </script>
-</head>
+      .formio-form,
+      .form-builder {
+        transform: scale(0.95);
+        transform-origin: top;
+        zoom: 0.9 !important;
+      }
 
-<body onload="renderForm()">
-  <div style="margin: 10px;">
-    <div id="formio"></div>
-  </div>
-</body>
+      .formio-form .form-group,
+      .formio-builder-form .form-group {
+        margin-bottom: 0 !important;
+      }
 
+      .formio-component {
+        padding-top: 0.25rem !important;
+      }
+
+      .formio-form,
+      .formio-wizard-nav-container.list-inline {
+        padding-top: 0.25rem !important;
+      }
+
+      .col-form-label {
+        padding-bottom: 0 !important;
+      }
+
+        {
+        % endif %
+      }
+    </style>
+
+    <script
+      defer
+      src="https://cdn.form.io/formiojs/formio.full.min.js"
+    ></script>
+    <script
+      defer
+      src="https://unpkg.com/formsflow-formio-custom-elements/dist/customformio.js"
+    ></script>
+    <script
+      defer
+      src="{{ url_for('static', filename='js/from_io_render.js') }}"
+    ></script>
+    <script defer type="text/javascript">
+      form_info = {{ form | tojson }}
+    </script>
+  </head>
+
+  <body onload="renderForm()">
+    <div style="margin: 10px">
+      <div id="formio"></div>
+    </div>
+  </body>
 </html>

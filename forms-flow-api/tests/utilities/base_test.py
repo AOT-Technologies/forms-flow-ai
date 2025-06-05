@@ -464,30 +464,17 @@ def get_filter_payload(
     name: str = "Test Task",
     roles: list = [],
     users: list = [],
-    order: int = None,
     filter_type: str = "TASK",
     parent_filter_id: int = None,
 ):
     """Return filter create payload."""
     return {
         "name": name,
-        "description": "Test task",
         "variables": [{"name": "name", "label": "userName"}],
-        "criteria": {"processDefinitionName": "onestepapproval", "condition": "ALL"},
+        "criteria": {"candidateGroupsExpression": "${currentUserGroups()}", "includeAssignedTasks": True},
         "properties": {"priority": 10},
         "users": users,
         "roles": roles,
-        "order": order,
-        "taskVisibleAttributes": {
-            "applicationId": True,
-            "assignee": True,
-            "taskTitle": True,
-            "createdDate": True,
-            "dueDate": True,
-            "followUp": True,
-            "priority": True,
-            "groups": True,
-        },
         "parentFilterId": parent_filter_id,
         "filterType": filter_type,
     }
@@ -616,4 +603,16 @@ def get_process_request_payload_low_code(name="Lowcode workflow", status="Draft"
                 "animated": True,
             },
         ],
+    }
+
+
+def task_outcome_config_payload():
+    """Return task outcome configuration payload."""
+    return {
+        "taskId": "19c06cb9-fb49-11ef-af3f-66318ba5bc56",
+        "taskName": "Test Task",
+        "taskTransitionMap": [
+                {"key": "approve", "label": "Approve"},
+                {"key": "reject", "label": "Reject"},],
+        "transitionMapType": "select",
     }

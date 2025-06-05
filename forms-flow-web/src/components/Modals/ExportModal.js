@@ -86,7 +86,7 @@ const ExportModal = React.memo(({ showExportModal, onClose, mapperId, formTitle 
             <Translation>{(t) => t("Export Form")}</Translation>
           </p>
         </Modal.Title>
-        <div className="icon-close" onClick={onClose}>
+        <div className="icon-close" onClick={onClose} data-testid="modal-close-icon">
           <CloseIcon />
         </div>
       </Modal.Header>

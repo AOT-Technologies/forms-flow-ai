@@ -49,7 +49,9 @@ export const formatForms = (forms) => {
       created: form.created,
       formType: form.formType,
       modified:form.modified,
-      submissionsCount:form.submissionsCount
+      latestSubmission: form.latestSubmission,
+      submissionsCount:form.submissionsCount,
+      parentFormId:form.parentFormId,
     };
   });
 };

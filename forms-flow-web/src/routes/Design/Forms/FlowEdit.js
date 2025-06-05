@@ -213,7 +213,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
             onClose={handleDiscardModal}
             primaryBtnText={t("Yes, Discard All Unsaved Changes")}
             secondaryBtnText={t("No, Keep The Changes")}
-            secondayBtnAction={handleDiscardModal}
+            secondaryBtnAction={handleDiscardModal}
             size="sm"
           />
           {/* <Card.Header> */}
@@ -347,7 +347,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         onClose={handleCloseMigration}
         primaryBtnText={t("Link this form that will keep the current flow and its history")}
         secondaryBtnText={t("Cancel")}
-        secondayBtnAction={handleCloseMigration}
+        secondaryBtnAction={handleCloseMigration}
         buttonLoading={isMigrationLoading}
         size="sm"
       />}

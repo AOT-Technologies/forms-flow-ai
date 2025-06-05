@@ -149,7 +149,7 @@ export const getFormattedProcess = (application) => {
 
 export const checkIsObjectId = (data) => {
   // Condition to check if the data is a mongoDb object Id or not
-  return data.length === 24 && !isNaN(Number("0x" + data));
+  return data?.length === 24 && !isNaN(Number("0x" + data));
 };
 
 export const copyText = (text)=>{

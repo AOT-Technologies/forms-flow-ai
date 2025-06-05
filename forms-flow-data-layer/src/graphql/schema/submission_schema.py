@@ -20,16 +20,21 @@ class SubmissionSchema:
 
 
 @strawberry.type
-class QuerySubmissionsSchema:
+class SubmissionDetailsWithSubmissionData:
     id: int
     created_by: str
+    submission_id: str
+    form_name: str
     application_status: str
-    data: Optional[JSON] = None
+    created: str
+    data: Optional[JSON] = (
+        None  # this data is the submission data from mongodb or we can pass any json data
+    )
 
 
 @strawberry.type
 class PaginatedSubmissionResponse:
-    submissions: List[QuerySubmissionsSchema]
+    submissions: List[SubmissionDetailsWithSubmissionData]
     total_count: int
     page_no: Optional[int] = None
     limit: Optional[int] = None

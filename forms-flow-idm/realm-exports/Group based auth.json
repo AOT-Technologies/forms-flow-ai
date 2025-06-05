@@ -148,6 +148,20 @@
           "composite": false,
           "clientRole": true,
           "attributes": {}
+        },
+        {
+          "name": "view_process_diagram",
+          "description": "Access to view process diagram",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "view_history",
+          "description": "Access to view history",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
         }
       ],
       "forms-flow-bpm": [],
@@ -363,6 +377,7 @@
           "manage-clients",
           "realm-admin"
         ],
+        "forms-flow-web": ["view_submissions"],
         "account": ["view-profile", "manage-account"]
       },
       "notBefore": 0,

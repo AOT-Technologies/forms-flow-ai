@@ -9,6 +9,11 @@
   overflow: hidden;
   width: 100%;
   display: flex;
+  // margin-top: 10px;
+  // resize: vertical;
+  // overflow: hidden;
+  // max-height: calc(100vh - 15.45rem);
+  // min-height: calc(100vh - 16rem);
   height: 100%;
   resize: vertical;
 }
@@ -102,6 +107,18 @@
   width: 100%;
 }
 
+.tjs-table-container::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: transparent;
+  display: block;
+  opacity: 0;
+  scrollbar-width:8px !important;
+}
+.tjs-table-container {
+  scrollbar-width: 8px; 
+  scrollbar-color: #888  #E2E1FC; 
+}
 .properties-panel-parent {
   border-left: 1px solid $gray-medium;
   // border-left: none;

@@ -16,7 +16,9 @@ jest.mock('connected-react-router', () => ({
   push: jest.fn(),
 }));
 
-
+jest.mock('../../helper/routerHelper', () => ({
+  navigateToFormEntries: jest.fn(),
+}));
 const queryClient = new QueryClient();
 let store;
 let history;
@@ -51,10 +53,22 @@ jest.mock("../../routes/Submit/Forms/DraftAndSubmissions", () => () => (
 
 
 beforeEach(() => {
+  const mockForms = [
+    {
+      _id: "mock-form-id",
+      parentFormId: "mock-form-id",
+      title: "Test Form",
+      description: "Test Description",
+      status: "active",
+      submissionsCount: 5,
+      modified: "2023-01-01T00:00:00.000Z"
+    }
+  ];
   const mockstateSort = {
     ...mockstate,
     bpmForms: {
       ...mockstate.bpmForms,
+      forms: mockForms,
       sort: {
         ...mockstate.bpmForms.sort,
         activeKey: "formName",
@@ -62,6 +76,13 @@ beforeEach(() => {
         modified: { sortOrder: "asc" },
         submissionCount: { sortOrder: "asc" },
       },
+      // Add submitFormSort which is what ClientTable.js actually uses
+      submitFormSort: {
+        activeKey: "formName",
+        formName: { sortOrder: "asc" },
+        latestSubmission: { sortOrder: "asc" },
+        submissionCount: { sortOrder: "asc" },
+      }
     },
   };
   store = configureStore({
@@ -115,13 +136,13 @@ it('should handle form name column sorting', async () => {
   // Now we can check the second call to dispatch
   expect(store.dispatch).toHaveBeenCalledWith(
     expect.objectContaining({
-      type: 'BPM_FORM_SORT', // Check for the correct action type
+      type: 'CLIENT_SUBMIT_LIST_SORT_CHANGE', // Updated to match the actual action type
       payload: expect.objectContaining({
         activeKey: 'formName',
         formName: expect.objectContaining({
           sortOrder: 'desc', // Adjust this based on expected sort order
         }),
-        modified: expect.objectContaining({
+        latestSubmission: expect.objectContaining({
           sortOrder: 'asc',
         }),
         submissionCount: expect.objectContaining({
@@ -146,13 +167,13 @@ it('should handle submission count column sorting', async () => {
   // Now we can check the second call to dispatch
   expect(store.dispatch).toHaveBeenCalledWith(
     expect.objectContaining({
-      type: 'BPM_FORM_SORT', // Check for the correct action type
+      type: 'CLIENT_SUBMIT_LIST_SORT_CHANGE', // Updated to match the actual action type
       payload: expect.objectContaining({
         activeKey: 'submissionCount',
         formName: expect.objectContaining({
           sortOrder: 'asc', // Adjust this based on expected sort order
         }),
-        modified: expect.objectContaining({
+        latestSubmission: expect.objectContaining({
           sortOrder: 'asc',
         }),
         submissionCount: expect.objectContaining({
@@ -163,27 +184,28 @@ it('should handle submission count column sorting', async () => {
   );
 });
 
-
-it('should handle latest submission (Modified) column sorting', async () => {
+it('should handle latest submission column sorting', async () => {
   const sortButton = screen.getByTestId('Latest Submission-header-btn');
   fireEvent.click(sortButton);
+  
   // The first call should be a function (thunk)
   const dispatchedFunction = store.dispatch.mock.calls[0][0];
-  expect(typeof dispatchedFunction).toBe('function');  // Confirm it's a function (thunk)
-
+  expect(typeof dispatchedFunction).toBe('function');
+  
+  // Confirm it's a function (thunk)
   // Now invoke the thunk with store.dispatch
   dispatchedFunction(store.dispatch);
-
+  
   // Now we can check the second call to dispatch
   expect(store.dispatch).toHaveBeenCalledWith(
     expect.objectContaining({
-      type: 'BPM_FORM_SORT', // Check for the correct action type
+      type: 'CLIENT_SUBMIT_LIST_SORT_CHANGE', // Updated to match the actual action type
       payload: expect.objectContaining({
-        activeKey: 'modified',
+        activeKey: 'latestSubmission',
         formName: expect.objectContaining({
-          sortOrder: 'asc', // Adjust this based on expected sort order
+          sortOrder: 'asc',
         }),
-        modified: expect.objectContaining({
+        latestSubmission: expect.objectContaining({
           sortOrder: 'desc',
         }),
         submissionCount: expect.objectContaining({
@@ -195,24 +217,24 @@ it('should handle latest submission (Modified) column sorting', async () => {
 });
 
 it('should render the selected form correctly', () => {
-  // First, make sure the mockstate includes a form with a known ID
-  const mockFormId = mockstate.bpmForms.forms[0]._id; // Use an ID that exists in your mock data
+  // Create a spy on the navigateToFormEntries function
+  const navigateSpy = jest.spyOn(require('../../helper/routerHelper'), 'navigateToFormEntries');
+  
+  // Use the parentFormId from the mock form
+  const mockFormId = "mock-form-id";
   
   // Find the select button for this form
   const selectButton = screen.getByTestId(`form-submit-button-${mockFormId}`);
   expect(selectButton).toBeInTheDocument();
   
-  // Mock the navigateToFormEntries function
-  jest.mock('../../helper/routerHelper', () => ({
-    navigateToFormEntries: jest.fn(),
-  }));
-  
   // Click the button
   fireEvent.click(selectButton);
   
   // Check that the navigateToFormEntries function was called
-  // This is different from the original test which expected a direct push action
-  expect(store.dispatch).toHaveBeenCalled();
+  expect(navigateSpy).toHaveBeenCalled();
+  
+  // Clean up the spy
+  navigateSpy.mockRestore();
 });
 
 
@@ -225,7 +247,6 @@ it('should render the table footer component and handle pagination correctly', (
   expect(footer).toBeInTheDocument();
   const itemsCount = screen.getByTestId("items-count");
   expect(itemsCount).toBeInTheDocument();
-
 
   // Test pagination controls
   const prevButton = screen.getByTestId('left-button');

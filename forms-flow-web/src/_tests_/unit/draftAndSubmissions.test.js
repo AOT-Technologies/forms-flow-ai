@@ -246,41 +246,43 @@ describe("DraftsAndSubmissions Component", () => {
   beforeEach(() => {
     // Setup mock store with initial state
     store = mockStore({
-      tenants: {
-        tenantId: "test-tenant",
+    tenants: {
+      tenantId: "test-tenant",
+    },
+    formCheckList: {
+      searchFormLoading: false,
+    },
+    applications: {
+      draftAndSubmissionsList: {
+        applications: [
+          {
+            applicationName: "Test Form",
+            id: "app-123",
+            created: "2023-01-01",
+            modified: "2023-01-02",
+            applicationStatus: "Submitted",
+            type: "Submission",
+          },
+        ],
+        totalCount: 1,
+        formId: "test-form-id", // Add formId here inside draftAndSubmissionsList
       },
-      formCheckList: {
-        searchFormLoading: false,
+      parentFormId: "test-parent-id",
+      activePage: 1,
+      countPerPage: 10,
+      searchParams: "",
+      sort: {
+        activeKey: "created",
+        created: { sortOrder: "desc" },
       },
-      applications: {
-        draftAndSubmissionsList: {
-          applications: [
-            {
-              applicationName: "Test Form",
-              id: "app-123",
-              created: "2023-01-01",
-              modified: "2023-01-02",
-              applicationStatus: "Submitted",
-              type: "Submission",
-            },
-          ],
-          totalCount: 1,
-        },
-        activePage: 1,
-        countPerPage: 10,
-        searchParams: "",
-        sort: {
-          activeKey: "created",
-          created: { sortOrder: "desc" },
-        },
-      },
-    });
+    },
+  });
 
     // Mock the API calls to return a thunk function
-    applicationServices.fetchApplicationsAndDrafts.mockImplementation(() => {
-      return () => Promise.resolve({ applications: [], totalCount: 0 });
-    });
+   applicationServices.fetchApplicationsAndDrafts.mockImplementation(() => {
+    return () => Promise.resolve({ applications: [], totalCount: 0 });
   });
+});
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -335,20 +337,19 @@ describe("DraftsAndSubmissions Component", () => {
     expect(searchInput.value).toBe("");
   });
 
-  test("navigates to new submission when button clicked", () => {
-    renderComponent();
+test("navigates to new submission when button clicked", () => {
+  renderComponent();
+  // Click new submission button
+  const newSubmissionButton = screen.getByTestId("create-form-button");
+  fireEvent.click(newSubmissionButton);
+  // Verify navigation function was called
+  expect(routerHelper.navigateToNewSubmission).toHaveBeenCalledWith(
+    expect.anything(),
+    "test-tenant",
+    formId
+  );
+});
 
-    // Click new submission button
-    const newSubmissionButton = screen.getByTestId("create-form-button");
-    fireEvent.click(newSubmissionButton);
-
-    // Verify navigation function was called
-    expect(routerHelper.navigateToNewSubmission).toHaveBeenCalledWith(
-      expect.anything(),
-      "test-tenant",
-      formId
-    );
-  });
 
   test("navigates back to form listing when back button clicked", () => {
     renderComponent();

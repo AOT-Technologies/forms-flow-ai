@@ -11,6 +11,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added Draft and Submission list table
 * Redesigned user form selection screens
 * Added new permission for submitter to work on resubmissions
+* Added new permission to view process diagram
+* Added new permission to view history
+* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
+
 **formsflow-api**
 * Below fields added to application list endpoint
    * Added parentFormId filter parameter to filter the submissions for a specific form
@@ -33,6 +37,18 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added variables(task_variables) as part of import and export.
 * Added Endpoint `/filter/filter-preference ` for saving user's filter preference data
 * Added new table called filter_preferences to handle filter preference of a user
+* Added new table task_outcome_configuration to store workflow transition rules
+* Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
+* Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
+* Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
+* Added new permissions and enhanced permission definitions with categories to `/permissions` endpoint
+
+
+**formsflow-documents**
+* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
+
+**forms-flow-idm**
+* Added view_submissions permission to the service account roles to support export PDF with service account token
 
 `Modified`
 
@@ -51,6 +67,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Draft submit by id: `/draft/<id>/submit`
    * Public draft submit by id: `/draft/public/<id>/submit`
 
+**formsflow-bpm**
+* FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](./CHANGELOG.md#405---2022-04-19))
 
 ## 7.0.0 - 2025-01-10
 

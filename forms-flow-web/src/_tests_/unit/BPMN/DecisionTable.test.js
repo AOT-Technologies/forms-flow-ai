@@ -20,6 +20,25 @@ import '../utils/i18nForTests'; // import to remove warning related to i18n impo
 jest.mock("connected-react-router", () => ({
   push: jest.fn(),
 }));
+
+jest.mock('@formsflow/service', () => {
+  const actualService = jest.requireActual('@formsflow/service');
+  
+  return {
+    ...actualService, 
+    HelperServices: {
+      ...actualService.HelperServices,
+      getResetSortOrders: jest.fn(() => ({
+        activeKey: "name",
+        name: { sortOrder: "asc" },
+        processKey: { sortOrder: "asc" },
+        status: { sortOrder: "asc" },
+        modified: { sortOrder: "asc" },
+      })),
+    }
+  };
+});
+
 jest.mock("@formsflow/components", () => ({
     ...jest.requireActual("../../../__mocks__/@formsflow/components"),
     FilterIcon: () => <div>Filter Icon</div>,

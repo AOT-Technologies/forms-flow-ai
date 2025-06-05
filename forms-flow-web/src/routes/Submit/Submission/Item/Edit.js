@@ -142,6 +142,7 @@ const Edit = React.memo((props) => {
               ...options,
               i18n: RESOURCE_BUNDLES_DATA,
               language: lang,
+              buttonSettings: { showCancel: false },
             }}
             onCustomEvent={onCustomEvent}
           />

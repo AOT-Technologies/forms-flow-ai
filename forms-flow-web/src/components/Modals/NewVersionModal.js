@@ -57,7 +57,7 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
                 </Modal.Title>
                 <div className="icon-close" onClick={() => {
                         clearState();
-                    }} >
+                    }}  data-testid="modal-close-icon">
                     <CloseIcon />
                 </div>
             </Modal.Header>

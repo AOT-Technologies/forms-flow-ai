@@ -14,10 +14,6 @@ import { Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import './utils/i18nForTests'; // import to remove warning related to i18n import
 
 const queryClient = new QueryClient();
-let store = configureStore({
-  reducer: rootReducer,
-  preloadedState: mockstate,
-});
 
 // Helper function to render the component with router support
 function renderWithRouterMatch(Ui, { path = '/', route = '/',
@@ -38,10 +34,39 @@ function renderWithRouterMatch(Ui, { path = '/', route = '/',
   );
 }
 
+const mockedState = {
+  ...mockstate,
+  bpmForms: {
+    ...mockstate.bpmForms,
+    clientFormSearch: '',
+    submitListPage: 1,
+    submitFormLimit: 10,
+    submitFormSort: {
+      activeKey: 'formName',
+      formName: {
+        sortOrder: 'asc'
+      }
+    }
+  },
+  formCheckList: {
+    ...mockstate.formCheckList,
+    searchFormLoading: false
+  },
+  user: {
+    ...mockstate.user,
+    roles: ['create_submissions']
+  }
+};
+
+let store = configureStore({
+  reducer: rootReducer,
+  preloadedState: mockedState,
+});
+
 beforeEach(() => {
   store = configureStore({
     reducer: rootReducer,
-    preloadedState: mockstate,
+    preloadedState: mockedState,
   });
 
   renderWithRouterMatch(SubmitList, {
@@ -55,7 +80,6 @@ beforeEach(() => {
 });
 //  Should render the search input and perform a search
 it('should render the search input and perform a search', async () => {
-
   //Check that the search input is rendered
   const searchInput = screen.getByTestId('form-search-input');
   expect(searchInput).toBeInTheDocument();
@@ -80,15 +104,7 @@ it('should render the sort filter button and refresh button are shown in the doc
   expect(sortFilterButton).toBeInTheDocument();
   const refreshButton = screen.getByTestId('form-list-refresh');
   expect(refreshButton).toBeInTheDocument();
-//the sort modal has already been tested in the sortModal.test.js file
+  //the sort modal has already been tested in the sortModal.test.js file
 });
-
-
-
-
-
-
-
-
 
 

@@ -1,18 +1,16 @@
 // Import statements
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setBPMFormLimit,
-  setBPMSubmitListPage,
-  setBpmFormSearch,
-  setBpmFormSort,
+  setClientFormLimit,
+  setClientFormListPage,
+  setClientFormListSort
 } from "../../../actions/formActions";
-
+import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
 import { TableFooter, CustomButton, NoDataFound } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import SortableHeader from '../../CustomComponents/SortableHeader';
-import { formatDate } from "../../../helper/dateTimeHelper";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
 
@@ -26,15 +24,14 @@ function ClientTable() {
   const [showSubmissions, setShowSubmissions] = useState(false);
   // Local state
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [search, setSearch] = useState(useSelector((state) => state.bpmForms.searchText) || "");
 
   // Derived state from Redux
   const formData = bpmForms?.forms || [];
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
-  const limit = useSelector((state) => state.bpmForms.limit);
+  const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
-  const formsort = useSelector((state) => state.bpmForms.sort);
-  const searchText = useSelector((state) => state.bpmForms.searchText);
+  const formsort = useSelector((state) => state.bpmForms.submitFormSort);
+
 
   // Constants
   const pageOptions = [
@@ -67,25 +64,25 @@ function ClientTable() {
       return acc;
     }, {});
 
-    dispatch(setBpmFormSort({
+    dispatch(setClientFormListSort({
       ...updatedSort,
       activeKey: key,
     }));
   };
 
-  const showFormEntries = (formId) => {
+  const showFormEntries = (parentFormId) => {
     setShowSubmissions(true);
-    navigateToFormEntries(dispatch, tenantKey, formId);
+    navigateToFormEntries(dispatch, tenantKey, parentFormId);
   };
 
 
   const handlePageChange = (page) => {
-    dispatch(setBPMSubmitListPage(page));
+    dispatch(setClientFormListPage(page));
   };
 
   const onSizePerPageChange = (newLimit) => {
-    dispatch(setBPMFormLimit(newLimit));
-    dispatch(setBPMSubmitListPage(1));
+    dispatch(setClientFormLimit(newLimit));
+    dispatch(setClientFormListPage(1));
   };
 
   const toggleRow = (index) => {
@@ -103,16 +100,6 @@ function ClientTable() {
     );
   };
 
-  // Effects
-  useEffect(() => {
-    setSearch(searchText);
-  }, [searchText]);
-
-  useEffect(() => {
-    if (!search?.trim()) {
-      dispatch(setBpmFormSearch(""));
-    }
-  }, [search]);
 
   return (
 
@@ -145,7 +132,7 @@ function ClientTable() {
 
                 
                   <SortableHeader
-                    columnKey="modified"
+                    columnKey="latestSubmission"
                     title={t("Latest Submission")}
                     currentSort={formsort}
                     handleSort={handleSort}
@@ -190,7 +177,7 @@ function ClientTable() {
                           </td>
                           <td
                             data-testid={`latest-submission-${e._id}`} className="w-15">
-                            {formatDate(e.modified)}
+                            {HelperServices?.getLocaldate(e.latestSubmission)}
                           </td>
 
                           <td className=" w-12 ">

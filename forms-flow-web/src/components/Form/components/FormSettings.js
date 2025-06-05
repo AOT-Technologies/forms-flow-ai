@@ -5,7 +5,8 @@ import React, {
   forwardRef,
   useRef
 } from "react";
-import { Form, FormControl, InputGroup } from "react-bootstrap";
+// import { Form, FormControl, InputGroup } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import {
   CopyIcon,
   CheckIcon,
@@ -236,7 +237,7 @@ const FormSettings = forwardRef((props, ref) => {
   const tabs = [
     {
       eventKey: "Basic",
-      title: "Basic",
+      title: <span data-testid="tab-title-basic">Basic</span>,
       content: (
         <>
         <FormInput
@@ -244,7 +245,7 @@ const FormSettings = forwardRef((props, ref) => {
           value={formDetails.title}
           label={t("Name")}
           onChange={handleFormDetailsChange}
-          dataTestId="form-name"
+          dataTestId="basic-form-settings"
           name="title"
           ariaLabel={t("Form Name")}
           isInvalid = {!!errors.title}
@@ -284,7 +285,7 @@ const FormSettings = forwardRef((props, ref) => {
     },
     {
       eventKey: "Permissions",
-      title: "Permissions",
+      title: <span data-testid="tab-title-permissions">Permissions</span>,
       content: (
         <>
         <DropdownMultiSelect
@@ -390,10 +391,10 @@ const FormSettings = forwardRef((props, ref) => {
     },
     {
       eventKey :"Link",
-      title : "Link",
+      title : <span data-testid="tab-title-link">Link</span>,
       content : (
         <>
-          <CustomInfo heading={t("Note")}
+          <CustomInfo heading={t("Note")} dataTestId={"form-url-info"}
             content={t("Making changes to your form URL will make your form inaccessible from your current URL.")}
           />
 
@@ -412,9 +413,10 @@ const FormSettings = forwardRef((props, ref) => {
             feedback={errors.path ? errors.path : ""}
           />
 
-          <Form.Group className="settings-input w-100" controlId="url-input">
+          {/* Below code is not removed . Can be used for reference */}
+          {/* <Form.Group className="settings-input w-100" controlId="url-input">
             <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
-            <InputGroup className="url-input">
+            <InputGroup className="url-input" data-testid="url-input-group">
               <InputGroup.Text className="url-non-edit">
                 {urlPath}
               </InputGroup.Text>
@@ -432,7 +434,7 @@ const FormSettings = forwardRef((props, ref) => {
               </InputGroup.Text>
             </InputGroup>
             {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
-          </Form.Group>
+          </Form.Group> */}
         </>
       )
     }

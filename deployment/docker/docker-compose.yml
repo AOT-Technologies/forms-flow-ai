@@ -39,6 +39,7 @@ services:
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      FORMIO_JWT_EXPIRE: ${FORMIO_JWT_EXPIRE:-240}
       NO_INSTALL: ${NO_INSTALL:-1}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
 
@@ -152,6 +153,7 @@ services:
         - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.1.0-alpha/forms-flow-components.gz.js}
         - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.1.0-alpha/forms-flow-admin.gz.js}
         - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v7.1.0-alpha/forms-flow-review.gz.js}
+        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v7.1.0-alpha/forms-flow-submissions.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
     environment:
@@ -190,6 +192,8 @@ services:
       - REACT_APP_TIME_FORMAT=${TIME_FORMAT:-hh:mm:ss A}
       - REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH=${KEYCLOAK_URL_HTTP_RELATIVE_PATH}
       - REACT_APP_USER_NAME_DISPLAY_CLAIM=${USER_NAME_DISPLAY_CLAIM:-}
+      - REACT_APP_ENABLE_COMPACT_FORM_VIEW=${ENABLE_COMPACT_FORM_VIEW:-false}
+      - REACT_APP_GRAPHQL_API_URL=${GRAPHQL_API_URL}      
     ports:
       - '3000:8080'
     tty: true
@@ -262,6 +266,7 @@ services:
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      FORMIO_JWT_EXPIRE: ${FORMIO_JWT_EXPIRE:-240}
       KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
       FORM_EMBED_JWT_SECRET: ${FORM_EMBED_JWT_SECRET:-f6a69a42-7f8a-11ed-a1eb-0242ac120002}
@@ -317,6 +322,7 @@ services:
       CUSTOM_SUBMISSION_URL: ${CUSTOM_SUBMISSION_URL}
       CUSTOM_SUBMISSION_ENABLED: ${CUSTOM_SUBMISSION_ENABLED}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      FORMIO_JWT_EXPIRE: ${FORMIO_JWT_EXPIRE:-240}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
       KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
@@ -324,6 +330,8 @@ services:
       API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
       CONFIGURE_LOGS: ${CONFIGURE_LOGS:-true}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      ENABLE_COMPACT_FORM_VIEW: ${ENABLE_COMPACT_FORM_VIEW:-false}
+
 
     stdin_open: true # -i
     tty: true # -t

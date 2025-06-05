@@ -23,11 +23,11 @@ const CreateFormModal = React.memo(({ newFormModal, onClose, onAction }) => {
                 </Modal.Header>
                 <Modal.Body className="choice">
                     <button onClick={() => onAction(ActionType.BUILD)}>
-                        <h3>{t("Build")}</h3>
+                        <h3 data-testid="build-new-form">{t("Build")}</h3>
                         <p>{t("Create the form from scratch")}</p>
                     </button>
                     <button onClick={() => onAction(ActionType.IMPORT)}>
-                        <h3>{t("Import")}</h3>
+                        <h3 data-testid="import-new-form">{t("Import")}</h3>
                         <p>{t("Upload form from a file")}</p>
                     </button>
                 </Modal.Body>

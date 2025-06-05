@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 // import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
 import {
   setFormSubmissionSort,
@@ -14,8 +12,10 @@ import {
 } from "../../../actions/applicationActions";
 import { navigateToSubmitFormsListing, navigateToNewSubmission } from "../../../helper/routerHelper";
 import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsflow/components";
+import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
+import { useParams } from "react-router-dom";
 
 // SearchBar Component
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
@@ -49,23 +49,25 @@ SearchBar.propTypes = {
 const DraftsAndSubmissions = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { formId } = useParams();
-
+  const { parentFormId } = useParams();
+  const formId = useSelector(
+    (state) => state.applications.draftAndSubmissionsList?.formId
+  );
+  
   // Redux state selectors
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
 
-  const {
-    draftAndSubmissionsList,
+  const {    
+    formName,
     activePage: pageNo,
     countPerPage: limit,
-    searchParams: searchText,
     sort: applicationSort
   } = useSelector((state) => state.applications);
 
   // Local state
-  const [search, setSearch] = useState(searchText || "");
+  const [search, setSearch] = useState("");
   const [selectedItem, setSelectedItem] = useState("All");
   const [showSortModal, setShowSortModal] = useState(false);
 
@@ -75,7 +77,14 @@ const DraftsAndSubmissions = () => {
     { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
     { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
   ];
-
+ //options for sortmodal
+ const optionSortBy = [   
+    { value: "id", label: t("Submission Id") },
+    { value: "created", label: t("Submitted On") },
+    { value: "type", label: t("Type") },
+    { value: "modified", label: t("Last Modified") },
+    { value: "applicationStatus", label: t("Status") },
+  ];
   // Handlers
   const handleSelection = (label) => setSelectedItem(label);
 
@@ -86,16 +95,16 @@ const DraftsAndSubmissions = () => {
   }, [search]);
 
   const handleSearch = () => {
-    dispatch(setApplicationListSearchParams(search));
     dispatch(setApplicationListActivePage(1));
   };
 
   const handleClearSearch = () => setSearch("");
 
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
     dispatch(
       setFormSubmissionSort({
-        ...applicationSort,
+        ...resetSortOrders,
         activeKey: selectedSortOption,
         [selectedSortOption]: { sortOrder: selectedSortOrder },
       })
@@ -110,15 +119,15 @@ const DraftsAndSubmissions = () => {
         pageNo,
         limit,
         applicationSort,
-        formId,
-        searchText,
+        parentFormId,
+        search,
         createdUserSubmissions: true,
         onlyDrafts: selectedItem === "Draft",
         includeDrafts: selectedItem === "All",
       })
     );
   };
-
+ 
   const submitNewForm = () => {
     navigateToNewSubmission(dispatch, tenantKey, formId);
   };
@@ -127,13 +136,11 @@ const DraftsAndSubmissions = () => {
     navigateToSubmitFormsListing(dispatch, tenantId);
   };
 
-  // Sync local search state with global searchText
-  useEffect(() => setSearch(searchText), [searchText]);
 
   // Fetch data when dependencies change
   useEffect(() => {
     fetchSubmissionsAndDrafts();
-  }, [pageNo, limit, applicationSort, searchText, selectedItem, formId, applicationSort]);
+  }, [pageNo, limit, applicationSort, search, selectedItem, parentFormId,formId]);
 
   return (
     <>
@@ -145,7 +152,7 @@ const DraftsAndSubmissions = () => {
 
         <div className="description">
           <p className="text-main">
-            {draftAndSubmissionsList?.applications?.[0]?.applicationName || ""}
+            {formName || ""}
           </p>
         </div>
       </div>
@@ -182,13 +189,7 @@ const DraftsAndSubmissions = () => {
             handleFilterIconClick={() => setShowSortModal(true)}
             handleRefresh={fetchSubmissionsAndDrafts}
             handleSortModalClose={() => setShowSortModal(false)}
-            optionSortBy={[
-              { value: "id", label: t("Submission Id") },
-              { value: "created", label: t("Submitted On") },
-              { value: "type", label: t("Type") },
-              { value: "modified", label: t("Last Modified") },
-              { value: "applicationStatus", label: t("Status") },
-            ]}
+            optionSortBy={optionSortBy}
             defaultSortOption={applicationSort?.activeKey}
             defaultSortOrder={applicationSort?.[applicationSort?.activeKey]?.sortOrder || "asc"}
             filterDataTestId="form-list-filter"

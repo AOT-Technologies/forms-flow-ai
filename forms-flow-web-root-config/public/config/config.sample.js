@@ -44,6 +44,7 @@ window["_env_"] = {
   REACT_APP_DRAFT_POLLING_RATE: 15000,
   // Enable Export Pdf feature
   REACT_APP_EXPORT_PDF_ENABLED: false,
+  REACT_APP_ENABLE_COMPACT_FORM_VIEW: false,
 
   // Document Service api hosted from forms-flow-documents, default: http://{your-ip-address}:5006
   REACT_APP_DOCUMENT_SERVICE_URL: "<Custom Document URL>",

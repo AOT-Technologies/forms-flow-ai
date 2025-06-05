@@ -50,7 +50,7 @@ export default React.memo(() => {
         {/* <Route exact path={`${BASE_ROUTE}formflow`} component={List} /> */}
         <Route exact path={`${BASE_ROUTE}form`} component={SubmitList} />
         <GenericRoute
-          path={`${BASE_ROUTE}form/:formId?/entries`}
+          path={`${BASE_ROUTE}form/:parentFormId?/entries`}
           component={DraftAndSubmissions}
           roles={['create_submissions']}
         />

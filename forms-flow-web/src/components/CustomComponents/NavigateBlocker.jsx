@@ -65,9 +65,10 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
             resetPath();
           }}
           title={t("You Have Unsaved Changes")}
-          message={<CustomInfo heading={t("Note")} content={message} />}
+          titleDataTestId="unsaved-changes-title"
+          message={<CustomInfo heading={t("Note")} content={message} dataTestId="unsaved-changes-info"/>}
           messageSecondary={t(secondaryMessage)}
-          secondayBtnAction={() => {
+          secondaryBtnAction={() => {
             handleConfirm(true);
           }}
           primaryBtnText={t("Stay in the Editor")}

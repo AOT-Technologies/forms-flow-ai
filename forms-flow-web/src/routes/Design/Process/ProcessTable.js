@@ -8,6 +8,7 @@ import {
   NoDataFound,
   BuildModal,
 } from "@formsflow/components";
+import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
@@ -128,8 +129,9 @@ const ProcessTable = React.memo(() => {
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
     setIsLoading(true);
     const action = isBPMN ? setBpmSort : setDmnSort;
+    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
     dispatch(action({
-      ...sortConfig,
+      ...resetSortOrders,
       activeKey: selectedSortOption,
       [selectedSortOption]: { sortOrder: selectedSortOrder },
     }));

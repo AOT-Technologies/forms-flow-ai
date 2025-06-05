@@ -8,6 +8,75 @@ from http import HTTPStatus
 
 from formsflow_api_utils.exceptions import ErrorCodeMixin
 
+# Static task filter variables.
+# These variables are used in the migration & tenant based task filter configuration.
+
+STATIC_TASK_FILTER_VARIABLES = [
+    {
+        "key": "applicationId",
+        "label": "Submission Id",
+        "type": "number",
+        "name": "applicationId",
+        "isChecked": True,
+        "sortOrder": 1,
+        "isFormVariable": False,
+    },
+    {
+        "key": "submitterName",
+        "label": "Submitter Name",
+        "type": "textfield",
+        "name": "submitterName",
+        "isChecked": True,
+        "sortOrder": 2,
+        "isFormVariable": False,
+    },
+    {
+        "key": "assignee",
+        "label": "Assignee",
+        "type": "textfield",
+        "name": "assignee",
+        "isChecked": True,
+        "sortOrder": 3,
+        "isFormVariable": False,
+    },
+    {
+        "key": "roles",
+        "label": "Roles",
+        "type": "textfield",
+        "name": "roles",
+        "isChecked": True,
+        "sortOrder": 4,
+        "isFormVariable": False,
+    },
+    {
+        "key": "name",
+        "label": "Task",
+        "type": "textfield",
+        "name": "name",
+        "isChecked": True,
+        "sortOrder": 5,
+        "isFormVariable": False,
+    },
+    {
+        "key": "created",
+        "label": "Created Date",
+        "type": "datetime",
+        "name": "created",
+        "isChecked": True,
+        "sortOrder": 6,
+        "isFormVariable": False,
+    },
+    {
+        "key": "formName",
+        "label": "Form Name",
+        "type": "textfield",
+        "name": "formName",
+        "isChecked": True,
+        "sortOrder": 7,
+        "isFormVariable": False,
+    },
+]
+
 
 class BusinessErrorCode(ErrorCodeMixin, Enum):
     """Business error codes."""
@@ -136,6 +205,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     FILTER_PREFERENCE_BAD_REQUEST = ("Invalid payload data", HTTPStatus.BAD_REQUEST)
     FILTER_PREFERENCE_DB_ERROR = (
         "Database error while updating filter preferences",
+        HTTPStatus.BAD_REQUEST,
+    )
+    TASK_OUTCOME_NOT_FOUND = (
+        "Task outcome configuration not found for the given task Id",
         HTTPStatus.BAD_REQUEST,
     )
 

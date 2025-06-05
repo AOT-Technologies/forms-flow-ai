@@ -41,6 +41,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
 * Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
 * Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
+* Added new permissions and enhanced permission definitions with categories to `/permissions` endpoint
 
 
 **formsflow-documents**

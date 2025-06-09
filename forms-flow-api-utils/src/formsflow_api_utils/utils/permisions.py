@@ -11,22 +11,15 @@ MANAGE_TASKS = "manage_tasks"
 MANAGE_ALL_FILTERS = "manage_all_filters"
 CREATE_FILTERS = "create_filters"
 VIEW_FILTERS = "view_filters"
-MANAGE_INTEGRATIONS = "manage_integrations"
 MANAGE_DASHBOARD_AUTHORIZATIONS = "manage_dashboard_authorizations"
 MANAGE_USERS = "manage_users"
 MANAGE_ROLES = "manage_roles"
-ADMIN= "admin"
-CREATE_BPMN_FLOWS = "create_bpmn_flows"
-MANAGE_SUBFLOWS = "manage_subflows"
-MANAGE_DECISION_TABLES = "manage_decision_tables"
-CAN_RESUBMIT_SUBMISSION = "resubmit_submissions"
-VIEW_PROCESS_DIAGRAM = "view_process_diagram"
 REVIEWER_VIEW_HISTORY = "reviewer_view_history"
 SUBMISSION_VIEW_HISTORY = "submission_view_history"
 ASSIGN_TASK_TO_OTHERS = "assign_task_to_others"
-MANAGE_ADVANCE_FLOWS ="manage_advance_workflows"
+MANAGE_ADVANCE_FLOWS = "manage_advance_workflows"
 MANAGE_TEMPLATES = "manage_templates"
-MANAGE_BUNDLES ="manage_bundles"
+MANAGE_BUNDLES = "manage_bundles"
 MANAGE_INTEGRATIONS = "manage_integrations"
 ANALYZE_METRICS_VIEW = "analyze_metrics_view"
 ANALYZE_SUBMISSIONS_VIEW = "analyze_submissions_view"
@@ -34,6 +27,9 @@ ANALYZE_SUBMISSIONS_VIEW_HISTORY = "analyze_submissions_view_history"
 ANALYZE_PROCESS_VIEW = "analyze_process_view"
 MANAGE_LINKS = "manage_links"
 ADMIN = "admin"
+CREATE_BPMN_FLOWS = "create_bpmn_flows"
+MANAGE_SUBFLOWS = "manage_subflows"
+MANAGE_DECISION_TABLES = "manage_decision_tables"
 
 class permission_category(Enum):
     """Enumerations for permission categories."""
@@ -57,7 +53,7 @@ PERMISSION_DETAILS = [
     {"name": MANAGE_ADVANCE_FLOWS, "description": "Manage advance flows (BPMNs + SubFlows + Decision Tables)", "category": permission_category.DESIGN.value, "order": 30, "depends_on": [ VIEW_DESIGNS ]},
     {"name": MANAGE_TEMPLATES, "description": "Manage templates", "category": permission_category.DESIGN.value, "order": 40, "depends_on": [ CREATE_DESIGNS, VIEW_DESIGNS ]},
     {"name": MANAGE_BUNDLES, "description": "Manage bundles", "category": permission_category.DESIGN.value, "order": 50, "depends_on": [ CREATE_DESIGNS, VIEW_DESIGNS ]},
-    {"name": MANAGE_INTEGRATIONS, "description": "Manage Integrations", "category": permission_category.DESIGN.value, "order": 60, "depends_on": []},
+    {"name": MANAGE_INTEGRATIONS, "description": "Manage integrations", "category": permission_category.DESIGN.value, "order": 60, "depends_on": []},
     {"name": CREATE_SUBMISSIONS, "description": "Manage submissions (create, save drafts, resubmit)", "category": permission_category.SUBMIT.value, "order": 10, "depends_on": [VIEW_SUBMISSIONS]},
     {"name": VIEW_SUBMISSIONS, "description": "View their own past submissions", "category": permission_category.SUBMIT.value, "order": 20, "depends_on": []},
     {"name": SUBMISSION_VIEW_HISTORY, "description": "View submission history", "category": permission_category.SUBMIT.value, "order": 30, "depends_on": [VIEW_SUBMISSIONS]},
@@ -66,8 +62,8 @@ PERMISSION_DETAILS = [
     {"name": ANALYZE_SUBMISSIONS_VIEW, "description": "View submissions", "category": permission_category.ANALYZE.value, "order": 30, "depends_on": []},
     {"name": ANALYZE_SUBMISSIONS_VIEW_HISTORY, "description": "View submissions history", "category": permission_category.ANALYZE.value, "order": 40, "depends_on": [ ANALYZE_SUBMISSIONS_VIEW ]},
     {"name": ANALYZE_PROCESS_VIEW, "description": "View submissions process diagram", "category": permission_category.ANALYZE.value, "order": 50, "depends_on": [ ANALYZE_SUBMISSIONS_VIEW, ANALYZE_SUBMISSIONS_VIEW_HISTORY ]},
-    {"name": MANAGE_USERS, "description": "Manage Users", "category": permission_category.ADMIN.value, "order": 10, "depends_on": []},
-    {"name": MANAGE_ROLES, "description": "Manage Roles", "category": permission_category.ADMIN.value, "order": 20, "depends_on": []},
+    {"name": MANAGE_USERS, "description": "Manage users", "category": permission_category.ADMIN.value, "order": 10, "depends_on": []},
+    {"name": MANAGE_ROLES, "description": "Manage roles", "category": permission_category.ADMIN.value, "order": 20, "depends_on": []},
     {"name": MANAGE_DASHBOARD_AUTHORIZATIONS, "description": "Manage dashboards", "category": permission_category.ADMIN.value, "order": 30, "depends_on": []},
     {"name": MANAGE_LINKS, "description": "View links", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []}
 ]

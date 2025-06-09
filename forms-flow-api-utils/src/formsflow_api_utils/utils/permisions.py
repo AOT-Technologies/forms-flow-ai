@@ -33,6 +33,7 @@ ANALYZE_SUBMISSIONS_VIEW = "analyze_submissions_view"
 ANALYZE_SUBMISSIONS_VIEW_HISTORY = "analyze_submissions_view_history"
 ANALYZE_PROCESS_VIEW = "analyze_process_view"
 MANAGE_LINKS = "manage_links"
+ADMIN = "admin"
 
 class permission_category(Enum):
     """Enumerations for permission categories."""

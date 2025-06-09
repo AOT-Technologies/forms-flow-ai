@@ -190,6 +190,13 @@
           "composite": false,
           "clientRole": true,
           "attributes": {}
+        },
+        {
+          "name": "reviewer_process_view",
+          "description": "View process diagram in task",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
         }
       ],
       "forms-flow-bpm": [],

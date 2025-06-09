@@ -1,14 +1,14 @@
-name: Update all package dependencies
+name: Update GitHub Action versions
 
 on:
   schedule:
-    - cron: '0 0 1,15 * *'  # Runs at midnight (UTC) on the 1st and 15th of each month
+    - cron: '0 0 1,15 * *'
   workflow_dispatch:
   push:
     branches: [ master, develop, release/* ]
 
 jobs:
-  update-dependencies:
+  update-workflow-versions:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -27,71 +27,61 @@ jobs:
 
       - name: Configure git
         run: |
-          git config user.name "Dependency Bot"
+          git config user.name "Workflow Bot"
           git config user.email "${{ secrets.BOT_EMAIL }}"
 
       - name: Create update branch
         run: |
-          BRANCH_NAME="dependency-update-$(date +'%Y%m%d')"
+          BRANCH_NAME="workflow-version-update-$(date +'%Y%m%d')-${GITHUB_RUN_NUMBER}"
           git checkout -b $BRANCH_NAME
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Update dependencies in all components
+      - name: Update GitHub Actions versions in workflow files
         run: |
-          set -e  # Exit on any error
-          ANY_UPDATES=0
-          for dir in forms-flow-*; do
-            if [ -f "$dir/package.json" ]; then
-              echo "Checking for outdated packages in $dir"
-              cd "$dir"
-              if [ -n "$(npm outdated || true)" ]; then
-                echo "Updating packages in $dir"
-                npm install || { echo "npm install failed in $dir"; exit 1; }
-                npm update || { echo "npm update failed in $dir"; exit 1; }
-                npm audit fix --force || echo "npm audit fix failed in $dir"
-                ANY_UPDATES=1
-              else
-                echo "No outdated packages in $dir"
+          set -e
+          UPDATED=0
+          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+            if [ -f "$file" ]; then
+              echo "Processing $file"
+              BEFORE_HASH=$(sha256sum "$file")
+              # Use sed to bump common action versions; add more as needed
+              sed -i \
+                -e 's|actions/checkout@v[0-9]\+|actions/checkout@v3|g' \
+                -e 's|actions/setup-node@v[0-9]\+|actions/setup-node@v3|g' \
+                -e 's|peter-evans/create-pull-request@v[0-9]\+|peter-evans/create-pull-request@v5|g' \
+                -e 's|tibdex/github-app-token@v[0-9]\+|tibdex/github-app-token@v1|g' \
+                "$file"
+              AFTER_HASH=$(sha256sum "$file")
+              if [ "$BEFORE_HASH" != "$AFTER_HASH" ]; then
+                echo "Updated $file"
+                UPDATED=1
               fi
-              cd -
             fi
           done
-          if [ "$ANY_UPDATES" -eq 0 ]; then
-            echo "No updates needed. Exiting."
+
+          if [ "$UPDATED" -eq 0 ]; then
+            echo "No workflow versions needed updating. Exiting."
             exit 0
           fi
 
       - name: Commit changes
         run: |
-          git add .
+          git add .github/workflows
           git diff --cached --quiet && echo "No changes to commit" && exit 0
-          git commit -m "chore: update dependencies across packages on $(date +'%Y-%m-%d')"
+          git commit -m "chore: update GitHub Action versions in workflows ($(date +'%Y-%m-%d'))"
 
-      - name: Push branch (with rebase)
+      - name: Push branch
         run: |
-          git stash
-          git fetch origin
-          git checkout ${{ env.BRANCH_NAME }}
-          git rebase origin/develop || { echo "Git rebase failed"; exit 1; }
-          if git stash list | grep -q .; then
-            git stash pop
-          fi
-          git push --force https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}
+          git push --force-with-lease https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          commit-message: "chore: update dependencies across packages"
+          commit-message: "chore: update GitHub Action versions"
           branch: ${{ env.BRANCH_NAME }}
-          title: "chore: update dependencies ($(date +'%Y-%m-%d'))"
+          title: "chore: update GitHub Action versions ($(date +'%Y-%m-%d'))"
           body: |
-            Automated dependency update triggered by GitHub Actions.
-
-            Target branch: `develop`
+            This PR updates GitHub Action versions in workflow files.
+            Automated by GitHub Actions.
           base: develop

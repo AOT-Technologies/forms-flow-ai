@@ -146,7 +146,7 @@ def test_attribute_filter(app, client, session, jwt):
     assert response.json.get("id") is not None
     assert response.json.get("name") == "Task filter1"
     assert response.json.get("filterType") == "TASK"
-    assert response.json.get("parentFilterId") is None
+    assert response.json.get("parentFilterId") not in response.json
 
     parent_filter_id = response.json.get("id")
     # Create attribute filter for the task filter

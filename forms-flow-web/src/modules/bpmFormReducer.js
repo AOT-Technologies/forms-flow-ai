@@ -27,7 +27,7 @@ const initialState = {
   submitFormSort: {
     activeKey: "formName",
     formName: { sortOrder: "asc" },
-    modified: { sortOrder: "asc" },
+    latestSubmission: { sortOrder: "asc" },
     submissionCount: { sortOrder: "asc" },
     visibility: { sortOrder: "asc" },
     status: { sortOrder: "asc" },

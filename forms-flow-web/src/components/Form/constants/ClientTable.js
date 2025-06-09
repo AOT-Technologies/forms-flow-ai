@@ -1,18 +1,16 @@
 // Import statements
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setClientFormLimit,
   setClientFormListPage,
-  setClientFormSearch,
   setClientFormListSort
 } from "../../../actions/formActions";
-
+import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
 import { TableFooter, CustomButton } from "@formsflow/components";
 import LoadingOverlay from "react-loading-overlay-ts";
 import SortableHeader from '../../CustomComponents/SortableHeader';
-import { formatDate } from "../../../helper/dateTimeHelper";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
 
@@ -26,7 +24,6 @@ function ClientTable() {
   const [showSubmissions, setShowSubmissions] = useState(false);
   // Local state
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [search, setSearch] = useState(useSelector((state) => state.bpmForms.searchText) || "");
 
   // Derived state from Redux
   const formData = bpmForms?.forms || [];
@@ -34,7 +31,7 @@ function ClientTable() {
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
-  const searchText = useSelector((state) => state.bpmForms.clientFormSearch);
+
 
   // Constants
   const pageOptions = [
@@ -108,16 +105,6 @@ function ClientTable() {
     );
   };
 
-  // Effects
-  useEffect(() => {
-    setSearch(searchText);
-  }, [searchText]);
-
-  useEffect(() => {
-    if (!search?.trim()) {
-      dispatch(setClientFormSearch(""));
-    }
-  }, [search]);
 
   return (
 
@@ -153,7 +140,7 @@ function ClientTable() {
 
                 <th className="w-13" scope="col" data-testid="latest-submission-header">
                   <SortableHeader
-                    columnKey="modified"
+                    columnKey="latestSubmission"
                     title={t("Latest Submission")}
                     currentSort={formsort}
                     handleSort={handleSort}
@@ -196,7 +183,7 @@ function ClientTable() {
                         </td>
                         <td
                           data-testid={`latest-submission-${e._id}`} className="w-13">
-                          {formatDate(e.latestSubmission)}
+                         {HelperServices?.getLocaldate(e.latestSubmission)}
                         </td>
 
                         <td className=" w-12 ">

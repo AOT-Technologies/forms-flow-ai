@@ -23,7 +23,7 @@ def test_get_dashboard_details(app, client, session, jwt):
     rv = client.get("/dashboards", headers=headers)
     assert rv.status_code == 200
     data = rv.json
-    dashboard_id = data["results"][0]["id"]
+    dashboard_id = data[0]["resourceId"]
     token = get_token(jwt, role=VIEW_DASHBOARDS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(f"/dashboards/{dashboard_id}", headers=headers)

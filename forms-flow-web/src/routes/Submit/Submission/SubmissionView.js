@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import startCase from "lodash/startCase";
 import { Card } from "react-bootstrap";
@@ -27,13 +27,12 @@ import { HelperServices } from "@formsflow/service";
 import DownloadPDFButton from "../../../components/Form/ExportAsPdf/downloadPdfButton";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
-import { navigateToFormEntries } from "../../../helper/routerHelper";
-
 
 const ViewApplication = React.memo(() => {
   const { t } = useTranslation();
   const { applicationId } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { applicationDetail, applicationDetailStatusCode, isApplicationDetailLoading } =
    useSelector(
@@ -43,11 +42,9 @@ const ViewApplication = React.memo(() => {
     isApplicationDetailLoading: state.applications.isApplicationDetailLoading,
     })
     );
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const submission = useSelector((state) => state.submission?.submission || {});
   const form = useSelector((state) => state.form?.form || {});
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [formId,setFormId] = useState();
   const { appHistory, isHistoryListLoading } = useSelector(
     useMemo(() => (state) => ({
       appHistory: state.taskAppHistory.appHistory,
@@ -64,7 +61,6 @@ const ViewApplication = React.memo(() => {
     dispatch(
       getApplicationById(applicationId, (err, res) => {
         if (!err) {
-          setFormId(res.formId);
           if (res.submissionId && res.formId) {
             dispatch(getForm("form", res.formId));
             if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
@@ -109,7 +105,7 @@ const ViewApplication = React.memo(() => {
   }
 
   const backToSubmissionList = () => {
-    navigateToFormEntries(dispatch, tenantKey, formId);
+    history.goBack();
   };
 
   return (

@@ -599,7 +599,7 @@ BackToPrevIcon.propTypes = {
 };
 
 export const CustomInfo = () => {
-  return <div className={`info-panel`}>
+  return <div className={`info-panel`} data-testid="custom-info-panel">
   <div className="d-flex align-items-center">
     <InfoIcon />
     <div className="field-label ms-2">Note</div>
@@ -1021,3 +1021,41 @@ HistoryModal.propTypes = {
   ),
   historyCount: PropTypes.number,
 };
+
+
+export const useSuccessCountdownPropTypes = {
+  options: PropTypes.shape({
+    intervalDelay: PropTypes.number
+  }),
+  successState: PropTypes.shape({
+    showSuccess: PropTypes.bool.isRequired,
+    countdown: PropTypes.number.isRequired
+  }).isRequired,
+  startSuccessCountdown: PropTypes.func.isRequired
+};
+
+// The mock implementation remains the same
+export const useSuccessCountdown = (options = {}) => {
+  const mockSuccessState = {
+    showSuccess: false,
+    countdown: 0
+  };
+
+  const startSuccessCountdown = (callback, initialCount = 2) => {
+    mockSuccessState.showSuccess = true;
+    mockSuccessState.countdown = initialCount;
+    
+    if (callback) {
+      callback();
+    }
+  };
+
+  return {
+    successState: mockSuccessState,
+    startSuccessCountdown
+  };
+};
+
+useSuccessCountdown.propTypes = useSuccessCountdownPropTypes;
+
+export default useSuccessCountdown;

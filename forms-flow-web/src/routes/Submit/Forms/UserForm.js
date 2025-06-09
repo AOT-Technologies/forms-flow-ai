@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
@@ -65,9 +64,16 @@ import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import { cloneDeep } from "lodash";
+import { HelperServices } from "@formsflow/service";
+import { useParams } from "react-router-dom";
+
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
   const { t } = useTranslation();
+
+  const parentFormId = useSelector(
+    (state) => state.form.form?.parentFormId
+  );
   const { formId } = useParams();
   const lang = useSelector((state) => state.user.lang);
   const pubSub = useSelector((state) => state.pubSub);
@@ -292,7 +298,7 @@ const View = React.memo((props) => {
 
   // will be updated once application/draft listing page is ready
   const handleBack = () => {
-    navigateToFormEntries(dispatch, tenantKey, formId);
+    navigateToFormEntries(dispatch, tenantKey, parentFormId);
 
   };
 
@@ -301,7 +307,7 @@ const View = React.memo((props) => {
       return (
         <>
           <span className="status-draft"></span> {t("Last modified on:")}{" "}
-          {new Date(draftModified).toLocaleString()}
+          {HelperServices.getLocalDateAndTime(draftModified)}
         </>
       );
     } else {
@@ -420,11 +426,11 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
     const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
+    let parentFormId = form?.parentFormId; 
     dispatch(resetSubmissions("submission"));
-
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-
-    let isDraftCreated = !!draftId;
+    const draftIdToUse = draftId || state.draft?.draftSubmission?.applicationId;
+    let isDraftCreated = Boolean(draftIdToUse);
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,
       isDraftCreated,
@@ -433,14 +439,14 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
 
 
     dispatch(
-      applicationCreateAPI(data, draftId, (err) => {
+      applicationCreateAPI(data, draftIdToUse, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
           toast.success(<Translation>{(t) => t("Submission Saved")}</Translation>);
           dispatch(setFormSubmitted(true));
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
-            navigateToFormEntries(dispatch, tenantKey, formId);
+            navigateToFormEntries(dispatch, tenantKey, parentFormId);
           }
         } else {
           toast.error(<Translation>{(t) => t("Submission Failed.")}</Translation>);

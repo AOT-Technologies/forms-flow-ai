@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -16,6 +15,7 @@ import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsf
 import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
+import { useParams } from "react-router-dom";
 
 // SearchBar Component
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
@@ -49,8 +49,11 @@ SearchBar.propTypes = {
 const DraftsAndSubmissions = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { formId } = useParams();
-
+  const { parentFormId } = useParams();
+  const formId = useSelector(
+    (state) => state.applications.draftAndSubmissionsList?.formId
+  );
+  
   // Redux state selectors
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -116,7 +119,7 @@ const DraftsAndSubmissions = () => {
         pageNo,
         limit,
         applicationSort,
-        formId,
+        parentFormId,
         search,
         createdUserSubmissions: true,
         onlyDrafts: selectedItem === "Draft",
@@ -124,7 +127,7 @@ const DraftsAndSubmissions = () => {
       })
     );
   };
-
+ 
   const submitNewForm = () => {
     navigateToNewSubmission(dispatch, tenantKey, formId);
   };
@@ -137,7 +140,7 @@ const DraftsAndSubmissions = () => {
   // Fetch data when dependencies change
   useEffect(() => {
     fetchSubmissionsAndDrafts();
-  }, [pageNo, limit, applicationSort, search, selectedItem, formId, applicationSort]);
+  }, [pageNo, limit, applicationSort, search, selectedItem, parentFormId,formId]);
 
   return (
     <div>

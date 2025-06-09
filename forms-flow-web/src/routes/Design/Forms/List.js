@@ -41,14 +41,13 @@ import {
   ImportModal,
   CustomSearch,
   CustomButton,
+  useSuccessCountdown
 } from "@formsflow/components";
 import { HelperServices } from '@formsflow/service';
 import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { navigateToDesignFormEdit } from "../../../helper/routerHelper.js";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
-import useSuccessCountdown from "../../../customHooks/useSuccessCountdown";
-
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
@@ -424,8 +423,8 @@ const List = React.memo((props) => {
                     nameValidationOnBlur={validateFormNameOnBlur}
                     nameError={nameError}
                     buildForm={true}
-                    showSuccess={successState.showSuccess} // ✅ Pass success state
-                    successCountdown={successState.countdown} // ✅ Pass countdown
+                    showSuccess={successState?.showSuccess} // ✅ Pass success state
+                    successCountdown={successState?.countdown} // ✅ Pass countdown
                   />
                   {importFormModal && (
                     <ImportModal

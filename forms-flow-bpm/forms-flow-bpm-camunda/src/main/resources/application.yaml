@@ -52,6 +52,10 @@ formsflow.ai:
       resourceType: "DEPLOYMENT"
       resourceId: "*"
       permissions: ["ALL"]
+    - groupId: "ROLE_manage_advance_workflows"
+      resourceType: "DEPLOYMENT"
+      resourceId: "*"
+      permissions: ["ALL"]
     - groupId: "ROLE_view_tasks"
       resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
       resourceId: "*"

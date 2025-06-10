@@ -158,7 +158,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
 
     @classmethod
     def get_all_process(
-        cls, request_args, subflows_auth, decision_auth
+        cls, request_args, subflows_decision_auth
     ):  # pylint:disable=too-many-locals
         """Get all process list."""
         dict_data = ProcessListRequestSchema().load(request_args) or {}
@@ -169,8 +169,8 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         )
         if (
             process_type
-            and (process_type == ProcessType.BPMN.value and not subflows_auth)
-            or (process_type == ProcessType.DMN.value and not decision_auth)
+            and process_type in (ProcessType.BPMN.value, ProcessType.DMN.value)
+            and not subflows_decision_auth
         ):
             raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         page_no = dict_data.get("page_no")

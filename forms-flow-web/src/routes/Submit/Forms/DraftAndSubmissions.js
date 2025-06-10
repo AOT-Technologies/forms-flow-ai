@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
+import userRoles from "../../../constants/permissions";
 import {
   setFormSubmissionSort,
   setApplicationListActivePage,
@@ -58,7 +59,7 @@ const DraftsAndSubmissions = () => {
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
-
+  const {createSubmissions} = userRoles();
   const {    
     formName,
     activePage: pageNo,
@@ -196,14 +197,14 @@ const DraftsAndSubmissions = () => {
             filterDataTestId="form-list-filter"
             refreshDataTestId="form-list-refresh"
           />
-          <CustomButton
+          {createSubmissions && <CustomButton
             variant="primary"
             size="sm"
             label={t("New Submission")}
             onClick={submitNewForm}
             dataTestId="create-form-button"
             ariaLabel="Create Form"
-          />
+          />}
         </div>
       </div>
 

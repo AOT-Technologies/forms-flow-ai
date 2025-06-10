@@ -16,7 +16,7 @@ import {
 } from "../../apiManager/services/processServices";
 import _ from "lodash";
 import { StyleServices } from "@formsflow/service";
-
+import userRoles from "../../constants/permissions";
 
   // Filter out applicationId and applicationStatus
   const ignoreKeywords = new Set([
@@ -35,7 +35,6 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
   const primaryColor = StyleServices.getCSSVariable('--ff-primary'); 
   const primaryLight = StyleServices.getCSSVariable('--ff-primary-light'); 
-
   const filteredVariablePills = Object.values(alternativeLabels).filter(
     ({ key }) => !ignoreKeywords.has(key)
   );
@@ -341,7 +340,7 @@ const TaskVariableModal = React.memo(
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
-
+    const {createDesigns} = userRoles();
     const form = useSelector((state) => state.form?.form || {});
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
@@ -432,7 +431,7 @@ const TaskVariableModal = React.memo(
     // Define the content for when layoutNotsaved is false
     const layoutSavedContent = (
       <>
-        <CustomButton
+       { createDesigns && <CustomButton
           variant="primary"
           size="md"
           className=""
@@ -441,7 +440,7 @@ const TaskVariableModal = React.memo(
           ariaLabel="save task variable btn"
           dataTestId="save-task-variable-btn"
           onClick={handleSaveTaskVariable}
-        />
+        />}
         <CustomButton
           variant="secondary"
           size="md"

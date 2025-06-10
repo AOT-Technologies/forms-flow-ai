@@ -276,6 +276,57 @@ describe("DraftsAndSubmissions Component", () => {
         created: { sortOrder: "desc" },
       },
     },
+    user: {
+    createDesigns: true,
+    viewSubmissions: true,
+    createSubmissions: true,
+    viewSubmissionHistory: true,
+    showApplications: true,
+    bearerToken: "",
+    isAuthenticated: true,
+    userDetail: {
+      name: "Test User",
+      email: "testuser@example.com",
+    },
+    roles: [
+      "view_tasks",
+      "formsflow-client",
+      "create_bpmn_flows",
+      "manage_all_filters",
+      "formsflow-reviewer",
+      "manage_integrations",
+      "view_dashboards",
+      "create_submissions",
+      "admin",
+      "manage_decision_tables",
+      "view_designs",
+      "view_submissions",
+      "manage_roles",
+      "manage_dashboard_authorizations",
+      "create_designs",
+      "formsflow-admin",
+      "manage_users",
+      "manage_tasks",
+      "view_filters",
+      "formsflow-analytics",
+      "create_filters",
+      "formsflow-designer",
+      "manage_subflows",
+      "submission_view_history",
+    ],
+    roleIds: {
+      DESIGNER: "65f684595a0b7bdb4eabddb3",
+      ANONYMOUS: "65f6845a5a0b7bdb4eabddca",
+      CLIENT: "65f6845c5a0b7bdb4eabddda",
+      REVIEWER: "65f6845b5a0b7bdb4eabddd4",
+      RESOURCE_ID: "65f6845c5a0b7bdb4eabdde1",
+    },
+    currentPage: "",
+    lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : null,
+    selectLanguages: [],
+    defaultFilter: "",
+    searchText: "",
+  },
   });
 
     // Mock the API calls to return a thunk function
@@ -337,18 +388,18 @@ describe("DraftsAndSubmissions Component", () => {
     expect(searchInput.value).toBe("");
   });
 
-// test("navigates to new submission when button clicked", () => {
-//   renderComponent();
-//   // Click new submission button
-//   const newSubmissionButton = screen.getByTestId("create-form-button");
-//   fireEvent.click(newSubmissionButton);
-//   // Verify navigation function was called
-//   expect(routerHelper.navigateToNewSubmission).toHaveBeenCalledWith(
-//     expect.anything(),
-//     "test-tenant",
-//     formId
-//   );
-// });
+test("navigates to new submission when button clicked", () => {
+  renderComponent();
+  // Click new submission button
+  const newSubmissionButton = screen.getByTestId("create-form-button");
+  fireEvent.click(newSubmissionButton);
+  // Verify navigation function was called
+  expect(routerHelper.navigateToNewSubmission).toHaveBeenCalledWith(
+    expect.anything(),
+    "test-tenant",
+    formId
+  );
+});
 
 
   test("navigates back to form listing when back button clicked", () => {

@@ -26,7 +26,8 @@ const ActionModal = React.memo(
   }) => {
     const { t } = useTranslation();
     const primaryColor = StyleServices.getCSSVariable('--ff-primary');
-    const { viewDesigns} = userRoles();
+    const { viewDesigns, createDesigns } = userRoles();
+    const isReadOnly = viewDesigns && !createDesigns;
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
@@ -73,7 +74,7 @@ const ActionModal = React.memo(
                   variant="secondary"
                   size="sm"
                   label={t("Duplicate")}
-                  disabled={!isMigrated || viewDesigns  }
+                  disabled={!isMigrated || isReadOnly  }
                   icon={<DuplicateIcon color={primaryColor} />}
                   className=""
                   dataTestId="duplicate-form-button"
@@ -82,7 +83,7 @@ const ActionModal = React.memo(
                 />
                 <CustomButton
                   variant="secondary"
-                  disabled={published || !isMigrated || viewDesigns}
+                  disabled={published || !isMigrated || isReadOnly}
                   size="sm"
                   label={t("Import")}
                   icon={<ImportIcon disabled={published} />}
@@ -105,7 +106,7 @@ const ActionModal = React.memo(
 
                 <CustomButton
                   variant="secondary"
-                  disabled={published || viewDesigns}
+                  disabled={published || isReadOnly}
                   size="sm"
                   label={t("Delete")}
                   icon={<TrashIcon disabled={published} />}

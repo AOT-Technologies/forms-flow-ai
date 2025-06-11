@@ -98,12 +98,14 @@ const PrivateRoute = React.memo((props) => {
     manageLinks,
     analyzeSubmissionView,
     analyzeMetricsView,
+    manageAdvancedWorkFlows,
   } = useUserRoles();
 
   const BASE_ROUTE_PATH = (() => {
     if (viewTasks || manageTasks) return ROUTE_TO.TASK;
     if (createSubmissions || viewSubmissions) return ROUTE_TO.FORM;
     if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;
+    if (manageAdvancedWorkFlows) return ROUTE_TO.SUBFLOW;
     if (
       manageDashBoardAuthorizations ||
       manageRoles ||
@@ -219,7 +221,7 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              createDesigns || viewDesigns ? (
+              createDesigns || viewDesigns || manageAdvancedWorkFlows ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />
@@ -237,9 +239,7 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              viewDashboards ||
-              analyzeSubmissionView ||
-              analyzeMetricsView ? (
+              viewDashboards || analyzeSubmissionView || analyzeMetricsView ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />
@@ -360,13 +360,13 @@ const PrivateRoute = React.memo((props) => {
                 component={Application}
               />
             )}
-            {ENABLE_PROCESSES_MODULE && (
+            {ENABLE_PROCESSES_MODULE  && (
               <DesignerRoute
                 path={ROUTE_TO.SUBFLOW}
                 component={DesignProcessRoutes}
               />
             )}
-            {ENABLE_PROCESSES_MODULE && (
+            {ENABLE_PROCESSES_MODULE  && (
               <DesignerRoute
                 path={ROUTE_TO.DECISIONTABLE}
                 component={DesignProcessRoutes}

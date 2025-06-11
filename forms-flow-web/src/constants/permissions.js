@@ -23,6 +23,7 @@ const userRoles = () => {
     manageRoles: role('manage_roles'),
     manageUsers: role('manage_users'),
     manageLinks: role('manage_links'),
+    manageAdvancedWorkFlows: role('manage_advance_workflows'),
   };
 };
 

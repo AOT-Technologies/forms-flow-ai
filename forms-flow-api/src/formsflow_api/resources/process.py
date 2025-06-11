@@ -184,7 +184,6 @@ class ProcessDataResource(Resource):
         """List all process data."""
         process_list, count = ProcessService.get_all_process(
             request.args,
-            auth.has_role([MANAGE_ADVANCE_FLOWS]),
         )
         response = {
             "process": process_list,

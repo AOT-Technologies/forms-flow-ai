@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  //setBPMFormListLoading,
+  setBPMFormListLoading,
   setClientFormSearch,
   setClientFormListPage,
   setClientFormListSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
-  //setFormCheckList,
+  setFormCheckList,
   setFormSearchLoading,
 } from "../../../actions/checkListActions";
 import { useTranslation } from "react-i18next";
@@ -69,15 +69,15 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   const fetchForms = () => {
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({
-      pageNo, 
-      limit, 
-      formSort, 
-      formName: searchText, 
-      showForOnlyCreateSubmissionUsers: true, 
+      pageNo,
+      limit,
+      formSort,
+      formName: searchText,
+      showForOnlyCreateSubmissionUsers: true,
       includeSubmissionsCount: true
     }));
   };
-  
+
 
   // Handle Sorting
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
@@ -116,13 +116,13 @@ const SubmitList = React.memo(({ getFormsInit }) => {
 
 
 
-  // useEffect(() => {
-  //   dispatch(setFormCheckList([]));
-  //   dispatch(setBPMFormListLoading(true));
-  //   // if (!create_submissions) {
-  //   //   navigateTo(navigateToSubmitFormsApplication);
-  //   // }
-  // }, []);
+  useEffect(() => {
+    dispatch(setFormCheckList([]));
+    dispatch(setBPMFormListLoading(true));
+    // if (!create_submissions) {
+    //   navigateTo(navigateToSubmitFormsApplication);
+    // }
+  }, []);
 
   useEffect(() => {
     fetchForms();

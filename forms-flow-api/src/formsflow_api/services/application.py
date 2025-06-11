@@ -274,9 +274,17 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         """Get all applications based on user."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
+        user_roles = user.roles
+        view_only_submission = (
+            "view_submissions" in user_roles and "create_submissions" not in user_roles
+        )
+        if only_drafts and view_only_submission:
+            # View-only users should not see anything unless only_drafts is True
+            return [], 0
         common_filters = ApplicationService.extract_common_filters(filters)
         applications, get_all_applications_count = Application.find_all_by_user(
             user_id=user_id,
+            view_only_submission=view_only_submission,
             **common_filters,
             include_drafts=include_drafts,
             only_drafts=only_drafts,

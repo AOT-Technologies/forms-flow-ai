@@ -2,7 +2,7 @@
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import ADMIN
+from formsflow_api_utils.utils import MANAGE_ALL_FILTERS
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import (
@@ -35,13 +35,6 @@ class FilterService:
         filter_payload["created_by"] = user.user_name
         filter_data = Filter.create_filter_from_dict(filter_payload)
         return filter_schema.dump(filter_data)
-
-    @staticmethod
-    def set_filter_edit_permission(filter_item, user):
-        """Set filter edit permission for a filter item."""
-        filter_item["editPermission"] = (
-            filter_item["createdBy"] == user.user_name or ADMIN in user.roles
-        )
 
     @staticmethod
     @user_context
@@ -105,16 +98,13 @@ class FilterService:
             user=user.user_name,
             tenant=tenant_key,
             exclude_ids=existing_filter_ids,
-            admin=ADMIN in user.roles,
             filter_type=FilterType.TASK,
         )
         # Merging existing filters with the remaining data.
         all_filters = [*existing_filters, *filters]
         filter_data = filter_schema.dump(all_filters, many=True)
 
-        # User who created the filter or admin have edit permission.
         for filter_item in filter_data:
-            FilterService.set_filter_edit_permission(filter_item, user)
             filter_item["variables"] = filter_item["variables"] or []
             filter_item["sortOrder"] = filter_item.get("sortOrder", None)
             filter_item["hide"] = filter_item.get("hide", False)
@@ -135,7 +125,6 @@ class FilterService:
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
-            admin=ADMIN in user.roles,
         )
         if filter_result:
             response = filter_schema.dump(filter_result)
@@ -143,15 +132,12 @@ class FilterService:
                 roles=user.group_or_roles,
                 user=user.user_name,
                 tenant=tenant_key,
-                admin=ADMIN in user.roles,
                 filter_type=FilterType.ATTRIBUTE,
                 parent_filter_id=response["id"],
             )
             response["attributeFilters"] = filter_schema.dump(
                 attribute_filters, many=True
             )
-            for filter_item in response["attributeFilters"]:
-                FilterService.set_filter_edit_permission(filter_item, user)
             return response
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 
@@ -164,7 +150,9 @@ class FilterService:
         filter_result = Filter.find_active_auth_filter_by_id(
             filter_id=filter_id,
             user=user.user_name,
-            admin=ADMIN in user.roles,
+            filter_admin=MANAGE_ALL_FILTERS in user.roles,
+            roles=user.group_or_roles,
+            tenant=tenant_key,
         )
         if filter_result:
             if (
@@ -187,7 +175,9 @@ class FilterService:
         filter_result = Filter.find_active_auth_filter_by_id(
             filter_id=filter_id,
             user=user.user_name,
-            admin=ADMIN in user.roles,
+            filter_admin=MANAGE_ALL_FILTERS in user.roles,
+            roles=user.group_or_roles,
+            tenant=tenant_key,
         )
 
         if filter_result:

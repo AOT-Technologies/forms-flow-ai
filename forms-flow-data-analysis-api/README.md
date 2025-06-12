@@ -9,7 +9,7 @@ Sentiment Analysisis used to understand the sentiments of the customer for produ
 The goal of the Data Analysis API is to provide access to all relevant interfaces of
 the system. It is built using Python :snake: .
 
-## forms-flow-dat-analysis-api Setup
+## forms-flow-data-analysis-api Setup
 
 [Instructions for data-analysis-api setup](../deployment/Individual-deployment/README.md)
 

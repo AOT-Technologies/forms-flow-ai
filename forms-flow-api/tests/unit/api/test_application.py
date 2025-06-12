@@ -152,7 +152,7 @@ class TestApplicationResource:
         assert rv.status_code == 201
         # creating a draft
         client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
-        token = get_token(jwt, role=VIEW_SUBMISSIONS)
+        token = get_token(jwt, roles=[VIEW_SUBMISSIONS, CREATE_SUBMISSIONS])
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -203,6 +203,29 @@ class TestApplicationResource:
             "formId": "1234",
             "parentFormId": "1234",
         }
+        # Assert application list api returns empty response if createdUserSubmissions=true and onlyDrafts=true with only view submission permission
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.get("/application?onlyDrafts=true&createdUserSubmissions=true&parentFormId=1234&sortBy=type&sortOrder=asc", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 0
+
+        # Assert application list api returns only submissions if createdUserSubmissions=true
+        token = get_token(jwt, role=VIEW_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.get("/application?createdUserSubmissions=true&parentFormId=1234&sortBy=type&sortOrder=asc", headers=headers)
+        assert response.status_code == 200
+        assert len(response.json["applications"]) == 1
+        assert response.json["applications"][0]["isDraft"] is False
+        assert response.json["formName"] == "Sample form"
+        assert response.json["formId"] is not None
+        assert response.json["parentFormId"] is not None
 
 
 class TestApplicationDetailView:

@@ -97,10 +97,10 @@ const PrivateRoute = React.memo((props) => {
 
   const BASE_ROUTE_PATH = (() => { 
     if (viewTasks || manageTasks) return ROUTE_TO.TASK;
-    if (createSubmissions) return ROUTE_TO.FORM;
+    if (createSubmissions || viewSubmissions) return ROUTE_TO.FORM;
     if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;
     if (admin) return ROUTE_TO.ADMIN;
-    if (viewSubmissions) return ROUTE_TO.APPLICATION;
+    //if (viewSubmissions) return ROUTE_TO.APPLICATION;
     if (viewDashboards) return ROUTE_TO.METRICS;
     return ROUTE_TO.NOTFOUND;
   })();

@@ -396,7 +396,7 @@ const List = React.memo((props) => {
                     <CustomButton
                       variant="primary"
                       size="sm"
-                      label={t("New Form")}
+                      label={t("New Form & Flow")}
                       onClick={() => setNewFormModal(true)}
                       className=""
                       dataTestId="create-form-button"

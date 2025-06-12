@@ -5,8 +5,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
-    MANAGE_SUBFLOWS,
     MANAGE_TASKS,
+    MANAGE_ADVANCE_FLOWS,
     get_token,
 )
 
@@ -63,7 +63,7 @@ def create_process(app, client, session, jwt):
 @pytest.fixture
 def create_process_with_api_call(app, client, session, jwt):
     """Create a process with API call."""
-    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -154,7 +154,7 @@ class TestProcessList:
         self, app, client, session, jwt, create_process_with_api_call
     ):
         """Testing process listing API."""
-        token = get_token(jwt, role=MANAGE_SUBFLOWS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -184,7 +184,7 @@ class TestProcessList:
         create_process_with_api_call,
     ):
         """Testing process listing API with pagination and sorted list."""
-        token = get_token(jwt, role=MANAGE_SUBFLOWS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -203,7 +203,7 @@ class TestProcessList:
         self, app, client, session, jwt, create_process_with_api_call
     ):
         """Testing process listing API with filters."""
-        token = get_token(jwt, role=MANAGE_SUBFLOWS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -255,7 +255,7 @@ class TestProcessDelete:
 
     def test_process_delete_method_with_invalid_token(self, app, client, session, jwt):
         """Tests the process delete method with invalid token."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -379,7 +379,7 @@ class TestProcessValidation:
 
     def test_process_validation_invalid(self, app, client, session, jwt):
         """Test process validation api with already exists process key/name."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -404,7 +404,7 @@ class TestProcessValidation:
 
     def test_process_validate_missing_params(app, client, session, jwt):
         """Testing process name validation with missing parameters."""
-        token = get_token(jwt, role=CREATE_DESIGNS)
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -423,7 +423,7 @@ class TestProcessValidation:
 
     def test_process_validation_success(self, app, client, session, jwt):
         """Test process validation api with success."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -459,7 +459,7 @@ class TestProcessPublish:
 
     def test_process_publish_success(self, app, client, session, jwt):
         """Test process publish success."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -487,7 +487,7 @@ class TestProcessPublish:
 
     def test_process_publish_invalid_id(self, app, client, session, jwt):
         """Test process publish with invalid id."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -506,7 +506,7 @@ class TestProcessUnPublish:
 
     def test_process_unpublish_success(self, app, client, session, jwt):
         """Test process unpublish success."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -528,7 +528,7 @@ class TestProcessUnPublish:
 
     def test_process_unpublish_invalid_id(self, app, client, session, jwt):
         """Test process unpublish with invalid id."""
-        token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+        token = get_token(jwt, role=MANAGE_ADVANCE_FLOWS, username="designer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

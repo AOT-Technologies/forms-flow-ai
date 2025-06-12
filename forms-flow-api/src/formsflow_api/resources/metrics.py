@@ -5,7 +5,7 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    VIEW_DASHBOARDS,
+    ANALYZE_METRICS_VIEW,
     auth,
     cors_preflight,
     profiletime,
@@ -70,7 +70,7 @@ class AggregatedApplicationsResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @auth.has_one_of_roles([VIEW_DASHBOARDS])
+    @auth.has_one_of_roles([ANALYZE_METRICS_VIEW])
     @profiletime
     @API.doc(
         params={
@@ -161,7 +161,7 @@ class AggregatedApplicationStatusResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @auth.has_one_of_roles([VIEW_DASHBOARDS])
+    @auth.has_one_of_roles([ANALYZE_METRICS_VIEW])
     @profiletime
     @API.doc(
         params={

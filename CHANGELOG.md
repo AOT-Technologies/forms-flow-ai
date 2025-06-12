@@ -57,6 +57,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Modified the `/application/<id>` GET and UPDATE endpoints to support draft get and update.
 * Updated the anonymous draft POST API URL from `/draft/public/create` to `/public/draft`.
 * Updated the theme GET API URL from `/themes` to `/public/themes`.
+* Updated API authorization with new permissions
 
 `Removed`
 

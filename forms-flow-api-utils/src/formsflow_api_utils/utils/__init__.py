@@ -50,6 +50,7 @@ from .permisions import (
     MANAGE_TEMPLATES,
     MANAGE_BUNDLES,
     ANALYZE_METRICS_VIEW,
+    ANALYZE_SUBMISSIONS_VIEW_HISTORY,
 )
 from .file_log_handler import CustomTimedRotatingFileHandler, register_log_handlers
 from .format import CustomFormatter

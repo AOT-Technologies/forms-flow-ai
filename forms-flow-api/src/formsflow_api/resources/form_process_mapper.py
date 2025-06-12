@@ -301,6 +301,7 @@ class FormResourceList(Resource):
             CREATE_DESIGNS,
             VIEW_DESIGNS,
             CREATE_SUBMISSIONS,
+            VIEW_SUBMISSIONS,
             CREATE_FILTERS,
             VIEW_FILTERS,
             MANAGE_ALL_FILTERS,

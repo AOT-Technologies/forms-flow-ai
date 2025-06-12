@@ -5,9 +5,8 @@ import {
     setCountPerpage,
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
-import LoadingOverlay from "react-loading-overlay-ts";
 import { useTranslation } from "react-i18next";
-import { CustomButton, TableFooter, NoDataFound, ConfirmModal } from "@formsflow/components";
+import { CustomButton, TableFooter, NoDataFound, ConfirmModal, TableSkeleton } from "@formsflow/components";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
@@ -111,9 +110,12 @@ const noDataMessage = !searchFormLoading ? (
     />
 ) : null;
 
+if (isApplicationLoading) {
+  return <TableSkeleton columns={5} rows={7} pagination={7} />;
+}
+
 return (
-    <LoadingOverlay active={isApplicationLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400">
+ <div className="min-height-400">
             <div className="custom-tables-wrapper-application">
                 <table className="table custom-tables table-responsive-sm mb-0">
                     <thead className="table-header">
@@ -258,7 +260,6 @@ return (
             />
             </div>
         </div>
-    </LoadingOverlay>
 );
 };
 

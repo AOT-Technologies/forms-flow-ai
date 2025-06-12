@@ -127,7 +127,7 @@ const EditComponent = () => {
   const [importLoader, setImportLoader] = useState(false);
   const defaultPrimaryBtnText = t("Confirm And Replace");
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
-  const { createDesigns } = userRoles();
+  const { createDesigns,viewDesigns } = userRoles();
   const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
   const [migration, setMigration] = useState(false);
@@ -1152,7 +1152,7 @@ const handleSaveLayout = () => {
                     {isPublished ? t("Live") : t("Draft")}
                   </span>
                 </div>
-                {createDesigns && (
+                {(createDesigns || viewDesigns) && (
                   <div>
                     <CustomButton
                       variant="dark"
@@ -1171,7 +1171,7 @@ const handleSaveLayout = () => {
                       dataTestId="designer-action-testid"
                       ariaLabel={(t) => t("Designer Actions Button")}
                     />
-                    <CustomButton
+                     {createDesigns && <CustomButton
                       variant="light"
                       size="md"
                       label={t(publishText)}
@@ -1179,7 +1179,7 @@ const handleSaveLayout = () => {
                       onClick={handlePublishClick}
                       dataTestId="handle-publish-testid"
                       ariaLabel={`${t(publishText)} ${t("Button")}`}
-                    />
+                    />}
                   </div>
                 )}
               </div>
@@ -1197,7 +1197,7 @@ const handleSaveLayout = () => {
                   >
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="mx-2 builder-header-text">{t("Layout")}</div>
-                      {createDesigns && (
+                      {(createDesigns || viewDesigns) && (
                         <div>
                           <CustomButton
                             variant="secondary"
@@ -1221,7 +1221,7 @@ const handleSaveLayout = () => {
                         </div>
                       )}
                     </div>
-                    {createDesigns && (
+                    {(createDesigns) && (
                       <div>
                         <CustomButton
                           variant="primary"

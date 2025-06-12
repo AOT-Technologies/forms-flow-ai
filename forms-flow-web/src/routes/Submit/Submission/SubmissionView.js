@@ -27,13 +27,13 @@ import { HelperServices } from "@formsflow/service";
 import DownloadPDFButton from "../../../components/Form/ExportAsPdf/downloadPdfButton";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
-
+import userRoles from "../../../constants/permissions";
 const ViewApplication = React.memo(() => {
   const { t } = useTranslation();
   const { applicationId } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
-
+  const {viewSubmissionHistory} = userRoles();
   const { applicationDetail, applicationDetailStatusCode, isApplicationDetailLoading } =
    useSelector(
     (state) => ({
@@ -134,14 +134,14 @@ const ViewApplication = React.memo(() => {
 
             {/* Right: Buttons */}
             <div className="form-submission-button">
-              <CustomButton
+              {viewSubmissionHistory && <CustomButton
                 variant="gray-dark"
                 size="table"
                 label={t("History")}
                 dataTestId="handle-submission-history-testid"
                 ariaLabel={t("Submission History Button")}
                 onClick={() => setShowHistoryModal(true)}
-              />
+              />}
               <DownloadPDFButton
                 form_id={form._id}
                 submission_id={submission._id}

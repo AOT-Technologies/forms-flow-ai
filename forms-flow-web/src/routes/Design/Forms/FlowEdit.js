@@ -50,7 +50,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
-  const { createDesigns } = userRoles();
+  const { createDesigns, viewDesigns} =  userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
@@ -219,7 +219,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
             <div className="d-flex justify-content-between align-items-center w-100">
               <div className="d-flex align-items-center justify-content-between">
                 <div className="mx-2 builder-header-text">{t("Flow")}</div>
-                {createDesigns && (
+                {(createDesigns || viewDesigns) && (
                   <div>
                     <CustomButton
                       variant="secondary"

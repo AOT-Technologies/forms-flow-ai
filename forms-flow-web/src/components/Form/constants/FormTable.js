@@ -215,7 +215,7 @@ function FormTable() {
                 </tbody>
               ) : !searchFormLoading ? (
                 <NoDataFound
-                message={t('No forms have been found. Create a new form by clicking the "New Form" button in the top right.')}
+                message={t('No forms have been found. Create a new form by clicking the "New Form & Flow" button in the top right.')}
               />
               ) : null}
             </table>

@@ -276,6 +276,11 @@ describe("DraftsAndSubmissions Component", () => {
         created: { sortOrder: "desc" },
       },
     },
+    user: {
+    roles: [
+      "create_submissions",
+    ],
+  },
   });
 
     // Mock the API calls to return a thunk function

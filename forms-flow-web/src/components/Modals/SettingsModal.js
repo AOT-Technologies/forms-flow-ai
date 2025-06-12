@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@formsflow/components";
 import PropTypes from 'prop-types';
+import userRoles from "../../constants/permissions";
 
 import FormSettings from "../Form/components/FormSettings";
 const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) => {
@@ -10,7 +11,7 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
   const FormSettingsRef = useRef();
   const [ isSaveButtonDisabled ,setIsSaveButtonDisabled] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
-
+  const { createDesigns } = userRoles();
   const handleConfirmFunction = async () => {
     const { formDetails, validateField } = FormSettingsRef.current;
     const fieldsToValidate = ["title", "path"];
@@ -53,8 +54,10 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           setIsSaveButtonDisabled = {setIsSaveButtonDisabled}
         />
       </Modal.Body>
-      <Modal.Footer>
-        <CustomButton
+  
+  <Modal.Footer>
+
+    {createDesigns && <CustomButton
           variant="primary"
           size="md"
           disabled={isSaving || isSaveButtonDisabled}
@@ -63,7 +66,8 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           onClick={handleConfirmFunction}
           dataTestId="save-form-settings"
           ariaLabel={t("Save Form Settings")}
-        />
+        />}
+        
 
         <CustomButton
           variant="secondary"

@@ -69,15 +69,15 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   const fetchForms = () => {
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({
-      pageNo, 
-      limit, 
-      formSort, 
-      formName: searchText, 
-      showForOnlyCreateSubmissionUsers: true, 
+      pageNo,
+      limit,
+      formSort,
+      formName: searchText,
+      showForOnlyCreateSubmissionUsers: true,
       includeSubmissionsCount: true
     }));
   };
-  
+
 
   // Handle Sorting
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {

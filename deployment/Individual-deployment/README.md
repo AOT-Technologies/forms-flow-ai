@@ -11,6 +11,15 @@ Ensure the following prerequisites are met before proceeding with the deployment
 - Docker installed
 - Docker Compose installed
 
+## ❌ Unsupported Docker Versions
+
+The following Docker versions are **not supported** in this installation process due to compatibility or known issues:
+
+- Docker 19.1.x
+- Docker versions below 20.10.23
+
+> **Note:** Please ensure you're using a stable Docker version tested with this installation.
+
 ## Clone the Repository
 
 ```bash

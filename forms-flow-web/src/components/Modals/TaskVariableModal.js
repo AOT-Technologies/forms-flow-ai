@@ -279,7 +279,9 @@ const FormComponent = React.memo(
         <div className="field-details-container" ref={detailsRef}>
           {showElement  && selectedComponent.key ? (
             <>
-            <div className="slideout-variable-selected">
+
+            {/* Keep for next version for future updated design */}
+            {/* <div className="slideout-variable-selected">
               <div className="head">
                 <button className="close" data-testid="close-button" aria-label="Close slideout">×</button>
               </div>
@@ -328,7 +330,7 @@ const FormComponent = React.memo(
                     />
                 </div>
               </div>
-          </div>
+          </div> */}
 
             <div className="details-section">
               <div className="d-flex flex-column">
@@ -376,7 +378,7 @@ const FormComponent = React.memo(
             </>
           ) : (
             <>
-              <h3>{t("Selected Variables (0)")}</h3>
+              {/* <h3>{t("Selected Variables")}</h3> */}
 
               <p className="select-text">{t("To use variables in the flow, submissions and tasks you need to specify which variables you want to import. Variables get imported at the time of the submission. If specific variables are not selected prior to the submission THEY WILL NOT BE AVAILABLE.")}<br></br><br></br>{t("Select a form field on the left to add a variable to the list.")}</p>
             </>
@@ -526,7 +528,7 @@ const TaskVariableModal = React.memo(
             <CloseIcon dataTestId="close-task-var-modal"/>
           </div>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="with-sections">
           {layoutNotsaved ? (
             // Content when layoutNotsaved is true
             <div className="info-pill-container">

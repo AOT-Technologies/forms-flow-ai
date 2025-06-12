@@ -26,7 +26,7 @@ import { StyleServices } from "@formsflow/service";
     "submitterEmail",
     "submitterFirstName",
     "submitterLastName",
-    "currentUserRole",
+    "currentUserRoles",
     "allAvailableRoles"
   ]);
 

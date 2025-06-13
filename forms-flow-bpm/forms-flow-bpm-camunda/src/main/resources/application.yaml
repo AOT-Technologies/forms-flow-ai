@@ -12,6 +12,7 @@ server:
   servlet:
     context-path: /camunda
     session:
+      tracking-modes: cookie
       cookie:
         secure: ${SESSION_COOKIE_SECURE:true}
         max-age: 1800

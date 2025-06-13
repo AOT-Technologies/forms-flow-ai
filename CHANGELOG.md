@@ -2,6 +2,14 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.0.3.rc - 2025-06-13
+
+`Added`
+
+**forms-flow-bpm**
+* Addition of security level config to bpmn docker compose to resolve Inconsistent CSRF token behavior
+
+
 ## 7.0.2 - 2025-06-04
 
 `Added`

@@ -99,6 +99,8 @@ const PrivateRoute = React.memo((props) => {
     analyzeSubmissionView,
     analyzeMetricsView,
     manageAdvancedWorkFlows,
+    reviewerViewHistory,
+    analyzeSubmissionsViewHistory,
   } = useUserRoles();
 
   const BASE_ROUTE_PATH = (() => {
@@ -311,7 +313,8 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              createSubmissions || viewSubmissions ? (
+              createSubmissions || viewSubmissions ||  analyzeSubmissionsViewHistory ||
+              reviewerViewHistory ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />

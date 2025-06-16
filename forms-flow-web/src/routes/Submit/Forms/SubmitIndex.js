@@ -28,11 +28,14 @@ import UserForm from "./UserForm";
 import { setDraftModified, setDraftSubmission } from "../../../actions/draftActions";
 
 const SubmissionRoute = ({ component: Component, createSubmissions, 
-  viewSubmissions, redirectUrl, ...rest }) => (
+  viewSubmissions,analyzeSubmissionsViewHistory,
+  reviewerViewHistory, redirectUrl, ...rest }) => (
   <Route
     {...rest}
     render={(props) =>
-      createSubmissions || viewSubmissions ? (
+      createSubmissions || viewSubmissions ||
+      analyzeSubmissionsViewHistory ||
+      reviewerViewHistory ? (
         <Component {...props} />
       ) : (
         <Redirect exact to={`${redirectUrl}`} />
@@ -57,7 +60,9 @@ const Item = React.memo(() => {
   const formAuthVerifyLoading = useSelector((state)=>state.process?.formAuthVerifyLoading);
   const apiCallError = useSelector((state)=>state.errors?.apiCallError);
   const dispatch = useDispatch();
-  const { createSubmissions, viewSubmissions} = userRoles();
+  const { createSubmissions, viewSubmissions, 
+    analyzeSubmissionsViewHistory,
+    reviewerViewHistory} = userRoles();
 
 
   const formAuthVerify = ({parentFormId, currentFormId},successCallBack)=>{
@@ -150,6 +155,8 @@ const Item = React.memo(() => {
           component={Submission}
           createSubmissions={createSubmissions}
           viewSubmissions={viewSubmissions}
+          analyzeSubmissionsViewHistory={analyzeSubmissionsViewHistory}
+          reviewerViewHistory={reviewerViewHistory}
           redirectUrl={redirectUrl}
         />
         <SubmissionRoute

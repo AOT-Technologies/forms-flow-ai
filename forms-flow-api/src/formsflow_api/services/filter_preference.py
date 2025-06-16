@@ -2,7 +2,6 @@
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import ADMIN
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import (
@@ -24,7 +23,6 @@ class FilterPreferenceService:
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=user.tenant_key,
-            admin=ADMIN in user.roles,
         )
         authorized_filter_ids = {item.id for item in authorized_filter}
         filtered_data = []

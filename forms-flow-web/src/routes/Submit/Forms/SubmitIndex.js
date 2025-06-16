@@ -48,6 +48,8 @@ SubmissionRoute.propTypes = {
   component: proptypes.func.isRequired,
   createSubmissions: proptypes.bool.isRequired,
   viewSubmissions: proptypes.bool.isRequired,
+  analyzeSubmissionsViewHistory: proptypes.bool.isRequired,
+  reviewerViewHistory: proptypes.bool.isRequired,
   redirectUrl: proptypes.string.isRequired,
 };
 

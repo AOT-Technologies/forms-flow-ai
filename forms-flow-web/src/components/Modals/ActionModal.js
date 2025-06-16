@@ -5,7 +5,6 @@ import {
   DuplicateIcon,
   ImportIcon,
   ExportIcon,
-  PencilIcon,
   CloseIcon,
   TrashIcon,
   CustomInfo,
@@ -136,7 +135,7 @@ const ActionModal = React.memo(
 
                 <CustomButton
                   label={t("Export")}
-                  icon={<PencilIcon />}
+                  icon={<ExportIcon />}
                   dataTestId="export-workflow-button"
                   ariaLabel="Export Workflow"
                   onClick={() => handleAction("EXPORT")}

@@ -14,7 +14,9 @@ import {
   FormInput,
   FormTextArea,
   CustomTabs,
-  DropdownMultiSelect
+  DropdownMultiSelect,
+  CheckboxCheckedIcon,
+  CheckboxUncheckedIcon,
 } from "@formsflow/components";
 
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
@@ -152,7 +154,7 @@ const FormSettings = forwardRef((props, ref) => {
     setErrors((prev) => ({ ...prev, [name]: "" }));
     blurStatus.current[name] = false;  
     let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;
-  
+
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
     } else {
@@ -280,6 +282,21 @@ const FormSettings = forwardRef((props, ref) => {
           onChange={handleFormDetailsChange}
           className="field-label"
         />
+
+        {console.log(formDetails.display)}
+
+        <label htmlFor="allow-adding-multiple-pages" className="input-checkbox">
+          <input
+            id="allow-adding-multiple-pages"
+            type="checkbox"
+            checked={formDetails.display === "wizard"}
+            onChange={handleFormDetailsChange}
+            data-testid="allow-adding-multiple-pages"
+            />
+          <span>Allow adding multiple pages in this form</span>
+          {formDetails.display == "wizard" ? <CheckboxCheckedIcon /> : <CheckboxUncheckedIcon /> }
+        </label>
+
         </>
       ),
     },

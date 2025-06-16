@@ -188,14 +188,8 @@ const Dashboard = React.memo(() => {
     );
   }
   return (
-
-      <LoadingOverlay active={submissionStatusCountLoader} spinner>
-        <div
-          className="mb-4"
-          id="main"
-          role="complementary"
-        >
-          <div className="d-flex flex-wrap justify-content-between col-md-12">
+    <>
+      <div className="d-flex flex-wrap justify-content-between col-md-12">
             <div className="custom-input-group col-12 col-md-4 px-0">
               <CustomSearch
                 handleClearSearch={onClear}
@@ -260,6 +254,14 @@ const Dashboard = React.memo(() => {
               </div>
             </div>
           </div>
+
+      <LoadingOverlay active={submissionStatusCountLoader} spinner>
+        <div
+          className="mb-4 old-design-metrics"
+          id="main"
+          role="complementary"
+        >
+          
 
           <div className="dashboard dashboard-height d-flex service-task-details">
             {submissionsList.length ? (
@@ -377,7 +379,7 @@ const Dashboard = React.memo(() => {
           <Redirect exact to="/404" />
         </Route>
       </LoadingOverlay>
-
+    </>
   );
 });
 

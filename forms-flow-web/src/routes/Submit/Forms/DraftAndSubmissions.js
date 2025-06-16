@@ -11,7 +11,7 @@ import {
   setApplicationLoading
 } from "../../../actions/applicationActions";
 import { navigateToSubmitFormsListing, navigateToNewSubmission } from "../../../helper/routerHelper";
-import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsflow/components";
+import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon, ButtonDropdown } from "@formsflow/components";
 import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
@@ -160,6 +160,15 @@ const DraftsAndSubmissions = () => {
       {/* Actions */}
       <div className="table-bar">
         <div className="filters">
+
+          <ButtonDropdown
+            label={t(selectedItem)}
+            dropdownItems={dropdownItems}
+            dataTestId="submission-filter-dropdown"
+            ariaLabel="Submission Filter Dropdown"
+            className="input-filter"
+          />
+
           <CustomButton
             className="appliation-dropdown"
             isDropdown

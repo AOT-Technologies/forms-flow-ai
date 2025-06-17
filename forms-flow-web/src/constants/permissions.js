@@ -24,6 +24,8 @@ const userRoles = () => {
     manageUsers: role('manage_users'),
     manageLinks: role('manage_links'),
     manageAdvancedWorkFlows: role('manage_advance_workflows'),
+    reviewerViewHistory: role('reviewer_view_history'),
+    analyzeSubmissionsViewHistory: role('analyze_submissions_view_history'),
   };
 };
 

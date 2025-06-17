@@ -146,7 +146,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     @classmethod
     def find_active_filter_by_ids(  # pylint: disable=too-many-arguments,too-many-positional-arguments
-        cls, filter_ids, roles, user, tenant
+        cls, filter_ids, roles, user, tenant, filter_type
     ) -> list[Filter]:
         """Find active filters by IDs, ensuring only active filters are returned."""
         if not filter_ids:
@@ -158,7 +158,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             and_(
                 Filter.id.in_(filter_ids),  # Properly handle multiple IDs
                 Filter.status == str(FilterStatus.ACTIVE.value),
-                Filter.filter_type == FilterType.TASK.value,
+                Filter.filter_type == filter_type,
             )
         )
 

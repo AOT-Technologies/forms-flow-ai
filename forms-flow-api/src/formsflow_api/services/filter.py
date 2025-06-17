@@ -37,6 +37,46 @@ class FilterService:
         return filter_schema.dump(filter_data)
 
     @staticmethod
+    def get_filters_by_user_filter_preference(
+        user_name, group_or_roles, tenant_key, filter_type, parent_filter_id=None
+    ):
+        """Get filters by user filter preference."""
+        current_app.logger.debug("Fetching filters by filter preference table..")
+        # fetch data from filter preference table
+        filter_preference = FilterPreferences.get_filters_by_user_id(
+            user_name, tenant_key, filter_type
+        )
+        # Extract existing filter IDs to avoid redundant fetching from the filter table.
+        # The `existing_filters` variable will store the result, containing filters
+        existing_filter_ids = []
+        existing_filters = []
+        if filter_preference:
+            for preference_data in filter_preference:
+                existing_filter_ids.append(preference_data.filter_id)
+                # adding filter_preference sort order to filter data
+                preference_data.filter.sort_order = preference_data.sort_order
+                preference_data.filter.hide = preference_data.hide
+                existing_filters.append(preference_data.filter)
+        current_app.logger.debug("Existing filter IDs: %s", existing_filter_ids)
+        filters = Filter.find_user_filters(
+            roles=group_or_roles,
+            user=user_name,
+            tenant=tenant_key,
+            exclude_ids=existing_filter_ids,
+            filter_type=filter_type,
+            parent_filter_id=parent_filter_id,
+        )
+        # Merging existing filters with the remaining data.
+        all_filters = [*existing_filters, *filters]
+        filter_data = filter_schema.dump(all_filters, many=True)
+
+        for filter_item in filter_data:
+            filter_item["variables"] = filter_item["variables"] or []
+            filter_item["sortOrder"] = filter_item.get("sortOrder", None)
+            filter_item["hide"] = filter_item.get("hide", False)
+        return filter_data
+
+    @staticmethod
     @user_context
     def get_user_filters(**kwargs):  # pylint: disable=too-many-locals
         """Get filters for the user."""
@@ -77,37 +117,12 @@ class FilterService:
                     tenant=tenant_key,
                 )
                 filter_obj.save()
-        # fetch data from filter preference table
-        filter_preference = FilterPreferences.get_filters_by_user_id(
-            user.user_name, tenant_key
-        )
-        # Extract existing filter IDs to avoid redundant fetching from the filter table.
-        # The `existing_filters` variable will store the result, containing filters
-        existing_filter_ids = []
-        existing_filters = []
-        if filter_preference:
-            for preference_data in filter_preference:
-                existing_filter_ids.append(preference_data.filter_id)
-                # adding filter_preference sort order to filter data
-                preference_data.filter.sort_order = preference_data.sort_order
-                preference_data.filter.hide = preference_data.hide
-                existing_filters.append(preference_data.filter)
-
-        filters = Filter.find_user_filters(
-            roles=user.group_or_roles,
-            user=user.user_name,
-            tenant=tenant_key,
-            exclude_ids=existing_filter_ids,
+        filter_data = FilterService.get_filters_by_user_filter_preference(
+            user_name=user.user_name,
+            group_or_roles=user.group_or_roles,
+            tenant_key=tenant_key,
             filter_type=FilterType.TASK,
         )
-        # Merging existing filters with the remaining data.
-        all_filters = [*existing_filters, *filters]
-        filter_data = filter_schema.dump(all_filters, many=True)
-
-        for filter_item in filter_data:
-            filter_item["variables"] = filter_item["variables"] or []
-            filter_item["sortOrder"] = filter_item.get("sortOrder", None)
-            filter_item["hide"] = filter_item.get("hide", False)
         response = {"filters": filter_data}
         # get user default filter
         user_data = User.get_user_by_user_name(user_name=user.user_name)
@@ -128,16 +143,14 @@ class FilterService:
         )
         if filter_result:
             response = filter_schema.dump(filter_result)
-            attribute_filters = Filter.find_user_filters(
-                roles=user.group_or_roles,
-                user=user.user_name,
-                tenant=tenant_key,
+            attribute_filters = FilterService.get_filters_by_user_filter_preference(
+                user_name=user.user_name,
+                group_or_roles=user.group_or_roles,
+                tenant_key=tenant_key,
                 filter_type=FilterType.ATTRIBUTE,
                 parent_filter_id=response["id"],
             )
-            response["attributeFilters"] = filter_schema.dump(
-                attribute_filters, many=True
-            )
+            response["attributeFilters"] = attribute_filters
             return response
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 

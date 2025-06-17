@@ -64,10 +64,10 @@ PERMISSION_DETAILS = [
     {"name": ANALYZE_SUBMISSIONS_VIEW, "description": "View submissions", "category": permission_category.ANALYZE.value, "order": 30, "depends_on": []},
     {"name": ANALYZE_SUBMISSIONS_VIEW_HISTORY, "description": "View submissions history", "category": permission_category.ANALYZE.value, "order": 40, "depends_on": [ ANALYZE_SUBMISSIONS_VIEW ]},
     {"name": ANALYZE_PROCESS_VIEW, "description": "View submissions process diagram", "category": permission_category.ANALYZE.value, "order": 50, "depends_on": [ ANALYZE_SUBMISSIONS_VIEW, ANALYZE_SUBMISSIONS_VIEW_HISTORY ]},
-    {"name": MANAGE_USERS, "description": "Manage users", "category": permission_category.ADMIN.value, "order": 10, "depends_on": []},
-    {"name": MANAGE_ROLES, "description": "Manage roles", "category": permission_category.ADMIN.value, "order": 20, "depends_on": []},
-    {"name": MANAGE_DASHBOARD_AUTHORIZATIONS, "description": "Manage dashboards", "category": permission_category.ADMIN.value, "order": 30, "depends_on": []},
-    # {"name": MANAGE_LINKS, "description": "View links", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []}
+    {"name": MANAGE_USERS, "description": "Users", "category": permission_category.ADMIN.value, "order": 10, "depends_on": []},
+    {"name": MANAGE_ROLES, "description": "Roles", "category": permission_category.ADMIN.value, "order": 20, "depends_on": []},
+    {"name": MANAGE_DASHBOARD_AUTHORIZATIONS, "description": "Dashboards", "category": permission_category.ADMIN.value, "order": 30, "depends_on": []},
+    # {"name": MANAGE_LINKS, "description": "Links", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []}
 ]
 
 

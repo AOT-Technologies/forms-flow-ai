@@ -6,7 +6,7 @@ import React, {
   useRef
 } from "react";
 // import { Form, FormControl, InputGroup } from "react-bootstrap";
-import { Form } from "react-bootstrap";
+// import { Form } from "react-bootstrap";
 import {
   CopyIcon,
   CheckIcon,
@@ -268,11 +268,12 @@ const FormSettings = forwardRef((props, ref) => {
           data-testid="form-description"
           maxRows={3}
           minRows={3}
+          id="form-description"
         />
         <CustomInfo heading={t("Note")}
         content={t("Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later.")} />
 
-        <Form.Check
+        {/* <Form.Check
           data-testid="form-edit-wizard-display"
           type="checkbox"
           id="formDisplaychange"
@@ -281,9 +282,8 @@ const FormSettings = forwardRef((props, ref) => {
           name="display"
           onChange={handleFormDetailsChange}
           className="field-label"
-        />
+        /> */}
 
-        {console.log(formDetails.display)}
 
         <label htmlFor="allow-adding-multiple-pages" className="input-checkbox">
           <input
@@ -291,10 +291,11 @@ const FormSettings = forwardRef((props, ref) => {
             type="checkbox"
             checked={formDetails.display === "wizard"}
             onChange={handleFormDetailsChange}
-            data-testid="allow-adding-multiple-pages"
+            data-testid="form-edit-wizard-display"
+            name="display"
             />
           <span>Allow adding multiple pages in this form</span>
-          {formDetails.display == "wizard" ? <CheckboxCheckedIcon /> : <CheckboxUncheckedIcon /> }
+          {formDetails.display === "wizard" ? <CheckboxCheckedIcon /> : <CheckboxUncheckedIcon /> }
         </label>
 
         </>
@@ -362,7 +363,10 @@ const FormSettings = forwardRef((props, ref) => {
           dataTestId="form-permission"
           id="who-can-create"
         />
-        <Form.Check
+
+
+
+        {/* <Form.Check
           type="checkbox"
           id="anonymouseCheckbox"
           label={t("Also allow anonymous users to create submissions")}
@@ -371,7 +375,21 @@ const FormSettings = forwardRef((props, ref) => {
             setIsAnonymous(!isAnonymous);
           }}
           className="field-label"
-        />
+        /> */}
+
+        <label htmlFor="anonymouse-checkbox" className="input-checkbox">
+          <input
+            id="anonymouse-checkbox"
+            type="checkbox"
+            checked={isAnonymous}
+            onChange={() => {
+              setIsAnonymous(!isAnonymous);
+            }}
+            data-testid="form-edit-allow-anonymous"
+            />
+          <span>{t("Also allow anonymous users to create submissions")}</span>
+          {isAnonymous ? <CheckboxCheckedIcon /> : <CheckboxUncheckedIcon /> }
+        </label>
 
 
         <DropdownMultiSelect

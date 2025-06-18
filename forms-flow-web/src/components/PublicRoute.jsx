@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { getForm } from "@aot-technologies/formio-react";
-import View from "../components/Form/Item/View";
+// import View from "../routes/Submit/Forms/View";
 import NotFound from "./NotFound";
+import UserForm from "../routes/Submit/Forms/UserForm";
 
 const PublicRoute = ({publish}) => {
 
@@ -13,7 +14,7 @@ const PublicRoute = ({publish}) => {
 
   return (
     <div className="container py-2 min-hightcontainer">
-      <Route exact path="/public/form/:formId" render={(props) => <View {...props} publish={publish}  />} />
+      <Route exact path="/public/form/:formId" render={(props) => <UserForm {...props} publish={publish}  />} />
       <Route path="/public/form/:formId/:notavailable" component={NotFound} />
     </div>
   );

@@ -82,10 +82,43 @@ const FormComponent = React.memo(
     /* ------------- manipulate the hidden variable to show in form ------------- */
     const [updatedForm, setUpdatedForm] = useState(null);
     const [manipulatedKeys, setManipulatedKeys] = useState(new Set());
+    const [nestedDataKeys, setNestedDataKeys] = useState({});
+
+    function getParentKeys(parentComponent) {
+      if (!parentComponent) return [];
+  
+      const parentElement = parentComponent.getAttribute("ref");
+  
+      if (parentElement === "webform") return [];
+  
+      const nestedContainer = parentElement?.slice(7);
+  
+      if (parentElement === "component") {
+          return getParentKeys(parentComponent.parentElement);
+      }
+  
+      return nestedDataKeys[nestedContainer]
+          ? [...getParentKeys(parentComponent.parentElement),nestedContainer]
+          : getParentKeys(parentComponent.parentElement);
+  }
+  
+
     useEffect(()=>{
       const data = _.cloneDeep(form);
       const manipulatedKeys = [];
       Utils.eachComponent(data.components,(component)=>{
+        // remove display (show/hide) conditions for showing the component in taskvariable modal
+        /* --------------------------- ------------------ --------------------------- */
+        component.conditional = {};
+        component.customConditional = "";
+        component.logic = [];
+        component.hidden = false;
+        component.hideLabel = false;
+
+        if(component.type == "container" || component.type == "survey" ){
+          setNestedDataKeys(prev=>({...prev, [component.key]:component.type}));
+        }
+        /* ---------------------------------- ---- ---------------------------------- */
         //Keys ignored for the default task variable that don't need to be displayed in the form.
         if(component.type == "hidden" && !ignoreKeywords.has(component.key)){
           component.type = "textfield";
@@ -117,9 +150,11 @@ const FormComponent = React.memo(
         if (highlightedElement) {
           highlightedElement.classList.remove("formio-hilighted");
         }
-
-        if (formioComponent) {
-
+        const parentComponent = formioComponent.parentElement;
+        const parentKeys = getParentKeys(parentComponent);
+        
+       
+        if (formioComponent) { 
           let classes = Array.from(formioComponent.classList).filter((cls) =>
             cls.startsWith("formio-component-")
           );
@@ -165,7 +200,7 @@ const FormComponent = React.memo(
 
           // Update the selected component state
           setSelectedComponent({
-            key: componentKey,
+            key: parentKeys.length ? [...parentKeys, componentKey].join(".") : componentKey,
             type: manipulatedKeys.has(componentKey) ? "hidden" : componentType,
             label,
             altVariable: alternativeLabels[componentKey]?.altVariable || "",
@@ -256,7 +291,7 @@ const FormComponent = React.memo(
               <FormInput
                 type="text"
                 ariaLabel="Add alternative label input"
-                dataTestid="Add-alternative-input"
+                dataTestId="Add-alternative-input"
                 label="Add Alternative Label"
                 value={selectedComponent.altVariable}
                 onChange={(e) =>
@@ -267,7 +302,7 @@ const FormComponent = React.memo(
                 }
               />
               <CustomButton
-                dataTestid="Add-alternative-btn"
+                dataTestId="Add-alternative-btn"
                 ariaLabel="Add alternative label button"
                 size="sm"
                 label={
@@ -379,7 +414,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Back to Layout")}
           ariaLabel="Back to Layout btn"
-          dataTestid="back-to-layout-btn"
+          dataTestId="back-to-layout-btn"
           onClick={handleBackToLayout}
         />
         <CustomButton
@@ -388,7 +423,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
-          dataTestid="cancel-btn"
+          dataTestId="cancel-btn"
           onClick={handleClose}
         />
       </>
@@ -404,7 +439,7 @@ const TaskVariableModal = React.memo(
           disabled={isPublished}
           label={t("Save")}
           ariaLabel="save task variable btn"
-          dataTestid="save-task-variable-btn"
+          dataTestId="save-task-variable-btn"
           onClick={handleSaveTaskVariable}
         />
         <CustomButton
@@ -413,7 +448,7 @@ const TaskVariableModal = React.memo(
           className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
-          dataTestid="cancel-btn"
+          dataTestId="cancel-btn"
           onClick={handleClose}
         />
       </>
@@ -426,6 +461,7 @@ const TaskVariableModal = React.memo(
         className="task-variable-modal"
         size={layoutNotsaved ? "sm" : "lg"}
         centered={true}
+        data-testid="task-variable-modal"
       >
         <Modal.Header>
           <Modal.Title>
@@ -434,7 +470,7 @@ const TaskVariableModal = React.memo(
               : t("Variables for Flow, Submissions, and Tasks")}
           </Modal.Title>
           <div className="d-flex align-items-center">
-            <CloseIcon width="16.5" height="16.5" onClick={handleClose} />
+            <CloseIcon dataTestId="close-task-var-modal" width="16.5" height="16.5" onClick={handleClose} />
           </div>
         </Modal.Header>
         <Modal.Body>

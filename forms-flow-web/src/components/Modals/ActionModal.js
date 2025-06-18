@@ -42,9 +42,11 @@ const ActionModal = React.memo(
       };
     } else if (CategoryType === "WORKFLOW" && published) {
       customInfo = {
-        heading: "Note",
-        content: `Importing is not available when the ${diagramType} is published.` +
-        `You must unpublish the ${diagramType} first if you wish to make any changes.`.trim(),
+        heading: t("Note"),
+        content: t(
+          "Importing is not available when the {{type}} is published. You must unpublish the {{type}} first if you wish to make any changes.",
+          { type: diagramType }
+        ).trim(),
 
 
       };
@@ -53,13 +55,13 @@ const ActionModal = React.memo(
 
     return (
       <>
-        <Modal show={newActionModal} onHide={onClose} centered={true} size="sm">
+        <Modal show={newActionModal} onHide={onClose} centered={true} size="sm" data-testid="action-modal">
           <Modal.Header>
             <Modal.Title className="modal-headder">
               <div>{t("Action")}</div>
             </Modal.Title>
             <div className="d-flex align-items-center">
-              <CloseIcon onClick={onClose} color={primaryColor} />
+              <CloseIcon onClick={onClose} color={primaryColor}  dataTestId="action-modal-close"/>
             </div>
           </Modal.Header>
           <Modal.Body className="action-modal-body">
@@ -73,7 +75,7 @@ const ActionModal = React.memo(
                   disabled={!isMigrated}
                   icon={<DuplicateIcon color={primaryColor} />}
                   className=""
-                  dataTestid="duplicate-form-button"
+                  dataTestId="duplicate-form-button"
                   ariaLabel="Duplicate Button"
                   onClick={() => handleAction("DUPLICATE")}
                 />
@@ -82,9 +84,9 @@ const ActionModal = React.memo(
                   disabled={published || !isMigrated}
                   size="sm"
                   label={t("Import")}
-                  icon={<ImportIcon />}
+                  icon={<ImportIcon disabled={published} />}
                   className=""
-                  dataTestid="import-form-button"
+                  dataTestId="import-form-button"
                   ariaLabel="Import Form"
                   onClick={() => handleAction("IMPORT")}
                 />
@@ -95,7 +97,7 @@ const ActionModal = React.memo(
                   label={t("Export")}
                   icon={<PencilIcon />}
                   className=""
-                  dataTestid="export-form-button"
+                  dataTestId="export-form-button"
                   ariaLabel="Export Form"
                   onClick={() => handleAction("EXPORT")}
                 />
@@ -105,9 +107,9 @@ const ActionModal = React.memo(
                   disabled={published}
                   size="sm"
                   label={t("Delete")}
-                  icon={<TrashIcon />}
+                  icon={<TrashIcon disabled={published} />}
                   className=""
-                  dataTestid="delete-form-button"
+                  dataTestId="delete-form-button"
                   ariaLabel="Delete Form"
                   onClick={() => handleAction("DELETE")}
                 />
@@ -119,10 +121,10 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Duplicate"
+                  label={t("Duplicate")}
                   icon={<DuplicateIcon />}
                   className=""
-                  dataTestid="duplicate-workflow-button"
+                  dataTestId="duplicate-workflow-button"
                   ariaLabel="Duplicate Workflow"
                   disabled={isCreate}
                   onClick={() => handleAction("DUPLICATE")}
@@ -132,10 +134,10 @@ const ActionModal = React.memo(
                   variant="secondary"
                   disabled={published}
                   size="sm"
-                  label="Import"
-                  icon={<ImportIcon />}
+                  label={t("Import")}
+                  icon={<ImportIcon disabled={published}  />}
                   className=""
-                  dataTestid="import-workflow-button"
+                  dataTestId="import-workflow-button"
                   ariaLabel="Import Workflow"
                   onClick={() => handleAction("IMPORT")}
                 />
@@ -143,10 +145,10 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Export"
+                  label={t("Export")}
                   icon={<PencilIcon />}
                   className=""
-                  dataTestid="export-workflow-button"
+                  dataTestId="export-workflow-button"
                   ariaLabel="Export Workflow"
                   onClick={() => handleAction("EXPORT")}
                 />

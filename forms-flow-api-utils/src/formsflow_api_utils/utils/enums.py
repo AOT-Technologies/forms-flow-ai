@@ -28,6 +28,8 @@ class ApplicationSortingParameters:  # pylint: disable=too-few-public-methods
     FormName = "formName"
     visibility= "visibility"
     is_anonymous= "is_anonymous"
+    type = "type"
+    is_draft = "is_draft"
 
 
 @unique
@@ -80,3 +82,22 @@ class ProcessSortingParameters:  # pylint: disable=too-few-public-methods
     Created = "created"
     Modified= "modified"
     ProcessKey = "processKey"
+
+
+# Added for data analysis api
+@unique
+class Service(Enum):
+    """Enumerations for database support status."""
+
+    ENABLED = "ENABLED"
+    DISABLED = "DISABLED"
+
+
+@unique
+class AIRequestType(Enum):
+    """Enumerations for chat bot request type."""
+
+    ASSIST = "ASSIST"
+    HELP = "HELP"
+    MODIFY = "MODIFY"
+    REGENERATE = "REGENERATE"

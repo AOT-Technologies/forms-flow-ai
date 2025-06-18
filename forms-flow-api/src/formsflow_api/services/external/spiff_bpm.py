@@ -2,6 +2,7 @@
 
 import json
 from enum import IntEnum
+import time
 from typing import Dict
 
 from flask import current_app
@@ -23,6 +24,7 @@ class BPMEndpointType(IntEnum):
     MESSAGE_EVENT = 3
     DECISION_DEFINITION = 4
     DEPLOYMENT = 5
+    PROCESS_INSTANCE = 6
 
 
 class SpiffBPMService(BaseBPMService):
@@ -68,7 +70,9 @@ class SpiffBPMService(BaseBPMService):
         url = (
             f"{cls._get_url_(BPMEndpointType.PROCESS_INSTANCES)}/{process_key}/start"
         )
-        cls.post_request(url, token, payload={}, tenant_key=tenant_key)
+        process_data = cls.post_request(url, token, payload={}, tenant_key=tenant_key)
+        # Wait for Spiff to fully initialize the process instance
+        cls._wait_for_process_instance(process_data["id"], token)  # type: ignore
 
         url = (
             f"{cls._get_url_(BPMEndpointType.MESSAGE_EVENT)}/{message_key}"
@@ -79,15 +83,23 @@ class SpiffBPMService(BaseBPMService):
 
     @classmethod
     def post_process_start_tenant(
-            cls, process_key: str, payload: Dict, token: str, tenant_key: str
+            cls, process_key: str, payload: Dict, token: str, tenant_key: str, message_key: str = None
     ):
         """Post process start based on tenant key."""
-        # TODO
         url = (
                 f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
                 f"key/{process_key}/start?tenantId=" + tenant_key
         )
-        return cls.post_request(url, token, payload=payload)
+        process_data = cls.post_request(url, token, payload={}, tenant_key=tenant_key)
+        # Wait for Spiff to fully initialize the process instance
+        cls._wait_for_process_instance(process_data["id"], token)  # type: ignore
+
+        url = (
+            f"{cls._get_url_(BPMEndpointType.MESSAGE_EVENT)}/{message_key}"
+        )
+        send_event_req = cls.post_request(url, token, payload=payload, tenant_key=tenant_key)
+        current_app.logger.debug(f"Process start response payload---> {send_event_req}")
+        return send_event_req.get("process_instance")
 
     @classmethod
     def get_auth_form_details(cls, token):
@@ -127,10 +139,11 @@ class SpiffBPMService(BaseBPMService):
     def post_deployment(cls, token, payload, tenant_key, files):
         """Create new deployment."""
         url = f"{cls._get_url_(BPMEndpointType.DEPLOYMENT)}"
-        return cls.post_request(url, token, payload, tenant_key, files)
+        response = cls.post_request(url, token, payload, tenant_key, files)
+        return response
 
     @classmethod
-    def _get_url_(cls, endpoint_type: BPMEndpointType):
+    def _get_url_(cls, endpoint_type: BPMEndpointType) -> str:
         """Get Url."""
         bpm_api_base = current_app.config.get("BPM_API_URL")
         try:
@@ -142,11 +155,12 @@ class SpiffBPMService(BaseBPMService):
             elif endpoint_type == BPMEndpointType.MESSAGE_EVENT:
                 url = f"{bpm_api_base}/v1.0/messages"
             elif endpoint_type == BPMEndpointType.DECISION_DEFINITION:
-                url = f"{bpm_api_base}/engine-rest-ext/v1/decision-definition"
+                url = f"{bpm_api_base}/v1.0/decision-definition"
             elif endpoint_type == BPMEndpointType.DEPLOYMENT:
                 url = f"{bpm_api_base}/v1.0/deployment/create"
+            elif endpoint_type == BPMEndpointType.PROCESS_INSTANCE:
+                url = f"{bpm_api_base}/v1.0/process-instance"
             return url
-
         except BaseException as e:  # pylint: disable=broad-except
             raise BusinessException(BusinessErrorCode.BPM_BASE_URL_NOT_SET) from e
 
@@ -159,7 +173,6 @@ class SpiffBPMService(BaseBPMService):
             variables: Dict,
     ) -> Dict:
         """Returns the payload for initiating the task."""
-
         return {
             **variables,
             "applicationId": application.id,
@@ -169,7 +182,8 @@ class SpiffBPMService(BaseBPMService):
             "submitterName": application.created_by,
             "submissionDate": str(application.created),
             "tenantKey": mapper.tenant,
-            "formId": mapper.form_id
+            "formId": mapper.form_id,
+            "skipReview": False
         }
 
     @staticmethod
@@ -184,3 +198,25 @@ class SpiffBPMService(BaseBPMService):
                 if key in form_data
             }
         return variables
+
+    @classmethod
+    def _wait_for_process_instance(cls, process_instance_id: int, token: str, retry_count: int = 3):
+        """Checks and waits for the process instance to be initialized
+
+        Arguments:
+            process_instance_id {int} -- Unique ID of process instance
+            token {str} -- JWT token of authenticated user
+
+        Keyword Arguments:
+            retry_count {int} -- Max number of attempts before failure (default: {3})
+        """
+        url = f"{cls._get_url_(BPMEndpointType.PROCESS_INSTANCE)}/{process_instance_id}/is-initialized"
+        for attempt in range(1, retry_count + 1):
+            response = cls.get_request(url, token)
+
+            if response["status"]:
+                current_app.logger.debug(f"Process instance {process_instance_id} is initialized.")
+                return
+            current_app.logger.debug(f"Waiting for process instance {process_instance_id} to be initialized. {attempt = }")
+            time.sleep(5 * attempt)  # increase retry duration by 1 second each time
+        raise BusinessException(BusinessErrorCode.PROCESS_NOT_INITIALIZED)

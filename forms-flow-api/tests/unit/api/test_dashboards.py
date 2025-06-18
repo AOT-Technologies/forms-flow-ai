@@ -3,9 +3,8 @@
 from formsflow_api_utils.utils import (
     MANAGE_DASHBOARD_AUTHORIZATIONS,
     VIEW_DASHBOARDS,
+    get_token,
 )
-
-from tests.utilities.base_test import get_token
 
 
 def test_get_dashboards(app, client, session, jwt):

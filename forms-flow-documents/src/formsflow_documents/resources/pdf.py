@@ -4,7 +4,7 @@ import string
 from http import HTTPStatus
 
 from flask import current_app, make_response, render_template, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     VIEW_SUBMISSIONS,
@@ -18,7 +18,24 @@ from formsflow_documents.services import PDFService
 from formsflow_documents.utils import DocUtils
 from formsflow_documents.utils.constants import BusinessErrorCode
 
-API = Namespace("Form", description="Form")
+API = Namespace(
+    "PDFExport", description="Handles API operations for exporting form as a PDF."
+)
+
+request_model = API.model(
+    "RequestModel",
+    {
+        "template": fields.String(
+            description="base64 encoded jinja template is used when generate PDF with custom theme.",
+            default="",
+            required=False,
+        ),
+        "templateVars": fields.Raw(
+            description="JSON key-value pairs for generating PDFs with a dedicated custom theme.",
+            required=False,
+        ),
+    },
+)
 
 
 @API.route("/<string:form_id>/submission/<string:submission_id>/render", doc=False)
@@ -30,33 +47,49 @@ class FormResourceRenderPdf(Resource):
     @profiletime
     def get(form_id: string, submission_id: string):
         """Form rendering method."""
+        current_app.logger.info(
+            f"Inside Get RENDER form_id : {form_id}, submission_id : {submission_id}"
+        )
         pdf_service = PDFService(form_id=form_id, submission_id=submission_id)
+        current_app.logger.info("Created PDF Service class instance")
         default_template = "index.html"
         template_name = request.args.get("template_name")
         template_variable_name = request.args.get("template_variable")
-        use_template = bool(template_name)
 
+        use_template = bool(template_name)
+        current_app.logger.info(f"use_template : {use_template}")
         template_name = (
             DocUtils.url_decode(secure_filename(template_name))
             if use_template
             else default_template
         )
 
+        current_app.logger.info(f"template_name : {template_name}")
+
         template_variable_name = (
             DocUtils.url_decode(secure_filename(template_variable_name))
             if template_variable_name
             else None
         )
-        if not pdf_service.search_template(template_name):
+        current_app.logger.info(f"template_variable_name : {template_variable_name}")
+        if not pdf_service.search_template(template_name, is_temp=use_template):
+            current_app.logger.error(
+                "Template not found, raising TEMPLATE_NOT_FOUND error"
+            )
             raise BusinessException(BusinessErrorCode.TEMPLATE_NOT_FOUND)
+
         if template_variable_name and not pdf_service.search_template(
-            template_variable_name
+            template_variable_name, is_temp=use_template
         ):
+            current_app.logger.error(
+                "Template vars not found, raising TEMPLATE_VARS_NOT_FOUND error"
+            )
             raise BusinessException(BusinessErrorCode.TEMPLATE_VARS_NOT_FOUND)
 
         render_data = pdf_service.get_render_data(
             use_template, template_variable_name, request.headers.get("Authorization")
         )
+        current_app.logger.error("Render data received")
         headers = {"Content-Type": "text/html"}
         return make_response(
             render_template(template_name, **render_data), 200, headers
@@ -84,8 +117,36 @@ class FormResourceExportPdf(Resource):
     @auth.require
     @auth.has_one_of_roles([VIEW_SUBMISSIONS])
     @profiletime
+    @API.doc(
+        responses={
+            200: "OK:- Successful request.",
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed",
+        },
+    )
+    @API.expect(request_model)
     def post(form_id: string, submission_id: string):
-        """PDF generation and rendering method."""
+        """PDF generation and rendering method.
+
+        e.g payload ,
+        To generate default PDF
+        ```
+        {}
+        ```
+        To generate PDFs with generic custom theme
+        ```
+        {
+            "template": "PCFET0NUWVBFIGh0bWw..." #base64 encoded jinja template.
+        }
+        ```
+        To generate PDFs with dedicated custom theme
+        ```
+        {
+            "template": "PCFET0NUWVBFIGh0bWw...", #base64 encoded jinja template.
+            "templateVars": {"invoiceNumber": 7723949372643552}
+        }
+        ```
+        """
         timezone = request.args.get("timezone")
         request_json = request.get_json()
         template = request_json.get("template")
@@ -102,9 +163,21 @@ class FormResourceExportPdf(Resource):
                 template_name,
                 template_variable_name,
             ) = pdf_service.create_template(template, template_variables)
-            current_app.logger.info(template_name)
-            current_app.logger.info(template_variable_name)
-        assert pdf_service.get_render_status(token, template_name) == 200
+            current_app.logger.info(f"Custom template created : {template_name}")
+            current_app.logger.info(
+                f"Template variables created : {template_variable_name}"
+            )
+            return pdf_service.create_pdf_from_custom_template(
+                template_name, template_variable_name, token, timezone
+            )
+
+        status = (
+            pdf_service.get_render_status(  # pylint:disable = too-many-function-args
+                token, template_name, template_variable_name
+            )
+        )
+        current_app.logger.info(f"pdf_service.get_render_status : {status}")
+        assert status == 200
         current_app.logger.info("Generating PDF...")
         result = pdf_service.generate_pdf(
             timezone, token, template_name, template_variable_name

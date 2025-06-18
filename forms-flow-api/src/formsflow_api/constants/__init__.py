@@ -131,6 +131,17 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "The path must not contain: exists, export, role, current, logout, import, form, access, token, recaptcha or end with submission/action.",  # pylint: disable=line-too-long
         HTTPStatus.BAD_REQUEST,
     )
+    FORM_NOT_FOUND = "Form not found", HTTPStatus.BAD_REQUEST
+    FORM_NOT_PUBLISHED = "Form not published", HTTPStatus.BAD_REQUEST
+    FILTER_PREFERENCE_BAD_REQUEST = ("Invalid payload data", HTTPStatus.BAD_REQUEST)
+    FILTER_PREFERENCE_DB_ERROR = (
+        "Database error while updating filter preferences",
+        HTTPStatus.BAD_REQUEST,
+    )
+    PROCESS_NOT_INITIALIZED = (
+        "Process not initialized",
+        HTTPStatus.SERVICE_UNAVAILABLE
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

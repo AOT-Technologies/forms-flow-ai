@@ -6,7 +6,7 @@ import startCase from "lodash/startCase";
 import { Tabs, Tab } from "react-bootstrap";
 import Details from "./Details";
 import Loading from "../../containers/Loading";
-import View from "../Form/Item/Submission/Item/View";
+import View from "../../routes/Submit/Submission/Item/View";
 import { getForm } from "@aot-technologies/formio-react";
 import NotFound from "../NotFound";
 import { Translation, useTranslation } from "react-i18next";
@@ -19,7 +19,7 @@ import { setDraftDetail } from "../../actions/draftActions";
 const ViewDraft = React.memo(() => {
   const { t } = useTranslation();
   const { draftId } = useParams();
-  const draftDetail = useSelector((state) => state.draft.submission);
+  const draftDetail = useSelector((state) => state.draft.draftSubmission);
   const draftDetailStatusCode = useSelector(
     (state) => state.draft.draftDetailStatusCode
   );

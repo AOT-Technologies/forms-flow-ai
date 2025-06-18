@@ -24,6 +24,8 @@ from formsflow_api.schemas import (
     ProcessListRequestSchema,
 )
 from formsflow_api.services.external.bpm import BPMService
+from formsflow_api.services.external import BaseBPMService, BpmFactory
+
 
 processSchema = ProcessDataSchema()
 
@@ -121,17 +123,18 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         token = user.bearer_token
         process_list = []
         mapper_process_keys = []
+        bpm: BaseBPMService = BpmFactory.get_bpm_service()
         if process_type == ProcessType.BPMN.value:
             mappers = FormProcessMapper.find_all()
             mapper_process_keys = [mapper.process_key for mapper in mappers]
             current_app.logger.debug(f"mapper_process_keys...{mapper_process_keys}")
             url_path = "&includeProcessDefinitionsWithoutTenantId=true"
-            process_list = BPMService.get_all_process(token, url_path)
+            process_list = bpm.get_all_process(token, url_path)
         elif process_type == ProcessType.DMN.value:
             url_path = (
                 "?latestVersion=true&includeDecisionDefinitionsWithoutTenantId=true"
             )
-            process_list = BPMService.get_decision(token, url_path)
+            process_list = bpm.get_decision(token, url_path)
         if process_list:
             unique_default_non_tenant_list = []
             if current_app.config.get("MULTI_TENANCY_ENABLED"):
@@ -399,12 +402,13 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         user: UserContext = kwargs["user"]
         if not xml_data:
             current_app.logger.debug(f"Fetching xml for process: {process_key}")
+            bpm = BpmFactory.get_bpm_service()
             if process_type == ProcessType.DMN.value:
-                xml_data = BPMService.decision_definition_xml(
+                xml_data = bpm.decision_definition_xml(
                     process_key, user.bearer_token, tenant_key
                 ).get("dmnXml")
             else:
-                xml_data = BPMService.process_definition_xml(
+                xml_data = bpm.process_definition_xml(
                     process_key, user.bearer_token, tenant_key
                 ).get("bpmn20Xml")
             current_app.logger.debug(
@@ -634,7 +638,8 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
             "tenant-id": tenant_key,
         }
         files = {"upload": (file_path, process_data, file_type)}
-        BPMService.post_deployment(token, payload, tenant_key, files)
+        bpm: BaseBPMService = BpmFactory.get_bpm_service()
+        bpm.post_deployment(token, payload, tenant_key, files)
 
     @classmethod
     def update_process_status(cls, process, status, user):

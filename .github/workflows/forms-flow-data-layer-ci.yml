@@ -1,0 +1,80 @@
+name: Forms Flow Data Layer CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+      - master
+      - release/**
+  pull_request:
+    branches:
+      - develop
+      - master
+      - release/**
+    paths:
+      - "forms-flow-data-layer/**"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./forms-flow-data-layer
+
+jobs:
+  setup-job:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: "true"
+
+  Lint:
+    if: always()
+    needs: setup-job
+    runs-on: ubuntu-24.04
+
+    strategy:
+      matrix:
+        python-version: [3.12.7]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4 
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -r requirements/dev.txt
+      - name: Pylint
+        id: pylint
+        run: |
+          pylint --rcfile=setup.cfg  src
+      - name: Flake8
+        id: flake8
+        run: |
+          flake8 src tests
+  Test:
+    if: always()
+    needs: setup-job
+    runs-on: ubuntu-24.04
+
+    strategy:
+      matrix:
+        python-version: [3.12.9]
+    
+    env:
+      JWT_OIDC_JWKS_URI: "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/certs"
+      JWT_OIDC_ISSUER: "http://localhost:8081/auth/realms/forms-flow-ai"
+      JWT_OIDC_AUDIENCE: "forms-flow-web"
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: pip install -r requirements/dev.txt
+      - name: Run tests
+        run: pytest

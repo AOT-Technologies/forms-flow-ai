@@ -76,6 +76,22 @@ export const setBPMFormLimit = (pageLimit) => (dispatch) => {
   });
 };
 
+// Submission form listing pagination
+
+export const setClientSubmissionLimit = (pageLimit) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CLIENT_FORM_LIST_SUBMISSION_LIST_PAGE_CHANGE,
+    payload: pageLimit,
+  });
+};
+
+export const setClientSubmitionListPage = (page) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CLIENT_SUBMITION_LIST_PAGE_CHANGE,
+    payload: page,
+  });
+};
+
 export const setMaintainBPMFormPagination = (maintainList) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.BPM_MAINTAIN_PAGINATION,
@@ -208,4 +224,25 @@ export const setClientFormSearch = ( data ) => (dispatch) => {
     type: ACTION_CONSTANTS.BPM_CLIENT_FORM_SEARCH,
     payload: data,
     });
+};
+
+export const setClientFormListPage = (page) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_PAGE_CHANGE,
+    payload: page,
+  });
+};
+
+export const setClientFormLimit = (pageLimit) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_LIMIT_CHANGE,
+    payload: pageLimit,
+  });
+};
+
+export const setClientFormListSort = (sort) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_SORT_CHANGE,
+    payload: sort,
+  });
 };

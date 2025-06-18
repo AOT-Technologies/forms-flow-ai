@@ -378,6 +378,13 @@
           "composite": false,
           "clientRole": true,
           "attributes": {}
+        },
+        {
+          "name": "resubmit_submissions",
+          "description": "Access to re-submit submissions",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
         }
       ],
       "security-admin-console": [],

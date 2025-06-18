@@ -323,7 +323,10 @@ class FilterPreferenceResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
-    @API.doc(body=[filter_preference_model])
+    @API.doc(
+        params={"filterType": "Filter type to set preferences for"},
+        body=[filter_preference_model],
+    )
     @API.response(
         201, "CREATED:- Successful request.", model=[filter_preference_response_model]
     )
@@ -351,7 +354,10 @@ class FilterPreferenceResource(Resource):
             401: If user is not authenticated
         """
         data = request.get_json()
+        filter_type = request.args.get("filterType", None)
         return (
-            FilterPreferenceService.create_or_update_filter_preference(data),
+            FilterPreferenceService.create_or_update_filter_preference(
+                data, filter_type
+            ),
             HTTPStatus.CREATED,
         )

@@ -92,12 +92,13 @@ class FilterPreferences(db.Model, BaseModel, AuditDateTimeMixin):
 
     @classmethod
     def get_filters_by_user_id(
-        cls, user_id: str, tenant: str
+        cls, user_id: str, tenant: str, filter_type: str
     ) -> List[FilterPreferences]:
         """Find filter prefernce with specific user id."""
         query = cls.query.filter(
             cls.user_id == user_id,
             cls.filter.has(Filter.status == FilterStatus.ACTIVE.value),
+            cls.filter.has(Filter.filter_type == filter_type),
         )
         if tenant:
             query = query.filter(cls.tenant == tenant)

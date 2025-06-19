@@ -200,6 +200,7 @@ const ViewApplication = React.memo(() => {
         onClose={() => setShowHistoryModal(false)}
         redirectUrl={redirectUrl}
         histories={appHistory}
+        isHistoryListLoading={isHistoryListLoading}
         title="History"
         showBpmnDiagram={analyze_process_view}
         diagramXML={diagramXML}

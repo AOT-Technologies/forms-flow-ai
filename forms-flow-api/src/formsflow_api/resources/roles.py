@@ -7,8 +7,12 @@ from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     CREATE_FILTERS,
+    MANAGE_ADVANCE_FLOWS,
     MANAGE_ALL_FILTERS,
+    MANAGE_BUNDLES,
+    MANAGE_INTEGRATIONS,
     MANAGE_ROLES,
+    MANAGE_TEMPLATES,
     MANAGE_USERS,
     PERMISSION_DETAILS,
     VIEW_DESIGNS,
@@ -189,4 +193,18 @@ class Permissions(Resource):
     )
     def get():
         """Fetch the list of permissions."""
-        return PERMISSION_DETAILS
+        # Filtered specific permissions related to EE
+        filtered_permissions = [
+            (
+                {
+                    **item,
+                    "description": "Manage advance flows (SubFlows + Decision Tables)",
+                }
+                if item["name"] == MANAGE_ADVANCE_FLOWS
+                else item
+            )
+            for item in PERMISSION_DETAILS
+            if item["name"]
+            not in [MANAGE_INTEGRATIONS, MANAGE_TEMPLATES, MANAGE_BUNDLES]
+        ]
+        return filtered_permissions

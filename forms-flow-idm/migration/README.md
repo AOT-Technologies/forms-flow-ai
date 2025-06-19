@@ -76,7 +76,7 @@ PS : The keycloak client provided for this script needs `manage-clients` role fr
 Note: If you're upgrading from a version prior to 7.0.0, execute python migrate-7.0.0.py before proceeding.
 ```
 v7.1.0, introduces new roles, removes deprecated ones, and updates role descriptions in the permission matrix.
-Run the following command to migrate these changes:
+After completing the [setup](#setup), run the following command to apply these migration changes:
 ```bash
 [Default setup]
 python migrate-7.1.0.py

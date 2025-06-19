@@ -211,37 +211,53 @@ class FilterService:
 
         It retrieves the task variables from the form mapper table,
         creates a mapping of task variable keys to their labels & updates the filter variables for each active filter.
-        The function ensures that default filter variables ("applicationId" and "formName") are always included
+        The function ensures that default filter variables are always included
         """
         current_app.logger.debug("Updating filter variables..")
         user: UserContext = kwargs["user"]
+        current_app.logger.debug("Fetching active filters for the form..")
         filters = Filter.find_all_active_filters_formid(
             form_id=form_id, tenant=user.tenant_key
         )
+        current_app.logger.debug(f"Updating filter variables for filters: {filters}")
         for filter_item in filters:
             # Create a dictionary mapping keys to labels from task_variables
             key_to_label = {task_var["key"]: task_var for task_var in task_variables}
-            default_filter_variables = ["applicationId", "formName"]
+            default_filter_variables = [
+                "applicationId",
+                "formName",
+                "submitterName",
+                "assignee",
+                "roles",
+                "name",
+                "created",
+            ]
             # For each filter variable:
             # - Include it in the result if its name is in task variables or default filter variables
             # - Use the task variable label if available, otherwise keep the existing label
             # - Retain the existing labels for default filter variables
 
-            result = [
-                {
-                    "name": filter_variable["name"],
-                    "label": (
-                        filter_variable["label"]
-                        if filter_variable["name"] in default_filter_variables
-                        else key_to_label.get(
-                            filter_variable["name"], filter_variable
-                        ).get("label", filter_variable["label"])
-                    ),
-                }
-                for filter_variable in filter_item.variables
-                if filter_variable["name"] in key_to_label.keys()
-                or filter_variable["name"] in default_filter_variables
-            ]
+            updated_variables = []
+            for filter_var in filter_item.variables:
+                # Skip if variable shouldn't be included
+                if not (
+                    filter_var["key"] in key_to_label
+                    or filter_var["key"] in default_filter_variables
+                ):
+                    continue
+
+                # Create updated variable (copy all existing properties)
+                updated_var = filter_var.copy()
+
+                # Only update label if it's not a default variable and exists in task_variables
+                if updated_var["key"] not in default_filter_variables:
+                    task_var = key_to_label.get(updated_var["key"])
+                    if task_var:
+                        updated_var["label"] = task_var["label"]
+
+                updated_variables.append(updated_var)
+
+            result = updated_variables
             # Update filter variables in database
             filter_obj = Filter.query.get(filter_item.id)
             filter_obj.variables = result

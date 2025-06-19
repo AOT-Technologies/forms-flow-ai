@@ -44,7 +44,7 @@ class FilterService:
         current_app.logger.debug("Fetching filters by filter preference table..")
         # fetch data from filter preference table
         filter_preference = FilterPreferences.get_filters_by_user_id(
-            user_name, tenant_key, filter_type
+            user_name, tenant_key, filter_type, group_or_roles, parent_filter_id
         )
         # Extract existing filter IDs to avoid redundant fetching from the filter table.
         # The `existing_filters` variable will store the result, containing filters

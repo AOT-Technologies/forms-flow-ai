@@ -67,7 +67,10 @@ class FilterPreferenceService:
             current_app.logger.debug("Data added into filter preference table..")
             # fetch latest data
             result = FilterPreferences.get_filters_by_user_id(
-                user_id=user_name, tenant=tenant_key, filter_type=filter_type
+                user_id=user_name,
+                tenant=tenant_key,
+                filter_type=filter_type,
+                roles=user.group_or_roles,
             )
             return filter_preference_schema.dump(result, many=True)
         except Exception as e:

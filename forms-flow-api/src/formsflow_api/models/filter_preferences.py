@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import List
 
 from formsflow_api_utils.utils.enums import FilterStatus
-from sqlalchemy import Index, UniqueConstraint, tuple_
+from sqlalchemy import Index, UniqueConstraint, and_, or_, tuple_
 from sqlalchemy.orm import relationship
 
 from .audit_mixin import AuditDateTimeMixin
@@ -91,10 +91,15 @@ class FilterPreferences(db.Model, BaseModel, AuditDateTimeMixin):
         return db.session.commit()
 
     @classmethod
-    def get_filters_by_user_id(
-        cls, user_id: str, tenant: str, filter_type: str
+    def get_filters_by_user_id(  # pylint: disable-msg=too-many-arguments, too-many-locals, too-many-positional-arguments
+        cls,
+        user_id: str,
+        tenant: str,
+        filter_type: str,
+        roles: List[str],
+        parent_filter_id: int = None,
     ) -> List[FilterPreferences]:
-        """Find filter prefernce with specific user id."""
+        """Find filter preference with specific user id."""
         query = cls.query.filter(
             cls.user_id == user_id,
             cls.filter.has(Filter.status == FilterStatus.ACTIVE.value),
@@ -102,5 +107,26 @@ class FilterPreferences(db.Model, BaseModel, AuditDateTimeMixin):
         )
         if tenant:
             query = query.filter(cls.tenant == tenant)
+        if parent_filter_id:
+            query = query.filter(
+                cls.filter.has(Filter.parent_filter_id == parent_filter_id)
+            )
+        # Filer Authorization checks
+        role_conditions = []
+        if roles:
+            role_conditions = [Filter.roles.contains([role]) for role in roles]
+
+        auth_conditions = [
+            *role_conditions,
+            Filter.users.contains([user_id]),
+            and_(
+                or_(Filter.roles == {}, Filter.roles.is_(None)),
+                or_(Filter.users == {}, Filter.users.is_(None)),
+            ),
+            Filter.created_by == user_id,
+        ]
+
+        query = query.filter(cls.filter.has(or_(*auth_conditions)))
+
         query = query.order_by(cls.sort_order.asc())
         return query.all() or []

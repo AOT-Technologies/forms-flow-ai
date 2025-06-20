@@ -1,0 +1,377 @@
+version: "3.7"
+
+############################
+# VOLUMES
+############################
+volumes:
+  postgres: {}              # <- reused for the BPM Postgres data
+  keycloak_custom_data: {}
+  api_db_data: {}
+  forms_db_data: {}
+  redis_data: {}
+  forms_forms_db_data: {}
+
+############################
+# NETWORKS
+############################
+networks:
+  keycloak-server-network:
+    driver: bridge
+    name: keycloak-server-network
+  forms-flow:
+    driver: bridge
+    name: forms-flow
+  forms-flow-bpm-network:
+    driver: bridge
+    name: forms-flow-bpm-network
+  formsflow-redis:
+    driver: bridge
+    name: formsflow-redis
+  forms-flow-forms-network:
+    driver: bridge
+    name: forms-flow-forms-network
+  forms-flow-webapi-network:
+    driver: bridge
+    name: forms-flow-webapi-network
+    
+############################
+# SERVICES
+############################
+services:
+
+  # ───────── KEYCLOAK STACK (unchanged) ─────────
+  keycloak-db:
+    image: postgres:latest
+    container_name: keycloak_db
+    volumes:
+      - ./forms-flow-idm/keycloak/postgres/keycloak:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_JDBC_DB:-keycloak}
+      POSTGRES_USER: ${KEYCLOAK_JDBC_USER:-admin}
+      POSTGRES_PASSWORD: ${KEYCLOAK_JDBC_PASSWORD:-changeme}
+    ports:
+      - "5431:5432"
+    networks:
+      - keycloak-server-network
+  keycloak-customizations:
+    build:
+      context: ./forms-flow-idm/keycloak
+      dockerfile: Dockerfile
+    volumes:
+      - keycloak_custom_data:/custom
+    command: /bin/sh
+    tty: true
+    stdin_open: true
+    networks:
+      - keycloak-server-network
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.2
+    container_name: keycloak
+    entrypoint: ["/bin/bash","-c","/keycloak_custom_data/start-keycloak.sh"]
+    volumes:
+      - keycloak_custom_data:/keycloak_custom_data
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: keycloak-db
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: ${KEYCLOAK_JDBC_DB:-keycloak}
+      KC_DB_USERNAME: ${KEYCLOAK_JDBC_USER:-admin}
+      KC_DB_PASSWORD: ${KEYCLOAK_JDBC_PASSWORD:-changeme}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-changeme}
+      KEYCLOAK_START_MODE: ${KEYCLOAK_START_MODE:-start-dev}
+      KEYCLOAK_HTTP_PATH: ${KEYCLOAK_HTTP_PATH:-/auth}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - keycloak-db
+      - keycloak-customizations
+    networks:
+      - keycloak-server-network
+      - forms-flow
+
+  # ───────── REDIS (unchanged) ─────────
+  redis:
+    image: redis:alpine          # ← pull from Docker Hub (no Dockerfile)
+    container_name: redis
+    ports:
+      - "6379:6379"              # expose exactly as upstream
+    networks:
+      - forms-flow               # share with the rest of the suite
+      - formsflow-redis          # private net identical to original compose
+    restart: unless-stopped
+
+
+  # ───────── BPM STACK (FULL ORIGINAL) ─────────
+  forms-flow-bpm-db:
+    image: postgres:latest
+    container_name: forms-flow-bpm-db
+    environment:
+      POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}
+      POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
+      POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
+    volumes:
+      - ./forms-flow-bpm/postgres/camunda:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - forms-flow-bpm-network
+
+  forms-flow-bpm:
+    build:
+      context: ./forms-flow-bpm
+      dockerfile: Dockerfile
+    container_name: forms-flow-bpm
+    restart: always
+    depends_on:
+      - forms-flow-bpm-db
+      - keycloak
+    ports:
+      - "8000:8080"                # host:8000  →  container:8080
+    environment:
+      - KEYCLOAK_URL=${KEYCLOAK_URL:-http://keycloak:8080}
+      - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
+      - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
+      - KEYCLOAK_URL_HTTP_RELATIVE_PATH=${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}
+      - CAMUNDA_JDBC_URL=${CAMUNDA_JDBC_URL:-jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm}
+      - CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER:-admin}
+      - CAMUNDA_JDBC_PASSWORD=${CAMUNDA_JDBC_PASSWORD:-changeme}
+      - CAMUNDA_JDBC_DRIVER=${CAMUNDA_JDBC_DRIVER:-org.postgresql.Driver}
+      - CAMUNDA_APP_ROOT_LOG_FLAG=${CAMUNDA_APP_ROOT_LOG_FLAG:-error}
+      - FORMSFLOW_API_URL=${FORMSFLOW_API_URL}
+      - FORMIO_URL=http://localhost:3001
+      - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL:-admin@example.com}
+      - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD:-changeme}
+      - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN:-http://localhost:3000}
+      - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN:-http://localhost:3000}
+      - WEBSOCKET_MESSAGE_TYPE=${WEBSOCKET_MESSAGE_TYPE:-TASK_EVENT}
+      - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
+      - DATA_BUFFER_SIZE=${DATA_BUFFER_SIZE:-2}
+      - IDENTITY_PROVIDER_MAX_RESULT_SIZE=${IDENTITY_PROVIDER_MAX_RESULT_SIZE:-250}
+      - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENTID:-}
+      - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      - BPM_CLIENT_CONN_TIMEOUT=${BPM_CLIENT_CONN_TIMEOUT:-5000}
+      - DATA_ANALYSIS_URL=${DATA_ANALYSIS_URL}
+      - CUSTOM_SUBMISSION_URL=${CUSTOM_SUBMISSION_URL}
+      - CUSTOM_SUBMISSION_ENABLED=${CUSTOM_SUBMISSION_ENABLED:-false}
+      - MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
+      - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL:-}
+      - REDIS_ENABLED=${REDIS_ENABLED:-false}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
+      - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
+      - FORMSFLOW_DOC_API_URL=${FORMSFLOW_DOC_API_URL}
+    networks:
+      - forms-flow-bpm-network
+      - forms-flow
+      - keycloak-server-network
+    extra_hosts:
+      - "localhost:host-gateway"
+
+  # ───────── API STACK (unchanged) ─────────
+  forms-flow-webapi-db:
+    image: postgres:11
+    container_name: forms-flow-webapi-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${FORMSFLOW_API_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
+      POSTGRES_DB: ${FORMSFLOW_API_DB_NAME:-webapi}
+    ports:
+      - "6432:5432"                       # host 6432 → container 5432 (avoids clashes)
+    volumes:
+      - ./forms-flow-api/postgres/webapi:/var/lib/postgresql/data
+    networks:
+      - forms-flow-webapi-network
+
+  forms-flow-api:                        # ← keep the service name so all dependencies still work
+    build:
+      context: ./forms-flow-api
+      dockerfile: Dockerfile
+    container_name: forms-flow-webapi
+    restart: unless-stopped
+    depends_on:
+      - forms-flow-webapi-db
+    entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./forms-flow-api:/app:rw          # live-code-mount exactly like original
+    environment:
+      INSIGHT_API_KEY: ${INSIGHT_API_KEY}
+      INSIGHT_API_URL: ${INSIGHT_API_URL}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      DATABASE_USERNAME: ${FORMSFLOW_API_DB_USER:-postgres}
+      DATABASE_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
+      DATABASE_HOST: ${FORMSFLOW_API_DB_HOST:-forms-flow-webapi-db}
+      DATABASE_PORT: ${FORMSFLOW_API_DB_PORT:-5432}
+      DATABASE_NAME: ${FORMSFLOW_API_DB_NAME:-webapi}
+
+      # Keycloak / OIDC
+      KEYCLOAK_URL: ${KEYCLOAK_URL:-http://localhost:8080}
+      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      BPM_TOKEN_API: ${KEYCLOAK_URL:-http://localhost:8080}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
+      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
+      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL:-http://localhost:8080}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL:-http://localhost:8080}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL:-http://localhost:8080}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+      JWT_OIDC_CACHING_ENABLED: "True"
+
+      # URLs to other services
+      BPM_API_URL: ${BPM_API_URL:-http://forms-flow-bpm:8080/camunda} 
+      WEB_API_BASE_URL: ${FORMSFLOW_API_URL:-http://forms-flow-api:5000}
+      WEB_BASE_URL: ${WEB_BASE_URL:-null}
+      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL:-http://localhost:3001}
+
+      # Form.io root creds & secrets
+      FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      FORMIO_JWT_EXPIRE: ${FORMIO_JWT_EXPIRE:-240}
+      FORM_EMBED_JWT_SECRET: ${FORM_EMBED_JWT_SECRET:-f6a69a42-7f8a-11ed-a1eb-0242ac120002}
+
+      # Feature flags & CORS
+      FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
+      MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
+      APP_SECURITY_ORIGIN: ${APP_SECURITY_ORIGIN:-*}
+
+      # Redis
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+
+      # Admin & Docs
+      FORMSFLOW_ADMIN_URL: ${FORMSFLOW_ADMIN_URL}
+      FORMSFLOW_DOC_API_URL: ${FORMSFLOW_DOC_API_URL}
+
+      # Logging & Gunicorn
+      API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}
+      API_LOG_ROTATION_INTERVAL: ${API_LOG_ROTATION_INTERVAL:-1}
+      API_LOG_BACKUP_COUNT: ${API_LOG_BACKUP_COUNT:-7}
+      CONFIGURE_LOGS: ${CONFIGURE_LOGS:-true}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-5}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-10}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
+
+    stdin_open: true
+    tty: true
+    networks:
+      - forms-flow-webapi-network
+      - forms-flow                      # shared bus with the rest
+      - keycloak-server-network         # reach Keycloak
+      - formsflow-redis                 # reach Redis if needed
+      - forms-flow-bpm-network
+    extra_hosts:
+      - "localhost:host-gateway"
+
+  # ────────── MongoDB for Form.io ──────────
+  forms-flow-forms-db:
+    image: mongo:5.0
+    container_name: forms-flow-forms-db
+    restart: always
+    hostname: forms-flow-forms-db
+    volumes:
+      - ./forms-flow-forms/mongo:/data/db          # same bind-mount path
+      - forms_forms_db_data:/data/configdb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-changeme}
+    ports:
+      - "27018:27017"                              # host port 27018 → container 27017
+    networks:
+      - forms-flow-forms-network
+
+  # ────────── Form.io / forms-flow-forms ──────────
+  forms-flow-forms:
+    image: formsflow/forms-flow-forms:v7.0.0
+    container_name: forms-flow-forms
+    restart: always
+    depends_on:
+      - forms-flow-forms-db
+    ports:
+      - "3001:3001"                                # unchanged
+    # every variable from the original compose
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DEBUG: formio:*
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authSource=admin\"}"
+      ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+      FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
+      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      FORMIO_JWT_EXPIRE: ${FORMIO_JWT_EXPIRE:-240}
+      NO_INSTALL: ${NO_INSTALL:-1}
+      MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
+    stdin_open: true # -i
+    tty: true # -t
+    networks:
+      - forms-flow-forms-network                    # original private net
+      - forms-flow                                  # shared net so other apps see it
+      - keycloak-server-network                     # can reach Keycloak
+    extra_hosts:
+      - "localhost:host-gateway"
+
+  # ───────── UI / ROOT CONFIG (unchanged) ─────────
+  forms-flow-web-root-config:
+    container_name: forms-flow-web-root-config
+    build:
+      context: ./forms-flow-web-root-config         # path in your repo
+      dockerfile: Dockerfile
+      args:
+        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.1.0-alpha/forms-flow-web.gz.js}
+        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v7.1.0-alpha/forms-flow-nav.gz.js}
+        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v7.1.0-alpha/forms-flow-service.gz.js}
+        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.1.0-alpha/forms-flow-components.gz.js}
+        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.1.0-alpha/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v7.1.0-alpha/forms-flow-review.gz.js}
+        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v7.1.0-alpha/forms-flow-submissions.gz.js}
+        - NODE_ENV=${NODE_ENV:-production}
+    entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - REACT_APP_API_SERVER_URL=http://localhost:3001
+      - REACT_APP_LANGUAGE=${LANGUAGE:-en}
+      - REACT_APP_API_PROJECT_URL=http://localhost:3001
+      - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+      - REACT_APP_WEB_BASE_URL=http://localhost:5000
+      - REACT_APP_BPM_URL=http://localhost:8000/camunda
+      - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
+      - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL:-http://localhost:8080}
+      - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
+      - REACT_APP_ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK=${ENABLE_APPLICATION_ACCESS_PERMISSION_CHECK:-false}
+      - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL}
+      - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
+      - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}
+      - REACT_APP_MT_ADMIN_BASE_URL_VERSION=${MT_ADMIN_BASE_URL_VERSION}
+      - REACT_APP_CUSTOM_SUBMISSION_URL=${CUSTOM_SUBMISSION_URL}
+      - REACT_APP_CUSTOM_SUBMISSION_ENABLED=${CUSTOM_SUBMISSION_ENABLED:-false}
+      - REACT_APP_DRAFT_ENABLED=${DRAFT_ENABLED:-false}
+      - REACT_APP_DRAFT_POLLING_RATE=${DRAFT_POLLING_RATE:-15000}
+      - REACT_APP_EXPORT_PDF_ENABLED=${EXPORT_PDF_ENABLED:-false}
+      - REACT_APP_PUBLIC_WORKFLOW_ENABLED=${PUBLIC_WORKFLOW_ENABLED:-false}
+      - REACT_APP_DOCUMENT_SERVICE_URL=${DOCUMENT_SERVICE_URL}
+      - REACT_APP_CUSTOM_THEME_URL=${CUSTOM_THEME_URL}
+      - REACT_APP_CUSTOM_RESOURCE_BUNDLE_URL=${CUSTOM_RESOURCE_BUNDLE_URL}
+      - REACT_APP_KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      - REACT_APP_ENABLE_FORMS_MODULE=${ENABLE_FORMS_MODULE:-true}
+      - REACT_APP_ENABLE_TASKS_MODULE=${ENABLE_TASKS_MODULE:-true}
+      - REACT_APP_ENABLE_DASHBOARDS_MODULE=${ENABLE_DASHBOARDS_MODULE:-true}
+      - REACT_APP_ENABLE_PROCESSES_MODULE=${ENABLE_PROCESSES_MODULE:-true}
+      - REACT_APP_ENABLE_APPLICATIONS_MODULE=${ENABLE_APPLICATIONS_MODULE:-true}
+      - REACT_APP_DATE_FORMAT=${DATE_FORMAT:-DD-MM-YY}
+      - REACT_APP_TIME_FORMAT=${TIME_FORMAT:-hh:mm:ss A}
+      - REACT_APP_KEYCLOAK_URL_HTTP_RELATIVE_PATH=/auth
+      - REACT_APP_ENABLE_COMPACT_FORM_VIEW=${ENABLE_COMPACT_FORM_VIEW:-false}
+      - REACT_APP_GRAPHQL_API_URL=${GRAPHQL_API_URL}
+    ports:
+      - "3000:8080"      # match original mapping
+    tty: true
+    networks:
+      - forms-flow
+      - keycloak-server-network

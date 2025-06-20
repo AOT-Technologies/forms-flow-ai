@@ -19,6 +19,8 @@ const userRoles = () => {
     manageIntegrations: role('manage_integrations'),
     analyzeMetricsView: role('analyze_metrics_view'),
     analyzeSubmissionView: role('analyze_submissions_view'),
+    analyze_process_view: role('analyze_process_view'),
+    analyze_submissions_view_history: role('analyze_submissions_view_history'),
     manageDashBoardAuthorizations: role('manage_dashboard_authorizations'),
     manageRoles: role('manage_roles'),
     manageUsers: role('manage_users'),

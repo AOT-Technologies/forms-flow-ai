@@ -241,8 +241,8 @@ class FilterService:
             for filter_var in filter_item.variables:
                 # Skip if variable shouldn't be included
                 if not (
-                    filter_var["key"] in key_to_label
-                    or filter_var["key"] in default_filter_variables
+                    filter_var["name"] in key_to_label
+                    or filter_var["name"] in default_filter_variables
                 ):
                     continue
 
@@ -250,8 +250,8 @@ class FilterService:
                 updated_var = filter_var.copy()
 
                 # Only update label if it's not a default variable and exists in task_variables
-                if updated_var["key"] not in default_filter_variables:
-                    task_var = key_to_label.get(updated_var["key"])
+                if updated_var["name"] not in default_filter_variables:
+                    task_var = key_to_label.get(updated_var["name"])
                     if task_var:
                         updated_var["label"] = task_var["label"]
 

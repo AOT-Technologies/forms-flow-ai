@@ -355,9 +355,10 @@ class FilterPreferenceResource(Resource):
         """
         data = request.get_json()
         filter_type = request.args.get("filterType", None)
+        parent_filter_id = request.args.get("parentFilterId", None)
         return (
             FilterPreferenceService.create_or_update_filter_preference(
-                data, filter_type
+                data, filter_type, parent_filter_id
             ),
             HTTPStatus.CREATED,
         )

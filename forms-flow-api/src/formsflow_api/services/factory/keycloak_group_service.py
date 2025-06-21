@@ -101,6 +101,15 @@ class KeycloakGroupService(KeycloakAdmin):
             group_id = group.get("id")
             url_path = f"groups/{group_id}/members"
             user_list = self.client.get_request(url_path)
+            if (
+                user_name_display_claim := current_app.config.get(
+                    "USER_NAME_DISPLAY_CLAIM"
+                )
+            ) is not None:
+                for user in user_list:
+                    user["username"] = self.get_user_id_from_response(
+                        user, user_name_display_claim
+                    )
 
         if search:
             user_list = self.user_service.user_search(search, user_list)
@@ -295,7 +304,7 @@ class KeycloakGroupService(KeycloakAdmin):
         )
 
     @user_context
-    def search_realm_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments
+    def search_realm_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments, too-many-locals
         self,
         search: str,
         page_no: int,
@@ -328,6 +337,14 @@ class KeycloakGroupService(KeycloakAdmin):
             f"{'Getting tenant users...' if multitenancy else 'Getting users...'}"
         )
         user_list = self.client.get_request(url)
+        # iterate users and set the username if a user name claim is set.
+        if (
+            user_name_display_claim := current_app.config.get("USER_NAME_DISPLAY_CLAIM")
+        ) is not None:
+            for user in user_list:
+                user["username"] = self.get_user_id_from_response(
+                    user, user_name_display_claim
+                )
 
         # checking the specific permission(roles)
         if permission:

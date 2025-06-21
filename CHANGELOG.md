@@ -2,6 +2,15 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.0.1 - 2025-03-15
+
+`Added`
+
+* Additional Custom theme variables added for extensive customizations
+* Added shared realm support for application
+
+`Modified`
+* Issue with Simple conditional logic option of formio components not returning component names fixed
 
 
 ## 7.0.0 - 2025-01-10

@@ -22,9 +22,7 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         self._bearer_token: str = _get_token()
         self.token_info = token_info
         self._email = token_info.get("email")
-        self._roles: list = token_info.get("roles", None) or token_info.get(
-            "role", None
-        )
+        self._roles: list = token_info.get('roles') or token_info.get('role') or token_info.get('client_roles')
         self._groups: list = token_info.get("groups", None)
 
     @property

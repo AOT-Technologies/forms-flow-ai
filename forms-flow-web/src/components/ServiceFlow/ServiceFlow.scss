@@ -52,7 +52,7 @@
 
 .filter-listview{
   min-width: 700px;
-  max-height: 80vh;
+  max-height: 70vh;
   overflow-y: auto;
 }
 
@@ -241,8 +241,8 @@
 }
 
 .filter-details {
-  background-color: $danger-200;
-  border-color: $danger-200;
+  background-color: $danger;
+  border-color: $danger;
   // margin: 0.5em;
   margin-top: 15px;
   margin-left: 5px;

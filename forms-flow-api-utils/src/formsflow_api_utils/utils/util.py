@@ -27,6 +27,7 @@ MANAGE_TASKS,
 VIEW_TASKS,
 CREATE_SUBMISSIONS,
 VIEW_SUBMISSIONS,
+ANALYZE_SUBMISSIONS_VIEW,
 )
 from sqlalchemy.sql.expression import text
 
@@ -127,7 +128,7 @@ def get_role_ids_from_user_groups(role_ids, user_role):
 
     if any(permission in user_role for permission in [ CREATE_DESIGNS, VIEW_DESIGNS]):
         return role_ids
-    if any(permission in user_role for permission in [ MANAGE_TASKS, VIEW_TASKS]):
+    if any(permission in user_role for permission in [ MANAGE_TASKS, VIEW_TASKS, ANALYZE_SUBMISSIONS_VIEW]):
         return filter_list_by_user_role(FormioRoles.REVIEWER.name, role_ids)
     if any(permission in user_role for permission in [ CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]):
         return filter_list_by_user_role(FormioRoles.CLIENT.name, role_ids)

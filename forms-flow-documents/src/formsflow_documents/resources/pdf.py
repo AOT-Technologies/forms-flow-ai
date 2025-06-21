@@ -8,6 +8,7 @@ from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     VIEW_SUBMISSIONS,
+    ANALYZE_SUBMISSIONS_VIEW,
     auth,
     cors_preflight,
     profiletime,
@@ -115,7 +116,7 @@ class FormResourceExportPdf(Resource):
 
     @staticmethod
     @auth.require
-    @auth.has_one_of_roles([VIEW_SUBMISSIONS])
+    @auth.has_one_of_roles([VIEW_SUBMISSIONS, ANALYZE_SUBMISSIONS_VIEW])
     @profiletime
     @API.doc(
         responses={

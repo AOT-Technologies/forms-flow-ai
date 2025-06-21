@@ -100,8 +100,11 @@ const ViewApplication = React.memo(() => {
 
 
  useEffect(() => {
-    if (viewSubmissionHistory && applicationId && isHistoryListLoading) {
-
+    if (
+      (viewSubmissionHistory || analyze_submissions_view_history) &&
+      applicationId &&
+      isHistoryListLoading
+    ) {
       dispatch(fetchApplicationAuditHistoryList(applicationId));
     }
   }, [applicationId, isHistoryListLoading, dispatch]);

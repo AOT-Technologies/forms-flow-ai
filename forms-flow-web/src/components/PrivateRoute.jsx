@@ -277,7 +277,7 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              viewSubmissions ? (
+              viewSubmissions || analyzeSubmissionView ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />

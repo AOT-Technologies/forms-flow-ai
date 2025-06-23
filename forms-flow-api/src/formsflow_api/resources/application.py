@@ -298,7 +298,7 @@ class ApplicationResourceById(Resource):
     )
     def get(application_id: int):
         """Get application by id."""
-        if auth.has_role([VIEW_TASKS, MANAGE_TASKS]):
+        if auth.has_one_of_roles([VIEW_TASKS, MANAGE_TASKS, ANALYZE_SUBMISSIONS_VIEW]):
             (
                 application_schema_dump,
                 status,

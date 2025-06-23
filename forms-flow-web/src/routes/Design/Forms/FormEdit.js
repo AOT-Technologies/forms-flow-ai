@@ -61,7 +61,7 @@ import NewVersionModal from "../../../components/Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate,
+import { generateUniqueId, addTenantkey, textTruncate,
   convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";

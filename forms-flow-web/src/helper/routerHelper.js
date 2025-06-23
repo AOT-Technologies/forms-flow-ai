@@ -49,6 +49,10 @@ const navigateToViewSubmission = (dispatch, tenantId, formId, applicationId ) =>
   navigateTo(dispatch,`${getRoute(tenantId).APPLICATION}/${applicationId}`);
 };
 
+const navigateToResubmit = (dispatch, tenantId, formId, submissionId ) => {
+  navigateTo(dispatch,`${getRoute(tenantId).FORM}/${formId}/submissions/${submissionId}/resubmit`);
+};
+
 
 
 
@@ -63,4 +67,5 @@ export {
   navigateToNewSubmission,
   navigateToDraftEdit,
   navigateToViewSubmission,  
+  navigateToResubmit,
 };

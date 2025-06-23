@@ -1,5 +1,7 @@
-import React, {useState} from "react";
+import React, {useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { selectRoot } from "@aot-technologies/formio-react";
+import { CLIENT_EDIT_STATUS } from "../../../constants/applicationConstants";
 import {
     setApplicationListActivePage,
     setCountPerpage,
@@ -10,7 +12,7 @@ import { CustomButton, TableFooter, NoDataFound, ConfirmModal, TableSkeleton } f
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
-import { navigateToDraftEdit, navigateToViewSubmission } from "../../../helper/routerHelper";
+import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import { HelperServices } from "@formsflow/service";
 
@@ -28,6 +30,8 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const searchFormLoading = useSelector(
         (state) => state.formCheckList.searchFormLoading
     );
+    const [canEdit, setCanEdit] = useState(false);
+    const userRoles = useSelector((state) => selectRoot("user", state).roles);
     const isApplicationLoading = useSelector((state) =>
         state.applications.isApplicationLoading);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -41,6 +45,14 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         { text: "100", value: 100 },
         { text: "All", value: totalForms },
     ];
+
+    useEffect(() => {
+        setCanEdit(userRoles?.includes("create_submissions"));
+    }, [userRoles]);
+
+    const continueResubmit = (row) => {
+        navigateToResubmit(dispatch, tenantKey, row.formId, row.submissionId);
+    };
 
     const handleSort = (key) => {
         const newSortOrder = applicationSort[key].sortOrder === "asc" ? "desc" : "asc";
@@ -214,7 +226,16 @@ return (
                                                     aria-label={t("Continue Draft edit")}
                                                 />
                                             </div>
-                                        ) : (
+                                        ) : (CLIENT_EDIT_STATUS.includes(item.applicationStatus)) 
+                                            && canEdit ? (
+                                            <CustomButton
+                                                variant="secondary"
+                                                size="table"
+                                                label={t("Resubmit")}
+                                                onClick={() => continueResubmit(item)}
+                                                className="btn btn-secondary btn-table"
+                                            /> )
+                                            : (
                                             <CustomButton
                                                 variant="secondary"
                                                 size="table"

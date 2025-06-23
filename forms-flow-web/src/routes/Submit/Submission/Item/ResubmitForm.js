@@ -226,8 +226,8 @@ Resubmit.defaultProps = {
 };
 
 Resubmit.propTypes = {
+    isAuthenticated: PropTypes.bool,
     onCustomEvent: PropTypes.func,
-    form: PropTypes.object,
     submission: PropTypes.object,
     errors: PropTypes.array,
     options: PropTypes.object,
@@ -306,7 +306,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                              handleBack
                             );
                     } else {
-                        handleSubmissionSuccess(submission, onFormSubmit, redirectUrl, handleBack);
+                        handleSubmissionSuccess(submission, onFormSubmit, handleBack);
                     }
                 } else {
                     handleSubmissionError();

@@ -121,6 +121,54 @@ const noDataMessage = !searchFormLoading ? (
         message={t('No Submissions or Draft have been found. Create a new submission by clicking the "New Submission " button in the top right.')}
     />
 ) : null;
+//The buttons are seperated for better readability.
+const getActionButtons = (item) => {
+  if (item.isDraft) {
+    return (
+      <div className="d-flex justify-content-end gap-2">
+        <CustomButton
+          variant="secondary"
+          size="table"
+          label={t("Delete")}
+          onClick={() => deleteDraft(item)}
+          className="btn btn-secondary btn-table"
+          data-testid={`delete-draft-button-${item.id}`}
+          aria-label={t("Delete Draft")}
+        />
+        <CustomButton
+          variant="secondary"
+          size="table"
+          label={t("Continue")}
+          onClick={() => continueDraft(item)}
+          className="btn btn-secondary btn-table"
+          data-testid={`continue-draft-button-${item.id}`}
+          aria-label={t("Continue Draft edit")}
+        />
+      </div>
+    );
+  } else if (CLIENT_EDIT_STATUS.includes(item.applicationStatus) && canEdit) {
+    return (
+      <CustomButton
+        variant="secondary"
+        size="table"
+        label={t("Resubmit")}
+        onClick={() => continueResubmit(item)}
+        className="btn btn-secondary btn-table"
+      />
+    );
+  } else {
+    return (
+      <CustomButton
+        variant="secondary"
+        size="table"
+        label={t("View")}
+        onClick={() => viewSubmission(item)}
+        className="btn btn-secondary btn-table"
+      />
+    );
+  }
+};
+
 
 if (isApplicationLoading) {
   return <TableSkeleton columns={5} rows={7} pagination={7} />;
@@ -199,51 +247,8 @@ return (
                                         </span>
                                     </td>
                                     <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
-
                                     <td className="w-20 text-end">
-                                        {item.isDraft ? (
-                                            <div className="d-flex justify-content-end gap-2">
-                                                <CustomButton
-                                                    variant="secondary"
-                                                    size="table"
-                                                    label={t("Delete")}
-                                                    onClick={() => deleteDraft(item)}
-                                                    className="btn btn-secondary btn-table"
-                                                    data-testid={
-                                                        `delete-draft-button-${item.id}`
-                                                    }
-                                                    aria-label={t("Delete Draft")}
-                                                />
-                                                <CustomButton
-                                                    variant="secondary"
-                                                    size="table"
-                                                    label={t("Continue")}
-                                                    onClick={() => continueDraft(item)}
-                                                    className="btn btn-secondary btn-table"
-                                                    data-testid={
-                                                        `continue-draft-button-${item.id}`
-                                                    }
-                                                    aria-label={t("Continue Draft edit")}
-                                                />
-                                            </div>
-                                        ) : (CLIENT_EDIT_STATUS.includes(item.applicationStatus)) 
-                                            && canEdit ? (
-                                            <CustomButton
-                                                variant="secondary"
-                                                size="table"
-                                                label={t("Resubmit")}
-                                                onClick={() => continueResubmit(item)}
-                                                className="btn btn-secondary btn-table"
-                                            /> )
-                                            : (
-                                            <CustomButton
-                                                variant="secondary"
-                                                size="table"
-                                                label={t("View")}
-                                                onClick={() => viewSubmission(item)}
-                                                className="btn btn-secondary btn-table"
-                                            />
-                                        )}
+                                    {getActionButtons(item)}
                                     </td>
                                 </tr>
                             ))}

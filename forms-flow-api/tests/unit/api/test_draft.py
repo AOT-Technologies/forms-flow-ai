@@ -64,7 +64,8 @@ def test_draft_detail_view(app, client, session, jwt, create_mapper):
     token = get_token(jwt, username="different_user", role=VIEW_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(f"/application/{application_id}", headers=headers)
-    assert rv.status_code == 403
+    assert rv.status_code == 200
+    assert rv.json == {}
 
 
 def test_draft_update_details_api(app, client, session, jwt, create_mapper):

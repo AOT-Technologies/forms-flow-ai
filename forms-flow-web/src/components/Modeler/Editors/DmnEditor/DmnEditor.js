@@ -98,7 +98,7 @@ const DmnEditor = forwardRef(({ dmnXml, onChange = ()=>{} }, ref) => {
   const redo = () => dmnModeler?.getActiveViewer().get("commandStack")?.redo(); 
 
   return (
-    <div className="bpmn-main-container">
+    <div className="bpmn-main-container-editor">
       <div className="bpmn-viewer-container">
         <div
           id="canvas"

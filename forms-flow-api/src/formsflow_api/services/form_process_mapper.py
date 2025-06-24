@@ -1,5 +1,4 @@
 """This exposes form process mapper service."""
-# pylint: disable=too-many-lines
 
 # pylint: disable=too-many-lines
 

@@ -5,6 +5,7 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
+    ANALYZE_PROCESS_VIEW,
     CREATE_DESIGNS,
     MANAGE_ADVANCE_FLOWS,
     VIEW_DESIGNS,
@@ -430,6 +431,7 @@ class ProcessResourceByProcessKey(Resource):
     @staticmethod
     @auth.has_one_of_roles(
         [
+            ANALYZE_PROCESS_VIEW,
             CREATE_DESIGNS,
             VIEW_DESIGNS,
             VIEW_TASKS,

@@ -5,7 +5,7 @@
   overflow: auto;
 }
 
-.bpmn-main-container {
+.bpmn-main-container-editor {
   width: 100%;
   display: flex;
   margin-top: 10px;
@@ -43,8 +43,8 @@
 }
 /* ------------------- this is for diagram settings icons end  ------------------- */
 
-.bpm-modeler-container {
-  height: 100%;
+.bpm-modeler-container { 
+   height: calc(100vh - 20rem);
 }
 
 .bpmn-viewer-container {

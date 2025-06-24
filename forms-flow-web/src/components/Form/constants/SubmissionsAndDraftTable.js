@@ -121,6 +121,7 @@ const noDataMessage = !searchFormLoading ? (
         message={t('No Submissions or Draft have been found. Create a new submission by clicking the "New Submission " button in the top right.')}
     />
 ) : null;
+
 //The buttons are seperated for better readability.
 const getActionButtons = (item) => {
   if (item.isDraft) {
@@ -154,6 +155,7 @@ const getActionButtons = (item) => {
         label={t("Resubmit")}
         onClick={() => continueResubmit(item)}
         className="btn btn-secondary btn-table"
+        data-testid={`resubmit-submission-button-${item?.id}`}
       />
     );
   } else {
@@ -164,6 +166,7 @@ const getActionButtons = (item) => {
         label={t("View")}
         onClick={() => viewSubmission(item)}
         className="btn btn-secondary btn-table"
+        data-testid={`view-submission-button-${item?.id}`}
       />
     );
   }

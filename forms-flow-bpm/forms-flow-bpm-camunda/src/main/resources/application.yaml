@@ -64,6 +64,10 @@ formsflow.ai:
       resourceType: "TASK,FILTER"
       resourceId: "*"
       permissions: ["ALL"]
+    - groupId: "ROLE_analyze_process_view"
+      resourceType: "PROCESS_INSTANCE"
+      resourceId: "*"
+      permissions: ["ALL"]
 
 camunda.bpm:
   database:

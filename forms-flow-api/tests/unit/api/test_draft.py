@@ -67,6 +67,7 @@ def test_draft_detail_view(app, client, session, jwt, create_mapper):
     assert rv.status_code == 200
     assert rv.json == {}
 
+
 def test_draft_update_details_api(app, client, session, jwt, create_mapper):
     """Tests the draft update endpoint with valid payload."""
     form_id = create_mapper["formId"]

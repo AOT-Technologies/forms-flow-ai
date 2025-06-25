@@ -5,8 +5,9 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    VIEW_SUBMISSIONS,
-    VIEW_TASKS,
+    ANALYZE_SUBMISSIONS_VIEW_HISTORY,
+    REVIEWER_VIEW_HISTORY,
+    SUBMISSION_VIEW_HISTORY,
     auth,
     cors_preflight,
     profiletime,
@@ -26,6 +27,8 @@ application_history_model = API.model(
         "formUrl": fields.String(),
         "submissionId": fields.String(),
         "submittedBy": fields.String(),
+        "color": fields.String(),
+        "percentage": fields.Float(),
     },
 )
 
@@ -54,7 +57,13 @@ class ApplicationHistoryResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @auth.has_one_of_roles([VIEW_SUBMISSIONS, VIEW_TASKS])
+    @auth.has_one_of_roles(
+        [
+            SUBMISSION_VIEW_HISTORY,
+            REVIEWER_VIEW_HISTORY,
+            ANALYZE_SUBMISSIONS_VIEW_HISTORY,
+        ]
+    )
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_history_list_model)
     @API.response(
@@ -66,7 +75,7 @@ class ApplicationHistoryResource(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def get(application_id):
-        """Get application history."""
+        """Retrieve the history of an application based on the application ID."""
         return (
             (
                 {
@@ -92,7 +101,7 @@ class ApplicationHistoryResource(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post(application_id):
-        """Post a new history entry using the request body."""
+        """Create a new application history entry from the request body."""
         application_history_json = request.get_json()
 
         application_history_schema = ApplicationHistorySchema()

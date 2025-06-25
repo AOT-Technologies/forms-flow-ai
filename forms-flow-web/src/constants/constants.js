@@ -82,6 +82,7 @@ export const STAFF_DESIGNER = "formsflow-designer";
 export const STAFF_REVIEWER = "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
 export const FORMSFLOW_ADMIN = "formsflow-admin";
+export const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB in bytes
 
 export const OPERATIONS = {
   insert: {
@@ -214,13 +215,16 @@ export const ENABLE_APPLICATIONS_MODULE =
 const MAIN_ROUTE = {
   DRAFT: "draft",
   FORM: "form",
+  FORM_ENTRIES: "form/:formId/entries",
   FORMFLOW: "formflow",
   TASK: "task",
+  REVIEW: "review",
   APPLICATION: "application",
   SUBFLOW: "subflow",
   DECISIONTABLE: "decision-table",
   METRICS: "metrics",
-  INSIGHTS: "insights",
+  DASHBOARDS: "dashboards",
+  ANALYZESUBMISSIONS: "submissions",
   ADMIN: "admin",
   NOTFOUND: "404"
 };
@@ -234,16 +238,18 @@ export const getRoute = (tenantId) => ({
   FORM: getBaseRoute(tenantId) + MAIN_ROUTE.FORM,
   FORMFLOW: getBaseRoute(tenantId) + MAIN_ROUTE.FORMFLOW,
   TASK: getBaseRoute(tenantId) + MAIN_ROUTE.TASK,
+  REVIEW: getBaseRoute(tenantId) + MAIN_ROUTE.REVIEW,
   APPLICATION: getBaseRoute(tenantId) + MAIN_ROUTE.APPLICATION,
   SUBFLOW: getBaseRoute(tenantId) + MAIN_ROUTE.SUBFLOW,
   DECISIONTABLE: getBaseRoute(tenantId) + MAIN_ROUTE.DECISIONTABLE,
   METRICS: getBaseRoute(tenantId) + MAIN_ROUTE.METRICS,
-  INSIGHTS: getBaseRoute(tenantId) + MAIN_ROUTE.INSIGHTS,
+  ANALYZESUBMISSIONS: getBaseRoute(tenantId) + MAIN_ROUTE.ANALYZESUBMISSIONS,
+  DASHBOARDS: getBaseRoute(tenantId) + MAIN_ROUTE.DASHBOARDS,
   ADMIN: getBaseRoute(tenantId) + MAIN_ROUTE.ADMIN,
-  NOTFOUND: getBaseRoute(tenantId) + MAIN_ROUTE.NOTFOUND
+  NOTFOUND: getBaseRoute(tenantId) + MAIN_ROUTE.NOTFOUND,
+  FORM_ENTRIES: getBaseRoute(tenantId) + MAIN_ROUTE.FORM_ENTRIES,
 });
 
-export const USER_NAME_DISPLAY_CLAIM =
-  (window._env_ && window._env_.REACT_APP_USER_NAME_DISPLAY_CLAIM) ||
-  process.env.REACT_APP_USER_NAME_DISPLAY_CLAIM ||
-  "preferred_username";
+export const USER_NAME_DISPLAY_CLAIM = window._env_?.REACT_APP_USER_NAME_DISPLAY_CLAIM || process.env.REACT_APP_USER_NAME_DISPLAY_CLAIM || "preferred_username";
+  
+

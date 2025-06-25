@@ -260,49 +260,6 @@ class FormProcessMapper(
         return query.items, total_count
 
     @classmethod
-    def find_all_active_by_formid(
-        cls,
-        page_number=None,
-        limit=None,
-        sort_by=None,
-        sort_order=None,
-        search=None,
-        form_ids=None,
-        **filters,
-    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
-        """Fetch all active form process mappers by authorized forms."""
-        # Get latest row for each form_id group
-        filtered_form_query = cls.get_latest_form_mapper_ids()
-        filtered_form_ids = [
-            data.id for data in filtered_form_query if data.parent_form_id in form_ids
-        ]
-        query = cls.filter_conditions(**filters)
-        query = query.filter(
-            FormProcessMapper.id.in_(filtered_form_ids),
-        )
-        query = cls.add_search_filter(query=query, search=search)
-        query = cls.access_filter(query=query)
-        query = add_sort_filter(
-            sort_by=sort_by,
-            sort_order=sort_order,
-            query=query,
-            model_name="form_process_mapper",
-        )
-
-        total_count = query.count()
-        query = query.with_entities(
-            cls.id,
-            cls.process_key,
-            cls.form_id,
-            cls.form_name,
-            cls.modified,
-            cls.description,
-        )
-        limit = total_count if limit is None else limit
-        query = query.paginate(page=page_number, per_page=limit, error_out=False)
-        return query.items, total_count
-
-    @classmethod
     def find_all_count(cls):
         """Fetch the total active form process mapper which are active."""
         return cls.query.filter(

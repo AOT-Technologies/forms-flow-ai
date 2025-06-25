@@ -61,8 +61,8 @@ def get_client_roles(token, client_id):
     return response.json()
 
 
-def update_client_roles(token, client_id, roles):
-    """Update a client's roles."""
+def add_client_roles(token, client_id, roles):
+    """Add a client's roles."""
     client_url = f"{_get_base_url()}/admin/realms/{REALM}/clients/{client_id}/roles"
     headers = {
         'Authorization': f"Bearer {token}",
@@ -76,6 +76,33 @@ def update_client_roles(token, client_id, roles):
             print(f"Failed to create role {role}: {response.text}")
         else:
             print("Added role")
+
+
+def delete_client_role(token, client_id, role_names):
+    """Delete a client role."""
+    headers = {'Authorization': f"Bearer {token}"}
+    for role_name in role_names:
+        print(f"Deleting role {role_name}.")
+        role_url = f"{_get_base_url()}/admin/realms/{REALM}/clients/{client_id}/roles/{role_name}"
+        response = requests.delete(role_url, headers=headers)
+        if response.status_code == 204:  # 204 = No content (success)
+            print("Deleted role successfully.")
+        else:
+            print(f"Failed to delete role {role_name}: {response.text}")
+
+
+def update_client_role(token, client_id, roles):
+    """Update the description of a client role."""
+    headers = {'Authorization': f"Bearer {token}"}
+    for role in roles:
+        role_name = role.get("name")
+        print("Updating role : ", role.get("name"))
+        role_url = f"{_get_base_url()}/admin/realms/{REALM}/clients/{client_id}/roles/{role_name}"
+        response = requests.put(role_url, headers=headers, json=role)
+        if response.status_code == 204:  # 204 = No content (success)
+            print("Updated role successfully.")
+        else:
+            print(f"Failed to update role {role_name}: {response.text}")    
 
 
 def get_group_id(token, group_name):

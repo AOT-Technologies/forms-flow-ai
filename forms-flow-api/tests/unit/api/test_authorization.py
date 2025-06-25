@@ -2,9 +2,9 @@
 
 import json
 
-from formsflow_api_utils.utils import VIEW_DASHBOARDS
+from formsflow_api_utils.utils import VIEW_DASHBOARDS, get_token
 
-from tests.utilities.base_test import factory_auth, get_token
+from tests.utilities.base_test import factory_auth
 
 
 class TestAuthorizationResource:
@@ -82,7 +82,7 @@ class TestAuthorizationResource:
         }
         response = client.get("/authorizations/users/dashboard", headers=headers)
         assert response.status_code == 200
-        assert len(response.json) == 2
+        assert len(response.json) == 1
 
         token = get_token(jwt, role=VIEW_DASHBOARDS, roles=["approver"])
         headers = {

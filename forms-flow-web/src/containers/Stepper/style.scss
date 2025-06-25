@@ -18,7 +18,7 @@
         width: calc(100% + 2.94vw - 5vw);
         left: calc(50% + 0px);
         height: 1px;
-        background-color: $gray-400; 
+        background-color: $gray-medium-dark; 
         order: -10;
         transition: background-color 0.7s ease-in-out;
       }
@@ -39,7 +39,7 @@
     height: 22px;
     font-size: 10px;
     border-radius: 50%;
-    background-color: $gray-600;
+    background-color: $gray-dark;
     margin-bottom: 0.5rem;
     z-index: 5;
     transition: color 1s ease-in-out, background-color 0.6s ease-in-out;
@@ -51,7 +51,7 @@
   }
 
   .ff-step-label {
-    color: $gray-600;
+    color: $gray-dark;
     font-size: 16px;
     padding-left: var(--spacing);
     padding-right: var(--spacing);

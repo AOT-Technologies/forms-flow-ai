@@ -5,11 +5,10 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
+    ANALYZE_PROCESS_VIEW,
     CREATE_DESIGNS,
-    MANAGE_DECISION_TABLES,
-    MANAGE_SUBFLOWS,
+    MANAGE_ADVANCE_FLOWS,
     VIEW_DESIGNS,
-    VIEW_SUBMISSIONS,
     VIEW_TASKS,
     auth,
     cors_preflight,
@@ -19,14 +18,14 @@ from formsflow_api_utils.utils import (
 from formsflow_api.schemas import ProcessDataSchema
 from formsflow_api.services import ProcessService
 
-API = Namespace("Process", description="Process")
+API = Namespace("Process", description="Manages process/workflow operations.")
 
 process_request = API.model(
     "ProcessRequest",
     {
-        "name": fields.String(description="Process name"),
-        "status": fields.String(description="Process status"),
-        "processType": fields.String(description="Process Type"),
+        "processType": fields.String(
+            description="Process Type - BPMN/DMN/LOWCODE", default="BPMN"
+        ),
         "processData": fields.String(description="Process data"),
     },
 )
@@ -47,6 +46,9 @@ process_history_response_model = API.model(
                         "majorVersion": fields.Integer(),
                         "minorVersion": fields.Integer(),
                         "isMajor": fields.Boolean(),
+                        "publishedBy": fields.String(),
+                        "publishedOn": fields.String(),
+                        "modified": fields.String(),
                     },
                 )
             )
@@ -55,44 +57,43 @@ process_history_response_model = API.model(
     },
 )
 
-process_response = API.inherit(
-    "ProcessResponse",
-    process_request,
+process_response_base_model = API.model(
+    "BaseProcessResponse",
     {
-        "tenant": fields.String(description="Authorized Tenant to the process"),
         "id": fields.Integer(description="Unique id of the process"),
+        "name": fields.String(description="Process name"),
+        "status": fields.String(description="Process status"),
+        "processType": fields.String(),
+        "tenant": fields.String(description="Authorized Tenant to the process"),
         "created": fields.DateTime(description="Created time"),
         "modified": fields.DateTime(description="Modified time"),
         "createdBy": fields.String(),
         "modifiedBy": fields.String(),
+        "processKey": fields.String(),
+        "parentProcessKey": fields.String(),
+        "isSubflow": fields.Boolean(),
+    },
+)
+process_response = API.inherit(
+    "ProcessResponse",
+    process_response_base_model,
+    {
+        "processData": fields.String(description="Process data"),
     },
 )
 
 process_list_model = API.model(
     "ProcessList",
     {
-        "process": fields.List(
-            fields.Nested(
-                API.model(
-                    "Process",
-                    {
-                        "id": fields.Integer(description="Unique id of the process"),
-                        "name": fields.String(description="Process name"),
-                        "status": fields.String(description="Process status"),
-                        "processType": fields.String(description="Process Type"),
-                        "processData": fields.String(description="Process data"),
-                        "tenant": fields.String(
-                            description="Authorized Tenant to the process"
-                        ),
-                        "created": fields.DateTime(description="Created time"),
-                        "modified": fields.DateTime(description="Modified time"),
-                        "createdBy": fields.String(),
-                        "modifiedBy": fields.String(),
-                    },
-                )
-            )
-        ),
+        "process": fields.List(fields.Nested(process_response_base_model)),
         "totalCount": fields.Integer(),
+    },
+)
+migrate_request_model = API.model(
+    "MigrateRequestModel",
+    {
+        "mapperId": fields.String(),
+        "processKey": fields.String(),
     },
 )
 
@@ -103,7 +104,7 @@ class ProcessDataResource(Resource):
     """Resource to create and list process data."""
 
     @staticmethod
-    @auth.has_one_of_roles([MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
+    @auth.has_one_of_roles([MANAGE_ADVANCE_FLOWS])
     @profiletime
     @API.doc(
         params={
@@ -135,17 +136,18 @@ class ProcessDataResource(Resource):
             "processType": {
                 "in": "query",
                 "description": "Retrieve form list based on process type.",
-                "default": "",
+                "default": "BPMN",
+                "enum": ["BPMN", "DMN", "LOWCODE"],
             },
             "status": {
                 "in": "query",
                 "description": "Retrieve form list based on status.",
-                "default": "",
+                "enum": ["Draft", "Published"],
             },
             "id": {
                 "in": "query",
                 "description": "Filter process by id.",
-                "type": "int",
+                "type": "integer",
             },
             "modifiedFrom": {
                 "in": "query",
@@ -183,8 +185,6 @@ class ProcessDataResource(Resource):
         """List all process data."""
         process_list, count = ProcessService.get_all_process(
             request.args,
-            auth.has_role([MANAGE_SUBFLOWS]),
-            auth.has_role([MANAGE_DECISION_TABLES]),
         )
         response = {
             "process": process_list,
@@ -193,15 +193,15 @@ class ProcessDataResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
+    @auth.has_one_of_roles([MANAGE_ADVANCE_FLOWS])
     @profiletime
+    @API.expect(process_request)
     @API.doc(
         responses={
-            201: "CREATED:- Successful request.",
+            201: ("CREATED:- Successful request.", process_response),
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
-        },
-        model=process_response,
+        }
     )
     def post():
         """Create process data."""
@@ -222,7 +222,7 @@ class ProcessResourceById(Resource):
     """Resource for managing process by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_ADVANCE_FLOWS])
     @profiletime
     @API.doc(
         responses={
@@ -239,7 +239,7 @@ class ProcessResourceById(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
+    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_ADVANCE_FLOWS])
     @profiletime
     @API.doc(
         responses={
@@ -287,14 +287,10 @@ class ProcessHistoryResource(Resource):
     """Resource for retrieving process history."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
+    @auth.has_one_of_roles([CREATE_DESIGNS, VIEW_DESIGNS, MANAGE_ADVANCE_FLOWS])
     @profiletime
     @API.doc(
         params={
-            "process_name": {
-                "description": "Unique name of the process",
-                "type": "string",
-            },
             "pageNo": {
                 "in": "query",
                 "description": "Page number for paginated results",
@@ -310,7 +306,7 @@ class ProcessHistoryResource(Resource):
         model=process_history_response_model,
     )
     def get(parent_process_key: str):
-        """Get history for a process by process_name."""
+        """Get history for a process by parent_process_key ."""
         # Retrieve all history related to the specified process
 
         process_history, count = ProcessService.get_all_history(
@@ -333,7 +329,7 @@ class ValidateProcess(Resource):
     """Resource for validating a process name or key."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
+    @auth.has_one_of_roles([MANAGE_ADVANCE_FLOWS])
     @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(400, "BAD_REQUEST:- Invalid request.")
@@ -342,8 +338,24 @@ class ValidateProcess(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     @API.response(403, "FORBIDDEN:- Authorization will not help.")
+    @API.doc(
+        params={
+            "processKey": {
+                "in": "query",
+                "description": "processKey to be validated",
+            },
+            "processName": {
+                "in": "query",
+                "description": "processName to be validated",
+            },
+            "parentProcessKey": {
+                "in": "query",
+                "description": "Used for validating title against an existing process",
+            },
+        }
+    )
     def get():
-        """Handle GET requests for validating process name/key.
+        """Validates process name or process key.
 
         Retrieves the query parameters from the request, validates the process name or key,
         and returns a response indicating whether the process name/key is valid or not.
@@ -354,11 +366,11 @@ class ValidateProcess(Resource):
 
 @cors_preflight("POST,OPTIONS")
 @API.route("/<process_id>/publish", methods=["POST", "OPTIONS"])
-class PublishResource(Resource):
+class PublishProcessResource(Resource):
     """Resource to support publish sub-process/worklfow."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
+    @auth.has_one_of_roles([MANAGE_ADVANCE_FLOWS])
     @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(
@@ -374,7 +386,7 @@ class PublishResource(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def post(process_id: int):
-        """Publish by process id."""
+        """Publish process by process id."""
         return (
             ProcessService.publish(process_id),
             HTTPStatus.OK,
@@ -383,11 +395,11 @@ class PublishResource(Resource):
 
 @cors_preflight("POST,OPTIONS")
 @API.route("/<process_id>/unpublish", methods=["POST", "OPTIONS"])
-class UnpublishResource(Resource):
+class UnpublishProcessResource(Resource):
     """Resource to support unpublish sub-process/workflow."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS, MANAGE_SUBFLOWS, MANAGE_DECISION_TABLES])
+    @auth.has_one_of_roles([MANAGE_ADVANCE_FLOWS])
     @profiletime
     @API.response(200, "OK:- Successful request.")
     @API.response(
@@ -403,7 +415,7 @@ class UnpublishResource(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def post(process_id: int):
-        """Unpublish by process_id."""
+        """Unpublish process by process_id."""
         return (
             ProcessService.unpublish(process_id),
             HTTPStatus.OK,
@@ -419,12 +431,11 @@ class ProcessResourceByProcessKey(Resource):
     @staticmethod
     @auth.has_one_of_roles(
         [
+            ANALYZE_PROCESS_VIEW,
             CREATE_DESIGNS,
             VIEW_DESIGNS,
-            VIEW_SUBMISSIONS,
             VIEW_TASKS,
-            MANAGE_SUBFLOWS,
-            MANAGE_DECISION_TABLES,
+            MANAGE_ADVANCE_FLOWS,
         ]
     )
     @profiletime
@@ -466,8 +477,9 @@ class MigrateResource(Resource):
         403,
         "FORBIDDEN:- Authorization will not help.",
     )
+    @API.expect(migrate_request_model)
     def post():
-        """Migrate by process_key."""
+        """Migrate process by process_key."""
         return (
             ProcessService.migrate(request),
             HTTPStatus.OK,

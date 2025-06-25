@@ -1,17 +1,18 @@
 """Test suit for formio role id cached endpoint."""
 
 from unittest.mock import MagicMock
-
+import datetime
 import jwt as pyjwt
 from formsflow_api_utils.utils import (
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     MANAGE_TASKS,
     Cache,
+    get_token,
 )
 from formsflow_api_utils.utils.enums import FormioRoles
 
-from tests.utilities.base_test import get_formio_roles, get_token
+from tests.utilities.base_test import get_formio_roles
 
 
 def get_roles(client, headers):
@@ -43,6 +44,8 @@ def test_formio_roles(app, client, session, jwt, mock_redis_client):
             "customRoles": ["/formsflow-client"],
         },
     }
+    # Adding jwt expire time
+    payload["exp"] = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=app.config.get("FORMIO_JWT_EXPIRE"))
     mock_jwt_token = pyjwt.encode(
         payload, app.config["FORMIO_JWT_SECRET"], algorithm="HS256"
     )

@@ -1,5 +1,6 @@
 """API endpoints for managing formio resource."""
 
+import datetime
 import json
 from http import HTTPStatus
 from typing import Dict
@@ -9,9 +10,12 @@ from flask import after_this_request, current_app
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
+    ANALYZE_SUBMISSIONS_VIEW,
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     MANAGE_TASKS,
+    REVIEWER_VIEW_HISTORY,
+    SUBMISSION_VIEW_HISTORY,
     VIEW_DESIGNS,
     VIEW_SUBMISSIONS,
     VIEW_TASKS,
@@ -28,7 +32,7 @@ from formsflow_api_utils.utils.startup import (
 )
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-API = Namespace("Formio", description="formio")
+API = Namespace("Formio", description="Formio wrapper APIs.")
 
 role = API.model(
     "Role",
@@ -95,7 +99,14 @@ class FormioResource(Resource):
             ):
                 filter_list.append(FormioRoles.DESIGNER.name)
             if any(
-                permission in user_role for permission in [MANAGE_TASKS, VIEW_TASKS]
+                permission in user_role
+                for permission in [
+                    MANAGE_TASKS,
+                    VIEW_TASKS,
+                    SUBMISSION_VIEW_HISTORY,
+                    REVIEWER_VIEW_HISTORY,
+                    ANALYZE_SUBMISSIONS_VIEW,
+                ]
             ):
                 filter_list.append(FormioRoles.REVIEWER.name)
             if any(
@@ -143,6 +154,12 @@ class FormioResource(Resource):
             }
             if project_id:
                 payload["project"] = {"_id": project_id}
+
+            # Adding expire time
+            payload["exp"] = datetime.datetime.now(
+                datetime.timezone.utc
+            ) + datetime.timedelta(seconds=current_app.config.get("FORMIO_JWT_EXPIRE"))
+
             response.headers["x-jwt-token"] = jwt.encode(
                 payload=payload,
                 key=current_app.config.get("FORMIO_JWT_SECRET"),

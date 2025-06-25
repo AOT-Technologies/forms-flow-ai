@@ -15,10 +15,8 @@
     "--custom-title": "Amazon.in",
     "--primary-btn-font-color": "black",
     "--primary-btn-bg-color": "yellow",
-    "--primary-btn-hover-bg-color": "red",
     "--secondary-btn-font-color": "yellow",
     "--secondary-btn-bg-color": "black",
-    "--secondary-btn-hover-bg-color": "red",
     "--default-font-color": "green",
     "--default-font-size": "1rem",
     "--ff-primary": "violet",
@@ -32,6 +30,5 @@
     "--sm-btn-border-radius": "4px",
     "--md-btn-border-radius": "4px",
     "--lg-btn-border-radius" : "6px",
-    "--default-danger-color": "red",
-    "--custom-logo-height": "3rem"
+    "--default-danger-color": "red"
 }

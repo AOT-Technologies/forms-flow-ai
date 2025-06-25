@@ -16,15 +16,33 @@
   <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-js-decision-table-controls.css">
   <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-js-literal-expression.css">
   <link rel="stylesheet" href="https://unpkg.com/dmn-js@16.8.0/dist/assets/dmn-font/css/dmn.css">
-  <link rel="stylesheet" href="https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@v7.0.1/forms-flow-theme.min.css">
+  <link rel="stylesheet" href="https://forms-flow-microfrontends.aot-technologies.com/forms-flow-theme@v7.1.0-alpha/forms-flow-theme.min.css">
 
   <!-- required styles from cdn -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/formiojs@4.13.1/dist/formio.full.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdn.form.io/flatpickr/flatpickr.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.form.io/flatpickr/flatpickr.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/ar.min.js"></script>
+ 
+  <!-- ✅ Formio Vendor Styles -->
+  <link rel="stylesheet" href="https://cdn.form.io/flatpickr-formio/4.6.13-formio.3/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.form.io/shortcut-buttons-flatpickr/0.4.0/themes/light.min.css"> <!--TODO need to override this style internally @formsflow/theme-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/formiojs@4.13.1/dist/formio.full.min.css">
+  <!-- ✅ Flatpickr Locales -->
+  <!-- NOTE: Load these only if needed — optimize in future -->
+  <script src="https://cdn.form.io/flatpickr-formio/4.6.13-formio.3/l10n/flatpickr-zh.js"></script>
+  <script src="https://cdn.form.io/flatpickr-formio/4.6.13-formio.3/l10n/flatpickr-pt.js"></script>
+  <script src="https://cdn.form.io/flatpickr-formio/4.6.13-formio.3/l10n/flatpickr-fr.js"></script>
+  <script src="https://cdn.form.io/flatpickr-formio/4.6.13-formio.3/l10n/flatpickr-bg.js"></script>
+  <script src="https://cdn.form.io/flatpickr-formio/4.6.13-formio.3/l10n/flatpickr-de.js"></script>
+  <script src="https://cdn.form.io/flatpickr-formio/4.6.13-formio.3/l10n/flatpickr-es.js"></script>
+
+  <!-- ✅ Flatpickr & Shortcut Buttons JS -->
+  <script src="https://cdn.form.io/flatpickr-formio/4.6.13-formio.3/flatpickr.min.js"></script>
+  <script src="https://cdn.form.io/shortcut-buttons-flatpickr/0.4.0/shortcut-buttons-flatpickr.min.js"></script>
+
+  <!-- ✅ CKEditor (used in formio WYSIWYG) -->
+  <script src="https://cdn.form.io/ckeditor/19.0.0/ckeditor.js"></script>
+
 
   <!--
     Remove this if you only support browsers that support async/await.
@@ -71,6 +89,8 @@
               "@formsflow/nav": "<%= process.env.MF_FORMSFLOW_NAV_URL %>",
               "@formsflow/formsflow-web": "<%= process.env.MF_FORMSFLOW_WEB_URL %>",
               "@formsflow/admin":"<%=process.env.MF_FORMSFLOW_ADMIN_URL %>",
+              "@formsflow/review":"<%=process.env.MF_FORMSFLOW_REVIEW_URL %>",
+              "@formsflow/submissions":"<%=process.env.MF_FORMSFLOW_SUBMISSIONS_URL %>",
               "@formsflow/service":"<%= process.env.MF_FORMSFLOW_SERVICE_URL %>",
               "@formsflow/components":"<%= process.env.MF_FORMSFLOW_COMPONENTS_URL %>"
           }

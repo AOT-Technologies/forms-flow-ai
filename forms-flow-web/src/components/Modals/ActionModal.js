@@ -10,7 +10,9 @@ import {
   CustomInfo,
   CustomButton,
 } from "@formsflow/components";
-
+import { StyleServices } from "@formsflow/service";
+import { useTranslation } from "react-i18next";
+import userRoles from "../../constants/permissions";
 const ActionModal = React.memo(
   ({
     newActionModal,
@@ -22,6 +24,10 @@ const ActionModal = React.memo(
     isMigrated,
     diagramType
   }) => {
+    const { t } = useTranslation();
+    const primaryColor = StyleServices.getCSSVariable('--ff-primary');
+    const { viewDesigns, createDesigns } = userRoles();
+    const isReadOnly = viewDesigns && !createDesigns;
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
@@ -30,32 +36,34 @@ const ActionModal = React.memo(
 
     if (CategoryType === "FORM" && (published || !isMigrated)) {
       customInfo = {
-        heading: "Note",
+        heading: t("Note"),
         content: `
-          ${published ? `Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.` : ""}
+          ${published ? t("Importing and deleting is not available when the form is published. You must unpublish the form first if you wish to make any changes.") : ""}
           ${!isMigrated ? "\nSome actions are disabled as this form has not been migrated to the new 1 to 1 relationship structure. To migrate this form exit this popup and click \"Save layout\" or \"Save flow\"." : ""}
         `.trim(),
       };
     } else if (CategoryType === "WORKFLOW" && published) {
       customInfo = {
-        heading: "Note",
-        content: `Importing is not available when the ${diagramType} is published.` + 
-        `You must unpublish the ${diagramType} first if you wish to make any changes.`.trim(),
-      
+        heading: t("Note"),
+        content: t(
+          "Importing is not available when the {{type}} is published. You must unpublish the {{type}} first if you wish to make any changes.",
+          { type: diagramType }
+        ).trim(),
+
 
       };
     }
-    
-    
+
+
     return (
       <>
-        <Modal show={newActionModal} onHide={onClose} centered={true} size="sm">
+        <Modal show={newActionModal} onHide={onClose} centered={true} size="sm" data-testid="action-modal">
           <Modal.Header>
             <Modal.Title className="modal-headder">
-              <div> Action</div>
+              <div>{t("Action")}</div>
             </Modal.Title>
             <div className="d-flex align-items-center">
-              <CloseIcon onClick={onClose} color="#253DF4" />
+              <CloseIcon onClick={onClose} color={primaryColor}  dataTestId="action-modal-close"/>
             </div>
           </Modal.Header>
           <Modal.Body className="action-modal-body">
@@ -65,22 +73,22 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Duplicate"
-                  disabled={!isMigrated}
-                  icon={<DuplicateIcon color="#253DF4" />}
+                  label={t("Duplicate")}
+                  disabled={!isMigrated || isReadOnly  }
+                  icon={<DuplicateIcon color={primaryColor} />}
                   className=""
-                  dataTestid="duplicate-form-button"
+                  dataTestId="duplicate-form-button"
                   ariaLabel="Duplicate Button"
                   onClick={() => handleAction("DUPLICATE")}
                 />
                 <CustomButton
                   variant="secondary"
-                  disabled={published || !isMigrated}
+                  disabled={published || !isMigrated || isReadOnly}
                   size="sm"
-                  label="Import"
-                  icon={<ImportIcon />}
+                  label={t("Import")}
+                  icon={<ImportIcon disabled={published} />}
                   className=""
-                  dataTestid="import-form-button"
+                  dataTestId="import-form-button"
                   ariaLabel="Import Form"
                   onClick={() => handleAction("IMPORT")}
                 />
@@ -88,22 +96,22 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Export"
+                  label={t("Export")}
                   icon={<PencilIcon />}
                   className=""
-                  dataTestid="export-form-button"
+                  dataTestId="export-form-button"
                   ariaLabel="Export Form"
                   onClick={() => handleAction("EXPORT")}
                 />
 
                 <CustomButton
                   variant="secondary"
-                  disabled={published}
+                  disabled={published || isReadOnly}
                   size="sm"
-                  label="Delete"
-                  icon={<TrashIcon />}
+                  label={t("Delete")}
+                  icon={<TrashIcon disabled={published} />}
                   className=""
-                  dataTestid="delete-form-button"
+                  dataTestId="delete-form-button"
                   ariaLabel="Delete Form"
                   onClick={() => handleAction("DELETE")}
                 />
@@ -115,10 +123,10 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Duplicate"
+                  label={t("Duplicate")}
                   icon={<DuplicateIcon />}
                   className=""
-                  dataTestid="duplicate-workflow-button"
+                  dataTestId="duplicate-workflow-button"
                   ariaLabel="Duplicate Workflow"
                   disabled={isCreate}
                   onClick={() => handleAction("DUPLICATE")}
@@ -128,10 +136,10 @@ const ActionModal = React.memo(
                   variant="secondary"
                   disabled={published}
                   size="sm"
-                  label="Import"
-                  icon={<ImportIcon />}
+                  label={t("Import")}
+                  icon={<ImportIcon disabled={published}  />}
                   className=""
-                  dataTestid="import-workflow-button"
+                  dataTestId="import-workflow-button"
                   ariaLabel="Import Workflow"
                   onClick={() => handleAction("IMPORT")}
                 />
@@ -139,10 +147,10 @@ const ActionModal = React.memo(
                 <CustomButton
                   variant="secondary"
                   size="sm"
-                  label="Export"
+                  label={t("Export")}
                   icon={<PencilIcon />}
                   className=""
-                  dataTestid="export-workflow-button"
+                  dataTestId="export-workflow-button"
                   ariaLabel="Export Workflow"
                   onClick={() => handleAction("EXPORT")}
                 />

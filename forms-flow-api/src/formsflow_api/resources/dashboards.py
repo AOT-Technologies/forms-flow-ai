@@ -15,7 +15,10 @@ from formsflow_api_utils.utils import (
 from formsflow_api.schemas import ApplicationListReqSchema
 from formsflow_api.services import AuthorizationService, RedashAPIService
 
-API = Namespace("dashboards", description="Dashboard APIs")
+API = Namespace(
+    "Dashboards",
+    description="Dashboard APIs for data analysis and insights generation.",
+)
 analytics_service = RedashAPIService()
 auth_service = AuthorizationService()
 
@@ -30,6 +33,7 @@ dashboard_base_model = API.model(
         "is_favorite": fields.Boolean(),
         "layout": fields.List(fields.Raw()),
         "name": fields.String(),
+        "slug": fields.String(),
         "options": fields.Raw(),
         "tags": fields.List(fields.String()),
         "updated_at": fields.String(),
@@ -53,10 +57,8 @@ dashboard_model = API.inherit(
     "Dashboard",
     dashboard_base_model,
     {
-        "slug": fields.String(),
         "can_edit": fields.Boolean(),
         "widgets": fields.List(fields.Raw()),
-        "dashboard_filters_enabled": fields.Boolean(),
     },
 )
 
@@ -124,7 +126,7 @@ class DashboardList(Resource):
             return {"message": "Error"}, HTTPStatus.SERVICE_UNAVAILABLE
 
         assert response is not None
-        return response, HTTPStatus.OK
+        return AuthorizationService().get_all_dashboards(response), HTTPStatus.OK
 
 
 @cors_preflight("GET,OPTIONS")

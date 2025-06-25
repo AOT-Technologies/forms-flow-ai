@@ -1,6 +1,7 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 
 export const initialState = {
+  draftAndSubmissionsList: [],
   applicationsList: [],
   applicationDetail: {},
   applicationProcess: {},
@@ -16,14 +17,28 @@ export const initialState = {
   iserror: false,
   error: "",
   isPublicStatusLoading: false,
-  sortOrder : "desc",
-  sortBy : "id",
-  searchParams : {},
-  isApplicationLoading : false,
+  sortOrder: "desc",
+  sortBy: "id",
+  searchParams: "",
+  isApplicationLoading: false,
+  formName: "",
+  sort: {
+    activeKey: "modified",
+    id: { sortOrder: "asc" },
+    created: { sortOrder: "asc" },
+    modified: { sortOrder: "desc" },
+    applicationStatus: { sortOrder: "asc" },
+    type: { sortOrder: "asc" },
+  }
 };
 
 const applications = (state = initialState, action) => {
   switch (action.type) {
+    case ACTION_CONSTANTS.FETCH_APPLICATIONS_AND_DRAFTS:
+      return {
+        ...state,
+        draftAndSubmissionsList: action.payload,
+      };
     case ACTION_CONSTANTS.LIST_APPLICATIONS:
       return {
         ...state,
@@ -52,10 +67,14 @@ const applications = (state = initialState, action) => {
       return { ...state, applicationProcess: action.payload };
     case ACTION_CONSTANTS.SET_APPLICATION_LIST_COUNT:
       return { ...state, applicationCount: action.payload };
+    case ACTION_CONSTANTS.SET_SUBMISSION_FORM_NAME:
+      return { ...state, formName: action.payload };
     case ACTION_CONSTANTS.APPLICATION_DETAIL_STATUS_CODE:
       return { ...state, applicationDetailStatusCode: action.payload };
     case ACTION_CONSTANTS.APPLICATION_LIST_ACTIVE_PAGE:
       return { ...state, activePage: action.payload };
+    case ACTION_CONSTANTS.FORM_SUBMISSION_SORT:
+      return { ...state, sort: action.payload };
     case ACTION_CONSTANTS.CHANGE_SIZE_PER_PAGE:
       return { ...state, countPerPage: action.payload };
     case ACTION_CONSTANTS.APPLICATION_STATUS_LIST:

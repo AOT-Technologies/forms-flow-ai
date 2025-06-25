@@ -2,6 +2,77 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+
+## 7.1.0
+
+`Added`
+**forms-flow-web**
+* Added re-designed Client Table
+* Added Draft and Submission list table
+* Redesigned user form selection screens
+* Added new permission for submitter to work on resubmissions
+* Added new permission to view process diagram
+* Added new permission to view history
+* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
+
+**formsflow-api**
+* Below fields added to application list endpoint
+   * Added parentFormId filter parameter to filter the submissions for a specific form
+   * Added the includeDrafts parameter to include drafts along with submissions.
+   * Added the onlyDrafts parameter to retrieve only drafts.
+   * Added the createdUserSubmissions parameter to filter submissions created by a specific user.
+* Added a new column, is_draft, to the application table to identify draft entries.
+* Added Alembic script to update existing active drafts by setting is_draft to true in the application table.
+* Added the includeSubmissionsCount=true parameter to the form list endpoint to include the submissions count.
+* Added below endpoints
+   * Public draft update: `/public/application/<id>`
+   * Draft submit by id: `/application/<id>/submit`
+   * Public draft submit by id: `/public/application/<id>/submit`
+   * Delete draft by id: `/application/<id>`
+* Added columns filter_type, parent_filter_id to the filter table.
+* Added script to migrate existing filters to TASK filter type.
+
+* Added columns filter_type, parent_filter_id to the filter table.
+* Added script to migrate existing filters to TASK filter type.
+* Added variables(task_variables) as part of import and export.
+* Added Endpoint `/filter/filter-preference ` for saving user's filter preference data
+* Added new table called filter_preferences to handle filter preference of a user
+* Added new table task_outcome_configuration to store workflow transition rules
+* Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
+* Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
+* Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
+* Added new permissions and enhanced permission definitions with categories to `/permissions` endpoint
+
+
+**formsflow-documents**
+* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
+
+**forms-flow-idm**
+* Added view_submissions permission to the service account roles to support export PDF with service account token
+* Added new permissions to the forms-flow-ai realm
+* To migrate the new roles(permissions) to the realm Refer [here](./forms-flow-idm/migration/README.md#710)
+
+`Modified`
+
+**formsflow-api**
+* Modified the `/application/<id>` GET and UPDATE endpoints to support draft get and update.
+* Updated the anonymous draft POST API URL from `/draft/public/create` to `/public/draft`.
+* Updated the theme GET API URL from `/themes` to `/public/themes`.
+* Updated API authorization with new permissions
+
+`Removed`
+
+**formsflow-api**
+* Removed below endpoints
+   * Get/Update/Delete draft by id: `/draft/<id>`
+   * Draft list: `/draft`
+   * Public draft update: `/draft/public/<id>`
+   * Draft submit by id: `/draft/<id>/submit`
+   * Public draft submit by id: `/draft/public/<id>/submit`
+
+**formsflow-bpm**
+* FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](./CHANGELOG.md#405---2022-04-19))
+
 ## 7.0.1 - 2025-03-15
 
 `Added`
@@ -33,6 +104,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Submitter First Name
    * Submitter Last Name
    * Current User Roles
+* Added MF_FORMSFLOW_REVIEW_URL env for reviewer microfront end
 
 **forms-flow-api**
    * Added new endpoints for:

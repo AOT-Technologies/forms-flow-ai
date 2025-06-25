@@ -27,6 +27,7 @@ MANAGE_TASKS,
 VIEW_TASKS,
 CREATE_SUBMISSIONS,
 VIEW_SUBMISSIONS,
+ANALYZE_SUBMISSIONS_VIEW,
 )
 from sqlalchemy.sql.expression import text
 
@@ -67,6 +68,7 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ApplicationSortingParameters.FormStatus,
         ApplicationSortingParameters.FormName,
         ApplicationSortingParameters.visibility,
+        ApplicationSortingParameters.type,
         DraftSortingParameters.Name,
         ProcessSortingParameters.Name,
         ProcessSortingParameters.Created,
@@ -79,6 +81,12 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
             order_by = ApplicationSortingParameters.FormName
         if order_by == ApplicationSortingParameters.visibility:
             order_by = ApplicationSortingParameters.is_anonymous
+        if order_by == ApplicationSortingParameters.type:
+            # If the sort type is 'type', sort by the 'is_draft' column
+            order_by = ApplicationSortingParameters.is_draft
+            # - By default, sorting boolean values in ascending order places `False` (submissions) first.
+            # - To ensure drafts (True) come first in ascending order, we invert the sort order.
+            sort_order = "asc" if sort_order == "desc" else "desc"
         order_by = camel_to_snake(order_by)
     if sort_order not in ["asc", "desc"]:
         sort_order = None
@@ -120,7 +128,7 @@ def get_role_ids_from_user_groups(role_ids, user_role):
 
     if any(permission in user_role for permission in [ CREATE_DESIGNS, VIEW_DESIGNS]):
         return role_ids
-    if any(permission in user_role for permission in [ MANAGE_TASKS, VIEW_TASKS]):
+    if any(permission in user_role for permission in [ MANAGE_TASKS, VIEW_TASKS, ANALYZE_SUBMISSIONS_VIEW]):
         return filter_list_by_user_role(FormioRoles.REVIEWER.name, role_ids)
     if any(permission in user_role for permission in [ CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]):
         return filter_list_by_user_role(FormioRoles.CLIENT.name, role_ids)

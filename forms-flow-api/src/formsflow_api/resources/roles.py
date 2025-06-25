@@ -5,10 +5,15 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    ADMIN,
     CREATE_DESIGNS,
     CREATE_FILTERS,
+    MANAGE_ADVANCE_FLOWS,
     MANAGE_ALL_FILTERS,
+    MANAGE_BUNDLES,
+    MANAGE_INTEGRATIONS,
+    MANAGE_ROLES,
+    MANAGE_TEMPLATES,
+    MANAGE_USERS,
     PERMISSION_DETAILS,
     VIEW_DESIGNS,
     VIEW_FILTERS,
@@ -22,17 +27,29 @@ from formsflow_api.services.factory import KeycloakFactory
 
 roles_schema = RolesGroupsSchema()
 
-API = Namespace("roles", description="keycloak roles wrapper APIs")
+API = Namespace("Roles", description="Keycloak roles/groups wrapper APIs.")
 
 roles_request = API.model(
     "roles_request",
     {
         "name": fields.String(),
         "description": fields.String(),
+        "permissions": fields.List(fields.String()),
     },
 )
 
 roles_response = API.inherit("roles_response", roles_request, {"id": fields.String()})
+
+permission_response_model = API.model(
+    "PermissionResponseModel",
+    {
+        "name": fields.String(),
+        "description": fields.String(),
+        "depends_on": fields.List(fields.String()),
+    },
+)
+
+create_role_response_model = API.model("createRoleResponse", {"id": fields.String()})
 
 
 @cors_preflight("GET, POST, OPTIONS")
@@ -43,16 +60,28 @@ class KeycloakRolesResource(Resource):
     @staticmethod
     @auth.has_one_of_roles(
         [
-            ADMIN,
             CREATE_DESIGNS,
             MANAGE_ALL_FILTERS,
             CREATE_FILTERS,
             VIEW_FILTERS,
             VIEW_DESIGNS,
+            MANAGE_USERS,
+            MANAGE_ROLES,
         ]
     )
     @profiletime
     @API.doc(
+        params={
+            "sortOrder": {
+                "in": "query",
+                "description": "Specify sorting order.",
+                "default": "asc",
+            },
+            "search": {
+                "in": "query",
+                "description": "Retrieve list based on role name search.",
+            },
+        },
         responses={
             200: "OK:- Successful request.",
             400: "BAD_REQUEST:- Invalid request.",
@@ -61,12 +90,7 @@ class KeycloakRolesResource(Resource):
         model=[roles_response],
     )
     def get():
-        """
-        GET request to fetch all groups/roles from Keycloak.
-
-        :params int pageNo: page number (optional)
-        :params int limit: number of items per page (optional)
-        """
+        """Fetch all groups from Keycloak."""
         search = request.args.get("search", "")
         sort_order = request.args.get("sortOrder", "asc")
         response = KeycloakFactory.get_instance().get_groups_roles(search, sort_order)
@@ -74,7 +98,7 @@ class KeycloakRolesResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -83,9 +107,10 @@ class KeycloakRolesResource(Resource):
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
         },
     )
+    @API.response(201, "OK:- Successful request.", model=create_role_response_model)
     @API.expect(roles_request)
     def post():
-        """Create role/group in keycloak."""
+        """Create group in keycloak."""
         request_data = roles_schema.load(request.get_json())
         response, status = (
             KeycloakFactory.get_instance().create_group_role(request_data),
@@ -101,7 +126,7 @@ class KeycloakRolesResourceById(Resource):
     """Resource to manage keycloak roles/groups by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -112,17 +137,13 @@ class KeycloakRolesResourceById(Resource):
         model=roles_response,
     )
     def get(role_id: str):
-        """
-        Get role by group id/role name.
-
-        Get keycloak role by role name & group by group id.
-        """
+        """Get keycloak group by id."""
         response = KeycloakFactory.get_instance().get_group(role_id)
         response = roles_schema.dump(response)
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -132,16 +153,12 @@ class KeycloakRolesResourceById(Resource):
         },
     )
     def delete(role_id: str):
-        """
-        Delete role by role id.
-
-        Delete keycloak role by role name & group by group id.
-        """
+        """Delete keycloak group by id."""
         KeycloakFactory.get_instance().delete_group(role_id)
         return {"message": "Deleted successfully."}, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -152,11 +169,7 @@ class KeycloakRolesResourceById(Resource):
     )
     @API.expect(roles_request)
     def put(role_id: str):
-        """
-        Update role by role id.
-
-        Update keycloak role by role name & group by group id.
-        """
+        """Update keycloak group by id."""
         request_data = roles_schema.load(request.get_json())
         response = KeycloakFactory.get_instance().update_group(role_id, request_data)
         return {"message": response}, HTTPStatus.OK
@@ -168,7 +181,7 @@ class Permissions(Resource):
     """Resource to list."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -176,7 +189,22 @@ class Permissions(Resource):
             400: "BAD_REQUEST:- Invalid request.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
         },
+        model=permission_response_model,
     )
     def get():
-        """Return permission list."""
-        return PERMISSION_DETAILS
+        """Fetch the list of permissions."""
+        # Filtered specific permissions related to EE
+        filtered_permissions = [
+            (
+                {
+                    **item,
+                    "description": "Manage advance flows (SubFlows + Decision Tables)",
+                }
+                if item["name"] == MANAGE_ADVANCE_FLOWS
+                else item
+            )
+            for item in PERMISSION_DETAILS
+            if item["name"]
+            not in [MANAGE_INTEGRATIONS, MANAGE_TEMPLATES, MANAGE_BUNDLES]
+        ]
+        return filtered_permissions

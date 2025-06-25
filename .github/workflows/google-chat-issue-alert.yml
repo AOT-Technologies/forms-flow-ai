@@ -1,0 +1,23 @@
+name: Notify Google Chat on New Issue
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  send-alert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message to Google Chat
+        env:
+          GOOGLE_CHAT_WEBHOOK: ${{ secrets.PR_NOTIFICATION }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_CREATOR: ${{ github.event.issue.user.login }}
+        run: |
+          MESSAGE="📌 *New GitHub Issue Created!*\n*Title:* ${ISSUE_TITLE}\n*Created by:* ${ISSUE_CREATOR}\n🔗 ${ISSUE_URL}"
+          PAYLOAD=$(jq -n --arg text "$MESSAGE" '{text: $text}')
+          curl -X POST -H 'Content-Type: application/json' \
+               -d "$PAYLOAD" \
+               "$GOOGLE_CHAT_WEBHOOK"

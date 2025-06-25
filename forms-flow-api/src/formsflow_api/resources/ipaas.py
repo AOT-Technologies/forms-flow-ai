@@ -5,7 +5,7 @@ from http import HTTPStatus
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
-API = Namespace("Integration", description="iPaas related endpoints")
+API = Namespace("Integration", description="iPaas related endpoints.")
 
 
 @cors_preflight("GET, OPTIONS")
@@ -24,5 +24,8 @@ class DisplayEmbed(Resource):
         },
     )
     def get():
-        """Return false to get the web going with implementation."""
+        """Return details on ipaas embed is enabled for the current user.
+
+        Return false to get the web going with implementation.
+        """
         return {"enabled": False}, HTTPStatus.OK

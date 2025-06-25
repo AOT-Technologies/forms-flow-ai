@@ -6,21 +6,32 @@ const initialState = {
   forms: [],
   isActive: false,
   limit: 5,
-  page: 1,
+  formListPage: 1,
   totalForms: 0,
   bpmFormLoading: false,
   sortBy: "formName",
   sortOrder: "asc",
-  formType:"form",
+  formType: "form",
   searchText: "",
   sort: {
-    activeKey: "formName", 
+    activeKey: "formName",
     formName: { sortOrder: "asc" },
     modified: { sortOrder: "asc" },
-    visibility: { sortOrder: "asc"},
+    submissionCount: { sortOrder: "asc" },
+    visibility: { sortOrder: "asc" },
     status: { sortOrder: "asc" },
   },
-  clientFormSearch:"",
+  clientFormSearch: "",
+  submitFormLimit: 5,  
+  submitListPage: 1,
+  submitFormSort: {
+    activeKey: "formName",
+    formName: { sortOrder: "asc" },
+    latestSubmission: { sortOrder: "asc" },
+    submissionCount: { sortOrder: "asc" },
+    visibility: { sortOrder: "asc" },
+    status: { sortOrder: "asc" },
+  }
 };
 
 const bpmForms = (state = initialState, action) => {
@@ -31,10 +42,17 @@ const bpmForms = (state = initialState, action) => {
         forms: formatForms(action.payload.forms),
         totalForms: action.payload.totalCount,
       };
+    case ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_LIMIT_CHANGE:
+      return { ...state, submitFormLimit: action.payload };
+    case ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_SORT_CHANGE:
+      return { ...state, submitFormSort: action.payload };
+    case ACTION_CONSTANTS.CLIENT_SUBMIT_LIST_PAGE_CHANGE:
+      return { ...state, submitListPage: action.payload };
+    case ACTION_CONSTANTS.BPM_FORM_LIST_PAGE_CHANGE:
+      return { ...state, formListPage: action.payload };
     case ACTION_CONSTANTS.BPM_FORM_LIST_LIMIT_CHANGE:
       return { ...state, limit: action.payload };
-    case ACTION_CONSTANTS.BPM_FORM_LIST_PAGE_CHANGE:
-      return { ...state, page: action.payload };
+
     case ACTION_CONSTANTS.IS_BPM_FORM_LIST_LOADING:
       return { ...state, isActive: action.payload };
     case ACTION_CONSTANTS.BPM_FORM_SEARCH:

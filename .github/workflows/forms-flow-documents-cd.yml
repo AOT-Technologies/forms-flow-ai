@@ -3,7 +3,7 @@ name: Push Forms flow Document to registry
 on:
   workflow_dispatch:
   push:
-    branches: [ master, develop, release/* ]
+    branches: [ master, develop, release/* ,patch/*]
     paths:
       - "forms-flow-documents/**"
       - "VERSION"

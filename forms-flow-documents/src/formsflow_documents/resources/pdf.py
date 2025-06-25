@@ -90,7 +90,7 @@ class FormResourceRenderPdf(Resource):
         render_data = pdf_service.get_render_data(
             use_template, template_variable_name, request.headers.get("Authorization")
         )
-        current_app.logger.error("Render data received")
+        current_app.logger.info("Render data received")
         headers = {"Content-Type": "text/html"}
         return make_response(
             render_template(template_name, **render_data), 200, headers

@@ -24,8 +24,13 @@ public class ProcessInstanceRestResourceImpl implements ProcessInstanceRestResou
         return restService.getProcessInstance(id).getActivityInstanceTree();
     }
 
-	@Override
-	public Map<String, VariableValueDto> getVariables(boolean deserializeValues, String id) {
-		return restService.getProcessInstance(id).getVariablesResource().getVariables(deserializeValues);
-	}
+    @Override
+    public Map<String, VariableValueDto> getVariables(boolean deserializeValues, String id) {
+        return restService.getProcessInstance(id).getVariablesResource().getVariables(deserializeValues);
+    }
+
+    @Override
+    public void deleteProcessInstance(String id, boolean var1, boolean var2, boolean var3, boolean var4) {
+        restService.getProcessInstance(id).deleteProcessInstance(var1, var2, var3, var4);
+    }
 }

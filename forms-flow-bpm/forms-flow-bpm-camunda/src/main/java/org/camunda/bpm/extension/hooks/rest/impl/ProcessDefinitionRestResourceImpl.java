@@ -82,9 +82,15 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
         }
         return processInstanceDto;
     }
-    
+
     @Override
     public CountResultDto getProcessDefinitionsCount(UriInfo uriInfo){
         return restService.getProcessDefinitionsCount(uriInfo);
+    }
+
+    @Override
+    public void deleteProcessDefinitionsByKey(String var1, boolean var2, boolean var3, boolean var4) {
+        restService.deleteProcessDefinitionsByKey(var1, var2, var3, var4);
+
     }
 }

@@ -2,6 +2,15 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.0.4 - 2025-06-26
+
+`Modified`
+
+**forms-flow-documents**
+* Migrated CSS and JS dependencies from CDN links to local static files
+* Refactored `index.html` to reference local static assets for CSS and JS
+* Increased PDF generation wait time to 60 seconds
+
 ## 7.0.3.rc - 2025-06-13
 
 `Added`

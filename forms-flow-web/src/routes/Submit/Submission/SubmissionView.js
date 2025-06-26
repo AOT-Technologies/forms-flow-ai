@@ -41,6 +41,8 @@ const ViewApplication = React.memo(() => {
   const history = useHistory();
   const { viewSubmissionHistory,analyze_submissions_view_history, 
     analyze_process_view} = userRoles();
+  const isFromFormEntries =
+    new URLSearchParams(history.location.search).get("from") === "formEntries";
   const {
     applicationDetail,
     applicationDetailStatusCode,
@@ -199,7 +201,7 @@ const ViewApplication = React.memo(() => {
 
       {/* View Application Details */}
       <View page="application-detail" />
-      {analyze_submissions_view_history ?  
+      {(analyze_submissions_view_history && !isFromFormEntries) ?  
       <SubmissionHistoryWithViewButton
         show={showHistoryModal}
         onClose={() => setShowHistoryModal(false)}

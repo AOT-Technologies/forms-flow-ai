@@ -1,5 +1,7 @@
-import React, {useState} from "react";
+import React, {useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { selectRoot } from "@aot-technologies/formio-react";
+import { CLIENT_EDIT_STATUS } from "../../../constants/applicationConstants";
 import {
     setApplicationListActivePage,
     setCountPerpage,
@@ -10,7 +12,7 @@ import { CustomButton, TableFooter, NoDataFound, ConfirmModal, TableSkeleton } f
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
-import { navigateToDraftEdit, navigateToViewSubmission } from "../../../helper/routerHelper";
+import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import { HelperServices } from "@formsflow/service";
 
@@ -28,6 +30,8 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const searchFormLoading = useSelector(
         (state) => state.formCheckList.searchFormLoading
     );
+    const [canEdit, setCanEdit] = useState(false);
+    const userRoles = useSelector((state) => selectRoot("user", state).roles);
     const isApplicationLoading = useSelector((state) =>
         state.applications.isApplicationLoading);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -41,6 +45,14 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         { text: "100", value: 100 },
         { text: "All", value: totalForms },
     ];
+
+    useEffect(() => {
+        setCanEdit(userRoles?.includes("create_submissions"));
+    }, [userRoles]);
+
+    const continueResubmit = (row) => {
+        navigateToResubmit(dispatch, tenantKey, row.formId, row.submissionId);
+    };
 
     const handleSort = (key) => {
         const newSortOrder = applicationSort[key].sortOrder === "asc" ? "desc" : "asc";
@@ -109,6 +121,57 @@ const noDataMessage = !searchFormLoading ? (
         message={t('No Submissions or Draft have been found. Create a new submission by clicking the "New Submission " button in the top right.')}
     />
 ) : null;
+
+//The buttons are seperated for better readability.
+const getActionButtons = (item) => {
+  if (item.isDraft) {
+    return (
+      <div className="d-flex justify-content-end gap-2">
+        <CustomButton
+          variant="secondary"
+          size="table"
+          label={t("Delete")}
+          onClick={() => deleteDraft(item)}
+          className="btn btn-secondary btn-table"
+          data-testid={`delete-draft-button-${item.id}`}
+          aria-label={t("Delete Draft")}
+        />
+        <CustomButton
+          variant="secondary"
+          size="table"
+          label={t("Continue")}
+          onClick={() => continueDraft(item)}
+          className="btn btn-secondary btn-table"
+          data-testid={`continue-draft-button-${item.id}`}
+          aria-label={t("Continue Draft edit")}
+        />
+      </div>
+    );
+  } else if (CLIENT_EDIT_STATUS.includes(item.applicationStatus) && canEdit) {
+    return (
+      <CustomButton
+        variant="secondary"
+        size="table"
+        label={t("Resubmit")}
+        onClick={() => continueResubmit(item)}
+        className="btn btn-secondary btn-table"
+        data-testid={`resubmit-submission-button-${item?.id}`}
+      />
+    );
+  } else {
+    return (
+      <CustomButton
+        variant="secondary"
+        size="table"
+        label={t("View")}
+        onClick={() => viewSubmission(item)}
+        className="btn btn-secondary btn-table"
+        data-testid={`view-submission-button-${item?.id}`}
+      />
+    );
+  }
+};
+
 
 if (isApplicationLoading) {
   return <TableSkeleton columns={5} rows={7} pagination={7} />;
@@ -187,42 +250,8 @@ return (
                                         </span>
                                     </td>
                                     <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
-
                                     <td className="w-20 text-end">
-                                        {item.isDraft ? (
-                                            <div className="d-flex justify-content-end gap-2">
-                                                <CustomButton
-                                                    variant="secondary"
-                                                    size="table"
-                                                    label={t("Delete")}
-                                                    onClick={() => deleteDraft(item)}
-                                                    className="btn btn-secondary btn-table"
-                                                    data-testid={
-                                                        `delete-draft-button-${item.id}`
-                                                    }
-                                                    aria-label={t("Delete Draft")}
-                                                />
-                                                <CustomButton
-                                                    variant="secondary"
-                                                    size="table"
-                                                    label={t("Continue")}
-                                                    onClick={() => continueDraft(item)}
-                                                    className="btn btn-secondary btn-table"
-                                                    data-testid={
-                                                        `continue-draft-button-${item.id}`
-                                                    }
-                                                    aria-label={t("Continue Draft edit")}
-                                                />
-                                            </div>
-                                        ) : (
-                                            <CustomButton
-                                                variant="secondary"
-                                                size="table"
-                                                label={t("View")}
-                                                onClick={() => viewSubmission(item)}
-                                                className="btn btn-secondary btn-table"
-                                            />
-                                        )}
+                                    {getActionButtons(item)}
                                     </td>
                                 </tr>
                             ))}

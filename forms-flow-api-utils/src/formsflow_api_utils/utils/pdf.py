@@ -92,7 +92,7 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
 
     try:
         if "wait" in args:
-            delay = 30  # seconds
+            delay = 60  # seconds
             elem_loc = EC.presence_of_element_located((By.CLASS_NAME, args["wait"]))
             WebDriverWait(driver, delay).until(elem_loc)
         calculated_print_options = {

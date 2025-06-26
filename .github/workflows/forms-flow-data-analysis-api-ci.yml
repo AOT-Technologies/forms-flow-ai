@@ -75,7 +75,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.12.9]
+        python-version: [3.12.11]
 
     services:
       postgres:
@@ -112,7 +112,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.12.9]
+        python-version: [3.12.11]
 
     steps:
       - uses: actions/checkout@v2

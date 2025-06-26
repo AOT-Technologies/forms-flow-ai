@@ -3,17 +3,18 @@
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
 
-## 7.1.0
+## 7.1.0 - 2025-07-01
 
 `Added`
+
 **forms-flow-web**
-* Added re-designed Client Table
-* Added Draft and Submission list table
-* Redesigned user form selection screens
-* Added new permission for submitter to work on resubmissions
-* Added new permission to view process diagram
-* Added new permission to view history
-* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
+* Added new User Interface for task page
+* Added environment variables:
+   * `ENABLE_COMPACT_FORM_VIEW` to handle compact form view
+   * `USER_NAME_DISPLAY_CLAIM` to specify if the app should use a different attribute than the default 'username' claim from Keycloak
+   * `GRAPHQL_API_URL` to connect to the datalayer
+   * `MF_FORMSFLOW_REVIEW_URL` for reviewer microfront end
+   * `MF_FORMSFLOW_SUBMISSIONS_URL` for submissions microfront end
 
 **formsflow-api**
 * Below fields added to application list endpoint
@@ -31,7 +32,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Delete draft by id: `/application/<id>`
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
-
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
 * Added variables(task_variables) as part of import and export.
@@ -40,12 +40,20 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added new table task_outcome_configuration to store workflow transition rules
 * Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
 * Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
-* Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
 * Added new permissions and enhanced permission definitions with categories to `/permissions` endpoint
+* Added new environment variables:
+   * `USER_NAME_DISPLAY_CLAIM` to specify if the app should use a different attribute than the default 'username' claim from Keycloak
+   * `FORMIO_JWT_EXPIRE` to handle formio jwt token expire time
 
+**formsflow-bpm**
+* Added new environment variables:
+   * `USER_NAME_DISPLAY_CLAIM` to specify if the app should use a different attribute than the default 'username' claim from Keycloak
+   * `SERVER_MAX_HTTP_REQUEST_HEADER_SIZE` to configure the maximum size of the HTTP request header
 
 **formsflow-documents**
-* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
+* Added new environment variable:
+   * `ENABLE_COMPACT_FORM_VIEW` to handle compact form view
+   * `FORMIO_JWT_EXPIRE` to handle formio jwt token expire time
 
 **forms-flow-idm**
 * Added view_submissions permission to the service account roles to support export PDF with service account token
@@ -53,6 +61,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * To migrate the new roles(permissions) to the realm Refer [here](./forms-flow-idm/migration/README.md#710)
 
 `Modified`
+
+**forms-flow-web**
+* Modified User Interfaces of:
+   * Client Table
+   * Draft and Submission list table
+   * Form submission view
 
 **formsflow-api**
 * Modified the `/application/<id>` GET and UPDATE endpoints to support draft get and update.
@@ -72,6 +86,21 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **formsflow-bpm**
 * FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](./CHANGELOG.md#405---2022-04-19))
+
+*Upgrade notes:*
+
+**forms-flow-api**
+* Python version upgraded to 3.13.2
+
+**forms-flow-documents**
+   * Python version upgraded to 3.13.2
+
+**forms-flow-idm**
+   * Keycloak Version upgraded to 26.1.2
+
+`Generic Changes`
+* Added new micro-frontends: forms-flow-review, forms-flow-submissions
+
 
 ## 7.0.1 - 2025-03-15
 
@@ -104,7 +133,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Submitter First Name
    * Submitter Last Name
    * Current User Roles
-* Added MF_FORMSFLOW_REVIEW_URL env for reviewer microfront end
 
 **forms-flow-api**
    * Added new endpoints for:

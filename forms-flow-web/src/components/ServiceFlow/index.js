@@ -201,7 +201,7 @@ export default React.memo(() => {
         if (bpmTaskIdRef.current && refreshedTaskId === bpmTaskIdRef.current) {
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-          dispatch(push(`${redirectUrl.current}task/`));
+          dispatch(push(`${redirectUrl.current}task-old/`));
         }
       } else {
         if (selectedFilterIdRef.current) {
@@ -285,7 +285,7 @@ useEffect(() => {
 
   //Reset the path when the 'cardView' changes
   useEffect(() => {
-    dispatch(replace(`${redirectUrl.current}task`));
+    dispatch(replace(`${redirectUrl.current}task-old`));
   }, [cardView, dispatch]);
 
   return (
@@ -311,10 +311,10 @@ useEffect(() => {
             <div className="col-12 pe-0 ps-md-5 col-md-8 col-xl-9  px-2 pe-md-0 py-5 py-md-0 border ">
               <Switch>
                 <Route
-                  path={`${BASE_ROUTE}task/:taskId?`}
+                  path={`${BASE_ROUTE}task-old/:taskId?`}
                   component={ServiceFlowTaskDetails}
                 ></Route>
-                <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
+                <Route path={`${BASE_ROUTE}task-old/:taskId/:notAvailable`}>
                   {" "}
                   <Redirect exact to="/404" />
                 </Route>
@@ -326,7 +326,7 @@ useEffect(() => {
         <Switch>
           <Route
             exact
-            path={`${BASE_ROUTE}task`}
+            path={`${BASE_ROUTE}task-old`}
             render={() => (
               <>
                 <ServiceTaskListView
@@ -337,14 +337,14 @@ useEffect(() => {
             )}
           ></Route>
           <Route
-            path={`${BASE_ROUTE}task/:taskId`}
+            path={`${BASE_ROUTE}task-old/:taskId`}
             render={() => (
               <>
                 <ServiceTaskListViewDetails />
               </>
             )}
           ></Route>
-          <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
+          <Route path={`${BASE_ROUTE}task-old/:taskId/:notAvailable`}>
             <Redirect exact to="/404" />
           </Route>
         </Switch>

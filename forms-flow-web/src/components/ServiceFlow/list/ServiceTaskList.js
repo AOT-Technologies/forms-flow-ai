@@ -63,7 +63,7 @@ const ServiceFlowTaskList = React.memo((props) => {
 
   const getTaskDetails = (taskId) => {
     if (taskId !== bpmTaskId) {
-      dispatch(push(`${redirectUrl.current}task/${taskId}`));
+      dispatch(push(`${redirectUrl.current}task-old/${taskId}`));
     }
   };
 

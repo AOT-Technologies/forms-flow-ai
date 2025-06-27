@@ -8,13 +8,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 `Added`
 
 **forms-flow-web**
-* Added new User Interface for task page
+* Added new User Interfaces: for task page, submissions
 * Added environment variables:
    * `ENABLE_COMPACT_FORM_VIEW` to handle compact form view
    * `USER_NAME_DISPLAY_CLAIM` to specify if the app should use a different attribute than the default 'username' claim from Keycloak
    * `GRAPHQL_API_URL` to connect to the datalayer
-   * `MF_FORMSFLOW_REVIEW_URL` for reviewer microfront end
-   * `MF_FORMSFLOW_SUBMISSIONS_URL` for submissions microfront end
+   * `MF_FORMSFLOW_REVIEW_URL` for reviewer micro-frontend
+   * `MF_FORMSFLOW_SUBMISSIONS_URL` for submissions micro-frontend
 
 **formsflow-api**
 * Below fields added to application list endpoint
@@ -30,8 +30,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Draft submit by id: `/application/<id>/submit`
    * Public draft submit by id: `/public/application/<id>/submit`
    * Delete draft by id: `/application/<id>`
-* Added columns filter_type, parent_filter_id to the filter table.
-* Added script to migrate existing filters to TASK filter type.
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
 * Added variables(task_variables) as part of import and export.
@@ -67,6 +65,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Client Table
    * Draft and Submission list table
    * Form submission view
+   * Permission selection modal
 
 **formsflow-api**
 * Modified the `/application/<id>` GET and UPDATE endpoints to support draft get and update.
@@ -83,24 +82,33 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Public draft update: `/draft/public/<id>`
    * Draft submit by id: `/draft/<id>/submit`
    * Public draft submit by id: `/draft/public/<id>/submit`
+* Removed fields: order, resourceId, description, and taskVisibleAttributes from filter table
+
 
 **formsflow-bpm**
 * FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](./CHANGELOG.md#405---2022-04-19))
 
 *Upgrade notes:*
 
+**forms-flow-web**
+   * webpack version upgraded to 5.94.0
+
 **forms-flow-api**
 * Python version upgraded to 3.13.2
-
-**forms-flow-documents**
-   * Python version upgraded to 3.13.2
 
 **forms-flow-idm**
    * Keycloak Version upgraded to 26.1.2
 
+**forms-flow-documents**
+   * Python version upgraded to 3.13.2
+
+
 `Generic Changes`
 * Added new micro-frontends: forms-flow-review, forms-flow-submissions
 
+`Known Issues`
+
+* If a form's version changes and it is already selected in an existing task filter, the user must reselect the form in the filter edit to ensure proper form name in UI.
 
 ## 7.0.1 - 2025-03-15
 
@@ -187,7 +195,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Modified form history management to include major and minor versions
 * Modified RBAC mechanism:
-   * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#permissions) for more
+   * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/roles-permissions) for more
 * Authorization updates:
    * Permissions options in settings for Designers are changed : 
       * 'All Designers' option is removed 

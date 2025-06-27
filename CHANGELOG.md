@@ -72,6 +72,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **formsflow-bpm**
 * FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](./CHANGELOG.md#405---2022-04-19))
+* Exposed Camunda delete API for process-instance, process-definition, task, deployment.
 
 ## 7.0.1 - 2025-03-15
 

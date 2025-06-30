@@ -12,6 +12,7 @@ server:
   servlet:
     context-path: /camunda
     session:
+      tracking-modes: cookie
       cookie:
         secure: ${SESSION_COOKIE_SECURE:true}
         max-age: 1800
@@ -144,6 +145,10 @@ spring:
       resource-server:
         jwt:
           issuer-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
+    csrf:
+      cookie:
+        http-only: false
+        secure: true
   main:
     allow-bean-definition-overriding: true
   cloud:

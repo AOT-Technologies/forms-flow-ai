@@ -51,6 +51,8 @@ from .permisions import (
     MANAGE_BUNDLES,
     ANALYZE_METRICS_VIEW,
     ANALYZE_SUBMISSIONS_VIEW_HISTORY,
+    ANALYZE_SUBMISSIONS_VIEW,
+    ANALYZE_PROCESS_VIEW,
 )
 from .file_log_handler import CustomTimedRotatingFileHandler, register_log_handlers
 from .format import CustomFormatter

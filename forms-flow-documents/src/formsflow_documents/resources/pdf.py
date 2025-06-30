@@ -8,6 +8,7 @@ from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     VIEW_SUBMISSIONS,
+    ANALYZE_SUBMISSIONS_VIEW,
     auth,
     cors_preflight,
     profiletime,
@@ -51,7 +52,7 @@ class FormResourceRenderPdf(Resource):
             f"Inside Get RENDER form_id : {form_id}, submission_id : {submission_id}"
         )
         pdf_service = PDFService(form_id=form_id, submission_id=submission_id)
-        current_app.logger.info("Created PDF Service class instance")
+        current_app.logger.debug("Created PDF Service class instance")
         default_template = "index.html"
         template_name = request.args.get("template_name")
         template_variable_name = request.args.get("template_variable")
@@ -89,7 +90,7 @@ class FormResourceRenderPdf(Resource):
         render_data = pdf_service.get_render_data(
             use_template, template_variable_name, request.headers.get("Authorization")
         )
-        current_app.logger.error("Render data received")
+        current_app.logger.debug("Render data received")
         headers = {"Content-Type": "text/html"}
         return make_response(
             render_template(template_name, **render_data), 200, headers
@@ -115,7 +116,7 @@ class FormResourceExportPdf(Resource):
 
     @staticmethod
     @auth.require
-    @auth.has_one_of_roles([VIEW_SUBMISSIONS])
+    @auth.has_one_of_roles([VIEW_SUBMISSIONS, ANALYZE_SUBMISSIONS_VIEW])
     @profiletime
     @API.doc(
         responses={

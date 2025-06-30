@@ -160,6 +160,19 @@ Wait until it's up and running, then access it at http://localhost:8000/camunda
 
 <img src="../../.images/image-5.png" />
 
+### Forms-flow-data-layer
+
+The **forms-flow-data-layer** service is introduced as a dedicated backend component to support GraphQL. It acts as a centralized data access layer with direct connectivity to all underlying databases, including Formio's MongoDB and the WebAPI's PostgreSQL. This separation allows for cleaner architecture, improved security, and more efficient querying across multiple data sources via GraphQL.
+
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
+```bash
+cd forms-flow-data-layer
+docker-compose up --build -d
+```
+<img src="../../.images/image_data_layer.png" />
+
+
 ### Forms-flow-web-root-config
 
 A React library for rendering out forms based on the form.io platform.

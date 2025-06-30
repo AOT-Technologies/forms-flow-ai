@@ -323,7 +323,13 @@ class FilterPreferenceResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([MANAGE_ALL_FILTERS, VIEW_FILTERS])
     @profiletime
-    @API.doc(body=[filter_preference_model])
+    @API.doc(
+        params={
+            "filterType": "Filter type to set preferences for",
+            "parentFilterId": "Parent filter ID of the attribute filter",
+        },
+        body=[filter_preference_model],
+    )
     @API.response(
         201, "CREATED:- Successful request.", model=[filter_preference_response_model]
     )
@@ -341,6 +347,10 @@ class FilterPreferenceResource(Resource):
             sortOrder (int): The order in which the filter should appear (1 being first)
             hide (bool): Whether to hide the filter from view
 
+        Query Parameters:
+            filterType (str): The type of filter for which preferences are being set
+            parentFilterId (int): The ID of the parent filter for attribute filters
+
         Returns:
             List: [dict] containing:
                 - Filter preference data including id, tenant and userId
@@ -351,7 +361,11 @@ class FilterPreferenceResource(Resource):
             401: If user is not authenticated
         """
         data = request.get_json()
+        filter_type = request.args.get("filterType", None)
+        parent_filter_id = request.args.get("parentFilterId", None)
         return (
-            FilterPreferenceService.create_or_update_filter_preference(data),
+            FilterPreferenceService.create_or_update_filter_preference(
+                data, filter_type, parent_filter_id
+            ),
             HTTPStatus.CREATED,
         )

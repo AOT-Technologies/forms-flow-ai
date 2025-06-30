@@ -99,6 +99,8 @@ const PrivateRoute = React.memo((props) => {
     analyzeSubmissionView,
     analyzeMetricsView,
     manageAdvancedWorkFlows,
+    reviewerViewHistory,
+    analyzeSubmissionsViewHistory,
   } = useUserRoles();
 
   const BASE_ROUTE_PATH = (() => {
@@ -275,7 +277,7 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              viewSubmissions ? (
+              viewSubmissions || analyzeSubmissionView ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />
@@ -311,7 +313,8 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              createSubmissions || viewSubmissions ? (
+              createSubmissions || viewSubmissions ||  analyzeSubmissionsViewHistory ||
+              reviewerViewHistory ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />
@@ -384,9 +387,9 @@ const PrivateRoute = React.memo((props) => {
             )}
 
             {ENABLE_TASKS_MODULE && (
-              <ReviewerRoute path={ROUTE_TO.TASK} component={ServiceFlow} />
+              <ReviewerRoute path={ROUTE_TO.TASK_OLD} component={ServiceFlow} />
             )}
-            <Route exact path={ROUTE_TO.REVIEW} />
+           <Route exact path={ROUTE_TO.TASK} />
             <Route exact path={ROUTE_TO.ADMIN} />
             {/* * This route is used to redirect the user to the correct base route
              * based on their roles. If the user has no roles, they will be redirected

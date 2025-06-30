@@ -429,7 +429,8 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
     let parentFormId = form?.parentFormId || form?._id; 
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-    const draftIdToUse = draftId || state.draft?.draftSubmission?.applicationId;
+    //To Be Done need to detail test of draft for public user and authenticated user
+    const draftIdToUse = isAuth ? draftId || state.draft?.draftSubmission?.applicationId : draftId;
     let isDraftCreated = Boolean(draftIdToUse);
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,

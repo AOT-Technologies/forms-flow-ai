@@ -61,7 +61,7 @@ import NewVersionModal from "../../../components/Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate,
+import { generateUniqueId, addTenantkey, textTruncate,
   convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
@@ -374,7 +374,6 @@ const EditComponent = () => {
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
   const {
     formHistoryData = {},
-    restoredFormData,
     restoredFormId,
   } = useSelector((state) => state.formRestore);
 
@@ -646,10 +645,7 @@ const handleSaveLayout = () => {
 
   const saveFormData = async ({ showToast = true }) => {
     try {
-      const isFormChanged = isFormComponentsChanged({
-        restoredFormData,
-        restoredFormId, formData, form
-      });
+      const isFormChanged = true; // Hard code the value to always make backend call on Save Layout
       if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
         setFormChangeState(prev => ({ ...prev, changed: false }));

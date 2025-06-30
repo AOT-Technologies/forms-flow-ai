@@ -47,7 +47,7 @@ PERMISSION_DETAILS = [
     {"name": ASSIGN_TASK_TO_OTHERS, "description": "Assign/re-assign tasks to anybody within the group", "category": permission_category.TASKS.value, "order": 30, "depends_on": [ VIEW_FILTERS, VIEW_TASKS, MANAGE_TASKS ]},
     {"name": REVIEWER_VIEW_HISTORY, "description": "View task history", "category": permission_category.TASKS.value, "order": 40, "depends_on": [VIEW_FILTERS, VIEW_TASKS]},
     # {"name": REVIEWER_PROCESS_VIEW, "description": "View process diagram in task", "category": permission_category.TASKS.value, "order": 41, "depends_on": [VIEW_FILTERS, VIEW_TASKS, REVIEWER_VIEW_HISTORY]},
-    {"name": VIEW_FILTERS, "description": "View filters",  "category": permission_category.TASKS.value, "order": 50, "depends_on": []},
+    {"name": VIEW_FILTERS, "description": "View filters",  "category": permission_category.TASKS.value, "order": 50, "depends_on": [ VIEW_TASKS ]},
     {"name": CREATE_FILTERS, "description": "Manage filters you create",  "category": permission_category.TASKS.value, "order": 60, "depends_on": [ VIEW_FILTERS ]},
     {"name": MANAGE_ALL_FILTERS, "description": "Manage all shared filters (delete and edit filters others shared, excluding private filters)",  "category": permission_category.TASKS.value, "order": 70, "depends_on": [ VIEW_FILTERS , CREATE_FILTERS ]},
     {"name": VIEW_DESIGNS, "description": "View forms & flows", "category": permission_category.DESIGN.value, "order": 10, "depends_on": []},
@@ -64,10 +64,10 @@ PERMISSION_DETAILS = [
     {"name": ANALYZE_SUBMISSIONS_VIEW, "description": "View submissions", "category": permission_category.ANALYZE.value, "order": 30, "depends_on": []},
     {"name": ANALYZE_SUBMISSIONS_VIEW_HISTORY, "description": "View submissions history", "category": permission_category.ANALYZE.value, "order": 40, "depends_on": [ ANALYZE_SUBMISSIONS_VIEW ]},
     {"name": ANALYZE_PROCESS_VIEW, "description": "View submissions process diagram", "category": permission_category.ANALYZE.value, "order": 50, "depends_on": [ ANALYZE_SUBMISSIONS_VIEW, ANALYZE_SUBMISSIONS_VIEW_HISTORY ]},
-    {"name": MANAGE_USERS, "description": "Manage users", "category": permission_category.ADMIN.value, "order": 10, "depends_on": []},
-    {"name": MANAGE_ROLES, "description": "Manage roles", "category": permission_category.ADMIN.value, "order": 20, "depends_on": []},
-    {"name": MANAGE_DASHBOARD_AUTHORIZATIONS, "description": "Manage dashboards", "category": permission_category.ADMIN.value, "order": 30, "depends_on": []},
-    # {"name": MANAGE_LINKS, "description": "View links", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []}
+    {"name": MANAGE_USERS, "description": "Users", "category": permission_category.ADMIN.value, "order": 10, "depends_on": []},
+    {"name": MANAGE_ROLES, "description": "Roles", "category": permission_category.ADMIN.value, "order": 20, "depends_on": []},
+    {"name": MANAGE_DASHBOARD_AUTHORIZATIONS, "description": "Dashboards", "category": permission_category.ADMIN.value, "order": 30, "depends_on": []},
+    # {"name": MANAGE_LINKS, "description": "Links", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []}
 ]
 
 

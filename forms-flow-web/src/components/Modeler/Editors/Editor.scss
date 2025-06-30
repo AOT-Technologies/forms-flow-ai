@@ -5,7 +5,7 @@
   overflow: auto;
 }
 
-.bpmn-main-container {
+.bpmn-main-container-editor {
   width: 100%;
   display: flex;
   margin-top: 10px;
@@ -13,6 +13,7 @@
   overflow: hidden;
   max-height: calc(100vh - 15.45rem);
   min-height: calc(100vh - 16rem);
+  border: 1px solid $black;
 }
 
 /* ------------------- this is for diagram settings icons start  ------------------- */
@@ -43,8 +44,8 @@
 }
 /* ------------------- this is for diagram settings icons end  ------------------- */
 
-.bpm-modeler-container {
-  height: 100%;
+.bpm-modeler-container { 
+   height: calc(100vh - 15rem);
 }
 
 .bpmn-viewer-container {
@@ -64,8 +65,7 @@
   scrollbar-color: #888  #E2E1FC; 
 }
 .properties-panel-parent {
-  border: 1px solid $black;
-  border-left: none;
+  border-left: 1px solid $black;
 }
 
 .grab-cursor {

@@ -80,4 +80,12 @@ After completing the [setup](#setup), run the following command to apply these m
 ```bash
 [Default setup]
 python migrate-7.1.0.py
+```
 
+##### Note:
+* To add these permissions(roles) to the specific group.
+
+    * Login to formsflow.ai --> Manage --> Roles --> Actions --> Edit --> Permissions 
+
+<br/>
+<img src="./../../.images/add-permissions.png" />

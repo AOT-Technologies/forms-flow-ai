@@ -13,7 +13,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/formio.full.min.css') }}"
     />
-    <style type="text/css" media="print">
+     <style type="text/css" media="print">
       .formio-component {
         break-inside: avoid;
         page-break-inside: avoid;
@@ -28,9 +28,7 @@
         display: none;
       }
 
-        {
-        % if form.compact_form_view %
-      }
+      {% if form.compact_form_view %}
 
       .formio-form,
       .form-builder {
@@ -57,10 +55,9 @@
         padding-bottom: 0 !important;
       }
 
-        {
-        % endif %
-      }
+      {% endif %}
     </style>
+
 
     <script
       defer

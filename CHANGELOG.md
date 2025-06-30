@@ -73,6 +73,27 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **formsflow-bpm**
 * FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](./CHANGELOG.md#405---2022-04-19))
 
+## 7.0.4 - 2025-06-26
+
+`Modified`
+
+**forms-flow-documents**
+* Migrated CSS and JS dependencies from CDN links to local static files
+* Refactored `index.html` to reference local static assets for CSS and JS
+* Increased PDF generation wait time to 60 seconds
+
+## 7.0.3 - 2025-06-13
+
+`Added`
+**forms-flow-bpm**
+* Addition of security level config to bpmn docker compose to resolve Inconsistent CSRF token behavior
+
+
+## 7.0.2 - 2025-06-04
+`Added`
+**forms-flow-bpm**
+* Addition of ssl certificate in bpm layer to work on secured environments and updated the docker file
+
 ## 7.0.1 - 2025-03-15
 
 `Added`

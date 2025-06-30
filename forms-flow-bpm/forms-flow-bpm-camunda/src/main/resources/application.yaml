@@ -147,7 +147,6 @@ spring:
           issuer-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
     csrf:
       cookie:
-        http-only: false
         secure: true
   main:
     allow-bean-definition-overriding: true

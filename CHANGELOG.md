@@ -10,7 +10,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **forms-flow-web**
 * Added new User Interfaces: for task page, submissions
 * Added environment variables:
-   * `ENABLE_COMPACT_FORM_VIEW` to handle compact form view
+   * `ENABLE_COMPACT_FORM_VIEW` Set to true to reduce extra space between form components and display more components in the viewport.
    * `USER_NAME_DISPLAY_CLAIM` to specify if the app should use a different attribute than the default 'username' claim from Keycloak
    * `GRAPHQL_API_URL` to connect to the datalayer
    * `MF_FORMSFLOW_REVIEW_URL` for reviewer micro-frontend
@@ -50,7 +50,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **formsflow-documents**
 * Added new environment variable:
-   * `ENABLE_COMPACT_FORM_VIEW` to handle compact form view
+   * `ENABLE_COMPACT_FORM_VIEW` Set to true to reduce extra space between form components and display more components in the viewport.
    * `FORMIO_JWT_EXPIRE` to handle formio jwt token expire time
 
 **forms-flow-idm**

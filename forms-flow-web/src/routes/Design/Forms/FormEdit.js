@@ -1010,20 +1010,7 @@ const handleSaveLayout = () => {
   }
 
   //TBD: check the behaviour when a form has some submission and still in draft mode
-  const unPublishActiveForm = async () => {
-    if (processListData.status === "active") {
-      try {
-        await unPublish(processListData.id);
-        setIsPublished(false);
-        dispatch(push(`${redirectUrl}formflow`));
-      } catch (err) {
-        const error = err.response?.data || err.message;
-        dispatch(setFormFailureErrorData("form", error));
-      } finally {
-        setIsPublishLoading(false);
-      }
-    }
-  };
+
 
   const handleCloseActionModal = () => {
     setSelectedAction(null); // Reset action
@@ -1067,20 +1054,14 @@ const handleSaveLayout = () => {
       return (
         <ConfirmModal
           {...commonProps}
-          title={t("You Cannot Delete This Form")}
-          message={t(
-            "But you may unpublish it if you wish to not receive any more submissions."
-          )}
-          messageSecondary={t(
-            "You may not delete a form that has submissions associated with it."
-          )}
-          secondaryBtnAction={unPublishActiveForm}
-          primaryBtnText={t("Keep This Form")}
-          secondaryBtnText={t("Unpublish This Form")}
-          secondoryBtndataTestid="unpublish-button"
-          primaryBtndataTestid="keep-form-button"
-          primaryBtnariaLabel="Keep This Form"
-          secondoryBtnariaLabel="Unpublish This Form"
+          title={t("You Cannot Delete This Form & Flow")}
+          message={<CustomInfo heading={t("Note")} content={t(
+            "You cannot delete a form & flow that has submissions associated with it."
+          )} />}
+          secondaryBtnAction={handleCloseActionModal}
+          secondaryBtnText={t("Dismiss")}
+          secondoryBtndataTestid="dismiss-button"
+          secondoryBtnariaLabel="Dismiss button"
         />
       );
     } else {

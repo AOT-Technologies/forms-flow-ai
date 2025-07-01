@@ -108,6 +108,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 `Known Issues`
 
 * If a form's version changes and it is already selected in an existing task filter, the user must reselect the form in the filter edit to ensure proper form name in UI.
+* In Task Filters, specifying "Tasks Accessible To" either a role or an assignee is mandatory starting from version v7.1.0 when saving a filter. As a result, after upgrading from v7.0.0 to v7.1.0, any existing filters created in v7.0.0 or earlier that do not have a role or assignee selected will still function as expected, but cannot be updated unless one of these fields is provided.
 
 ## 7.0.4 - 2025-06-26
 

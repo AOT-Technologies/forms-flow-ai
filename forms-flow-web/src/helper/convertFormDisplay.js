@@ -1,5 +1,3 @@
-import { cloneDeep } from "lodash";
-
 /**
  * Converts flat form components into a wizard-style structure with a single panel.
  * Filters out the submit button and appends it separately.
@@ -15,9 +13,9 @@ export const convertToWizardForm = (components) => {
 
   for (const comp of components) {
     if (comp?.type === "button" && comp?.key === "submit") {
-      submitButton = cloneDeep(comp);
+      submitButton = comp;
     } else {
-      formFields.push(cloneDeep(comp));
+      formFields.push(comp);
     }
   }
 
@@ -50,9 +48,9 @@ export const convertToNormalForm = (components) => {
 
   for (const comp of components) {
     if (comp?.type === "panel" && Array.isArray(comp.components)) {
-      flattened.push(...cloneDeep(comp.components));
+      flattened.push(comp.components);
     } else {
-      flattened.push(cloneDeep(comp));
+      flattened.push(comp);
     }
   }
 

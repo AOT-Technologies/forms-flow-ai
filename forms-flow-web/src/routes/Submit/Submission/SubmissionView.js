@@ -8,7 +8,6 @@ import {
   BackToPrevIcon,
   FormSubmissionHistoryModal,
   SubmissionHistoryWithViewButton,
-  DownloadPDFButton
 } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
@@ -27,6 +26,7 @@ import {
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { HelperServices } from "@formsflow/service";
+import DownloadPDFButton from "../../../components/Form/ExportAsPdf/downloadPdfButton";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
 import userRoles from "../../../constants/permissions";

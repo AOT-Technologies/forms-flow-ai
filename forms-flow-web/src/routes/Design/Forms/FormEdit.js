@@ -66,6 +66,7 @@ import { generateUniqueId, addTenantkey, textTruncate,
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
+import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -612,17 +613,23 @@ const handleSaveLayout = () => {
     // update the form Access and submission access if anonymouse changed
     const formAccess = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", formDetails.anonymous);
     const submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", formDetails.anonymous);
-    const formData = {
+    const newFormData = {
       title: formDetails.title,
       display: formDetails.display,
       path: updatepath,
       submissionAccess: submissionAccess,
       access: formAccess,
     };
+ 
+    if(formDetails.display !== form.display){
+      newFormData["components"] = formDetails.display == "form" ? 
+      convertToNormalForm(formData.components) : convertToWizardForm(formData.components);
+    }
+ 
 
     try {
       await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
-      const updateFormResponse = await formUpdate(form._id, formData);
+      const updateFormResponse = await formUpdate(form._id, newFormData);
       dispatchFormAction({
         type: "formChange",
         value: { ...updateFormResponse.data, components: form.components },

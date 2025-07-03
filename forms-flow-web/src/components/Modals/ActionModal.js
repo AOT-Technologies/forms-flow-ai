@@ -12,7 +12,7 @@ import {
 } from "@formsflow/components";
 import { StyleServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
-
+import userRoles from "../../constants/permissions";
 const ActionModal = React.memo(
   ({
     newActionModal,
@@ -26,6 +26,8 @@ const ActionModal = React.memo(
   }) => {
     const { t } = useTranslation();
     const primaryColor = StyleServices.getCSSVariable('--ff-primary');
+    const { viewDesigns, createDesigns } = userRoles();
+    const isReadOnly = viewDesigns && !createDesigns;
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
@@ -72,7 +74,7 @@ const ActionModal = React.memo(
               <div className="buttons-row">
                 <CustomButton
                   label={t("Duplicate")}
-                  disabled={!isMigrated}
+                  disabled={!isMigrated || isReadOnly  }
                   icon={<DuplicateIcon color={primaryColor} />}
                   className=""
                   dataTestId="duplicate-form-button"
@@ -81,7 +83,7 @@ const ActionModal = React.memo(
                   iconWithText
                 />
                 <CustomButton
-                  disabled={published || !isMigrated}
+                  disabled={published || !isMigrated || isReadOnly}
                   label={t("Import")}
                   icon={<ImportIcon disabled={published} />}
                   dataTestId="import-form-button"
@@ -100,7 +102,7 @@ const ActionModal = React.memo(
                 />
 
                 <CustomButton
-                  disabled={published}
+                  disabled={published || isReadOnly}
                   label={t("Delete")}
                   icon={<TrashIcon disabled={published} />}
                   dataTestId="delete-form-button"

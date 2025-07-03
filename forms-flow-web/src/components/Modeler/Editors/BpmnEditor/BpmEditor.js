@@ -91,7 +91,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
   const redo = () => bpmnModeler?.get("commandStack")?.redo();
 
   return (
-    <div className="bpmn-main-container">
+    <div className="bpmn-main-container-editor">
       <div className="bpmn-viewer-container">
         <div
           id="canvas"

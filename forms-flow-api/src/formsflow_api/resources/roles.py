@@ -5,10 +5,15 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    ADMIN,
     CREATE_DESIGNS,
     CREATE_FILTERS,
+    MANAGE_ADVANCE_FLOWS,
     MANAGE_ALL_FILTERS,
+    MANAGE_BUNDLES,
+    MANAGE_INTEGRATIONS,
+    MANAGE_ROLES,
+    MANAGE_TEMPLATES,
+    MANAGE_USERS,
     PERMISSION_DETAILS,
     VIEW_DESIGNS,
     VIEW_FILTERS,
@@ -55,12 +60,13 @@ class KeycloakRolesResource(Resource):
     @staticmethod
     @auth.has_one_of_roles(
         [
-            ADMIN,
             CREATE_DESIGNS,
             MANAGE_ALL_FILTERS,
             CREATE_FILTERS,
             VIEW_FILTERS,
             VIEW_DESIGNS,
+            MANAGE_USERS,
+            MANAGE_ROLES,
         ]
     )
     @profiletime
@@ -92,7 +98,7 @@ class KeycloakRolesResource(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -120,7 +126,7 @@ class KeycloakRolesResourceById(Resource):
     """Resource to manage keycloak roles/groups by id."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -137,7 +143,7 @@ class KeycloakRolesResourceById(Resource):
         return response, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -152,7 +158,7 @@ class KeycloakRolesResourceById(Resource):
         return {"message": "Deleted successfully."}, HTTPStatus.OK
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -175,7 +181,7 @@ class Permissions(Resource):
     """Resource to list."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_ROLES])
     @profiletime
     @API.doc(
         responses={
@@ -187,4 +193,18 @@ class Permissions(Resource):
     )
     def get():
         """Fetch the list of permissions."""
-        return PERMISSION_DETAILS
+        # Filtered specific permissions related to EE
+        filtered_permissions = [
+            (
+                {
+                    **item,
+                    "description": "Manage advance flows (SubFlows + Decision Tables)",
+                }
+                if item["name"] == MANAGE_ADVANCE_FLOWS
+                else item
+            )
+            for item in PERMISSION_DETAILS
+            if item["name"]
+            not in [MANAGE_INTEGRATIONS, MANAGE_TEMPLATES, MANAGE_BUNDLES]
+        ]
+        return filtered_permissions

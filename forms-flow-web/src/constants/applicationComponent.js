@@ -1,7 +1,9 @@
 import utils from "@aot-technologies/formiojs/lib/utils";
 
 // Factory function to create a hidden component with dynamic properties
-const createHiddenComponent = ({label, key, persistent, customDefaultValue = null}) => ({
+const createHiddenComponent = ({label, key, persistent, 
+  customDefaultValue = null, 
+  calculateValue = null}) => ({
   label,
   addons: [],
   customClass: "",
@@ -12,8 +14,8 @@ const createHiddenComponent = ({label, key, persistent, customDefaultValue = nul
   dbIndex: false,
   encrypted: false,
   redrawOn: "",
-  customDefaultValue,
-  calculateValue: "",
+  customDefaultValue: customDefaultValue ?? "",
+  calculateValue: calculateValue ?? "",
   calculateServer: false,
   key,
   tags: [],
@@ -130,8 +132,8 @@ export const addHiddenApplicationComponent = (form) => {
     { 
       label: "Current User Roles", 
       persistent: true,
-      key: "currentUserRole", 
-      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && (JSON.parse(localStorage.getItem('UserDetails'))) || []; value = localdata?.groups?.map(group => group.replace(new RegExp('^/+|/+$', 'g'), '')) || [];" 
+      key: "currentUserRoles", 
+      calculateValue: "const localdata = localStorage.getItem('UserDetails') && (JSON.parse(localStorage.getItem('UserDetails'))) || []; value = localdata?.groups?.map(group => group.replace(new RegExp('^/+|/+$', 'g'), '')) || [];" 
     },
     // { 
     //   label: "All Available Roles", 
@@ -158,10 +160,11 @@ export const addHiddenApplicationComponent = (form) => {
 
 
   // Loop through and add each additional component
-  additionalComponents.forEach(({ label, key, customDefaultValue, ...rest }) => {
+  additionalComponents.forEach(({ label, key, customDefaultValue, calculateValue, ...rest }) => {
     const componentConfig = key === "submit" 
       ? { key, label, ...rest } 
-      : createHiddenComponent({label, key, customDefaultValue, persistent:rest.persistent });
+      : createHiddenComponent({label, key, customDefaultValue, 
+        calculateValue, persistent:rest.persistent });
     addHiddenComponent(components, componentConfig, form);
   });
 

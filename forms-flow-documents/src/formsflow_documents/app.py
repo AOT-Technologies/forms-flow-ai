@@ -102,6 +102,9 @@ def create_app(
                 HTTPStatus.FORBIDDEN,
                 HTTPStatus.NOT_FOUND,
             ]:
+                token_info = getattr(g, "token_info", {})
+                if not isinstance(token_info, dict) or "locale" not in token_info:
+                    return response
                 lang = g.token_info["locale"]
                 if lang == "en":
                     return response

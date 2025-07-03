@@ -16,6 +16,7 @@
   // min-height: calc(100vh - 16rem);
   height: 100%;
   resize: vertical;
+  border: 1px solid $black;
 }
 
 /* ------------------- this is for diagram settings icons start  ------------------- */
@@ -99,8 +100,8 @@
 }
 /* ------------------- this is for diagram settings icons end  ------------------- */
 
-.bpm-modeler-container {
-  height: 100%;
+.bpm-modeler-container { 
+   height: calc(100vh - 15rem);
 }
 
 .bpmn-viewer-container {

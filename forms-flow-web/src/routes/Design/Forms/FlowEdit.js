@@ -50,7 +50,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
-  const { createDesigns } = userRoles();
+  const { createDesigns, viewDesigns} =  userRoles();
   const [showTaskVarModal, setShowTaskVarModal] = useState(false);
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
@@ -218,7 +218,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
           />
           {/* <Card.Header> */}
           <div className="head">
-            {createDesigns && (
+            {(createDesigns || viewDesigns) && (
               <div>
                 <h2>{t("Flow")}</h2>
                 <CustomButton

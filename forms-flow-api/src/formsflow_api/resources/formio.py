@@ -10,9 +10,12 @@ from flask import after_this_request, current_app
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException, ExternalError
 from formsflow_api_utils.utils import (
+    ANALYZE_SUBMISSIONS_VIEW,
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     MANAGE_TASKS,
+    REVIEWER_VIEW_HISTORY,
+    SUBMISSION_VIEW_HISTORY,
     VIEW_DESIGNS,
     VIEW_SUBMISSIONS,
     VIEW_TASKS,
@@ -96,7 +99,14 @@ class FormioResource(Resource):
             ):
                 filter_list.append(FormioRoles.DESIGNER.name)
             if any(
-                permission in user_role for permission in [MANAGE_TASKS, VIEW_TASKS]
+                permission in user_role
+                for permission in [
+                    MANAGE_TASKS,
+                    VIEW_TASKS,
+                    SUBMISSION_VIEW_HISTORY,
+                    REVIEWER_VIEW_HISTORY,
+                    ANALYZE_SUBMISSIONS_VIEW,
+                ]
             ):
                 filter_list.append(FormioRoles.REVIEWER.name)
             if any(

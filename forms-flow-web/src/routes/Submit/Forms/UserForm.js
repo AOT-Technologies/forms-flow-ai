@@ -298,7 +298,7 @@ const View = React.memo((props) => {
 
   // will be updated once application/draft listing page is ready
   const handleBack = () => {
-    navigateToFormEntries(dispatch, tenantKey, parentFormId);
+    navigateToFormEntries(dispatch, tenantKey, parentFormId || formId);
 
   };
 
@@ -442,10 +442,11 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
     const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
-    let parentFormId = form?.parentFormId; 
+    let parentFormId = form?.parentFormId || form?._id; 
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-    const draftIdToUse = draftId || state.draft?.draftSubmission?.applicationId;
+    //To Be Done need to detail test of draft for public user and authenticated user
+    const draftIdToUse = isAuth ? draftId || state.draft?.draftSubmission?.applicationId : draftId;
     let isDraftCreated = Boolean(draftIdToUse);
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,

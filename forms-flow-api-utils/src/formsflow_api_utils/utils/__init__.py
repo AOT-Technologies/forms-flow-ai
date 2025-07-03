@@ -44,6 +44,15 @@ from .permisions import (
     CREATE_BPMN_FLOWS,
     MANAGE_DECISION_TABLES,
     MANAGE_SUBFLOWS,
+    MANAGE_ADVANCE_FLOWS,
+    REVIEWER_VIEW_HISTORY,
+    SUBMISSION_VIEW_HISTORY,
+    MANAGE_TEMPLATES,
+    MANAGE_BUNDLES,
+    ANALYZE_METRICS_VIEW,
+    ANALYZE_SUBMISSIONS_VIEW_HISTORY,
+    ANALYZE_SUBMISSIONS_VIEW,
+    ANALYZE_PROCESS_VIEW,
 )
 from .file_log_handler import CustomTimedRotatingFileHandler, register_log_handlers
 from .format import CustomFormatter

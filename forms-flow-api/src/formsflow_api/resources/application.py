@@ -5,6 +5,7 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
+    ANALYZE_SUBMISSIONS_VIEW,
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     MANAGE_TASKS,
@@ -277,7 +278,13 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @auth.has_one_of_roles(
-        [CREATE_SUBMISSIONS, VIEW_SUBMISSIONS, VIEW_TASKS, MANAGE_TASKS]
+        [
+            CREATE_SUBMISSIONS,
+            VIEW_SUBMISSIONS,
+            VIEW_TASKS,
+            MANAGE_TASKS,
+            ANALYZE_SUBMISSIONS_VIEW,
+        ]
     )
     @profiletime
     @API.response(200, "OK:- Successful request.", model=application_model)
@@ -291,7 +298,7 @@ class ApplicationResourceById(Resource):
     )
     def get(application_id: int):
         """Get application by id."""
-        if auth.has_role([VIEW_TASKS, MANAGE_TASKS]):
+        if auth.has_one_of_roles([VIEW_TASKS, MANAGE_TASKS, ANALYZE_SUBMISSIONS_VIEW]):
             (
                 application_schema_dump,
                 status,

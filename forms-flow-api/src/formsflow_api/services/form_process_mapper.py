@@ -10,7 +10,7 @@ from typing import List, Set, Tuple
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
-from formsflow_api_utils.utils import CREATE_SUBMISSIONS
+from formsflow_api_utils.utils import CREATE_SUBMISSIONS, VIEW_SUBMISSIONS
 from formsflow_api_utils.utils.enums import FormProcessMapperStatus
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
@@ -83,9 +83,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 if is_designer
                 else Application.find_all_active_by_formid
             )
-            # Submissions count should return only for user with create_submissions permission
-            fetch_submissions_count = (
-                include_submissions_count and CREATE_SUBMISSIONS in user.roles
+            # Submissions count should return for user with create_submissions or view_submissions permission
+            fetch_submissions_count = include_submissions_count and any(
+                perm in user.roles for perm in [CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]
             )
             mappers, get_all_mappers_count = list_form_mappers(
                 page_number=page_number,

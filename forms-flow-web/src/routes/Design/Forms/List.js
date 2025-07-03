@@ -394,7 +394,7 @@ const List = React.memo((props) => {
 
                   {createDesigns && (
                     <CustomButton
-                      label={t("New Form")}
+                      label={t("New Form & Flow")}
                       onClick={() => setNewFormModal(true)}
                       dataTestId="create-form-button"
                       ariaLabel="Create Form"

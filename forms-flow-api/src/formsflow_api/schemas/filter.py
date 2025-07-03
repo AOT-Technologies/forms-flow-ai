@@ -1,6 +1,6 @@
 """This manages Filter Schema."""
 
-from marshmallow import EXCLUDE, Schema, fields
+from marshmallow import EXCLUDE, Schema, fields, post_dump
 
 from .base_schema import AuditDateTimeSchema
 
@@ -57,3 +57,12 @@ class FilterSchema(AuditDateTimeSchema):
     def load_filter_type(self, value):
         """This method is to load the filter type."""
         return value.upper() if value else None
+
+    @post_dump
+    def remove_parent_filter_if_task(
+        self, data, many, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Remove parent_filter_id if filter type is TASK."""
+        if data.get("filterType") == "TASK":
+            data.pop("parentFilterId", None)
+        return data

@@ -5,7 +5,7 @@ import datetime
 import pytest
 from formsflow_api_utils.utils import (
     CREATE_SUBMISSIONS,
-    VIEW_DASHBOARDS,
+    ANALYZE_METRICS_VIEW,
     get_token,
 )
 
@@ -23,7 +23,7 @@ tomorrow = (
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
 def test_metrics_get_200(orderBy, app, client, session, jwt):
     """Tests the API/metrics endpoint with valid param."""
-    token = get_token(jwt, VIEW_DASHBOARDS)
+    token = get_token(jwt, ANALYZE_METRICS_VIEW)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(
         f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}", headers=headers
@@ -50,7 +50,7 @@ def test_metrics_list_view(orderBy, app, client, session, jwt, create_mapper):
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-    token = get_token(jwt, VIEW_DASHBOARDS)
+    token = get_token(jwt, ANALYZE_METRICS_VIEW)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(
         f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}", headers=headers
@@ -80,7 +80,7 @@ def test_metrics_detailed_view(orderBy, app, client, session, jwt, create_mapper
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-    token = get_token(jwt, VIEW_DASHBOARDS)
+    token = get_token(jwt, ANALYZE_METRICS_VIEW)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(
         f"/metrics/{form_id}?from={today}&to={tomorrow}&orderBy={orderBy}&formType=form",
@@ -105,7 +105,7 @@ def test_metrics_paginated_list(
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-    token = get_token(jwt, VIEW_DASHBOARDS)
+    token = get_token(jwt, ANALYZE_METRICS_VIEW)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(
         f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}&pageNo={pageNo}&limit={limit}",
@@ -136,7 +136,7 @@ def test_metrics_paginated_sorted_list(
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-    token = get_token(jwt, VIEW_DASHBOARDS)
+    token = get_token(jwt, ANALYZE_METRICS_VIEW)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(
         f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}&pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}",
@@ -167,7 +167,7 @@ def test_metrics_paginated_filtered_list(
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-    token = get_token(jwt, VIEW_DASHBOARDS)
+    token = get_token(jwt, ANALYZE_METRICS_VIEW)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(
         f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}&pageNo={pageNo}&limit={limit}&formName={formName}",

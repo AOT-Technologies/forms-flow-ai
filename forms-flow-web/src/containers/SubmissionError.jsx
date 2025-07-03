@@ -10,13 +10,15 @@ const SubmissionError = React.memo((props) => {
     <>
       <Modal show={modalOpen}>
         <Modal.Header>
-          <Modal.Title>Error</Modal.Title>
+          <Modal.Title><p>Error</p></Modal.Title>
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>
-          <Button type="button" className="btn btn-default" onClick={onConfirm}>
-            {t("Ok")}
-          </Button>
+          <div className="buttons-row">
+            <Button type="button" className="btn btn-default" onClick={onConfirm}>
+              {t("Ok")}
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
     </>

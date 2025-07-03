@@ -35,18 +35,17 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
   };
   return (
     <Modal
-      className="d-flex flex-column align-items-start w-100 settings-modal"
+      className="settings-modal"
       show={show}
       onHide={handleClose}
       size="sm"
       backdrop="static"
-      centered
       data-testid="settings-modal"
     >
       <Modal.Header>
-        <Modal.Title>{t("Settings")}</Modal.Title>
+        <Modal.Title><p>{t("Settings")}</p></Modal.Title>
       </Modal.Header>
-      <Modal.Body className="p-0">
+      <Modal.Body className="with-tabs">
         <FormSettings
           ref={FormSettingsRef}
           handleConfirm={handleConfirm}
@@ -54,29 +53,25 @@ const SettingsModal = ({ show, handleClose, handleConfirm, isSaving = false }) =
           setIsSaveButtonDisabled = {setIsSaveButtonDisabled}
         />
       </Modal.Body>
-  
-  <Modal.Footer>
+      <Modal.Footer>
+        <div className="buttons-row">
+          {createDesigns && <CustomButton
+            disabled={isSaving || isSaveButtonDisabled}
+            buttonLoading={isSaving || isValidating}
+            label={t("Save Changes")}
+            onClick={handleConfirmFunction}
+            dataTestId="save-form-settings"
+            ariaLabel={t("Save Form Settings")}
+          />}
 
-    {createDesigns && <CustomButton
-          variant="primary"
-          size="md"
-          disabled={isSaving || isSaveButtonDisabled}
-          buttonLoading={isSaving || isValidating}
-          label={t("Save Changes")}
-          onClick={handleConfirmFunction}
-          dataTestId="save-form-settings"
-          ariaLabel={t("Save Form Settings")}
-        />}
-        
-
-        <CustomButton
-          variant="secondary"
-          size="md"
-          label={t("Discard Changes")}
-          onClick={handleClose}
-          dataTestId="cancel-form-settings"
-          ariaLabel={t("Cancel Form Settings")}
-        />
+          <CustomButton
+            label={t("Discard Changes")}
+            onClick={handleClose}
+            dataTestId="cancel-form-settings"
+            ariaLabel={t("Cancel Form Settings")}
+            secondary
+          />
+        </div>
       </Modal.Footer>
     </Modal>
   );

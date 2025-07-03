@@ -53,7 +53,7 @@ const AddGroupModal = React.memo((props) => {
     <>
       <Modal show={modalOpen} onHide={onClose}>
         <Modal.Header>
-          <Modal.Title>{t("Manage Groups")}</Modal.Title>
+          <Modal.Title><p>{t("Manage Groups")}</p></Modal.Title>
         </Modal.Header>
         <LoadingOverlay
           active={isGroupLoading}
@@ -117,9 +117,11 @@ const AddGroupModal = React.memo((props) => {
           </Modal.Body>
         </LoadingOverlay>
         <Modal.Footer>
-          <Button type="button" className="btn btn-default" onClick={onClose}>
-            {t("Close")}
-          </Button>
+          <div className="buttons-row">
+            <Button type="button" className="btn btn-default" onClick={onClose}>
+              {t("Close")}
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
     </>

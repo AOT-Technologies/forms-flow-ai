@@ -33,6 +33,7 @@ class PDFService:
         "__form_io_url",
         "__host_name",
         "__chrome_driver_path",
+        "__chrome_driver_timeout",
         "form_id",
         "submission_id",
         "formio",
@@ -53,6 +54,7 @@ class PDFService:
         self.__form_io_url = current_app.config.get("FORMIO_URL")
         self.__host_name = current_app.config.get("FORMSFLOW_DOC_API_URL")
         self.__chrome_driver_path = current_app.config.get("CHROME_DRIVER_PATH")
+        self.__chrome_driver_timeout = current_app.config.get("CHROME_DRIVER_TIMEOUT")
         self.form_id = form_id
         self.submission_id = submission_id
         self.formio = FormioService()
@@ -93,6 +95,10 @@ class PDFService:
     def __get_chrome_driver_path(self) -> str:
         """Returns the configured chrome driver path."""
         return self.__chrome_driver_path
+
+    def __get_chrome_driver_timeout(self) -> int:
+        """Returns the configured chrome driver timeout."""
+        return self.__chrome_driver_timeout
 
     def __get_headers(self, token):
         """Returns the headers."""
@@ -374,6 +380,7 @@ class PDFService:
             self.__get_render_url(template_name, template_variable_name),
             self.__get_chrome_driver_path(),
             args=self.__get_render_args(timezone, token, bool(template_name)),
+            chrome_driver_timeout=self.__get_chrome_driver_timeout(),
         )
         return pdf_response(pdf, self.generate_pdf_file_name()) if pdf else False
 
@@ -397,6 +404,7 @@ class PDFService:
                 html_content,
                 self.__get_chrome_driver_path(),
                 args=self.__get_render_args(timezone, token, True),
+                chrome_driver_timeout=self.__get_chrome_driver_timeout(),
             )
             return pdf
         except Exception as e:  # pylint:disable=broad-exception-caught
@@ -519,6 +527,7 @@ class PDFService:
             temp_url,
             self.__get_chrome_driver_path(),
             args=self.__get_render_args(timezone, token, False),
+            chrome_driver_timeout=self.__get_chrome_driver_timeout(),
         )
         # Clean up temporary file
         try:

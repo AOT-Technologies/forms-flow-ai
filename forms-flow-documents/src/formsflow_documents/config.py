@@ -93,6 +93,11 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Configure LOG
     CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
 
+    # This is the timeout for the chrome driver to wait for the page to load
+    CHROME_DRIVER_TIMEOUT = int(
+        os.getenv("CHROME_DRIVER_TIMEOUT", default="60")
+    )  # seconds
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

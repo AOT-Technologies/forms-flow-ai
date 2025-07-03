@@ -1,17 +1,10 @@
 package org.camunda.bpm.extension.hooks.rest;
 
+import jakarta.ws.rs.*;
 import org.camunda.bpm.engine.rest.dto.repository.DeploymentDto;
 import org.camunda.bpm.engine.rest.dto.repository.DeploymentResourceDto;
 import org.camunda.bpm.engine.rest.mapper.MultipartFormData;
-import org.springframework.hateoas.EntityModel;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.UriInfo;
@@ -43,5 +36,9 @@ public interface DeploymentRestResource extends RestResource {
     @GET
     @Path("/{id}/resources/{resourceId}/data")
     Response getDeploymentResourceData(@PathParam("id") String id, @PathParam("resourceId") String resourceId);
+
+    @DELETE
+    @Path("/{id}")
+    void deleteDeployment(@PathParam("id") String id, @Context UriInfo uriInfo);
 
 }

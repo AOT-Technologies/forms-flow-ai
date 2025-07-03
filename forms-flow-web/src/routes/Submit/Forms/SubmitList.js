@@ -14,7 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 import ClientTable from "../../../components/Form/constants/ClientTable";
 import { CustomSearch } from "@formsflow/components";
-import { navigateToSubmitFormsApplication } from "../../../helper/routerHelper";
+// import { navigateToSubmitFormsApplication } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
 import { HelperServices } from '@formsflow/service';
@@ -44,9 +44,9 @@ const SubmitList = React.memo(({ getFormsInit }) => {
 
   // Redux Selectors
   const searchText = useSelector((state) => state.bpmForms.clientFormSearch);
-  const tenantId = useSelector((state) => state.tenants?.tenantId);
-  const userRoles = useSelector((state) => state.user.roles || []);
-  const create_submissions = userRoles.includes("create_submissions");
+  // const tenantId = useSelector((state) => state.tenants?.tenantId);
+  // const userRoles = useSelector((state) => state.user.roles || []);
+  // const create_submissions = userRoles.includes("create_submissions");
 
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
@@ -69,15 +69,15 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   const fetchForms = () => {
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({
-      pageNo, 
-      limit, 
-      formSort, 
-      formName: searchText, 
-      showForOnlyCreateSubmissionUsers: true, 
+      pageNo,
+      limit,
+      formSort,
+      formName: searchText,
+      showForOnlyCreateSubmissionUsers: true,
       includeSubmissionsCount: true
     }));
   };
-  
+
 
   // Handle Sorting
   const handleSortApply = (selectedSortOption, selectedSortOrder) => {
@@ -91,7 +91,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   };
 
   // Navigation Handler (Refactored)
-  const navigateTo = (routeFunction) => routeFunction(dispatch, tenantId);
+  // const navigateTo = (routeFunction) => routeFunction(dispatch, tenantId);
 
   // Effects
   useEffect(() => {
@@ -119,9 +119,9 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   useEffect(() => {
     dispatch(setFormCheckList([]));
     dispatch(setBPMFormListLoading(true));
-    if (!create_submissions) {
-      navigateTo(navigateToSubmitFormsApplication);
-    }
+    // if (!create_submissions) {
+    //   navigateTo(navigateToSubmitFormsApplication);
+    // }
   }, []);
 
   useEffect(() => {

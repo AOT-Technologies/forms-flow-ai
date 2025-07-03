@@ -15,7 +15,7 @@ import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import { initPubSub } from "../actions/pubSubActions";
 import { push } from "connected-react-router";
-import LandingPage from "./MultiTenant";
+import LandingPage from "./MultiTenant/LandingPage";
 
 const BaseRouting = React.memo(
   ({ store, publish, subscribe, getKcInstance }) => {

@@ -7,7 +7,6 @@ import {
 
   setBpmFormSort,
 } from "../../../actions/formActions";
-import LoadingOverlay from "react-loading-overlay-ts";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
@@ -17,7 +16,7 @@ import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
-import { CustomButton,TableFooter ,NoDataFound } from "@formsflow/components";
+import { CustomButton,TableFooter ,NoDataFound, TableSkeleton } from "@formsflow/components";
 import userRoles from "../../../constants/permissions";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 
@@ -102,9 +101,11 @@ function FormTable() {
     setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
   };
 
+  if (searchFormLoading || isApplicationCountLoading) {
+    return <TableSkeleton columns={5} rows={7} pagination={7} />;
+  }
 
   return (
-    <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
           <div className="custom-tables-wrapper">
             <table className="table custom-tables table-responsive-sm mb-0">
               <thead className="table-header">
@@ -220,13 +221,12 @@ function FormTable() {
               ) : !searchFormLoading ? (
                 <tbody className="table-empty">
                   <div className="table-scroll-container">
-                    <NoDataFound message={t('No forms have been found. Create a new form by clicking the "New Form" button in the top right.')}/>
+                    <NoDataFound message={t('No forms have been found. Create a new form by clicking the "New Form & Flow" button in the top right.')}/>
                   </div>
                 </tbody>
               ) : null}
             </table>
           </div>
-      </LoadingOverlay>
   );
 }
 

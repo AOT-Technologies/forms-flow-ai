@@ -62,7 +62,7 @@ import NewVersionModal from "../../../components/Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, isFormComponentsChanged, addTenantkey, textTruncate,
+import { generateUniqueId, addTenantkey, textTruncate,
   convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
@@ -128,7 +128,7 @@ const EditComponent = () => {
   const [importLoader, setImportLoader] = useState(false);
   const defaultPrimaryBtnText = t("Confirm And Replace");
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
-  const { createDesigns } = userRoles();
+  const { createDesigns,viewDesigns } = userRoles();
   const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
   const [migration, setMigration] = useState(false);
@@ -375,7 +375,6 @@ const EditComponent = () => {
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
   const {
     formHistoryData = {},
-    restoredFormData,
     restoredFormId,
   } = useSelector((state) => state.formRestore);
 
@@ -647,10 +646,7 @@ const handleSaveLayout = () => {
 
   const saveFormData = async ({ showToast = true }) => {
     try {
-      const isFormChanged = isFormComponentsChanged({
-        restoredFormData,
-        restoredFormId, formData, form
-      });
+      const isFormChanged = true; // Hard code the value to always make backend call on Save Layout
       if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
         setFormChangeState(prev => ({ ...prev, changed: false }));
@@ -1014,22 +1010,6 @@ const handleSaveLayout = () => {
     );
   }
 
-  //TBD: check the behaviour when a form has some submission and still in draft mode
-  const unPublishActiveForm = async () => {
-    if (processListData.status === "active") {
-      try {
-        await unPublish(processListData.id);
-        setIsPublished(false);
-        dispatch(push(`${redirectUrl}formflow`));
-      } catch (err) {
-        const error = err.response?.data || err.message;
-        dispatch(setFormFailureErrorData("form", error));
-      } finally {
-        // setIsPublishLoading(false);
-      }
-    }
-  };
-
   const handleCloseActionModal = () => {
     setSelectedAction(null); // Reset action
   };
@@ -1072,20 +1052,14 @@ const handleSaveLayout = () => {
       return (
         <ConfirmModal
           {...commonProps}
-          title={t("You Cannot Delete This Form")}
-          message={t(
-            "But you may unpublish it if you wish to not receive any more submissions."
-          )}
-          messageSecondary={t(
-            "You may not delete a form that has submissions associated with it."
-          )}
-          secondaryBtnAction={unPublishActiveForm}
-          primaryBtnText={t("Keep This Form")}
-          secondaryBtnText={t("Unpublish This Form")}
-          secondoryBtndataTestid="unpublish-button"
-          primaryBtndataTestid="keep-form-button"
-          primaryBtnariaLabel="Keep This Form"
-          secondoryBtnariaLabel="Unpublish This Form"
+          title={t("You Cannot Delete This Form & Flow")}
+          message={<CustomInfo heading={t("Note")} content={t(
+            "You cannot delete a form & flow that has submissions associated with it."
+          )} />}
+          secondaryBtnAction={handleCloseActionModal}
+          secondaryBtnText={t("Dismiss")}
+          secondoryBtndataTestid="dismiss-button"
+          secondoryBtnariaLabel="Dismiss button"
         />
       );
     } else {
@@ -1153,7 +1127,7 @@ const handleSaveLayout = () => {
                 </p>
               </div>
 
-              {createDesigns && (
+              {(createDesigns || viewDesigns) && (
                 <div className="buttons">
 
                   <CustomButton
@@ -1172,13 +1146,13 @@ const handleSaveLayout = () => {
                     dark
                   />
 
-                  <CustomButton
+                  {createDesigns && <CustomButton
                     label={t(publishText)}
                     onClick={handlePublishClick}
                     dataTestId="handle-publish-testid"
                     ariaLabel={`${t(publishText)} ${t("Button")}`}
                     darkPrimary
-                  />
+                  />}
                 </div>
               )}
             
@@ -1193,7 +1167,8 @@ const handleSaveLayout = () => {
                   {createDesigns && (
                     <div>
                       <h2>{t("Layout")}</h2>
-
+                    {(createDesigns || viewDesigns) && (
+                      <>
                       <CustomButton
                         icon={<HistoryIcon />}
                         label={t("History")}
@@ -1212,10 +1187,12 @@ const handleSaveLayout = () => {
                         ariaLabel={t("Preview Button")}
                         iconWithText
                       />
+                      </>
+                    )}
                     </div>
                   )}
 
-                  {createDesigns && (
+                  {(createDesigns) && (
                     <div>
                       <CustomButton
                         disabled={!formChangeState.changed}

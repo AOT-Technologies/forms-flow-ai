@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 // import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
+import userRoles from "../../../constants/permissions";
 import {
   setFormSubmissionSort,
   setApplicationListActivePage,
@@ -58,7 +59,7 @@ const DraftsAndSubmissions = () => {
   const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
-
+  const {createSubmissions} = userRoles();
   const {    
     formName,
     activePage: pageNo,
@@ -72,11 +73,33 @@ const DraftsAndSubmissions = () => {
   const [showSortModal, setShowSortModal] = useState(false);
 
   // Dropdown filter options
+  // const dropdownItems = [
+  //   { label: t("All"), onClick: () => handleSelection("All"), dataTestId: "all-submissions-button", ariaLabel: "View all submissions" },
+  //   { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
+  //   { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
+  // ];
+
   const dropdownItems = [
-    { label: t("All"), onClick: () => handleSelection("All"), dataTestId: "all-submissions-button", ariaLabel: "View all submissions" },
-    { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
-    { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
+    {
+      content: <span>{t("All")}</span>,
+      onClick: () => handleSelection("All"),
+      dataTestId: "all-submissions-button",
+      ariaLabel: "View all submissions",
+    },
+    {
+      content: <span>{t("Draft")}</span>,
+      onClick: () => handleSelection("Draft"),
+      dataTestId: "draft-submissions-button",
+      ariaLabel: "View draft submissions",
+    },
+    {
+      content: <span>{t("Submissions")}</span>,
+      onClick: () => handleSelection("Submissions"),
+      dataTestId: "completed-submissions-button",
+      ariaLabel: "View completed submissions",
+    },
   ];
+  
  //options for sortmodal
  const optionSortBy = [   
     { value: "id", label: t("Submission Id") },
@@ -164,20 +187,10 @@ const DraftsAndSubmissions = () => {
           <ButtonDropdown
             label={t(selectedItem)}
             dropdownItems={dropdownItems}
+            dropdownType="DROPDOWN_ONLY"
             dataTestId="submission-filter-dropdown"
             ariaLabel="Submission Filter Dropdown"
             className="input-filter"
-          />
-
-          <CustomButton
-            className="appliation-dropdown"
-            isDropdown
-            variant="primary"
-            size="sm"
-            label={t(selectedItem)}
-            dropdownItems={dropdownItems}
-            data-testid="submission-filter-dropdown"
-            aria-label="Submission Filter Dropdown"
           />
           <ConnectIcon />
           <SearchBar
@@ -204,13 +217,13 @@ const DraftsAndSubmissions = () => {
             filterDataTestId="form-list-filter"
             refreshDataTestId="form-list-refresh"
           />
-          <CustomButton
+          {createSubmissions && <CustomButton
             label={t("New Submission")}
             onClick={submitNewForm}
             dataTestId="create-form-button"
             ariaLabel="Create Form"
             action
-          />
+          />}
         </div>
       </div>
 

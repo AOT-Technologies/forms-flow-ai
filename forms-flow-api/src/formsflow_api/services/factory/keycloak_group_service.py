@@ -328,6 +328,14 @@ class KeycloakGroupService(KeycloakAdmin):
             f"{'Getting tenant users...' if multitenancy else 'Getting users...'}"
         )
         user_list = self.client.get_request(url)
+        # iterate users and set the username if a user name claim is set.
+        if (
+            user_name_display_claim := current_app.config.get("USER_NAME_DISPLAY_CLAIM")
+        ) is not None:
+            for user in user_list:
+                user["username"] = self.get_user_id_from_response(
+                    user, user_name_display_claim
+                )
 
         # Process username display
         user_list = self._process_username_display(user_list)

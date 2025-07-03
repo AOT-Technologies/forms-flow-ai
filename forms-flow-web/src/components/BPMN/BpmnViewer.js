@@ -34,7 +34,7 @@ const BPMNViewer = ({ bpmnXml }) => {
 
   if (!bpmnXml) {
     return (
-      <div className="bpmn-viewer-container">
+      <div className="bpmn-main-container-editor">
         <div className="bpm-container">
           <Nodata
             text={t("No Process Diagram found")}

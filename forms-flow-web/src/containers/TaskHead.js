@@ -107,7 +107,7 @@ function TaskHead() {
             selectedFilter?.id ? <div className="form-check mx-2 mb-0 form-switch">
 
             <input
-              className="form-check-input cursor-pointer"
+              className="form-check-input custom-switch-checkbox"
               onChange={defaultFilterChange}
               disabled={!selectedFilter?.id}
               checked={defaultFilter == selectedFilter?.id}

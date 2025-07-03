@@ -8,11 +8,11 @@ import {
 } from "../../../actions/formActions";
 import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
-import { TableFooter, CustomButton, NoDataFound } from "@formsflow/components";
-import LoadingOverlay from "react-loading-overlay-ts";
+import { TableFooter, CustomButton, NoDataFound, TableSkeleton } from "@formsflow/components";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
+
 
 function ClientTable() {
   // Redux hooks and state management
@@ -100,14 +100,13 @@ function ClientTable() {
     );
   };
 
+  //Skeleton Loading
+  if (searchFormLoading) {
+    return <TableSkeleton columns={5} rows={7} pagination={7} />;
+  }
 
   return (
-
-    <LoadingOverlay
-      active={searchFormLoading}
-      spinner
-      text={t("Loading...")}
-    >
+      <>
         <div className="custom-tables-wrapper">
           <table className="table custom-tables table-responsive-sm" data-testid="client-table">
             <thead className="table-header">
@@ -222,8 +221,7 @@ function ClientTable() {
           </table>
         </div>
         {showSubmissions && <SubmissionDrafts />}
-    </LoadingOverlay>
-
+      </>
   );
 }
 

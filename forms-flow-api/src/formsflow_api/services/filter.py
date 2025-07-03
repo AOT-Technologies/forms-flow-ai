@@ -2,7 +2,7 @@
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api_utils.utils import ADMIN
+from formsflow_api_utils.utils import MANAGE_ALL_FILTERS
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import (
@@ -37,11 +37,44 @@ class FilterService:
         return filter_schema.dump(filter_data)
 
     @staticmethod
-    def set_filter_edit_permission(filter_item, user):
-        """Set filter edit permission for a filter item."""
-        filter_item["editPermission"] = (
-            filter_item["createdBy"] == user.user_name or ADMIN in user.roles
+    def get_filters_by_user_filter_preference(
+        user_name, group_or_roles, tenant_key, filter_type, parent_filter_id=None
+    ):
+        """Get filters by user filter preference."""
+        current_app.logger.debug("Fetching filters by filter preference table..")
+        # fetch data from filter preference table
+        filter_preference = FilterPreferences.get_filters_by_user_id(
+            user_name, tenant_key, filter_type, group_or_roles, parent_filter_id
         )
+        # Extract existing filter IDs to avoid redundant fetching from the filter table.
+        # The `existing_filters` variable will store the result, containing filters
+        existing_filter_ids = []
+        existing_filters = []
+        if filter_preference:
+            for preference_data in filter_preference:
+                existing_filter_ids.append(preference_data.filter_id)
+                # adding filter_preference sort order to filter data
+                preference_data.filter.sort_order = preference_data.sort_order
+                preference_data.filter.hide = preference_data.hide
+                existing_filters.append(preference_data.filter)
+        current_app.logger.debug("Existing filter IDs: %s", existing_filter_ids)
+        filters = Filter.find_user_filters(
+            roles=group_or_roles,
+            user=user_name,
+            tenant=tenant_key,
+            exclude_ids=existing_filter_ids,
+            filter_type=filter_type,
+            parent_filter_id=parent_filter_id,
+        )
+        # Merging existing filters with the remaining data.
+        all_filters = [*existing_filters, *filters]
+        filter_data = filter_schema.dump(all_filters, many=True)
+
+        for filter_item in filter_data:
+            filter_item["variables"] = filter_item["variables"] or []
+            filter_item["sortOrder"] = filter_item.get("sortOrder", None)
+            filter_item["hide"] = filter_item.get("hide", False)
+        return filter_data
 
     @staticmethod
     @user_context
@@ -84,40 +117,12 @@ class FilterService:
                     tenant=tenant_key,
                 )
                 filter_obj.save()
-        # fetch data from filter preference table
-        filter_preference = FilterPreferences.get_filters_by_user_id(
-            user.user_name, tenant_key
-        )
-        # Extract existing filter IDs to avoid redundant fetching from the filter table.
-        # The `existing_filters` variable will store the result, containing filters
-        existing_filter_ids = []
-        existing_filters = []
-        if filter_preference:
-            for preference_data in filter_preference:
-                existing_filter_ids.append(preference_data.filter_id)
-                # adding filter_preference sort order to filter data
-                preference_data.filter.sort_order = preference_data.sort_order
-                preference_data.filter.hide = preference_data.hide
-                existing_filters.append(preference_data.filter)
-
-        filters = Filter.find_user_filters(
-            roles=user.group_or_roles,
-            user=user.user_name,
-            tenant=tenant_key,
-            exclude_ids=existing_filter_ids,
-            admin=ADMIN in user.roles,
+        filter_data = FilterService.get_filters_by_user_filter_preference(
+            user_name=user.user_name,
+            group_or_roles=user.group_or_roles,
+            tenant_key=tenant_key,
             filter_type=FilterType.TASK,
         )
-        # Merging existing filters with the remaining data.
-        all_filters = [*existing_filters, *filters]
-        filter_data = filter_schema.dump(all_filters, many=True)
-
-        # User who created the filter or admin have edit permission.
-        for filter_item in filter_data:
-            FilterService.set_filter_edit_permission(filter_item, user)
-            filter_item["variables"] = filter_item["variables"] or []
-            filter_item["sortOrder"] = filter_item.get("sortOrder", None)
-            filter_item["hide"] = filter_item.get("hide", False)
         response = {"filters": filter_data}
         # get user default filter
         user_data = User.get_user_by_user_name(user_name=user.user_name)
@@ -135,23 +140,17 @@ class FilterService:
             roles=user.group_or_roles,
             user=user.user_name,
             tenant=tenant_key,
-            admin=ADMIN in user.roles,
         )
         if filter_result:
             response = filter_schema.dump(filter_result)
-            attribute_filters = Filter.find_user_filters(
-                roles=user.group_or_roles,
-                user=user.user_name,
-                tenant=tenant_key,
-                admin=ADMIN in user.roles,
+            attribute_filters = FilterService.get_filters_by_user_filter_preference(
+                user_name=user.user_name,
+                group_or_roles=user.group_or_roles,
+                tenant_key=tenant_key,
                 filter_type=FilterType.ATTRIBUTE,
                 parent_filter_id=response["id"],
             )
-            response["attributeFilters"] = filter_schema.dump(
-                attribute_filters, many=True
-            )
-            for filter_item in response["attributeFilters"]:
-                FilterService.set_filter_edit_permission(filter_item, user)
+            response["attributeFilters"] = attribute_filters
             return response
         raise BusinessException(BusinessErrorCode.FILTER_NOT_FOUND)
 
@@ -164,7 +163,9 @@ class FilterService:
         filter_result = Filter.find_active_auth_filter_by_id(
             filter_id=filter_id,
             user=user.user_name,
-            admin=ADMIN in user.roles,
+            filter_admin=MANAGE_ALL_FILTERS in user.roles,
+            roles=user.group_or_roles,
+            tenant=tenant_key,
         )
         if filter_result:
             if (
@@ -187,7 +188,9 @@ class FilterService:
         filter_result = Filter.find_active_auth_filter_by_id(
             filter_id=filter_id,
             user=user.user_name,
-            admin=ADMIN in user.roles,
+            filter_admin=MANAGE_ALL_FILTERS in user.roles,
+            roles=user.group_or_roles,
+            tenant=tenant_key,
         )
 
         if filter_result:
@@ -208,37 +211,53 @@ class FilterService:
 
         It retrieves the task variables from the form mapper table,
         creates a mapping of task variable keys to their labels & updates the filter variables for each active filter.
-        The function ensures that default filter variables ("applicationId" and "formName") are always included
+        The function ensures that default filter variables are always included
         """
         current_app.logger.debug("Updating filter variables..")
         user: UserContext = kwargs["user"]
+        current_app.logger.debug("Fetching active filters for the form..")
         filters = Filter.find_all_active_filters_formid(
             form_id=form_id, tenant=user.tenant_key
         )
+        current_app.logger.debug(f"Updating filter variables for filters: {filters}")
         for filter_item in filters:
             # Create a dictionary mapping keys to labels from task_variables
             key_to_label = {task_var["key"]: task_var for task_var in task_variables}
-            default_filter_variables = ["applicationId", "formName"]
+            default_filter_variables = [
+                "applicationId",
+                "formName",
+                "submitterName",
+                "assignee",
+                "roles",
+                "name",
+                "created",
+            ]
             # For each filter variable:
             # - Include it in the result if its name is in task variables or default filter variables
             # - Use the task variable label if available, otherwise keep the existing label
             # - Retain the existing labels for default filter variables
 
-            result = [
-                {
-                    "name": filter_variable["name"],
-                    "label": (
-                        filter_variable["label"]
-                        if filter_variable["name"] in default_filter_variables
-                        else key_to_label.get(
-                            filter_variable["name"], filter_variable
-                        ).get("label", filter_variable["label"])
-                    ),
-                }
-                for filter_variable in filter_item.variables
-                if filter_variable["name"] in key_to_label.keys()
-                or filter_variable["name"] in default_filter_variables
-            ]
+            updated_variables = []
+            for filter_var in filter_item.variables:
+                # Skip if variable shouldn't be included
+                if not (
+                    filter_var["name"] in key_to_label
+                    or filter_var["name"] in default_filter_variables
+                ):
+                    continue
+
+                # Create updated variable (copy all existing properties)
+                updated_var = filter_var.copy()
+
+                # Only update label if it's not a default variable and exists in task_variables
+                if updated_var["name"] not in default_filter_variables:
+                    task_var = key_to_label.get(updated_var["name"])
+                    if task_var:
+                        updated_var["label"] = task_var["label"]
+
+                updated_variables.append(updated_var)
+
+            result = updated_variables
             # Update filter variables in database
             filter_obj = Filter.query.get(filter_item.id)
             filter_obj.variables = result

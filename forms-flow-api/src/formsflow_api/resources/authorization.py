@@ -6,8 +6,10 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
+    ANALYZE_SUBMISSIONS_VIEW_HISTORY,
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
+    REVIEWER_VIEW_HISTORY,
     VIEW_DASHBOARDS,
     VIEW_DESIGNS,
     VIEW_SUBMISSIONS,
@@ -150,7 +152,14 @@ class AuthorizationDetail(Resource):
 
     @staticmethod
     @auth.has_one_of_roles(
-        [CREATE_DESIGNS, VIEW_DESIGNS, CREATE_SUBMISSIONS, VIEW_SUBMISSIONS]
+        [
+            CREATE_DESIGNS,
+            VIEW_DESIGNS,
+            CREATE_SUBMISSIONS,
+            VIEW_SUBMISSIONS,
+            REVIEWER_VIEW_HISTORY,
+            ANALYZE_SUBMISSIONS_VIEW_HISTORY,
+        ]
     )
     @profiletime
     @API.doc(

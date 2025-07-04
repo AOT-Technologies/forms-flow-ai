@@ -4,6 +4,7 @@ FROM python:3.11.7-slim-bullseye
 LABEL Name="formsflow"
 
 WORKDIR /forms-flow-data-analysis-api/app
+RUN mkdir -p /forms-flow-data-analysis-api/app/logs
 RUN apt-get update \
   && apt-get install -y --no-install-recommends git \
   && apt-get clean \

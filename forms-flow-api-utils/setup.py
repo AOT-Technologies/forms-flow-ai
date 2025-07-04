@@ -27,7 +27,7 @@ REQUIREMENTS = read_requirements("requirements.txt")
 
 setuptools.setup(
     name='formsflow_api_utils',
-    version='7.1.0',
+    version='7.2.0-alpha',
     author='AOT Technologies',
     description='Formsflow api related libraries.',
     long_description=read("README.md"),

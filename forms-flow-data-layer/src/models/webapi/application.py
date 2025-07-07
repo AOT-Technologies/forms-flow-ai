@@ -25,6 +25,22 @@ class Application(BaseModel):
         return cls._application
 
     @classmethod
+    def filter_query(cls, query, filter: dict, application_table):
+        """
+        Apply filters to the SQLAlchemy query.
+        """
+        for field, value in filter.items():
+            if hasattr(application_table.c, field):
+                col = getattr(application_table.c, field)
+                if field == "id":
+                    # Special case for application_id
+                    query = query.where(col == value)
+                else:
+                    # For other fields, use ilike for case-insensitive search
+                    query = query.where(col.ilike(f"%{value}%"))
+        return query
+
+    @classmethod
     def paginationed_query(cls, query, page_no: int = 1, limit: int = 5):
         """
         Paginate the SQLAlchemy query.
@@ -113,15 +129,7 @@ class Application(BaseModel):
         if (
             filter
         ):  # filter will contain {field: value} pairs eg: { "application_status": "John"}
-            for field, value in filter.items():
-                if hasattr(application_table.c, field):
-                    col = getattr(application_table.c, field)
-                    if field == "id":
-                        # Special case for application_id
-                        query = query.where(col == value)
-                    else:
-                        # For other fields, use ilike for case-insensitive search
-                        query = query.where(col.ilike(f"%{value}%"))
+            query = Application.filter_query(query, filter, application_table)
 
         if sort_by and sort_order:
             col = sortable_fields[sort_by]

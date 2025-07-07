@@ -41,8 +41,8 @@ public class TaskRestResourceImpl implements TaskRestResource {
 
     @Override
     public List<TaskDto>  queryTasks(TaskQueryDto query, Integer firstResult, Integer maxResults) {
-       return bpmObjectMapper.convertValue(restService.queryTasks(query, firstResult, maxResults),
-               new TypeReference<List<TaskDto>>(){});
+        return bpmObjectMapper.convertValue(restService.queryTasks(query, firstResult, maxResults),
+                new TypeReference<List<TaskDto>>(){});
     }
 
     @Override
@@ -83,7 +83,7 @@ public class TaskRestResourceImpl implements TaskRestResource {
     public Map<String, VariableValueDto> getVariables(boolean deserializeValues, String id) {
         return bpmObjectMapper.convertValue(restService.getTask(id).getVariables().getVariables(deserializeValues),
                 new TypeReference<Map<String, VariableValueDto>>() {
-        });
+                });
     }
 
     @Override
@@ -107,7 +107,12 @@ public class TaskRestResourceImpl implements TaskRestResource {
 
     @Override
     public Response submit(CompleteTaskDto completeTaskDto, String id) {
-       return restService.getTask(id).submit(
-               bpmObjectMapper.convertValue(completeTaskDto, org.camunda.bpm.engine.rest.dto.task.CompleteTaskDto.class));
+        return restService.getTask(id).submit(
+                bpmObjectMapper.convertValue(completeTaskDto, org.camunda.bpm.engine.rest.dto.task.CompleteTaskDto.class));
+    }
+
+    @Override
+    public void deleteTask(String id) {
+        restService.getTask(id).deleteTask(id);
     }
 }

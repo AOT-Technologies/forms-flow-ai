@@ -1,0 +1,115 @@
+{
+  "version_patterns": {
+    "docker_tag": "{VERSION_WITH_V}",
+    "url_version": "@{VERSION}",
+    "npm_version": "{VERSION_NO_V}",
+    "full_version": "{VERSION}"
+  },
+  
+  "files": [
+    {
+      "name": "Docker Compose - Main Deployment",
+      "path": "deployment/docker/docker-compose.yml",
+      "updates": [
+        {
+          "description": "Forms Flow Forms Docker image tag",
+          "find": "ff_docker_image_pattern",
+          "replace": "image: formsflow/forms-flow-forms:{{docker_tag}}",
+          "type": "regex"
+        },
+        {
+          "description": "All microfrontend URLs (except NAV)",
+          "find": "ff_url_version_pattern",
+          "replace": "{{url_version}}",
+          "type": "regex",
+          "exclude": []
+        }
+      ]
+    },
+    
+    {
+      "name": "Environment Sample Files", 
+      "path": "deployment/docker/sample.env",
+      "updates": [
+        {
+          "description": "Microfrontend URLs in comments",
+          "find": "ff_url_version_pattern",
+          "replace": "{{url_version}}",
+          "type": "regex"
+        }
+      ]
+    },
+    
+    {
+      "name": "Web Root Config Docker Compose",
+      "path": "forms-flow-web-root-config/docker-compose.yml", 
+      "updates": [
+        {
+          "description": "Microfrontend URLs in build args",
+          "find": "ff_url_version_pattern",
+          "replace": "{{url_version}}",
+          "type": "regex"
+        }
+      ]
+    },
+    
+    {
+      "name": "Web Root Config Sample Environment",
+      "path": "forms-flow-web-root-config/sample.env",
+      "updates": [
+        {
+          "description": "Microfrontend URLs in environment variables",
+          "find": "ff_url_version_pattern", 
+          "replace": "{{url_version}}",
+          "type": "regex"
+        }
+      ]
+    },
+    
+    {
+      "name": "HTML Template",
+      "path": "forms-flow-web-root-config/src/index.ejs",
+      "updates": [
+        {
+          "description": "CSS theme version in stylesheet link",
+          "find": "ff_url_version_pattern",
+          "replace": "{{url_version}}",
+          "type": "regex"
+        }
+      ]
+    },
+    
+    {
+      "name": "NPM Package Definition",
+      "path": "forms-flow-web/package.json",
+      "updates": [
+        {
+          "description": "Main application version",
+          "find": "ff_json_version_pattern",
+          "replace": "\"version\": \"{{npm_version}}\"",
+          "type": "regex",
+          "context": {
+            "near": "\"name\": \"formsflow-ai-react\""
+          }
+        }
+      ]
+    },
+    
+    {
+      "name": "NPM Lock File",
+      "path": "forms-flow-web/package-lock.json", 
+      "updates": [
+        {
+          "description": "Root package version (first occurrence)",
+          "find": "ff_json_version_pattern",
+          "replace": "\"version\": \"{{npm_version}}\"",
+          "type": "regex",
+          "context": {
+            "near": "\"name\": \"formsflow-ai-react\"",
+            "max_matches": 2
+          }
+        }
+      ]
+    }
+  ]
+} 

@@ -38,7 +38,6 @@ class SubmissionsModel(Document):
         """Build the MongoDB projection stage."""
         project_stage = {"$project": {
             "_id": {"$toString": "$_id"},
-            "created": 1
         }}
         if project_fields:
             for field in project_fields:

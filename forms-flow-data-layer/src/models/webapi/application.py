@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import and_, desc, or_, select
 from sqlalchemy.sql import func
 
@@ -41,6 +42,8 @@ class Application(BaseModel):
         roles: list[str],
         parent_form_id: str,
         filter: dict = None,
+        created_before: str = None,
+        created_after: str = None,
         sort_by: str = None,
         sort_order: str = None,
         is_paginate: bool = False,
@@ -100,13 +103,25 @@ class Application(BaseModel):
         # Combine conditions
         query = query.where(application_table.c.is_draft.is_(False))
 
+        # Add created date filters if provided
+        if created_before and created_after:
+            # Convert ISO format strings to datetime objects
+            created_after = datetime.fromisoformat(created_after)
+            created_before = datetime.fromisoformat(created_before)
+            query = query.where(application_table.c.created.between(created_after, created_before))
+
         if (
             filter
         ):  # filter will contain {field: value} pairs eg: { "application_status": "John"}
             for field, value in filter.items():
                 if hasattr(application_table.c, field):
                     col = getattr(application_table.c, field)
-                    query = query.where(col.ilike(f"%{value}%"))
+                    if field == "id":
+                        # Special case for application_id
+                        query = query.where(col == value)
+                    else:
+                        # For other fields, use ilike for case-insensitive search
+                        query = query.where(col.ilike(f"%{value}%"))
 
         if sort_by and sort_order:
             col = sortable_fields[sort_by]

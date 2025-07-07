@@ -4,7 +4,6 @@ FROM python:3.11.7-slim-bullseye
 LABEL Name="formsflow"
 
 WORKDIR /forms-flow-data-analysis-api/app
-RUN mkdir -p /forms-flow-data-analysis-api/app/logs
 RUN apt-get update \
   && apt-get install -y --no-install-recommends git \
   && apt-get clean \
@@ -31,6 +30,13 @@ ENV HF_HOME=/tmp/huggingface
 # Pre-download the model into the cache under HF_HOME
 RUN mkdir -p /tmp/huggingface \
  && python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID', truncation=True)"
+
+RUN chmod -R 777 /tmp/huggingface \
+ && mkdir -p /app/model_cache \
+ && mkdir -p /forms-flow-data-analysis-api/app/logs \
+ && mkdir -p /app/model_cache \
+ && chmod -R 777 /app/model_cache \
+ && chmod -R 777 /forms-flow-data-analysis-api/app/logs
 
 EXPOSE 5000
 RUN chmod u+x ./entrypoint.sh

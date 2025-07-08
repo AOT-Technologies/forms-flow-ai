@@ -71,7 +71,8 @@ class SubmissionsModel(Document):
         pipeline.append(SubmissionsModel._build_projection_stage(selected_form_fields))
         # Only add pagination if page_no and limit specified
         if page_no is not None and limit is not None:
-            total = await SubmissionsModel.aggregate(pipeline).count()
+            total_items = await SubmissionsModel.aggregate(pipeline).to_list()
+            total = len(total_items)
             pipeline.append({"$skip": (page_no - 1) * limit})
             pipeline.append({"$limit": limit})
             items = await SubmissionsModel.aggregate(pipeline).to_list()

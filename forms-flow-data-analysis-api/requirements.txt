@@ -98,7 +98,7 @@ tokenizers==0.21.1
 tomli==2.2.1
 torch==2.6.0
 tqdm==4.67.1
-transformers==4.49.0
+transformers==4.51.0
 trio-websocket==0.12.2
 trio==0.29.0
 typing_extensions==4.12.2

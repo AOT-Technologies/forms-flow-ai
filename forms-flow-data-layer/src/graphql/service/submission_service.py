@@ -88,6 +88,8 @@ class SubmissionService:
         parent_form_id: str,
         filters: Dict,
         selected_form_fields: List[str],
+        created_before: Optional[str],
+        created_after: Optional[str],
         page_no: int,
         limit: int,
     ) -> Optional[PaginatedSubmissionResponse]:
@@ -132,6 +134,8 @@ class SubmissionService:
                 roles=user_groups,
                 is_paginate=is_paginate_on_webapi_side,
                 filter=webapi_search,
+                created_before=created_before,
+                created_after=created_after,
                 page_no=page_no,
                 limit=limit,
                 parent_form_id=parent_form_id,

@@ -315,7 +315,7 @@ class ImportService:  # pylint: disable=too-many-public-methods
         if process is not None:
             process.set("id", process_name)
             process.set("name", process_name)
-            if participant.get("processRef"):
+            if participant is not None and participant.get("processRef"):
                 participant.set("processRef", process_name)
 
         # Convert the XML tree back to a string

@@ -79,7 +79,7 @@ thinc==8.3.2
 tokenizers==0.21.0
 torch==2.6.0
 tqdm==4.67.1
-transformers==4.48.0
+transformers==4.52.1
 typer==0.15.1
 typing_extensions==4.12.2
 urllib3==2.2.3

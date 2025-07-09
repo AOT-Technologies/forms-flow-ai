@@ -306,11 +306,17 @@ class ImportService:  # pylint: disable=too-many-public-methods
         current_app.logger.info("Updating workflow...")
         root = ProcessService.xml_parser(xml_data)
 
+        # Define BPMN namespace
+        ns = {"bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"}
         # Find the bpmn:process element
-        process = root.find(".//{http://www.omg.org/spec/BPMN/20100524/MODEL}process")
+        process = root.find(".//bpmn:process", namespaces=ns)
+        participant = root.find(".//bpmn:participant", namespaces=ns)
+
         if process is not None:
             process.set("id", process_name)
             process.set("name", process_name)
+            if participant is not None and participant.get("processRef"):
+                participant.set("processRef", process_name)
 
         # Convert the XML tree back to a string
         updated_xml = etree.tostring(  # pylint: disable=c-extension-no-member

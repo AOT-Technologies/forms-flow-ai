@@ -3,6 +3,15 @@
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
 
+## 7.2.0 - 
+
+`Added`
+
+
+**formsflow-documents**
+* Added new environment variable:
+   * CHROME_DRIVER_TIMEOUT to specify timeout for the chrome driver to wait for the page to load
+
 ## 7.1.0 - 2025-07-01
 
 `Added`

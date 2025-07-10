@@ -331,6 +331,7 @@ services:
       CONFIGURE_LOGS: ${CONFIGURE_LOGS:-true}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       ENABLE_COMPACT_FORM_VIEW: ${ENABLE_COMPACT_FORM_VIEW:-false}
+      CHROME_DRIVER_TIMEOUT: ${CHROME_DRIVER_TIMEOUT:-60}  # seconds
 
 
     stdin_open: true # -i

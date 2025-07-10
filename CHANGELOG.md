@@ -3,17 +3,27 @@
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
 
-## 7.1.0
+## 7.2.0 - 
 
 `Added`
+
+
+**formsflow-documents**
+* Added new environment variable:
+   * CHROME_DRIVER_TIMEOUT to specify timeout for the chrome driver to wait for the page to load
+
+## 7.1.0 - 2025-07-01
+
+`Added`
+
 **forms-flow-web**
-* Added re-designed Client Table
-* Added Draft and Submission list table
-* Redesigned user form selection screens
-* Added new permission for submitter to work on resubmissions
-* Added new permission to view process diagram
-* Added new permission to view history
-* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
+* Added new User Interfaces: for task page, submissions
+* Added environment variables:
+   * `ENABLE_COMPACT_FORM_VIEW` Set to true to reduce extra space between form components and display more components in the viewport.
+   * `USER_NAME_DISPLAY_CLAIM` to specify if the app should use a different attribute than the default 'username' claim from Keycloak
+   * `GRAPHQL_API_URL` to connect to the datalayer
+   * `MF_FORMSFLOW_REVIEW_URL` for reviewer micro-frontend
+   * `MF_FORMSFLOW_SUBMISSIONS_URL` for submissions micro-frontend
 
 **formsflow-api**
 * Below fields added to application list endpoint
@@ -31,31 +41,46 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Delete draft by id: `/application/<id>`
 * Added columns filter_type, parent_filter_id to the filter table.
 * Added script to migrate existing filters to TASK filter type.
-
-* Added columns filter_type, parent_filter_id to the filter table.
-* Added script to migrate existing filters to TASK filter type.
 * Added variables(task_variables) as part of import and export.
 * Added Endpoint `/filter/filter-preference ` for saving user's filter preference data
 * Added new table called filter_preferences to handle filter preference of a user
 * Added new table task_outcome_configuration to store workflow transition rules
 * Added `/tasks/task-outcome-configuration` endpoint for task configuration storage
 * Added `/tasks/task-outcome-configuration/<task_id>` endpoint for task configuration lookup
-* Added `FORMIO_JWT_EXPIRE` env for handle formio jwt token expire time
 * Added new permissions and enhanced permission definitions with categories to `/permissions` endpoint
+* Added new environment variables:
+   * `USER_NAME_DISPLAY_CLAIM` to specify if the app should use a different attribute than the default 'username' claim from Keycloak
+   * `FORMIO_JWT_EXPIRE` to handle formio jwt token expire time
 
+**formsflow-bpm**
+* Added new environment variables:
+   * `USER_NAME_DISPLAY_CLAIM` to specify if the app should use a different attribute than the default 'username' claim from Keycloak
+   * `SERVER_MAX_HTTP_REQUEST_HEADER_SIZE` to configure the maximum size of the HTTP request header
 
 **formsflow-documents**
-* Added `ENABLE_COMPACT_FORM_VIEW` env for handle compact form view
+* Added new environment variable:
+   * `ENABLE_COMPACT_FORM_VIEW` Set to true to reduce extra space between form components and display more components in the viewport.
+   * `FORMIO_JWT_EXPIRE` to handle formio jwt token expire time
 
 **forms-flow-idm**
 * Added view_submissions permission to the service account roles to support export PDF with service account token
+* Added new permissions to the forms-flow-ai realm
+* To migrate the new roles(permissions) to the realm Refer [here](./forms-flow-idm/migration/README.md#710)
 
 `Modified`
+
+**forms-flow-web**
+* Modified User Interfaces of:
+   * Client Table
+   * Draft and Submission list table
+   * Form submission view
+   * Permission selection modal
 
 **formsflow-api**
 * Modified the `/application/<id>` GET and UPDATE endpoints to support draft get and update.
 * Updated the anonymous draft POST API URL from `/draft/public/create` to `/public/draft`.
 * Updated the theme GET API URL from `/themes` to `/public/themes`.
+* Updated API authorization with new permissions
 
 `Removed`
 
@@ -66,9 +91,67 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Public draft update: `/draft/public/<id>`
    * Draft submit by id: `/draft/<id>/submit`
    * Public draft submit by id: `/draft/public/<id>/submit`
+* Removed fields: order, resourceId, description, and taskVisibleAttributes from filter table
 
 **formsflow-bpm**
 * FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](./CHANGELOG.md#405---2022-04-19))
+* Exposed Camunda delete API for process-instance, process-definition, task, deployment.
+
+*Upgrade notes:*
+
+**forms-flow-web**
+   * webpack version upgraded to 5.94.0
+
+**forms-flow-api**
+* Python version upgraded to 3.13.2
+
+**forms-flow-idm**
+   * Keycloak Version upgraded to 26.1.2
+
+**forms-flow-documents**
+   * Python version upgraded to 3.13.2
+
+
+`Generic Changes`
+* Added new micro-frontends: forms-flow-review, forms-flow-submissions
+
+`Known Issues`
+
+* If a form's version changes and it is already selected in an existing task filter, the user must reselect the form in the filter edit to ensure proper form name in UI.
+* In Task Filters, specifying "Tasks Accessible To" either a role or an assignee is mandatory starting from version v7.1.0 when saving a filter. As a result, after upgrading from v7.0.0 to v7.1.0, any existing filters created in v7.0.0 or earlier that do not have a role or assignee selected will still function as expected, but cannot be updated unless one of these fields is provided.
+* When a user views the details of a submission from the ANALYZE tab in the sidebar, the active tab is incorrectly highlighted as SUBMIT instead of ANALYZE.
+
+## 7.0.4 - 2025-06-26
+
+`Modified`
+
+**forms-flow-documents**
+* Migrated CSS and JS dependencies from CDN links to local static files
+* Refactored `index.html` to reference local static assets for CSS and JS
+* Increased PDF generation wait time to 60 seconds
+
+## 7.0.3 - 2025-06-13
+
+`Added`
+**forms-flow-bpm**
+* Addition of security level config to bpmn docker compose to resolve Inconsistent CSRF token behavior
+
+
+## 7.0.2 - 2025-06-04
+`Added`
+**forms-flow-bpm**
+* Addition of ssl certificate in bpm layer to work on secured environments and updated the docker file
+
+## 7.0.1 - 2025-03-15
+
+`Added`
+
+* Additional Custom theme variables added for extensive customizations
+* Added shared realm support for application
+
+`Modified`
+* Issue with Simple conditional logic option of formio components not returning component names fixed
+
 
 ## 7.0.0 - 2025-01-10
 
@@ -90,7 +173,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * Submitter First Name
    * Submitter Last Name
    * Current User Roles
-* Added MF_FORMSFLOW_REVIEW_URL env for reviewer microfront end
 
 **forms-flow-api**
    * Added new endpoints for:
@@ -145,7 +227,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Modified form history management to include major and minor versions
 * Modified RBAC mechanism:
-   * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/#permissions) for more
+   * Users can create new roles with specific permissions for more granular application access control. Refer [here](https://aot-technologies.github.io/forms-flow-ai-doc/roles-permissions) for more
 * Authorization updates:
    * Permissions options in settings for Designers are changed : 
       * 'All Designers' option is removed 

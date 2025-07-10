@@ -1,7 +1,9 @@
 @import "../../variables.scss";
 
 .dashboard {
-   margin-top: 10px;
+  margin-top: 10px;
+  height: calc(100vh - 9.0625rem);
+  overflow-x: hidden;
 
   & .line-hr {
     border-top: 1px solid $primary-light;

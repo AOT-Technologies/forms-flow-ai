@@ -41,7 +41,8 @@ const Processes = () => {
   }
 
   return (
-    <div data-testid="Process-index">
+    // <div data-testid="Process-index">
+    <>
       <Switch>
         <Route exact path={`${BASE_ROUTE}:viewType`} component={ProcessTable} />
         <DesignerProcessRoute
@@ -56,7 +57,8 @@ const Processes = () => {
         />
         <Redirect exact to="/404" />
       </Switch>
-    </div>
+      </>
+   //</div> 
   );
 };
 

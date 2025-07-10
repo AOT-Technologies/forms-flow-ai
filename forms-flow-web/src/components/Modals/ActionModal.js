@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {
   DuplicateIcon,
   ImportIcon,
-  PencilIcon,
+  ExportIcon,
   CloseIcon,
   TrashIcon,
   CustomInfo,
@@ -12,7 +12,7 @@ import {
 } from "@formsflow/components";
 import { StyleServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
-
+import userRoles from "../../constants/permissions";
 const ActionModal = React.memo(
   ({
     newActionModal,
@@ -26,6 +26,8 @@ const ActionModal = React.memo(
   }) => {
     const { t } = useTranslation();
     const primaryColor = StyleServices.getCSSVariable('--ff-primary');
+    const { viewDesigns, createDesigns } = userRoles();
+    const isReadOnly = viewDesigns && !createDesigns;
     const handleAction = (actionType) => {
       onAction(actionType);
       onClose();
@@ -55,102 +57,91 @@ const ActionModal = React.memo(
 
     return (
       <>
-        <Modal show={newActionModal} onHide={onClose} centered={true} size="sm" data-testid="action-modal">
+        <Modal show={newActionModal} onHide={onClose} size="sm" data-testid="action-modal">
           <Modal.Header>
             <Modal.Title className="modal-headder">
-              <div>{t("Action")}</div>
+              <p>{t("Actions")}</p>
             </Modal.Title>
-            <div className="d-flex align-items-center">
-              <CloseIcon onClick={onClose} color={primaryColor}  dataTestId="action-modal-close"/>
+            <div className="icon-close" onClick={onClose}>
+              <CloseIcon dataTestId="action-modal-close"/>
             </div>
           </Modal.Header>
+
           <Modal.Body className="action-modal-body">
-          {customInfo && <CustomInfo heading={customInfo.heading} content={customInfo.content} />}
+            {customInfo && <CustomInfo heading={customInfo.heading} content={customInfo.content} />}
+
             {CategoryType === "FORM" && (
-              <div className="custom-action-flex action-form">
+              <div className="buttons-row">
                 <CustomButton
-                  variant="secondary"
-                  size="sm"
                   label={t("Duplicate")}
-                  disabled={!isMigrated}
+                  disabled={!isMigrated || isReadOnly  }
                   icon={<DuplicateIcon color={primaryColor} />}
                   className=""
                   dataTestId="duplicate-form-button"
                   ariaLabel="Duplicate Button"
                   onClick={() => handleAction("DUPLICATE")}
+                  iconWithText
                 />
                 <CustomButton
-                  variant="secondary"
-                  disabled={published || !isMigrated}
-                  size="sm"
+                  disabled={published || !isMigrated || isReadOnly}
                   label={t("Import")}
                   icon={<ImportIcon disabled={published} />}
-                  className=""
                   dataTestId="import-form-button"
                   ariaLabel="Import Form"
                   onClick={() => handleAction("IMPORT")}
+                  iconWithText
                 />
 
                 <CustomButton
-                  variant="secondary"
-                  size="sm"
                   label={t("Export")}
-                  icon={<PencilIcon />}
-                  className=""
+                  icon={<ExportIcon />}
                   dataTestId="export-form-button"
                   ariaLabel="Export Form"
                   onClick={() => handleAction("EXPORT")}
+                  iconWithText
                 />
 
                 <CustomButton
-                  variant="secondary"
-                  disabled={published}
-                  size="sm"
+                  disabled={published || isReadOnly}
                   label={t("Delete")}
                   icon={<TrashIcon disabled={published} />}
-                  className=""
                   dataTestId="delete-form-button"
                   ariaLabel="Delete Form"
                   onClick={() => handleAction("DELETE")}
+                  iconWithText
                 />
               </div>
             )}
 
             {CategoryType === "WORKFLOW" && (
-              <div className="d-flex custom-action-flex action-form">
+              <div className="buttons-row">
                 <CustomButton
-                  variant="secondary"
-                  size="sm"
                   label={t("Duplicate")}
                   icon={<DuplicateIcon />}
-                  className=""
                   dataTestId="duplicate-workflow-button"
                   ariaLabel="Duplicate Workflow"
                   disabled={isCreate}
                   onClick={() => handleAction("DUPLICATE")}
+                  iconWithText
                 />
 
                 <CustomButton
-                  variant="secondary"
                   disabled={published}
-                  size="sm"
                   label={t("Import")}
                   icon={<ImportIcon disabled={published}  />}
-                  className=""
                   dataTestId="import-workflow-button"
                   ariaLabel="Import Workflow"
                   onClick={() => handleAction("IMPORT")}
+                  iconWithText
                 />
 
                 <CustomButton
-                  variant="secondary"
-                  size="sm"
                   label={t("Export")}
-                  icon={<PencilIcon />}
-                  className=""
+                  icon={<ExportIcon />}
                   dataTestId="export-workflow-button"
                   ariaLabel="Export Workflow"
                   onClick={() => handleAction("EXPORT")}
+                  iconWithText
                 />
               </div>
             )}

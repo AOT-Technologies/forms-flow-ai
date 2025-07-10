@@ -85,15 +85,12 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         roles: List[str] = None,
         user: str = None,
         tenant: str = None,
-        admin: bool = False,
         filter_type: str = None,
         parent_filter_id: int = None,
         exclude_ids: List[str] = None,
     ):
         """Find active filters of the user."""
-        query = cls._auth_query(
-            roles, user, tenant, admin, filter_empty_tenant_key=True
-        )
+        query = cls._auth_query(roles, user, tenant, filter_empty_tenant_key=True)
         # exclude filter ids
         if exclude_ids:
             query = query.filter(Filter.id.notin_(exclude_ids))
@@ -106,22 +103,21 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     @classmethod
     def _auth_query(  # pylint: disable=too-many-arguments, too-many-positional-arguments
-        cls, roles, user, tenant, admin, filter_empty_tenant_key=False
+        cls, roles, user, tenant, filter_empty_tenant_key=False
     ):
         query = cls.query
-        if not admin:
-            role_condition = [Filter.roles.contains([role]) for role in roles]
-            query = query.filter(
-                or_(
-                    *role_condition,
-                    Filter.users.contains([user]),
-                    and_(
-                        or_(cls.roles == {}, cls.roles.is_(None)),
-                        or_(cls.users == {}, cls.users.is_(None)),
-                    ),
-                    cls.created_by == user,
-                )
+        role_condition = [Filter.roles.contains([role]) for role in roles]
+        query = query.filter(
+            or_(
+                *role_condition,
+                Filter.users.contains([user]),
+                and_(
+                    or_(cls.roles == {}, cls.roles.is_(None)),
+                    or_(cls.users == {}, cls.users.is_(None)),
+                ),
+                cls.created_by == user,
             )
+        )
         if tenant:
             if filter_empty_tenant_key:
                 query = query.filter(
@@ -138,10 +134,10 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     @classmethod
     def find_active_filter_by_id(  # pylint: disable=too-many-arguments,too-many-positional-arguments
-        cls, filter_id, roles, user, tenant, admin
+        cls, filter_id, roles, user, tenant
     ) -> Filter:
         """Find active filter by id."""
-        query = cls._auth_query(roles, user, tenant, admin)
+        query = cls._auth_query(roles, user, tenant)
         return query.filter(
             and_(
                 Filter.id == filter_id, Filter.status == str(FilterStatus.ACTIVE.value)
@@ -150,36 +146,40 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     @classmethod
     def find_active_filter_by_ids(  # pylint: disable=too-many-arguments,too-many-positional-arguments
-        cls, filter_ids, roles, user, tenant, admin
+        cls, filter_ids, roles, user, tenant, filter_type
     ) -> list[Filter]:
         """Find active filters by IDs, ensuring only active filters are returned."""
         if not filter_ids:
             return []
 
-        query = cls._auth_query(roles, user, tenant, admin)
+        query = cls._auth_query(roles, user, tenant)
 
         query = query.filter(
             and_(
                 Filter.id.in_(filter_ids),  # Properly handle multiple IDs
                 Filter.status == str(FilterStatus.ACTIVE.value),
-                Filter.filter_type == FilterType.TASK.value,
+                Filter.filter_type == filter_type,
             )
         )
 
         return query.all()  # Fetch results properly
 
     @classmethod
-    def find_active_auth_filter_by_id(cls, filter_id, user, admin) -> Filter:
+    def find_active_auth_filter_by_id(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        cls, filter_id, user, filter_admin, roles, tenant
+    ) -> Filter:
         """Find active filter by id with edit & delete permission.
 
-        User who created the filter or admin can edit/delete filter.
+        User who created the filter can edit/delete filter they created.
+        or filter_admin(manage_all_filters) can edit/delete authorized filter.
         """
-        query = cls.query.filter(
+        if filter_admin:
+            query = cls._auth_query(roles, user, tenant)
+        else:
+            query = cls.query.filter(cls.created_by == user)
+        return query.filter(
             Filter.id == filter_id, Filter.status == str(FilterStatus.ACTIVE.value)
-        )
-        if not admin:
-            query = query.filter(cls.created_by == user)
-        return query.first()
+        ).first()
 
     def mark_inactive(self):
         """Mark filter as inactive."""

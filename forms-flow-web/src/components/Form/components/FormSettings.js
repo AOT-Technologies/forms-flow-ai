@@ -5,14 +5,18 @@ import React, {
   forwardRef,
   useRef
 } from "react";
-import { Form, FormControl, InputGroup } from "react-bootstrap";
+// import { Form, FormControl, InputGroup } from "react-bootstrap";
+// import { Form } from "react-bootstrap";
 import {
   CopyIcon,
+  CheckIcon,
   CustomInfo,
   FormInput,
   FormTextArea,
   CustomTabs,
-  DropdownMultiSelect
+  DropdownMultiSelect,
+  CheckboxCheckedIcon,
+  CheckboxUncheckedIcon,
 } from "@formsflow/components";
 
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
@@ -150,7 +154,7 @@ const FormSettings = forwardRef((props, ref) => {
     setErrors((prev) => ({ ...prev, [name]: "" }));
     blurStatus.current[name] = false;  
     let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;
-  
+
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
     } else {
@@ -237,7 +241,7 @@ const FormSettings = forwardRef((props, ref) => {
       eventKey: "Basic",
       title: <span data-testid="tab-title-basic">Basic</span>,
       content: (
-        <div className="settings-sections">
+        <>
         <FormInput
           required
           value={formDetails.title}
@@ -251,7 +255,9 @@ const FormSettings = forwardRef((props, ref) => {
           turnOnLoader={isValidating.name}
           onBlur={() => handleBlur('title', formDetails.title)}   
           maxLength={200} 
+          id="formflow-name"
           />
+
         <FormTextArea
           dataTestId="form-description"
           label={t("Description")}
@@ -262,11 +268,12 @@ const FormSettings = forwardRef((props, ref) => {
           data-testid="form-description"
           maxRows={3}
           minRows={3}
+          id="form-description"
         />
         <CustomInfo heading={t("Note")}
         content={t("Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later.")} />
 
-        <Form.Check
+        {/* <Form.Check
           data-testid="form-edit-wizard-display"
           type="checkbox"
           id="formDisplaychange"
@@ -275,15 +282,30 @@ const FormSettings = forwardRef((props, ref) => {
           name="display"
           onChange={handleFormDetailsChange}
           className="field-label"
-        />
-        </div>
+        /> */}
+
+
+        <label htmlFor="allow-adding-multiple-pages" className="input-checkbox">
+          <input
+            id="allow-adding-multiple-pages"
+            type="checkbox"
+            checked={formDetails.display === "wizard"}
+            onChange={handleFormDetailsChange}
+            data-testid="form-edit-wizard-display"
+            name="display"
+            />
+          <span>Allow adding multiple pages in this form</span>
+          {formDetails.display === "wizard" ? <CheckboxCheckedIcon /> : <CheckboxUncheckedIcon /> }
+        </label>
+
+        </>
       ),
     },
     {
       eventKey: "Permissions",
       title: <span data-testid="tab-title-permissions">Permissions</span>,
       content: (
-        <div className="settings-sections">
+        <>
         <DropdownMultiSelect
           dropdownLabel="Who Can View/Edit This Form"
           enableMultiSelect= { 
@@ -309,7 +331,7 @@ const FormSettings = forwardRef((props, ref) => {
          displayValue={multiSelectOptionKey}
          ariaLabel="design-permission"
          dataTestId="design-permission"
-         
+          id="who-can-view"
         />
 
         <DropdownMultiSelect
@@ -339,9 +361,12 @@ const FormSettings = forwardRef((props, ref) => {
           displayValue={multiSelectOptionKey}
           ariaLabel="form-permission"
           dataTestId="form-permission"
-
+          id="who-can-create"
         />
-        <Form.Check
+
+
+
+        {/* <Form.Check
           type="checkbox"
           id="anonymouseCheckbox"
           label={t("Also allow anonymous users to create submissions")}
@@ -350,7 +375,21 @@ const FormSettings = forwardRef((props, ref) => {
             setIsAnonymous(!isAnonymous);
           }}
           className="field-label"
-        />
+        /> */}
+
+        <label htmlFor="anonymouse-checkbox" className="input-checkbox">
+          <input
+            id="anonymouse-checkbox"
+            type="checkbox"
+            checked={isAnonymous}
+            onChange={() => {
+              setIsAnonymous(!isAnonymous);
+            }}
+            data-testid="form-edit-allow-anonymous"
+            />
+          <span>{t("Also allow anonymous users to create submissions")}</span>
+          {isAnonymous ? <CheckboxCheckedIcon /> : <CheckboxUncheckedIcon /> }
+        </label>
 
 
         <DropdownMultiSelect
@@ -379,53 +418,70 @@ const FormSettings = forwardRef((props, ref) => {
          onMultiSelectionChange={handleRoleSelectForApplication}
           displayValue={multiSelectOptionKey}
           dataTestId="application-permission"
+          id="who-can-submit"
         />
 
-        </div>
+        </>
       ),
     },
     {
       eventKey :"Link",
       title : <span data-testid="tab-title-link">Link</span>,
       content : (
-        <div className="settings-sections">
-        <CustomInfo heading={t("Note")} dataTestId={"form-url-info"}
-        content={t("Making changes to your form URL will make your form inaccessible from your current URL.")} />
-        <Form.Group className="settings-input w-100" controlId="url-input">
-          <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
-          <InputGroup className="url-input" data-testid="url-input-group">
-            <InputGroup.Text className="url-non-edit">
-              {urlPath}
-            </InputGroup.Text>
+        <>
+          <CustomInfo heading={t("Note")} dataTestId={"form-url-info"}
+            content={t("Making changes to your form URL will make your form inaccessible from your current URL.")}
+          />
 
-            <FormControl
-              type="text"
-              data-test-id="url-edit-input"
-              value={formDetails.path}
-              className="url-edit"
-              name="path"
-              onChange={handleFormDetailsChange}
-              onBlur={() => handleBlur('path', formDetails.path)}           />
-            <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
-              {copied ? <i className="fa fa-check" /> : <CopyIcon />}
-            </InputGroup.Text>
-          </InputGroup>
-          {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
+          <FormInput
+            value={t(formDetails.path)}
+            label={urlPath}
+            onChange={handleFormDetailsChange}
+            data-test-id="url-edit-input"
+            name="path"
+            type="text"
+            ariaLabel={t("Form Url")}
+            onBlur={() => handleBlur('title', formDetails.title)} 
+            icon={copied ? <CheckIcon className="svgIcon-success" /> : <CopyIcon />}
+            onIconClick={copyPublicUrl}
+            id="formflow-url"
+            feedback={errors.path ? errors.path : ""}
+          />
 
-        </Form.Group>
-        </div>
+          {/* Below code is not removed . Can be used for reference */}
+          {/* <Form.Group className="settings-input w-100" controlId="url-input">
+            <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
+            <InputGroup className="url-input" data-testid="url-input-group">
+              <InputGroup.Text className="url-non-edit">
+                {urlPath}
+              </InputGroup.Text>
+
+              <FormControl
+                type="text"
+                data-test-id="url-edit-input"
+                value={formDetails.path}
+                className="url-edit"
+                name="path"
+                onChange={handleFormDetailsChange}
+                onBlur={() => handleBlur('path', formDetails.path)}           />
+              <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
+                {copied ? <i className="fa fa-check" /> : <CopyIcon />}
+              </InputGroup.Text>
+            </InputGroup>
+            {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
+          </Form.Group> */}
+        </>
       )
     }
   ];
   return (
-    <div className="settings-tab-container">
+    <div className="tabs">
       <CustomTabs
        defaultActiveKey={key}
        onSelect={setKey}
        tabs={tabs}
        dataTestId="template-form-flow-tabs"
        ariaLabel="Template forms flow  tabs"
-       className="custom-tab"
        /> 
     </div>     
   );

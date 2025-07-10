@@ -32,7 +32,7 @@ def send_devtools(driver, cmd, params=None):
 # pylint: disable=R1710
 
 
-def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
+def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None, chrome_driver_timeout=60):
     """Load url in chrome web driver and print as pdf."""
 
     def interceptor(request):
@@ -92,7 +92,7 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
 
     try:
         if "wait" in args:
-            delay = 30  # seconds
+            delay = chrome_driver_timeout  # seconds
             elem_loc = EC.presence_of_element_located((By.CLASS_NAME, args["wait"]))
             WebDriverWait(driver, delay).until(elem_loc)
         calculated_print_options = {
@@ -128,7 +128,7 @@ def save_pdf_local(result, file_name="Pdf.pdf"):
 
 
 
-def get_pdf_from_html_string(html_content, chrome_driver_path=None, args=None):
+def get_pdf_from_html_string(html_content, chrome_driver_path=None, args=None, chrome_driver_timeout=60):
     """
     Generate PDF from HTML content string using Chrome/Chromium.
     
@@ -150,7 +150,7 @@ def get_pdf_from_html_string(html_content, chrome_driver_path=None, args=None):
         temp_url = f"file://{temp_html_path}"
         
         # Use the existing function to generate PDF from URL
-        pdf = get_pdf_from_html(temp_url, chrome_driver_path, args)
+        pdf = get_pdf_from_html(temp_url, chrome_driver_path, args=args, chrome_driver_timeout=chrome_driver_timeout)
         
         # Clean up temporary file
         try:

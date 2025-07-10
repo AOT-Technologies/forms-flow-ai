@@ -80,19 +80,18 @@ const ExportDiagram = React.memo(
       <Modal
         show={showExportModal}
         onHide={onClose}
-        centered
         aria-labelledby="contained-modal-title-vcenter"
         scrollable
         size="sm"
       >
         <Modal.Header>
           <Modal.Title>
-            <b>
+            <p>
               <Translation>{(t) => t(modalTitle)}</Translation>
-            </b>
+            </p>
           </Modal.Title>
-          <div className="d-flex align-items-center">
-            <CloseIcon width="16.5" height="16.5" onClick={onClose} />
+          <div className="icon-close" onClick={onClose}>
+            <CloseIcon />
           </div>
         </Modal.Header>
         <Modal.Body className="build-modal-body">
@@ -133,25 +132,22 @@ const ExportDiagram = React.memo(
             </div>
           )}
         </Modal.Body>
-        {isError && <Modal.Footer className="d-flex justify-content-start flex-wrap">
-            <CustomButton
-              variant="primary"
-              size="md"
-              label={<Translation>{(t) => t(retryButtonText)}</Translation>}
-              onClick={exportData}
-              className="mb-2"
-              dataTestId="try-again"
-              ariaLabel="Try Again"
-            />
-            <CustomButton
-              variant="secondary"
-              size="md"
-              label={<Translation>{(t) => t(cancelButtonText)}</Translation>}
-              onClick={onClose}
-              className="mb-2"
-              dataTestId="cancel"
-              ariaLabel="Cancel"
-            />
+        {isError && <Modal.Footer>
+            <div className="buttons-row">
+              <CustomButton
+                label={<Translation>{(t) => t(retryButtonText)}</Translation>}
+                onClick={exportData}
+                dataTestId="try-again"
+                ariaLabel="Try Again"
+              />
+              <CustomButton
+                label={<Translation>{(t) => t(cancelButtonText)}</Translation>}
+                onClick={onClose}
+                dataTestId="cancel"
+                ariaLabel="Cancel"
+                secondary
+              />
+            </div>
         </Modal.Footer>}
       </Modal>
     );

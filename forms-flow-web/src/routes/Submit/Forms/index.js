@@ -9,6 +9,7 @@ import ViewApplication from "../Submission/SubmissionView";
 import { BASE_ROUTE } from "../../../constants/constants";
 import Loading from "../../../containers/Loading";
 import AccessDenied from "../../../components/AccessDenied";
+import ResubmitForm from "../../../routes/Submit/Submission/Item/ResubmitForm";
 
 const GenericRoute = ({ component: Component, roles, ...rest }) => {
   const userRoles = useSelector((state) => state.user.roles || []);
@@ -45,13 +46,18 @@ export default React.memo(() => {
   }
 
   return (
-    <div data-testid="Form-index">
+    // <div data-testid="Form-index">
       <Switch>
         {/* <Route exact path={`${BASE_ROUTE}formflow`} component={List} /> */}
         <Route exact path={`${BASE_ROUTE}form`} component={SubmitList} />
         <GenericRoute
           path={`${BASE_ROUTE}form/:parentFormId?/entries`}
           component={DraftAndSubmissions}
+          roles={['create_submissions','view_submissions']}
+        />
+        <GenericRoute
+          path={`${BASE_ROUTE}form/:formId?/submissions/:submissionId/resubmit`}
+          component={ResubmitForm}
           roles={['create_submissions']}
         />
         <GenericRoute
@@ -63,6 +69,6 @@ export default React.memo(() => {
           component={ViewApplication}
         />
       </Switch>
-    </div>
+    // </div>
   );
 });

@@ -338,6 +338,7 @@ class FormProcessMapper(
         query = query.with_entities(
             cls.form_id,
             cls.form_name,
+            cls.parent_form_id,
         )
         limit = total_count if limit is None else limit
         query = query.paginate(page=page_number, per_page=limit, error_out=False)

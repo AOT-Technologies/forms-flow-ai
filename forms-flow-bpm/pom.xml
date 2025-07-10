@@ -6,7 +6,7 @@
 
 	<groupId>formsflow.ai</groupId>
 	<artifactId>forms-flow-bpm</artifactId>
-	<version>7.1.0</version>
+	<version>7.2.0-alpha</version>
 	<packaging>pom</packaging>
 
 	<name>formsflow BPM Extension</name>

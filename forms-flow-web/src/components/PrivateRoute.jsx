@@ -85,7 +85,6 @@ const PrivateRoute = React.memo((props) => {
   const [formioTokenSet, setFormioTokenSet] = React.useState(false);
   const ROUTE_TO = getRoute(tenantId);
   const {
-    admin,
     createDesigns,
     createSubmissions,
     viewDesigns,
@@ -93,15 +92,32 @@ const PrivateRoute = React.memo((props) => {
     viewTasks,
     manageTasks,
     viewDashboards,
+    manageDashBoardAuthorizations,
+    manageRoles,
+    manageUsers,
+    manageLinks,
+    analyzeSubmissionView,
+    analyzeMetricsView,
+    manageAdvancedWorkFlows,
+    reviewerViewHistory,
+    analyzeSubmissionsViewHistory,
   } = useUserRoles();
 
-  const BASE_ROUTE_PATH = (() => { 
+  const BASE_ROUTE_PATH = (() => {
     if (viewTasks || manageTasks) return ROUTE_TO.TASK;
-    if (createSubmissions) return ROUTE_TO.FORM;
+    if (createSubmissions || viewSubmissions) return ROUTE_TO.FORM;
     if (createDesigns || viewDesigns) return ROUTE_TO.FORMFLOW;
-    if (admin) return ROUTE_TO.ADMIN;
-    if (viewSubmissions) return ROUTE_TO.APPLICATION;
-    if (viewDashboards) return ROUTE_TO.METRICS;
+    if (manageAdvancedWorkFlows) return ROUTE_TO.SUBFLOW;
+    if (
+      manageDashBoardAuthorizations ||
+      manageRoles ||
+      manageUsers ||
+      manageLinks
+    )
+      return ROUTE_TO.ADMIN;
+    if (analyzeSubmissionView) return ROUTE_TO.ANALYZESUBMISSIONS;
+    if (analyzeMetricsView) return ROUTE_TO.METRICS;
+    if (viewDashboards) return ROUTE_TO.DASHBOARDS;
     return ROUTE_TO.NOTFOUND;
   })();
 
@@ -207,7 +223,7 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              createDesigns || viewDesigns ? (
+              createDesigns || viewDesigns || manageAdvancedWorkFlows ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />
@@ -218,14 +234,14 @@ const PrivateRoute = React.memo((props) => {
     [userRoles]
   );
 
-  const DashBoardRoute = useMemo(
+  const AnalyzeRoute = useMemo(
     () =>
       ({ component: Component, ...rest }) =>
         (
           <Route
             {...rest}
             render={(props) =>
-              viewDashboards ? (
+              viewDashboards || analyzeSubmissionView || analyzeMetricsView ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />
@@ -261,7 +277,7 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              viewSubmissions ? (
+              viewSubmissions || analyzeSubmissionView ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />
@@ -297,7 +313,8 @@ const PrivateRoute = React.memo((props) => {
           <Route
             {...rest}
             render={(props) =>
-              createSubmissions || viewSubmissions ? (
+              createSubmissions || viewSubmissions ||  analyzeSubmissionsViewHistory ||
+              reviewerViewHistory ? (
                 <Component {...props} />
               ) : (
                 <AccessDenied userRoles={userRoles} />
@@ -346,36 +363,39 @@ const PrivateRoute = React.memo((props) => {
                 component={Application}
               />
             )}
-            {ENABLE_PROCESSES_MODULE && (
+            {ENABLE_PROCESSES_MODULE  && (
               <DesignerRoute
                 path={ROUTE_TO.SUBFLOW}
                 component={DesignProcessRoutes}
               />
             )}
-            {ENABLE_PROCESSES_MODULE && (
+            {ENABLE_PROCESSES_MODULE  && (
               <DesignerRoute
                 path={ROUTE_TO.DECISIONTABLE}
                 component={DesignProcessRoutes}
               />
             )}
+
             {ENABLE_DASHBOARDS_MODULE && (
-              <DashBoardRoute
-                path={ROUTE_TO.METRICS}
-                component={DashboardPage}
-              />
+              <AnalyzeRoute path={ROUTE_TO.METRICS} component={DashboardPage} />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
-              <DashBoardRoute
-                path={ROUTE_TO.INSIGHTS}
+              <AnalyzeRoute
+                path={ROUTE_TO.DASHBOARDS}
                 component={InsightsPage}
               />
             )}
-            {ENABLE_TASKS_MODULE && (
-              <ReviewerRoute path={ROUTE_TO.TASK} component={ServiceFlow} />
-            )}
-            <Route exact path={ROUTE_TO.REVIEW} /> 
-            <Route exact path={ROUTE_TO.ADMIN} /> 
 
+            {ENABLE_TASKS_MODULE && (
+              <ReviewerRoute path={ROUTE_TO.TASK_OLD} component={ServiceFlow} />
+            )}
+           <Route exact path={ROUTE_TO.TASK} />
+            <Route exact path={ROUTE_TO.ADMIN} />
+            {/* * This route is used to redirect the user to the correct base route
+             * based on their roles. If the user has no roles, they will be redirected
+             * to the not found page.
+             */}
+            <Route exact path={ROUTE_TO.ANALYZESUBMISSIONS} />
             <Route exact path={BASE_ROUTE}>
               {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}
             </Route>

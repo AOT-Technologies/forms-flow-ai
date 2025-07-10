@@ -7,7 +7,7 @@ import { BASE_ROUTE } from "../../../constants/constants";
 import  userRoles  from "../../../constants/permissions";
 
 const Form = React.memo(() => {
-  const { viewSubmissions } = userRoles();
+  const { viewSubmissions, analyzeSubmissionsViewHistory,reviewerViewHistory} = userRoles();
  
 
   return (
@@ -16,7 +16,7 @@ const Form = React.memo(() => {
         <Route exact path={`${BASE_ROUTE}form/:formId/submission`}>
           <Redirect exact to="/404" />
         </Route>
-        {viewSubmissions && (
+        {(viewSubmissions || analyzeSubmissionsViewHistory || reviewerViewHistory) && (
           <Route
             path={`${BASE_ROUTE}form/:formId/submission/:submissionId`}
             component={Item}

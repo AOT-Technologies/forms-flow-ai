@@ -1,5 +1,5 @@
 import argparse
-from utils import get_access_token, get_client_id, update_client_roles, get_group_id, assign_roles_to_group, \
+from utils import get_access_token, get_client_id, add_client_roles, get_group_id, assign_roles_to_group, \
     get_client_roles, create_group, add_group_membership_mapper, get_users_with_client_role, add_user_to_group
 from typing import List
 
@@ -161,7 +161,7 @@ def _migrate_tenants(tenant_keys: List[str]):
 
     for tenant_key in tenant_keys:
         client_id = get_client_id(token, f"{tenant_key}-forms-flow-web")
-        update_client_roles(token, client_id, roles_to_update)
+        add_client_roles(token, client_id, roles_to_update)
         # Add group mapper to the client
         add_group_membership_mapper(token, client_id)
         client_roles = get_client_roles(token, client_id)
@@ -298,7 +298,7 @@ def _migrate_default():
 
         # Get client and group IDs
         client_id = get_client_id(token, "forms-flow-web")
-        update_client_roles(token, client_id, roles_to_update)
+        add_client_roles(token, client_id, roles_to_update)
         client_roles = get_client_roles(token, client_id)
         print("Client roles updated successfully.")
         print("Starting group update")

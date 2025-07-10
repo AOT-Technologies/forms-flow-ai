@@ -6,21 +6,78 @@
 }
 
 .bpmn-main-container {
+  overflow: hidden;
   width: 100%;
   display: flex;
-  margin-top: 10px;
+  // margin-top: 10px;
+  // resize: vertical;
+  // overflow: hidden;
+  // max-height: calc(100vh - 15.45rem);
+  // min-height: calc(100vh - 16rem);
+  height: 100%;
   resize: vertical;
-  overflow: hidden;
-  max-height: calc(100vh - 15.45rem);
-  min-height: calc(100vh - 16rem);
+  border: 1px solid $black;
 }
 
 /* ------------------- this is for diagram settings icons start  ------------------- */
+
+/*
 .card-body {
-  padding-top: 16px !important;
-  padding-bottom: 16px !important;
-  color: $black;
+  padding: 0;
+
+  .icon-back {
+    // @include clickableFeedback1();
+
+    display: flex;
+    align-items: center;
+
+    padding-right: var(--spacer-150);
+    padding-left: var(--spacer-200);
+
+    cursor: pointer;
+  }
+
+  .editor-header-text {
+    display: flex;
+    margin: 0;
+    align-items: center;
+  }
+
+  .navbar-description {
+    display: flex;
+    flex-grow: 1;
+
+    margin-right: var(--spacer-150);
+
+    gap: var(--spacer-150);
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+
+    margin: 0;
+
+    color: white;
+  }
+
+  & > div {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .buttons {
+    padding: 1rem 0;
+    padding-right: 2rem;
+  }
+
+  .btn-dark,
+  .btn-light {
+    padding: 0.5rem 1rem !important;
+  }
 }
+
+*/
 
 .card-overflow {
   padding-left: 14px !important;
@@ -43,8 +100,8 @@
 }
 /* ------------------- this is for diagram settings icons end  ------------------- */
 
-.bpm-modeler-container {
-  height: 100%;
+.bpm-modeler-container { 
+   height: calc(100vh - 15rem);
 }
 
 .bpmn-viewer-container {
@@ -64,8 +121,8 @@
   scrollbar-color: #888  #E2E1FC; 
 }
 .properties-panel-parent {
-  border: 1px solid $black;
-  border-left: none;
+  border-left: 1px solid $gray-medium;
+  // border-left: none;
 }
 
 .grab-cursor {

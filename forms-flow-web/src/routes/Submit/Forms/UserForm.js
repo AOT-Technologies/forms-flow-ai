@@ -60,7 +60,7 @@ import {
 import { setFormStatusLoading } from "../../../actions/processActions";
 import { renderPage, textTruncate } from "../../../helper/helper";
 import PropTypes from "prop-types";
-import { Card } from "react-bootstrap";
+// import { Card } from "react-bootstrap";
 import { BackToPrevIcon } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import { cloneDeep } from "lodash";
@@ -298,7 +298,7 @@ const View = React.memo((props) => {
 
   // will be updated once application/draft listing page is ready
   const handleBack = () => {
-    navigateToFormEntries(dispatch, tenantKey, parentFormId);
+    navigateToFormEntries(dispatch, tenantKey, parentFormId || formId);
 
   };
 
@@ -320,14 +320,30 @@ const View = React.memo((props) => {
   };
 
   const renderHeader = () => (
-    <Card className="user-form-header">
-      <Card.Body>
+    <div className="nav-bar">
         <SubmissionError
           modalOpen={props.submissionError.modalOpen}
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        <div className="d-flex justify-content-between align-items-center">
+        
+        { !isPublic && 
+        <div className="icon-back" onClick={handleBack}>
+          <BackToPrevIcon data-testid="back-to-form-list" ariaLabel="Back to Form List" />
+        </div>
+        }
+
+        <div className="description">
+          <p className="text-main">
+            {textTruncate(100, 97, form.title)}
+          </p>
+
+          <p className="status" data-testid={`form-status-${form._id}`}>
+            {renderModifiedDate()}
+          </p>
+        </div>
+
+        {/* <div className="d-flex justify-content-between align-items-center">
           <div className="icon-title-container">
             {!isPublic && <BackToPrevIcon
               title={t("Back to Form List")}
@@ -338,14 +354,14 @@ const View = React.memo((props) => {
               {textTruncate(100, 97, form.title)}
             </div>
           </div>
+
           <div className="d-flex align-items-center">
             <span className="form-modified-date me-3">
               {renderModifiedDate()}
             </span>
           </div>
-        </div>
-      </Card.Body>
-    </Card>
+        </div> */}
+    </div>
   );
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
@@ -426,10 +442,11 @@ const doProcessActions = (submission, draftId, ownProps, formId) => {
     const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
     const origin = `${window.location.origin}${redirectUrl}`;
-    let parentFormId = form?.parentFormId; 
+    let parentFormId = form?.parentFormId || form?._id; 
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, origin, submission?.data);
-    const draftIdToUse = draftId || state.draft?.draftSubmission?.applicationId;
+    //To Be Done need to detail test of draft for public user and authenticated user
+    const draftIdToUse = isAuth ? draftId || state.draft?.draftSubmission?.applicationId : draftId;
     let isDraftCreated = Boolean(draftIdToUse);
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,

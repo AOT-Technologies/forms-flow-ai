@@ -7,7 +7,6 @@ import {
 
   setBpmFormSort,
 } from "../../../actions/formActions";
-import LoadingOverlay from "react-loading-overlay-ts";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
@@ -17,7 +16,7 @@ import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
-import { CustomButton,TableFooter ,NoDataFound } from "@formsflow/components";
+import { CustomButton,TableFooter ,NoDataFound, TableSkeleton } from "@formsflow/components";
 import userRoles from "../../../constants/permissions";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 
@@ -102,104 +101,109 @@ function FormTable() {
     setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
   };
 
+  if (searchFormLoading || isApplicationCountLoading) {
+    return <TableSkeleton columns={5} rows={7} pagination={7} />;
+  }
 
   return (
-    <LoadingOverlay active={searchFormLoading || isApplicationCountLoading} spinner text={t("Loading...")}>
-        <div className="min-height-400">
           <div className="custom-tables-wrapper">
             <table className="table custom-tables table-responsive-sm mb-0">
               <thead className="table-header">
                 <tr>
-                  <th className="w-20">
+                  
                   <SortableHeader
                    columnKey="formName"
                    title="Name"
                    currentSort={formsort}
                    handleSort={handleSort}
-                   className="gap-2"
+                   className="w-20"
                   />
-                  </th>
+                  
                   <th className="w-30" scope="col">{t("Description")}</th>
-                  <th className="w-13" scope="col">
+                  
                   <SortableHeader
                   columnKey="modified"
                   title="Last Edited"
                   currentSort={formsort}
                   handleSort={handleSort}
-                  className="gap-2"
+                  className="w-13"
                   />
-                  </th>
-                  <th className="w-13" scope="col">
+                  
+                  
                   <SortableHeader
                     columnKey="visibility"
                     title="Visibility"
                     currentSort={formsort}
                     handleSort={handleSort}
-                    className="gap-2"/>
-                  </th>
-                  <th className="w-12" scope="col" colSpan="4">
+                    className="w-13"/>
+                  
+                  
                     <SortableHeader
                     columnKey="status"
                     title="Status"
                     currentSort={formsort}
                     handleSort={handleSort}
-                    className="gap-2"/>
-                  </th>
-                  <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>
+                    className="w-12"/>
+                  
+                  <th className="text-end" aria-label="Search Forms by form title"></th>
                 </tr>
               </thead>
 
               {formData?.length ? (
-                <tbody>
-                  {formData?.map((e, index) => {
-                    const isExpanded = expandedRowIndex === index;
+                <>
+                  <tbody>
+                    <div className="table-scroll-container">
+                      {formData?.map((e, index) => {
+                        const isExpanded = expandedRowIndex === index;
 
-                    return (
-                      <tr key={index}>
-                        <td className="w-20">
-                          <div className="d-flex">
-                            <span className="text-container">{e.title}</span>
-                          </div>
-                        </td>
-                        <td className="w-30 cursor-pointer">
-                          <span className={isExpanded ? "text-container-expand" : "text-container"}
-                            onClick={() => toggleRow(index)}
-                            data-testid="description-cell"
-                            >
-                            {stripHtml(e.description ? e.description : "")}
-                          </span>
-                        </td>
-                        <td className="w-13">{HelperServices?.getLocaldate(e.modified)}</td>
-                        <td className="w-13">{e.anonymous ? t("Public") : t("Private")}</td>
-                        <td className="w-12">
-                          <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
-                            {e.status === "active" ? (
-                                <span className="status-live"></span>
-                            ) : (
-                              <span className="status-draft"></span>
-                            )}
-                            {e.status === "active" ? t("Live") : t("Draft")}
-                          </span>
-                        </td>
-                        <td className="w-12 text-end">
-                        {(createDesigns || viewDesigns) && (
-                          <CustomButton
-                            variant="secondary"
-                            size="sm"
-                            label={
-                              <Translation>
-                                {(t) => t(createDesigns ? "Edit" : "View")}
-                              </Translation>
-                            }
-                            onClick={() => viewOrEditForm(e._id, 'edit')}
-                            className=""
-                            dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
-                            ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
-                          /> )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                        return (
+                          <tr key={index}>
+                            <td className="w-20">
+                              <div className="d-flex">
+                                <span className="text-container">{e.title}</span>
+                              </div>
+                            </td>
+                            <td className="w-30 cursor-pointer">
+                              <span className={isExpanded ? "text-container-expand" : "text-container"}
+                                onClick={() => toggleRow(index)}
+                                data-testid="description-cell"
+                                >
+                                {stripHtml(e.description ? e.description : "")}
+                              </span>
+                            </td>
+                            <td className="w-13">{HelperServices?.getLocaldate(e.modified)}</td>
+                            <td className="w-13">{e.anonymous ? t("Public") : t("Private")}</td>
+                            <td className="w-12">
+                              <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
+                                {e.status === "active" ? (
+                                    <span className="status-live"></span>
+                                ) : (
+                                  <span className="status-draft"></span>
+                                )}
+                                {e.status === "active" ? t("Live") : t("Draft")}
+                              </span>
+                            </td>
+                            <td className="text-end">
+                            {(createDesigns || viewDesigns) && (
+                              <CustomButton
+                                label={
+                                  <Translation>
+                                    {(t) => t(createDesigns ? "Edit" : "View")}
+                                  </Translation>
+                                }
+                                onClick={() => viewOrEditForm(e._id, 'edit')}
+                                dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
+                                ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
+                                actionTable
+                              /> )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </div>
+                    <div className="custom-scrollbar"></div>
+                  </tbody>
+                  <tfoot>
                     {formData.length ? (
                       <TableFooter
                       limit={limit}
@@ -210,18 +214,19 @@ function FormTable() {
                       pageOptions={pageOptions}
                     />
                     ) : (
-                      <td colSpan={3}></td>
+                      <></>
                     )}
-                </tbody>
+                </tfoot>
+                </>
               ) : !searchFormLoading ? (
-                <NoDataFound
-                message={t('No forms have been found. Create a new form by clicking the "New Form" button in the top right.')}
-              />
+                <tbody className="table-empty">
+                  <div className="table-scroll-container">
+                    <NoDataFound message={t('No forms have been found. Create a new form by clicking the "New Form & Flow" button in the top right.')}/>
+                  </div>
+                </tbody>
               ) : null}
             </table>
           </div>
-        </div>
-      </LoadingOverlay>
   );
 }
 

@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from formsflow_api_utils.utils import ADMIN, auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
 from formsflow_api.schemas import ThemeCustomizationSchema
 from formsflow_api.services import ThemeCustomizationService
@@ -41,7 +41,7 @@ class ThemeCustomizationResource(Resource):
     """Resource to manage create update and get theme."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.require
     @profiletime
     @API.doc(
         responses={
@@ -62,7 +62,7 @@ class ThemeCustomizationResource(Resource):
         return response, status
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.require
     @profiletime
     @API.doc(
         responses={

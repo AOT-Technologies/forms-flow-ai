@@ -157,9 +157,7 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
                 )
 
     @classmethod
-    def get_all_process(
-        cls, request_args, subflows_auth, decision_auth
-    ):  # pylint:disable=too-many-locals
+    def get_all_process(cls, request_args):  # pylint:disable=too-many-locals
         """Get all process list."""
         dict_data = ProcessListRequestSchema().load(request_args) or {}
         process_type = (
@@ -167,12 +165,6 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
             if dict_data.get("process_data_type")
             else None
         )
-        if (
-            process_type
-            and (process_type == ProcessType.BPMN.value and not subflows_auth)
-            or (process_type == ProcessType.DMN.value and not decision_auth)
-        ):
-            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
         page_no = dict_data.get("page_no")
         limit = dict_data.get("limit")
         sort_by = dict_data.get("sort_by", "")
@@ -238,10 +230,20 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         current_app.logger.debug(
             f"Process key: {process_key}, Process name: {process_name}"
         )
+        # this code used to handle the pool component
+        participant = None
+        if process_type.lower() == "bpmn":
+            ns = {"bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"}
+            # TBD: currently the root return process target that's why namespace used here again
+            participant = root.find(".//bpmn:participant", namespaces=ns)
+
         # Note: If id have space in name, then process view in bpmn modeller throws error
         if process is not None:
             process.set("id", process_key or process_name)
             process.set("name", process_name)
+            if participant is not None and participant.get("processRef"):
+                participant.set("processRef", process_name)
+                participant.set("name", process_name)
 
         # Convert the XML tree back to a string
         updated_xml = etree.tostring(

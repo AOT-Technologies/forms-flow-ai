@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.hooks.rest;
 
+import jakarta.ws.rs.*;
 import org.camunda.bpm.engine.rest.dto.task.TaskQueryDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
 import org.bpm.utils.dto.UserIdDto;
@@ -9,16 +10,7 @@ import org.bpm.utils.dto.CompleteTaskDto;
 import org.bpm.utils.dto.VariableValueDto;
 import org.bpm.utils.dto.CountResultDto;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.core.Request;
@@ -98,4 +90,8 @@ public interface TaskRestResource extends RestResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     Response submit(CompleteTaskDto dto, @PathParam("id") String id);
+
+    @DELETE
+    @PathParam("/{id}")
+    void deleteTask(@PathParam("id") String id);
 }

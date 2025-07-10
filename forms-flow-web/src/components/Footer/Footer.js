@@ -5,7 +5,8 @@ import React from "react";
 // const version_org = version;
 const Footer = React.memo(() => {
   return (
-    <div></div>
+    <></>
+    // <div></div>
    // <div className="ps-md-3 pb-3">
     //   <hr />
     //   <div className="d-flex justify-content-end pb-2">

@@ -187,9 +187,9 @@ class SubmissionService:
                 for row in data
             ],
             total_count=(
-                mongo_side_submissions.get("total_count")
+                mongo_side_submissions.get("total_count", 0)
                 if mongo_search
-                and parent_form_id  # if mongo side submission is empty then use webapi side submission count
+                and needs_mongo_submissions
                 else total_count
             ),
             page_no=page_no,

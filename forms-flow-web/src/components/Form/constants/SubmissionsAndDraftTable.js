@@ -179,7 +179,7 @@ if (isApplicationLoading) {
 
 return (
             <div className="custom-tables-wrapper">
-                <table className="table custom-tables table-responsive-sm mb-0">
+                <table className="table custom-tables">
                     <thead className="table-header">
                         <tr>
                               <SortableHeader
@@ -248,7 +248,6 @@ return (
                               </tr>
                             ))}
                           </div>
-                          <div className="custom-scrollbar"></div>
                         </tbody>
                         <tfoot>
                           {draftAndSubmissionsList?.applications?.length ? (

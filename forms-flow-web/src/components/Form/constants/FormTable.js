@@ -11,7 +11,6 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
-import { Translation } from "react-i18next";
 import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
@@ -107,7 +106,7 @@ function FormTable() {
 
   return (
           <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm mb-0">
+            <table className="table custom-tables">
               <thead className="table-header">
                 <tr>
                   
@@ -186,11 +185,7 @@ function FormTable() {
                             <td className="text-end">
                             {(createDesigns || viewDesigns) && (
                               <CustomButton
-                                label={
-                                  <Translation>
-                                    {(t) => t(createDesigns ? "Edit" : "View")}
-                                  </Translation>
-                                }
+                                label={createDesigns ? "Edit" : "View"}
                                 onClick={() => viewOrEditForm(e._id, 'edit')}
                                 dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
                                 ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
@@ -201,7 +196,6 @@ function FormTable() {
                         );
                       })}
                     </div>
-                    <div className="custom-scrollbar"></div>
                   </tbody>
                   <tfoot>
                     {formData.length ? (

@@ -293,7 +293,7 @@ const ProcessTable = React.memo(() => {
       </div>
       {isLoading ? <TableSkeleton columns={5} rows={7} /> :
         <div className="custom-tables-wrapper">
-          <table className="table custom-tables table-responsive-sm">
+          <table className="table custom-tables">
             <thead className="table-header">
               <tr>
                   <SortableHeader
@@ -344,7 +344,6 @@ const ProcessTable = React.memo(() => {
                     />
                   ))}
                 </div>
-                <div className="custom-scrollbar"><div></div></div>
               </tbody>
               <tfoot>
                 <TableFooter

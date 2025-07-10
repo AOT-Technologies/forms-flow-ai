@@ -108,7 +108,7 @@ function ClientTable() {
   return (
       <>
         <div className="custom-tables-wrapper">
-          <table className="table custom-tables table-responsive-sm" data-testid="client-table">
+          <table className="table custom-tables" data-testid="client-table">
             <thead className="table-header">
               <tr>
                   <SortableHeader
@@ -198,7 +198,6 @@ function ClientTable() {
                     );
                   })}
                 </div>
-                <div className="custom-scrollbar"><div></div></div>
               </tbody>
               <tfoot>
                 {formData.length ? (

@@ -2,6 +2,9 @@
 
 from formsflow_api_utils.services.external import FormioService
 
+from formsflow_api.services.analyze_submissions_filter import (
+    AnalyzeSubmissionsFilterService,
+)
 from formsflow_api.services.application import ApplicationService
 from formsflow_api.services.application_history import ApplicationHistoryService
 from formsflow_api.services.authorization import AuthorizationService
@@ -20,6 +23,7 @@ from formsflow_api.services.theme import ThemeCustomizationService
 from formsflow_api.services.user import UserService
 
 __all__ = [
+    "AnalyzeSubmissionsFilterService",
     "ApplicationService",
     "ApplicationHistoryService",
     "FormProcessMapperService",

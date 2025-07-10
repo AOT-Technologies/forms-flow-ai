@@ -25,6 +25,7 @@ from formsflow_api.services import (
     DraftService,
     ThemeCustomizationService,
 )
+from formsflow_api.services.external import BPMService
 
 API = Namespace("Public", description="Public APIs.")
 
@@ -282,3 +283,29 @@ class PublicThemeCustomizationResource(Resource):
             HTTPStatus.OK,
         )
         return response, status
+
+    
+# todo: do we need any other decorators, check with the team or request for PR review?
+@cors_preflight("POST,OPTIONS")
+@API.route("/<string:definition_key>/start", methods=["POST", "OPTIONS"])
+class ProcessByDefinitionKeyResource(Resource):
+    """Resource for process resource by definition key."""
+
+    @staticmethod
+    @profiletime
+    @API.response(201, "Created:- Request has been fulfilled and resulted in new resource being created.")
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(401, "UNAUTHORIZED:- Authorization header not provided or invalid token.")
+    @API.response(403, "FORBIDDEN:- Authorization will not help.")
+    # @API.expect(post_request_model)
+    def post(definition_key: str):
+        """Creates a new process instance using the specified definition key."""
+        payload = request.get_json()
+        tenant_key = request.args.get("tenantKey", default=None)
+        camunda_start_task = BPMService.post_process_start_tenant(
+                    process_key=definition_key,
+                    payload=payload,
+                    token=None,
+                    tenant_key=tenant_key
+                )
+        return camunda_start_task

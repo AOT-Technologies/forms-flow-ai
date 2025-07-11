@@ -68,9 +68,18 @@ class BaseBPMService:
     def _get_headers_(cls, token, tenant_key=None, files=None, is_multitenant_client_secret=False):
         """Generate headers."""
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
-        bpm_client_id = current_app.config.get("BPM_CLIENT_ID") if not is_multitenant_client_secret else current_app.config.get("MULTITENANT_BPM_CLIENT_ID")
-        bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET") if not is_multitenant_client_secret else current_app.config.get("MULTITENANT_BPM_CLIENT_SECRET")
+        bpm_client_id = (
+        current_app.config.get("MULTITENANT_BPM_CLIENT_ID")
+        if is_multitenant_client_secret
+        else current_app.config.get("BPM_CLIENT_ID")
+        )
+        bpm_client_secret = (
+            current_app.config.get("MULTITENANT_BPM_CLIENT_SECRET")
+            if is_multitenant_client_secret
+            else current_app.config.get("BPM_CLIENT_SECRET")
+        )
         bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
+        
         if current_app.config.get("MULTI_TENANCY_ENABLED") and tenant_key:
             bpm_client_id = f"{tenant_key}-{bpm_client_id}"
 
@@ -84,12 +93,17 @@ class BaseBPMService:
             if files:
                 return {"Authorization": token}
             return {"Authorization": token, "content-type": "application/json"}
-
-        response = requests.post(
+        
+        try:
+            response = requests.post(
             bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
-        )
-        data = json.loads(response.text)
-        return {
-            "Authorization": "Bearer " + data["access_token"],
-            "Content-Type": "application/json",
-        }
+            )
+            data = json.loads(response.text)
+            return {
+                "Authorization": "Bearer " + data["access_token"],
+                "Content-Type": "application/json",
+            }
+
+        except Exception as e:
+            current_app.logger.error(f"Token fetch failed: {str(e)}")
+            raise

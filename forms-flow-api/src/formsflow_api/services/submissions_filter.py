@@ -3,13 +3,13 @@
 from flask import current_app
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.models import AnalyzeSubmissionsFilter
-from formsflow_api.schemas import AnalyzeSubmissionsFilterSchema
+from formsflow_api.models import SubmissionsFilter
+from formsflow_api.schemas import SubmissionsFilterSchema
 
-schema = AnalyzeSubmissionsFilterSchema()
+schema = SubmissionsFilterSchema()
 
 
-class AnalyzeSubmissionsFilterService:
+class SubmissionsFilterService:
     """This class manages user filter preferences for analyze submissions."""
 
     @staticmethod
@@ -24,7 +24,7 @@ class AnalyzeSubmissionsFilterService:
         tenant = user.tenant_key
         data = schema.load(input_data)
         filter_data = (
-            AnalyzeSubmissionsFilter.get_filter_preferences_by_user_and_parent_for_id(
+            SubmissionsFilter.get_filter_preferences_by_user_and_parent_for_id(
                 user=user_id,
                 parent_form_id=data["parent_form_id"],
                 tenant=tenant,
@@ -33,15 +33,13 @@ class AnalyzeSubmissionsFilterService:
         if filter_data:
             current_app.logger.info("Filter preferences already exist, updating.")
             filter_data.variables = data["variables"]
-            filter_data.is_default = data.get("is_default", False)
         else:
             current_app.logger.info("Creating new filter preferences.")
-            filter_data = AnalyzeSubmissionsFilter(
+            filter_data = SubmissionsFilter(
                 tenant=tenant,
                 user=user_id,
                 parent_form_id=data["parent_form_id"],
                 variables=data["variables"],
-                is_default=data.get("is_default", False),
                 is_active=True,
             )
         filter_data.save()
@@ -60,7 +58,7 @@ class AnalyzeSubmissionsFilterService:
         user_id = user.user_name
         tenant = user.tenant_key
         filter_preferences = (
-            AnalyzeSubmissionsFilter.fetch_all_filter_preferences_by_user(
+            SubmissionsFilter.fetch_all_filter_preferences_by_user(
                 user=user_id, tenant=tenant
             )
         )
@@ -78,7 +76,7 @@ class AnalyzeSubmissionsFilterService:
         current_app.logger.info(f"Fetching filter preferences by ID: {filter_id}.")
         user: UserContext = kwargs["user"]
         tenant = user.tenant_key
-        filter_data = AnalyzeSubmissionsFilter.get_filter_preferences_by_id(
+        filter_data = SubmissionsFilter.get_filter_preferences_by_id(
             filter_id=filter_id, tenant=tenant
         )
         if not filter_data:
@@ -97,7 +95,7 @@ class AnalyzeSubmissionsFilterService:
         current_app.logger.info(f"Deleting filter preferences by ID: {filter_id}.")
         user: UserContext = kwargs["user"]
         tenant = user.tenant_key
-        filter_data = AnalyzeSubmissionsFilter.get_filter_preferences_by_id(
+        filter_data = SubmissionsFilter.get_filter_preferences_by_id(
             filter_id=filter_id, tenant=tenant
         )
         if not filter_data:

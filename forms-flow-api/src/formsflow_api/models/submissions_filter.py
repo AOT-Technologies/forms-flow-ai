@@ -10,7 +10,7 @@ from .base_model import BaseModel
 from .db import db
 
 
-class AnalyzeSubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
+class SubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
     """This class manages user-specific preferences for filters in analyze submissions."""
 
     id = db.Column(
@@ -31,12 +31,6 @@ class AnalyzeSubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
     )
     variables = db.Column(
         ARRAY(JSON), nullable=True, comment="Variables associated with the filter."
-    )
-    is_default = db.Column(
-        db.Boolean,
-        default=False,
-        nullable=False,
-        comment="Flag to indicate if this is the default filter.",
     )
     is_active = db.Column(
         db.Boolean,

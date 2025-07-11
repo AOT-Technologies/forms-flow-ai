@@ -3,7 +3,7 @@
 from marshmallow import EXCLUDE, Schema, fields
 
 
-class AnalyzeSubmissionsFilterSchema(Schema):
+class SubmissionsFilterSchema(Schema):
     """This class manages user-specific preferences for filters in analyze submissions."""
 
     class Meta:  # pylint: disable=too-few-public-methods
@@ -16,4 +16,3 @@ class AnalyzeSubmissionsFilterSchema(Schema):
     user = fields.Str(allow_none=True, dump_only=True)
     parent_form_id = fields.Str(required=True, data_key="parentFormId")
     variables = fields.List(fields.Dict(), required=True)
-    is_default = fields.Bool(data_key="isDefault", default=False)

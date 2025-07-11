@@ -1,6 +1,6 @@
 """This exports all of the models used by the formsflow_api."""
 
-from .analyze_submissions_filter import AnalyzeSubmissionsFilter
+from .submissions_filter import SubmissionsFilter
 from .application import Application
 from .application_history import ApplicationHistory
 from .authorization import Authorization, AuthType
@@ -18,7 +18,7 @@ from .user import User
 __all__ = [
     "db",
     "ma",
-    "AnalyzeSubmissionsFilter",
+    "SubmissionsFilter",
     "Application",
     "ApplicationHistory",
     "BaseModel",

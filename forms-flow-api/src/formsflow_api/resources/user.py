@@ -78,7 +78,13 @@ tenant_add_user_model = API.model(
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
-default_filter_model = API.model("DefaulFilter", {"defaultFilter": fields.Integer()})
+default_filter_model = API.model(
+    "DefaulFilter",
+    {
+        "defaultFilter": fields.Integer(),
+        "defaultSubmissionsFilter": fields.Integer(),
+    },
+)
 default_filter_response_model = API.inherit(
     "DefaulFilterResponse",
     default_filter_model,
@@ -160,7 +166,7 @@ class UserDefaultFilter(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
-        """Update the user's default task filter."""
+        """Update the user's default task filter or analyze submissions filter."""
         data = UserSchema().load(request.get_json())
         response = UserService().update_user_data(data=data)
         return response, HTTPStatus.OK

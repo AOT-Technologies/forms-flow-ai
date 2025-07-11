@@ -11,10 +11,10 @@ from formsflow_api_utils.utils import (
     profiletime,
 )
 
-from formsflow_api.services import AnalyzeSubmissionsFilterService
+from formsflow_api.services import SubmissionsFilterService
 
 API = Namespace(
-    "AnalyzeSubmissionsFilterPreferences",
+    "SubmissionsFilterPreferences",
     description="Analyze Submissions Filter Preferences",
 )
 
@@ -32,7 +32,7 @@ variable = API.model(
 )
 
 analyze_submissions_create_model = API.model(
-    "AnalyzeSubmissionsFilterCreate",
+    "SubmissionsFilterCreate",
     {
         "parentFormId": fields.String(
             description="ID of the parent form for which the filter is being created."
@@ -63,7 +63,7 @@ analyze_submissions_response_model = API.inherit(
 
 @cors_preflight("GET, POST, OPTIONS")
 @API.route("", methods=["GET", "POST", "OPTIONS"])
-class AnalyzeSubmissionsFilterPreferencesResource(Resource):
+class SubmissionsFilterPreferencesResource(Resource):
     """Resource for managing user filter preferences for analyze submissions."""
 
     @staticmethod
@@ -81,7 +81,7 @@ class AnalyzeSubmissionsFilterPreferencesResource(Resource):
         request_data = request.get_json()
         if not request_data:
             return {"message": "Invalid input"}, HTTPStatus.BAD_REQUEST
-        response = AnalyzeSubmissionsFilterService.create_or_update_filter_preferences(
+        response = SubmissionsFilterService.create_or_update_filter_preferences(
             request_data
         )
         return response, HTTPStatus.CREATED
@@ -98,13 +98,13 @@ class AnalyzeSubmissionsFilterPreferencesResource(Resource):
     )
     def get():
         """Get user filter preferences for analyze submissions."""
-        response = AnalyzeSubmissionsFilterService.get_user_filter_preferences()
+        response = SubmissionsFilterService.get_user_filter_preferences()
         return response, HTTPStatus.OK
 
 
 @cors_preflight("GET, DELETE, OPTIONS")
 @API.route("/<int:filter_id>", methods=["GET", "DELETE", "OPTIONS"])
-class AnalyzeSubmissionsFilterResourceById(Resource):
+class SubmissionsFilterResourceById(Resource):
     """Resource for managing user filter preferences for analyze submissions by ID."""
 
     @staticmethod
@@ -119,7 +119,7 @@ class AnalyzeSubmissionsFilterResourceById(Resource):
     )
     def get(filter_id):
         """Get user filter preferences for analyze submissions by ID."""
-        response = AnalyzeSubmissionsFilterService.get_filter_preferences_by_id(
+        response = SubmissionsFilterService.get_filter_preferences_by_id(
             filter_id
         )
         return response, HTTPStatus.OK
@@ -136,7 +136,7 @@ class AnalyzeSubmissionsFilterResourceById(Resource):
     )
     def delete(filter_id):
         """Delete user filter preferences for analyze submissions by ID."""
-        response = AnalyzeSubmissionsFilterService.delete_filter_preferences_by_id(
+        response = SubmissionsFilterService.delete_filter_preferences_by_id(
             filter_id
         )
         return response, HTTPStatus.OK

@@ -69,9 +69,9 @@ class BaseBPMService:
         """Generate headers."""
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
         bpm_client_id = (
-        current_app.config.get("MULTITENANT_BPM_CLIENT_ID")
-        if is_multitenant_client_secret
-        else current_app.config.get("BPM_CLIENT_ID")
+            current_app.config.get("MULTITENANT_BPM_CLIENT_ID")
+            if is_multitenant_client_secret
+            else current_app.config.get("BPM_CLIENT_ID")
         )
         bpm_client_secret = (
             current_app.config.get("MULTITENANT_BPM_CLIENT_SECRET")

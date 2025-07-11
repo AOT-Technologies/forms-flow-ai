@@ -1,1 +1,1 @@
-com.formsflow.keycloak.listener.CustomRegistrationListenerProviderFactory
+com.formsflow.keycloak.listener.KeycloakEventListenerProviderFactory

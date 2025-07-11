@@ -19,8 +19,8 @@ if [ "$START_MODE" = "start-dev" ]; then
 fi
 
 # Custom SPI event listener flags
-CUSTOM_SPI_FLAGS="--spi-events-listener-custom-registration-listener-enabled=true \
---spi-events-listener-custom-registration-listener-provider=custom-registration-listener"
+CUSTOM_SPI_FLAGS="--spi-events-listener-keycloak-event-listener-enabled=true \
+--spi-events-listener-keycloak-event-listener-provider=keycloak-event-listener"
 
 # Construct Keycloak command
 COMMAND="/opt/keycloak/bin/kc.sh $START_MODE --import-realm \

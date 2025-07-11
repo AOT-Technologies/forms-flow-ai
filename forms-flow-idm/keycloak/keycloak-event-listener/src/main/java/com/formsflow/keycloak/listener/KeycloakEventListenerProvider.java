@@ -11,11 +11,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public class CustomRegistrationListenerProvider implements EventListenerProvider {
+public class KeycloakEventListenerProvider implements EventListenerProvider {
 
-  private static final Logger logger = LoggerFactory.getLogger(CustomRegistrationListenerProvider.class);
+  private static final Logger logger = LoggerFactory.getLogger(KeycloakEventListenerProvider.class);
   private static final String TENANT_REGISTRATION_CLIENT_ID = System.getenv("TENANT_REGISTRATION_CLIENT_ID");
 
   @Override
@@ -25,7 +26,7 @@ public class CustomRegistrationListenerProvider implements EventListenerProvider
       logger.info("User registered with client_id: {}", clientId);
 
       // ✅ Only proceed for try-it-now-client
-      if (!TENANT_REGISTRATION_CLIENT_ID.equals(clientId)) {
+      if (!Objects.equals(TENANT_REGISTRATION_CLIENT_ID, clientId)) {
         logger.info("Skipping Camunda trigger: Not target client_id");
         return;
       }
@@ -34,11 +35,11 @@ public class CustomRegistrationListenerProvider implements EventListenerProvider
       String processKey = System.getenv("PROCESS_KEY");
       String tenantKey = System.getenv("PROCESS_TENANT_KEY");
 
-        if (camundaUrl == null || processKey == null || tenantKey == null) {
-          logger.warn(
-              "One or more required environment variables (PUBLIC_PROCESS_START_URL, PROCESS_KEY, PROCESS_TENANT_KEY) are missing.");
-          return;
-        }
+      if (camundaUrl == null || processKey == null || tenantKey == null) {
+        logger.warn(
+            "One or more required environment variables (PUBLIC_PROCESS_START_URL, PROCESS_KEY, PROCESS_TENANT_KEY) are missing.");
+        return;
+      }
 
       String startUrl = camundaUrl + processKey + "/start?tenantKey=" + tenantKey;
       String jsonPayload = "{}";

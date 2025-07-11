@@ -94,7 +94,7 @@ class BaseBPMService:
             return {"Authorization": token, "content-type": "application/json"}
         try:
             response = requests.post(
-            bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
+                bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
             )
             data = json.loads(response.text)
             return {

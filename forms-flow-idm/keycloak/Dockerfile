@@ -30,14 +30,4 @@ COPY ./themes /custom/themes
 COPY ./imports /custom/imports
 COPY ./start-keycloak.sh /custom/start-keycloak.sh
 
-# Add non-root user and set permissions
-RUN addgroup -g 1001 keycloak && \
-  adduser -D -u 1001 -G keycloak keycloakuser && \
-  chown -R keycloakuser:keycloak /custom && \
-  chmod +x /custom/start-keycloak.sh
-
-# Switch to the non-root user
-USER keycloakuser
-
-# Set entrypoint
-ENTRYPOINT ["/custom/start-keycloak.sh"]
+RUN chmod +x /custom/start-keycloak.sh

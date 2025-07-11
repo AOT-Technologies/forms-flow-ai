@@ -79,7 +79,6 @@ class BaseBPMService:
             else current_app.config.get("BPM_CLIENT_SECRET")
         )
         bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
-        
         if current_app.config.get("MULTI_TENANCY_ENABLED") and tenant_key:
             bpm_client_id = f"{tenant_key}-{bpm_client_id}"
 
@@ -93,7 +92,6 @@ class BaseBPMService:
             if files:
                 return {"Authorization": token}
             return {"Authorization": token, "content-type": "application/json"}
-        
         try:
             response = requests.post(
             bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT

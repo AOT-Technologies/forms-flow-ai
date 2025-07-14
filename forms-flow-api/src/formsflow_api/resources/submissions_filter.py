@@ -72,6 +72,7 @@ class SubmissionsFilterPreferencesResource(Resource):
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
         }
     )
+    @API.expect(analyze_submissions_create_model)
     def post():
         """Create or update user filter preferences for analyze submissions."""
         request_data = request.get_json()

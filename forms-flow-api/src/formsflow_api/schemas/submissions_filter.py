@@ -9,6 +9,23 @@ def not_empty_string(value):
         raise ValidationError("Field cannot be empty or whitespace-only.")
 
 
+def validate_non_empty_list(value):
+    """Checks if list is empty."""
+    if not value:
+        raise ValidationError("List cannot be empty.")
+
+
+class VariableSchema(Schema):
+    """Schema for variables list."""
+
+    key = fields.Str(required=True, validate=not_empty_string)
+    name = fields.Str(required=True, validate=not_empty_string)
+    label = fields.Str(required=True, validate=not_empty_string)
+    isChecked = fields.Bool(required=True)
+    sortOrder = fields.Int(required=True)
+    isFormVariable = fields.Bool(required=True)
+
+
 class SubmissionsFilterSchema(Schema):
     """This class manages user-specific preferences for filters in analyze submissions."""
 
@@ -23,4 +40,6 @@ class SubmissionsFilterSchema(Schema):
     parent_form_id = fields.Str(
         required=True, data_key="parentFormId", validate=not_empty_string
     )
-    variables = fields.List(fields.Dict(), required=True)
+    variables = fields.List(
+        fields.Nested(VariableSchema), required=True, validate=validate_non_empty_list
+    )

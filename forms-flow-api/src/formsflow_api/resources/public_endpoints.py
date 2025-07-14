@@ -286,6 +286,9 @@ class PublicThemeCustomizationResource(Resource):
 
 
 # todo: do we need any other decorators, check with the team or request for PR review?# pylint: disable=fixme
+# This endpoint is used during the registration process for the "try-it-now" client.
+# After registration, the user is created in Keycloak but remains disabled and will not be able to log in.
+# For the "try-it-now" client, only registration is allowed—login is intentionally disabled.
 @cors_preflight("POST,OPTIONS")
 @API.route("/<string:definition_key>/start", methods=["POST", "OPTIONS"])
 class ProcessByDefinitionKeyResource(Resource):

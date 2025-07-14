@@ -18,15 +18,7 @@ RUN mvn -f capture-tenant-info/pom.xml clean package && \
 
 
 # === Runtime Stage ===
-# FROM eclipse-temurin:17-jre-alpine
-
 FROM alpine:latest
-
-# Install OpenJDK 17 JRE and bash
-RUN apk update && apk add --no-cache openjdk17-jre bash
-
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-ENV PATH="$JAVA_HOME/bin:$PATH"
 
 WORKDIR /custom
 

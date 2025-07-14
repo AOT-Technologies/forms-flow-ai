@@ -14,7 +14,7 @@
         grid-template-rows: -webkit-min-content;
         -ms-grid-rows: -webkit-min-content;
         -ms-grid-rows: min-content;
-        /* grid-template-rows: min-content; */
+        grid-template-rows: min-content;
     }
     .pf-c-tile::before {
         position: absolute;

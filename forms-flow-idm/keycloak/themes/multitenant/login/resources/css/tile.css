@@ -11,8 +11,8 @@
         text-align: center;
         cursor: pointer;
         background-color: #fff;
-        grid-template-rows: -webkit-min-content;
-        -ms-grid-rows: -webkit-min-content;
+        /* grid-template-rows: -webkit-min-content;
+        -ms-grid-rows: -webkit-min-content; */
         -ms-grid-rows: min-content;
         grid-template-rows: min-content;
     }

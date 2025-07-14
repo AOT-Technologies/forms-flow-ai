@@ -72,7 +72,7 @@ class SubmissionsFilterService:
         user: UserContext = kwargs["user"]
         tenant = user.tenant_key
         filter_data = SubmissionsFilter.get_filter_preferences_by_id(
-            filter_id=filter_id, tenant=tenant
+            filter_id=filter_id, user=user.user_name, tenant=tenant
         )
         if not filter_data:
             current_app.logger.info(f"No filter preferences found for ID: {filter_id}.")
@@ -91,7 +91,7 @@ class SubmissionsFilterService:
         user: UserContext = kwargs["user"]
         tenant = user.tenant_key
         filter_data = SubmissionsFilter.get_filter_preferences_by_id(
-            filter_id=filter_id, tenant=tenant
+            filter_id=filter_id, user=user.user_name, tenant=tenant
         )
         if not filter_data:
             current_app.logger.info(f"No filter preferences found for ID: {filter_id}.")

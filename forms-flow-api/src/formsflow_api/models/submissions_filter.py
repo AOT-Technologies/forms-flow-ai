@@ -65,9 +65,11 @@ class SubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
         return query.all()
 
     @classmethod
-    def get_filter_preferences_by_id(cls, filter_id: int, tenant: str | None = None):
+    def get_filter_preferences_by_id(
+        cls, filter_id: int, user: str, tenant: str | None = None
+    ):
         """Get filter preferences by ID."""
-        query = cls.query.filter_by(id=filter_id, is_active=True)
+        query = cls.query.filter_by(id=filter_id, user=user, is_active=True)
         if tenant is not None:
             query = query.filter_by(tenant=tenant)
         return query.one_or_none()

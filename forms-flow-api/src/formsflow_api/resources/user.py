@@ -5,6 +5,7 @@ from http import HTTPStatus
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
+    ANALYZE_SUBMISSIONS_VIEW,
     CREATE_DESIGNS,
     CREATE_FILTERS,
     MANAGE_ALL_FILTERS,
@@ -153,7 +154,9 @@ class UserDefaultFilter(Resource):
     """Resource to create or update user's default filter."""
 
     @staticmethod
-    @auth.has_one_of_roles([VIEW_FILTERS, CREATE_FILTERS, MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles(
+        [VIEW_FILTERS, CREATE_FILTERS, MANAGE_ALL_FILTERS, ANALYZE_SUBMISSIONS_VIEW]
+    )
     @profiletime
     @API.doc(body=default_filter_model)
     @API.response(200, "OK:- Successful request.", model=default_filter_response_model)

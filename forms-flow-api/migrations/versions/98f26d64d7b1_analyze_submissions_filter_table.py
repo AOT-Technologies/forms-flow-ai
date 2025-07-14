@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('user', sa.String(), nullable=False, comment='Unique identifier for the user.'),
     sa.Column('parent_form_id', sa.String(length=100), nullable=False, comment='ID of the parent form.'),
     sa.Column('variables', postgresql.ARRAY(postgresql.JSON(astext_type=sa.Text())), nullable=True, comment='Variables associated with the filter.'),
-    sa.Column('is_active', sa.Boolean(), nullable=False, server_default='true', comment='Flag to indicate if the filter is active.'),
+    sa.Column('is_active', sa.Boolean(), nullable=False, server_default=sa.text('true'), comment='Flag to indicate if the filter is active.'),
     sa.Column('created', sa.DateTime(timezone=True), nullable=False),
     sa.Column('modified', sa.DateTime(timezone=True), nullable=True),
     sa.PrimaryKeyConstraint('id'),

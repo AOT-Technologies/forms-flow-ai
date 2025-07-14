@@ -40,9 +40,6 @@ analyze_submissions_create_model = API.model(
             fields.Nested(variable),
             description="List of variables to be used in the filter.",
         ),
-        "isDefault": fields.Boolean(
-            description="Flag to indicate if this is the default filter.", default=False
-        ),
     },
 )
 analyze_submissions_response_model = API.inherit(
@@ -91,7 +88,6 @@ class SubmissionsFilterPreferencesResource(Resource):
     @API.doc(
         responses={
             200: ("OK:- Successful request.", [analyze_submissions_response_model]),
-            400: "NOT_FOUND:- No filter preferences found for user.",
             401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
         }
     )

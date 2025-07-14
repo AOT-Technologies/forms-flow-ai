@@ -32,7 +32,20 @@ const initialState = {
   totalDmnCount:0,
   defaultProcessXmlData:createNewProcess().defaultWorkflow.xml,
   defaultDmnXmlData:createNewDecision().defaultWorkflow.xml,
-
+  bpmsort: {
+    activeKey: "name",
+    name: { sortOrder: "asc" },
+    processKey: { sortOrder: "asc" },
+    modified: { sortOrder: "asc" },
+    status: { sortOrder: "asc" },
+  },
+ dmnSort: {
+  activeKey: "name",
+  name: { sortOrder: "asc" },
+  processKey: { sortOrder: "asc" },
+  modified: { sortOrder: "asc" },
+  status: { sortOrder: "asc" },
+},
 };
 
 const process = (state = initialState, action) => {
@@ -118,6 +131,10 @@ const process = (state = initialState, action) => {
         return { ...state, totalBpmnCount: action.payload };
     case ACTION_CONSTANTS.SET_TOTAL_DMN_COUNT:
         return { ...state, totalDmnCount: action.payload };
+    case ACTION_CONSTANTS.BPM_SORT:
+        return { ...state, bpmsort: action.payload };
+    case ACTION_CONSTANTS.DMN_SORT:
+        return { ...state, dmnSort: action.payload };
     default:
       return state;
   }

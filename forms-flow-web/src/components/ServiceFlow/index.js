@@ -26,7 +26,8 @@ import {
   setSelectedTaskID,
 } from "../../actions/bpmTaskActions";
 // import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
-import SocketIOService from "../../services/SocketIOService";
+// import SocketIOService from "../../services/SocketIOService";
+import SocketIOUpdatedService from "../../services/SocketIOUpdatedService";
 import isEqual from "lodash/isEqual";
 import cloneDeep from "lodash/cloneDeep";
 import { Route, Redirect, Switch } from "react-router-dom";
@@ -119,7 +120,8 @@ export default React.memo(() => {
             .then((res) => {
               dispatch(setBPMFiltersAndCount(res.data));
             })
-            .catch((err) => console.error(err))
+            .catch((err) =>
+              console.error(err))
             .finally(() => {
               dispatch(setBPMFilterLoader(false));
             });
@@ -199,7 +201,7 @@ export default React.memo(() => {
         if (bpmTaskIdRef.current && refreshedTaskId === bpmTaskIdRef.current) {
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-          dispatch(push(`${redirectUrl.current}task/`));
+          dispatch(push(`${redirectUrl.current}task-old/`));
         }
       } else {
         if (selectedFilterIdRef.current) {
@@ -246,24 +248,44 @@ export default React.memo(() => {
     [dispatch, currentUser, selectedFilter, searchParams, sortParams]
   );
 
-  useEffect(() => {
-    if (!SocketIOService.isConnected()) {
-      SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
-        SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
-      );
-    } else {
-      SocketIOService.disconnect();
-      SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
-        SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
-      );
-    }
-    return () => {
-      if (SocketIOService.isConnected()) SocketIOService.disconnect();
-    };
-  }, [SocketIOCallback, dispatch]);
+  // useEffect(() => {
+  //   if (!SocketIOService.isConnected()) {
+  //     SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
+  //       SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
+  //     );
+  //   } else {
+  //     SocketIOService.disconnect();
+  //     SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
+  //       SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
+  //     );
+  //   }
+  //   return () => {
+  //     if (SocketIOService.isConnected()) SocketIOService.disconnect();
+  //   };
+  // }, [SocketIOCallback, dispatch]);
+
+useEffect(() => {
+  const connectSocket = () => {
+    SocketIOUpdatedService.connect((refreshedTaskId, forceReload, isUpdateEvent) =>
+      SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent)
+    );
+  };
+
+  if (!SocketIOUpdatedService.isConnected()) {
+    connectSocket();
+  } else {
+    SocketIOUpdatedService.disconnect();
+    connectSocket();
+  }
+
+  return () => {
+    SocketIOUpdatedService.disconnect();
+  };
+}, [SocketIOCallback, dispatch]);
+
   //Reset the path when the 'cardView' changes
   useEffect(() => {
-    dispatch(replace(`${redirectUrl.current}task`));
+    dispatch(replace(`${redirectUrl.current}task-old`));
   }, [cardView, dispatch]);
 
   return (
@@ -275,13 +297,13 @@ export default React.memo(() => {
       {cardView ? (
         <>
           <div className="row mx-0">
-           
+
             <div className="col-12 px-0 col-md-4 col-xl-3">
               <section>
                 {/* <header className="d-flex flex-wrap align-items-center p-2 bg-light shadow mb-2">
               <TaskSortSelectedList />
             </header> */}
-                <ServiceFlowTaskList 
+                <ServiceFlowTaskList
                   expandedTasks={expandedTasks}
                   setExpandedTasks={setExpandedTasks}/>
               </section>
@@ -289,10 +311,10 @@ export default React.memo(() => {
             <div className="col-12 pe-0 ps-md-5 col-md-8 col-xl-9  px-2 pe-md-0 py-5 py-md-0 border ">
               <Switch>
                 <Route
-                  path={`${BASE_ROUTE}task/:taskId?`}
+                  path={`${BASE_ROUTE}task-old/:taskId?`}
                   component={ServiceFlowTaskDetails}
                 ></Route>
-                <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
+                <Route path={`${BASE_ROUTE}task-old/:taskId/:notAvailable`}>
                   {" "}
                   <Redirect exact to="/404" />
                 </Route>
@@ -304,7 +326,7 @@ export default React.memo(() => {
         <Switch>
           <Route
             exact
-            path={`${BASE_ROUTE}task`}
+            path={`${BASE_ROUTE}task-old`}
             render={() => (
               <>
                 <ServiceTaskListView
@@ -315,14 +337,14 @@ export default React.memo(() => {
             )}
           ></Route>
           <Route
-            path={`${BASE_ROUTE}task/:taskId`}
+            path={`${BASE_ROUTE}task-old/:taskId`}
             render={() => (
               <>
                 <ServiceTaskListViewDetails />
               </>
             )}
           ></Route>
-          <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}>
+          <Route path={`${BASE_ROUTE}task-old/:taskId/:notAvailable`}>
             <Redirect exact to="/404" />
           </Route>
         </Switch>

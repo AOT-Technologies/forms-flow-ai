@@ -9,14 +9,16 @@ on:
     paths:
       - "forms-flow-web/**"
       - "VERSION"
+
 defaults:
   run:
     shell: bash
+
 jobs:
   build:
     if: github.repository == 'AOT-Technologies/forms-flow-ai'
     name: Build and push artifacts to s3
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -45,15 +47,12 @@ jobs:
           VER=$(cat VERSION)
           VER=${VER/-alpha/''}
           echo "VERSION=$VER" >> $GITHUB_ENV
-      
       - run: echo ${{ env.VERSION }}
-
       - run: npm ci
         working-directory: ./forms-flow-web/scripts
-
       - run: node index
         env:
-          BUCKET: ${{ secrets.BUCKET}}
+          BUCKET: ${{ secrets.BUCKET }}
           VERSION: ${{ env.VERSION }}
         working-directory: ./forms-flow-web/scripts
 
@@ -63,24 +62,46 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: master
-      
+
+      - name: Check DEV URL
+        id: check-dev-url
+        run: |
+          DEV_URL="${{ secrets.WEB_DEV_URL }}"
+          
+          echo "Checking DEV URL..."
+          RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
+
+          if [ "$RESPONSE_DEV" -eq 200 ]; then
+            echo "DEV URL is up"
+            echo "WEB_TARGET_URL=$DEV_URL" >> $GITHUB_ENV
+            echo "URL_STATUS=success" >> $GITHUB_ENV
+          else
+            echo "DEV URL is down. Exiting workflow."
+            echo "URL_STATUS=failure" >> $GITHUB_ENV
+            exit 0
+          fi
+
+      - name: Print selected target
+        if: env.URL_STATUS == 'success'
+        run: |
+          echo "Selected target URL is: ${{ env.WEB_TARGET_URL }}"
+
       - name: ZAP Scan
+        if: env.URL_STATUS == 'success'
         uses: zaproxy/action-full-scan@v0.8.0
         with:
-          working-directory: zap-reports
           token: ${{ secrets.GITHUB_TOKEN }}
-          docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
-          target: ${{ secrets.WEB_TARGET_URL }}
+          target: ${{ env.WEB_TARGET_URL }}
           rules_file_name: '.zap/rules.tsv'
 
       - name: Install AWS CLI
+        if: env.URL_STATUS == 'success'
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
           
       - name: Configure AWS credentials
+        if: env.URL_STATUS == 'success'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -88,5 +109,6 @@ jobs:
           aws-region: ${{ secrets.REGION }}
 
       - name: Upload ZAP Report to S3
+        if: env.URL_STATUS == 'success'
         run: |
           aws s3 cp report_html.html s3://zap-report-formsflow/zap-reports/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html

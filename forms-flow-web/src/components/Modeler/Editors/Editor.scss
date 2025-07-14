@@ -5,23 +5,22 @@
   overflow: auto;
 }
 
-.bpmn-main-container {
+.bpmn-main-container-editor {
   width: 100%;
   display: flex;
-  margin-bottom: 20px;
   margin-top: 10px;
-  height: auto;
   resize: vertical;
   overflow: hidden;
-  max-height: 600px;
-  min-height: 450px;
+  max-height: calc(100vh - 15.45rem);
+  min-height: calc(100vh - 16rem);
+  border: 1px solid $black;
 }
 
 /* ------------------- this is for diagram settings icons start  ------------------- */
 .card-body {
   padding-top: 16px !important;
   padding-bottom: 16px !important;
-  color: $dark;
+  color: $black;
 }
 
 .card-overflow {
@@ -33,7 +32,7 @@
   padding-top: 16px;
 }
 .card-border {
-  border-left: solid 1px $gray-200;
+  border-left: solid 1px $gray-medium;
 }
 
 .card-header.bg-default .card-title {
@@ -41,21 +40,32 @@
 }
 
 .card-header .card-title {
-  color: $dark; 
+  color: $black; 
 }
 /* ------------------- this is for diagram settings icons end  ------------------- */
 
-.bpm-modeler-container {
-  height: 100%;
+.bpm-modeler-container { 
+   height: calc(100vh - 15rem);
 }
 
 .bpmn-viewer-container {
   width: 100%;
 }
 
+.tjs-table-container::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: transparent;
+  display: block;
+  opacity: 0;
+  scrollbar-width:8px !important;
+}
+.tjs-table-container {
+  scrollbar-width: 8px; 
+  scrollbar-color: #888  #E2E1FC; 
+}
 .properties-panel-parent {
-  border: 1px solid $dark;
-  border-left: none;
+  border-left: 1px solid $black;
 }
 
 .grab-cursor {
@@ -64,7 +74,7 @@
 }
 
 .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-  fill: $primary-500 !important;
+  fill: $primary !important;
 }
 
 .highlight .djs-label {

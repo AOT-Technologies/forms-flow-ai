@@ -1,20 +1,35 @@
 """This manages Application submission Data."""
 
+# pylint: disable=too-many-lines
+
 from __future__ import annotations
 
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
-    DRAFT_APPLICATION_STATUS,
     FILTER_MAPS,
+    add_sort_filter,
     validate_sort_order_and_order_by,
 )
 from formsflow_api_utils.utils.enums import MetricsState
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import and_, func, or_, text
+from sqlalchemy import (
+    and_,
+    asc,
+    case,
+    desc,
+    func,
+    nulls_first,
+    nulls_last,
+    or_,
+    text,
+)
+from sqlalchemy.orm import aliased
 
+from .application_history import ApplicationHistory
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
+from .draft import Draft
 from .form_history_logs import FormHistory
 from .form_process_mapper import FormProcessMapper
 
@@ -35,9 +50,10 @@ class Application(
     latest_form_id = db.Column(db.String(100), nullable=False)
     is_resubmit = db.Column(db.Boolean, nullable=True, default=False)
     event_name = db.Column(db.String(100), nullable=True)
+    is_draft = db.Column(db.Boolean, default=False, index=True)
 
     draft = db.relationship(
-        "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
+        "Draft", backref=db.backref("Application", cascade="save-update, merge")
     )
 
     @classmethod
@@ -52,6 +68,7 @@ class Application(
             ]
             application.submission_id = application_info["submission_id"]
             application.latest_form_id = application_info["form_id"]
+            application.is_draft = application_info.get("is_draft", False)
             application.save_and_flush()
             return application
         return None
@@ -68,22 +85,52 @@ class Application(
                 "modified_by",
                 "is_resubmit",
                 "event_name",
+                "is_draft",
             ],
             mapper_info,
         )
         self.save_and_flush()
 
     @classmethod
-    def find_by_id(cls, application_id: int) -> Application:
+    def created_by_condition_query_for_draft(cls, query, username):
+        """Query to filter by created by if its a draft."""
+        query = query.filter(
+            or_(
+                cls.is_draft.is_(
+                    False
+                ),  # No need to filter by created_by if it's not a draft
+                and_(
+                    cls.is_draft.is_(True), cls.created_by == username
+                ),  # Filter by created_by if it's a draft
+            )
+        )
+        return query
+
+    @classmethod
+    def find_by_id(cls, application_id: int, user_id: str = None) -> Application:
         """Find application that matches the provided id."""
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         )
         query = query.filter(cls.id == application_id)
+        query = cls.created_by_condition_query_for_draft(query, user_id)
         return FormProcessMapper.tenant_authorization(query=query).first()
 
     @classmethod
-    def find_auth_by_id(cls, application_id: int) -> Application:
+    def find_draft_application_by_user(
+        cls, application_id: int, user_id: str = None
+    ) -> Application:
+        """Find draft application by application id created by specific user."""
+        query = cls.query.join(
+            FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+        ).filter(
+            cls.id == application_id,
+            and_(cls.is_draft.is_(True), cls.created_by == user_id),
+        )
+        return FormProcessMapper.tenant_authorization(query=query).first()
+
+    @classmethod
+    def find_auth_by_id(cls, application_id: int, user_id: str) -> Application:
         """Find application that matches the provided id."""
         result = (
             FormProcessMapper.query.with_entities(
@@ -99,13 +146,32 @@ class Application(
                 cls.modified_by,
                 cls.is_resubmit,
                 cls.event_name,
+                cls.is_draft,
+                case(
+                    (
+                        and_(cls.is_draft.is_(True), cls.created_by == user_id),
+                        Draft.data,
+                    ),
+                    else_=None,
+                ).label("data"),
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
                 FormProcessMapper.process_tenant,
                 FormProcessMapper.form_name.label("application_name"),
             )
             .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
+            .outerjoin(Draft, cls.id == Draft.application_id)
             .filter(Application.id == application_id)
+            .filter(
+                or_(
+                    cls.is_draft.is_(
+                        False
+                    ),  # No need to filter by created_by if it's not a draft
+                    and_(
+                        cls.is_draft.is_(True), cls.created_by == user_id
+                    ),  # Filter by created_by if it's a draft
+                )
+            )
         )
         result = FormProcessMapper.tenant_authorization(query=result)
         return result.first()
@@ -161,7 +227,7 @@ class Application(
                 filter_map = FILTER_MAPS[key]
                 model_name = (
                     Application
-                    if not filter_map["field"] == "form_name"
+                    if filter_map["field"] not in ["form_name", "parent_form_id"]
                     else FormProcessMapper
                 )
                 condition = Application.create_filter_condition(
@@ -184,10 +250,12 @@ class Application(
             cls.modified_by,
             cls.is_resubmit,
             cls.event_name,
+            cls.is_draft,
             FormProcessMapper.form_name.label("application_name"),
             FormProcessMapper.process_key.label("process_key"),
             FormProcessMapper.process_name.label("process_name"),
             FormProcessMapper.process_tenant.label("process_tenant"),
+            FormProcessMapper.parent_form_id,
         )
         query = query.filter(*filter_conditions) if filter_conditions else query
         return query
@@ -196,17 +264,34 @@ class Application(
     def find_all_by_user(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         user_id: str,
+        view_only_submission: bool,
         page_no: int,
         limit: int,
         order_by: str,
         sort_order: str,
+        include_drafts: str,
+        only_drafts: str,
         **filters,
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer."""
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(Application.created_by == user_id)
-        query = cls.filter_draft_applications(query=query)
+        # if view_only_submission is True, then we need to filter out drafts and resubmissions
+        if view_only_submission:
+            query = query.filter(
+                ~or_(
+                    cls.is_draft.is_(True),  # Exclude drafts
+                    cls.is_resubmit.is_(True),
+                    cls.application_status.in_(
+                        ["Resubmit", "Awaiting Acknowledgement"]
+                    ),
+                )
+            )
+        elif only_drafts:  # only draft applications
+            query = query.filter(Application.is_draft.is_(True))
+        elif not include_drafts:  # only submissions
+            query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             table_name = "application"
@@ -224,6 +309,7 @@ class Application(
             cls.query.join(
                 FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
             )
+            .outerjoin(Draft, cls.id == Draft.application_id)
             .filter(and_(cls.id == application_id, cls.created_by == user_id))
             .add_columns(
                 cls.id,
@@ -238,6 +324,8 @@ class Application(
                 cls.modified_by,
                 cls.is_resubmit,
                 cls.event_name,
+                cls.is_draft,
+                case((cls.is_draft.is_(True), Draft.data), else_=None).label("data"),
                 FormProcessMapper.form_name.label("application_name"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
@@ -447,7 +535,7 @@ class Application(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         ).filter(
             cls.latest_form_id == form_id,
-            cls.application_status != DRAFT_APPLICATION_STATUS,
+            cls.is_draft.is_(False),
         )
         return FormProcessMapper.tenant_authorization(query=query).count()
 
@@ -695,7 +783,7 @@ class Application(
                 FormProcessMapper.id == Application.form_process_mapper_id,
             )
             .filter(FormProcessMapper.id == form_process_mapper_id)
-            .filter(Application.application_status != DRAFT_APPLICATION_STATUS)
+            .filter(Application.is_draft.is_(False))
             .one_or_none()
         )
         # returns a list of one element with count of applications
@@ -725,7 +813,7 @@ class Application(
         """Modifies the query to filter draft applications."""
         if not isinstance(query, Query):
             raise TypeError("Query object must be of type Query")
-        return query.filter(cls.application_status != DRAFT_APPLICATION_STATUS)
+        return query.filter(cls.is_draft.is_(False))
 
     @classmethod
     def get_all_application_count(cls):
@@ -807,3 +895,152 @@ class Application(
             and_(cls.latest_form_id == formid, cls.created_by == user_name)
         )
         return query.first()
+
+    @classmethod
+    def apply_submission_sorting(cls, query, sort_by, sort_order, submission_alias):
+        """Sort by submission count or latest submission time."""
+        order_func, nulls_func = (
+            (desc, nulls_last) if "desc" in sort_order else (asc, nulls_first)
+        )
+        # Sort by latest submission time/submission count, treating NULLs first while ascending & last while descending
+        if "latestSubmission" in sort_by:
+            return query.order_by(
+                nulls_func(order_func(submission_alias.c.latest_submission))
+            )
+        return query.order_by(
+            nulls_func(order_func(submission_alias.c.submissions_count))
+        )
+
+    @classmethod
+    @user_context
+    def get_form_stats(cls, form_ids, query, sort_by, sort_order, **kwargs):
+        """Get submission count and latest submission time."""
+        user: UserContext = kwargs["user"]
+
+        # Subquery for user's application history
+        # Get most recent status update time for each application by this user
+        user_history_subq = (
+            db.session.query(
+                ApplicationHistory.application_id,
+                func.max(ApplicationHistory.created).label("latest_submission"),
+            )
+            .filter(ApplicationHistory.submitted_by == user.user_name)
+            .group_by(ApplicationHistory.application_id)
+            .subquery()
+        )
+
+        # Combined subquery for both stats
+        # Get both count and latest time per form
+        form_stats_subq = (
+            db.session.query(
+                FormProcessMapper.parent_form_id,
+                func.count(cls.id).label("submissions_count"),  # Count of submissions
+                func.max(
+                    func.coalesce(
+                        user_history_subq.c.latest_submission,  # Either status update time
+                        cls.created,  # Or original creation time if there's no entry in history table
+                    )
+                ).label("latest_submission"),
+            )
+            .select_from(FormProcessMapper)
+            .join(cls, cls.form_process_mapper_id == FormProcessMapper.id)
+            .outerjoin(user_history_subq, user_history_subq.c.application_id == cls.id)
+            .filter(
+                FormProcessMapper.tenant == user.tenant_key,
+                cls.created_by == user.user_name,
+                cls.is_draft.is_(False),
+                FormProcessMapper.parent_form_id.in_(form_ids),
+            )
+            .group_by(FormProcessMapper.parent_form_id)
+            .subquery()
+        )
+        form_stats_alias = aliased(form_stats_subq)
+        # Join with main query
+        query = query.outerjoin(
+            form_stats_alias,
+            FormProcessMapper.parent_form_id == form_stats_alias.c.parent_form_id,
+        )
+        # Sort by submission count or latestSubmission
+        if "submissionCount" in sort_by or "latestSubmission" in sort_by:
+            query = cls.apply_submission_sorting(
+                query, sort_by, sort_order, form_stats_alias
+            )
+        return query, form_stats_alias
+
+    @classmethod
+    def find_all_active_by_formid(
+        cls,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        search=None,
+        form_ids=None,
+        fetch_submissions_count=False,
+        **filters,
+    ):  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        """Fetch all active form process mappers by authorized forms."""
+        # Get latest row for each form_id group
+        filtered_form_query = FormProcessMapper.get_latest_form_mapper_ids()
+        filtered_form_ids = [
+            data.id for data in filtered_form_query if data.parent_form_id in form_ids
+        ]
+        query = FormProcessMapper.filter_conditions(**filters)
+        query = query.filter(
+            FormProcessMapper.id.in_(filtered_form_ids),
+        )
+        query = FormProcessMapper.add_search_filter(query=query, search=search)
+        query = FormProcessMapper.access_filter(query=query)
+        query = add_sort_filter(
+            sort_by=sort_by,
+            sort_order=sort_order,
+            query=query,
+            model_name="form_process_mapper",
+        )
+
+        # Prepare the entities for the query
+        entities = [
+            FormProcessMapper.id,
+            FormProcessMapper.process_key,
+            FormProcessMapper.form_id,
+            FormProcessMapper.form_name,
+            FormProcessMapper.modified,
+            FormProcessMapper.description,
+            FormProcessMapper.parent_form_id,
+        ]
+        if fetch_submissions_count:
+            # Get the submission count subquery
+            query, submission_alias = cls.get_form_stats(
+                form_ids, query, sort_by, sort_order
+            )
+            entities.extend(
+                [
+                    submission_alias.c.submissions_count,
+                    submission_alias.c.latest_submission,
+                ]
+            )
+
+        # Select the required columns
+        query = query.with_entities(*entities)
+
+        # Paginate the results
+        total_count = query.count()
+        limit = total_count if limit is None else limit
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
+        return query.items, total_count
+
+    @classmethod
+    def get_draft_by_parent_form_id(cls, parent_form_id: str) -> Draft:
+        """Get all draft against one form id."""
+        get_all_mapper_id = (
+            db.session.query(FormProcessMapper.id)
+            .filter(FormProcessMapper.parent_form_id == parent_form_id)
+            .all()
+        )
+        result = cls.query.join(Draft, Draft.application_id == cls.id).filter(
+            and_(
+                cls.form_process_mapper_id.in_([id for id, in get_all_mapper_id]),
+                cls.is_draft.is_(True),
+            )
+        )
+        return FormProcessMapper.tenant_authorization(result).all()

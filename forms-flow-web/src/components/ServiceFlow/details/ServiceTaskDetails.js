@@ -20,8 +20,8 @@ import {
   getProcessDataObjectFromList,
 } from "../../../apiManager/services/formatterService";
 import History from "../../Application/ApplicationHistory";
-import FormEdit from "../../Form/Item/Submission/Item/Edit";
-import FormView from "../../Form/Item/Submission/Item/View";
+import FormEdit from "../../../routes/Submit/Submission/Item/Edit";
+import FormView from "../../../routes/Submit/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { getForm, getSubmission, Formio, resetSubmission } from "@aot-technologies/formio-react";
 import { CUSTOM_EVENT_TYPE } from "../constants/customEventTypes";
@@ -182,7 +182,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
     dispatch(fetchServiceTaskList(reqData,null,firstResult)); //Refreshes the Tasks
-    dispatch(push(`${redirectUrl}task/`));
+    dispatch(push(`${redirectUrl}task-old/`));
   };
 
   const reloadCurrentTask = () => {

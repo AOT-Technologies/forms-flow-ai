@@ -18,7 +18,26 @@ subscribe("FF_AUTH", (msg, data) => {
 });
 const getKcInstance = () => instance;
 
-// Service Worker Setup
+if (window._env_?.REACT_APP_CUSTOM_THEME_URL) {
+  fetch(window._env_?.REACT_APP_CUSTOM_THEME_URL)
+    .then((response) => response.json())
+    .then((data) => {
+      if (typeof data == "object") {
+        for (let property in data) {
+          document.documentElement.style.setProperty(property, data[property]);
+        }
+      }
+            // Dynamically load the font if a custom font URL is provided
+            if (data["--default-font-family-url"]) {
+              let link = document.createElement("link");
+              link.href = data["--default-font-family-url"];
+              link.rel = "stylesheet";
+              document.head.appendChild(link);
+            }
+    });
+}
+
+// Register service worker and if new changes skip waiting and activate new service worker
 registerServiceWorker({
   onUpdate: (registration) => {
     const waitingServiceWorker = registration.waiting;

@@ -43,7 +43,15 @@ jobs:
           - { name: "redash", tag: "24.04.0" }
           - { name: "forms-flow-data-analysis-api", tag: "latest" }
           - { name: "forms-flow-documents-api", tag: "latest" }
+
     steps:
+      - name: Authenticate with Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
       - name: Install Trivy
         run: |
           sudo apt-get update
@@ -68,7 +76,7 @@ jobs:
           docker.io/formsflow/${{ matrix.service.name }}:${{ matrix.service.tag }}
 
       - name: Upload Trivy Image Scan Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trivy-${{ matrix.service.name }}-results
           path: trivy-${{ matrix.service.name }}-results.html

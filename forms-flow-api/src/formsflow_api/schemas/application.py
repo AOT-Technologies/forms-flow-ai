@@ -21,7 +21,7 @@ class ApplicationListRequestSchema(ApplicationListReqSchema):
     """This class manages application list request schema."""
 
     order_by = fields.Str(data_key="sortBy", required=False)
-    application_id = fields.Int(data_key="Id", required=False)
+    application_id = fields.Str(data_key="Id", required=False)
     application_name = fields.Str(data_key="applicationName", required=False)
     application_status = fields.Str(data_key="applicationStatus", required=False)
     created_by = fields.Str(data_key="createdBy", required=False)
@@ -38,6 +38,10 @@ class ApplicationListRequestSchema(ApplicationListReqSchema):
         data_key="modifiedTo", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
     sort_order = fields.Str(data_key="sortOrder", required=False)
+    created_user_submissions = fields.Bool(data_key="createdUserSubmissions")
+    parent_form_id = fields.Str(data_key="parentFormId")
+    include_drafts = fields.Bool(data_key="includeDrafts")
+    only_drafts = fields.Bool(data_key="onlyDrafts")
 
 
 class ApplicationSchema(AuditDateTimeSchema):
@@ -65,7 +69,8 @@ class ApplicationSchema(AuditDateTimeSchema):
     web_form_url = fields.Str(data_key="webFormUrl", load_only=True)
     is_resubmit = fields.Bool(data_key="isResubmit", dump_only=True)
     event_name = fields.Str(data_key="eventName", dump_only=True)
-    data = fields.Dict(data_key="data", load_only=True)
+    data = fields.Dict(data_key="data")
+    is_draft = fields.Bool(data_key="isDraft", dump_only=True)
 
 
 class ApplicationUpdateSchema(Schema):
@@ -76,10 +81,11 @@ class ApplicationUpdateSchema(Schema):
 
         unknown = EXCLUDE
 
-    application_status = fields.Str(data_key="applicationStatus", required=True)
+    application_status = fields.Str(data_key="applicationStatus", required=False)
     form_url = fields.Str(data_key="formUrl", required=False)
     is_resubmit = fields.Bool(data_key="isResubmit")
     event_name = fields.Str(data_key="eventName", allow_none=True)
+    data = fields.Dict(data_key="data", required=False, allow_none=True)
 
 
 class ApplicationSubmissionSchema(Schema):

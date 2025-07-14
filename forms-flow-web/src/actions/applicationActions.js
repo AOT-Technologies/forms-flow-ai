@@ -15,6 +15,13 @@ export const setApplicationListByFormId = (data) => (dispatch) => {
   });
 };
 
+export const setApplicationsAndDrafts = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.FETCH_APPLICATIONS_AND_DRAFTS,
+    payload: data,
+  });
+};
+
 export const setApplicationDetail = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.APPLICATION_DETAIL,
@@ -80,6 +87,12 @@ export const setApplicationListCount = (data) => (dispatch) => {
     payload: data,
   });
 };
+export const setSubmissionFormName = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_SUBMISSION_FORM_NAME,
+    payload: data,
+  });
+};
 
 export const setApplicationListActivePage = (data) => (dispatch) => {
   dispatch({
@@ -87,6 +100,15 @@ export const setApplicationListActivePage = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setFormSubmissionSort = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.FORM_SUBMISSION_SORT,
+    payload: data,
+  });
+};
+
+
 
 export const setCountPerpage = (data) => (dispatch) => {
   dispatch({

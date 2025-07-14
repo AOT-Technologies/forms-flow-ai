@@ -1,6 +1,6 @@
 numpy==1.26.4
-transformers==4.45.1
-torch==2.2.0
+transformers==4.48.0
+torch==2.6.0
 scikit-learn==1.5.0
 datasets==3.0.1
 pyarrow>=14.0.1 # not directly required, pinned to avoid a vulnerability

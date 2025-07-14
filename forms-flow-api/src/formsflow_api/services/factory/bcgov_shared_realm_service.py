@@ -43,7 +43,6 @@ class BCGovSharedRealm(KeycloakGroupService):
         )
         self.base_url = current_app.config.get("CSS_API_BASE_URL")
 
-    @user_context
     def search_realm_users(  # pylint: disable-msg=too-many-arguments, too-many-positional-arguments, too-many-locals
         self,
         search: str,
@@ -61,38 +60,58 @@ class BCGovSharedRealm(KeycloakGroupService):
         if permission and not search:
             return self.get_users(page_no, limit, role, permission, count, search)
 
+        # Extract configuration values once
         css_env = current_app.config.get("CSS_ENV")
         css_integration_id = current_app.config.get("CSS_INTEGRATION_ID")
         css_idps = current_app.config.get("CSS_IDP_LIST").split(",")
+
+        users_list = self._fetch_users_from_idps(
+            css_idps, css_env, search, css_integration_id
+        )
+        return users_list, len(users_list)
+
+    def _fetch_users_from_idps(self, css_idps, css_env, search, css_integration_id):
+        """Fetch users from identity providers."""
         users_list = []
         for css_idp in css_idps:
             param_name = "firstName"
-            if css_idp in ('github-bcgov','github-public'):
+            if css_idp in ("github-bcgov", "github-public"):
                 param_name = "name"
-            elif css_idp in ('basic-bceid','business-bceid', 'basic-business-bceid'):
+            elif css_idp in ("basic-bceid", "business-bceid", "basic-business-bceid"):
                 param_name = "guid"
 
             url = f"{css_env}/{css_idp}/users?{param_name}={search}"
             response = self.session.request("GET", f"{self.base_url}/{url}")
+
             if response.json():
-                for user in response.json().get("data"):
-                    _user = {**{"id": user.get("username")}, **user, "role": []}
-                    # Find roles for this user
-                    url = f"integrations/{css_integration_id}/{css_env}/users/{_user.get('username')}/roles"
-                    user_roles = self.session.request("GET", f"{self.base_url}/{url}")
+                self._process_user_results(
+                    response.json().get("data"), css_env, css_integration_id, users_list
+                )
 
-                    for user_role in user_roles.json().get("data"):
-                        _user["role"].append(
-                            {
-                                "id": user_role.get("name"),
-                                "name": user_role.get("name"),
-                                "path": user_role.get("name"),
-                                "subGroups": [],
-                            }
-                        )
+        return users_list
 
-                    users_list.append(_user)
-        return users_list, len(users_list)
+    def _process_user_results(
+        self, users_data, css_env, css_integration_id, users_list
+    ):
+        """Process user results and add roles."""
+        for user in users_data:
+            _user = {**{"id": user.get("username")}, **user, "role": []}
+
+            # Find roles for this user
+            url = f"integrations/{css_integration_id}/{css_env}/users/{_user.get('username')}/roles"
+            user_roles = self.session.request("GET", f"{self.base_url}/{url}")
+
+            for user_role in user_roles.json().get("data"):
+                _user["role"].append(
+                    {
+                        "id": user_role.get("name"),
+                        "name": user_role.get("name"),
+                        "path": user_role.get("name"),
+                        "subGroups": [],
+                    }
+                )
+
+            users_list.append(_user)
 
     @user_context
     def get_users(  # pylint:disable=too-many-arguments, too-many-positional-arguments, too-many-locals
@@ -150,7 +169,9 @@ class BCGovSharedRealm(KeycloakGroupService):
         response.raise_for_status()
         return payload
 
-    def remove_user_from_group(self, user_id: str, group_id: str, payload: Dict = None):
+    def remove_user_from_group(
+        self, user_id: str, group_id: str, payload: Dict = None
+    ):  # pylint: disable=unused-argument
         """Remove user to group."""
         css_env = current_app.config.get("CSS_ENV")
         css_integration_id = current_app.config.get("CSS_INTEGRATION_ID")

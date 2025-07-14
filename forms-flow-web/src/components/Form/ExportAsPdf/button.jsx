@@ -14,7 +14,7 @@ export const ExportButton = React.memo(
     labelLoading,
     icon,
     dataTestId = "",
-    variant = "primary",
+    variant = "light",
     disabled = false,
   }) => {
     const isLoading = buttonState === ButtonState.Loading;

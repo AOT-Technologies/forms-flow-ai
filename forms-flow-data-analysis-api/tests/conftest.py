@@ -6,8 +6,7 @@ from sqlalchemy.schema import DropConstraint, MetaData
 
 from api import create_app, setup_jwt_manager
 from api.models import db as _db
-from api.utils import jwt as _jwt
-from api.utils.enumerator import Service
+from formsflow_api_utils.utils import jwt as _jwt, Service
 
 
 @pytest.fixture(scope="session")

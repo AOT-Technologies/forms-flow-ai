@@ -18,126 +18,182 @@
       "forms-flow-web": [
         {
           "name": "manage_users",
-          "description": "Manage Users",
+          "description": "Manage users",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "view_designs",
-          "description": "Access to designs",
+          "description": "View forms & flows",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "create_designs",
-          "description": "Design layout and flow",
+          "description": "Manage forms & flows you create and that are shared with you",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "view_filters",
-          "description": "Access to view filters",
+          "description": "View filters",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "manage_roles",
-          "description": "Manage Roles",
+          "description": "Manage roles",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "manage_integrations",
-          "description": "Access to Integrations",
+          "description": "Manage integrations",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "view_dashboards",
-          "description": "Access to dashboards",
+          "description": "View dashboards",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "manage_tasks",
-          "description": "Can assign, re-assign and work on tasks",
+          "description": "Work on tasks (assign to themselves + complete tasks)",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "create_submissions",
-          "description": "Create submissions",
+          "description": "Manage submissions (create, save drafts, resubmit)",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "create_filters",
-          "description": "Access to create filters",
+          "description": "Manage filters you create",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "view_tasks",
-          "description": "Access to tasks",
+          "description": "View tasks",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "manage_dashboard_authorizations",
-          "description": "Manage Dashboard Authorization",
+          "description": "Manage dashboards",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "view_submissions",
-          "description": "Access to submissions",
-          "composite": false,
-          "clientRole": true,
-          "attributes": {}
-        },
-        {
-          "name": "admin",
-          "description": "Administrator Role",
+          "description": "View their own past submissions",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
           "name": "manage_all_filters",
-          "description": "Manage all filters",
+          "description": "Manage all shared filters (delete and edit filters others shared, excluding private filters)",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
-          "name": "create_bpmn_flows",
-          "description": "Access to BPMN workflows",
+          "name": "analyze_metrics_view",
+          "description": "View metrics",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
-          "name": "manage_subflows",
-          "description": "Access to Subflows",
+          "name": "analyze_process_view",
+          "description": "View submissions process diagram",
           "composite": false,
           "clientRole": true,
           "attributes": {}
         },
         {
-          "name": "manage_decision_tables",
-          "description": "Access to Decision Tables",
+          "name": "analyze_submissions_view",
+          "description": "View submissions",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "analyze_submissions_view_history",
+          "description": "View submissions history",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "assign_task_to_others",
+          "description": "Assign/re-assign tasks to anybody within the group",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "manage_advance_workflows",
+          "description": "Manage advance flows (BPMNs + SubFlows + Decision Tables)",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "manage_bundles",
+          "description": "Manage bundles",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "manage_links",
+          "description": "View links",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "manage_templates",
+          "description": "Manage templates",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "reviewer_view_history",
+          "description": "View task history",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "submission_view_history",
+          "description": "View submission history",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "reviewer_process_view",
+          "description": "View process diagram in task",
           "composite": false,
           "clientRole": true,
           "attributes": {}
@@ -186,7 +242,7 @@
               "manage_users",
               "manage_roles",
               "manage_dashboard_authorizations",
-              "admin"
+              "manage_links"
             ]
           }
         },
@@ -199,7 +255,7 @@
           },
           "realmRoles": [],
           "clientRoles": {
-            "forms-flow-web": ["create_submissions", "view_submissions"]
+            "forms-flow-web": ["create_submissions", "view_submissions", "submission_view_history"]
           }
         },
         {
@@ -215,9 +271,9 @@
               "manage_integrations",
               "view_designs",
               "create_designs",
-              "create_bpmn_flows",
-              "manage_subflows",
-              "manage_decision_tables"
+              "manage_advance_workflows",
+              "manage_templates",
+              "manage_bundles"
             ]
           }
         },
@@ -262,8 +318,14 @@
               "manage_tasks",
               "view_tasks",
               "create_filters",
-              "view_submissions",
-              "view_filters"
+              "view_filters",
+              "assign_task_to_others",
+              "reviewer_view_history",
+              "manage_all_filters",
+              "analyze_metrics_view",
+              "analyze_submissions_view",
+              "analyze_submissions_view_history",
+              "analyze_process_view"
             ]
           }
         }
@@ -359,6 +421,7 @@
           "manage-clients",
           "realm-admin"
         ],
+        "forms-flow-web": ["view_submissions"],
         "account": ["view-profile", "manage-account"]
       },
       "notBefore": 0,

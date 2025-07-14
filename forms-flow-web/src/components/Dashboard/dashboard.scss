@@ -1,10 +1,12 @@
 @import "../../variables.scss";
 
 .dashboard {
-   margin-top: 10px;
+  margin-top: 10px;
+  height: calc(100vh - 9.0625rem);
+  overflow-x: hidden;
 
   & .line-hr {
-    border-top: 1px solid $primary-200;
+    border-top: 1px solid $primary-light;
   }
 
   & .card-counter {
@@ -14,7 +16,7 @@
 
     & .white-box {
       background: $white;
-      border: 1px solid $primary-400;
+      border: 1px solid $primary;
       padding: 25px;
       margin-bottom: 30px;
       font-size: larger;
@@ -22,7 +24,7 @@
 
       &.active,
       &:hover {
-        background-color: $primary-600 !important;
+        background-color: $primary !important;
         color: $white;
 
         & .small-title {
@@ -62,11 +64,11 @@
 
   & .application-title {
     margin-bottom: -5px;
-    color: $dark;
+    color: $black;
   }
 
   & .dashboard-title {
-    color: $dark;
+    color: $black;
   }
 
   & .dashboard-icon-style {
@@ -83,13 +85,13 @@
   }
 
   & .react-daterange-picker__wrapper {
-    color: $dark;
+    color: $black;
     padding: 5px;
-    border: 1px solid $dark;
+    border: 1px solid $black;
     background: $white;
 
     & input {
-      color:  $primary-600;
+      color:  $primary;
     }
 
     & select {
@@ -97,7 +99,7 @@
       -moz-appearance: none;
       text-indent: 1px;
       text-overflow: "";
-      color:  $primary-600;
+      color:  $primary;
     }
 
     & .react-daterange-picker__range-divider {
@@ -113,7 +115,7 @@
       align-self: center;
       flex-direction: row;
       flex-wrap: wrap;
-      border: 1px solid $dark;
+      border: 1px solid $black;
       padding: 30px;
       border-radius: 10px;
 
@@ -187,7 +189,7 @@
   width: 80px;
   height: 35px;
   border-radius: 3px;
-  border-color: $primary-100;
+  border-color: $primary-light;
 }
 
 .dashboard-sort{

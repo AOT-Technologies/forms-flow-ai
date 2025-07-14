@@ -26,6 +26,10 @@ The component is dependent on listed variables from camunda context,
 2. applicationStatus
 3. formUrl
 
+Optional camunda variables for resubmission
+* isResubmit -  A flag indicating whether the application can be resubmitted
+* eventName -  The message name that the process is awaiting
+
 ### How to Use
 
 Below snapshot shows how to configure the **ApplicationStateListener** to a task. 

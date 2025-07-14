@@ -13,7 +13,7 @@ class CustomFormatter(logging.Formatter):
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
     __format = (
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+        "%(tenant)s - %(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
     )
 
     FORMATS = {
@@ -24,8 +24,11 @@ class CustomFormatter(logging.Formatter):
         logging.CRITICAL: bold_red + __format + reset,
     }
 
+    tenant = "default"
+
     def format(self, record):
         """Returns the formatted information."""
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
+        record.tenant = CustomFormatter.tenant
         return formatter.format(record)

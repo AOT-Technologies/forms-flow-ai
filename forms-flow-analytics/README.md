@@ -1,6 +1,6 @@
 # Analytics Engine
 
-![Redash](https://img.shields.io/badge/Redash-10.1.5-blue)
+![Redash](https://img.shields.io/badge/Redash-24.04.0-blue)
 
 **formsflow.ai** leverages [Redash](https://github.com/getredash/redash) to build interactive
 dashboards and gain insights. To create meaningful visualization for
@@ -40,22 +40,6 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
 * Modify the environment variables inside [.env](./sample.env) file if needed. Environment variables are given in the table below
 * **NOTE : `{your-ip-address}` given inside the [.env](./sample.env) file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
-> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the `.env` file
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`REDASH_HOST`:triangular_flag_on_post:| Base address of your Redash instance (the DNS name or IP) with the protocol | | <http://{your-ip-address}:7000/redash>
-`PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
-`REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
-`REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`
-`REDASH_DATABASE_URL`|Postgres database URL|Used on installation to create the database.Choose your own.|`postgresql://postgres@postgres/postgres`
-`POSTGRES_PASSWORD`|Postgres database Password|Used on installation to create the database.Choose your own.|`postgres`
-`REDASH_COOKIE_SECRET`|Encryption for all configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
-`REDASH_SECRET_KEY`|Encryption for datasource configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
-`REDASH_CORS_ACCESS_CONTROL_ALLOW_ORIGIN`| To set allow origins to access Redash | `your-domain.com` | `*`
-`REDASH_REFERRER_POLICY`| To control how much referrer information should be included with Redash API requests | Choose your own. | `no-referrer-when-downgrade`
-`REDASH_CORS_ACCESS_CONTROL_ALLOW_HEADERS` | To control allowed headers to access Reash | Choose on your own | `Content-Type, Authorization`
-  
 ### Running the application
 
 * Analytics service uses port 7000, make sure the port is available.

@@ -1,0 +1,20 @@
+name: Check Dependency PR
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  update_dependency_status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract and update PR with Dependency PR status
+        uses: shuhaibzahir/check-dependency-pr@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # user-token: ${{ secrets.USER_GITHUB_TOKEN }}  // if we need to check a private repo pr pass a user's token

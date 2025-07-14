@@ -12,6 +12,7 @@ server:
   servlet:
     context-path: /camunda
     session:
+      tracking-modes: cookie
       cookie:
         secure: ${SESSION_COOKIE_SECURE:true}
         max-age: 1800
@@ -52,11 +53,22 @@ formsflow.ai:
       resourceType: "DEPLOYMENT"
       resourceId: "*"
       permissions: ["ALL"]
+    - groupId: "ROLE_manage_advance_workflows"
+      resourceType: "DEPLOYMENT"
+      resourceId: "*"
+      permissions: ["ALL"]
     - groupId: "ROLE_view_tasks"
       resourceType: "PROCESS_DEFINITION,PROCESS_INSTANCE,TASK,FILTER,USER,DECISION_DEFINITION,DECISION_REQUIREMENTS_DEFINITION"
       resourceId: "*"
       permissions: ["ALL"]
-
+    - groupId: "ROLE_resubmit_submissions"
+      resourceType: "TASK,FILTER"
+      resourceId: "*"
+      permissions: ["ALL"]
+    - groupId: "ROLE_analyze_process_view"
+      resourceType: "PROCESS_INSTANCE"
+      resourceId: "*"
+      permissions: ["READ"]
 
 camunda.bpm:
   database:
@@ -133,6 +145,9 @@ spring:
       resource-server:
         jwt:
           issuer-uri: ${keycloak.url}${keycloak.url.httpRelativePath}/realms/${keycloak.url.realm}
+    csrf:
+      cookie:
+        secure: true
   main:
     allow-bean-definition-overriding: true
   cloud:

@@ -10,6 +10,8 @@ attrs
 Werkzeug
 sqlalchemy_utils
 sqlalchemy
-spacy
-nltk
+# spacy
+# nltk
 Flask-Migrate
+python-jose
+git+https://github.com/aot-technologies/forms-flow-ai.git@release/7.1.0#subdirectory=forms-flow-api-utils

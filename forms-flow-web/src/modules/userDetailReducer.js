@@ -30,14 +30,14 @@ const initialState = {
   lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : null,
   selectLanguages: getLanguages ? JSON.parse(getLanguages) : [],
   defaultFilter: "",
+  searchText: '',
 };
 
 const user = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.SET_CURRENT_PAGE:
       return { ...state, currentPage: action.payload };
-    case ACTION_CONSTANTS.SET_USER_TOKEN:
-      localStorage.setItem("authToken", action.payload);
+    case ACTION_CONSTANTS.SET_USER_TOKEN: 
       return { ...state, bearerToken: action.payload };
     case ACTION_CONSTANTS.SET_USER_ROLES:
       return { ...state, roles: action.payload };

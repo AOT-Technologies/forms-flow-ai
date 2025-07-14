@@ -57,14 +57,9 @@ class SubmissionsFilterService:
         user: UserContext = kwargs["user"]
         user_id = user.user_name
         tenant = user.tenant_key
-        filter_preferences = (
-            SubmissionsFilter.fetch_all_filter_preferences_by_user(
-                user=user_id, tenant=tenant
-            )
+        filter_preferences = SubmissionsFilter.fetch_all_filter_preferences_by_user(
+            user=user_id, tenant=tenant
         )
-        if not filter_preferences:
-            current_app.logger.info("No filter preferences found for user.")
-            return {"message": "No filter preferences found"}, 404
         current_app.logger.info("Filter preferences retrieved successfully.")
         response = schema.dump(filter_preferences, many=True)
         return response
@@ -86,7 +81,7 @@ class SubmissionsFilterService:
             f"Filter preferences for ID: {filter_id} retrieved successfully."
         )
         response = schema.dump(filter_data)
-        return response
+        return response, 200
 
     @staticmethod
     @user_context
@@ -106,4 +101,4 @@ class SubmissionsFilterService:
         current_app.logger.info(
             f"Filter preferences for ID: {filter_id} deleted successfully."
         )
-        return {"message": "Filter preferences deleted successfully"}
+        return {"message": "Filter preferences deleted successfully"}, 200

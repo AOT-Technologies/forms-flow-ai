@@ -38,9 +38,7 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         user.locale = user_data.get("locale")
         user.tenant = user_data.get("tenant")
         user.default_filter = user_data.get("default_filter")
-        user.default_submissions_filter = user_data.get(
-            "default_submissions_filter"
-        )
+        user.default_submissions_filter = user_data.get("default_submissions_filter")
         user.save()
         return user
 

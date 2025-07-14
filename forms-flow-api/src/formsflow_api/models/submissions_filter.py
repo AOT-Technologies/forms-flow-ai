@@ -49,7 +49,9 @@ class SubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
         cls, user: str, parent_form_id: str, tenant: str | None = None
     ):
         """Get filter preferences by user and parent form ID."""
-        query = cls.query.filter_by(user=user, parent_form_id=parent_form_id)
+        query = cls.query.filter_by(
+            user=user, parent_form_id=parent_form_id, is_active=True
+        )
         if tenant is not None:
             query = query.filter_by(tenant=tenant)
         return query.first()
@@ -57,7 +59,7 @@ class SubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
     @classmethod
     def fetch_all_filter_preferences_by_user(cls, user: str, tenant: str | None = None):
         """Get all filter preferences by user for a specific tenant."""
-        query = cls.query.filter_by(user=user)
+        query = cls.query.filter_by(user=user, is_active=True)
         if tenant is not None:
             query = query.filter_by(tenant=tenant)
         return query.all()
@@ -65,7 +67,7 @@ class SubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
     @classmethod
     def get_filter_preferences_by_id(cls, filter_id: int, tenant: str | None = None):
         """Get filter preferences by ID."""
-        query = cls.query.filter_by(id=filter_id)
+        query = cls.query.filter_by(id=filter_id, is_active=True)
         if tenant is not None:
             query = query.filter_by(tenant=tenant)
         return query.one_or_none()

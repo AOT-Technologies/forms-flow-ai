@@ -29,7 +29,6 @@ from formsflow_api.schemas.user import (
     UsersListSchema,
 )
 
-from .submissions_filter import SubmissionsFilterSchema
 from .base_schema import AuditDateTimeSchema
 from .filter_preference import FilterPreferenceSchema
 from .form_history_logs import FormHistoryReqSchema, FormHistorySchema
@@ -48,5 +47,6 @@ from .process import (
 )
 from .process_history_logs import ProcessHistorySchema
 from .roles import RolesGroupsSchema
+from .submissions_filter import SubmissionsFilterSchema
 from .tasks import TaskOutcomeConfigurationSchema
 from .theme import ThemeCustomizationSchema

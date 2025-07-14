@@ -24,7 +24,6 @@ variable = API.model(
         "name": fields.String(description="Variable name"),
         "label": fields.String(description="Display name"),
         "key": fields.String(description="Variable key"),
-        "type": fields.String(description="Variable type"),
         "isChecked": fields.Boolean(description="Is variable checked"),
         "sortOrder": fields.Integer(description="Sort order of the variable"),
         "isFormVariable": fields.Boolean(description="Is this a form variable"),
@@ -119,10 +118,10 @@ class SubmissionsFilterResourceById(Resource):
     )
     def get(filter_id):
         """Get user filter preferences for analyze submissions by ID."""
-        response = SubmissionsFilterService.get_filter_preferences_by_id(
+        response, status = SubmissionsFilterService.get_filter_preferences_by_id(
             filter_id
         )
-        return response, HTTPStatus.OK
+        return response, status
 
     @staticmethod
     @auth.has_one_of_roles([ANALYZE_SUBMISSIONS_VIEW])
@@ -136,7 +135,7 @@ class SubmissionsFilterResourceById(Resource):
     )
     def delete(filter_id):
         """Delete user filter preferences for analyze submissions by ID."""
-        response = SubmissionsFilterService.delete_filter_preferences_by_id(
+        response, status = SubmissionsFilterService.delete_filter_preferences_by_id(
             filter_id
         )
-        return response, HTTPStatus.OK
+        return response, status

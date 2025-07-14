@@ -11,9 +11,6 @@ from formsflow_api_utils.exceptions import (
 )
 from formsflow_api_utils.utils.constants import ALLOW_ALL_ORIGINS
 
-from formsflow_api.resources.submissions_filter import (
-    API as ANALYZE_SUBMISSIONS_FILTER_API,
-)
 from formsflow_api.resources.application import API as APPLICATION_API
 from formsflow_api.resources.application_history import (
     API as APPLICATION_HISTORY_API,
@@ -33,6 +30,9 @@ from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.process import API as PROCESS_API
 from formsflow_api.resources.public_endpoints import API as PUBLIC_API
 from formsflow_api.resources.roles import API as KEYCLOAK_ROLES_API
+from formsflow_api.resources.submissions_filter import (
+    API as SUBMISSIONS_FILTER_API,
+)
 from formsflow_api.resources.tasks import API as TASK_API
 from formsflow_api.resources.theme import API as THEME_CUSTOMIZATION_API
 from formsflow_api.resources.user import API as KEYCLOAK_USER_API
@@ -70,4 +70,4 @@ API.add_namespace(INTEGRATION_API, path="/integrations")
 API.add_namespace(THEME_CUSTOMIZATION_API, path="/themes")
 API.add_namespace(IMPORT_API, path="/import")
 API.add_namespace(TASK_API, path="/tasks")
-API.add_namespace(ANALYZE_SUBMISSIONS_FILTER_API, path="/submissions-filter")
+API.add_namespace(SUBMISSIONS_FILTER_API, path="/submissions-filter")

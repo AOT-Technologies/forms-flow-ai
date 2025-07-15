@@ -2,7 +2,11 @@ export const WEB_BASE_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_URL) ||
   process.env.REACT_APP_WEB_BASE_URL;
 
-  export const DOCUMENT_SERVICE_URL =
+export const GRAPHQL_URL =
+  (window._env_ && window._env_.REACT_APP_GRAPHQL_API_URL) ||
+  process.env.REACT_APP_GRAPHQL_API_URL;
+
+export const DOCUMENT_SERVICE_URL =
   (window._env_ && window._env_.REACT_APP_DOCUMENT_SERVICE_URL) ||
   process.env.REACT_APP_DOCUMENT_SERVICE_URL;
 

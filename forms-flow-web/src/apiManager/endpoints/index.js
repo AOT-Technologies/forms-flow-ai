@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import {
   WEB_BASE_URL,
+  GRAPHQL_URL,
   MT_ADMIN_BASE_URL,
   MT_ADMIN_BASE_URL_VERSION,
   BPM_BASE_URL_EXT,
@@ -11,6 +12,7 @@ import {
 import { AppConfig } from "../../config";
 
 const API = {
+  GRAPHQL: GRAPHQL_URL,
   GET_DASHBOARDS: `${WEB_BASE_URL}/dashboards`,
   METRICS_SUBMISSIONS: `${WEB_BASE_URL}/metrics`,
   APPLICATION_START: `${WEB_BASE_URL}/application/create`,

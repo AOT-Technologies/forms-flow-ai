@@ -15,6 +15,25 @@ const COLORS = [
   "#ff7c43",
 ];
 
+const testData = [
+  {
+    "statusName": "Completed",
+    "count": 10
+  },
+  {
+    "statusName": "In Progress",
+    "count": 4
+  },
+  {
+    "statusName": "Inactive",
+    "count": 3
+  },
+  {
+    "statusName": "Other",
+    "count": 1
+  }
+];
+
 // label={renderCustomizedLabel}
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
@@ -26,7 +45,8 @@ const ChartForm = React.memo((props) => {
 
   const version = formVersions?.length;
   const { t } = useTranslation();
-  const pieData = submissionsStatusList || [];
+  let pieData = submissionsStatusList || [];
+  pieData = testData;
 
   const handlePieData = (value) => {
     const isParentId = value === "all";

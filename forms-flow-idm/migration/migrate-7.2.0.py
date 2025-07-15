@@ -26,7 +26,7 @@ def _migrate_tenants(tenant_keys: List[str]):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Migrate new roles, removes deprecated ones, and updates role descriptions in the multitenent environment")
+    parser = argparse.ArgumentParser(description="Migrate new roles, removes deprecated ones, and updates role descriptions in the multitenant environment")
     parser.add_argument("--tenants", type=str, help="Comma-separated list of tenant names")
     args = parser.parse_args()
     tenants_list = args.tenants.split(",") if args.tenants else None

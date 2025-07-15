@@ -81,6 +81,15 @@ After completing the [setup](#setup), run the following command to apply these m
 [Default setup]
 python migrate-7.1.0.py
 ```
+#### 7.2.0
+```commandline
+PS : The keycloak client provided for this script needs `manage-clients` role from `realm-management`.
+```
+Migrate new roles, removes deprecated ones, and updates role descriptions introduced in 7.1.0, to the multitenant setup
+```bash
+[Default setup]
+python migrate-7.2.0.py --tenants=tenant1,tenant2
+```
 
 ##### Note:
 * To add these permissions(roles) to the specific group.

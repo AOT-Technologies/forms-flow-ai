@@ -13,6 +13,10 @@ For migrating default roles (formsflow-client, formsflow-designer, formsflow-rev
 
 For migrating new roles introduced in v7.1.0 follow the steps mentioned [here](./migration/README.md#710)
 
+### v7.2.0
+
+For migrating new roles introduced in v7.1.0 to multitenant setup follow the steps mentioned [here](./migration/README.md#720)
+
 ### Additional reference
 
 Check out the [installation documentation](https://aot-technologies.github.io/forms-flow-installation-doc/) for installation instructions and [features documentation](https://aot-technologies.github.io/forms-flow-ai-doc) to explore features and capabilities in detail.

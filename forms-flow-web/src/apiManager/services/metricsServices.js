@@ -27,20 +27,39 @@ export const fetchMetricsSubmissionCount = (
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
+    const url = API.GRAPHQL;
     /*eslint max-len: ["error", { "code": 170 }]*/
-    let url = `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${searchBy}&pageNo=${pageNo}&limit=${limit}&sortBy=${sortsBy}&sortOrder=${sortOrder}`;
-    if (formName) {
-      url += `&formName=${encodeURIComponent(formName)}`;
-    }
-
-    RequestService.httpGETRequest(url, {})
+    const query = `
+      query FetchMetricsSubmissionQuery {
+        getSubmission(sortBy: "${sortsBy}", sortOrder: "${sortOrder}", pageNo: ${pageNo}, limit: ${limit}, filters: {
+          from: "${fromDate}",
+          to: "${toDate}",
+          orderBy: "${searchBy}",
+        }) {
+          submissions {
+            applicationStatus
+            created
+            createdBy
+            data
+            formName
+            id
+            submissionId
+          }
+          totalCount
+        }
+      }
+    `;
+    
+    RequestService.httpPOSTRequest(url, {
+      query: query 
+    })
       .then((res) => {
         if (res.data) {
           dispatch(setMetricsDateRangeLoading(false));
           dispatch(setMetricsLoader(false));
           dispatch(setMetricsStatusLoader(false));
-          dispatch(setMetricsSubmissionCount(res.data.applications));
-          dispatch(setMetricsTotalItems(res.data.totalCount));
+          dispatch(setMetricsSubmissionCount(res.data.data.getSubmission.submissions));
+          dispatch(setMetricsTotalItems(res.data.data.getSubmission.totalCount));
           if (res.data.applications && res.data.applications[0]) {
               dispatch(setSelectedMetricsId(res.data.applications[0].parentFormId));
 

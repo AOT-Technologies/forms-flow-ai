@@ -4,6 +4,7 @@ import ApplicationCounter from "./ApplicationCounter";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Redirect } from "react-router";
 import StatusChart from "./StatusChart";
+import StatusChart_POC from "./StatusChart-POC";
 import Modal from "react-bootstrap/Modal";
 import {
   fetchMetricsSubmissionCount,
@@ -355,12 +356,23 @@ const Dashboard = React.memo(() => {
                   <button type="button" className="btn-close me-2" onClick={() => setShow(false)}></button>
                   </Modal.Header>
                 <Modal.Body>
-                  <StatusChart
-                    submissionsStatusList={submissionsStatusList}
-                    submissionData={showSubmissionData}
-                    getStatusDetails={getStatusDetails}
-                    submissionStatusCountLoader={submissionStatusCountLoader}
-                        />
+                  <div>
+                    <p>Redash</p>
+                    <StatusChart
+                      submissionsStatusList={submissionsStatusList}
+                      submissionData={showSubmissionData}
+                      getStatusDetails={getStatusDetails}
+                      submissionStatusCountLoader={submissionStatusCountLoader}
+                          />
+                    <hr></hr>
+                    <p>Charts.js</p>
+                    <StatusChart_POC
+                      submissionsStatusList={submissionsStatusList}
+                      submissionData={showSubmissionData}
+                      getStatusDetails={getStatusDetails}
+                      submissionStatusCountLoader={submissionStatusCountLoader}
+                          />
+                  </div>
                       </Modal.Body>
                     </Modal>
                   )}

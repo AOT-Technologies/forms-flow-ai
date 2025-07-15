@@ -26,7 +26,7 @@ const SortableHeader = ({ columnKey, title, currentSort, handleSort,className = 
           data-testid = {`${title}-header-btn`}
           aria-label={`${title}-header-btn`}
         >
-          <span>{t(title)}</span>
+          <span className="text">{t(title)}</span>
           <span className={sortedOrder === "asc" ? "arrow-up" : "arrow-down"}>
           <SortIcon color={iconColor} dataTestId={`${(title).toLowerCase()}-sort`}/>
         </span>

@@ -178,111 +178,110 @@ if (isApplicationLoading) {
 }
 
 return (
-            <div className="custom-tables-wrapper">
-                <table className="table custom-tables">
-                    <thead className="table-header">
-                        <tr>
-                              <SortableHeader
-                                  columnKey="id"
-                                  title="Submission ID"
-                                  currentSort={applicationSort}
-                                  handleSort={handleSort}
-                                  className="w-20"
-                              />
-                              <SortableHeader
-                                  columnKey="created"
-                                  title="Submitted On"
-                                  currentSort={applicationSort}
-                                  handleSort={handleSort}
-                                  className="w-20"
-                              />
-                              <SortableHeader
-                                  columnKey="modified"
-                                  title="Last Modified On"
-                                  currentSort={applicationSort}
-                                  handleSort={handleSort}
-                                  className="w-20"
-                              />
-                              <SortableHeader
-                                  columnKey="type"
-                                  title="Type"
-                                  currentSort={applicationSort}
-                                  handleSort={handleSort}
-                                  className="w-12"
-                              />
-                              <SortableHeader
-                                  columnKey="applicationStatus"
-                                  title="Status"
-                                  currentSort={applicationSort}
-                                  handleSort={handleSort}
-                                  className="w-12"
-                              />
-                            <th className="text-end" colSpan="4"></th>
-                        </tr>
-                    </thead>
+  <div className="custom-table-wrapper-outter">
+    <div className="custom-table-wrapper-inner">
+        <table className="table custom-tables">
+            <thead className="table-header">
+                <tr>
+                      <SortableHeader
+                          columnKey="id"
+                          title="Submission ID"
+                          currentSort={applicationSort}
+                          handleSort={handleSort}
+                          className="w-20"
+                      />
+                      <SortableHeader
+                          columnKey="created"
+                          title="Submitted On"
+                          currentSort={applicationSort}
+                          handleSort={handleSort}
+                          className="w-20"
+                      />
+                      <SortableHeader
+                          columnKey="modified"
+                          title="Last Modified On"
+                          currentSort={applicationSort}
+                          handleSort={handleSort}
+                          className="w-20"
+                      />
+                      <SortableHeader
+                          columnKey="type"
+                          title="Type"
+                          currentSort={applicationSort}
+                          handleSort={handleSort}
+                          className="w-12"
+                      />
+                      <SortableHeader
+                          columnKey="applicationStatus"
+                          title="Status"
+                          currentSort={applicationSort}
+                          handleSort={handleSort}
+                          className="w-12"
+                      />
+                    <th className="text-end" colSpan="4"></th>
+                </tr>
+            </thead>
 
-                    {draftAndSubmissionsList?.applications?.length ? (
-                        <>
-                          <tbody>
-                          <div className="table-scroll-container">
-                            {draftAndSubmissionsList?.applications?.map((item) => (
-                              <tr key={item.id}>
-                                <td className="w-20">
-                                  <div className="d-flex">
-                                    <span className="text-container">{item.id}</span>
-                                  </div>
-                                </td>
-                                <td className="w-20">{HelperServices.getLocalDateAndTime(item.created)}</td>
-                                <td className="w-20">{HelperServices.getLocalDateAndTime(item.modified)}</td>
-                                <td className="w-12">
-                                  <span className="d-flex align-items-center">
-                                    {item.isDraft ? <span className="status-draft"></span> : <span className="status-live"></span>}
-                                    {item.isDraft ? t("Draft") : t("Submission")}
-                                  </span>
-                                </td>
-                                <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
-
-                                <td className="text-end">
-                                  {getActionButtons(item)}
-                                </td>
-                              </tr>
-                            ))}
+            {draftAndSubmissionsList?.applications?.length ? (
+                <>
+                  <tbody>
+                    {draftAndSubmissionsList?.applications?.map((item) => (
+                      <tr key={item.id}>
+                        <td className="w-20">
+                          <div className="d-flex">
+                            <span className="text-container">{item.id}</span>
                           </div>
-                        </tbody>
-                        <tfoot>
-                          {draftAndSubmissionsList?.applications?.length ? (
-                            <TableFooter
-                              limit={limit}
-                              activePage={pageNo}
-                              totalCount={totalForms}
-                              handlePageChange={handlePageChange}
-                              onLimitChange={onSizePerPageChange}
-                              pageOptions={pageOptions} />
-                          ) : (
-                            <></>
-                          )}
-                        </tfoot>
-                        </>
-                    ) : noDataMessage}
-                </table>
-                
-                <ConfirmModal
-                show={showDeleteModal}
-                primaryBtnAction={handleCloseActionModal}
-                onClose={handleCloseActionModal}
-                title={t("Are You Sure You Want to Delete This Draft?")}
-                message={t("This action cannot be undone.")}
-                secondaryBtnAction={confirmDraftDelete}
-                primaryBtnText={t("No, Keep This Draft")}
-                secondaryBtnText={t("Yes, Delete this Draft")}
-                secondoryBtndataTestid="yes-delete-button"
-                primaryBtndataTestid="no-delete-button"
-                primaryBtnariaLabel="No, Keep This Draft"
-                secondoryBtnariaLabel="Yes, Delete this Draft"
-                secondaryBtnDisable={isDeletionLoading}
-                secondaryBtnLoading={isDeletionLoading}
-            />
-            </div>
+                        </td>
+                        <td className="w-20">{HelperServices.getLocalDateAndTime(item.created)}</td>
+                        <td className="w-20">{HelperServices.getLocalDateAndTime(item.modified)}</td>
+                        <td className="w-12">
+                          <span className="d-flex align-items-center">
+                            {item.isDraft ? <span className="status-draft"></span> : <span className="status-live"></span>}
+                            {item.isDraft ? t("Draft") : t("Submission")}
+                          </span>
+                        </td>
+                        <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
+
+                        <td className="text-end">
+                          {getActionButtons(item)}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+                </>
+            ) : noDataMessage}
+        </table>
+        
+        <ConfirmModal
+        show={showDeleteModal}
+        primaryBtnAction={handleCloseActionModal}
+        onClose={handleCloseActionModal}
+        title={t("Are You Sure You Want to Delete This Draft?")}
+        message={t("This action cannot be undone.")}
+        secondaryBtnAction={confirmDraftDelete}
+        primaryBtnText={t("No, Keep This Draft")}
+        secondaryBtnText={t("Yes, Delete this Draft")}
+        secondoryBtndataTestid="yes-delete-button"
+        primaryBtndataTestid="no-delete-button"
+        primaryBtnariaLabel="No, Keep This Draft"
+        secondoryBtnariaLabel="Yes, Delete this Draft"
+        secondaryBtnDisable={isDeletionLoading}
+        secondaryBtnLoading={isDeletionLoading}
+    />
+    </div>
+    
+    {draftAndSubmissionsList?.applications?.length ? (
+      <TableFooter
+        limit={limit}
+        activePage={pageNo}
+        totalCount={totalForms}
+        handlePageChange={handlePageChange}
+        onLimitChange={onSizePerPageChange}
+        pageOptions={pageOptions} />
+    ) : (
+      <></>
+    )}
+  </div>
 );
 };
 

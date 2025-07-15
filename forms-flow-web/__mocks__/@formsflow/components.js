@@ -482,7 +482,9 @@ export const TableFooter = ({
 
 export const NoDataFound = ({message,dataTestId}) => {
   return (
-    <p className="empty-message" data-testid={dataTestId}>{message}</p>
+    <tbody className="table-empty">
+      <p className="empty-message" data-testid={dataTestId}>{message}</p>
+    </tbody>
   );
 };
 

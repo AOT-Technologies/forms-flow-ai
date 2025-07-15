@@ -292,49 +292,49 @@ const ProcessTable = React.memo(() => {
         </div>
       </div>
       {isLoading ? <TableSkeleton columns={5} rows={7} /> :
-        <div className="custom-tables-wrapper">
-          <table className="table custom-tables">
-            <thead className="table-header">
-              <tr>
-                  <SortableHeader
-                    columnKey="name"
-                    title="Name"
-                    currentSort={sortConfig}
-                    handleSort={handleSort}
+        <div className="custom-table-wrapper-outter">
+          <div className="custom-table-wrapper-inner">
+            <table className="table custom-tables">
+              <thead className="table-header">
+                <tr>
+                    <SortableHeader
+                      columnKey="name"
+                      title="Name"
+                      currentSort={sortConfig}
+                      handleSort={handleSort}
+                      className="w-25"
+                    />
+                    <SortableHeader
+                      columnKey="processKey"
+                      title="ID"
+                      currentSort={sortConfig}
+                      handleSort={handleSort}
+                      className="w-20"
+                    />
+                    <SortableHeader
+                      columnKey="modified"
+                      title="Last Edited"
+                      currentSort={sortConfig}
+                      handleSort={handleSort}
+                      className="w-15"
+                    />
+                    <SortableHeader
+                      columnKey="status"
+                      title="Status"
+                      currentSort={sortConfig}
+                      handleSort={handleSort}
+                      className="w-15"
+                    />
+                  <th
                     className="w-25"
-                  />
-                  <SortableHeader
-                    columnKey="processKey"
-                    title="ID"
-                    currentSort={sortConfig}
-                    handleSort={handleSort}
-                    className="w-20"
-                  />
-                  <SortableHeader
-                    columnKey="modified"
-                    title="Last Edited"
-                    currentSort={sortConfig}
-                    handleSort={handleSort}
-                    className="w-15"
-                  />
-                  <SortableHeader
-                    columnKey="status"
-                    title="Status"
-                    currentSort={sortConfig}
-                    handleSort={handleSort}
-                    className="w-15"
-                  />
-                <th
-                  className="w-25"
-                  colSpan="4"
-                  aria-label="edit-button"
-                ></th>
-              </tr>
-            </thead>
-            {processList.length ? (
-              <>
-              <tbody>
-                <div className="table-scroll-container">
+                    colSpan="4"
+                    aria-label="edit-button"
+                  ></th>
+                </tr>
+              </thead>
+              {processList.length ? (
+                <>
+                <tbody>
                   {processList.map((processItem) => (
                     <ReusableProcessTableRow
                       key={processItem.id}
@@ -343,35 +343,39 @@ const ProcessTable = React.memo(() => {
                       buttonLabel={ProcessContents.processType}
                     />
                   ))}
-                </div>
-              </tbody>
-              <tfoot>
-                <TableFooter
-                    limit={currentState.limit}
-                    activePage={currentState.activePage}
-                    totalCount={totalCount}
-                    handlePageChange={handlePageChange}
-                    onLimitChange={onLimitChange}
-                    pageOptions={[
-                      { text: "5", value: 5 },
-                      { text: "10", value: 10 },
-                      { text: "25", value: 25 },
-                      { text: "50", value: 50 },
-                      { text: "100", value: 100 },
-                      { text: "All", value: totalCount },
-                    ]}
-                  />
-              </tfoot>
-              </>
-            ) : !isLoading ? (
-              <tbody className="table-empty">
-                <div className="table-scroll-container">
+                </tbody>
+                </>
+              ) : !isLoading ? (
+                <tbody className="table-empty">
                   <NoDataFound message={t(`${ProcessContents.message}`)} />
-                </div>
-              </tbody>
-            ) : null}
-          </table>
-        </div>}
+                </tbody>
+              ) : null}
+            </table>
+          </div>
+
+          
+
+          {processList.length ? (
+            <TableFooter
+                limit={currentState.limit}
+                activePage={currentState.activePage}
+                totalCount={totalCount}
+                handlePageChange={handlePageChange}
+                onLimitChange={onLimitChange}
+                pageOptions={[
+                  { text: "5", value: 5 },
+                  { text: "10", value: 10 },
+                  { text: "25", value: 25 },
+                  { text: "50", value: 50 },
+                  { text: "100", value: 100 },
+                  { text: "All", value: totalCount },
+                ]}
+              />
+            ) : (
+              <></>
+            )}
+        </div>
+      }
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}

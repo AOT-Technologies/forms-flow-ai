@@ -14,8 +14,8 @@ from formsflow_api_utils.utils import (
 from formsflow_api.services import SubmissionsFilterService
 
 API = Namespace(
-    "SubmissionsFilterPreferences",
-    description="Analyze Submissions Filter Preferences",
+    "AnalyzeSubmissionsFilterPreferences",
+    description="APIs for managing user filter preferences for submissions analysis.",
 )
 
 variable = API.model(

@@ -183,8 +183,8 @@ function ClientTable() {
                                     variant="secondary"
                                     size="table"
                                     label={t("Select")}
-                                    onClick={() => showFormEntries(e._id)}
-                                    dataTestId={`form-submit-button-${e._id}`}
+                                    onClick={() => showFormEntries(e.parentFormId)}
+                                    dataTestId={`form-submit-button-${e.parentFormId}`}
                                     aria-label={t("Select a form")}
                                     actionTable
                                 />

@@ -71,6 +71,8 @@ class UserSchema(Schema):
         unknown = EXCLUDE
 
     default_filter = fields.Int(data_key="defaultFilter", allow_none=True)
+    default_submissions_filter = fields.Int(
+        data_key="defaultSubmissionsFilter", allow_none=True
+    )
     locale = fields.Str(data_key="locale")
     user_name = fields.Str(data_key="userName", dump_only=True)
-    # tenant = fields.Str(data_key="tenantKey", dump_only=True)

@@ -19,14 +19,20 @@ import {
 } from "../../../../constants/constants";
 import { updateCustomSubmission } from "../../../../apiManager/services/FormServices";
 import PropTypes from "prop-types";
+import { StyleServices } from "@formsflow/service"; 
 const View = React.memo((props) => {
   const { t } = useTranslation();
-  const { 
+  const {
     onSubmit,
     options,
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url },
   } = props;
+
+  const customLogoPath =  StyleServices?.getCSSVariable("--custom-logo-path");
+  const customTitle = StyleServices?.getCSSVariable("--custom-title");
+  const hasMultitenancyHeader = customLogoPath || customTitle;
+
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
@@ -35,20 +41,35 @@ const View = React.memo((props) => {
     (state) => state.customSubmission?.submission || {}
   );
 
-  const updatedSubmission = useMemo(()=>{
+
+
+  const updatedSubmission = useMemo(() => {
     if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
       return customSubmission;
     } else {
       return submission;
     }
-  },[customSubmission,submission]);
+  }, [customSubmission, submission]);
+
+  if (isFormActive || (isSubActive && !isFormSubmissionLoading) || !updatedSubmission?.data) {
+    return <Loading />;
+  }
+
+
+  let scrollableOverview = "scrollable-overview";
+
+  if (form?.display === "wizard") {
+    scrollableOverview = hasMultitenancyHeader
+      ? "scrollable-overview-with-custom-header-and-wizard"
+      : "scrollable-overview-with-wizard";
+  }
 
   if (isFormActive || (isSubActive && !isFormSubmissionLoading) || !updatedSubmission?.data) {
     return <Loading />;
   }
 
   return (
-    <div className="scrollable-overview  bg-white ps-3 pe-3 m-0 form-border">
+    <div className={`${scrollableOverview} bg-white ps-3 pe-3 m-0 form-border`}>
       <LoadingOverlay
         active={isFormSubmissionLoading}
         spinner

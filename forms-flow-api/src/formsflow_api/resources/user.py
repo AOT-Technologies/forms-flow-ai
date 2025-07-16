@@ -5,6 +5,7 @@ from http import HTTPStatus
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
+    ANALYZE_SUBMISSIONS_VIEW,
     CREATE_DESIGNS,
     CREATE_FILTERS,
     MANAGE_ALL_FILTERS,
@@ -78,7 +79,13 @@ tenant_add_user_model = API.model(
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
-default_filter_model = API.model("DefaulFilter", {"defaultFilter": fields.Integer()})
+default_filter_model = API.model(
+    "DefaulFilter",
+    {
+        "defaultFilter": fields.Integer(),
+        "defaultSubmissionsFilter": fields.Integer(),
+    },
+)
 default_filter_response_model = API.inherit(
     "DefaulFilterResponse",
     default_filter_model,
@@ -147,7 +154,9 @@ class UserDefaultFilter(Resource):
     """Resource to create or update user's default filter."""
 
     @staticmethod
-    @auth.has_one_of_roles([VIEW_FILTERS, CREATE_FILTERS, MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles(
+        [VIEW_FILTERS, CREATE_FILTERS, MANAGE_ALL_FILTERS, ANALYZE_SUBMISSIONS_VIEW]
+    )
     @profiletime
     @API.doc(body=default_filter_model)
     @API.response(200, "OK:- Successful request.", model=default_filter_response_model)
@@ -160,7 +169,7 @@ class UserDefaultFilter(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
-        """Update the user's default task filter."""
+        """Update the user's default task filter or analyze submissions filter."""
         data = UserSchema().load(request.get_json())
         response = UserService().update_user_data(data=data)
         return response, HTTPStatus.OK

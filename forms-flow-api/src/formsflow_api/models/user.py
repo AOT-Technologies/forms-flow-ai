@@ -17,6 +17,11 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     default_filter = db.Column(
         db.Integer, db.ForeignKey("filter.id", ondelete="SET NULL"), nullable=True
     )
+    default_submissions_filter = db.Column(
+        db.Integer,
+        db.ForeignKey("submissions_filter.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     locale = db.Column(db.String(), nullable=True, comment="language code")
     tenant = db.Column(db.String(), nullable=True, comment="tenant key")
     __table_args__ = (
@@ -33,6 +38,7 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         user.locale = user_data.get("locale")
         user.tenant = user_data.get("tenant")
         user.default_filter = user_data.get("default_filter")
+        user.default_submissions_filter = user_data.get("default_submissions_filter")
         user.save()
         return user
 
@@ -43,6 +49,7 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "locale",
                 "tenant",
                 "default_filter",
+                "default_submissions_filter",
             ],
             user_data,
         )

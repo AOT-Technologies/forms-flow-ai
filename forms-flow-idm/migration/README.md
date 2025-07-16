@@ -85,7 +85,7 @@ python migrate-7.1.0.py
 ```commandline
 PS : The keycloak client provided for this script needs `manage-clients` role from `realm-management`.
 ```
-Migrate new roles, removes deprecated ones, and updates role descriptions introduced in 7.1.0, to the multitenant setup
+Migrate new roles, and updates role descriptions introduced in 7.1.0, to the multitenant setup
 ```bash
 [Default setup]
 python migrate-7.2.0.py --tenants=tenant1,tenant2

@@ -1,5 +1,5 @@
 
-from utils import get_access_token, get_client_id, add_client_roles, delete_client_role, update_client_role
+from utils import get_access_token, get_client_id, add_client_roles, update_client_role
 
 # New roles to be added to the forms-flow-web client
 roles_to_add = [
@@ -159,7 +159,6 @@ def _migrate_default():
         # Get client and group IDs
         client_id = get_client_id(token, "forms-flow-web")
         add_client_roles(token, client_id, roles_to_add)
-        delete_client_role(token,client_id, roles_to_remove)
         update_client_role(token, client_id, roles_to_update)
         
 

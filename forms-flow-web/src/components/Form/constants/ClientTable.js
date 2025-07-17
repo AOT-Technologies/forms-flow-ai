@@ -93,9 +93,7 @@ function ClientTable() {
   const noDataFound = () => {
     return (
       <tbody className="table-empty">
-        <div className="table-scroll-container">
-          <NoDataFound message={t('No forms have been found.')}/>
-        </div>
+        <NoDataFound message={t('No forms have been found.')}/>
       </tbody>
     );
   };
@@ -107,118 +105,116 @@ function ClientTable() {
 
   return (
       <>
-        <div className="custom-tables-wrapper">
-          <table className="table custom-tables table-responsive-sm" data-testid="client-table">
-            <thead className="table-header">
-              <tr>
-                  <SortableHeader
-                    columnKey="formName"
-                    title="Form Name"
-                    currentSort={formsort}
-                    handleSort={handleSort}
-                    className="w-30"
-                  />
-                <th className="w-30" scope="col" data-testid="description-header">
-                  {t("Description")}
-                </th>
+        <div className="custom-table-wrapper-outter">
+          <div className="custom-table-wrapper-inner">
+            <table className="table custom-tables" data-testid="client-table">
+              <thead className="table-header">
+                <tr>
+                    <SortableHeader
+                      columnKey="formName"
+                      title="Form Name"
+                      currentSort={formsort}
+                      handleSort={handleSort}
+                      className="w-30"
+                    />
+                  <th className="w-30" scope="col" data-testid="description-header">
+                    {t("Description")}
+                  </th>
 
-                  <SortableHeader
-                    columnKey="submissionCount"
-                    title="Submissions"
-                    currentSort={formsort}
-                    handleSort={handleSort}
-                    className="w-13" />
+                    <SortableHeader
+                      columnKey="submissionCount"
+                      title="Submissions"
+                      currentSort={formsort}
+                      handleSort={handleSort}
+                      className="w-13" />
 
-                
-                  <SortableHeader
-                    columnKey="latestSubmission"
-                    title={t("Latest Submission")}
-                    currentSort={formsort}
-                    handleSort={handleSort}
-                    className="w-15" />
-                
-                <th className="w-12" aria-label="Select a Form"></th>
-              </tr>
-            </thead>
-            {formData?.length ? (
-              <>
-              <tbody>
-                <div className="table-scroll-container">
-                  {formData.map((e, index) => {
-                    const isExpanded = expandedRowIndex === index;
-                    return (
-                      <React.Fragment key={index}>
-                        <tr>
-                          <td className="w-30">
-                            <span
-                              data-testid={`form-title-${e._id}`}
-                              className="text-container"
-                            >
-                              {e.title}
-                            </span>
-                          </td>
-                          <td className="w-30">
-                            <span
-                              data-testid="description-cell"
-                              className={` cursor-pointer ${isExpanded ? "text-container-expand" : "text-container"}`}
-                              role="button"
-                              tabIndex="0"
-                              aria-expanded={isExpanded} // Adds accessibility
-                              onClick={() => toggleRow(index)}
-                              onKeyDown={(e) => handleKeyPress(e, index)}
-                            >
-                              {stripHtml(e.description ? e.description : "")}
-                            </span>
-                          </td>
-                          <td
-                            data-testid={`Submissions-count-${e._id}`} className="w-13">
-                            {e.submissionsCount}
-                          </td>
-                          <td
-                            data-testid={`latest-submission-${e._id}`} className="w-15">
-                            {HelperServices?.getLocaldate(e.latestSubmission)}
-                          </td>
+                  
+                    <SortableHeader
+                      columnKey="latestSubmission"
+                      title={t("Latest Submission")}
+                      currentSort={formsort}
+                      handleSort={handleSort}
+                      className="w-15" />
+                  
+                  <th className="w-12" aria-label="Select a Form"></th>
+                </tr>
+              </thead>
+              {formData?.length ? (
+                <>
+                <tbody>
+                    {formData.map((e, index) => {
+                      const isExpanded = expandedRowIndex === index;
+                      return (
+                        <React.Fragment key={index}>
+                          <tr>
+                            <td className="w-30">
+                              <span
+                                data-testid={`form-title-${e._id}`}
+                                className="text-container"
+                              >
+                                {e.title}
+                              </span>
+                            </td>
+                            <td className="w-30">
+                              <span
+                                data-testid="description-cell"
+                                className={` cursor-pointer ${isExpanded ? "text-container-expand" : "text-container"}`}
+                                role="button"
+                                tabIndex="0"
+                                aria-expanded={isExpanded} // Adds accessibility
+                                onClick={() => toggleRow(index)}
+                                onKeyDown={(e) => handleKeyPress(e, index)}
+                              >
+                                {stripHtml(e.description ? e.description : "")}
+                              </span>
+                            </td>
+                            <td
+                              data-testid={`Submissions-count-${e._id}`} className="w-13">
+                              {e.submissionsCount}
+                            </td>
+                            <td
+                              data-testid={`latest-submission-${e._id}`} className="w-15">
+                              {HelperServices?.getLocaldate(e.latestSubmission)}
+                            </td>
 
-                          <td className=" w-12 ">
-                            <div className="d-flex justify-content-end">
-                              <CustomButton
-                                  variant="secondary"
-                                  size="table"
-                                  label={t("Select")}
-                                  onClick={() => showFormEntries(e.parentFormId)}
-                                  dataTestId={`form-submit-button-${e.parentFormId}`}
-                                  aria-label={t("Select a form")}
-                                  actionTable
-                              />
-                            </div>
-                          </td>
-                        </tr>
+                            <td className=" w-12 ">
+                              <div className="d-flex justify-content-end">
+                                <CustomButton
+                                    variant="secondary"
+                                    size="table"
+                                    label={t("Select")}
+                                    onClick={() => showFormEntries(e.parentFormId)}
+                                    dataTestId={`form-submit-button-${e.parentFormId}`}
+                                    aria-label={t("Select a form")}
+                                    actionTable
+                                />
+                              </div>
+                            </td>
+                          </tr>
 
-                      </React.Fragment>
-                    );
-                  })}
-                </div>
-                <div className="custom-scrollbar"><div></div></div>
-              </tbody>
-              <tfoot>
-                {formData.length ? (
-                  <TableFooter
-                    limit={limit}
-                    activePage={pageNo}
-                    totalCount={totalForms}
-                    handlePageChange={handlePageChange}
-                    onLimitChange={onSizePerPageChange}
-                    pageOptions={pageOptions}
-                  />
-                ) : (
-                  <></>
-                )}
-              </tfoot>
-              </>
-            ) : !searchFormLoading ? (
-              noDataFound()
-            ) : null}
-          </table>
+                        </React.Fragment>
+                      );
+                    })}
+                </tbody>
+                </>
+              ) : !searchFormLoading ? (
+                noDataFound()
+              ) : null}
+            </table>
+          </div>
+
+          {formData.length ? (
+            <TableFooter
+              limit={limit}
+              activePage={pageNo}
+              totalCount={totalForms}
+              handlePageChange={handlePageChange}
+              onLimitChange={onSizePerPageChange}
+              pageOptions={pageOptions}
+            />
+          ) : (
+            <></>
+          )}
         </div>
         {showSubmissions && <SubmissionDrafts />}
       </>

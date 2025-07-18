@@ -36,7 +36,9 @@ class SubmissionsModel(Document):
     @staticmethod
     def _build_projection_stage(project_fields: Optional[List[str]]) -> dict:
         """Build the MongoDB projection stage."""
-        project_stage = {"$project": {"_id": {"$toString": "$_id"}}}
+        project_stage = {"$project": {
+            "_id": {"$toString": "$_id"},
+        }}
         if project_fields:
             for field in project_fields:
                 project_stage["$project"][field] = f"$data.{field}"
@@ -69,7 +71,11 @@ class SubmissionsModel(Document):
         pipeline.append(SubmissionsModel._build_projection_stage(selected_form_fields))
         # Only add pagination if page_no and limit specified
         if page_no is not None and limit is not None:
-            total = await SubmissionsModel.aggregate(pipeline).count()
+            # Get only the count (no document data)
+            count_pipeline = pipeline + [{"$count": "total"}]
+            count_result = await SubmissionsModel.aggregate(count_pipeline).to_list(length=1)
+            total = count_result[0]["total"] if count_result else 0
+            # Add skip and limit stages for pagination
             pipeline.append({"$skip": (page_no - 1) * limit})
             pipeline.append({"$limit": limit})
             items = await SubmissionsModel.aggregate(pipeline).to_list()

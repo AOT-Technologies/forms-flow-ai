@@ -4,8 +4,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from flask_sqlalchemy.query import Query
 from formsflow_api_utils.utils import (
     FILTER_MAPS,
@@ -14,7 +12,17 @@ from formsflow_api_utils.utils import (
 )
 from formsflow_api_utils.utils.enums import MetricsState
 from formsflow_api_utils.utils.user_context import UserContext, user_context
-from sqlalchemy import and_, asc, case, desc, func, or_, text
+from sqlalchemy import (
+    and_,
+    asc,
+    case,
+    desc,
+    func,
+    nulls_first,
+    nulls_last,
+    or_,
+    text,
+)
 from sqlalchemy.orm import aliased
 
 from .application_history import ApplicationHistory
@@ -256,6 +264,7 @@ class Application(
     def find_all_by_user(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         cls,
         user_id: str,
+        view_only_submission: bool,
         page_no: int,
         limit: int,
         order_by: str,
@@ -268,7 +277,18 @@ class Application(
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(Application.created_by == user_id)
-        if only_drafts:  # only draft applications
+        # if view_only_submission is True, then we need to filter out drafts and resubmissions
+        if view_only_submission:
+            query = query.filter(
+                ~or_(
+                    cls.is_draft.is_(True),  # Exclude drafts
+                    cls.is_resubmit.is_(True),
+                    cls.application_status.in_(
+                        ["Resubmit", "Awaiting Acknowledgement"]
+                    ),
+                )
+            )
+        elif only_drafts:  # only draft applications
             query = query.filter(Application.is_draft.is_(True))
         elif not include_drafts:  # only submissions
             query = cls.filter_draft_applications(query=query)
@@ -879,17 +899,16 @@ class Application(
     @classmethod
     def apply_submission_sorting(cls, query, sort_by, sort_order, submission_alias):
         """Sort by submission count or latest submission time."""
-        order_func = desc if "desc" in sort_order else asc
+        order_func, nulls_func = (
+            (desc, nulls_last) if "desc" in sort_order else (asc, nulls_first)
+        )
+        # Sort by latest submission time/submission count, treating NULLs first while ascending & last while descending
         if "latestSubmission" in sort_by:
-            # Sort by latest submission time, treating NULLs as max datetime
             return query.order_by(
-                order_func(
-                    func.coalesce(submission_alias.c.latest_submission, datetime.max)
-                )
+                nulls_func(order_func(submission_alias.c.latest_submission))
             )
-        # Default: sort by submission count, treating NULLs as 0
         return query.order_by(
-            order_func(func.coalesce(submission_alias.c.submissions_count, 0))
+            nulls_func(order_func(submission_alias.c.submissions_count))
         )
 
     @classmethod

@@ -88,6 +88,8 @@ class SubmissionService:
         parent_form_id: str,
         filters: Dict,
         selected_form_fields: List[str],
+        created_before: Optional[str],
+        created_after: Optional[str],
         page_no: int,
         limit: int,
     ) -> Optional[PaginatedSubmissionResponse]:
@@ -132,6 +134,8 @@ class SubmissionService:
                 roles=user_groups,
                 is_paginate=is_paginate_on_webapi_side,
                 filter=webapi_search,
+                created_before=created_before,
+                created_after=created_after,
                 page_no=page_no,
                 limit=limit,
                 parent_form_id=parent_form_id,
@@ -177,14 +181,15 @@ class SubmissionService:
                     submission_id=row.get("submission_id"),
                     created_by=row.get("created_by"),
                     application_status=row.get("application_status"),
+                    created=row.get("created"),
                     data=row.get("submission_data", {}),
                 )
                 for row in data
             ],
             total_count=(
-                mongo_side_submissions.get("total_count")
+                mongo_side_submissions.get("total_count", 0)
                 if mongo_search
-                and parent_form_id  # if mongo side submission is empty then use webapi side submission count
+                and needs_mongo_submissions
                 else total_count
             ),
             page_no=page_no,

@@ -1,18 +1,12 @@
 package org.camunda.bpm.extension.hooks.rest;
 
+import jakarta.ws.rs.*;
 import org.bpm.utils.dto.ProcessDefinitionDiagramDto;
 import org.bpm.utils.dto.ProcessInstanceDto;
 import org.bpm.utils.dto.ProcessDefinitionDto;
 import org.bpm.utils.dto.StartProcessInstanceDto;
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.UriInfo;
@@ -48,4 +42,9 @@ public interface ProcessDefinitionRestResource extends RestResource{
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     CountResultDto getProcessDefinitionsCount(@Context UriInfo uriInfo);
+
+    @DELETE
+    @Path("/key/{key}/delete")
+    void deleteProcessDefinitionsByKey(@PathParam("key") String var1, @QueryParam("cascade") boolean var2, @QueryParam("skipCustomListeners") boolean var3, @QueryParam("skipIoMappings") boolean var4);
+
 }

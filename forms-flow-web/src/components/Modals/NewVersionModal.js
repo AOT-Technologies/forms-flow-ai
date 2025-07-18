@@ -50,15 +50,15 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
     }, [acceptState]);
 
     return (
-        <Modal show={show} onHide={clearState} dialogClassName="modal-50w" size="sm" centered={true}>
+        <Modal show={show} onHide={clearState} dialogClassName="modal-50w" size="sm">
             <Modal.Header>
                 <Modal.Title>
-                    <b>{title}</b>
+                    <p>{title}</p>
                 </Modal.Title>
-                <div className="d-flex align-items-center">
-                    <CloseIcon width="16.5" height="16.5" onClick={() => {
+                <div className="icon-close" onClick={() => {
                         clearState();
-                    }} />
+                    }}  data-testid="modal-close-icon">
+                    <CloseIcon />
                 </div>
             </Modal.Header>
             <Modal.Body className="newversion-modal-body">
@@ -119,28 +119,30 @@ const NewVersionModal = React.memo(({ show, title, createNewVersion, onClose,
 
             </Modal.Body>
 
-            <Modal.Footer className="d-flex justify-content-start">
-                <CustomButton
-                    variant={!checkedAll ? "dark" : "primary"}
-                    disabled={!checkedAll}
-                    size="md"
-                    label={t(`Save as Version ${newVersion}`)}
-                    onClick={() => createNewVersion()}
-                    buttonLoading={isNewVersionLoading ? true : false}
-                    dataTestId="confirm-new-version"
-                    ariaLabel="Confirm New Version"
-                />
-                <CustomButton
-                    variant="secondary"
-                    size="md"
-                    label={t("Cancel")}
-                    onClick={() => {
-                        clearState();
-                    }}
-                    className=""
-                    dataTestId="cancel-import"
-                    ariaLabel="Cancel Import"
-                />
+            <Modal.Footer>
+                <div className="buttons-row">
+                    <CustomButton
+                        variant={!checkedAll ? "dark" : "primary"}
+                        disabled={!checkedAll}
+                        size="md"
+                        label={t(`Save as Version ${newVersion}`)}
+                        onClick={() => createNewVersion()}
+                        buttonLoading={isNewVersionLoading ? true : false}
+                        dataTestId="confirm-new-version"
+                        ariaLabel="Confirm New Version"
+                    />
+                    <CustomButton
+                        variant="secondary"
+                        size="md"
+                        label={t("Cancel")}
+                        onClick={() => {
+                            clearState();
+                        }}
+                        className=""
+                        dataTestId="cancel-import"
+                        ariaLabel="Cancel Import"
+                    />
+                </div>
             </Modal.Footer>
         </Modal>
     );

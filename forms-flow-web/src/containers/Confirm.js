@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
+import { CustomButton } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
 
 const Confirm = React.memo((props) => {
@@ -16,25 +17,41 @@ const Confirm = React.memo((props) => {
   return (
     <>
       <Modal  
-        centered
         data-testid="delete-modal" 
         show={modalOpen}>
         <Modal.Header>
-          <Modal.Title>{t("Delete Confirmation")}</Modal.Title>
+          <Modal.Title><p>{t("Delete Confirmation")}</p></Modal.Title>
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-link text-dark"
-            data-testid="delete-cancel-button"
-            onClick={onNo}>
-            {noText}</button>
+          <div className="buttons-row">
+            <CustomButton
+              label={noText}
+              onClick={onNo}
+              dataTestId="delete-cancel-button"
+              ariaLabel={t("Save Form Settings")}
+            />
 
-          <button className="btn btn-danger" onClick={onYes} data-testid="delete-confirm-button">
-            {yesText}
-          </button>
+            <CustomButton
+              label={yesText}
+              onClick={onYes}
+              dataTestId="delete-confirm-button"
+              ariaLabel={t("Save Form Settings")}
+              secondary
+            />
 
+            {/* <button
+              // type="button"
+              // className="btn btn-link text-dark"
+              // data-testid="delete-cancel-button"
+              // onClick={onNo}
+              >
+              {noText}</button> */}
+
+            {/* <button className="btn btn-danger" onClick={onYes} data-testid="delete-confirm-button">
+              {yesText}
+            </button> */}
+          </div>
         </Modal.Footer>
       </Modal>
     </>

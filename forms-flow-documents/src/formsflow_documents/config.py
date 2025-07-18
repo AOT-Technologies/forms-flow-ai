@@ -75,6 +75,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     CUSTOM_SUBMISSION_ENABLED = (
         os.getenv("CUSTOM_SUBMISSION_ENABLED", "false").lower() == "true"
     )
+    ENABLE_COMPACT_FORM_VIEW = (
+        os.getenv("ENABLE_COMPACT_FORM_VIEW", "false").lower() == "true"
+    )
 
     # Keycloak client authorization enabled flag
     KEYCLOAK_ENABLE_CLIENT_AUTH = (
@@ -89,6 +92,11 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # Configure LOG
     CONFIGURE_LOGS = str(os.getenv("CONFIGURE_LOGS", default="true")).lower() == "true"
+
+    # This is the timeout for the chrome driver to wait for the page to load
+    CHROME_DRIVER_TIMEOUT = int(
+        os.getenv("CHROME_DRIVER_TIMEOUT", default="60")
+    )  # seconds
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

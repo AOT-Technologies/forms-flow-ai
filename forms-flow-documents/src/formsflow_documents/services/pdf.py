@@ -3,6 +3,7 @@
 import json
 import os
 import tempfile
+import shutil
 import urllib.parse
 import uuid
 from typing import Any, Tuple, Union
@@ -27,10 +28,12 @@ class PDFService:
 
     __slots__ = (
         "__is_form_adaptor",
+        "__is_enable_compact_form_view",
         "__custom_submission_url",
         "__form_io_url",
         "__host_name",
         "__chrome_driver_path",
+        "__chrome_driver_timeout",
         "form_id",
         "submission_id",
         "formio",
@@ -44,10 +47,14 @@ class PDFService:
         submission_id: submissionid corresponding to the PDF.
         """
         self.__is_form_adaptor = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
+        self.__is_enable_compact_form_view = current_app.config.get(
+            "ENABLE_COMPACT_FORM_VIEW"
+        )
         self.__custom_submission_url = current_app.config.get("CUSTOM_SUBMISSION_URL")
         self.__form_io_url = current_app.config.get("FORMIO_URL")
         self.__host_name = current_app.config.get("FORMSFLOW_DOC_API_URL")
         self.__chrome_driver_path = current_app.config.get("CHROME_DRIVER_PATH")
+        self.__chrome_driver_timeout = current_app.config.get("CHROME_DRIVER_TIMEOUT")
         self.form_id = form_id
         self.submission_id = submission_id
         self.formio = FormioService()
@@ -55,6 +62,10 @@ class PDFService:
     def __is_form_adapter(self) -> bool:
         """Returns whether th eapplication is using a form adaptor."""
         return self.__is_form_adaptor
+
+    def __is_enabled_compact_form_view(self) -> bool:
+        """Returns whether thE application is using a COMPACT_FORM_VIEW."""
+        return self.__is_enable_compact_form_view
 
     def __get_custom_submission_url(self) -> str:
         """Returns the custom submission url based on config."""
@@ -84,6 +95,10 @@ class PDFService:
     def __get_chrome_driver_path(self) -> str:
         """Returns the configured chrome driver path."""
         return self.__chrome_driver_path
+
+    def __get_chrome_driver_timeout(self) -> int:
+        """Returns the configured chrome driver timeout."""
+        return self.__chrome_driver_timeout
 
     def __get_headers(self, token):
         """Returns the headers."""
@@ -136,6 +151,7 @@ class PDFService:
                 "token": self.__get_formio_access_token(),
                 "form_adapter": self.__is_form_adapter(),
                 "submission_data": submission_data,
+                "compact_form_view": self.__is_enabled_compact_form_view(),
             }
         }
 
@@ -364,6 +380,7 @@ class PDFService:
             self.__get_render_url(template_name, template_variable_name),
             self.__get_chrome_driver_path(),
             args=self.__get_render_args(timezone, token, bool(template_name)),
+            chrome_driver_timeout=self.__get_chrome_driver_timeout(),
         )
         return pdf_response(pdf, self.generate_pdf_file_name()) if pdf else False
 
@@ -387,6 +404,7 @@ class PDFService:
                 html_content,
                 self.__get_chrome_driver_path(),
                 args=self.__get_render_args(timezone, token, True),
+                chrome_driver_timeout=self.__get_chrome_driver_timeout(),
             )
             return pdf
         except Exception as e:  # pylint:disable=broad-exception-caught
@@ -453,3 +471,72 @@ class PDFService:
         except Exception as e:  # pylint:disable=broad-exception-caught
             current_app.logger.error(f"Error in direct template rendering: {str(e)}")
         return None
+
+    def generate_pdf_from_template(  # pylint: disable-msg=too-many-locals
+        self,
+        timezone: str,
+        token: str,
+    ) -> Any:
+        """Generate PDF."""
+        # Get render data
+        render_data = self.get_render_data(False, None, token)
+        current_app.logger.debug("Render data received for PDF generation")
+        # Get the template folder path
+        template_dir = self.get_template_path(is_temp=False)
+        current_app.logger.info(f"Template directory: {template_dir}")
+
+        # Setup environment
+        env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+
+        # Override `url_for` to output relative paths like static/style.css
+        # Avoids url_for undefined error outside Flask
+        env.globals["url_for"] = (
+            lambda endpoint, **values: f"static/{values['filename']}"
+        )
+
+        # Load default template and render
+        template = env.get_template("index.html")
+        html = template.render(**render_data)
+
+        # Create a temporary file to store the HTML content
+        fd, temp_html_path = tempfile.mkstemp(suffix=".html")
+        with os.fdopen(fd, "w") as f:
+            f.write(html)
+
+        # Use file:// protocol to access the temporary file
+        temp_url = f"file://{temp_html_path}"  # noqa: E231
+
+        # Move the static files to a temporary directory
+        temp_dir = os.path.join(tempfile.gettempdir())
+        current_app.logger.debug(f"Template directory: {temp_dir}")
+        # Copy static folder only if it doesn't already exist in temp directory
+        temp_static_dir = os.path.join(temp_dir, "static")
+        current_app.logger.debug("Copying static files to temporary directory...")
+        if not os.path.exists(temp_static_dir):
+            # get static files path
+            static_dir = os.path.dirname(__file__)
+            static_dir = static_dir.replace("services", "static")
+            shutil.copytree(static_dir, temp_static_dir)
+        else:
+            current_app.logger.info(
+                "Static folder already exists in temp directory, skipping copy."
+            )
+
+        # Use the existing function to generate PDF from URL
+        pdf = get_pdf_from_html(
+            temp_url,
+            self.__get_chrome_driver_path(),
+            args=self.__get_render_args(timezone, token, False),
+            chrome_driver_timeout=self.__get_chrome_driver_timeout(),
+        )
+        # Clean up temporary file
+        try:
+            os.unlink(temp_html_path)
+        except Exception:  # pylint:disable=broad-exception-caught
+            pass  # Ignore cleanup errors
+
+        return (
+            self.create_pdf_response(pdf, self.generate_pdf_file_name())
+            if pdf
+            else False
+        )

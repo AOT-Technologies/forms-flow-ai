@@ -16,7 +16,7 @@ import {
 } from "../../apiManager/services/processServices";
 import _ from "lodash";
 import { StyleServices } from "@formsflow/service";
-
+import userRoles from "../../constants/permissions";
 
   // Filter out applicationId and applicationStatus
   const ignoreKeywords = new Set([
@@ -26,7 +26,7 @@ import { StyleServices } from "@formsflow/service";
     "submitterEmail",
     "submitterFirstName",
     "submitterLastName",
-    "currentUserRole",
+    "currentUserRoles",
     "allAvailableRoles"
   ]);
 
@@ -35,7 +35,6 @@ const PillList = React.memo(({ alternativeLabels, onRemove }) => {
   const { t } = useTranslation();
   const primaryColor = StyleServices.getCSSVariable('--ff-primary'); 
   const primaryLight = StyleServices.getCSSVariable('--ff-primary-light'); 
-
   const filteredVariablePills = Object.values(alternativeLabels).filter(
     ({ key }) => !ignoreKeywords.has(key)
   );
@@ -278,16 +277,74 @@ const FormComponent = React.memo(
 
         <div className="field-details-container" ref={detailsRef}>
           {showElement  && selectedComponent.key ? (
+            <>
+
+            {/* Keep for next version for future updated design */}
+            {/* <div className="slideout-variable-selected">
+              <div className="head">
+                <button className="close" data-testid="close-button" aria-label="Close slideout">×</button>
+              </div>
+              
+              <div className="scroll-vertical">
+                <div className="content">
+                    <div className="variable-info">
+                        <p>{t("Type")}:</p>
+            
+                        <p>{selectedComponent.type}</p>
+                    </div>
+            
+                    <div className="variable-info">
+                        <p>{t("Variable")}:</p>
+            
+                        <p>{selectedComponent.key}</p>
+                    </div>
+            
+                    <FormInput
+                      type="text"
+                      ariaLabel="Add alternative label input"
+                      dataTestId="Add-alternative-input"
+                      label="Add Alternative Label"
+                      value={selectedComponent.altVariable}
+                      onChange={(e) =>
+                        setSelectedComponent((prev) => ({
+                          ...prev,
+                          altVariable: e.target.value,
+                        }))
+                      }
+                    />
+            
+                    <CustomButton
+                      dataTestId="Add-alternative-btn"
+                      ariaLabel="Add alternative label button"
+                      size="sm"
+                      label={
+                        alternativeLabels[selectedComponent.key]
+                          ? t("Update This Variable")
+                          : t("Add This Variable")
+                      }
+                      onClick={handleAddAlternative}
+                      className="w-75"
+                      disabled={selectedComponent.
+                          altVariable === alternativeLabels[selectedComponent.key]?.altVariable} //TBD need to create a variable to compare values
+                    />
+                </div>
+              </div>
+          </div> */}
+
             <div className="details-section">
               <div className="d-flex flex-column">
                 <span>{t("Type")}:</span>
+
                 <span className="text-bold"> {selectedComponent.type}</span>
               </div>
+
               <div className="d-flex flex-column">
                 <span>{t("Variable")}:</span>
+
                 <span className="text-bold">{selectedComponent.key}</span>
                 {/* TBD in case of Bundle  */}
               </div>
+
               <FormInput
                 type="text"
                 ariaLabel="Add alternative label input"
@@ -301,14 +358,15 @@ const FormComponent = React.memo(
                   }))
                 }
               />
+
               <CustomButton
                 dataTestId="Add-alternative-btn"
                 ariaLabel="Add alternative label button"
                 size="sm"
                 label={
                   alternativeLabels[selectedComponent.key]
-                    ? t("Update Variable")
-                    : t("Add Variable")
+                    ? t("Update This Variable")
+                    : t("Add This Variable")
                 }
                 onClick={handleAddAlternative}
                 className="w-75"
@@ -316,8 +374,13 @@ const FormComponent = React.memo(
                     altVariable === alternativeLabels[selectedComponent.key]?.altVariable} //TBD need to create a variable to compare values
               />
             </div>
+            </>
           ) : (
-            <p className="select-text">{t("Select a form field on the left")}</p>
+            <>
+              {/* <h3>{t("Selected Variables")}</h3> */}
+
+              <p className="select-text">{t("To use variables in the flow, submissions and tasks you need to specify which variables you want to import. Variables get imported at the time of the submission. If specific variables are not selected prior to the submission THEY WILL NOT BE AVAILABLE.")}<br></br><br></br>{t("Select a form field on the left to add a variable to the list.")}</p>
+            </>
           )}
         </div>
       </div>
@@ -341,7 +404,7 @@ const TaskVariableModal = React.memo(
     const formProcessList = useSelector(
       (state) => state.process.formProcessList
     );
-
+    const {createDesigns} = userRoles();
     const form = useSelector((state) => state.form?.form || {});
     const [alternativeLabels, setAlternativeLabels] = useState({});
 
@@ -409,22 +472,17 @@ const TaskVariableModal = React.memo(
     const layoutNotSavedContent = (
       <>
         <CustomButton
-          variant="primary"
-          size="md"
-          className=""
           label={t("Back to Layout")}
           ariaLabel="Back to Layout btn"
           dataTestId="back-to-layout-btn"
           onClick={handleBackToLayout}
         />
         <CustomButton
-          variant="secondary"
-          size="md"
-          className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
           dataTestId="cancel-btn"
           onClick={handleClose}
+          secondary
         />
       </>
     );
@@ -432,24 +490,19 @@ const TaskVariableModal = React.memo(
     // Define the content for when layoutNotsaved is false
     const layoutSavedContent = (
       <>
-        <CustomButton
-          variant="primary"
-          size="md"
-          className=""
+       { createDesigns && <CustomButton
           disabled={isPublished}
           label={t("Save")}
           ariaLabel="save task variable btn"
           dataTestId="save-task-variable-btn"
           onClick={handleSaveTaskVariable}
-        />
+        />}
         <CustomButton
-          variant="secondary"
-          size="md"
-          className=""
           label={t("Cancel")}
           ariaLabel="Cancel btn"
           dataTestId="cancel-btn"
           onClick={handleClose}
+          secondary
         />
       </>
     );
@@ -460,20 +513,21 @@ const TaskVariableModal = React.memo(
         onHide={handleClose}
         className="task-variable-modal"
         size={layoutNotsaved ? "sm" : "lg"}
-        centered={true}
         data-testid="task-variable-modal"
       >
         <Modal.Header>
           <Modal.Title>
-            {layoutNotsaved
-              ? t("Selecting Variables Is Not Available")
-              : t("Variables for Flow, Submissions, and Tasks")}
+            <p>
+              {layoutNotsaved
+                ? t("Selecting Variables Is Not Available")
+                : t("Select Variables")}
+            </p>
           </Modal.Title>
-          <div className="d-flex align-items-center">
-            <CloseIcon dataTestId="close-task-var-modal" width="16.5" height="16.5" onClick={handleClose} />
+          <div className="icon-close" onClick={handleClose} >
+            <CloseIcon dataTestId="close-task-var-modal"/>
           </div>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="with-sections">
           {layoutNotsaved ? (
             // Content when layoutNotsaved is true
             <div className="info-pill-container">
@@ -488,20 +542,18 @@ const TaskVariableModal = React.memo(
             // Content when layoutNotsaved is false
             <>
               <div className="info-pill-container">
-                <CustomInfo
-                  heading={t("Note")}
-                  content={t("To use variables in the flow, as well as sorting by them in the submissions and tasks you need to specify which variables you want to import from the layout. Variables get imported into the system at the time of the submission, if the variables that are needed are not selected prior to the form submission THEY WILL NOT BE AVAILABLE in the flow, submissions, and tasks.")}
-                />
                 <div>
                   <label className="selected-var-text">
                     {t("Selected Variables")}
                   </label>
+
                   <PillList
                     alternativeLabels={alternativeLabels}
                     onRemove={removeSelectedVariable}
                   />
                 </div>
               </div>
+
               <div className="variable-container">
                 <FormComponent
                   form={form}
@@ -515,7 +567,9 @@ const TaskVariableModal = React.memo(
           )}
         </Modal.Body>
         <Modal.Footer>
-          {layoutNotsaved ? layoutNotSavedContent : layoutSavedContent}
+          <div className="buttons-row">
+            {layoutNotsaved ? layoutNotSavedContent : layoutSavedContent}
+          </div>
         </Modal.Footer>
       </Modal>
     );

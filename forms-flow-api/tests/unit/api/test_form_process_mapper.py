@@ -5,7 +5,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from formsflow_api_utils.utils import (
-    ADMIN,
     CREATE_DESIGNS,
     CREATE_SUBMISSIONS,
     VIEW_DESIGNS,
@@ -101,9 +100,6 @@ def test_form_process_mapper_by_formid(app, client, session, jwt, create_mapper)
 
 def test_form_process_mapper_id_deletion(app, client, session, jwt, create_mapper):
     """Testing form process mapper delete endpoint."""
-    token = get_token(jwt, role=CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = create_mapper
     auth_payload = {
         "resourceId": "1234",
         "resourceDetails": {},
@@ -111,7 +107,7 @@ def test_form_process_mapper_id_deletion(app, client, session, jwt, create_mappe
     }
     token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(
+    client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
     )
     response = client.post(
@@ -134,18 +130,14 @@ def test_form_process_mapper_id_deletion(app, client, session, jwt, create_mappe
 
 def test_form_process_mapper_test_update(app, client, session, jwt, create_mapper):
     """Testing form process mapper update endpoint."""
-    token = get_token(jwt, role=CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = create_mapper
-
     auth_payload = {
         "resourceId": "1234",
         "resourceDetails": {},
         "roles": ["/formsflow/formsflow-designer"],
     }
-    token = get_token(jwt, role=ADMIN)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(
+    client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
     )
     response = client.post(
@@ -175,18 +167,14 @@ def test_anonymous_form_process_mapper_test_update(
     app, client, session, jwt, create_mapper
 ):
     """Testing anonymous form process mapper update endpoint."""
-    token = get_token(jwt, role=CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = create_mapper
-
     auth_payload = {
         "resourceId": "1234",
         "resourceDetails": {},
         "roles": ["/formsflow/formsflow-designer"],
     }
-    token = get_token(jwt, role=ADMIN)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(
+    client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
     )
     response = client.post(
@@ -222,17 +210,14 @@ def test_get_application_count_based_on_form_process_mapper_id(
     app, client, session, jwt, create_mapper
 ):
     """Testing the count API for applications corresponding to mapper id."""
-    token = get_token(jwt, role=CREATE_DESIGNS, roles=["/formsflow/formsflow-designer"])
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = create_mapper
     auth_payload = {
         "resourceId": "1234",
         "resourceDetails": {},
         "roles": ["/formsflow/formsflow-designer"],
     }
-    token = get_token(jwt, role=ADMIN)
+    token = get_token(jwt, role=CREATE_DESIGNS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(
+    client.post(
         "/authorizations/form", headers=headers, data=json.dumps(auth_payload)
     )
     response = client.post(
@@ -255,11 +240,6 @@ def test_get_application_count_based_on_form_process_mapper_id1(
     app, client, session, jwt, create_mapper
 ):
     """Testing the count api."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
     rv = create_mapper
     form_id = rv["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
@@ -279,11 +259,6 @@ def test_get_task_variable_based_on_form_process_mapper_id(
     app, client, session, jwt, create_mapper
 ):
     """Assert that API when passed with valid payload returns 200 status code."""
-    token = get_token(jwt, role=CREATE_DESIGNS)
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
     form_id = create_mapper["formId"]
     token = get_token(jwt, role=CREATE_SUBMISSIONS)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}

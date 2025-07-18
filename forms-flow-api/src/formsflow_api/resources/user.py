@@ -5,9 +5,14 @@ from http import HTTPStatus
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
-    ADMIN,
+    ANALYZE_SUBMISSIONS_VIEW,
+    CREATE_DESIGNS,
     CREATE_FILTERS,
     MANAGE_ALL_FILTERS,
+    MANAGE_ROLES,
+    MANAGE_USERS,
+    VIEW_DESIGNS,
+    VIEW_FILTERS,
     VIEW_TASKS,
     auth,
     cors_preflight,
@@ -74,7 +79,13 @@ tenant_add_user_model = API.model(
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
-default_filter_model = API.model("DefaulFilter", {"defaultFilter": fields.Integer()})
+default_filter_model = API.model(
+    "DefaulFilter",
+    {
+        "defaultFilter": fields.Integer(),
+        "defaultSubmissionsFilter": fields.Integer(),
+    },
+)
 default_filter_response_model = API.inherit(
     "DefaulFilterResponse",
     default_filter_model,
@@ -143,7 +154,9 @@ class UserDefaultFilter(Resource):
     """Resource to create or update user's default filter."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN, CREATE_FILTERS, MANAGE_ALL_FILTERS])
+    @auth.has_one_of_roles(
+        [VIEW_FILTERS, CREATE_FILTERS, MANAGE_ALL_FILTERS, ANALYZE_SUBMISSIONS_VIEW]
+    )
     @profiletime
     @API.doc(body=default_filter_model)
     @API.response(200, "OK:- Successful request.", model=default_filter_response_model)
@@ -156,7 +169,7 @@ class UserDefaultFilter(Resource):
         "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
     )
     def post():
-        """Update the user's default task filter."""
+        """Update the user's default task filter or analyze submissions filter."""
         data = UserSchema().load(request.get_json())
         response = UserService().update_user_data(data=data)
         return response, HTTPStatus.OK
@@ -168,7 +181,18 @@ class KeycloakUsersList(Resource):
     """Resource to fetch keycloak users."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN, CREATE_FILTERS, MANAGE_ALL_FILTERS, VIEW_TASKS])
+    @auth.has_one_of_roles(
+        [
+            CREATE_DESIGNS,
+            VIEW_DESIGNS,
+            VIEW_FILTERS,
+            CREATE_FILTERS,
+            MANAGE_ALL_FILTERS,
+            VIEW_TASKS,
+            MANAGE_ROLES,
+            MANAGE_USERS,
+        ]
+    )
     @profiletime
     @API.doc(
         params={
@@ -256,7 +280,7 @@ class UserPermission(Resource):
     """Resource to manage keycloak user."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_USERS])
     @profiletime
     @API.doc(body=user_permission_update_model)
     @API.response(204, "NO CONTENT:- Successful request.")
@@ -285,7 +309,7 @@ class UserPermission(Resource):
         return None, HTTPStatus.NO_CONTENT
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_USERS])
     @profiletime
     @API.response(204, "NO CONTENT:- Successful request.")
     @API.response(
@@ -322,7 +346,7 @@ class TenantAddUser(Resource):
     """Resource to manage add user to a tenant."""
 
     @staticmethod
-    @auth.has_one_of_roles([ADMIN])
+    @auth.has_one_of_roles([MANAGE_USERS])
     @profiletime
     @API.doc(body=tenant_add_user_model)
     @API.response(200, "OK:- Successful request.")

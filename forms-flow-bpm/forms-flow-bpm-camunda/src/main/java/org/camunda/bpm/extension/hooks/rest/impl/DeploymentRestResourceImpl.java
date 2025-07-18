@@ -46,4 +46,9 @@ public class DeploymentRestResourceImpl implements DeploymentRestResource {
         return restService.getDeployment(id).getDeploymentResources().getDeploymentResourceData(resourceId);
     }
 
+    @Override
+    public void deleteDeployment(String id, UriInfo uriInfo) {
+        restService.getDeployment(id).deleteDeployment(id, uriInfo);
+    }
+
 }

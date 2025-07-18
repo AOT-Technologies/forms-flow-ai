@@ -11,6 +11,15 @@ Ensure the following prerequisites are met before proceeding with the deployment
 - Docker installed
 - Docker Compose installed
 
+## ❌ Unsupported Docker Versions
+
+The following Docker versions are **not supported** in this installation process due to compatibility or known issues:
+
+- Docker 19.1.x
+- Docker versions below 20.10.23
+
+> **Note:** Please ensure you're using a stable Docker version tested with this installation.
+
 ## Clone the Repository
 
 ```bash
@@ -150,6 +159,19 @@ docker-compose up --build -d
 Wait until it's up and running, then access it at http://localhost:8000/camunda
 
 <img src="../../.images/image-5.png" />
+
+### Forms-flow-data-layer
+
+The **forms-flow-data-layer** service is introduced as a dedicated backend component to support GraphQL. It acts as a centralized data access layer with direct connectivity to all underlying databases, including Formio's MongoDB and the WebAPI's PostgreSQL. This separation allows for cleaner architecture, improved security, and more efficient querying across multiple data sources via GraphQL.
+
+NOTE: ``Rename sample.env to .env and  replace {your-ip-address} with your local IP address.``
+
+```bash
+cd forms-flow-data-layer
+docker-compose up --build -d
+```
+<img src="../../.images/image_data_layer.png" />
+
 
 ### Forms-flow-web-root-config
 

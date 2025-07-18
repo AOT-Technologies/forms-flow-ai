@@ -47,5 +47,6 @@ from .process import (
 )
 from .process_history_logs import ProcessHistorySchema
 from .roles import RolesGroupsSchema
+from .submissions_filter import SubmissionsFilterSchema
 from .tasks import TaskOutcomeConfigurationSchema
 from .theme import ThemeCustomizationSchema

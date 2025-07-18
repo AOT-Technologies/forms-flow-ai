@@ -301,6 +301,7 @@ class FormResourceList(Resource):
             CREATE_DESIGNS,
             VIEW_DESIGNS,
             CREATE_SUBMISSIONS,
+            VIEW_SUBMISSIONS,
             CREATE_FILTERS,
             VIEW_FILTERS,
             MANAGE_ALL_FILTERS,
@@ -751,7 +752,7 @@ class FormHistoryResource(Resource):
     """Resource for form history."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, VIEW_DESIGNS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=form_history_response_model)
     @API.response(
@@ -787,7 +788,7 @@ class ExportById(Resource):
     """Resource to support export by mapper_id."""
 
     @staticmethod
-    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @auth.has_one_of_roles([CREATE_DESIGNS, VIEW_DESIGNS])
     @profiletime
     @API.response(200, "OK:- Successful request.", model=export_response_model)
     @API.response(

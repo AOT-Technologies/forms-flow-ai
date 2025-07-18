@@ -119,6 +119,7 @@ export const mockstate = {
     createDesigns: true,
     viewSubmissions: true,
     createSubmissions: true,
+    viewSubmissionHistory: true,
     showApplications: true,
     bearerToken: "",
     isAuthenticated: true,
@@ -150,6 +151,7 @@ export const mockstate = {
       "create_filters",
       "formsflow-designer",
       "manage_subflows",
+      "submission_view_history",
     ],
     roleIds: {
       DESIGNER: "65f684595a0b7bdb4eabddb3",

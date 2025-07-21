@@ -124,7 +124,7 @@ roles_to_update= [
     },
     {
         "name": "create_filters",
-        "description": "Manage filters you create"
+        "description": "Manage personal filters"
     },
     {
         "name": "view_tasks",

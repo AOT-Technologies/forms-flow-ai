@@ -2,16 +2,6 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 7.2.0 -
-
-`Added`
-
-**formsflow-api**
-* Added the `submissions_filter` table to store user-specific filter preferences for analyzing submissions.
-* Added the `default_submissions_filter` column to the user table to record each user's default filter for submission analysis.
-* Implemented new endpoints for managing analyze submissions filters:
-   * `/submissions-filter` for creating, updating, and listing filters.
-   * `/submissions-filter/<id>` for retrieving or deleting a filter by its ID.
 
 ## 7.2.0 - 
 
@@ -21,6 +11,19 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 **formsflow-documents**
 * Added new environment variable:
    * CHROME_DRIVER_TIMEOUT to specify timeout for the chrome driver to wait for the page to load
+
+**formsflow-api**
+* Added the `submissions_filter` table to store user-specific filter preferences for analyzing submissions.
+* Added the `default_submissions_filter` column to the user table to record each user's default filter for submission analysis.
+* Implemented new endpoints for managing analyze submissions filters:
+   * `/submissions-filter` for creating, updating, and listing filters.
+   * `/submissions-filter/<id>` for retrieving or deleting a filter by its ID.
+
+`Modified`
+
+**formsflow-api**
+* Updated create_filters description from "Manage filters you create" to “Manage personal filters”
+
 
 ## 7.1.0 - 2025-07-01
 

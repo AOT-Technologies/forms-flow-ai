@@ -81,7 +81,7 @@
         },
         {
           "name": "create_filters",
-          "description": "Manage filters you create",
+          "description": "Manage personal filters",
           "composite": false,
           "clientRole": true,
           "attributes": {}

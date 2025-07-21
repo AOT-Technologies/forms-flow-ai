@@ -13,9 +13,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * `/submissions-filter` for creating, updating, and listing filters.
    * `/submissions-filter/<id>` for retrieving or deleting a filter by its ID.
 
-## 7.2.0 - 
-
-`Added`
+**formsflow-tools**
+* Added Git management tools
+   * Added pre-push check for testing changes
 
 
 **formsflow-documents**
@@ -162,10 +162,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 `Modified`
 * Issue with Simple conditional logic option of formio components not returning component names fixed
 
-
-**formsflow-tools**
-* Added Git management tools
-   * Added pre-push check for testing changes
 
 
 ## 7.0.0 - 2025-01-10

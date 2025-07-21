@@ -59,6 +59,7 @@ class Application(BaseModel):
         cls,
         tenant_key: str,
         roles: list[str],
+        form_name: str,
         parent_form_id: str,
         filter: dict = None,
         created_before: str = None,
@@ -93,7 +94,10 @@ class Application(BaseModel):
             authorization_table=authorization_table, roles=roles
         )
 
-        # Optional condition
+        # Optional conditions
+        form_name_condition = (
+            mapper_table.c.form_name == form_name if form_name else True
+        )
         parent_form_id_condition = (
             mapper_table.c.parent_form_id == parent_form_id if parent_form_id else True
         )
@@ -103,6 +107,7 @@ class Application(BaseModel):
             mapper_table,
             and_(
                 application_table.c.form_process_mapper_id == mapper_table.c.id,
+                form_name_condition,  # Ensure form name matches if provided
                 parent_form_id_condition,  # Ensure parent form ID matches if provided
                 mapper_table.c.tenant
                 == tenant_key,  # Ensure tenant key matches in both tables

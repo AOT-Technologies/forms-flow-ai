@@ -27,11 +27,12 @@ export const fetchMetricsSubmissionCount = (
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
+    print('formName', formName);
     const url = API.GRAPHQL;
     /*eslint max-len: ["error", { "code": 170 }]*/
     const query = `
       query FetchMetricsSubmissionQuery {
-        getSubmission(sortBy: "${sortsBy}", sortOrder: "${sortOrder}", pageNo: ${pageNo}, limit: ${limit}, filters: {
+        getSubmission(formName: "${formName}", sortBy: "${sortsBy}", sortOrder: "${sortOrder}", pageNo: ${pageNo}, limit: ${limit}, filters: {
           from: "${fromDate}",
           to: "${toDate}",
           orderBy: "${searchBy}",

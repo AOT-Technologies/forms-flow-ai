@@ -14,6 +14,7 @@ class QuerySubmissionsResolver:
     async def get_submission(
         self,
         info: strawberry.Info,
+        form_name: Optional[str] = None,
         sort_by: str = "created",
         sort_order: str = "desc",
         parent_form_id: Optional[str] = None,
@@ -29,6 +30,7 @@ class QuerySubmissionsResolver:
 
         Args:
             info (strawberry.Info): GraphQL context information
+            form_name (Optional[str]): Name of the form
             sort_by (str): Field to sort by (default: "created")
             sort_order (str): Order of sorting (default: "desc")
             parent_form_id (Optional[str]): ID of the parent form
@@ -43,6 +45,7 @@ class QuerySubmissionsResolver:
         """
         submission = await SubmissionService.get_submission(
             info=info,
+            form_name=form_name,
             sort_by=sort_by,
             sort_order=sort_order,
             parent_form_id=parent_form_id,

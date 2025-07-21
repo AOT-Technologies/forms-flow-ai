@@ -83,6 +83,7 @@ class SubmissionService:
     @staticmethod
     async def get_submission(
         info: strawberry.Info,
+        form_name: str,
         sort_by: str,
         sort_order: str,
         parent_form_id: str,
@@ -95,7 +96,8 @@ class SubmissionService:
     ) -> Optional[PaginatedSubmissionResponse]:
         """
         Fetches submissions from both webapi and MongoDB, merges them, and returns a paginated response.
-        Args:sort_by: Field to sort by (default: "created")
+        Args: form_name: Name of the form
+            sort_by: Field to sort by (default: "created")
             sort_order: Order of sorting (default: "desc")
             parent_form_id: ID of the parent form
             filters: Filters to apply to the query
@@ -133,6 +135,7 @@ class SubmissionService:
                 tenant_key=tenant_key,
                 roles=user_groups,
                 is_paginate=is_paginate_on_webapi_side,
+                form_name=form_name,
                 filter=webapi_search,
                 created_before=created_before,
                 created_after=created_after,

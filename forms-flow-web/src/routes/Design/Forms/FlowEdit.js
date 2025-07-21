@@ -11,6 +11,9 @@ import {
   ConfirmModal,
   HistoryModal,
   CurlyBracketsIcon,
+  VariableModal,
+  CloseIcon,
+  CustomInfo
 } from "@formsflow/components";
 // import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -25,6 +28,7 @@ import {
   updateProcess,
   getProcessHistory,
   fetchRevertingProcessData,
+  saveFormProcessMapperPut
 } from "../../../apiManager/services/processServices.js";
 import { toast } from "react-toastify";
 import {
@@ -35,7 +39,7 @@ import {
 import PropTypes from "prop-types";
 import userRoles from "../../../constants/permissions.js";
 import BPMNViewer from "../../../components/BPMN/BpmnViewer.js";
-import TaskVariableModal from "../../../components/Modals/TaskVariableModal.js";
+import Modal from "react-bootstrap/Modal";  
 
 const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   setWorkflowIsChanged,workflowIsChanged, migration, setMigration, redirectUrl,
@@ -51,9 +55,31 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const { createDesigns, viewDesigns} =  userRoles();
-  const [showTaskVarModal, setShowTaskVarModal] = useState(false);
+  const [showVariableModal, setShowVariableModal] = useState(false);
+  const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false);
   const [isMigrationChecked, setIsMigrationChecked] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
+
+   /* ------------ data that need to pass to reusabel variable modal ----------- */
+  const form = useSelector((state) => state.form?.form || {});
+  const [savedFormVariables, setSavedFormVariables] = useState({});
+  const formProcessList = useSelector(
+        (state) => state.process.formProcessList
+      );
+       useEffect(() => {
+      
+             const updatedLabels = {};
+            // Add taskVariables to updatedLabels
+            formProcessList?.taskVariables?.forEach(({ key, label, type }) => {
+              updatedLabels[key] = {
+                key,
+                altVariable: label, // Use label from taskVariables as altVariable
+                labelOfComponent: label, // Set the same label for labelOfComponent
+                type: type,
+              };
+            });
+            setSavedFormVariables(updatedLabels);
+          }, [formProcessList]);
    /* --------- fetching all process history when click history button --------- */
   const {
     data: { data: historiesData } = {}, // response data destructured
@@ -189,16 +215,50 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
         bpmnRef.current?.handleImport(xml);
       },
     }));
+    
     const handlePreviewAndVariables = () => {
-      setShowTaskVarModal(true);
+    if (layoutNotsaved) {
+      setShowUnsavedChangesModal(true);
+    } else {
+      setShowVariableModal(true);
+    }
+  };
+    const handleCloseVariableModal = () => {
+      setShowVariableModal(false);
     };
-    const CloseTaskVarModal = () => {
-      setShowTaskVarModal(false);
-    };
-
     const handleCloseMigration = () => {
     setShowMigrationModal(false);
-  };return (
+  };
+
+  const handleSaveVariables = async (variables) => {
+    console.log(variables,"variale in opensource");
+    if(!variables) return;
+    const currentTaskVariables = Object.values(variables).map((i) => ({
+      key: i.key,
+      label: i.altVariable || i.labelOfComponent, // If altVariable exists, use it, otherwise it will be  labelOfComponent
+      type: i.type,
+    }));
+    const mapper = {
+      formId: formProcessList.formId,
+      id: formProcessList.id,
+      parentFormId: formProcessList.parentFormId,
+      taskVariables: currentTaskVariables,
+      formName: formProcessList.formName,
+    };
+    await dispatch(saveFormProcessMapperPut({ mapper }));
+  };
+
+  const handleCloseUnsavedChangesModal = () => {
+    setShowUnsavedChangesModal(false);
+  };
+
+
+  const handleBackToLayout = () => {
+      handleCloseUnsavedChangesModal();
+      handleCurrentLayout();
+    };
+
+  return (
       <>
         {/* <Card> */}
         <div className="card-molecule">
@@ -290,93 +350,145 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
           {/* </Card.Body> */}
           </div>
         {/* </Card> */}
-        </div>
-        {showMigrationModal && <ConfirmModal
-        show={showMigrationModal}
-        title={t("***Migration Notice***")}
-        message={
-          <div>
-            <div className="message-primary mb-3">
-              {t(`We have switched to a new 1-to-1 relationship structure,
+      </div>
+      {showMigrationModal && (
+        <ConfirmModal
+          show={showMigrationModal}
+          title={t("***Migration Notice***")}
+          message={
+            <div>
+              <div className="message-primary mb-3">
+                {t(`We have switched to a new 1-to-1 relationship structure,
               where 1 form contains both the layout (visual of the form)
                and the flow (the actions that get executed after the
                form's submission). Due to this 1-to-1 relationship,
                each layout (previously known as "form") will have a
                flow associated with it, so you cannot reuse flows -
                 one flow cannot be executed by different forms.`)}
-            </div>
-            <div className="message-primary mb-3">
-              {t(`This form shares a flow with a few other forms. As this is
+              </div>
+              <div className="message-primary mb-3">
+                {t(`This form shares a flow with a few other forms. As this is
                not allowed under the new structure, we will permanently
                 link this flow with this form. For the other forms reusing
                  this flow, we will automatically duplicate the flow. When
                  flows are duplicated, their history is not carried over.
                  You need to pick which form keeps the history and which
                  forms get duplicates without history.`)}
-            </div>
-            <div className="message-primary mb-3">
-              {t(`If this is the form you wish to keep the flow's history with,
+              </div>
+              <div className="message-primary mb-3">
+                {t(`If this is the form you wish to keep the flow's history with,
                confirm below. If this is not the form, then hit cancel, find
                 the form you want, make a minor change, press "Save Layout"
                  or "Save Flow," and confirm it there.`)}
-            </div>
-            <div className="d-flex justify-content-between align-items-center">
-              <label className="message-primary">
-                {t(`This is the form that will keep the current
-                flow and its history.`)}
-                {" "}
-              </label>
-              <div className="dashed-line"></div>
-              <div className="custom-checkbox d-flex justify-content-between align-items-center gap-2">
-                <input
-                  type="checkbox"
-                  className="form-check-input mb-2"
-                  onChange={() => setIsMigrationChecked(prev => !prev)}
-                  data-testid="migration-confirm"
-                  checked={isMigrationChecked}
-                />
-                <label className="message-primary">{t(`I confirm`)}</label>
-                
+              </div>
+              <div className="d-flex justify-content-between align-items-center">
+                <label className="message-primary">
+                  {t(`This is the form that will keep the current
+                flow and its history.`)}{" "}
+                </label>
+                <div className="dashed-line"></div>
+                <div className="custom-checkbox d-flex justify-content-between align-items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="form-check-input mb-2"
+                    onChange={() => setIsMigrationChecked((prev) => !prev)}
+                    data-testid="migration-confirm"
+                    checked={isMigrationChecked}
+                  />
+                  <label className="message-primary">{t(`I confirm`)}</label>
+                </div>
               </div>
             </div>
-          </div >
-        }
-        primaryBtnDisable={!isMigrationChecked}
-        messageSecondary={null} // You can set this to `null` or remove it entirely if unused
-        primaryBtnAction={handleMigration}
-        onClose={handleCloseMigration}
-        primaryBtnText={t("Link this form that will keep the current flow and its history")}
-        secondaryBtnText={t("Cancel")}
-        secondaryBtnAction={handleCloseMigration}
-        buttonLoading={isMigrationLoading}
-        size="sm"
-      />}
-      
-        <HistoryModal
-          show={showHistoryModal}
-          onClose={handleToggleHistoryModal}
-          title={t("History")}
-          loadMoreBtnText={t("Load More")}
-          loadMoreBtndataTestId="load-more-flow-history"
-          revertBtnText={t("Revert To This")}
-          allHistory={historiesData?.processHistory || []}
-          loadMoreBtnAction={loadMoreBtnAction}
-          categoryType={CategoryType.WORKFLOW}
-          revertBtnAction={fetchHistoryData}
-          historyCount={historiesData?.totalCount || 0}
-          disableAllRevertButton={processData.status === "Published" || isPublished }
+          }
+          primaryBtnDisable={!isMigrationChecked}
+          messageSecondary={null} // You can set this to `null` or remove it entirely if unused
+          primaryBtnAction={handleMigration}
+          onClose={handleCloseMigration}
+          primaryBtnText={t(
+            "Link this form that will keep the current flow and its history"
+          )}
+          secondaryBtnText={t("Cancel")}
+          secondaryBtnAction={handleCloseMigration}
+          buttonLoading={isMigrationLoading}
+          size="sm"
         />
-        {showTaskVarModal && (
-          <TaskVariableModal
-            showTaskVarModal={showTaskVarModal}
-            onClose={CloseTaskVarModal}
-            isPublished={isPublished}
-            layoutNotsaved={layoutNotsaved}
-            handleCurrentLayout={handleCurrentLayout}
-          />
-        )}
-      </>
-    );
+      )}
+
+      <HistoryModal
+        show={showHistoryModal}
+        onClose={handleToggleHistoryModal}
+        title={t("History")}
+        loadMoreBtnText={t("Load More")}
+        loadMoreBtndataTestId="load-more-flow-history"
+        revertBtnText={t("Revert To This")}
+        allHistory={historiesData?.processHistory || []}
+        loadMoreBtnAction={loadMoreBtnAction}
+        categoryType={CategoryType.WORKFLOW}
+        revertBtnAction={fetchHistoryData}
+        historyCount={historiesData?.totalCount || 0}
+        disableAllRevertButton={
+          processData.status === "Published" || isPublished
+        }
+      />
+      {/* Show unsaved changes modal when layout is not saved */}
+      {showUnsavedChangesModal && (
+        <Modal 
+        show={showUnsavedChangesModal}
+        size="sm"
+        data-testid="unsaved-changes-modal"
+        >
+          <Modal.Header>
+            <Modal.Title>
+              {t("Selecting Variables Is Not Available")}
+            </Modal.Title>
+            <div
+              className="icon-close"
+              onClick={handleCloseUnsavedChangesModal}
+            >
+              <CloseIcon dataTestId="close-task-var-modal" />
+            </div>
+          </Modal.Header>
+          <Modal.Body>
+            <CustomInfo
+              heading={t("Note")}
+              content={t(
+                "Variables can be accessed only when there are no pending changes to the layout. Please go back to the layout section and save or discard your changes."
+              )}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <div className="buttons-row">
+               <CustomButton
+                label={t("Back to Layout")}
+                ariaLabel="Back to Layout btn"
+                dataTestId="back-to-layout-btn"
+                onClick={handleBackToLayout}
+              />
+              <CustomButton
+                label={t("Cancel")}
+                ariaLabel="Cancel btn"
+                dataTestId="cancel-btn"
+                onClick={handleCloseUnsavedChangesModal}
+                secondary
+              />
+              </div>
+          </Modal.Footer>
+        </Modal>
+      )}
+      {/* Show variable modal when layout is saved */}
+      {!layoutNotsaved && showVariableModal && (
+        <VariableModal
+          form={form}
+          show={showVariableModal}
+          onClose={handleCloseVariableModal}
+          saveBtnDisabled={isPublished}
+          handleCurrentLayout={handleCurrentLayout}
+          savedFormVariables={savedFormVariables}
+          primaryBtnAction={handleSaveVariables}
+        />
+      )}
+    </>
+  );
   }
 );
 

@@ -4,11 +4,11 @@ import { Translation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 const CardFormCounter = React.memo((props) => {
-  const { submitionData, getStatusDetails } = props;
+  const { submissionData, getStatusDetails } = props;
   const selectedMetricsId = useSelector(
     (state) => state.metrics?.selectedMetricsId
   );
-  const { formName, parentFormId, applicationCount } = submitionData;
+  const { formName, parentFormId, applicationCount } = submissionData;
   return (
     <Fragment>
       <div

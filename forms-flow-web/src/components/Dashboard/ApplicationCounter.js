@@ -33,7 +33,7 @@ const ApplicationCounter = React.memo((props) => {
             key={idx}
           >
             <CardFormCounter
-              submitionData={app}
+              submissionData={app}
               getStatusDetails={getStatusDetails}
             />
           </div>

@@ -43,6 +43,22 @@ class IsAuthenticated(BasePermission):
             raise GraphQLError(f"Unexpected error: {str(e)}")
 
 
+class IsAdmin(BasePermission):
+    """Class for check if user is admin."""
+
+    message = "User role must be admin"
+    error_extensions = {"code": "UNAUTHORIZED"}
+
+    async def has_permission(
+        self, source: Any, info: strawberry.Info, **kwargs
+    ) -> bool:
+        try:
+            user = info.context["user"]
+            return user.has_any_roles(['admin'])
+        except Exception as e:
+            raise GraphQLError(f"Unexpected error: {str(e)}")
+
+
 class HasAnyRole(BasePermission):
     """Class for check authorization."""
 
@@ -63,7 +79,6 @@ class HasAnyRole(BasePermission):
 
 
 class Auth:
-
     @staticmethod
     def auth_required(roles: List[str] = None):
         """

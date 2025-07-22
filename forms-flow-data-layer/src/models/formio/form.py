@@ -1,21 +1,21 @@
+from datetime import datetime
 from typing import Optional
 
 from beanie import Document
 
 from .constants import FormioTables
 
-# currently this file is not used in the codebase, but it is kept for future use
 
-
-class FormModel(Document):
+class Form(Document):
     title: str
     name: str
     path: str
     type: str
-    isBundle: Optional[bool]
-    display: Optional[str] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    isBundle: bool
+    display: Optional[str] = None    
+    created: Optional[datetime] = None
+    modified: Optional[datetime] = None
+    parentFormId: Optional[str] = None
 
     class Settings:
         name = FormioTables.FORMS.value

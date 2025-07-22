@@ -3,6 +3,8 @@ from typing import Any, Callable, List
 import strawberry
 from strawberry.extensions import FieldExtension
 
+# Currently not used in favour of extending BasePermission in auth.py
+# See here for more details: https://strawberry.rocks/docs/guides/permissions
 
 class RoleCheck(FieldExtension):
     """Custom extension."""

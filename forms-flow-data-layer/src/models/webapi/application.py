@@ -6,8 +6,7 @@ from src.db.webapi_db import webapi_db
 
 from .authorization import Authorization, AuthType
 from .base import BaseModel
-from .constants import WebApiTables
-from .formprocess_mapper import FormProcessMapper
+from .form_process_mapper import FormProcessMapper
 
 
 class Application(BaseModel):
@@ -16,13 +15,8 @@ class Application(BaseModel):
     This class provides methods to interact with the application table.
     """
 
-    _application = None
-
-    @classmethod
-    async def get_table(cls):
-        if cls._application is None:
-            cls._application = await webapi_db.get_table(WebApiTables.APPLICATION.value)
-        return cls._application
+    _table_name = "application"
+    _table = None
 
     @classmethod
     def filter_query(cls, query, filter_data: dict, application_table, mapper_table):

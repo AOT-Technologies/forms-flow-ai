@@ -6,6 +6,7 @@ from src.db.webapi_db import webapi_db
 
 from .authorization import Authorization, AuthType
 from .base import BaseModel
+from .constants import WebApiTables
 from .form_process_mapper import FormProcessMapper
 
 
@@ -15,7 +16,7 @@ class Application(BaseModel):
     This class provides methods to interact with the application table.
     """
 
-    _table_name = "application"
+    _table_name = WebApiTables.APPLICATION.value
     _table = None
 
     @classmethod

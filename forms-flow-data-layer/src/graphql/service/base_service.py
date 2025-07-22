@@ -1,4 +1,4 @@
-from typing import List, TypeVar, Generic
+from typing import Generic, List, TypeVar
 
 from src.utils import get_logger
 

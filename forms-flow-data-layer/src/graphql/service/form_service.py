@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from beanie import PydanticObjectId
 
-from src.graphql.service import BaseService
 from src.graphql.schema import FormSchema, PaginationWindow
+from src.graphql.service import BaseService
 from src.models.formio import Form, SubmissionsModel
 from src.models.webapi import FormProcessMapper
 from src.utils import get_logger
@@ -11,8 +11,9 @@ from src.utils import get_logger
 logger = get_logger(__name__)
 
 
-# Service Layer for Form-related Operations
 class FormService(BaseService):
+    """Service class for handling form related operations."""
+
     @classmethod
     async def get_forms(
         cls,
@@ -21,6 +22,17 @@ class FormService(BaseService):
         offset: int = 0,
         filters: dict[str, str] = {},
     ) -> PaginationWindow[FormSchema]:
+        """
+        Fetches forms from the WebAPI and adds additional details from FormIO.
+
+        Args:
+            order_by (str): Field to sort by (default: 'id')
+            limit (int): Number of items to return (default: 100)
+            offset (int): Pagination offset (default: 0)
+            filters (dict): Search filters to apply to the query
+        Returns:
+            Paginated list of Form objects containing combined PostgreSQL and MongoDB data
+        """
         # Query webapi database
         webapi_query, webapi_total_count = await cls._webapi_find_all(FormProcessMapper, limit, offset, filters)
 
@@ -43,6 +55,14 @@ class FormService(BaseService):
 
     @staticmethod
     async def get_form(form_id: str) -> Optional[FormSchema]:
+        """
+        Fetches a form based on it's form_id from the WebAPI and adds additional details from FormIO.
+
+        Args:
+            form_id (str): ID of the form
+        Returns:
+            Form object containing combined PostgreSQL and MongoDB data
+        """
         # Query the databases
         webapi_result = await FormProcessMapper.first(form_id=form_id)
         formio_result = await Form.get(PydanticObjectId(form_id))

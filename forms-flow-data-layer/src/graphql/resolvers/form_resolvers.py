@@ -10,7 +10,6 @@ from src.middlewares.auth import auth
 @strawberry.type
 class QueryFormsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
-    @strawberry.field
     async def get_forms(
         self,
         order_by: str = 'id',
@@ -18,6 +17,17 @@ class QueryFormsResolver:
         offset: int = 0,
         type: Optional[str] = None
     ) -> PaginationWindow[FormSchema]:
+        """
+        GraphQL resolver for querying forms.
+
+        Args:
+            order_by (str): Field to sort by (default: 'id')
+            limit (int): Number of items to return (default: 100)
+            offset (int): Pagination offset (default: 0)
+            type (Optional[str]): Type of form to return
+        Returns:
+            Paginated list of Form objects containing combined PostgreSQL and MongoDB data
+        """
         filters = {}
 
         if type:
@@ -32,7 +42,6 @@ class QueryFormsResolver:
         return forms
 
     @strawberry.field(extensions=[auth.auth_required()])
-    @strawberry.field
     async def get_form(
         self,
         form_id: str,
@@ -43,7 +52,7 @@ class QueryFormsResolver:
         Args:
             form_id (str): ID of the form
         Returns:
-            Form object containing combined SQL and MongoDB data
+            Form object containing combined PostgreSQL and MongoDB data
         """
         form = await FormService.get_form(
             form_id=form_id,

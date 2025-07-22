@@ -10,7 +10,7 @@ from src.middlewares.auth import auth
 
 @strawberry.type
 class QuerySubmissionsResolver:
-    @strawberry.field(extensions=[auth.auth_required()])
+    # @strawberry.field(extensions=[auth.auth_required()])
     async def get_submission(
         self,
         info: strawberry.Info,

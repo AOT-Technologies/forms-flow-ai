@@ -4,7 +4,7 @@ from beanie import PydanticObjectId
 
 from src.graphql.schema import FormSchema, PaginationWindow
 from src.graphql.service import BaseService
-from src.models.formio import Form, SubmissionsModel
+from src.models.formio import Form, Submission
 from src.models.webapi import FormProcessMapper
 from src.utils import get_logger
 
@@ -40,7 +40,7 @@ class FormService(BaseService):
         results = []
         webapi_results = webapi_query.all()
         for wr in webapi_results:
-            _, submissions_count = await cls._formio_find_all(SubmissionsModel, filters={"form": PydanticObjectId(wr.form_id)})
+            _, submissions_count = await cls._formio_find_all(Submission, filters={"form": PydanticObjectId(wr.form_id)})
             results.append({
                 "webapi": wr,
                 "formio": await Form.get(PydanticObjectId(wr.form_id)),

@@ -6,9 +6,8 @@ from bson import ObjectId
 from .constants import FormioTables
 
 
-class SubmissionsModel(Document):
+class Submission(Document):
     data: dict
-    _id: PydanticObjectId
 
     class Settings:
         name = FormioTables.SUBMISSIONS.value
@@ -63,29 +62,25 @@ class SubmissionsModel(Document):
         Query submissions from MongoDB with optional pagination and sorting.
         """
         # Build match stage
-        match_stage = SubmissionsModel._build_match_stage(
+        match_stage = Submission._build_match_stage(
             submission_ids=submission_ids, filter=filter
         )
         pipeline = [{"$match": match_stage}]
 
         # Add sorting if sort_by is specified
-        if sort_stage := SubmissionsModel._build_sort_stage(sort_by, sort_order):
+        if sort_stage := Submission._build_sort_stage(sort_by, sort_order):
             pipeline.append(sort_stage)
 
         # Projection stage
-        pipeline.append(SubmissionsModel._build_projection_stage(selected_form_fields))
+        pipeline.append(Submission._build_projection_stage(selected_form_fields))
         # Only add pagination if page_no and limit specified
         if page_no is not None and limit is not None:
-            # Get only the count (no document data)
-            count_pipeline = pipeline + [{"$count": "total"}]
-            count_result = await SubmissionsModel.aggregate(count_pipeline).to_list(length=1)
-            total = count_result[0]["total"] if count_result else 0
-            # Add skip and limit stages for pagination
+            total = await Submission.aggregate(pipeline).count()
             pipeline.append({"$skip": (page_no - 1) * limit})
             pipeline.append({"$limit": limit})
-            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = await Submission.aggregate(pipeline).to_list()
         else:
-            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = await Submission.aggregate(pipeline).to_list()
             total = len(items)
         return {
             "submissions": items,

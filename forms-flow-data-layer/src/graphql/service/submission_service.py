@@ -1,13 +1,15 @@
 from typing import Any, Dict, List, Optional, Tuple
 
 import strawberry
+from beanie import PydanticObjectId
 
+from src.graphql.schema import PaginationWindow, SubmissionSchema
 from src.graphql.schema import (
     PaginatedSubmissionResponse,
     SubmissionDetailsWithSubmissionData,
 )
-from src.models.formio.submission import SubmissionsModel
-from src.models.webapi.application import Application
+from src.models.formio import Submission
+from src.models.webapi import Application
 from src.utils import get_logger
 
 logger = get_logger(__name__)
@@ -15,6 +17,44 @@ logger = get_logger(__name__)
 
 class SubmissionService:
     """Service class for handling submission related operations on mongo and webapi side."""
+
+    @classmethod
+    async def get_submissions(
+        cls,
+        order_by: str,
+        limit: int = 100,
+        offset: int = 0,
+        filters: dict[str, str] = {},
+    ) -> PaginationWindow[SubmissionSchema]:
+        """
+        Fetches submissions from the WebAPI and adds additional details from FormIO.
+
+        Args:
+            order_by (str): Field to sort by (default: 'id')
+            limit (int): Number of items to return (default: 100)
+            offset (int): Pagination offset (default: 0)
+            filters (dict): Search filters to apply to the query
+        Returns:
+            Paginated list of Submission objects containing combined PostgreSQL and MongoDB data
+        """
+        # Query webapi database
+        webapi_query, webapi_total_count = await cls._webapi_find_all(Application, limit, offset, filters)
+
+        # Combine results with data from formio
+        results = []
+        webapi_results = webapi_query.all()
+        for wr in webapi_results:
+            _, submissions_count = await cls._formio_find_all(Submission, filters={"form": PydanticObjectId(wr.form_id)})
+            results.append({
+                "webapi": wr,
+                "formio": await Submission.get(PydanticObjectId(wr.form_id)),
+                "calculated": {"total_submissions": submissions_count}
+            })
+
+        # Convert to GraphQL Schema
+        forms = [SubmissionSchema.from_result(result=r) for r in results]
+        forms.sort(key=lambda x: getattr(x, order_by))
+        return PaginationWindow(items=forms, total_count=webapi_total_count)
 
     @staticmethod
     async def split_search_criteria(
@@ -160,7 +200,7 @@ class SubmissionService:
                 if app["submission_id"]
             ]
             # Get filtered submissions from MongoDB
-            mongo_side_submissions = await SubmissionsModel.query_submission(
+            mongo_side_submissions = await Submission.query_submission(
                 submission_ids=submission_ids,
                 filter=mongo_search,
                 selected_form_fields=selected_form_fields,

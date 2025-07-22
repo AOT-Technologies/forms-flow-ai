@@ -3,6 +3,7 @@ from typing import List, Optional
 import strawberry
 from strawberry.scalars import JSON
 
+from src.graphql.schema import PaginationWindow, SubmissionSchema
 from src.graphql.schema import PaginatedSubmissionResponse
 from src.graphql.service import SubmissionService
 from src.middlewares.auth import auth
@@ -11,6 +12,40 @@ from src.middlewares.auth import auth
 @strawberry.type
 class QuerySubmissionsResolver:
     # @strawberry.field(extensions=[auth.auth_required()])
+    @strawberry.field
+    async def get_submissions(
+        self,
+        order_by: str = 'id',
+        limit: int = 100,
+        offset: int = 0,
+        form_name: Optional[str] = None,
+    ) -> PaginationWindow[SubmissionSchema]:
+        """
+        GraphQL resolver for querying submissions.
+
+        Args:
+            order_by (str): Field to sort by (default: 'id')
+            limit (int): Number of items to return (default: 100)
+            offset (int): Pagination offset (default: 0)
+            form_name (Optional[str]): Name of the form to get submissions from
+        Returns:
+            Paginated list of Submission objects containing combined PostgreSQL and MongoDB data
+        """
+        filters = {}
+
+        if form_name:
+            filters["form_name"] = form_name
+
+        forms = await SubmissionService.get_submissions(
+            order_by=order_by,
+            limit=limit,
+            offset=offset,
+            filters=filters
+        )
+        return forms
+
+    # @strawberry.field(extensions=[auth.auth_required()])
+    @strawberry.field
     async def get_submission(
         self,
         info: strawberry.Info,

@@ -1,0 +1,141 @@
+#!/bin/sh
+set -eu
+
+# Check if we have an interactive terminal
+if [ -z "$TERM" ] || [ "$TERM" = "dumb" ] || [ ! -t 0 ] || [ ! -t 1 ]; then
+    echo "Non-interactive environment detected. Skipping pre-push hook." >&2
+    exit 0
+fi
+
+# Function to validate yes/no input
+is_valid_yes() {
+	case "$1" in
+		[Yy]|[Yy][Ee][Ss]) return 0 ;;
+		*) return 1 ;;
+	esac
+}
+
+is_valid_no() {
+	case "$1" in
+		[Nn]|[Nn][Oo]) return 0 ;;
+		*) return 1 ;;
+	esac
+}
+
+# Function to get push confirmation
+get_push_confirmation() {
+	local message="$1"
+	local answer
+	while true; do
+		printf "%s (y/n): " "$message" > /dev/tty
+		read -r answer < /dev/tty
+		if is_valid_yes "$answer"; then
+			return 0
+		elif is_valid_no "$answer"; then
+			return 1
+		else
+			printf "Please answer with Yes or No\n" > /dev/tty
+		fi
+	done
+}
+
+remote="$1"
+url="$2"
+
+zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
+run_web_tests=0 # Flag to check if web tests should be run
+changelog_updated_in_push=0 # Flag for changelog update
+
+while read local_ref local_oid remote_ref remote_oid
+do
+	if test "$local_oid" = "$zero"
+	then
+		# Handle delete
+		:
+	else
+		if test "$remote_oid" = "$zero"
+		then
+			# New branch, examine all commits
+			range="$local_oid"
+		else
+			# Update to existing branch, examine new commits
+			range="$remote_oid..$local_oid"
+		fi
+
+		# Check if any files were changed in the forms-flow-web directory
+		if git diff --name-only "$range" -- forms-flow-web/ | grep -q '.'; then
+			run_web_tests=1
+		fi
+		
+		# Check if CHANGELOG.md was modified in this range
+		if git diff --name-only "$range" -- CHANGELOG.md | grep -q '.'; then
+			changelog_updated_in_push=1
+		fi
+	fi
+done
+
+# --- Changelog Check ---
+if [ "$changelog_updated_in_push" -eq 0 ]; then
+	echo "⚠️  WARNING: No changes detected in CHANGELOG.md in the pushed commits." > /dev/tty
+	if ! get_push_confirmation "Proceed with push without updating CHANGELOG.md?"; then
+		echo "❌ Push aborted by user due to missing CHANGELOG.md update." > /dev/tty
+		exit 1
+	else
+		echo "ℹ️  Continuing push without CHANGELOG.md update as per user confirmation." > /dev/tty
+	fi
+fi
+
+# --- Web Linting & Testing ---
+if [ "$run_web_tests" -eq 1 ]; then
+	echo "\nℹ️  Found changes in forms-flow-web/" > /dev/tty
+
+	# Ask user if they want to run checks
+	if ! get_push_confirmation "Run linting and tests for changes in forms-flow-web/?"; then
+		echo "ℹ️  Skipping checks for forms-flow-web/ as per user request" > /dev/tty
+		# Decide if skipping checks should allow push or not. Currently allows.
+		# If skipping should abort, change exit 0 to exit 1
+		# For now, let's assume skipping checks is okay and we just continue to the end.
+	else 
+		# Only run tests if user confirmed
+		echo "\nℹ️  Running linting and tests for forms-flow-web/..." > /dev/tty
+
+		# Check if node_modules directory exists
+		if [ ! -d "forms-flow-web/node_modules" ]; then
+			echo "❌ Error: forms-flow-web/node_modules directory not found. Please run 'npm install' in forms-flow-web/" > /dev/tty
+			exit 1
+		fi
+
+		# Navigate into the web directory
+		cd forms-flow-web || exit 1
+
+		# Run linting
+		echo "ℹ️  Running forms-flow-web linting..." > /dev/tty
+		if npm run lint; then
+			echo "✅ forms-flow-web linting passed" > /dev/tty
+		else
+			echo "❌ forms-flow-web linting failed. Aborting push" > /dev/tty
+			cd .. || exit 1 # Go back to original directory before exiting
+			exit 1
+		fi
+
+		# Run tests
+		echo "ℹ️  Running forms-flow-web tests..." > /dev/tty
+		if npm run test; then
+			echo "✅ forms-flow-web tests passed" > /dev/tty
+		else
+			echo "❌ forms-flow-web tests failed. Aborting push" > /dev/tty
+			cd .. || exit 1 # Go back to original directory before exiting
+			exit 1
+		fi
+
+		# Go back to the original directory
+		cd .. || exit 1
+
+		echo "✅ All checks passed successfully!" > /dev/tty
+	fi
+
+else
+	echo "ℹ️  No changes detected in forms-flow-web/ directory" > /dev/tty
+fi
+
+exit 0

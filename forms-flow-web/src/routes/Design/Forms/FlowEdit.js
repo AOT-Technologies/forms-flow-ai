@@ -231,7 +231,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
   };
 
   const handleSaveVariables = async (variables) => {
-    console.log(variables,"variale in opensource");
     if(!variables) return;
     const currentTaskVariables = Object.values(variables).map((i) => ({
       key: i.key,
@@ -482,7 +481,6 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
           show={showVariableModal}
           onClose={handleCloseVariableModal}
           saveBtnDisabled={isPublished}
-          handleCurrentLayout={handleCurrentLayout}
           savedFormVariables={savedFormVariables}
           primaryBtnAction={handleSaveVariables}
         />

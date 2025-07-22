@@ -62,7 +62,7 @@ import NewVersionModal from "../../../components/Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, addTenantkey, textTruncate,
+import { generateUniqueId, textTruncate,
   convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
@@ -607,17 +607,14 @@ const handleSaveLayout = () => {
             : [],
       },
     };
-    const updatepath = MULTITENANCY_ENABLED
-      ? addTenantkey(formDetails.path, tenantKey)
-      : formDetails.path;
-
+  
     // update the form Access and submission access if anonymouse changed
     const formAccess = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", formDetails.anonymous);
     const submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", formDetails.anonymous);
     const newFormData = {
       title: formDetails.title,
       display: formDetails.display,
-      path: updatepath,
+      path: formDetails.path,
       submissionAccess: submissionAccess,
       access: formAccess,
     };

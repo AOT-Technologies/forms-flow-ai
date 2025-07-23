@@ -7,7 +7,6 @@ import { featureFlags } from "./featureToogle";
 import { FlagsProvider } from "flagged";
 import { Formio, Components } from "@aot-technologies/formio-react";
 import { AppConfig } from "./config";
-import CompactFormView from "./components/Form/components/CompactFormView";
 import "./resourceBundles/i18n.js";
 
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -34,7 +33,6 @@ const createRootComponent = (props) => {
   const history = StoreService.history;
   return (
     <FlagsProvider features={featureFlags}>
-      {featureFlags.enableCompactViewForm && <CompactFormView />}
       <App {...{ store, history, publish, subscribe, getKcInstance }} />
     </FlagsProvider>
   );

@@ -1,0 +1,85 @@
+#!/bin/sh
+set -eu
+
+# Function to validate yes/no input
+is_valid_yes() {
+    case "$1" in
+        [Yy]|[Yy][Ee][Ss]) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+is_valid_no() {
+    case "$1" in
+        [Nn]|[Nn][Oo]) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# Prompt the user
+get_push_confirmation() {
+    local message="$1"
+    local answer
+    while true; do
+        printf "%s (y/n): " "$message" > /dev/tty
+        read -r answer < /dev/tty
+        if is_valid_yes "$answer"; then
+            return 0
+        elif is_valid_no "$answer"; then
+            return 1
+        else
+            printf "Please answer with Yes or No\n" > /dev/tty
+        fi
+    done
+}
+
+# Check if Snyk is installed
+if ! command -v snyk >/dev/null 2>&1; then
+    echo "❌ Snyk CLI not found." > /dev/tty
+
+    echo "⚙️  Attempting to install Snyk CLI using curl..." > /dev/tty
+
+    # Detect OS and install Snyk
+    OS="$(uname | tr '[:upper:]' '[:lower:]')"
+    if echo "$OS" | grep -q "mingw"; then
+        # Windows (Git Bash)
+        curl -s https://static.snyk.io/cli/latest/snyk-win.exe -o snyk.exe
+        chmod +x snyk.exe
+        SNYK_CMD="./snyk.exe"
+    elif echo "$OS" | grep -q "darwin"; then
+        # macOS
+        curl -sL https://static.snyk.io/cli/latest/snyk-macos -o snyk
+        chmod +x snyk
+        SNYK_CMD="./snyk"
+    else
+        # Linux
+        curl -sL https://static.snyk.io/cli/latest/snyk-linux -o snyk
+        chmod +x snyk
+        SNYK_CMD="./snyk"
+    fi
+
+    echo "✅ Snyk CLI downloaded successfully." > /dev/tty
+else
+    SNYK_CMD="snyk"
+fi
+
+# Run Snyk scan
+echo "🔍 Running Snyk scan before push..." > /dev/tty
+
+if "$SNYK_CMD" test; then
+    echo "✅ No vulnerabilities found by Snyk." > /dev/tty
+else
+    echo "⚠️  Snyk found vulnerabilities in the codebase." > /dev/tty
+    if ! get_push_confirmation "Do you still want to proceed with the push?"; then
+        echo "❌ Push aborted due to Snyk vulnerabilities." > /dev/tty
+        exit 1
+    else
+        echo "⚠️  Proceeding with push despite vulnerabilities as per user confirmation." > /dev/tty
+    fi
+fi
+
+# Optionally monitor project
+echo "📡 Sending project data to Snyk for monitoring..." > /dev/tty
+"$SNYK_CMD" monitor --all-projects || echo "⚠️ Snyk monitor failed." > /dev/tty
+
+exit 0

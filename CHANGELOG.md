@@ -2,11 +2,13 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-
 ## 7.2.0 - 
 
 `Added`
 
+**formsflow-tools**
+* Added Git management tools
+   * Added pre-push check for testing changes
 
 **formsflow-documents**
 * Added new environment variable:
@@ -19,11 +21,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * `/submissions-filter` for creating, updating, and listing filters.
    * `/submissions-filter/<id>` for retrieving or deleting a filter by its ID.
 
+**forms-flow-idm**
+* To migrate the new roles(permissions) to the multitenant setup Refer [here](./forms-flow-idm/migration/README.md#720)
+
 `Modified`
 
 **formsflow-api**
 * Updated create_filters description from "Manage filters you create" to “Manage personal filters”
-
 
 ## 7.1.0 - 2025-07-01
 
@@ -164,6 +168,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 `Modified`
 * Issue with Simple conditional logic option of formio components not returning component names fixed
+
 
 
 ## 7.0.0 - 2025-01-10

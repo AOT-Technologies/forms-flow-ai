@@ -22,6 +22,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Added new environment variable:
    * CHROME_DRIVER_TIMEOUT to specify timeout for the chrome driver to wait for the page to load
 
+**forms-flow-idm**
+* To migrate the new roles(permissions) to the multitenant setup Refer [here](./forms-flow-idm/migration/README.md#720)
+
 ## 7.1.0 - 2025-07-01
 
 `Added`

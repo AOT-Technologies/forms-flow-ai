@@ -65,11 +65,19 @@ class BaseBPMService:
         return data
 
     @classmethod
-    def _get_headers_(cls, token, tenant_key=None, files=None):
+    def _get_headers_(cls, token, tenant_key=None, files=None, is_registration_bpm_client_details =False):
         """Generate headers."""
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
-        bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
-        bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
+        bpm_client_id = (
+            current_app.config.get("TENANT_REGISTRATION_BPM_CLIENT_ID")
+            if is_registration_bpm_client_details 
+            else current_app.config.get("BPM_CLIENT_ID")
+        )
+        bpm_client_secret = (
+            current_app.config.get("TENANT_REGISTRATION_BPM_CLIENT_SECRET")
+            if is_registration_bpm_client_details 
+            else current_app.config.get("BPM_CLIENT_SECRET")
+        )
         bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
         if current_app.config.get("MULTI_TENANCY_ENABLED") and tenant_key:
             bpm_client_id = f"{tenant_key}-{bpm_client_id}"
@@ -84,12 +92,16 @@ class BaseBPMService:
             if files:
                 return {"Authorization": token}
             return {"Authorization": token, "content-type": "application/json"}
+        try:
+            response = requests.post(
+                bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
+            )
+            data = json.loads(response.text)
+            return {
+                "Authorization": "Bearer " + data["access_token"],
+                "Content-Type": "application/json",
+            }
 
-        response = requests.post(
-            bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
-        )
-        data = json.loads(response.text)
-        return {
-            "Authorization": "Bearer " + data["access_token"],
-            "Content-Type": "application/json",
-        }
+        except Exception as e:
+            current_app.logger.error(f"Token fetch failed: {str(e)}")
+            raise

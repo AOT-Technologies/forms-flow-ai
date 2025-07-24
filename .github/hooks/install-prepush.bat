@@ -1,7 +1,7 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS
 
-ECHO 🔧 Installing pre-push Git hook...
+ECHO 🔧 Installing Git hooks...
 
 REM Detect Git root directory
 FOR /F "delims=" %%D IN ('git rev-parse --show-toplevel 2^>NUL') DO SET "GIT_ROOT=%%D"
@@ -14,33 +14,49 @@ IF NOT DEFINED GIT_ROOT (
 REM Set Snyk token
 SET "SNYK_TOKEN=7dbc5585-8fea-46fe-b80a-8af40fa7366b"
 
-REM Copy hook
+REM Copy pre-push hook
 COPY /Y "%~dp0pre-push" "%GIT_ROOT%\.git\hooks\pre-push" > NUL
 IF ERRORLEVEL 1 (
     ECHO ❌ Failed to copy pre-push hook.
     EXIT /B 1
 )
+ECHO ✅ Pre-push hook installed.
 
-ECHO 📋 Pre-push hook copied.
+REM Copy pre-commit hook
+COPY /Y "%~dp0pre-commit" "%GIT_ROOT%\.git\hooks\pre-commit" > NUL
+IF ERRORLEVEL 1 (
+    ECHO ❌ Failed to copy pre-commit hook.
+    EXIT /B 1
+)
+ECHO ✅ Pre-commit hook installed.
 
 REM Check if Snyk CLI exists
 ECHO 🔍 Checking Snyk CLI...
 WHERE snyk >NUL 2>&1
 IF %ERRORLEVEL% NEQ 0 (
-    ECHO ❌ Snyk CLI not found. Please install it from https://docs.snyk.io/install
-    EXIT /B 1
+    ECHO ⚠️  Snyk CLI not found. Downloading Snyk for Windows...
+    curl -s https://static.snyk.io/cli/latest/snyk-win.exe -o "%GIT_ROOT%\snyk.exe"
+    IF ERRORLEVEL 1 (
+        ECHO ❌ Failed to download Snyk CLI.
+        EXIT /B 1
+    )
+    ECHO ✅ Snyk CLI downloaded successfully to %GIT_ROOT%\snyk.exe
+    SET "SNYK_CMD=%GIT_ROOT%\snyk.exe"
+) ELSE (
+    ECHO ✅ Snyk CLI already installed.
+    SET "SNYK_CMD=snyk"
 )
 
 REM Authenticate Snyk CLI
 ECHO 🔐 Authenticating Snyk CLI using token...
-snyk config set api=%SNYK_TOKEN% > NUL 2>&1
+"%SNYK_CMD%" config set api=%SNYK_TOKEN% > NUL 2>&1
 
 REM Confirm token is set
-FOR /F "tokens=*" %%A IN ('snyk config get api') DO SET "CONFIGURED_TOKEN=%%A"
+FOR /F "tokens=*" %%A IN ('"%SNYK_CMD%" config get api') DO SET "CONFIGURED_TOKEN=%%A"
 
 IF "%CONFIGURED_TOKEN%"=="%SNYK_TOKEN%" (
     ECHO ✅ Snyk CLI authenticated successfully!
-    ECHO ✅ Pre-push Git hook installed successfully!
+    ECHO ✅ Git hooks installed successfully!
     EXIT /B 0
 ) ELSE (
     ECHO ❌ Authentication failed. Token not set correctly.

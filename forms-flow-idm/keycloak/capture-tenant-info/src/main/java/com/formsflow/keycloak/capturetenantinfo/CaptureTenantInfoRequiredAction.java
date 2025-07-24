@@ -1,12 +1,12 @@
 package com.formsflow.keycloak.capturetenantinfo;
 
+import org.jboss.logging.Logger;
 import org.keycloak.authentication.RequiredActionContext;
 import org.keycloak.authentication.RequiredActionProvider;
 import org.keycloak.authentication.RequiredActionFactory;
 import org.keycloak.models.*;
 import org.keycloak.services.validation.Validation;
 import org.keycloak.events.EventBuilder;
-import org.keycloak.sessions.AuthenticationSessionModel;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
@@ -17,6 +17,7 @@ public class CaptureTenantInfoRequiredAction implements RequiredActionProvider, 
   private static final String SUCCESS_MESSAGE_KEY = "registrationCustomSuccessMsg";
   private static final String TENANT_REGISTRATION_CLIENT_ID = System.getenv("TENANT_REGISTRATION_CLIENT_ID");
   private static final String TENANT_FORM = "capture-tenant-info.ftl";
+  private static final Logger LOG = Logger.getLogger(CaptureTenantInfoRequiredAction.class);
 
   @Override
   public void evaluateTriggers(RequiredActionContext context) {
@@ -43,12 +44,8 @@ public class CaptureTenantInfoRequiredAction implements RequiredActionProvider, 
     if (!TENANT_REGISTRATION_CLIENT_ID.equals(clientId)) {
       return;
     }
-    AuthenticationSessionModel authSession = context.getAuthenticationSession();
-    if (authSession != null) {
-      authSession.setAuthNote("skip_require_action", "true");
-      authSession.setAuthNote("ignore_previous_user", "true");
-    }
 
+    LOG.infof("[CaptureTenantInfo] Render capture-tenant-info page.");
     Response challenge = context.form()
         .setAttribute("clientId", context.getAuthenticationSession().getClient().getClientId())
         .createForm(TENANT_FORM);
@@ -66,6 +63,7 @@ public class CaptureTenantInfoRequiredAction implements RequiredActionProvider, 
     String tenantName = formData.getFirst("tenantName");
     String tenantKey = formData.getFirst("tenantKey");
 
+    LOG.infof("[CaptureTenantInfo] Trigger tenant validations");
     if (Validation.isBlank(tenantName)) {
       Response challenge = context.form()
           .setError("tenantNameMissing")
@@ -88,6 +86,7 @@ public class CaptureTenantInfoRequiredAction implements RequiredActionProvider, 
       Response challenge = context.form()
           .setError("tenantKeyInvalid")
           .setAttribute("tenantName", tenantName)
+          .setAttribute("tenantKey", tenantKey)
           .createForm(TENANT_FORM);
       context.challenge(challenge);
       return;
@@ -97,32 +96,23 @@ public class CaptureTenantInfoRequiredAction implements RequiredActionProvider, 
     user.setSingleAttribute("tenantName", tenantName.trim());
     user.setSingleAttribute("tenantKey", tenantKey.trim().toLowerCase());
 
-    if (TENANT_REGISTRATION_CLIENT_ID.equals(clientId)) {
-      // Disable user login
-      user.setEnabled(false);
+    // Disable user login
+    LOG.infof("[CaptureTenantInfo] Disable user and login");
+    user.setEnabled(false);
 
-      // Remove required action
-      user.removeRequiredAction(PROVIDER_ID);
-
-      // Always show success message for try-it-now-client
-      handlePostRegistrationFlow(context);
-      return; // Don't proceed with login
-    }
-
-    // For other clients (if needed)
+    // Remove required action
     user.removeRequiredAction(PROVIDER_ID);
-    context.success();
+
+    // Always show success message for try-it-now-client
+    handlePostRegistrationFlow(context);
+    return; // Don't proceed with login
 
   }
 
   private void handlePostRegistrationFlow(RequiredActionContext context) {
     try {
-      // Clear any existing authentication session to prevent login
-      context.getAuthenticationSession().setAuthNote("skip_require_action", "true");
-      context.getAuthenticationSession().setAuthNote("ignore_previous_user", "true");
-      context.getAuthenticationSession().setAuthNote("registration_success", "true");
-
       // Show static success message
+      LOG.infof("[CaptureTenantInfo] Rendering registration-success.ftl");
       Response successPage = context.form()
           .setSuccess(context.form().getMessage(SUCCESS_MESSAGE_KEY))
           .createForm("registration-success.ftl");
@@ -130,6 +120,7 @@ public class CaptureTenantInfoRequiredAction implements RequiredActionProvider, 
       context.challenge(successPage);
 
     } catch (Exception e) {
+      LOG.infof("[CaptureTenantInfo] Error while rendering registration-success.ftl", e);
       EventBuilder event = new EventBuilder(context.getRealm(), context.getSession(), context.getConnection());
       event.error("REGISTRATION_ERROR");
       context.failure();
@@ -160,6 +151,6 @@ public class CaptureTenantInfoRequiredAction implements RequiredActionProvider, 
 
   @Override
   public String getDisplayText() {
-    return "Capture Tenant Info";
+    return "Capture Tenant Info ";
   }
 }

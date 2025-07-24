@@ -65,17 +65,17 @@ class BaseBPMService:
         return data
 
     @classmethod
-    def _get_headers_(cls, token, tenant_key=None, files=None, is_multitenant_client_secret=False):
+    def _get_headers_(cls, token, tenant_key=None, files=None, is_registration_bpm_client_details =False):
         """Generate headers."""
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
         bpm_client_id = (
-            current_app.config.get("MULTITENANT_BPM_CLIENT_ID")
-            if is_multitenant_client_secret
+            current_app.config.get("TENANT_REGISTRATION_BPM_CLIENT_ID")
+            if is_registration_bpm_client_details 
             else current_app.config.get("BPM_CLIENT_ID")
         )
         bpm_client_secret = (
-            current_app.config.get("MULTITENANT_BPM_CLIENT_SECRET")
-            if is_multitenant_client_secret
+            current_app.config.get("TENANT_REGISTRATION_BPM_CLIENT_SECRET")
+            if is_registration_bpm_client_details 
             else current_app.config.get("BPM_CLIENT_SECRET")
         )
         bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")

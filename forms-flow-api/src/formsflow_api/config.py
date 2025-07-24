@@ -81,8 +81,8 @@ class _Config:  # pylint: disable=too-few-public-methods
     BPM_CLIENT_ID = os.getenv("BPM_CLIENT_ID")
     BPM_CLIENT_SECRET = os.getenv("BPM_CLIENT_SECRET")
     BPM_GRANT_TYPE = os.getenv("BPM_GRANT_TYPE", "client_credentials")
-    MULTITENANT_BPM_CLIENT_ID = os.getenv("MULTITENANT_BPM_CLIENT_ID")
-    MULTITENANT_BPM_CLIENT_SECRET = os.getenv("MULTITENANT_BPM_CLIENT_SECRET")
+    TENANT_REGISTRATION_BPM_CLIENT_ID = os.getenv("TENANT_REGISTRATION_BPM_CLIENT_ID")
+    TENANT_REGISTRATION_BPM_CLIENT_SECRET = os.getenv("TENANT_REGISTRATION_BPM_CLIENT_SECRET")
 
     # BPM Camunda Details
     BPM_API_URL = os.getenv("BPM_API_URL")

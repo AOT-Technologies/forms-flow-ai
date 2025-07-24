@@ -1,32 +1,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.formsflow.keycloak</groupId>
-  <artifactId>capture-tenant-info</artifactId>
+  <artifactId>registration-success-spi</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
-
-  <name>Capture Tenant Info Required Action</name>
-
+  <name>Try It Now Registration Success SPI</name>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <keycloak.version>26.2.4</keycloak.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
   <dependencies>
-    <!-- Keycloak SPI dependencies -->
+    <!-- Keycloak Core -->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-core</artifactId>
+      <version>${keycloak.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Keycloak Server SPIs -->
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-server-spi</artifactId>
       <version>${keycloak.version}</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-server-spi-private</artifactId>
@@ -34,6 +38,7 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Required for LoginFormsProvider, themes -->
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-services</artifactId>
@@ -41,7 +46,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Jakarta (formerly javax.ws.rs) -->
+    <!-- Jakarta WS-RS API (Response, MultivaluedMap, etc.) -->
     <dependency>
       <groupId>jakarta.ws.rs</groupId>
       <artifactId>jakarta.ws.rs-api</artifactId>
@@ -49,7 +54,8 @@
       <scope>provided</scope>
     </dependency>
 
-        <dependency>
+    <!-- Logging -->
+    <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <version>3.4.3.Final</version>
@@ -58,13 +64,13 @@
 
   <build>
     <plugins>
-      <!-- Compiler Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <release>17</release>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
     </plugins>

@@ -23,12 +23,19 @@ public class KeycloakEventListenerProvider implements EventListenerProvider {
   public void onEvent(Event event) {
     if (event.getType() == EventType.REGISTER) {
       String clientId = event.getClientId();
-      logger.info("User registered with client_id: {}", clientId);
+      logger.info("[keycloakEventListener] User registered event triggered");
 
       // ✅ Only proceed for try-it-now-client
       if (!Objects.equals(TENANT_REGISTRATION_CLIENT_ID, clientId)) {
-        logger.info("Skipping Camunda trigger: Not target client_id");
+        logger.info("[keycloakEventListener] Skipping Camunda trigger: Not target client_id");
         return;
+      }
+
+      if (event.getError() != null || event.getUserId() == null) {
+        logger.warn("[keycloakEventListener] Registration failed for client_id: {}, error: {}", clientId,
+            event.getError());
+      } else {
+        logger.info("[keycloakEventListener] User registered with client_id: {}", clientId);
       }
 
       String camundaUrl = System.getenv("PUBLIC_PROCESS_START_URL");
@@ -37,7 +44,7 @@ public class KeycloakEventListenerProvider implements EventListenerProvider {
 
       if (camundaUrl == null || processKey == null || tenantKey == null) {
         logger.warn(
-            "One or more required environment variables (PUBLIC_PROCESS_START_URL, PROCESS_KEY, PROCESS_TENANT_KEY) are missing.");
+            "[keycloakEventListener] One or more required environment variables (PUBLIC_PROCESS_START_URL, PROCESS_KEY, PROCESS_TENANT_KEY) are missing.");
         return;
       }
 
@@ -57,14 +64,14 @@ public class KeycloakEventListenerProvider implements EventListenerProvider {
               .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
               .build();
 
-          logger.info("Triggering Camunda process at: {}", startUrl);
+          logger.info("[keycloakEventListener] Triggering Camunda process at: {}", startUrl);
           HttpResponse<String> startResponse = httpClient.send(startRequest, HttpResponse.BodyHandlers.ofString());
 
-          logger.info("Camunda response status: {}", startResponse.statusCode());
-          logger.info("Camunda response body: {}", startResponse.body());
+          logger.info("[keycloakEventListener] Camunda response status: {}", startResponse.statusCode());
+          logger.info("[keycloakEventListener] Camunda response body: {}", startResponse.body());
 
         } catch (Exception e) {
-          logger.error("Error while triggering Camunda process", e);
+          logger.error("[keycloakEventListener] Error while triggering Camunda process", e);
         }
       });
     }

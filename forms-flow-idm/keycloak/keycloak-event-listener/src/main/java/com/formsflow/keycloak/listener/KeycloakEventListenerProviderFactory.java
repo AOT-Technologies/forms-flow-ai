@@ -27,6 +27,6 @@ public class KeycloakEventListenerProviderFactory implements EventListenerProvid
 
   @Override
   public String getId() {
-    return "keycloak-event-listener";
+    return "trigger-registration-workflow-for-try-it-clients";
   }
 }

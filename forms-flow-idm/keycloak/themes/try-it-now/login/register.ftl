@@ -3,8 +3,9 @@
         <#if section=="header">
             ${msg("registerTitle")}
             <#elseif section=="form">
-                <form id="kc-register-form" class="${properties.kcFormClass!}" action="${url.registrationAction}" method="post">
-                    <input type="hidden" id="clientId" name="clientId" value="" />
+                <form id="kc-register-form"
+                    class="${properties.kcFormClass!}"
+                    action="${url.registrationAction}" method="post" novalidate>
                     <div class="${properties.kcFormGroupClass!} ${messagesPerField.printIfExists('firstName',properties.kcFormGroupErrorClass!)}">
                         <div class="${properties.kcLabelWrapperClass!}">
                             <label for="firstName" class="${properties.kcLabelClass!}">
@@ -12,7 +13,7 @@
                             </label>
                         </div>
                         <div class="${properties.kcInputWrapperClass!}">
-                            <input type="text" id="firstName" class="${properties.kcInputClass!}" name="firstName" value="${(register.formData.firstName!'')}" />
+                            <input type="text" id="firstName" class="${properties.kcInputClass!}" name="firstName" value="${(register.formData.firstName!'')}" required />
                         </div>
                     </div>
                     <div class="${properties.kcFormGroupClass!} ${messagesPerField.printIfExists('lastName',properties.kcFormGroupErrorClass!)}">
@@ -22,7 +23,7 @@
                             </label>
                         </div>
                         <div class="${properties.kcInputWrapperClass!}">
-                            <input type="text" id="lastName" class="${properties.kcInputClass!}" name="lastName" value="${(register.formData.lastName!'')}" />
+                            <input type="text" id="lastName" class="${properties.kcInputClass!}" name="lastName" value="${(register.formData.lastName!'')}" required />
                         </div>
                     </div>
                     <div class="${properties.kcFormGroupClass!} ${messagesPerField.printIfExists('email',properties.kcFormGroupErrorClass!)}">
@@ -32,7 +33,7 @@
                             </label>
                         </div>
                         <div class="${properties.kcInputWrapperClass!}">
-                            <input type="text" id="email" class="${properties.kcInputClass!}" name="email" value="${(register.formData.email!'')}" autocomplete="email" />
+                            <input type="email" id="email" class="${properties.kcInputClass!}" name="email" value="${(register.formData.email!'')}" autocomplete="email" required />
                         </div>
                     </div>
                     <#if !realm.registrationEmailAsUsername>
@@ -43,7 +44,7 @@
                                 </label>
                             </div>
                             <div class="${properties.kcInputWrapperClass!}">
-                                <input type="text" id="username" class="${properties.kcInputClass!}" name="username" value="${(register.formData.username!'')}" autocomplete="username" />
+                                <input type="text" id="username" class="${properties.kcInputClass!}" name="username" value="${(register.formData.username!'')}" autocomplete="username" required />
                             </div>
                         </div>
                     </#if>
@@ -55,7 +56,7 @@
                                 </label>
                             </div>
                             <div class="${properties.kcInputWrapperClass!}">
-                                <input type="password" id="password" class="${properties.kcInputClass!}" name="password" autocomplete="new-password" />
+                                <input type="password" id="password" class="${properties.kcInputClass!}" name="password" autocomplete="new-password" required />
                             </div>
                         </div>
                         <div class="${properties.kcFormGroupClass!} ${messagesPerField.printIfExists('password-confirm',properties.kcFormGroupErrorClass!)}">
@@ -65,7 +66,38 @@
                                 </label>
                             </div>
                             <div class="${properties.kcInputWrapperClass!}">
-                                <input type="password" id="password-confirm" class="${properties.kcInputClass!}" name="password-confirm" />
+                                <input type="password" id="password-confirm" class="${properties.kcInputClass!}" name="password-confirm" required />
+                            </div>
+                        </div>
+                        <!-- Tenant fields block for try-it-now client -->
+                        <div id="tryItNowFields">
+                            <div class="${properties.kcFormGroupClass!}">
+                                <div class="${properties.kcLabelWrapperClass!}">
+                                    <label for="tenantName" class="${properties.kcLabelClass!}">
+                                        ${msg("tenantName")}
+                                    </label>
+                                </div>
+                                <div class="${properties.kcInputWrapperClass!}">
+                                    <input type="text" id="tenantName" name="tenantName"
+                                        class="${properties.kcInputClass!}"
+                                        value="${register.formData.tenantName?default('')}"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="${properties.kcFormGroupClass!}">
+                                <div class="${properties.kcLabelWrapperClass!}">
+                                    <label for="tenantKey" class="${properties.kcLabelClass!}">
+                                        ${msg("tenantKey")}
+                                    </label>
+                                </div>
+                                <div class="${properties.kcInputWrapperClass!}">
+                                    <input type="text" id="tenantKey" name="tenantKey"
+                                        class="${properties.kcInputClass!}"
+                                        value="${register.formData.tenantKey?default('')}"
+                                        pattern="^\\S+$"
+                                        title="Tenant Key must not contain spaces."
+                                        required />
+                                </div>
                             </div>
                         </div>
                     </#if>
@@ -77,13 +109,6 @@
                         </div>
                     </#if>
                     <div class="${properties.kcFormGroupClass!}">
-                        <div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
-                            <div class="${properties.kcFormOptionsWrapperClass!}">
-                                <span id="backToLoginLink"><a href="${url.loginUrl}">
-                                        ${msg("backToLogin")?no_esc}
-                                    </a></span>
-                            </div>
-                        </div>
                         <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
                             <input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doRegister")}" />
                         </div>
@@ -105,7 +130,8 @@ ${properties.kcFormSocialAccountListGridClass!}
                                         <a id="social-${p.alias}" class="${properties.kcFormSocialAccountListButtonClass!}
 <#if social.providers?size gt 3>
 ${properties.kcFormSocialAccountGridItem!}
-</#if>" type="button" href="${p.loginUrl}">
+</#if>"
+                                            type="button" href="${p.loginUrl}">
                                             <#if p.iconClasses?has_content>
                                                 <i class="${properties.kcCommonLogoIdP!} ${p.iconClasses!}" aria-hidden="true"></i>
                                                 <span class="${properties.kcFormSocialAccountNameClass!} kc-social-icon-text">
@@ -124,30 +150,3 @@ ${properties.kcFormSocialAccountGridItem!}
                     </#if>
         </#if>
         </@layout.registrationLayout>
-        <script>
-        (function() {
-            function getClientIdFromUrl() {
-                const searchParams = new URLSearchParams(window.location.search);
-                if (searchParams.has("client_id")) {
-                    return searchParams.get("client_id");
-                }
-                // Fallback: extract from hash
-                const hashParams = new URLSearchParams(window.location.hash.substring(1));
-                if (hashParams.has("client_id")) {
-                    return hashParams.get("client_id");
-                }
-                return null;
-            }
-            const clientId = getClientIdFromUrl();
-            const clientIdField = document.getElementById("clientId");
-            if (clientIdField && clientId) {
-                clientIdField.value = clientId;
-            }
-            if (clientId && clientId.includes("try-it-now-client")) {
-                const backToLogin = document.getElementById("backToLoginLink");
-                if (backToLogin) {
-                    backToLogin.style.display = "none";
-                }
-            }
-        })();
-        </script>

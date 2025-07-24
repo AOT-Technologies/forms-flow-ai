@@ -20,6 +20,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Implemented new endpoints for managing analyze submissions filters:
    * `/submissions-filter` for creating, updating, and listing filters.
    * `/submissions-filter/<id>` for retrieving or deleting a filter by its ID.
+* Added alembic migration script to set roles to empty for attribute filters with no users. 
+This prevents the need to update attribute filters every time a task filter is modified, except in the case of private attribute filters.
 
 **forms-flow-idm**
 * To migrate the new roles(permissions) to the multitenant setup Refer [here](./forms-flow-idm/migration/README.md#720)

@@ -2,9 +2,17 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 7.2.0 -
+## 7.2.0 - 
 
 `Added`
+
+**formsflow-tools**
+* Added Git management tools
+   * Added pre-push check for testing changes
+
+**formsflow-documents**
+* Added new environment variable:
+   * CHROME_DRIVER_TIMEOUT to specify timeout for the chrome driver to wait for the page to load
 
 **formsflow-api**
 * Added the `submissions_filter` table to store user-specific filter preferences for analyzing submissions.
@@ -12,15 +20,16 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Implemented new endpoints for managing analyze submissions filters:
    * `/submissions-filter` for creating, updating, and listing filters.
    * `/submissions-filter/<id>` for retrieving or deleting a filter by its ID.
+* Added alembic migration script to set roles to empty for attribute filters with no users. 
+This prevents the need to update attribute filters every time a task filter is modified, except in the case of private attribute filters.
 
-## 7.2.0 - 
+**forms-flow-idm**
+* To migrate the new roles(permissions) to the multitenant setup Refer [here](./forms-flow-idm/migration/README.md#720)
 
-`Added`
+`Modified`
 
-
-**formsflow-documents**
-* Added new environment variable:
-   * CHROME_DRIVER_TIMEOUT to specify timeout for the chrome driver to wait for the page to load
+**formsflow-api**
+* Updated create_filters description from "Manage filters you create" to “Manage personal filters”
 
 ## 7.1.0 - 2025-07-01
 
@@ -161,6 +170,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 `Modified`
 * Issue with Simple conditional logic option of formio components not returning component names fixed
+
 
 
 ## 7.0.0 - 2025-01-10

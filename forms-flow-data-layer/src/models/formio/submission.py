@@ -21,7 +21,12 @@ class SubmissionsModel(Document):
             match_stage["_id"] = {"$in": [ObjectId(id) for id in submission_ids]}
         if filter:
             for field, value in filter.items():
-                match_stage[f"data.{field}"] = {"$regex": value, "$options": "i"}
+                if isinstance(value, str):
+                    # Only use regex for string values
+                    match_stage[f"data.{field}"] = {"$regex": value, "$options": "i"}
+                else:
+                    # For non-string values (numbers, booleans, etc.), use exact match
+                    match_stage[f"data.{field}"] = value
         return match_stage
 
     @staticmethod

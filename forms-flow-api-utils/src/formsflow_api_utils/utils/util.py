@@ -20,7 +20,7 @@ from .enums import (
     ProcessSortingParameters,
 )
 from .translations.translations import translations
-from .permisions import (
+from .permissions import (
     CREATE_DESIGNS,
 VIEW_DESIGNS,
 MANAGE_TASKS,

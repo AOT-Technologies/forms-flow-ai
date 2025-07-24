@@ -48,7 +48,7 @@ PERMISSION_DETAILS = [
     {"name": REVIEWER_VIEW_HISTORY, "description": "View task history", "category": permission_category.TASKS.value, "order": 40, "depends_on": [VIEW_FILTERS, VIEW_TASKS]},
     # {"name": REVIEWER_PROCESS_VIEW, "description": "View process diagram in task", "category": permission_category.TASKS.value, "order": 41, "depends_on": [VIEW_FILTERS, VIEW_TASKS, REVIEWER_VIEW_HISTORY]},
     {"name": VIEW_FILTERS, "description": "View filters",  "category": permission_category.TASKS.value, "order": 50, "depends_on": [ VIEW_TASKS ]},
-    {"name": CREATE_FILTERS, "description": "Manage filters you create",  "category": permission_category.TASKS.value, "order": 60, "depends_on": [ VIEW_FILTERS ]},
+    {"name": CREATE_FILTERS, "description": "Manage personal filters",  "category": permission_category.TASKS.value, "order": 60, "depends_on": [ VIEW_FILTERS ]},
     {"name": MANAGE_ALL_FILTERS, "description": "Manage all shared filters (delete and edit filters others shared, excluding private filters)",  "category": permission_category.TASKS.value, "order": 70, "depends_on": [ VIEW_FILTERS , CREATE_FILTERS ]},
     {"name": VIEW_DESIGNS, "description": "View forms & flows", "category": permission_category.DESIGN.value, "order": 10, "depends_on": []},
     {"name": CREATE_DESIGNS, "description": "Manage forms & flows you create and that are shared with you", "category": permission_category.DESIGN.value, "order": 20, "depends_on": [ VIEW_DESIGNS ]},

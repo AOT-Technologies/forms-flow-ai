@@ -24,7 +24,7 @@ from .constants import (
     authorization_doc_params,
 )
 from .enums import ApplicationSortingParameters, Service, AIRequestType
-from .permisions import (
+from .permissions import (
     PERMISSION_DETAILS ,
     CREATE_DESIGNS,
     VIEW_DESIGNS,

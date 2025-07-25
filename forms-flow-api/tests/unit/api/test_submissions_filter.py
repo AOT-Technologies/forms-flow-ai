@@ -63,7 +63,7 @@ def test_get_analyze_submissions_filter_list(app, client, session, jwt):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # Test filter list api with no entries
     response = client.get("/submissions-filter", headers=headers)
-    assert response.json == []
+    assert response.json.get("filters") == []
     response = client.post(
         "/submissions-filter", headers=headers, json=filter_payload()
     )
@@ -72,7 +72,10 @@ def test_get_analyze_submissions_filter_list(app, client, session, jwt):
     # Test filter list api with valid entries
     response = client.get("/submissions-filter", headers=headers)
     assert response.json != []
-    assert response.json[0].get("id") is not None
+    filters = response.json.get("filters")
+    assert len(filters) == 1
+    assert filters[0].get("parentFormId") == "685bc0c99135c75802703046"
+    assert response.json["filters"][0].get("id") is not None
 
 
 def test_get_analyze_submissions_filter_by_id(app, client, session, jwt):

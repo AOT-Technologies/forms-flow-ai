@@ -3,7 +3,7 @@ name: Snyk Scan on Push
 on:
   push:
     branches:
-      - "**"   # runs on all branches
+      - "**"   # Runs on all branches
 
 jobs:
   snyk-security-scan:
@@ -21,16 +21,12 @@ jobs:
         run: npm install
 
       - name: Run Snyk Security Scan
-        uses: snyk/actions/node@master
+        run: snyk test --all-projects --severity-threshold=high --json > snyk-report.json
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --all-projects --severity-threshold=high
 
-      - name: Save Snyk report
-        run: snyk test --json > snyk-report.json
-      - name: Upload report
-        uses: actions/upload-artifact@v3
+      - name: Upload Snyk report
+        uses: actions/upload-artifact@v4
         with:
-         name: snyk-report
-         path: snyk-report.json
+          name: snyk-report
+          path: snyk-report.json

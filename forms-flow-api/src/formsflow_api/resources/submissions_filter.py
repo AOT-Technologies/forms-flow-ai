@@ -60,7 +60,7 @@ filter_response_with_default_filter = API.model(
     "FilterResponseWithDefaultFilter",
     {
         "filters": fields.List(fields.Nested(analyze_submissions_response_model)),
-        "defaultSubmissionsFilter": fields.String(
+        "defaultSubmissionsFilter": fields.Integer(
             description="Default Submissions Filter ID of the user"
         ),
     },

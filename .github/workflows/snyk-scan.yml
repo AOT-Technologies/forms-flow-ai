@@ -2,13 +2,12 @@ name: Snyk Scan on Push
 
 on:
   push:
-    branches: 
-      - [ main, develop ]
+    branches:
+      - "**"   # runs on all branches
 
 jobs:
   snyk-security-scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

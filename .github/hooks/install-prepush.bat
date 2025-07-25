@@ -35,11 +35,20 @@ ECHO 🔍 Checking Snyk CLI...
 WHERE snyk >NUL 2>&1
 IF %ERRORLEVEL% NEQ 0 (
     ECHO ⚠️  Snyk CLI not found. Downloading Snyk for Windows...
-    curl -s https://static.snyk.io/cli/latest/snyk-win.exe -o "%GIT_ROOT%\snyk.exe"
+
+    REM Check if curl exists
+    WHERE curl >NUL 2>&1
+    IF %ERRORLEVEL% EQU 0 (
+        curl -s https://static.snyk.io/cli/latest/snyk-win.exe -o "%GIT_ROOT%\snyk.exe"
+    ) ELSE (
+        powershell -Command "Invoke-WebRequest -Uri 'https://static.snyk.io/cli/latest/snyk-win.exe' -OutFile '%GIT_ROOT%\snyk.exe'"
+    )
+
     IF ERRORLEVEL 1 (
         ECHO ❌ Failed to download Snyk CLI.
         EXIT /B 1
     )
+
     ECHO ✅ Snyk CLI downloaded successfully to %GIT_ROOT%\snyk.exe
     SET "SNYK_CMD=%GIT_ROOT%\snyk.exe"
 ) ELSE (

@@ -20,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
       - name: Run Snyk Security Scan
         run: snyk test --all-projects --severity-threshold=high --json > snyk-report.json
         env:

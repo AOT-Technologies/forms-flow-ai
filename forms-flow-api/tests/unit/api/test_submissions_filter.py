@@ -64,6 +64,7 @@ def test_get_analyze_submissions_filter_list(app, client, session, jwt):
     # Test filter list api with no entries
     response = client.get("/submissions-filter", headers=headers)
     assert response.json.get("filters") == []
+    assert response.json.get("defaultSubmissionsFilter") is None
     response = client.post(
         "/submissions-filter", headers=headers, json=filter_payload()
     )

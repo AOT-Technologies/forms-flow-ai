@@ -1,0 +1,37 @@
+name: Snyk Scan on Push
+
+on:
+  push:
+    branches: 
+      - [ main, develop ]
+
+jobs:
+  snyk-security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Snyk Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --all-projects --severity-threshold=high
+
+      - name: Save Snyk report
+        run: snyk test --json > snyk-report.json
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+         name: snyk-report
+         path: snyk-report.json

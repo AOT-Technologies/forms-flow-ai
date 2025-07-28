@@ -9,7 +9,7 @@ const ApplicationCounter = React.memo((props) => {
     application,
     getStatusDetails,
     noOfApplicationsAvailable,
-    setSHowSubmissionData,
+    setShowSubmissionData,
   } = props;
   if (noOfApplicationsAvailable === 0) {
     return (
@@ -28,7 +28,7 @@ const ApplicationCounter = React.memo((props) => {
           <div
             className="col-lg-4 col-sm-6 col-xs-12"
             onClick={() => {
-              setSHowSubmissionData(app);
+              setShowSubmissionData(app);
             }}
             key={idx}
           >

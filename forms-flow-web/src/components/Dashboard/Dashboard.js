@@ -72,7 +72,7 @@ const Dashboard = React.memo(() => {
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
 
-  const [showSubmissionData, setSHowSubmissionData] = useState(submissionsList[0]);
+  const [showSubmissionData, setShowSubmissionData] = useState(submissionsList[0]);
   const [show, setShow] = useState(false);
   // State to set search text for submission data
   //Array for pagination dropdown
@@ -134,7 +134,7 @@ const Dashboard = React.memo(() => {
   }, [dispatch, activePage, limit, sortsBy, sortOrder, dateRange, searchText, searchBy]);
 
   useEffect(() => {
-    setSHowSubmissionData(submissionsList[0]);
+    setShowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
 
   const onChangeInput = (option) => {
@@ -272,7 +272,7 @@ const Dashboard = React.memo(() => {
                     application={submissionsList}
                     getStatusDetails={getStatusDetails}
                     noOfApplicationsAvailable={noOfApplicationsAvailable}
-                    setSHowSubmissionData={setSHowSubmissionData}
+                    setShowSubmissionData={setShowSubmissionData}
                   />
                 )}
               </div>
@@ -353,10 +353,8 @@ const Dashboard = React.memo(() => {
                   <Modal.Title id="example-custom-modal-styling-title">
                     <p>{t("Submission Status")}</p>
                   </Modal.Title>
-                  <div className="icon-close" onClick={() => setShow(false)} aria-label="Close">
-                    <CloseIcon/>
-                  </div>
-                </Modal.Header>
+                    <button type="button" className="btn-close me-3 align-self-center" onClick={() => setShow(false)}></button>
+                  </Modal.Header>
                 <Modal.Body>
                     <StatusChart
                       submissionsStatusList={submissionsStatusList}

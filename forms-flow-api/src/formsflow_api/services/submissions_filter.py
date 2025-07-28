@@ -3,7 +3,7 @@
 from flask import current_app
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
-from formsflow_api.models import SubmissionsFilter
+from formsflow_api.models import SubmissionsFilter, User
 from formsflow_api.schemas import SubmissionsFilterSchema
 
 schema = SubmissionsFilterSchema()
@@ -61,7 +61,12 @@ class SubmissionsFilterService:
             user=user_id, tenant=tenant
         )
         current_app.logger.info("Filter preferences retrieved successfully.")
-        response = schema.dump(filter_preferences, many=True)
+        response = {"filters": schema.dump(filter_preferences, many=True)}
+        # get user default submissions filter
+        user_data = User.get_user_by_user_name(user_name=user.user_name)
+        response["defaultSubmissionsFilter"] = (
+            user_data.default_submissions_filter if user_data else None
+        )
         return response
 
     @staticmethod

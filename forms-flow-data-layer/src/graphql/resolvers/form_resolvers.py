@@ -12,6 +12,7 @@ class QueryFormsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
     async def get_forms(
         self,
+        info: strawberry.Info,
         limit: int = 100,
         offset: int = 0,
         order_by: str = 'created',
@@ -27,6 +28,7 @@ class QueryFormsResolver:
         GraphQL resolver for querying forms.
 
         Args:
+            info (strawberry.Info): GraphQL context information
             limit (int): Number of items to return (default: 100)
             offset (int): Pagination offset (default: 0)
             order_by (str): Filter to sort forms by (default: 'created')
@@ -40,10 +42,9 @@ class QueryFormsResolver:
         Returns:
             Paginated list of Form objects containing combined PostgreSQL and MongoDB data
         """
-        filters = {}
-
         # Create filters dict. Filters that share names with PostgreSQL or MongoDB column names
         # will be applied automatically. Other filters will require additional handling.
+        filters = {}
         filters["order_by"] = order_by
         if type:
             filters["type"] = type
@@ -61,6 +62,7 @@ class QueryFormsResolver:
             filters["to_date"] = to_date
 
         forms = await FormService.get_forms(
+            user_context=info.context.get("user"),
             limit=limit,
             offset=offset,
             filters=filters
@@ -71,17 +73,20 @@ class QueryFormsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
     async def get_form(
         self,
+        info: strawberry.Info,
         form_id: str,
     ) -> Optional[FormSchema]:
         """
         GraphQL resolver for querying form.
 
         Args:
+            info (strawberry.Info): GraphQL context information
             form_id (str): ID of the form
         Returns:
             Form object containing combined PostgreSQL and MongoDB data
         """
         form = await FormService.get_form(
+            user_context=info.context.get("user"),
             form_id=form_id,
         )
         return form

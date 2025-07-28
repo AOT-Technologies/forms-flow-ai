@@ -1,7 +1,6 @@
-from typing import List, Optional
+from typing import Optional
 
 import strawberry
-from strawberry.scalars import JSON
 
 from src.graphql.schema import (
     PaginationWindow,
@@ -16,6 +15,7 @@ class QuerySubmissionsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
     async def get_submissions(
         self,
+        info: strawberry.Info,
         limit: int = 100,
         offset: int = 0,
         order_by: str = 'created',
@@ -30,6 +30,7 @@ class QuerySubmissionsResolver:
         GraphQL resolver for querying submissions.
 
         Args:
+            info (strawberry.Info): GraphQL context information
             limit (int): Number of items to return (default: 100)
             offset (int): Pagination offset (default: 0)
             order_by (str): Filter to sort submissions by (default: 'created')
@@ -42,10 +43,9 @@ class QuerySubmissionsResolver:
         Returns:
             Paginated list of Submission objects containing combined PostgreSQL and MongoDB data
         """
-        filters = {}
-
         # Create filters dict. Filters that share names with PostgreSQL or MongoDB column names
         # will be applied automatically. Other filters will require additional handling.
+        filters = {}
         filters["order_by"] = order_by
         if application_status:
             filters["application_status"] = application_status
@@ -61,8 +61,31 @@ class QuerySubmissionsResolver:
             filters["to_date"] = to_date
 
         forms = await SubmissionService.get_submissions(
+            user_context=info.context.get("user"),
             limit=limit,
             offset=offset,
             filters=filters
         )
         return forms
+
+
+    @strawberry.field(extensions=[auth.auth_required()])
+    async def get_submission(
+        self,
+        info: strawberry.Info,
+        submission_id: str,
+    ) -> Optional[SubmissionSchema]:
+        """
+        GraphQL resolver for querying submission.
+
+        Args:
+            info (strawberry.Info): GraphQL context information
+            submission_id (str): ID of the submission
+        Returns:
+            Submission object containing combined PostgreSQL and MongoDB data
+        """
+        submission = await SubmissionService.get_submission(
+            user_context=info.context.get("user"),
+            submission_id=submission_id,
+        )
+        return submission

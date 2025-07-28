@@ -19,3 +19,12 @@ class Form(Document):
 
     class Settings:
         name = FormioTables.FORMS.value
+
+    @classmethod
+    async def count(cls, **filters):
+        """Count number of entries that match the passed filters."""
+        query = cls.find_all()
+        for filter, value in filters.items():
+            if hasattr(cls, filter):
+                query = query.find(getattr(cls, filter) == value)
+        return (await query.count())

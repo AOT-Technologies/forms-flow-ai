@@ -1,9 +1,8 @@
 """Managing webapi schemas."""
 
-from typing import List, Optional
+from typing import Optional
 
 import strawberry
-from strawberry.scalars import JSON
 
 
 @strawberry.type

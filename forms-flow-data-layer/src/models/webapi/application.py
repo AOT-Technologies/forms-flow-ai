@@ -1,8 +1,6 @@
 from datetime import datetime
-from sqlalchemy import and_, desc, or_, select
-from sqlalchemy.sql import func
 
-from src.db.webapi_db import webapi_db
+from sqlalchemy import and_, or_, select
 
 from .authorization import Authorization, AuthType
 from .base import BaseModel
@@ -72,16 +70,6 @@ class Application(BaseModel):
         cls,
         tenant_key: str,
         roles: list[str],
-        form_name: str,
-        parent_form_id: str,
-        filter: dict = None,
-        created_before: str = None,
-        created_after: str = None,
-        sort_by: str = None,
-        sort_order: str = None,
-        is_paginate: bool = False,
-        page_no: int = 1,
-        limit: int = 5,
     ):
         """
         Fetches authorized applications based on the provided parameters.
@@ -89,14 +77,6 @@ class Application(BaseModel):
         application_table = await cls.get_table()
         mapper_table = await FormProcessMapper.get_table()
         authorization_table = await Authorization.get_table()
-        # ["created_by", "application_status", "id", "created", "form_name"]
-        sortable_fields = {
-            "application_status": application_table.c.application_status,
-            "id": application_table.c.id,
-            "created_by": application_table.c.created_by,
-            "created": application_table.c.created,
-            "form_name": mapper_table.c.form_name,
-        }
 
         query = select(
             application_table, mapper_table.c.parent_form_id, mapper_table.c.form_name
@@ -107,21 +87,12 @@ class Application(BaseModel):
             authorization_table=authorization_table, roles=roles
         )
 
-        # Optional conditions
-        form_name_condition = (
-            mapper_table.c.form_name == form_name if form_name else True
-        )
-        parent_form_id_condition = (
-            mapper_table.c.parent_form_id == parent_form_id if parent_form_id else True
-        )
 
         # Join tables
         query = query.join(
             mapper_table,
             and_(
                 application_table.c.form_process_mapper_id == mapper_table.c.id,
-                form_name_condition,  # Ensure form name matches if provided
-                parent_form_id_condition,  # Ensure parent form ID matches if provided
                 mapper_table.c.tenant
                 == tenant_key,  # Ensure tenant key matches in both tables
             ),
@@ -170,6 +141,6 @@ class Application(BaseModel):
 
         result = await cls.execute(query)
         applications = result.mappings().all()
-        total_count = len(applications) if not is_paginate else total_count
+        total_count = len(applications)
 
         return applications, total_count

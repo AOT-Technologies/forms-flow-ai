@@ -125,6 +125,12 @@ def get_sub_groups(token, group_id):
     sub_groups = get_request_data(token, url)    
     return sub_groups
 
+def get_group_id_by_path(token, group_path):
+    """Retrieve a group id(UUID) by its path."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/group-by-path/{group_path}"
+    group = get_request_data(token , url)
+    return group["id"] if group else None
+
 def get_group_id(token, group_name):
     """Retrieve the group ID (UUID) based on the group name."""
     parent_group = group_name.split("/")[0]

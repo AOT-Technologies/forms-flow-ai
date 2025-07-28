@@ -22,7 +22,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * `/submissions-filter/<id>` for retrieving or deleting a filter by its ID.
 
 **forms-flow-idm**
-* To migrate the new roles(permissions) to the multitenant setup Refer [here](./forms-flow-idm/migration/README.md#720)
+* To migrate the new roles(permissions) to the exsiting groups Refer [here](./forms-flow-idm/migration/README.md#720)
 
 `Modified`
 

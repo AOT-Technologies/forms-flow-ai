@@ -15,7 +15,7 @@ For migrating new roles introduced in v7.1.0 follow the steps mentioned [here](.
 
 ### v7.2.0
 
-For migrating new roles introduced in v7.1.0 to multitenant setup follow the steps mentioned [here](./migration/README.md#720)
+For migrating new roles introduced in v7.1.0 to existing groups follow the steps mentioned [here](./migration/README.md#720)
 
 ### Additional reference
 

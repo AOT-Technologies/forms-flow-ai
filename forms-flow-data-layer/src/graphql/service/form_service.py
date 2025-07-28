@@ -3,7 +3,6 @@ from typing import List, Optional
 from beanie import PydanticObjectId
 
 from src.graphql.schema import FormSchema, PaginationWindow
-from src.graphql.service import BaseService
 from src.models.formio import Form, Submission
 from src.models.webapi import FormProcessMapper
 from src.utils import get_logger
@@ -11,7 +10,7 @@ from src.utils import get_logger
 logger = get_logger(__name__)
 
 
-class FormService(BaseService):
+class FormService():
     """Service class for handling form related operations."""
 
     @classmethod
@@ -32,13 +31,16 @@ class FormService(BaseService):
             Paginated list of Form objects containing combined PostgreSQL and MongoDB data
         """
         # Query webapi database
-        webapi_query, webapi_total_count = await cls._webapi_find_all(FormProcessMapper, limit, offset, filters)
+        webapi_query, webapi_total_count = await FormProcessMapper.find_all(**filters)
+
+        # Apply pagination filters
+        webapi_query = webapi_query.offset(offset).limit(limit)
 
         # Combine results with data from formio
         results = []
-        webapi_results = webapi_query.all()
+        webapi_results = (await FormProcessMapper.execute(webapi_query)).all()
         for wr in webapi_results:
-            _, submissions_count = await cls._formio_find_all(Submission, filters={"form": PydanticObjectId(wr.form_id)})
+            submissions_count = await Submission.count(filters={"form": PydanticObjectId(wr.form_id)})
             results.append({
                 "webapi": wr,
                 "formio": await Form.get(PydanticObjectId(wr.form_id)),
@@ -63,7 +65,7 @@ class FormService(BaseService):
         # Query the databases
         webapi_result = await FormProcessMapper.first(form_id=form_id)
         formio_result = await Form.get(PydanticObjectId(form_id))
-        _, submissions_count = await cls._formio_find_all(Submission, filters={"form": PydanticObjectId(webapi_result.form_id)})   
+        submissions_count = await Submission.count(filters={"form": PydanticObjectId(webapi_result.form_id)})
 
         # Combine results
         result = {

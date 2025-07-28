@@ -13,6 +13,18 @@ class Submission(Document):
     class Settings:
         name = FormioTables.SUBMISSIONS.value
 
+    @classmethod
+    async def count(cls, **filters):
+        """Count number of entries that match the passed filters."""
+        query = cls.find_all()
+
+        # Apply filters
+        for filter, value in filters.items():
+            if hasattr(cls, filter):
+                query = query.find(getattr(cls, filter) == value)
+
+        return (await query.count())
+
     @staticmethod
     def _build_match_stage(submission_ids: List[str], filter: Optional[dict]) -> dict:
         """Build the MongoDB match stage."""

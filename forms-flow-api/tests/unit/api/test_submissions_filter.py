@@ -1,5 +1,6 @@
 """Test suite for analyze submissions filter APIs."""
 
+import json
 from formsflow_api_utils.utils import (
     ANALYZE_SUBMISSIONS_VIEW,
     get_token,
@@ -63,7 +64,8 @@ def test_get_analyze_submissions_filter_list(app, client, session, jwt):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     # Test filter list api with no entries
     response = client.get("/submissions-filter", headers=headers)
-    assert response.json == []
+    assert response.json.get("filters") == []
+    assert response.json.get("defaultSubmissionsFilter") is None
     response = client.post(
         "/submissions-filter", headers=headers, json=filter_payload()
     )
@@ -72,7 +74,23 @@ def test_get_analyze_submissions_filter_list(app, client, session, jwt):
     # Test filter list api with valid entries
     response = client.get("/submissions-filter", headers=headers)
     assert response.json != []
-    assert response.json[0].get("id") is not None
+    filters = response.json.get("filters")
+    assert len(filters) == 1
+    assert filters[0].get("parentFormId") == "685bc0c99135c75802703046"
+    assert response.json["filters"][0].get("id") is not None
+    filter_id = response.json["filters"][0].get("id")
+    # Add default submissions filter
+    response = client.post(
+        "/user/default-filter",
+        headers=headers,
+        data=json.dumps({"defaultSubmissionsFilter": filter_id}),
+        content_type="application/json",
+    )
+    assert response.status_code == 200
+    # Check if default submissions filter is set
+    response = client.get("/submissions-filter", headers=headers)
+    assert response.json != []
+    assert response.json.get("defaultSubmissionsFilter") == filter_id
 
 
 def test_get_analyze_submissions_filter_by_id(app, client, session, jwt):

@@ -12,34 +12,61 @@ class QueryFormsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
     async def get_forms(
         self,
-        order_by: str = 'id',
         limit: int = 100,
         offset: int = 0,
-        type: Optional[str] = None
+        order_by: str = 'created',
+        type: Optional[str] = None,
+        created_by: Optional[str] = None,
+        form_name: Optional[str] = None,
+        status: Optional[str] = None,
+        parent_form_id: Optional[str] = None,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None
     ) -> PaginationWindow[FormSchema]:
         """
         GraphQL resolver for querying forms.
 
         Args:
-            order_by (str): Field to sort by (default: 'id')
             limit (int): Number of items to return (default: 100)
             offset (int): Pagination offset (default: 0)
-            type (Optional[str]): Type of form to return
+            order_by (str): Filter to sort forms by (default: 'created')
+            type (Optional[str]): Filter on form type
+            created_by (Optional[str]): Filter on user who created the form
+            form_name (Optional[str]): Filter on form name
+            status (Optional[str]): Filter on form status
+            parent_form_id (Optional[str]): Filter on form parent id
+            from_date (Optional[str]): Filter from form date
+            to_date (Optional[str]): Filter to form date
         Returns:
             Paginated list of Form objects containing combined PostgreSQL and MongoDB data
         """
         filters = {}
 
+        # Create filters dict. Filters that share names with PostgreSQL or MongoDB column names
+        # will be applied automatically. Other filters will require additional handling.
+        filters["order_by"] = order_by
         if type:
             filters["type"] = type
+        if created_by:
+            filters["created_by"] = created_by
+        if form_name:
+            filters["form_name"] = form_name
+        if status:
+            filters["status"] = status
+        if parent_form_id:
+            filters["parent_form_id"] = parent_form_id
+        if from_date:
+            filters["from_date"] = from_date
+        if to_date:
+            filters["to_date"] = to_date
 
         forms = await FormService.get_forms(
-            order_by=order_by,
             limit=limit,
             offset=offset,
             filters=filters
         )
         return forms
+
 
     @strawberry.field(extensions=[auth.auth_required()])
     async def get_form(

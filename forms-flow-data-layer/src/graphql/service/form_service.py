@@ -17,7 +17,6 @@ class FormService(BaseService):
     @classmethod
     async def get_forms(
         cls,
-        order_by: str,
         limit: int = 100,
         offset: int = 0,
         filters: dict[str, str] = {},
@@ -26,7 +25,6 @@ class FormService(BaseService):
         Fetches forms from the WebAPI and adds additional details from FormIO.
 
         Args:
-            order_by (str): Field to sort by (default: 'id')
             limit (int): Number of items to return (default: 100)
             offset (int): Pagination offset (default: 0)
             filters (dict): Search filters to apply to the query
@@ -49,12 +47,11 @@ class FormService(BaseService):
 
         # Convert to GraphQL Schema
         forms = [FormSchema.from_result(result=r) for r in results]
-        forms.sort(key=lambda x: getattr(x, order_by))
         return PaginationWindow(items=forms, total_count=webapi_total_count)
 
 
-    @staticmethod
-    async def get_form(form_id: str) -> Optional[FormSchema]:
+    @classmethod
+    async def get_form(cls, form_id: str) -> Optional[FormSchema]:
         """
         Fetches a form based on it's form_id from the WebAPI and adds additional details from FormIO.
 
@@ -66,11 +63,13 @@ class FormService(BaseService):
         # Query the databases
         webapi_result = await FormProcessMapper.first(form_id=form_id)
         formio_result = await Form.get(PydanticObjectId(form_id))
+        _, submissions_count = await cls._formio_find_all(Submission, filters={"form": PydanticObjectId(webapi_result.form_id)})   
 
         # Combine results
         result = {
             "webapi": webapi_result,
-            "formio": formio_result
+            "formio": formio_result,
+            "calculated": {"total_submissions": submissions_count}
         }
 
         # Convert to GraphQL Schema

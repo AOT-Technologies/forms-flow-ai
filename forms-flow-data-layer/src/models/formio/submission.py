@@ -8,6 +8,7 @@ from .constants import FormioTables
 
 class Submission(Document):
     data: dict
+    form: PydanticObjectId
 
     class Settings:
         name = FormioTables.SUBMISSIONS.value

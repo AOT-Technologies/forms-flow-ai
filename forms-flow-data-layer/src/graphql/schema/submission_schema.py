@@ -36,39 +36,27 @@ class SubmissionSchema:
 
     @staticmethod
     def from_result(result: dict):
-        formio = result["formio"]
-        webapi = result["webapi"]
-        return SubmissionSchema(
-            id=webapi.id,
-            application_status=webapi.application_status,
-            form_id=webapi.latest_form_id,
-            submission_id=webapi.submission_id,
-            created_at=(webapi.created.isoformat() if webapi.created else None),
-            updated_at=(webapi.modified.isoformat() if webapi.modified else None),
-            created_by=webapi.created_by,
-            updated_by=webapi.modified_by,
-            is_resubmit=webapi.is_resubmit,
-            is_draft=webapi.is_draft,
-            data=formio.data
-        )
+        data = {}
 
+        # Map WebAPI data
+        if webapi := result.get("webapi"):
+            data.update({
+                "id": webapi.id,
+                "application_status": webapi.application_status,
+                "form_id": webapi.latest_form_id,
+                "submission_id": webapi.submission_id,
+                "created_at": (webapi.created.isoformat() if webapi.created else None),
+                "updated_at": (webapi.modified.isoformat() if webapi.modified else None),
+                "created_by": webapi.created_by,
+                "updated_by": webapi.modified_by,
+                "is_resubmit": webapi.is_resubmit,
+                "is_draft": webapi.is_draft
+            })
+        
+        # Map FormIO data
+        if formio := result.get("formio"):
+            data.update({
+                "data": formio.data
+            })
 
-@strawberry.type
-class SubmissionDetailsWithSubmissionData:
-    id: int
-    created_by: str
-    submission_id: str
-    form_name: str
-    application_status: str
-    created: str
-    data: Optional[JSON] = (
-        None  # this data is the submission data from mongodb or we can pass any json data
-    )
-
-
-@strawberry.type
-class PaginatedSubmissionResponse:
-    submissions: List[SubmissionDetailsWithSubmissionData]
-    total_count: int
-    page_no: Optional[int] = None
-    limit: Optional[int] = None
+        return SubmissionSchema(**data) if data else None

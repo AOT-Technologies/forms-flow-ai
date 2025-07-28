@@ -3,11 +3,7 @@ from typing import Generic, List, TypeVar
 import strawberry
 
 from src.graphql.schema.form_schema import FormSchema
-from src.graphql.schema.submission_schema import (
-    PaginatedSubmissionResponse,
-    SubmissionDetailsWithSubmissionData,
-    SubmissionSchema,
-)
+from src.graphql.schema.submission_schema import SubmissionSchema
 
 Item = TypeVar("Item")
 @strawberry.type
@@ -19,7 +15,5 @@ class PaginationWindow(Generic[Item]):
 __all__ = [
     "FormSchema",
     "PaginationWindow",
-    "SubmissionSchema",
-    "SubmissionDetailsWithSubmissionData",
-    "PaginatedSubmissionResponse",
+    "SubmissionSchema"
 ]

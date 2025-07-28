@@ -7,6 +7,7 @@ from src.db.webapi_db import webapi_db
 from .base import BaseModel
 from .constants import WebApiTables
 
+
 class AuthType(Enum):
     APPLICATION = "APPLICATION"
     FORM = "FORM"

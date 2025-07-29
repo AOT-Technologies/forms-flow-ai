@@ -268,12 +268,9 @@
           "realmRoles": [],
           "clientRoles": {
             "forms-flow-web": [
-              "manage_integrations",
               "view_designs",
               "create_designs",
-              "manage_advance_workflows",
-              "manage_templates",
-              "manage_bundles"
+              "manage_advance_workflows"
             ]
           }
         },

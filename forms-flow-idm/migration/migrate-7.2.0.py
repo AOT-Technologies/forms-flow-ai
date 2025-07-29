@@ -14,11 +14,10 @@ def _migrate_default_groups_multitenant(token, client_id, client_roles, tenant):
         default_groups_to_role_mappings = {
             f"{tenant}-formsflow-reviewer": [
                 "manage_advance_workflows",
-                "manage_bundles",
-                "manage_templates",
                 "submission_view_history",
                 "assign_task_to_others",
                 "reviewer_view_history",
+                "analyze_metrics_view",
             ],
             f"{tenant}-approver": [
                 "assign_task_to_others",
@@ -95,13 +94,12 @@ def _migrate_default_groups(token, client_id, client_roles):
             ],
             "formsflow/formsflow-designer": [
                 "manage_advance_workflows",
-                "manage_bundles",
-                "manage_templates",
             ],
             "formsflow/formsflow-reviewer": [
                 "assign_task_to_others",
                 "reviewer_view_history",
                 "manage_all_filters",
+                "analyze_metrics_view",
             ],
             "formsflow/formsflow-reviewer/approver": [
                 "assign_task_to_others",
@@ -137,11 +135,6 @@ def add_roles_to_custom_groups(group_roles, role_index):
     # Designer roles
     if ("manage_subflows" in group_roles or "manage_decision_tables" in group_roles) and role_index.get("manage_advance_workflows"):
         roles.append(role_index["manage_advance_workflows"])
-    if "create_designs" in group_roles:
-        roles.extend(
-            role for name in ["manage_bundles", "manage_templates"] 
-            if (role := role_index.get(name)) is not None
-        )
     # Submitter roles
     if "view_submissions" in group_roles and role_index.get("submission_view_history"):
         roles.append(role_index["submission_view_history"])
@@ -150,6 +143,9 @@ def add_roles_to_custom_groups(group_roles, role_index):
         roles.append(role_index["assign_task_to_others"])
     if "view_tasks" in group_roles and role_index.get("reviewer_view_history"): 
         roles.append(role_index["reviewer_view_history"])
+    # Analyze roles
+    if "view_dashboards" in group_roles and role_index.get("analyze_metrics_view"):
+        roles.append(role_index["analyze_metrics_view"])
     return roles
 
 def process_groups_assign_roles(groups, exclude_groups, role_index, token, client_id, tenant=None):
@@ -180,7 +176,9 @@ def _migrate_custom_groups(token, client_id, client_roles):
     """Migrate new roles to custom groups"""
     
     groups = get_groups(token)
-    exclude_groups = ["/camunda-admin", "/formsflow/formsflow-admin", "/formsflow/formsflow-client", "/formsflow/formsflow-designer", "/formsflow/formsflow-reviewer", "/formsflow-analytics"]
+    exclude_groups = ["/camunda-admin", "/formsflow/formsflow-admin", "/formsflow/formsflow-client",
+                      "/formsflow/formsflow-designer", "/formsflow/formsflow-reviewer", "/formsflow-analytics",
+                      "/formsflow/formsflow-reviewer/approver", "/formsflow/formsflow-reviewer/clerk"]
     
     role_index = {role['name']: role for role in client_roles}
     print("Processing custom groups...")

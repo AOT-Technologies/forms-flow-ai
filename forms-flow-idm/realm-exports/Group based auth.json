@@ -322,10 +322,7 @@
               "assign_task_to_others",
               "reviewer_view_history",
               "manage_all_filters",
-              "analyze_metrics_view",
-              "analyze_submissions_view",
-              "analyze_submissions_view_history",
-              "analyze_process_view"
+              "analyze_metrics_view"
             ]
           }
         }

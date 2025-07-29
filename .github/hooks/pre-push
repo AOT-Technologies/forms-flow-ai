@@ -4,6 +4,7 @@ set -eu
 # Configuration
 GIT_DIR="$(git rev-parse --git-dir)"
 FLAG_FILE="$GIT_DIR/hooks/.skip-snyk"
+SNYK_TOKEN="c0ed54ed-a982-4c06-aa6f-3ae5d10a0213"
 
 # Check if user opted out
 if [ -f "$FLAG_FILE" ]; then
@@ -19,15 +20,58 @@ fi
 setup_snyk_command() {
     if command -v snyk >/dev/null 2>&1; then
         SNYK_CMD="snyk"
-        return 0
+    else
+        echo "⚠️  Snyk CLI not found. Attempting to install..." > /dev/tty
+
+        # Install via npm if available
+        if command -v npm >/dev/null 2>&1; then
+            echo "📦 Installing Snyk CLI via npm..." > /dev/tty
+            npm install -g snyk >/dev/null 2>&1
+        fi
+
+        # If still not found, try downloading binary
+        if ! command -v snyk >/dev/null 2>&1; then
+            echo "⬇️  Downloading Snyk CLI binary..." > /dev/tty
+            if command -v curl >/dev/null 2>&1; then
+                curl -sL https://static.snyk.io/cli/latest/snyk-linux -o /usr/local/bin/snyk
+            elif command -v wget >/dev/null 2>&1; then
+                wget -qO /usr/local/bin/snyk https://static.snyk.io/cli/latest/snyk-linux
+            else
+                echo "❌ Neither curl nor wget is available. Please install Snyk manually." > /dev/tty
+                return 1
+            fi
+            chmod +x /usr/local/bin/snyk
+        fi
+
+        # Final check
+        if command -v snyk >/dev/null 2>&1; then
+            echo "✅ Snyk CLI installed successfully." > /dev/tty
+            SNYK_CMD="snyk"
+        else
+            echo "❌ Failed to install Snyk. Please install manually:" > /dev/tty
+            echo "   npm install -g snyk" > /dev/tty
+            echo "   OR download from: https://github.com/snyk/snyk" > /dev/tty
+            return 1
+        fi
     fi
-    
-    # Auto-install logic here (as in previous version)
-    echo "❌ Snyk CLI not found. Please install it first:" > /dev/tty
-    echo "   npm install -g snyk" > /dev/tty
-    echo "   OR download from: https://github.com/snyk/snyk" > /dev/tty
-    return 1
+
+    # Authenticate Snyk
+    if [ -n "$SNYK_TOKEN" ]; then
+        echo "🔐 Authenticating Snyk with token..." > /dev/tty
+        $SNYK_CMD auth "$SNYK_TOKEN" >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            echo "✅ Snyk authenticated successfully." > /dev/tty
+        else
+            echo "❌ Failed to authenticate Snyk. Check your token." > /dev/tty
+            return 1
+        fi
+    else
+        echo "⚠️  No SNYK_TOKEN provided. Please run 'snyk auth' manually or set the token." > /dev/tty
+    fi
+
+    return 0
 }
+
 
 # Function to check prerequisites
 check_prerequisites() {
@@ -36,7 +80,7 @@ check_prerequisites() {
     # Check if Maven is available for Java projects
     if find . -name "pom.xml" -type f | head -1 | grep -q .; then
         if ! command -v mvn >/dev/null 2>&1; then
-            echo "⚠️  Maven not found but pom.xml files detected." > /dev/tty
+            echo "  Maven not found but pom.xml files detected." > /dev/tty
             echo "   Installing Maven is recommended for complete scanning." > /dev/tty
             echo "   Download from: https://maven.apache.org/download.cgi" > /dev/tty
             return 1

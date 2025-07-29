@@ -12,7 +12,7 @@ IF NOT DEFINED GIT_ROOT (
 )
 
 REM Set Snyk token
-SET "SNYK_TOKEN=fb3020dc-2d54-4544-ac74-fea206e7333b"
+SET "SNYK_TOKEN=c0ed54ed-a982-4c06-aa6f-3ae5d10a0213"
 
 REM Copy pre-push hook
 COPY /Y "%~dp0pre-push" "%GIT_ROOT%\.git\hooks\pre-push" > NUL

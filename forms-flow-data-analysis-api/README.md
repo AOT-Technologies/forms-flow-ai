@@ -1,8 +1,8 @@
 # formsflow.ai Sentiment Analysis Component
 
-![Python](https://img.shields.io/badge/Python-3.11.7-blue) ![Flask](https://img.shields.io/badge/Flask-3.1.0-blue) ![postgres](https://img.shields.io/badge/postgres-13.0-blue)
-![Transformers](https://img.shields.io/badge/Transformers-4.49.0-blue)
-![Torch](https://img.shields.io/badge/Torch-2.6.0-blue)
+![Python](https://img.shields.io/badge/Python-3.11.7-blue) ![Flask](https://img.shields.io/badge/Flask-3.1.1-blue) ![postgres](https://img.shields.io/badge/postgres-13.0-blue)
+![Transformers](https://img.shields.io/badge/Transformers-4.54.1-blue)
+![Torch](https://img.shields.io/badge/Torch-2.7.1-blue)
 
 Sentiment Analysisis used to understand the sentiments of the customer for products, movies, and other such things, whether they feel positive, negative, or neutral about it. BERT is a very good pre-trained language model which helps machines learn excellent representations of text with respect to context in many natural language tasks. 
 

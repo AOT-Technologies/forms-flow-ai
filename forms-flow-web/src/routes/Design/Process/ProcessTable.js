@@ -68,13 +68,13 @@ const ProcessTable = React.memo(() => {
   
   const [bpmnState, setBpmnState] = useState({
     activePage: 1,
-    limit: 5,
+    limit: 10,
     sortConfig: sortConfig,
   });
 
   const [dmnState, setDmnState] = useState({
     activePage: 1,
-    limit: 5,
+    limit: 10,
     sortConfig: sortConfig,
   });
   const [searchDMN, setSearchDMN] = useState(searchTextDMN || "");
@@ -291,7 +291,7 @@ const ProcessTable = React.memo(() => {
           />)}
         </div>
       </div>
-      {isLoading ? <TableSkeleton columns={5} rows={7} /> :
+      {isLoading ? <TableSkeleton columns={5} rows={10} /> :
         <div className="custom-table-wrapper-outter">
           <div className="custom-table-wrapper-inner">
             <table className="table custom-tables">
@@ -363,7 +363,6 @@ const ProcessTable = React.memo(() => {
                 handlePageChange={handlePageChange}
                 onLimitChange={onLimitChange}
                 pageOptions={[
-                  { text: "5", value: 5 },
                   { text: "10", value: 10 },
                   { text: "25", value: 25 },
                   { text: "50", value: 50 },

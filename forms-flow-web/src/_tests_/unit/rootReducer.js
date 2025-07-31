@@ -17,7 +17,7 @@ const rootReducer = combineReducers({
     form: form({ name: "form" }),
     forms: forms({
       name: "forms",
-      limit: 5,
+      limit: 10,
       query: { type: "form", tags: "common", title__regex: "" },
       sort: "title",
     }),

@@ -31,6 +31,17 @@ This prevents the need to update attribute filters every time a task filter is m
 **formsflow-api**
 * Updated create_filters description from "Manage filters you create" to “Manage personal filters”
 
+*Upgrade notes:*
+
+**forms-flow-api**
+
+   * Flask version upgraded from 3.1.0 to 3.1.1
+
+**forms-flow-data-analysis-api**
+
+   * Flask version upgraded from 3.1.0 to 3.1.1
+
+
 ## 7.1.0 - 2025-07-01
 
 `Added`

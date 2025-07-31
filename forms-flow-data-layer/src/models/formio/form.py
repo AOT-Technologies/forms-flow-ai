@@ -6,12 +6,12 @@ from beanie import Document
 from .constants import FormioTables
 
 
-class Form(Document):
+class FormModel(Document):
     title: str
     name: str
     path: str
     type: str
-    isBundle: bool
+    isBundle: Optional[bool]
     display: Optional[str] = None    
     created: Optional[datetime] = None
     modified: Optional[datetime] = None

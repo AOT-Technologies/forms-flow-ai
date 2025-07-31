@@ -8,7 +8,7 @@ from src.middlewares.auth import auth
 
 
 @strawberry.type
-class QueryMetricResolver:
+class QueryMetricsResolver:
     @strawberry.field(extensions=[auth.auth_required()])
     async def get_metrics_submission_status(
         self,

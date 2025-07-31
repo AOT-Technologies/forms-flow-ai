@@ -67,6 +67,7 @@ class Application(BaseModel):
         return query.limit(limit).offset((page_no - 1) * limit)
 
     @classmethod
+
     async def find_aggregated_application_metrics(cls, metric: str, **filters):
         """Fetch application metrics."""
         table = await cls.get_table()
@@ -75,7 +76,6 @@ class Application(BaseModel):
             return None
 
         metric_col = getattr(table.c, metric)
-        print(metric_col)
         query = select(
             metric_col.label("metric"),
             func.count(table.c.id).label("count")
@@ -97,10 +97,46 @@ class Application(BaseModel):
     
 
     @classmethod
+    def filter_query(cls, query, filter: dict, application_table):
+        """
+        Apply filters to the SQLAlchemy query.
+        """
+        for field, value in filter.items():
+            if hasattr(application_table.c, field):
+                col = getattr(application_table.c, field)
+                if field == "id":
+                    # Special case for application_id
+                    query = query.where(col == value)
+                else:
+                    # For other fields, use ilike for case-insensitive search
+                    query = query.where(col.ilike(f"%{value}%"))
+        return query
+
+    @classmethod
+    def paginationed_query(cls, query, page_no: int = 1, limit: int = 5):
+        """
+        Paginate the SQLAlchemy query.
+        """
+        if page_no < 1:
+            page_no = 1
+        if limit < 1:
+            limit = 5
+        return query.limit(limit).offset((page_no - 1) * limit)
+
+    @classmethod
     async def get_authorized_applications(
         cls,
         tenant_key: str,
         roles: list[str],
+        parent_form_id: str,
+        filter: dict = None,
+        created_before: str = None,
+        created_after: str = None,
+        sort_by: str = None,
+        sort_order: str = None,
+        is_paginate: bool = False,
+        page_no: int = 1,
+        limit: int = 5,
     ):
         """
         Fetches authorized applications based on the provided parameters.
@@ -108,6 +144,14 @@ class Application(BaseModel):
         application_table = await cls.get_table()
         mapper_table = await FormProcessMapper.get_table()
         authorization_table = await Authorization.get_table()
+        # ["created_by", "application_status", "id", "created", "form_name"]
+        sortable_fields = {
+            "application_status": application_table.c.application_status,
+            "id": application_table.c.id,
+            "created_by": application_table.c.created_by,
+            "created": application_table.c.created,
+            "form_name": mapper_table.c.form_name,
+        }
 
         query = select(
             application_table, mapper_table.c.parent_form_id, mapper_table.c.form_name
@@ -118,12 +162,17 @@ class Application(BaseModel):
             authorization_table=authorization_table, roles=roles
         )
 
+        # Optional condition
+        parent_form_id_condition = (
+            mapper_table.c.parent_form_id == parent_form_id if parent_form_id else True
+        )
 
         # Join tables
         query = query.join(
             mapper_table,
             and_(
                 application_table.c.form_process_mapper_id == mapper_table.c.id,
+                parent_form_id_condition,  # Ensure parent form ID matches if provided
                 mapper_table.c.tenant
                 == tenant_key,  # Ensure tenant key matches in both tables
             ),
@@ -172,6 +221,6 @@ class Application(BaseModel):
 
         result = await cls.execute(query)
         applications = result.mappings().all()
-        total_count = len(applications)
+        total_count = len(applications) if not is_paginate else total_count
 
         return applications, total_count

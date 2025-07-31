@@ -4,7 +4,7 @@ from beanie import PydanticObjectId
 
 from src.graphql.schema import FormSchema, PaginationWindow
 from src.middlewares.pagination import verify_pagination_params
-from src.models.formio import Form, Submission
+from src.models.formio import FormModel, SubmissionModel
 from src.models.webapi import FormProcessMapper
 from src.utils import UserContext, get_logger
 
@@ -45,10 +45,10 @@ class FormService():
         results = []
         webapi_results = (await FormProcessMapper.execute(webapi_query)).all()
         for wr in webapi_results:
-            submissions_count = await Submission.count(filters={"form": PydanticObjectId(wr.form_id)})
+            submissions_count = await SubmissionModel.count(filters={"form": PydanticObjectId(wr.form_id)})
             results.append({
                 "webapi": wr,
-                "formio": await Form.get(PydanticObjectId(wr.form_id)),
+                "formio": await FormModel.get(PydanticObjectId(wr.form_id)),
                 "calculated": {"total_submissions": submissions_count}
             })
 
@@ -74,8 +74,8 @@ class FormService():
         """
         # Query the databases
         webapi_result = await FormProcessMapper.first(form_id=form_id)
-        formio_result = await Form.get(PydanticObjectId(form_id))
-        submissions_count = await Submission.count(filters={"form": PydanticObjectId(webapi_result.form_id)})
+        formio_result = await FormModel.get(PydanticObjectId(form_id))
+        submissions_count = await SubmissionModel.count(filters={"form": PydanticObjectId(webapi_result.form_id)})
 
         # Combine results
         result = {

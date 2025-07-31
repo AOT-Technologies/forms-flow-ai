@@ -164,8 +164,12 @@ class KeycloakGroupService(KeycloakAdmin):
         url_path = "groups"
         groups_length = len(groups)
         if groups_length == 1:
-            response = self.client.create_request(url_path=url_path, data=data)
-            group_id = response.headers["Location"].split("/")[-1]
+            try:
+                response = self.client.create_request(url_path=url_path, data=data)
+                group_id = response.headers["Location"].split("/")[-1]
+            except requests.exceptions.HTTPError as err:
+                if err.response.status_code == 409:
+                    raise BusinessException(BusinessErrorCode.DUPLICATE_ROLE) from err
         else:
             for index, group_name in enumerate(groups):
                 try:

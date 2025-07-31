@@ -8,7 +8,7 @@ const CardFormCounter = React.memo((props) => {
   const selectedMetricsId = useSelector(
     (state) => state.metrics?.selectedMetricsId
   );
-  const { formName, parentFormId, applicationCount } = submissionData;
+  const { title, parentFormId, totalSubmissions } = submissionData;
   return (
     <Fragment>
       <div
@@ -28,11 +28,11 @@ const CardFormCounter = React.memo((props) => {
                 delay={{ show: 0, hide: 400 }}
                 overlay={(propsData) => (
                   <Tooltip id="overlay-example" {...propsData}>
-                    {formName}
+                    {title}
                 </Tooltip>
                 )}
               >
-                <span className="form-title text-truncate">{formName}</span>
+                <span className="form-title text-truncate">{title}</span>
               </OverlayTrigger>
             </div>
             <div>
@@ -43,7 +43,7 @@ const CardFormCounter = React.memo((props) => {
             </div>
           </div>
           <div className="count">
-            <div className="counter ">{applicationCount}</div>
+            <div className="counter ">{totalSubmissions}</div>
             <div className="small-title">
               <Translation>{(t) => t("Total Submissions")}</Translation>
             </div>

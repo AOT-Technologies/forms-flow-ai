@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import and_, or_, select
+from sqlalchemy.sql import func
 
 from .authorization import Authorization, AuthType
 from .base import BaseModel
@@ -64,6 +65,36 @@ class Application(BaseModel):
         if limit < 1:
             limit = 5
         return query.limit(limit).offset((page_no - 1) * limit)
+
+    @classmethod
+    async def find_aggregated_application_metrics(cls, metric: str, **filters):
+        """Fetch application metrics."""
+        table = await cls.get_table()
+
+        if not hasattr(table.c, metric):
+            return None
+
+        metric_col = getattr(table.c, metric)
+        print(metric_col)
+        query = select(
+            metric_col.label("metric"),
+            func.count(table.c.id).label("count")
+        ).group_by(metric_col)
+
+        # Apply filters
+        for key, value in filters.items():
+            if hasattr(table.c, key):
+                query = query.where(getattr(table.c, key) == value)
+        
+        # Apply date filters, if any
+        if (order_by := filters.get("order_by")) and hasattr(table.c, order_by):
+            if from_date := filters.get("from_date"):
+                query = query.where(getattr(table.c, order_by) >= datetime.fromisoformat(from_date))
+            if to_date := filters.get("to_date"):
+                query = query.where(getattr(table.c, order_by) <= datetime.fromisoformat(to_date))
+
+        return query
+    
 
     @classmethod
     async def get_authorized_applications(

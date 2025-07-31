@@ -14,7 +14,7 @@ class Submission(Document):
         name = FormioTables.SUBMISSIONS.value
 
     @classmethod
-    async def count(cls, **filters):
+    async def count(cls, filters):
         """Count number of entries that match the passed filters."""
         query = cls.find_all()
         for filter, value in filters.items():

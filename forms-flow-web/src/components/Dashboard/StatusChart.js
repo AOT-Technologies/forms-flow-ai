@@ -31,7 +31,30 @@ ChartJS.register(
   Tooltip
 );
 
-const chartTypes = [
+
+const BACKGROUND_COLORS = [
+  "#0088FE33",
+  "#00C49F33",
+  "#FFBB2833",
+  "#FF804233",
+  "#a0519533",
+  "#d4508733",
+  "#f95d6a33",
+  "#ff7c4333",
+];
+
+const BORDER_COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#a05195",
+  "#d45087",
+  "#f95d6a",
+  "#ff7c43",
+];
+
+const CHART_TYPES = [
   { value: 'pie', label: 'Pie Chart' },
   { value: 'v-bar', label: 'Vertical Bar Chart' },
   { value: 'doughnut', label: 'Doughnut Chart' },
@@ -39,35 +62,31 @@ const chartTypes = [
   { value: 'radar', label: 'Radar Chart' },
 ];
 
-const testData = {
-  datasets: [
-    {
-      label: 'Submissions Dataset',
-      data: [{"Completed": 10}, {"In Progress": 4}, {"Inactive": 3}, {"Other": 1}],
-      backgroundColor: [
-        "#0088FE",
-        "#00C49F",
-        "#FFBB28",
-        "#FF8042",
-        "#a05195",
-        "#d45087",
-        "#f95d6a",
-        "#ff7c43"
-      ]
-    }
-  ]
-};
-
 
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
-  const { formName } = submissionData;
+  const {title} = submissionData;
+  const { t } = useTranslation();
 
   const [selectedChartValue, setSelectedChartValue] = useState('pie');
 
-  const { t } = useTranslation();
-  const chartData = submissionsStatusList || [];
-  console.log(chartData);
+  let chartLabels = [];
+  let chartDataset = [];
+  submissionsStatusList.map((metric) => {
+    chartLabels.push(metric.metric);
+    chartDataset.push(metric.count);
+  });
+
+  const chartData = {
+    labels: chartLabels,
+    datasets: [{
+      label: `${title} Dataset`,
+      data: chartDataset,
+      backgroundColor: BACKGROUND_COLORS,
+      borderColor: BORDER_COLORS,
+      borderWidth: 1
+    }]
+  } || {};
 
   const chartOptions = {
     plugins: {
@@ -82,35 +101,35 @@ const ChartForm = React.memo((props) => {
       case 'pie':
         return (
           <Pie
-            data={testData}
+            data={chartData}
             options={chartOptions}
           />
         );
       case 'v-bar':
         return (
           <Bar
-            data={testData}
+            data={chartData}
             options={chartOptions}
           />
         );
       case 'doughnut':
         return (
           <Doughnut
-            data={testData}
+            data={chartData}
             options={chartOptions}
           />
         );
       case 'polar-area':
         return (
           <PolarArea
-            data={testData}
+            data={chartData}
             options={chartOptions}
           />
         );
       case 'radar':
         return (
           <Radar
-            data={testData}
+            data={chartData}
             options={chartOptions}
           />
         );
@@ -122,20 +141,6 @@ const ChartForm = React.memo((props) => {
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
-          <div className="d-flex align-items-center justify-content-between flex-wrap">
-            <div className="d-flex flex-column">
-              <div className="d-flex">
-                <span className="text-primary me-2" style={{ whiteSpace: "nowrap" }}>
-                  {t("Form Name")} :
-                </span>
-                <h2
-                  className="mt-0 mb-2 fs-6"
-                >
-                  {formName}
-                </h2>
-              </div>
-            </div>
-          </div>
           <LoadingOverlay
             active={submissionStatusCountLoader}
             spinner
@@ -154,7 +159,7 @@ const ChartForm = React.memo((props) => {
                     title={t("Choose any")}
                     aria-label="Select chart type"
                   >
-                    {chartTypes.map((option, index) => (
+                    {CHART_TYPES.map((option, index) => (
                       <option key={index} value={option.value}>{option.label}</option>
                     ))}
                   </FormControl>

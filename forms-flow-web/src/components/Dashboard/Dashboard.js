@@ -120,8 +120,7 @@ const Dashboard = React.memo(() => {
   const getFormattedDate = (date) => {
     return moment
       .utc(date)
-      .format("YYYY-MM-DDTHH:mm:ssZ")
-      .replace(/\+/g, "%2B");
+      .format("YYYY-MM-DDTHH:mm:ssZ");
   };
 
   useEffect(() => {

@@ -14,7 +14,7 @@ class QueryFormsResolver:
         self,
         info: strawberry.Info,
         limit: int = 100,
-        offset: int = 0,
+        page_no: int = 1,
         order_by: str = 'created',
         type: Optional[str] = None,
         created_by: Optional[str] = None,
@@ -30,7 +30,7 @@ class QueryFormsResolver:
         Args:
             info (strawberry.Info): GraphQL context information
             limit (int): Number of items to return (default: 100)
-            offset (int): Pagination offset (default: 0)
+            page_no (int): Pagination number (default: 1)
             order_by (str): Filter to sort forms by (default: 'created')
             type (Optional[str]): Filter on form type
             created_by (Optional[str]): Filter on user who created the form
@@ -60,6 +60,9 @@ class QueryFormsResolver:
             filters["from_date"] = from_date
         if to_date:
             filters["to_date"] = to_date
+        
+        # Convert page_no to offset
+        offset = (page_no - 1) * limit
 
         forms = await FormService.get_forms(
             user_context=info.context.get("user"),

@@ -20,5 +20,5 @@ class BaseModel:
         """
         Executes a given SQLAlchemy query using the webapi session.
         """
-        session = await cls._get_session()
-        return await session.execute(query)
+        async with webapi_db.get_session() as session:
+            return await session.execute(query)

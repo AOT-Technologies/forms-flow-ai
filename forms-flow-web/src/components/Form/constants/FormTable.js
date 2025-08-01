@@ -39,8 +39,8 @@ function FormTable() {
 
   const pageOptions = [
     {
-      text: "5",
-      value: 5,
+      text: "10",
+      value: 10,
     },
     {
       text: "25",
@@ -101,7 +101,7 @@ function FormTable() {
   };
 
   if (searchFormLoading || isApplicationCountLoading) {
-    return <TableSkeleton columns={5} rows={7} pagination={7} />;
+    return <TableSkeleton columns={5} rows={10} pagination={7} />;
   }
 
   return (

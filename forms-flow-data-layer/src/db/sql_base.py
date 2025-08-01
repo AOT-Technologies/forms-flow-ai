@@ -42,7 +42,7 @@ class ConnectSQLDatabase:
             await conn.run_sync(self.metadata.reflect)  # Reflect all tables
             self._tables_cache = self.metadata.tables  # Store tables in cache
 
-    async def get_session(self):
+    def get_session(self):
         """Return a new session for the database"""
         return self.__session_factory()
 

@@ -68,8 +68,8 @@ const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
 const getpageList = (count) => {
   const list = [
     {
-      text: "5",
-      value: 5,
+      text: "10",
+      value: 10,
     },
     {
       text: "25",

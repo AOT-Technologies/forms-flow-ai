@@ -47,8 +47,14 @@ const View = React.memo((props) => {
     return <Loading />;
   }
 
+  let scrollableOverview = "scrollable-overview";
+  if (form?.display === "wizard") {
+    scrollableOverview =  "scrollable-overview-with-custom-header-and-wizard";
+  }
+ 
+
   return (
-    <div className="scrollable-overview  bg-white ps-3 pe-3 m-0 form-border">
+    <div className={`${scrollableOverview} bg-white ps-3 pe-3 m-0 form-border`}>
       <LoadingOverlay
         active={isFormSubmissionLoading}
         spinner

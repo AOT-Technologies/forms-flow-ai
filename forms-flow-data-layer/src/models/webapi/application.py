@@ -25,13 +25,16 @@ class Application(BaseModel):
         return cls._application
 
     @classmethod
-    def filter_query(cls, query, filter: dict, application_table):
-        """
-        Apply filters to the SQLAlchemy query.
-        """
-        for field, value in filter.items():
-            if hasattr(application_table.c, field):
-                col = getattr(application_table.c, field)
+    def filter_query(cls, query, filter_data: dict, application_table, mapper_table):
+        """Apply filters to the SQLAlchemy query."""
+        for field, value in filter_data.items():
+            # Check if the field is in the application table or mapper table
+            # except for 'form_name' which is in the mapper table
+            model_name = (
+                application_table if field not in ["form_name"] else mapper_table
+            )
+            if hasattr(model_name.c, field):
+                col = getattr(model_name.c, field)
                 if field == "id":
                     # Special case for application_id
                     query = query.where(col == value)
@@ -129,7 +132,7 @@ class Application(BaseModel):
         if (
             filter
         ):  # filter will contain {field: value} pairs eg: { "application_status": "John"}
-            query = Application.filter_query(query, filter, application_table)
+            query = Application.filter_query(query, filter, application_table, mapper_table)
 
         if sort_by and sort_order:
             col = sortable_fields[sort_by]

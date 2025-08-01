@@ -96,7 +96,7 @@ export const mockstate = {
       },
     ],
     isActive: false,
-    limit: 5,
+    limit: 10,
     page: 1,
     totalForms: 55,
     bpmFormLoading: false,

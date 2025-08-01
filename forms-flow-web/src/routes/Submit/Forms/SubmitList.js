@@ -23,7 +23,7 @@ import { HelperServices } from '@formsflow/service';
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
   const { t } = useTranslation();
   return (
-    <div className="search-box">
+   
       <CustomSearch
         search={search}
         setSearch={setSearch}
@@ -34,7 +34,6 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
         title={t("Search Form Name and Description")}
         dataTestId="form-search-input"
       />
-    </div>
   );
 };
 

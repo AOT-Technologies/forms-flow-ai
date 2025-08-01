@@ -31,7 +31,7 @@ const ProcessTable = React.memo(() => {
   const isBPMN = viewType === "subflow";
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const { createDesigns } = userRoles();
+  const { createDesigns, manageAdvancedWorkFlows } = userRoles();
   const ProcessContents = isBPMN
     ? {
       processType: "BPMN",
@@ -282,7 +282,7 @@ const ProcessTable = React.memo(() => {
             refreshDataTestId={ProcessContents.refreshDataTestId}
             refreshAriaLabel={ProcessContents.refreshAriaLabel}
           />
-          {createDesigns && (<CustomButton
+          {(createDesigns || manageAdvancedWorkFlows) && (<CustomButton
             label={t(`New ${ProcessContents.processType}`)}
             onClick={handleCreateProcess}
             dataTestid={`create-${ProcessContents.processType}-button`}

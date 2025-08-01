@@ -56,10 +56,12 @@ jobs:
         run: |
           kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
+          kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-data-layer -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-data-layer","image":"docker.io/formsflow/forms-flow-data-layer:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
           kubectl rollout restart deployment forms-flow-api -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-bpm -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
+          kubectl rollout restart deployment forms-flow-data-layer -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-documents-api -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-web -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
       
@@ -67,10 +69,12 @@ jobs:
         run: |
           kubectl -n ${{ secrets.QA_EE_NAMESPACE }} patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_EE_NAMESPACE }} patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm-ee:${{ env.VERSION }}"}]}}}}'
+          kubectl -n ${{ secrets.QA_EE_NAMESPACE }} patch deployment forms-flow-data-layer -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-data-layer","image":"docker.io/formsflow/forms-flow-data-layer:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_EE_NAMESPACE }} patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_EE_NAMESPACE }} patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web-ee:${{ env.VERSION }}"}]}}}}'
           kubectl rollout restart deployment forms-flow-api -n ${{ secrets.QA_EE_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-bpm -n ${{ secrets.QA_EE_NAMESPACE }}
+          kubectl rollout restart deployment forms-flow-data-layer -n ${{ secrets.QA_EE_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-documents-api -n ${{ secrets.QA_EE_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-web -n ${{ secrets.QA_EE_NAMESPACE }}
 
@@ -78,11 +82,13 @@ jobs:
         run: |
           kubectl -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }} patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }} patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm-ee:${{ env.VERSION }}"}]}}}}'
+          kubectl -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }} patch deployment forms-flow-data-layer -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-data-layer","image":"docker.io/formsflow/forms-flow-data-layer:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }} patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }} patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web-ee:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }} patch deployment forms-flow-admin -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-admin","image":"docker.io/formsflow/forms-flow-ai-admin:${{ env.VERSION }}"}]}}}}'
           kubectl rollout restart deployment forms-flow-api -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-bpm -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }}
+          kubectl rollout restart deployment forms-flow-data-layer -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-documents-api -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-web -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }}
           kubectl rollout restart deployment forms-flow-admin -n ${{ secrets.QA_EE_MULTITENANT_NAMESPACE }}

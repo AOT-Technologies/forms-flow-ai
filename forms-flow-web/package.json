@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "craco start",
-    "build": "GENERATE_SOURCEMAP=true craco --max_old_space_size=6144 build",
+    "build": "GENERATE_SOURCEMAP=false craco --max_old_space_size=6144 build",
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && craco build",
     "eject": "react-scripts eject",
     "test": "craco test --detectOpenHandles --silent",

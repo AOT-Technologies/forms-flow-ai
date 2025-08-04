@@ -12,7 +12,6 @@ const singleSpaAppPlugin = {
     reactPackagesAsExternal: true, // defaults to true. marks react and react-dom as external so they are not included in the bundle
     minimize: shouldMinimize, // defaults to false, sets optimization.minimize value
     outputFilename: "forms-flow-web.js", // defaults to the values set for the "orgName" and "projectName" properties, in this case "my-org-my-app.js"
-     devtool: "source-map"
   },
 };
 
@@ -28,7 +27,6 @@ module.exports = {
           net: false,  // Unfortunately, net can't be polyfilled easily in the browser.
         },
       },
-      devtool:"source-map"
     },
   },
   devServer: {

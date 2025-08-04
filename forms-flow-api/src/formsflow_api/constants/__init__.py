@@ -127,7 +127,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Missing pagination parameters",
         HTTPStatus.BAD_REQUEST,
     )
-    DUPLICATE_ROLE = "Duplicate role", HTTPStatus.BAD_REQUEST
+    ROLE_ERROR = (
+        "Role creation failed because Role name already exists",
+        HTTPStatus.BAD_REQUEST,
+    )
     APPLICATION_CREATE_ERROR = "Cannot create application", HTTPStatus.BAD_REQUEST
     DRAFT_APPLICATION_NOT_FOUND = (
         "The specified draft application does not exist",

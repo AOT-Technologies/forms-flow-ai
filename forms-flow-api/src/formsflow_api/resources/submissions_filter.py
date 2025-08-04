@@ -27,6 +27,7 @@ variable = API.model(
         "isChecked": fields.Boolean(description="Is variable checked"),
         "sortOrder": fields.Integer(description="Sort order of the variable"),
         "isFormVariable": fields.Boolean(description="Is this a form variable"),
+        "type": fields.String(description="Type of the variable"),
     },
 )
 

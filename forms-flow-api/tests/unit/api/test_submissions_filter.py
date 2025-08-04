@@ -18,7 +18,8 @@ def filter_payload():
                 "name": "applicationId",
                 "isChecked": True,
                 "sortOrder": 1,
-                "isFormVariable": False
+                "isFormVariable": False,
+                "type": "number"
             },
             {
                 "key": "submitterName",
@@ -26,7 +27,8 @@ def filter_payload():
                 "name": "submitterName",
                 "isChecked": True,
                 "sortOrder": 2,
-                "isFormVariable": False
+                "isFormVariable": False,
+                "type": "textField"
             }
         ]
     }

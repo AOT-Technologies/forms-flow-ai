@@ -24,6 +24,7 @@ class VariableSchema(Schema):
     isChecked = fields.Bool(required=True)
     sortOrder = fields.Int(required=True)
     isFormVariable = fields.Bool(required=True)
+    type = fields.Str(required=True, validate=not_empty_string)
 
 
 class SubmissionsFilterSchema(Schema):

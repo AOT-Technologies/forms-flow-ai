@@ -24,7 +24,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 This prevents the need to update attribute filters every time a task filter is modified, except in the case of private attribute filters.
 
 **forms-flow-idm**
-* To migrate the new roles(permissions) to the multitenant setup Refer [here](./forms-flow-idm/migration/README.md#720)
+* To migrate the new roles(permissions) to the exsiting groups Refer [here](./forms-flow-idm/migration/README.md#720)
 
 `Modified`
 

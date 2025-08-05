@@ -169,7 +169,7 @@ class KeycloakGroupService(KeycloakAdmin):
                 group_id = response.headers["Location"].split("/")[-1]
             except requests.exceptions.HTTPError as err:
                 if err.response.status_code == 409:
-                    raise BusinessException(BusinessErrorCode.DUPLICATE_ROLE) from err
+                    raise BusinessException(BusinessErrorCode.ROLE_ERROR) from err
         else:
             for index, group_name in enumerate(groups):
                 try:
@@ -180,7 +180,7 @@ class KeycloakGroupService(KeycloakAdmin):
                     if err.response.status_code == 409:
                         if index == (groups_length - 1):
                             raise BusinessException(
-                                BusinessErrorCode.DUPLICATE_ROLE
+                                BusinessErrorCode.ROLE_ERROR
                             ) from err
                         group_path = "/".join(groups[: index + 1])
                         response = self.client.get_request(

@@ -13,8 +13,10 @@ import {
   QueryClientProvider,
 } from 'react-query';
 const queryClient = new QueryClient();
-import { HelperServices } from '@formsflow/service';
-
+import { HelperServices, StyleServices } from '@formsflow/service';
+const customLogoPath =  StyleServices?.getCSSVariable("--custom-logo-path");
+const customTitle = StyleServices?.getCSSVariable("--custom-title");
+const hasMultitenancyHeader = customLogoPath || customTitle;
 const App = React.memo((props) => {
   const { store, history, publish, subscribe, getKcInstance } = props;
   const [isPreviewRoute,setIsPreviewRoute] = useState(false);
@@ -30,7 +32,7 @@ const App = React.memo((props) => {
   }, []);
 
   return (
-    <div className={`main-container ${isPreviewRoute && 'm-0'}`}>
+    <div className={`${hasMultitenancyHeader ? 'main-container-with-custom-header ' : 'main-container' } ${isPreviewRoute && 'm-0'}`}>
       <Helmet>
         {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
       </Helmet>

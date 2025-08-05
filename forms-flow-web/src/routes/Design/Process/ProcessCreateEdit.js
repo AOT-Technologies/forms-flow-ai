@@ -661,7 +661,7 @@ const ProcessCreateEdit = ({ type }) => {
               </div>
           </Card.Header>
         </div>
-        <Card.Body>
+        <Card.Body className="workflow-edit-container">
           <LoadingOverlay
             active={historyLoading}
             spinner

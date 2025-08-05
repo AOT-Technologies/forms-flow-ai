@@ -189,11 +189,11 @@ const ViewApplication = React.memo(() => {
           />
           )}
 
-          <DownloadPDFButton
+          {(form?._id && submission?._id) && <DownloadPDFButton
             form_id={form._id}
             submission_id={submission._id}
             title={form.title}
-          />
+          />}
         </div>
       </div>
       

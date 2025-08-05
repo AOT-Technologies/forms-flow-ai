@@ -36,26 +36,12 @@ class IsAuthenticated(BasePermission):
             token = auth.split(" ")[1]
             payload = await keycloak_validator.verify_token(token)
             # Attach token info to context
+            print('token', token)
+            print('payload', payload)
             info.context["user"] = UserContext(token=token, token_info=payload)
             return True
         except Exception as e:
             logger.error(e)
-            raise GraphQLError(f"Unexpected error: {str(e)}")
-
-
-class IsAdmin(BasePermission):
-    """Class for check if user is admin."""
-
-    message = "User role must be admin"
-    error_extensions = {"code": "UNAUTHORIZED"}
-
-    async def has_permission(
-        self, source: Any, info: strawberry.Info, **kwargs
-    ) -> bool:
-        try:
-            user = info.context["user"]
-            return user.has_any_roles(['admin'])
-        except Exception as e:
             raise GraphQLError(f"Unexpected error: {str(e)}")
 
 

@@ -2,7 +2,7 @@ from typing import Optional
 
 import strawberry
 
-from src.middlewares.auth import IsAdmin
+from src.middlewares.role_check import RoleCheck
 
 
 @strawberry.type
@@ -14,8 +14,10 @@ class FormSchema:
 
     # FormIO populated fields
     id: str
+    name: Optional[str] = strawberry.field(
+        extensions=[RoleCheck(["admin"])]
+    )
     title: str
-    name: Optional[str] = strawberry.field(permission_classes=[IsAdmin])
     path: str
     type: str
     display: Optional[str] = None

@@ -35,8 +35,7 @@ class FormService():
             Paginated list of Form objects containing combined PostgreSQL and MongoDB data
         """
         # Query webapi database
-        webapi_query = await FormProcessMapper.find_all(**filters)
-        webapi_total_count = await FormProcessMapper.count(**filters)
+        webapi_query, webapi_total_count = await FormProcessMapper.find_all(user_context=user_context, **filters)
 
         # Apply pagination filters
         webapi_query = webapi_query.offset(offset).limit(limit)

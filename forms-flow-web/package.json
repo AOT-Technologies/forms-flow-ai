@@ -99,7 +99,6 @@
     "react-scripts": "^5.0.1",
     "react-select": "^3.2.0",
     "react-toastify": "^7.0.4",
-    "recharts": "^2.12.7",
     "redux": "^4.1.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",

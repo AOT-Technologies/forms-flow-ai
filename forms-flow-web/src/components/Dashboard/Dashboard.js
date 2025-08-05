@@ -355,12 +355,12 @@ const Dashboard = React.memo(() => {
                     <button type="button" className="btn-close me-3 align-self-center" onClick={() => setShow(false)}></button>
                   </Modal.Header>
                 <Modal.Body>
-                    <StatusChart
-                      submissionsStatusList={submissionsStatusList}
-                      submissionData={showSubmissionData}
-                      getStatusDetails={getStatusDetails}
-                      submissionStatusCountLoader={submissionStatusCountLoader}
-                          />
+                  <StatusChart
+                    submissionsStatusList={submissionsStatusList}
+                    submissionData={showSubmissionData}
+                    getStatusDetails={getStatusDetails}
+                    submissionStatusCountLoader={submissionStatusCountLoader}
+                        />
                       </Modal.Body>
                     </Modal>
                   )}

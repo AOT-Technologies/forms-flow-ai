@@ -86,7 +86,7 @@ const ChartForm = React.memo((props) => {
       borderColor: BORDER_COLORS,
       borderWidth: 1
     }]
-  } || {};
+  };
 
   const chartOptions = {
     plugins: {

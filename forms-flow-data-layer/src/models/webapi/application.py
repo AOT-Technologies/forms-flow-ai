@@ -67,63 +67,6 @@ class Application(BaseModel):
         return query.limit(limit).offset((page_no - 1) * limit)
 
     @classmethod
-
-    async def find_aggregated_application_metrics(cls, metric: str, **filters):
-        """Fetch application metrics."""
-        table = await cls.get_table()
-
-        if not hasattr(table.c, metric):
-            return None
-
-        metric_col = getattr(table.c, metric)
-        query = select(
-            metric_col.label("metric"),
-            func.count(table.c.id).label("count")
-        ).group_by(metric_col)
-
-        # Apply filters
-        for key, value in filters.items():
-            if hasattr(table.c, key):
-                query = query.where(getattr(table.c, key) == value)
-        
-        # Apply date filters, if any
-        if (order_by := filters.get("order_by")) and hasattr(table.c, order_by):
-            if from_date := filters.get("from_date"):
-                query = query.where(getattr(table.c, order_by) >= datetime.fromisoformat(from_date))
-            if to_date := filters.get("to_date"):
-                query = query.where(getattr(table.c, order_by) <= datetime.fromisoformat(to_date))
-
-        return query
-    
-
-    @classmethod
-    def filter_query(cls, query, filter: dict, application_table):
-        """
-        Apply filters to the SQLAlchemy query.
-        """
-        for field, value in filter.items():
-            if hasattr(application_table.c, field):
-                col = getattr(application_table.c, field)
-                if field == "id":
-                    # Special case for application_id
-                    query = query.where(col == value)
-                else:
-                    # For other fields, use ilike for case-insensitive search
-                    query = query.where(col.ilike(f"%{value}%"))
-        return query
-
-    @classmethod
-    def paginationed_query(cls, query, page_no: int = 1, limit: int = 5):
-        """
-        Paginate the SQLAlchemy query.
-        """
-        if page_no < 1:
-            page_no = 1
-        if limit < 1:
-            limit = 5
-        return query.limit(limit).offset((page_no - 1) * limit)
-
-    @classmethod
     async def get_authorized_applications(
         cls,
         tenant_key: str,

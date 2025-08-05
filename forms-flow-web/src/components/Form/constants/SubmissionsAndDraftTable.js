@@ -174,7 +174,7 @@ const getActionButtons = (item) => {
 
 
 if (isApplicationLoading) {
-  return <TableSkeleton columns={5} rows={7} pagination={7} />;
+  return <TableSkeleton columns={5} rows={10} pagination={7} />;
 }
 
 return (

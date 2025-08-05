@@ -34,6 +34,13 @@ def get_access_token():
     response.raise_for_status()
     return response.json()['access_token']
 
+def get_request_data(token, url):
+    """Get data from a given URL with the provided token."""
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    response_json = response.json()
+    return response_json
 
 def get_client_id(token, client_name):
     """Retrieve the client ID (UUID) based on the client name."""
@@ -104,6 +111,25 @@ def update_client_role(token, client_id, roles):
         else:
             print(f"Failed to update role {role_name}: {response.text}")    
 
+def get_groups(token):
+    """Retrieve all groups in the realm."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/groups?briefRepresentation=false"
+    groups = get_request_data(token, url)    
+    return groups
+
+def get_sub_groups(token, group_id):
+    """Retrieve sub-groups of a given group."""
+    if not group_id:
+        raise ValueError("Group ID cannot be None or empty.")
+    url = f"{_get_base_url()}/admin/realms/{REALM}/groups/{group_id}/children?briefRepresentation=false"
+    sub_groups = get_request_data(token, url)    
+    return sub_groups
+
+def get_group_id_by_path(token, group_path):
+    """Retrieve a group id(UUID) by its path."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/group-by-path/{group_path}"
+    group = get_request_data(token , url)
+    return group["id"] if group else None
 
 def get_group_id(token, group_name):
     """Retrieve the group ID (UUID) based on the group name."""

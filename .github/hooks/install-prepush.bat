@@ -11,6 +11,19 @@ IF NOT DEFINED GIT_ROOT (
     EXIT /B 1
 )
 
+REM Rename sample.env to .env in script directory
+IF EXIST "%~dp0sample.env" (
+    REN "%~dp0sample.env" ".env"
+    IF ERRORLEVEL 1 (
+        ECHO ❌ Failed to rename sample.env to .env.
+        EXIT /B 1
+    )
+    ECHO ✅ sample.env renamed to .env successfully.
+) ELSE (
+    ECHO ❌ sample.env file not found in the script directory.
+    EXIT /B 1
+)
+
 REM Copy pre-push hook
 COPY /Y "%~dp0pre-push" "%GIT_ROOT%\.git\hooks\pre-push" > NUL
 IF ERRORLEVEL 1 (

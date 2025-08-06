@@ -36,7 +36,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v7.0.0
+    image: formsflow/forms-flow-forms:v7.1.0-alpha
     restart: always
     links:
       - forms-flow-forms-db

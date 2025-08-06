@@ -101,14 +101,6 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-data-analysis-api:latest
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Scan Docker image 🐳
-        uses: snyk/actions/docker@master
-        continue-on-error: true
-        with:
-          image: ${{ steps.meta.outputs.tags }}
-          args: --severity-threshold=high --sarif-file-output=snyk.sarif
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
 #####
 #      - name: Set up AWS CLI

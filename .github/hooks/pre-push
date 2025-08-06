@@ -1,0 +1,135 @@
+#!/bin/sh
+set -eu
+
+# Configuration
+GIT_DIR="$(git rev-parse --git-dir)"
+FLAG_FILE="$GIT_DIR/hooks/.skip-snyk"
+ENV_FILE="$GIT_DIR/hooks/.env"
+
+# Load environment variables from .env file
+if [ -f "$ENV_FILE" ]; then
+    export $(grep -v '^#' "$ENV_FILE" | xargs)
+fi
+
+# Validate SNYK_TOKEN
+if [ -z "${SNYK_TOKEN:-}" ]; then
+    echo "❌ SNYK_TOKEN is missing in $ENV_FILE" > /dev/tty
+    echo "⚠️  Skipping Snyk scan due to missing token." > /dev/tty
+    exit 0
+fi
+
+# Check if user opted out
+if [ -f "$FLAG_FILE" ]; then
+    choice=$(cat "$FLAG_FILE" 2>/dev/null || echo "")
+    rm -f "$FLAG_FILE"
+    if [ "$choice" = "skip" ]; then
+        echo "⚠️  User chose to skip Snyk scan. Proceeding with push..." > /dev/tty
+        exit 0
+    fi
+fi
+
+# Function to detect OS and set Snyk command
+setup_snyk_command() {
+    if command -v snyk >/dev/null 2>&1; then
+        SNYK_CMD="snyk"
+    else
+        echo "⚠️  Snyk CLI not found. Attempting to install..." > /dev/tty
+
+        # Install via npm if available
+        if command -v npm >/dev/null 2>&1; then
+            echo "📦 Installing Snyk CLI via npm..." > /dev/tty
+            npm install -g snyk >/dev/null 2>&1
+        fi
+
+        # If still not found, try downloading binary
+        if ! command -v snyk >/dev/null 2>&1; then
+            echo "⬇️  Downloading Snyk CLI binary..." > /dev/tty
+            if command -v curl >/dev/null 2>&1; then
+                curl -sL https://static.snyk.io/cli/latest/snyk-linux -o /usr/local/bin/snyk
+            elif command -v wget >/dev/null 2>&1; then
+                wget -qO /usr/local/bin/snyk https://static.snyk.io/cli/latest/snyk-linux
+            else
+                echo "❌ Neither curl nor wget is available. Please install Snyk manually." > /dev/tty
+                return 1
+            fi
+            chmod +x /usr/local/bin/snyk
+        fi
+
+        if command -v snyk >/dev/null 2>&1; then
+            echo "✅ Snyk CLI installed successfully." > /dev/tty
+            SNYK_CMD="snyk"
+        else
+            echo "❌ Failed to install Snyk. Please install manually:" > /dev/tty
+            echo "   npm install -g snyk" > /dev/tty
+            echo "   OR download from: https://github.com/snyk/snyk" > /dev/tty
+            return 1
+        fi
+    fi
+
+    echo "🔐 Authenticating Snyk with token from .env..." > /dev/tty
+    $SNYK_CMD auth "$SNYK_TOKEN" >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo "✅ Snyk authenticated successfully." > /dev/tty
+    else
+        echo "❌ Failed to authenticate Snyk. Check your token." > /dev/tty
+        return 1
+    fi
+
+    return 0
+}
+
+# Function to check prerequisites
+check_prerequisites() {
+    echo "🔍 Checking prerequisites..." > /dev/tty
+    if [ -f "package.json" ] && [ -f "package-lock.json" ]; then
+        echo "📦 Checking package.json sync..." > /dev/tty
+        if ! npm ls >/dev/null 2>&1; then
+            echo "⚠️  package.json and package-lock.json might be out of sync." > /dev/tty
+            echo "   Consider running 'npm install' to fix." > /dev/tty
+        fi
+    fi
+    return 0
+}
+
+# Run Snyk scan functions
+run_snyk_test() {
+    echo "🔍 Running Snyk vulnerability test..." > /dev/tty
+    if "$SNYK_CMD" test --all-projects --severity-threshold=high 2>/dev/null; then
+        echo "✅ No high/critical vulnerabilities found." > /dev/tty
+        return 0
+    else
+        echo "🚨 Vulnerabilities found! Review using: $SNYK_CMD test" > /dev/tty
+        return 0
+    fi
+}
+
+run_snyk_monitor() {
+    echo "📡 Sending project snapshot to Snyk..." > /dev/tty
+    EXCLUDE_PATTERNS="**/node_modules/**,**/vendor/**,**/target/**,**/.git/**"
+    if "$SNYK_CMD" monitor --all-projects --detection-depth=2 --exclude="$EXCLUDE_PATTERNS" --skip-unresolved >/dev/null 2>&1; then
+        echo "✅ All projects successfully sent to Snyk for monitoring." > /dev/tty
+    else
+        echo "⚠️  Monitor had issues. Check manually at: https://app.snyk.io" > /dev/tty
+    fi
+}
+
+# Main execution
+echo "🛡️  Starting Snyk security scan..." > /dev/tty
+if ! setup_snyk_command; then
+    echo "⚠️  Skipping Snyk scan due to setup issues." > /dev/tty
+    exit 0
+fi
+
+if ! "$SNYK_CMD" auth --quiet >/dev/null 2>&1; then
+    echo "❌ Snyk not authenticated. Run: $SNYK_CMD auth" > /dev/tty
+    echo "⚠️  Skipping scan due to authentication failure." > /dev/tty
+    exit 0
+fi
+
+check_prerequisites || true
+run_snyk_test || true
+run_snyk_monitor || true
+provide_tips || true
+
+echo "🎉 Security scan completed. Push proceeding..." > /dev/tty
+exit 0

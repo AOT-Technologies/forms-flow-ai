@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+
+FLAG_FILE="$(git rev-parse --git-dir)/hooks/.skip-snyk"
+
+# Prompt user
+printf "Do you want to run Snyk vulnerability scan before push? (y/n): " > /dev/tty
+read -r answer < /dev/tty
+
+case "$answer" in
+    [Yy]*)
+        echo "run" > "$FLAG_FILE"
+        echo "✅ Snyk scan will run on next push." > /dev/tty
+        ;;
+    [Nn]*)
+        echo "skip" > "$FLAG_FILE"
+        echo "⚠️  Snyk scan will be skipped on next push." > /dev/tty
+        ;;
+    *)
+        echo "Invalid input. Defaulting to run." > /dev/tty
+        echo "run" > "$FLAG_FILE"
+        ;;
+esac
+
+exit 0

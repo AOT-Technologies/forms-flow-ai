@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional, Tuple
 
 import strawberry
+from datetime import datetime
 
 from src.graphql.schema import (
     PaginatedSubmissionResponse,
@@ -32,6 +33,18 @@ class SubmissionService:
                     mongo_search[field] = value
 
         return webapi_search, mongo_search
+
+    @staticmethod
+    def convert_datetimes_to_iso(obj):
+        """Recursively convert datetime objects to strings."""
+        if isinstance(obj, dict):
+            return {k: SubmissionService.convert_datetimes_to_iso(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [SubmissionService.convert_datetimes_to_iso(i) for i in obj]
+        if isinstance(obj, datetime):
+            # Convert datetime to string format eg: 04-08-2025, 06:30 AM
+            return obj.strftime("%d-%m-%Y, %I:%M %p")
+        return obj
 
     @staticmethod
     def _process_results(
@@ -182,7 +195,7 @@ class SubmissionService:
                     created_by=row.get("created_by"),
                     application_status=row.get("application_status"),
                     created=row.get("created"),
-                    data=row.get("submission_data", {}),
+                    data=SubmissionService.convert_datetimes_to_iso(row.get("submission_data", {})),
                 )
                 for row in data
             ],

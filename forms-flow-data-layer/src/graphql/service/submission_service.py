@@ -1,7 +1,6 @@
 from typing import Any, Dict, List, Optional, Tuple
 
 import strawberry
-from datetime import datetime
 
 from src.graphql.schema import (
     PaginatedSubmissionResponse,
@@ -9,7 +8,7 @@ from src.graphql.schema import (
 )
 from src.models.formio.submission import SubmissionsModel
 from src.models.webapi.application import Application
-from src.utils import get_logger
+from src.utils import get_logger, convert_datetimes_to_string
 
 logger = get_logger(__name__)
 
@@ -33,18 +32,6 @@ class SubmissionService:
                     mongo_search[field] = value
 
         return webapi_search, mongo_search
-
-    @staticmethod
-    def convert_datetimes_to_string(obj):
-        """Recursively convert datetime objects to string format."""
-        if isinstance(obj, dict):
-            return {k: SubmissionService.convert_datetimes_to_string(v) for k, v in obj.items()}
-        if isinstance(obj, list):
-            return [SubmissionService.convert_datetimes_to_string(i) for i in obj]
-        if isinstance(obj, datetime):
-            # Convert datetime to string format eg: 04-08-2025, 06:30 AM
-            return obj.strftime("%d-%m-%Y, %I:%M %p")
-        return obj
 
     @staticmethod
     def _process_results(
@@ -195,7 +182,7 @@ class SubmissionService:
                     created_by=row.get("created_by"),
                     application_status=row.get("application_status"),
                     created=row.get("created"),
-                    data=SubmissionService.convert_datetimes_to_string(row.get("submission_data", {})),
+                    data=convert_datetimes_to_string(row.get("submission_data", {})),
                 )
                 for row in data
             ],

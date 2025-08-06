@@ -8,6 +8,9 @@ on:
 jobs:
   snyk-security-scan:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project-dir: [ "forms-flow-web", "forms-flow-root-config" ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -19,6 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: ${{ matrix.project-dir }}
 
       - name: Install Snyk CLI
         run: npm install -g snyk
@@ -29,18 +33,14 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Run Snyk Security Scan
-        run: snyk test --all-projects --severity-threshold=high --json > snyk-report.json
+        run: snyk test --severity-threshold=high --json > snyk-report.json
+        working-directory: ${{ matrix.project-dir }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         continue-on-error: true
 
-      - name: Monitor Project in Snyk
-        run: snyk monitor --all-projects
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
       - name: Upload Snyk report
         uses: actions/upload-artifact@v4
         with:
-          name: snyk-report-${{ github.ref_name }}
-          path: snyk-report.json
+          name: snyk-report-${{ matrix.project-dir }}-${{ github.ref_name }}
+          path: ${{ matrix.project-dir }}/snyk-report.json

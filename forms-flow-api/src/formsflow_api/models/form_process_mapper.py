@@ -352,6 +352,13 @@ class FormProcessMapper(
     ):
         """Fetch all the forms."""
         query = cls.tenant_authorization(query=cls.query)
+        # Fetch the latest non-deleted forms grouped by parent form ID.
+        filtered_form_query = cls.get_latest_form_mapper_ids()
+        filtered_form_ids = [data.id for data in filtered_form_query]
+        query = query.filter(
+            and_(FormProcessMapper.deleted.is_(False)),
+            FormProcessMapper.id.in_(filtered_form_ids),
+        )
         query = query.with_entities(
             cls.form_id,
             cls.form_name,

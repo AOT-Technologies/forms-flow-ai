@@ -30,6 +30,7 @@ This prevents the need to update attribute filters every time a task filter is m
 
 **formsflow-api**
 * Updated create_filters description from "Manage filters you create" to “Manage personal filters”
+* Introduced the allForms parameter in the form list endpoint to retrieve both active and inactive forms.
 
 *Upgrade notes:*
 

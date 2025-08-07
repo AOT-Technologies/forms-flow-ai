@@ -1105,21 +1105,8 @@ const handleSaveLayout = () => {
   return (
     <div>
       <div>
-        <NavigateBlocker
-          isBlock={
-            (formChangeState.changed || workflowIsChanged) &&
-            !isMigrationLoading &&
-            !isDeletionLoading
-          }
-          message={t(
-            "You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side."
-          )}
-        />
-        <LoadingOverlay
-          active={formSubmitted || loadingVersioning}
-          spinner
-          text={t("Loading...")}
-        >
+        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={t("You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side.")} />
+        <LoadingOverlay active={formSubmitted || loadingVersioning} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}
             isSaving={isSettingsSaving}
@@ -1130,54 +1117,52 @@ const handleSaveLayout = () => {
           <Errors errors={errors} />
 
           <div className="nav-bar">
-            <div className="icon-back" onClick={backToForm}>
-              <BackToPrevIcon data-testid="back-to-prev" />
-            </div>
+            
+              <div className="icon-back" onClick={backToForm}>
+                <BackToPrevIcon data-testid="back-to-prev"/>
+              </div>
 
-            <div className="description">
-              <p className="text-main">
-                {textTruncate(300, 300, formData.title)}
-              </p>
+              <div className="description">
+                <p className="text-main">
+                  {textTruncate(300,300,formData.title)}
+                </p>
 
-              <p className="status" data-testid={`form-status-${form._id}`}>
-                <span
-                  className={`status-${isPublished ? "live" : "draft"}`}
-                ></span>
+                <p className="status" data-testid={`form-status-${form._id}`}>
+                  <span className={`status-${isPublished ? "live" : "draft"}`}></span>
 
-                {isPublished ? t("Live") : t("Draft")}
-              </p>
-            </div>
+                  {isPublished ? t("Live") : t("Draft")}
+                </p>
+              </div>
 
-            {(createDesigns || viewDesigns) && (
-              <div className="buttons">
-                
-                <CustomButton
-                  label={t("Settings")}
-                  onClick={handleToggleSettingsModal}
-                  dataTestId="editor-settings-testid"
-                  ariaLabel={t("Designer Settings Button")}
-                  dark
-                />
-
-                <CustomButton
-                  label={t("Actions")}
-                  onClick={editorActions}
-                  dataTestId="designer-action-testid"
-                  ariaLabel={(t) => t("Designer Actions Button")}
-                  dark
-                />
-
-                {createDesigns && (
+              {(createDesigns || viewDesigns) && (
+                <div className="buttons">
+                  
                   <CustomButton
+                    label={t("Settings")}
+                    onClick={handleToggleSettingsModal}
+                    dataTestId="editor-settings-testid"
+                    ariaLabel={t("Designer Settings Button")}
+                    dark
+                  />
+
+                  <CustomButton
+                    label={t("Actions")}
+                    onClick={editorActions}
+                    dataTestId="designer-action-testid"
+                    ariaLabel={(t) => t("Designer Actions Button")}
+                    dark
+                  />
+                  
+                  {createDesigns && <CustomButton
                     label={t(publishText)}
                     onClick={handlePublishClick}
                     dataTestId="handle-publish-testid"
                     ariaLabel={`${t(publishText)} ${t("Button")}`}
                     darkPrimary
-                  />
-                )}
-              </div>
-            )}
+                  />}
+                </div>
+              )}
+            
           </div>
 
           <div className="d-flex">
@@ -1189,43 +1174,43 @@ const handleSaveLayout = () => {
                   {createDesigns && (
                     <div>
                       <h2>{t("Layout")}</h2>
-                      {(createDesigns || viewDesigns) && (
-                        <>
-                          <CustomButton
-                            icon={<HistoryIcon />}
-                            label={t("History")}
-                            onClick={() => handleFormHistory()}
-                            dataTestId="handle-form-history-testid"
-                            ariaLabel={t("Form History Button")}
-                            iconWithText
-                          />
+                    {(createDesigns || viewDesigns) && (
+                      <>
+                      <CustomButton
+                        icon={<HistoryIcon />}
+                        label={t("History")}
+                        onClick={() => handleFormHistory()}
+                        dataTestId="handle-form-history-testid"
+                        ariaLabel={t("Form History Button")}
+                        iconWithText
+                      />
 
-                          <CustomButton
-                            className="mx-2"
-                            icon={<PreviewIcon />}
-                            label={t("Preview")}
-                            onClick={handlePreview}
-                            dataTestId="handle-preview-testid"
-                            ariaLabel={t("Preview Button")}
-                            iconWithText
-                          />
-                        </>
-                      )}
+                      <CustomButton
+                        className="mx-2"
+                        icon={<PreviewIcon />}
+                        label={t("Preview")}
+                        onClick={handlePreview}
+                        dataTestId="handle-preview-testid"
+                        ariaLabel={t("Preview Button")}
+                        iconWithText
+                      />
+                      </>
+                    )}
                     </div>
                   )}
 
-                  {createDesigns && (
+                  {(createDesigns) && (
                     <div>
                       <CustomButton
                         disabled={!formChangeState.changed}
                         label={t("Save Layout")}
                         onClick={
-                          isPublished
-                            ? handleUnpublishAndSaveChanges
-                            : handleSaveLayout
+                          isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
+
                         }
                         dataTestId="save-form-layout"
-                        ariaLabel={t("Save Form Layout")}
+                        ariaLabel={t("Save Form Layout")
+                        }
                       />
                       <CustomButton
                         label={t("Discard Changes")}
@@ -1241,36 +1226,36 @@ const handleSaveLayout = () => {
                   )}
                 </Card.Header>
                 <div className="form-edit">
-                  <Card.Body>
-                    <div className="form-builder custom-scroll">
-                      {!createDesigns ? (
-                        <div className="px-4 pt-4 form-preview">
-                          <Form
-                            form={form}
-                            options={{
-                              disableAlerts: true,
-                              noAlerts: true,
-                              language: lang,
-                              i18n: RESOURCE_BUNDLES_DATA,
-                              buttonSettings: { showCancel: false },
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <FormBuilder
-                          key={form._id}
+                <Card.Body>
+                  <div className="form-builder custom-scroll">
+                    {!createDesigns ? (
+                      <div className="px-4 pt-4 form-preview">
+                        <Form
                           form={form}
-                          onChange={formChange}
                           options={{
-                            language: lang,
-                            alwaysConfirmComponentRemoval: true,
-                            i18n: RESOURCE_BUNDLES_DATA,
+                            disableAlerts: true,
+                            noAlerts: true,
+                            language: lang, i18n: RESOURCE_BUNDLES_DATA,
+                            buttonSettings: { showCancel: false },
                           }}
-                          onDeleteComponent={captureFormChanges}
                         />
-                      )}
-                    </div>
-                  </Card.Body>
+                      </div>
+                    ) : (
+                      <FormBuilder
+                        key={form._id}
+                        form={form}
+                        onChange={formChange}
+
+                        options={{
+                          language: lang,
+                          alwaysConfirmComponentRemoval: true,
+                          i18n: RESOURCE_BUNDLES_DATA,
+                        }}
+                        onDeleteComponent={captureFormChanges}
+                      />
+                    )}
+                  </div>
+                </Card.Body>
                 </div>
               </Card>
             </div>
@@ -1278,36 +1263,33 @@ const handleSaveLayout = () => {
               className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
             >
               {/* TBD: Add a loader instead. */}
-              {isProcessDetailsLoading ? (
-                <>loading...</>
-              ) : (
-                <FlowEdit
-                  ref={flowRef}
-                  setWorkflowIsChanged={setWorkflowIsChanged}
-                  workflowIsChanged={workflowIsChanged}
-                  CategoryType={CategoryType}
-                  isPublished={isPublished}
-                  migration={migration}
-                  redirectUrl={redirectUrl}
-                  setMigration={setMigration}
-                  isMigrated={processListData.isMigrated}
-                  mapperId={processListData.id}
-                  layoutNotsaved={formChangeState.changed}
-                  handleCurrentLayout={handleCurrentLayout}
-                  isMigrationLoading={isMigrationLoading}
-                  setIsMigrationLoading={setIsMigrationLoading}
-                  handleUnpublishAndSaveChanges={handleUnpublishAndSaveChanges}
-                />
-              )}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit
+                ref={flowRef}
+                setWorkflowIsChanged={setWorkflowIsChanged}
+                workflowIsChanged={workflowIsChanged}
+                CategoryType={CategoryType}
+                isPublished={isPublished}
+                migration={migration}
+                redirectUrl={redirectUrl}
+                setMigration={setMigration}
+                isMigrated = {processListData.isMigrated}
+                mapperId={processListData.id}
+                layoutNotsaved={formChangeState.changed}
+                handleCurrentLayout={handleCurrentLayout}
+                isMigrationLoading={isMigrationLoading}
+                setIsMigrationLoading={setIsMigrationLoading}
+                handleUnpublishAndSaveChanges={handleUnpublishAndSaveChanges}
+              />}
             </div>
             <button
-              className={`form-flow-wraper ${isFormLayout ? "right" : "left"} ${
-                sideTabRef.current && "visible"
-              }`}
+              className={`form-flow-wraper ${ isFormLayout ? "right" : "left"
+              } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
               data-testid="form-flow-wraper-button"
             >
-              <span>{isFormLayout ? t("Flow") : t("Layout")}</span>
+              <span>
+                {isFormLayout ? t("Flow") : t("Layout")}
+              </span>
               <CardsSwitchIcon />
             </button>
           </div>
@@ -1319,7 +1301,7 @@ const handleSaveLayout = () => {
         CategoryType={CategoryType.FORM}
         onAction={setSelectedAction}
         published={isPublished}
-        isMigrated={processListData.isMigrated}
+        isMigrated = {processListData.isMigrated}
       />
       <FormBuilderModal
         modalHeader={t("Duplicate")}
@@ -1336,21 +1318,19 @@ const handleSaveLayout = () => {
         nameError={nameError}
       />
 
-      {selectedAction === ACTION_OPERATIONS.IMPORT && (
-        <ImportModal
-          importLoader={importLoader}
-          importError={importError}
-          showModal={selectedAction === ACTION_OPERATIONS.IMPORT}
-          uploadActionType={UploadActionType}
-          formName={formTitle}
-          onClose={handleCloseSelectedAction}
-          handleImport={handleImport}
-          fileItems={fileItems}
-          headerText={t("Import File")}
-          primaryButtonText={primaryButtonText}
-          fileType=".json, .bpmn"
-        />
-      )}
+      {selectedAction === ACTION_OPERATIONS.IMPORT && <ImportModal
+        importLoader={importLoader}
+        importError={importError}
+        showModal={selectedAction === ACTION_OPERATIONS.IMPORT}
+        uploadActionType={UploadActionType}
+        formName={formTitle}
+        onClose={handleCloseSelectedAction}
+        handleImport={handleImport}
+        fileItems={fileItems}
+        headerText={t("Import File")}
+        primaryButtonText={primaryButtonText}
+        fileType=".json, .bpmn"
+      />}
 
       <ExportModal
         showExportModal={selectedAction === ACTION_OPERATIONS.EXPORT}

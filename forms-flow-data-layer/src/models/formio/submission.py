@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 
 from beanie import Document, PydanticObjectId
 from bson import ObjectId
-
+from datetime import timezone, timedelta, datetime
 from .constants import FormioTables
 
 
@@ -22,8 +22,17 @@ class SubmissionsModel(Document):
         if filter:
             for field, value in filter.items():
                 if isinstance(value, str):
-                    # Only use regex for string values
-                    match_stage[f"data.{field}"] = {"$regex": value, "$options": "i"}
+                    try:
+                        # Always attempt to parse as DD-MM-YYYY
+                        parsed_date = datetime.strptime(value, "%d-%m-%Y")
+                        parsed_date = parsed_date.replace(tzinfo=timezone.utc)
+                        # Build day range (covers whole date)
+                        start = parsed_date.replace(hour=0, minute=0, second=0, microsecond=0)
+                        end = start + timedelta(days=1)
+                        match_stage[f"data.{field}"] = {"$gte": start, "$lt": end}
+                    except ValueError:
+                        # Regex for string values
+                        match_stage[f"data.{field}"] = {"$regex": value, "$options": "i"}
                 else:
                     # For non-string values (numbers, booleans, etc.), use exact match
                     match_stage[f"data.{field}"] = value

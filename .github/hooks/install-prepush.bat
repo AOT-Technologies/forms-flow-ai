@@ -1,5 +1,5 @@
 @ECHO OFF
-SETLOCAL ENABLEEXTENSIONS
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
 ECHO 🔧 Installing Git hooks...
 
@@ -11,38 +11,47 @@ IF NOT DEFINED GIT_ROOT (
     EXIT /B 1
 )
 
-REM Rename sample.env to .env in script directory
+REM Rename sample.env to .env if .env doesn't already exist
 IF EXIST "%~dp0sample.env" (
-    REN "%~dp0sample.env" ".env"
-    IF ERRORLEVEL 1 (
-        ECHO ❌ Failed to rename sample.env to .env.
-        EXIT /B 1
+    IF NOT EXIST "%~dp0.env" (
+        REN "%~dp0sample.env" ".env"
+        IF ERRORLEVEL 1 (
+            ECHO ❌ Failed to rename sample.env to .env.
+            EXIT /B 1
+        )
+        ECHO ✅ sample.env renamed to .env successfully.
+    ) ELSE (
+        ECHO ⚠️  .env already exists. Skipping rename.
     )
-    ECHO ✅ sample.env renamed to .env successfully.
 ) ELSE (
     ECHO ❌ sample.env file not found in the script directory.
     EXIT /B 1
 )
 
+SET "HOOKS_DIR=%GIT_ROOT%\.git\hooks"
+SET "GH_HOOKS_LOG_DIR=%GIT_ROOT%\.github\hooks"
+
+REM Create .github/hooks directory if not exists
+IF NOT EXIST "%GH_HOOKS_LOG_DIR%" (
+    mkdir "%GH_HOOKS_LOG_DIR%"
+)
+
 REM Copy pre-push hook
-COPY /Y "%~dp0pre-push" "%GIT_ROOT%\.git\hooks\pre-push" > NUL
+COPY /Y "%~dp0pre-push" "%HOOKS_DIR%\pre-push" >NUL
 IF ERRORLEVEL 1 (
     ECHO ❌ Failed to copy pre-push hook.
     EXIT /B 1
 )
-ECHO ✅ Pre-push hook installed.
 
-REM Copy pre-commit hook
-COPY /Y "%~dp0pre-commit" "%GIT_ROOT%\.git\hooks\pre-commit" > NUL
-IF ERRORLEVEL 1 (
-    ECHO ❌ Failed to copy pre-commit hook.
-    EXIT /B 1
+REM Set executable permission if using Git Bash or WSL
+IF EXIST "%HOOKS_DIR%\pre-push" (
+    bash -c "chmod +x '%HOOKS_DIR%/pre-push'" 2>NUL
 )
-ECHO ✅ Pre-commit hook installed.
+ECHO ✅ Pre-push hook installed.
 
 REM Copy .env file for hooks
 IF EXIST "%~dp0.env" (
-    COPY /Y "%~dp0.env" "%GIT_ROOT%\.git\hooks\.env" > NUL
+    COPY /Y "%~dp0.env" "%HOOKS_DIR%\.env" >NUL
     IF ERRORLEVEL 1 (
         ECHO ❌ Failed to copy .env file.
         EXIT /B 1
@@ -54,7 +63,8 @@ IF EXIST "%~dp0.env" (
 )
 
 REM Load SNYK_TOKEN from .env
-FOR /F "tokens=1,2 delims==" %%A IN (%~dp0.env) DO (
+SET "SNYK_TOKEN="
+FOR /F "usebackq tokens=1,* delims==" %%A IN ("%~dp0.env") DO (
     IF /I "%%A"=="SNYK_TOKEN" SET "SNYK_TOKEN=%%B"
 )
 
@@ -91,10 +101,10 @@ IF %ERRORLEVEL% NEQ 0 (
 
 REM Authenticate Snyk CLI
 ECHO 🔐 Authenticating Snyk CLI using token from .env...
-"%SNYK_CMD%" config set api=%SNYK_TOKEN% > NUL 2>&1
+"%SNYK_CMD%" config set api=%SNYK_TOKEN% >NUL 2>&1
 
-REM Confirm token is set
-FOR /F "tokens=*" %%A IN ('"%SNYK_CMD%" config get api') DO SET "CONFIGURED_TOKEN=%%A"
+REM Confirm token is set correctly
+FOR /F "tokens=* USEBACKQ" %%T IN (`"%SNYK_CMD%" config get api 2^>NUL`) DO SET "CONFIGURED_TOKEN=%%T"
 
 IF "%CONFIGURED_TOKEN%"=="%SNYK_TOKEN%" (
     ECHO ✅ Snyk CLI authenticated successfully!

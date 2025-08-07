@@ -53,6 +53,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         is_designer: bool,
         active_forms: bool,
         include_submissions_count: bool,
+        all_forms: bool = False,
         **kwargs,
     ):  # pylint: disable=too-many-arguments, too-many-locals
         """Get all forms."""
@@ -61,6 +62,13 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         current_app.logger.info(f"Listing forms for designer: {is_designer}")
         if active_forms:
             mappers, get_all_mappers_count = FormProcessMapper.find_all_active_forms(
+                page_number=page_number,
+                limit=limit,
+            )
+        elif all_forms:
+            # If all_forms is true, retrieve all forms regardless of their active status,
+            # skipping authorization checks except for tenant-specific forms.
+            mappers, get_all_mappers_count = FormProcessMapper.fetch_all_forms(
                 page_number=page_number,
                 limit=limit,
             )

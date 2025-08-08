@@ -1136,15 +1136,7 @@ const handleSaveLayout = () => {
 
               {(createDesigns || viewDesigns) && (
                 <div className="buttons">
-
-                  <CustomButton
-                    label={t("Actions")}
-                    onClick={editorActions}
-                    dataTestId="designer-action-testid"
-                    ariaLabel={(t) => t("Designer Actions Button")}
-                    dark
-                  />
-
+                  
                   <CustomButton
                     label={t("Settings")}
                     onClick={handleToggleSettingsModal}
@@ -1153,6 +1145,14 @@ const handleSaveLayout = () => {
                     dark
                   />
 
+                  <CustomButton
+                    label={t("Actions")}
+                    onClick={editorActions}
+                    dataTestId="designer-action-testid"
+                    ariaLabel={(t) => t("Designer Actions Button")}
+                    dark
+                  />
+                  
                   {createDesigns && <CustomButton
                     label={t(publishText)}
                     onClick={handlePublishClick}

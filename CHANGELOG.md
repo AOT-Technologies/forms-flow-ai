@@ -57,6 +57,12 @@ This prevents the need to update attribute filters every time a task filter is m
 
 * Added UI changes to support data-layer implementation for Analyze submissions in micro-frontend.
 
+`Known Issues`
+
+* Selectboxes and survey form components cannot be selected in the variable selection modal.
+* Some advanced components (with data types other than text or number) may not function correctly when used in field filters on the reviewer listing page.
+* Certain advanced components may not display their values in the reviewer listing page.
+
 
 ## 7.1.0 - 2025-07-01
 

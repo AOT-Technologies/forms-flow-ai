@@ -62,6 +62,8 @@ This prevents the need to update attribute filters every time a task filter is m
 * Selectboxes and survey form components cannot be selected in the variable selection modal.
 * Some advanced components (with data types other than text or number) may not function correctly when used in field filters on the reviewer listing page.
 * Certain advanced components may not display their values in the reviewer listing page.
+* Sorting is not available for all columns on the review task listing page.
+* The date field filter in Analyze Submissions currently supports only the DD-MM-YYYY date format.
 
 
 ## 7.1.0 - 2025-07-01

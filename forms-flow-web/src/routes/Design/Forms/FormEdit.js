@@ -965,12 +965,12 @@ const handleSaveLayout = () => {
         };
       case "unpublish":
         return {
-          title: t("Confirm Unpublish"),
-          message: t( "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailable for new submissions to those who currently have access to it. You can republish the form after making your edits."),
+          title: t("Unpublish"),
+          message: t( "By unpublishing this form & flow, you will make it unavailable for new submissions."),
           primaryBtnAction: confirmPublishOrUnPublish,
           secondaryBtnAction: closeModal,
-          primaryBtnText: t("Unpublish and Edit This Form"),
-          secondaryBtnText: t("Cancel, Keep This Form Unpublished"),
+          primaryBtnText: t("Unpublish This Form & Flow"),
+          secondaryBtnText: t("Cancel, Keep This Form & Flow Published"),
         };
       case "discard":
         return {

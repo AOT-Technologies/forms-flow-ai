@@ -2,19 +2,22 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 7.2.0 - 
+## 7.2.0 - To be updated
 
 `Added`
 
-**formsflow-tools**
+**forms-flow-tools**
 * Added Git management tools
    * Added pre-push check for testing changes
 
-**formsflow-documents**
+**forms-flow-web**
+* Added collapsible search UI to support data-layer in analyze submissions.
+
+**forms-flow-documents**
 * Added new environment variable:
    * CHROME_DRIVER_TIMEOUT to specify timeout for the chrome driver to wait for the page to load
 
-**formsflow-api**
+**forms-flow-api**
 * Added the `submissions_filter` table to store user-specific filter preferences for analyzing submissions.
 * Added the `default_submissions_filter` column to the user table to record each user's default filter for submission analysis.
 * Implemented new endpoints for managing analyze submissions filters:
@@ -28,9 +31,17 @@ This prevents the need to update attribute filters every time a task filter is m
 
 `Modified`
 
-**formsflow-api**
+**forms-flow-api**
 * Updated create_filters description from "Manage filters you create" to “Manage personal filters”
 * Introduced the allForms parameter in the form list endpoint to retrieve both active and inactive forms.
+
+**forms-flow-data-layer**
+* Updated data layer to support field-level searches within individual forms or across all submissions in analyze-submissions.
+
+`Fixed`
+
+* Task filters no longer require manual selection for 'tasks accessible to'; the current user is automatically selected when not explicitly chosen.
+* Fixed the issue where the SUBMIT tab was incorrectly highlighted instead of the ANALYZE > SUBMISSIONS tab when viewing submission details from ANALYZE.
 
 *Upgrade notes:*
 
@@ -41,6 +52,18 @@ This prevents the need to update attribute filters every time a task filter is m
 **forms-flow-data-analysis-api**
 
    * Flask version upgraded from 3.1.0 to 3.1.1
+
+`Generic Changes`
+
+* Added UI changes to support data-layer implementation for Analyze submissions in micro-frontend.
+
+`Known Issues`
+
+* Selectboxes and survey form components cannot be selected in the variable selection modal.
+* Some advanced components (with data types other than text or number) may not function correctly when used in field filters on the reviewer listing page.
+* Certain advanced components may not display their values in the reviewer listing page.
+* Sorting is not available for all columns on the review task listing page.
+* The date field filter in Analyze Submissions currently supports only the DD-MM-YYYY date format.
 
 
 ## 7.1.0 - 2025-07-01

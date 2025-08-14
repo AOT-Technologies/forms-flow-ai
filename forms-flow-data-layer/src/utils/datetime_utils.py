@@ -17,7 +17,9 @@ def _(obj: dict):
 
 @convert_datetimes_to_string.register
 def _(obj: list):
-    """Convert datetime objects in a list to string format."""
+    """Convert datetime objects in a list, or join list of strings."""
+    if all(isinstance(i, str) for i in obj):
+        return ", ".join(obj)  # join string lists
     return [convert_datetimes_to_string(i) for i in obj]
 
 

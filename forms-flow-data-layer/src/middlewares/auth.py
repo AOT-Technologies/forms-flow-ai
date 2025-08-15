@@ -63,7 +63,6 @@ class HasAnyRole(BasePermission):
 
 
 class Auth:
-
     @staticmethod
     def auth_required(roles: List[str] = None):
         """

@@ -1,10 +1,49 @@
-import React, { useMemo } from "react";
+import React, { useState } from "react";
+import { FormControl } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay-ts";
 
-import { Legend, PieChart, Pie, Cell } from "recharts";
+import {
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  RadialLinearScale,
+  Tooltip
+} from 'chart.js';
+import { Bar, Doughnut, Pie, PolarArea, Radar } from 'react-chartjs-2';
 
-const COLORS = [
+ChartJS.register(
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  RadialLinearScale,
+  Tooltip
+);
+
+
+const BACKGROUND_COLORS = [
+  "#0088FE33",
+  "#00C49F33",
+  "#FFBB2833",
+  "#FF804233",
+  "#a0519533",
+  "#d4508733",
+  "#f95d6a33",
+  "#ff7c4333",
+];
+
+const BORDER_COLORS = [
   "#0088FE",
   "#00C49F",
   "#FFBB28",
@@ -15,24 +54,86 @@ const COLORS = [
   "#ff7c43",
 ];
 
-// label={renderCustomizedLabel}
+const CHART_TYPES = [
+  { value: 'pie', label: 'Pie Chart' },
+  { value: 'v-bar', label: 'Vertical Bar Chart' },
+  { value: 'doughnut', label: 'Doughnut Chart' },
+  { value: 'polar-area', label: 'Polar Area Chart' },
+  { value: 'radar', label: 'Radar Chart' },
+];
+
+
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
-  const {formVersions, formName, parentFormId} = submissionData;
-
-  const sortedVersions = useMemo(()=>
-  (formVersions?.sort((version1, version2)=>
-  version1.version > version2.version ? 1 : -1)),[formVersions]);
-
-  const version = formVersions?.length;
+  const {title} = submissionData;
   const { t } = useTranslation();
-  const pieData = submissionsStatusList || [];
 
-  const handlePieData = (value) => {
-    const isParentId = value === "all";
-    const id = isParentId ? parentFormId : value;
-    const option = {parentId : isParentId};
-    props.getStatusDetails(id,option);
+  const [selectedChartValue, setSelectedChartValue] = useState('pie');
+
+  let chartLabels = [];
+  let chartDataset = [];
+  submissionsStatusList.map((metric) => {
+    chartLabels.push(metric.metric);
+    chartDataset.push(metric.count);
+  });
+
+  const chartData = {
+    labels: chartLabels,
+    datasets: [{
+      label: `${title} Dataset`,
+      data: chartDataset,
+      backgroundColor: BACKGROUND_COLORS,
+      borderColor: BORDER_COLORS,
+      borderWidth: 1
+    }]
+  };
+
+  const chartOptions = {
+    plugins: {
+      legend: {
+        position: 'bottom'
+      }
+    }
+  };
+
+  const renderChart = () => {
+    switch (selectedChartValue) {
+      case 'pie':
+        return (
+          <Pie
+            data={chartData}
+            options={chartOptions}
+          />
+        );
+      case 'v-bar':
+        return (
+          <Bar
+            data={chartData}
+            options={chartOptions}
+          />
+        );
+      case 'doughnut':
+        return (
+          <Doughnut
+            data={chartData}
+            options={chartOptions}
+          />
+        );
+      case 'polar-area':
+        return (
+          <PolarArea
+            data={chartData}
+            options={chartOptions}
+          />
+        );
+      case 'radar':
+        return (
+          <Radar
+            data={chartData}
+            options={chartOptions}
+          />
+        );
+    }
   };
 
 
@@ -40,102 +141,31 @@ const ChartForm = React.memo((props) => {
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
-          <div className="d-flex align-items-center justify-content-between flex-wrap">
-            <div className="d-flex flex-column">
-              <div className="d-flex">
-                <span className="text-primary me-2" style={{ whiteSpace: "nowrap" }}>
-                  {t("Form Name")} :
-                </span>
-                <h2
-                  className="mt-0 mb-2 fs-6"
-                >
-                  {formName}
-                </h2>
-              </div>
-
-          <p>
-            <span className="text-primary" >{t("Latest Version")} :</span>{" "}
-            {`v${version}`}
-          </p>
-          </div>
-          {sortedVersions.length > 1 && (
-  <div className="d-flex align-items-center">
-    <p className="text-primary mb-0 me-2" style={{ whiteSpace: "nowrap" }}>
-      {t("Select form version")}:
-    </p>
-    <select
-      className="form-select"
-      aria-label="Default select example"
-      onChange={(e) => {
-        handlePieData(e.target.value);
-      }}
-    >
-      {sortedVersions.map((option) => (
-        <option key={option.formId} value={option.formId}>
-          v{option.version}
-        </option>
-      ))}
-      <option selected value={"all"}>
-        {t("All")}
-      </option>
-    </select>
-  </div>
-)}
-
-
-          </div>
           <LoadingOverlay
-        active={submissionStatusCountLoader}
-        spinner
-        text={t("Loading...")}
-      >
-         <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center justify-content-around">
- 
-    <div className="col-md-6">
-      <PieChart width={400} height={400}>
-        <Pie
-          paddingAngle={1}
-          minAngle={1}
-          data={pieData}
-          labelLine={false}
-          outerRadius={90}
-          fill="#8884d8"
-          dataKey="count"
-          nameKey="statusName"
-          label
-        >
-          <Legend />
-
-          {pieData.map((entry) => (
-  <Cell key={entry.statusName} fill={COLORS[pieData.indexOf(entry) % COLORS.length]} />
-))}
-        </Pie>
-      </PieChart>
-    </div>
-    {
-              pieData.length ? (
-                <div className="d-flex border flex-wrap rounded p-4   ">
-              {pieData.map((entry, index) => (
-                <div className=" d-flex align-items-center m-3" key={entry.statusName}>
-                  <span
-                    className="rounded-circle shadow  me-2"
-                    style={{
-                      backgroundColor: COLORS[index % COLORS.length],
-                      width: "25px",
-                      height: "25px",
-                    }}
-                  ></span>
-                  <div className="legent-text">{entry.statusName}</div>
+            active={submissionStatusCountLoader}
+            spinner
+            text={t("Loading...")}
+          >
+            <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center justify-content-around">
+              <div className="col-md-6">
+                {renderChart()}
+              </div>
+              <div className="col-md-3 offset-md-1">
+                <div className="input-group">
+                  <FormControl
+                    as="select"
+                    onChange={(e) => setSelectedChartValue(e.target.value)}
+                    className="form-select p-1"
+                    title={t("Choose any")}
+                    aria-label="Select chart type"
+                  >
+                    {CHART_TYPES.map((option, index) => (
+                      <option key={index} value={option.value}>{option.label}</option>
+                    ))}
+                  </FormControl>
                 </div>
-              ))}
+              </div>
             </div>
-              )  : (
-    <div className="d-flex justify-content-center align-items-center w-100" style={{ minHeight: "200px" }}>
-      <span className="text-center">{t("No submissions")}</span>
-    </div>
-  )}
-</div>
-
           </LoadingOverlay>
         </div>
       </div>

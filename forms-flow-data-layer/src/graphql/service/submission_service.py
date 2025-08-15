@@ -6,7 +6,7 @@ from src.graphql.schema import (
     PaginatedSubmissionResponse,
     SubmissionDetailsWithSubmissionData,
 )
-from src.models.formio.submission import SubmissionsModel
+from src.models.formio.submission import SubmissionModel
 from src.models.webapi.application import Application
 from src.utils import get_logger, convert_datetimes_to_string
 
@@ -158,7 +158,7 @@ class SubmissionService:
                 if app["submission_id"]
             ]
             # Get filtered submissions from MongoDB
-            mongo_side_submissions = await SubmissionsModel.query_submission(
+            mongo_side_submissions = await SubmissionModel.query_submission(
                 submission_ids=submission_ids,
                 filter=mongo_search,
                 selected_form_fields=selected_form_fields,

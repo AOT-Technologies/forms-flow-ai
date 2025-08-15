@@ -1,13 +1,12 @@
 from datetime import datetime
+
 from sqlalchemy import and_, desc, or_, select
 from sqlalchemy.sql import func
-
-from src.db.webapi_db import webapi_db
 
 from .authorization import Authorization, AuthType
 from .base import BaseModel
 from .constants import WebApiTables
-from .formprocess_mapper import FormProcessMapper
+from .form_process_mapper import FormProcessMapper
 
 
 class Application(BaseModel):
@@ -16,13 +15,27 @@ class Application(BaseModel):
     This class provides methods to interact with the application table.
     """
 
-    _application = None
+    _table_name = WebApiTables.APPLICATION.value
+    _table = None
 
     @classmethod
-    async def get_table(cls):
-        if cls._application is None:
-            cls._application = await webapi_db.get_table(WebApiTables.APPLICATION.value)
-        return cls._application
+    async def first(cls, **filters):
+        return await super().first(**filters)
+    
+    @classmethod
+    async def find_all(cls, **filters):
+        query = await super().find_all(**filters)
+        table = await cls.get_table()
+
+        # Apply date filters, if any
+        if (order_by := filters.get("order_by")) and hasattr(table.c, order_by):
+            query = query.order_by(order_by)
+            if from_date := filters.get("from_date"):
+                query = query.where(getattr(table.c, order_by) >= datetime.fromisoformat(from_date))
+            if to_date := filters.get("to_date"):
+                query = query.where(getattr(table.c, order_by) <= datetime.fromisoformat(to_date))
+
+        return query
 
     @classmethod
     def filter_query(cls, query, filter_data: dict, application_table, mapper_table):
@@ -41,7 +54,6 @@ class Application(BaseModel):
                 else:
                     # For other fields, use ilike for case-insensitive search
                     query = query.where(col.ilike(f"%{value}%"))
-        return query
 
     @classmethod
     def paginationed_query(cls, query, page_no: int = 1, limit: int = 5):

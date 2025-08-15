@@ -4,7 +4,7 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from src.config.envs import ENVS
-from src.models.formio import FormModel, SubmissionsModel  # Import your MongoDB models
+from src.models.formio import FormModel, SubmissionModel  # Import your MongoDB models
 from src.utils import get_logger
 
 logger = get_logger(__name__)
@@ -23,7 +23,7 @@ class FormioDbConnection:
         self.__client = AsyncIOMotorClient(ENVS.FORMIO_MONGO_DB_URI)
         self.formio_db = self.__client[ENVS.FORMIO_DB_NAME]
         await init_beanie(
-            database=self.formio_db, document_models=[FormModel, SubmissionsModel]
+            database=self.formio_db, document_models=[FormModel, SubmissionModel]
         )
 
     def get_db(self):

@@ -6,12 +6,22 @@ from datetime import timezone, timedelta, datetime
 from .constants import FormioTables
 
 
-class SubmissionsModel(Document):
+class SubmissionModel(Document):
     data: dict
     _id: PydanticObjectId
+    form: PydanticObjectId
 
     class Settings:
         name = FormioTables.SUBMISSIONS.value
+
+    @classmethod
+    async def count(cls, filters):
+        """Count number of entries that match the passed filters."""
+        query = cls.find_all()
+        for filter, value in filters.items():
+            if hasattr(cls, filter):
+                query = query.find(getattr(cls, filter) == value)
+        return (await query.count())
 
     @staticmethod
     def _build_match_stage(submission_ids: List[str], filter: Optional[dict]) -> dict:
@@ -72,29 +82,29 @@ class SubmissionsModel(Document):
         Query submissions from MongoDB with optional pagination and sorting.
         """
         # Build match stage
-        match_stage = SubmissionsModel._build_match_stage(
+        match_stage = SubmissionModel._build_match_stage(
             submission_ids=submission_ids, filter=filter
         )
         pipeline = [{"$match": match_stage}]
 
         # Add sorting if sort_by is specified
-        if sort_stage := SubmissionsModel._build_sort_stage(sort_by, sort_order):
+        if sort_stage := SubmissionModel._build_sort_stage(sort_by, sort_order):
             pipeline.append(sort_stage)
 
         # Projection stage
-        pipeline.append(SubmissionsModel._build_projection_stage(selected_form_fields))
+        pipeline.append(SubmissionModel._build_projection_stage(selected_form_fields))
         # Only add pagination if page_no and limit specified
         if page_no is not None and limit is not None:
             # Get only the count (no document data)
             count_pipeline = pipeline + [{"$count": "total"}]
-            count_result = await SubmissionsModel.aggregate(count_pipeline).to_list(length=1)
+            count_result = await SubmissionModel.aggregate(count_pipeline).to_list(length=1)
             total = count_result[0]["total"] if count_result else 0
             # Add skip and limit stages for pagination
             pipeline.append({"$skip": (page_no - 1) * limit})
             pipeline.append({"$limit": limit})
-            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = await SubmissionModel.aggregate(pipeline).to_list()
         else:
-            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = await SubmissionModel.aggregate(pipeline).to_list()
             total = len(items)
         return {
             "submissions": items,

@@ -1,4 +1,4 @@
-import { RequestService } from "@formsflow/service";
+import { RequestService, StorageService } from "@formsflow/service";
 import API from "../endpoints";
 import {
   setMetricsDateRangeLoading,
@@ -27,22 +27,48 @@ export const fetchMetricsSubmissionCount = (
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
-    /*eslint max-len: ["error", { "code": 170 }]*/
-    let url = `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${searchBy}&pageNo=${pageNo}&limit=${limit}&sortBy=${sortsBy}&sortOrder=${sortOrder}`;
-    if (formName) {
-      url += `&formName=${encodeURIComponent(formName)}`;
-    }
 
-    RequestService.httpGETRequest(url, {})
+    // Build GraphQL request params
+    const url = API.GRAPHQL;
+    const headers = {
+      Authorization: `Bearer ${StorageService.get(StorageService.User.AUTH_TOKEN)}`,
+      'Content-Type': 'application/json'
+    };
+    const query = `
+      query Query {
+        getForms(
+          formName: "${formName}"
+          fromDate: "${fromDate}"
+          limit: ${limit}
+          pageNo: ${pageNo}
+          orderBy: "${searchBy}"
+          toDate: "${toDate}"
+        ) {
+          items {
+            id
+            parentFormId
+            totalSubmissions
+            type
+            version
+            status
+            title
+          }
+          totalCount
+        }
+      }
+    `;
+    RequestService.httpPOSTRequest(url, {
+      query: query 
+    }, null, true, headers)
       .then((res) => {
         if (res.data) {
           dispatch(setMetricsDateRangeLoading(false));
           dispatch(setMetricsLoader(false));
           dispatch(setMetricsStatusLoader(false));
-          dispatch(setMetricsSubmissionCount(res.data.applications));
-          dispatch(setMetricsTotalItems(res.data.totalCount));
-          if (res.data.applications && res.data.applications[0]) {
-              dispatch(setSelectedMetricsId(res.data.applications[0].parentFormId));
+          dispatch(setMetricsSubmissionCount(res.data.data.getForms.items));
+          dispatch(setMetricsTotalItems(res.data.data.getForms.totalCount));
+          if (res.data.data.getForms?.items[0]) {
+              dispatch(setSelectedMetricsId(res.data.data.getForms.items[0].parentFormId));
 
           } else {
             dispatch(setSelectedMetricsId(null));
@@ -72,7 +98,7 @@ export const fetchMetricsSubmissionStatusCount = (
   id,
   fromDate,
   toDate,
-  setSearchBy,
+  searchBy,
   options = {},
   ...rest
 ) => {
@@ -82,12 +108,32 @@ export const fetchMetricsSubmissionStatusCount = (
       dispatch(setSelectedMetricsId(id));
     }
 
-    RequestService.httpGETRequest(
-      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}&formType=${options.parentId ? "parent" : "form"}`
-    )
+    // Build GraphQL request params
+    const url = API.GRAPHQL;
+    const headers = {
+      Authorization: `Bearer ${StorageService.get(StorageService.User.AUTH_TOKEN)}`,
+      'Content-Type': 'application/json'
+    };
+    const query = `
+      query Query {
+        getMetricsSubmissionStatus(
+          formId: "${id}"
+          fromDate: "${fromDate}"
+          orderBy: "${toDate}"
+          toDate: "${searchBy}"
+        ) {
+          count
+          metric
+        }
+      }
+    `;
+
+    RequestService.httpPOSTRequest(url, {
+      query: query 
+    }, null, true, headers)
       .then((res) => {
         if (res.data) {
-          dispatch(setMetricsSubmissionStatusCount(res.data.applications));
+          dispatch(setMetricsSubmissionStatusCount(res.data.data.getMetricsSubmissionStatus));
           dispatch(setMetricsStatusLoader(false));
           // dispatch(setMetricsTotalItems(res.data.totalCount));
           done(null, res.data);

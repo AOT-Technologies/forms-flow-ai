@@ -2,8 +2,6 @@ from enum import Enum
 
 from sqlalchemy import and_, or_, select
 
-from src.db.webapi_db import webapi_db
-
 from .base import BaseModel
 from .constants import WebApiTables
 
@@ -19,15 +17,8 @@ class Authorization(BaseModel):
     Authorization class to handle authorization-related information.
     """
 
-    _authorization_table = None  # Class-level cache
-
-    @classmethod
-    async def get_table(cls):
-        if cls._authorization_table is None:
-            cls._authorization_table = await webapi_db.get_table(
-                WebApiTables.AUTHORIZATION.value
-            )
-        return cls._authorization_table
+    _table_name = WebApiTables.AUTHORIZATION.value
+    _table = None  # Class-level cache
 
     @classmethod
     async def get_role_conditions(cls, authorization_table, roles: list[str]):

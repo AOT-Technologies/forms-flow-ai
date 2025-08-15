@@ -1,10 +1,9 @@
+from datetime import datetime
 from typing import Optional
 
 from beanie import Document
 
 from .constants import FormioTables
-
-# currently this file is not used in the codebase, but it is kept for future use
 
 
 class FormModel(Document):
@@ -13,9 +12,19 @@ class FormModel(Document):
     path: str
     type: str
     isBundle: Optional[bool]
-    display: Optional[str] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    display: Optional[str] = None    
+    created: Optional[datetime] = None
+    modified: Optional[datetime] = None
+    parentFormId: Optional[str] = None
 
     class Settings:
         name = FormioTables.FORMS.value
+
+    @classmethod
+    async def count(cls, **filters):
+        """Count number of entries that match the passed filters."""
+        query = cls.find_all()
+        for filter, value in filters.items():
+            if hasattr(cls, filter):
+                query = query.find(getattr(cls, filter) == value)
+        return (await query.count())

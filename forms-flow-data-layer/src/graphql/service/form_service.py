@@ -1,95 +1,89 @@
-from typing import List, Optional
+from typing import Optional
 
 from beanie import PydanticObjectId
 
-from src.graphql.schema import FormSchema
-from src.models.formio import FormModel
-from src.utils import get_logger
+from src.graphql.schema import FormSchema, PaginationWindow
+from src.middlewares.pagination import verify_pagination_params
+from src.models.formio import FormModel, SubmissionModel
+from src.models.webapi import FormProcessMapper
+from src.utils import UserContext, get_logger
 
 logger = get_logger(__name__)
 
-# this is not used for now, but we can use it in the future if needed
 
+class FormService():
+    """Service class for handling form related operations."""
 
-# Service Layer for Form-related Operations
-class FormService:
-    @staticmethod
-    def convert_to_graphql_type(form_model: FormModel) -> FormSchema:
-        """
-        Convert a Beanie FormModel to a GraphQL FormSchema
-
-        Args:
-            form_model (FormModel): Database model to convert
-
-        Returns:
-            FormSchema: GraphQL type representation
-        """
-        return FormSchema(
-            id=str(form_model.id),  # Convert ObjectId to string
-            name=form_model.name,
-            path=form_model.path,
-            type=form_model.type,
-            title=form_model.title,
-            display=str(form_model.display) if form_model.display else None,
-            created_at=(
-                form_model.created_at.isoformat() if form_model.created_at else None
-            ),
-            updated_at=(
-                form_model.updated_at.isoformat() if form_model.updated_at else None
-            ),
-        )
-
-    @staticmethod
+    @classmethod
+    @verify_pagination_params
     async def get_forms(
-        skip: int = 0, limit: int = 100, type_filter: Optional[str] = None
-    ) -> List[FormSchema]:
+        cls,
+        user_context: UserContext,
+        limit: int = 100,
+        offset: int = 0,
+        filters: dict[str, str] = {},
+    ) -> PaginationWindow[FormSchema]:
         """
-        Fetch and convert forms to GraphQL types
+        Fetches forms from the WebAPI and adds additional details from FormIO.
 
         Args:
-            skip (int): Pagination - number of items to skip
-            limit (int): Maximum number of items to return
-            type_filter (Optional[str]): Optional filter by form type
-
+            user_context (UserContext): User context information
+            limit (int): Number of items to return (default: 100)
+            offset (int): Pagination offset (default: 0)
+            filters (dict): Search filters to apply to the query
         Returns:
-            List[FormSchema]: List of converted GraphQL form types
+            Paginated list of Form objects containing combined PostgreSQL and MongoDB data
         """
-        query = FormModel.find_all()
+        # Query webapi database
+        webapi_query, webapi_total_count = await FormProcessMapper.find_all(user_context=user_context, **filters)
 
-        if type_filter:
-            query = query.find(FormModel.type == type_filter)
+        # Apply pagination filters
+        webapi_query = webapi_query.offset(offset).limit(limit)
 
-        # Execute query and convert results
-        forms = await query.skip(skip).limit(limit).to_list()
+        # Combine results with data from formio
+        results = []
+        webapi_results = (await FormProcessMapper.execute(webapi_query)).all()
+        for wr in webapi_results:
+            submissions_count = await SubmissionModel.count(filters={"form": PydanticObjectId(wr.form_id)})
+            results.append({
+                "webapi": wr,
+                "formio": await FormModel.get(PydanticObjectId(wr.form_id)),
+                "calculated": {"total_submissions": submissions_count}
+            })
 
-        # Convert each form to GraphQL type
-        return [FormService.convert_to_graphql_type(form) for form in forms]
+        # Convert to GraphQL Schema
+        forms = [FormSchema.from_result(result=r) for r in results]
+        return PaginationWindow(items=forms, total_count=webapi_total_count)
 
-    @staticmethod
-    async def get_form(form_id: str) -> Optional[FormSchema]:
+
+    @classmethod
+    async def get_form(
+        cls,
+        user_context: UserContext,
+        form_id: str
+    ) -> Optional[FormSchema]:
         """
-        service to fetch a single form by ID
+        Fetches a form based on it's form_id from the WebAPI and adds additional details from FormIO.
 
         Args:
-            form_id (str): ID of the form to fetch
-
+            user_context (UserContext): User context information
+            form_id (str): ID of the form
         Returns:
-            Optional[FormSchema]: Matching form or None
+            Form object containing combined PostgreSQL and MongoDB data
         """
-        try:
-            # Convert string ID back to PydanticObjectId
-            object_id = PydanticObjectId(form_id)
+        # Query the databases
+        webapi_result = await FormProcessMapper.first(form_id=form_id)
+        formio_result = await FormModel.get(PydanticObjectId(form_id))
+        submissions_count = await SubmissionModel.count(filters={"form": PydanticObjectId(webapi_result.form_id)})
 
-            # Fetch the form
-            form_model = await FormModel.find_one(id=object_id)
+        # Combine results
+        result = {
+            "webapi": webapi_result,
+            "formio": formio_result,
+            "calculated": {"total_submissions": submissions_count}
+        }
 
-            # If found, convert to GraphQL type
-            return (
-                await FormService.convert_to_graphql_type(form_model)
-                if form_model
-                else None
-            )
+        # Convert to GraphQL Schema
+        form = FormSchema.from_result(result=result) 
+        return form
 
-        except Exception:
-            # Handle invalid ID format or not found scenarios
-            return None

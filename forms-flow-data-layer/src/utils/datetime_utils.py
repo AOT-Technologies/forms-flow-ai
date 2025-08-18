@@ -1,6 +1,6 @@
 """Utility functions for converting datetime objects to string format."""
 from functools import singledispatch
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 @singledispatch
@@ -25,6 +25,10 @@ def _(obj: list):
 
 @convert_datetimes_to_string.register
 def _(obj: datetime):
-    """Convert datetime object to string format."""
-    # Convert datetime to string format eg: 04-08-2025, 06:30 AM
-    return obj.strftime("%d-%m-%Y, %I:%M %p")
+    """Convert datetime object to ISO string format."""
+    # Convert to desired ISO format with milliseconds and 'Z'
+    return (
+        obj.replace(tzinfo=timezone.utc)
+        .isoformat(timespec="milliseconds")
+        .replace("+00:00", "Z")
+    )

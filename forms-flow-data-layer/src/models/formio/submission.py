@@ -3,7 +3,39 @@ from typing import Any, Dict, List, Optional
 from beanie import Document, PydanticObjectId
 from bson import ObjectId
 from datetime import timezone, timedelta, datetime
+from pymongo import ASCENDING
 from .constants import FormioTables
+
+
+async def ensure_collation_index(field: str):
+    """Ensures a case-insensitive collation index exists for the specified field in the submissions collection.
+
+    This function checks if a collation index exists for the given field and creates one if it doesn't.
+    The index is created with English locale and strength 2 for case-insensitive comparisons.
+
+    Args:
+        field (str): The field name within the submission data to create an index for.
+                    The index will be created on the path 'data.<field>'.
+
+    Returns:
+        None
+
+    Note:
+        - Index name format is 'ci_data_<field>'
+        - Uses MongoDB collation with {"locale": "en", "strength": 2} for case-insensitive sorting
+        - The index is created asynchronously using Motor
+    """
+    collection = SubmissionsModel.get_motor_collection()
+    index_name = f"ci_data_{field}"
+
+    # Check if index already exists
+    indexes = await collection.index_information()
+    if index_name not in indexes:
+        await collection.create_index(
+            [(f"data.{field}", ASCENDING)],
+            name=index_name,
+            collation={"locale": "en", "strength": 2}
+        )
 
 
 class SubmissionsModel(Document):
@@ -83,6 +115,15 @@ class SubmissionsModel(Document):
 
         # Projection stage
         pipeline.append(SubmissionsModel._build_projection_stage(selected_form_fields))
+
+        # Prepare aggregation options for case-insensitive sorting
+        aggregate_options = {}
+        if sort_by:
+            await ensure_collation_index(sort_by)  # Create index if needed
+            aggregate_options = {
+                "collation": {"locale": "en", "strength": 2}  # Case-insensitive
+            }
+
         # Only add pagination if page_no and limit specified
         if page_no is not None and limit is not None:
             # Get only the count (no document data)
@@ -92,9 +133,9 @@ class SubmissionsModel(Document):
             # Add skip and limit stages for pagination
             pipeline.append({"$skip": (page_no - 1) * limit})
             pipeline.append({"$limit": limit})
-            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = await SubmissionsModel.aggregate(pipeline, **aggregate_options).to_list()
         else:
-            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = await SubmissionsModel.aggregate(pipeline, **aggregate_options).to_list()
             total = len(items)
         return {
             "submissions": items,

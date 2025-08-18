@@ -27,8 +27,11 @@ def _(obj: list):
 def _(obj: datetime):
     """Convert datetime object to ISO string format."""
     # Convert to desired ISO format with milliseconds and 'Z'
-    return (
-        obj.replace(tzinfo=timezone.utc)
-        .isoformat(timespec="milliseconds")
-        .replace("+00:00", "Z")
-    )
+    if obj.tzinfo is None:
+        # Assume naive datetimes are UTC (standard for databases like MongoDB)
+        obj = obj.replace(tzinfo=timezone.utc)
+    else:
+        # Convert aware datetimes to UTC (handles any timezone correctly)
+        obj = obj.astimezone(timezone.utc)
+    # Format with milliseconds and 'Z'
+    return obj.isoformat(timespec="milliseconds").replace("+00:00", "Z")

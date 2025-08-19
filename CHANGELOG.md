@@ -59,7 +59,7 @@ This prevents the need to update attribute filters every time a task filter is m
 
 `Known Issues`
 
-* Selectboxes and survey form components cannot be selected in the variable selection modal.
+* Selectboxes, textAreaWithAnalysis and survey form components cannot be selected in the variable selection modal.
 * Some advanced components (with data types other than text or number) may not function correctly when used in field filters on the reviewer listing page.
 * Certain advanced components may not display their values in the reviewer listing page.
 * Sorting is not available for all columns on the review task listing page.

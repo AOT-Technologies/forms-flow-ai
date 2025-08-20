@@ -206,10 +206,8 @@ const PrivateRoute = React.memo((props) => {
         LANGUAGE;
       dispatch(setLanguage(lang));
     }
-    else {
-      if (!kcInstance) {
-        dispatch(setLanguage('en'));
-      }
+    else {   
+        dispatch(setLanguage(localStorage.getItem('lang') ?? 'en'));    
     }
   }, [kcInstance, tenant?.tenantData]);
 

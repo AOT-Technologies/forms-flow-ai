@@ -7,15 +7,15 @@ const replaceUrl = (URL, key, value) => {
   return URL.replace(key, value);
 };
 
-const addTenantkey = (value, tenantkey) => {
-  const tenantKeyCheck = value.match(`${tenantkey}-`);
-  if (
-    tenantKeyCheck && tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
-  ) {
-    return value.toLowerCase();
-  } else {
-    return `${tenantkey.toLowerCase()}-${value.toLowerCase()}`;
+
+const addTenantkey = (value, tenantKey) => {
+  if (!value || !tenantKey) return value || '';
+  const normalizedValue = value.toLowerCase();
+  const normalizedTenantKey = tenantKey.toLowerCase();
+  if (normalizedValue.startsWith(`${normalizedTenantKey}-`)) {
+    return normalizedValue;
   }
+  return `${normalizedTenantKey}-${normalizedValue}`;
 };
 
 const removeTenantKey = (value, tenantkey) => {

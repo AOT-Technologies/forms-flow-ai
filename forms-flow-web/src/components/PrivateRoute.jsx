@@ -206,6 +206,9 @@ const PrivateRoute = React.memo((props) => {
         LANGUAGE;
       dispatch(setLanguage(lang));
     }
+    else {   
+        dispatch(setLanguage(localStorage.getItem('lang') ?? 'en'));    
+    }
   }, [kcInstance, tenant?.tenantData]);
 
   // Add effect to check for formio token on mount and when isAuth changes

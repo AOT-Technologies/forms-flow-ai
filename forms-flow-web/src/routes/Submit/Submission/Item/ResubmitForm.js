@@ -191,7 +191,7 @@ const Resubmit = React.memo(() => {
   }
 
   const renderHeader = () => (
-    <Card className="user-form-header">
+    <Card className="nav-bar user-form-header">
       <Card.Body>
         <SubmissionError
           modalOpen={submissionError.modalOpen}

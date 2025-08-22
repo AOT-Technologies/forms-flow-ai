@@ -83,6 +83,12 @@ class SubmissionsModel(Document):
 
         # Projection stage
         pipeline.append(SubmissionsModel._build_projection_stage(selected_form_fields))
+
+        # Prepare aggregation options for case-insensitive sorting
+        aggregate_options = {
+            "collation": {"locale": "en", "strength": 2}  # Case-insensitive
+        } if sort_by else {}
+
         # Only add pagination if page_no and limit specified
         if page_no is not None and limit is not None:
             # Get only the count (no document data)
@@ -92,9 +98,9 @@ class SubmissionsModel(Document):
             # Add skip and limit stages for pagination
             pipeline.append({"$skip": (page_no - 1) * limit})
             pipeline.append({"$limit": limit})
-            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = await SubmissionsModel.aggregate(pipeline, **aggregate_options).to_list()
         else:
-            items = await SubmissionsModel.aggregate(pipeline).to_list()
+            items = await SubmissionsModel.aggregate(pipeline, **aggregate_options).to_list()
             total = len(items)
         return {
             "submissions": items,

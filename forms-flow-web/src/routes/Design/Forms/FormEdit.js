@@ -409,6 +409,7 @@ const EditComponent = () => {
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
   const [isSettingsSaving, setIsSettingsSaving] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
   const onCloseActionModal = () => setNewActionModal(false);
   const processData = useSelector((state) => state.process?.processData);
 
@@ -452,6 +453,7 @@ const handleSaveLayout = () => {
 
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
+    setPendingAction(null); // Clear pending action when closing modals
     if (selectedAction === ACTION_OPERATIONS.IMPORT) {
       setFileItems({
         workflow: {
@@ -996,6 +998,32 @@ const handleSaveLayout = () => {
           primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",
           secondaryBtnText: "Cancel, Keep This Form Published",
           };
+      case "unsavedChangesBeforeAction":
+        return {
+          title: t("You Have Unsaved Changes"),
+          message: (
+            <CustomInfo
+              heading={t("Note")}
+              content={t("You have unsaved changes. To proceed with the {{action}} action, you must either save your changes or discard them.", { action: pendingAction?.toLowerCase() || "requested" })}
+            />
+          ),
+          primaryBtnAction: () => {
+            // Stay in editor and cancel the action
+            setPendingAction(null);
+            closeModal();
+          },
+          secondaryBtnAction: () => {
+            // Discard changes and proceed with the action
+            discardChanges();
+            if (pendingAction) {
+              setSelectedAction(pendingAction);
+              setPendingAction(null);
+            }
+            closeModal();
+          },
+          primaryBtnText: t("Stay in the Editor"),
+          secondaryBtnText: t("Discard Changes and Continue"),
+        };
       default:
         return {};
     }
@@ -1014,8 +1042,23 @@ const handleSaveLayout = () => {
     );
   }
 
+  const handleActionWithUnsavedCheck = (action) => {
+    // Check if there are unsaved changes for specific actions that should not proceed
+    if ((formChangeState.changed || workflowIsChanged) && 
+        (action === ACTION_OPERATIONS.DUPLICATE || action === ACTION_OPERATIONS.IMPORT)) {
+      setPendingAction(action);
+      // Show confirmation modal for unsaved changes
+      setModalType("unsavedChangesBeforeAction");
+      setShowConfirmModal(true);
+      return;
+    }
+    // If no unsaved changes, proceed normally
+    setSelectedAction(action);
+  };
+
   const handleCloseActionModal = () => {
     setSelectedAction(null); // Reset action
+    setPendingAction(null); // Reset pending action
   };
 
   // deleting form hardly from formio and mark inactive in mapper table
@@ -1296,7 +1339,7 @@ const handleSaveLayout = () => {
         newActionModal={newActionModal}
         onClose={onCloseActionModal}
         CategoryType={CategoryType.FORM}
-        onAction={setSelectedAction}
+        onAction={handleActionWithUnsavedCheck}
         published={isPublished}
         isMigrated = {processListData.isMigrated}
       />

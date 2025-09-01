@@ -295,11 +295,11 @@ const FormSettings = forwardRef((props, ref) => {
           inputDropDownSelectedValue={rolesState?.DESIGN?.selectedOption}
           inputDropDownOptions={[
             {
-              label: t("Only You"),
+              label: t("Only owner"),
               value:"onlyYou",
             },
             {
-              label: t("You and specified roles"),
+              label: t("Owner and specific roles"),
               value: "specifiedRoles",
             },
           ]}

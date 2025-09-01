@@ -345,6 +345,33 @@ class FormProcessMapper(
         return query.items, total_count
 
     @classmethod
+    def fetch_all_forms(
+        cls,
+        page_number=None,
+        limit=None,
+    ):
+        """Fetch all the forms."""
+        query = cls.tenant_authorization(query=cls.query)
+        # Fetch the latest non-deleted forms grouped by parent form ID.
+        filtered_form_query = cls.get_latest_form_mapper_ids()
+        filtered_form_ids = [data.id for data in filtered_form_query]
+        query = query.filter(
+            and_(FormProcessMapper.deleted.is_(False)),
+            FormProcessMapper.id.in_(filtered_form_ids),
+        )
+        query = query.with_entities(
+            cls.form_id,
+            cls.form_name,
+            cls.parent_form_id,
+            cls.status,
+        )
+        query = query.order_by(cls.form_name)
+        total_count = query.count()
+        limit = total_count if limit is None else limit
+        query = query.paginate(page=page_number, per_page=limit, error_out=False)
+        return query.items, total_count
+
+    @classmethod
     def find_forms_by_title(cls, form_title, exclude_id) -> FormProcessMapper:
         """Find all form process mapper that matches the provided form title."""
         latest_mapper = (

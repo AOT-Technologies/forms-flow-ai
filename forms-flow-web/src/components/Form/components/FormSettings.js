@@ -18,16 +18,13 @@ import {
   CheckboxCheckedIcon,
   CheckboxUncheckedIcon,
 } from "@formsflow/components";
-
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import {  addTenantkeyAsSuffix, convertSelectedValueToMultiSelectOption } from "../../../helper/helper";
+import {  convertSelectedValueToMultiSelectOption } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
 import { copyText } from "../../../apiManager/services/formatterService";
 import _camelCase from "lodash/camelCase";
 import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
-import { HelperServices } from "@formsflow/service";
 import PropTypes from 'prop-types';
 
 //CONST VARIABLES
@@ -67,10 +64,8 @@ const FormSettings = forwardRef((props, ref) => {
     title: "",
     path: "",
   });
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
-  const [urlPath,setUrlPath] = useState(publicUrlPath);
   const setSelectedOption = (option, roles = [])=> roles.length ? "specifiedRoles" : option;
   const multiSelectOptionKey = "role";
   /* ------------------------- authorization variables ------------------------ */
@@ -97,20 +92,6 @@ const FormSettings = forwardRef((props, ref) => {
 
   });
 
-  /* --------Updating path if multitenant enabled-------------------------- */
-  useEffect(()=>{
-    if(MULTITENANCY_ENABLED){
-      const updatedDisplayPath = HelperServices.removeTenantKeyFromData(formDetails.path,tenantKey);
-      setFormDetails((prev) => {
-        return {
-          ...prev,
-          path: updatedDisplayPath
-        };
-      });
-      const updatedUrlPath = addTenantkeyAsSuffix(publicUrlPath,tenantKey);
-      setUrlPath(updatedUrlPath);
-    }
-  },[MULTITENANCY_ENABLED]);
 
   /* ------------------------- validating form name and path ------------------------ */
 
@@ -193,7 +174,7 @@ const FormSettings = forwardRef((props, ref) => {
 
   const copyPublicUrl = async () => {
     try {
-      await copyText(`${urlPath}${formDetails.path}`);
+      await copyText(`${publicUrlPath}${formDetails.path}`);
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -314,11 +295,11 @@ const FormSettings = forwardRef((props, ref) => {
           inputDropDownSelectedValue={rolesState?.DESIGN?.selectedOption}
           inputDropDownOptions={[
             {
-              label: t("Only You"),
+              label: t("Only owner"),
               value:"onlyYou",
             },
             {
-              label: t("You and specified roles"),
+              label: t("Owner and specific roles"),
               value: "specifiedRoles",
             },
           ]}
@@ -435,7 +416,7 @@ const FormSettings = forwardRef((props, ref) => {
 
           <FormInput
             value={t(formDetails.path)}
-            label={urlPath}
+            label={publicUrlPath}
             onChange={handleFormDetailsChange}
             data-test-id="url-edit-input"
             name="path"

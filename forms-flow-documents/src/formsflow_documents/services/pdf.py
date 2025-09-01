@@ -20,6 +20,7 @@ from formsflow_api_utils.utils.pdf import (
 from jinja2 import Environment, FileSystemLoader
 from nested_lookup import get_occurrences_and_values
 
+from formsflow_documents.filters import is_b64image
 from formsflow_documents.utils import DocUtils
 
 
@@ -433,6 +434,21 @@ class PDFService:
         )
         return response
 
+    def copy_templates_to_temp(self, temp_dir):
+        """Copy template.html from the source directory to the temporary directory."""
+        current_app.logger.debug("Copying template.html to temporary directory...")
+        source_dir = os.path.dirname(__file__).replace("services", "templates")
+        source_file = os.path.join(source_dir, "template.html")
+        dest_file = os.path.join(temp_dir, "template.html")
+
+        # Create destination directory if it doesn't exist
+        os.makedirs(temp_dir, exist_ok=True)
+
+        # Copy template.html if it doesn't already exist in the temp directory
+        if os.path.isfile(source_file) and not os.path.exists(dest_file):
+            shutil.copy2(source_file, dest_file)
+            current_app.logger.debug(f"Copied template.html to {temp_dir}")
+
     def create_pdf_from_custom_template(
         self, template_name, template_variable_name, token, timezone
     ):
@@ -451,6 +467,13 @@ class PDFService:
             # Set up Jinja environment with the temp directory
             env = Environment(loader=FileSystemLoader(temp_dir), autoescape=True)
             template_obj = env.get_template(template_name)
+
+            if not template_variable_name:
+                # When generating PDF without template variables,
+                # copy necessary templates to the temporary directory if not already present
+                self.copy_templates_to_temp(temp_dir)
+                # Update the Jinja environment to include the is_signature function
+                env.globals.update(is_signature=is_b64image)
 
             # Render the template directly
             rendered_html = template_obj.render(**render_data)

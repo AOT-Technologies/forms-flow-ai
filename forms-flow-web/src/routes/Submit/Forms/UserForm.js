@@ -138,6 +138,10 @@ const View = React.memo((props) => {
   */
   const draftCreateMethod = isAuthenticated ? draftCreate : publicDraftCreate;
   const draftUpdateMethod = isAuthenticated ? draftUpdate : publicDraftUpdate;
+  let scrollableOverview = "user-form-container";
+  if (form?.display === "wizard") {
+    scrollableOverview =  "user-form-container-with-wizard";
+  }
 
   const getPublicForm = useCallback(
     (form_id, isObjectId, formObj) => {
@@ -399,7 +403,7 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className="wizard-tab user-form-container">
+        <div className={`wizard-tab ${scrollableOverview}`}>
           {(isPublic || formStatus === "active") ? (
             <Form
               form={form}

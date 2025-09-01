@@ -125,9 +125,10 @@ class SubmissionService:
             f"extracted filter by mongo {mongo_search} and webapi {webapi_search}"
         )
 
-        is_paginate_on_webapi_side = not mongo_search
         is_sort_on_webapi_side = sort_by in webapi_fields
+        is_paginate_on_webapi_side = not mongo_search and is_sort_on_webapi_side
         sort_params = {"sort_by": sort_by, "sort_order": sort_order}
+        logger.info(f"is_paginate_on_webapi_side: {is_paginate_on_webapi_side}")
         webapi_side_submissions, total_count = (
             await Application.get_authorized_applications(
                 tenant_key=tenant_key,

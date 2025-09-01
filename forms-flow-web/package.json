@@ -40,8 +40,8 @@
     "redux-mock-store": "^1.5.5"
   },
   "dependencies": {
-    "@aot-technologies/formio-react": "^1.0.5",
-    "@aot-technologies/formiojs": "^1.0.3",
+    "@aot-technologies/formio-react": "file:../../formio-react/aot-technologies-formio-react-1.0.5.tgz",
+		"@aot-technologies/formiojs": "file:../../formio.js/aot-technologies-formiojs-1.0.4.tgz",
     "@aot-technologies/formsflow-formio-custom-elements": "^1.0.2",
     "@babel/generator": "7.24.1",
     "@babel/helper-split-export-declaration": "^7.24.7",

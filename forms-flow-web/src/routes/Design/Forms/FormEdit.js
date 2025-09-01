@@ -1303,7 +1303,7 @@ const handleSaveLayout = () => {
                     ) : (
                       <FormBuilder
                         key={form._id}
-                        form={form}
+                        initialForm={form}
                         onChange={formChange}
 
                         options={{

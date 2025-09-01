@@ -1,7 +1,7 @@
 import { Translation } from "react-i18next";
 import "./helper.scss";
 import _ from "lodash";
-import utils from "@aot-technologies/formiojs/lib/utils";
+import utils from "@aot-technologies/formiojs/utils";
 
 const replaceUrl = (URL, key, value) => {
   return URL.replace(key, value);

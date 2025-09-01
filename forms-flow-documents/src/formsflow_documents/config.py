@@ -113,8 +113,6 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     TESTING = True
 
     FORMSFLOW_API_URL = os.getenv("WEB_API_BASE_URL")
-    # POSTGRESQL
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL_TEST")
 
     JWT_OIDC_TEST_MODE = True
     # USE_TEST_KEYCLOAK_DOCKER = os.getenv("USE_TEST_KEYCLOAK_DOCKER")

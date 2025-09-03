@@ -60,7 +60,7 @@ def test_create_analyze_submissions_filter(app, client, session, jwt):
     assert response.status_code == 401
 
 
-def test_get_analyze_submissions_filter_list(app, client, session, jwt):
+def test_get_analyze_submissions_filter_list(app, client, session, jwt, create_mapper_custom):
     """Test analyze submissions filter list."""
     token = get_token(jwt, role=ANALYZE_SUBMISSIONS_VIEW, username="reviewer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -68,6 +68,20 @@ def test_get_analyze_submissions_filter_list(app, client, session, jwt):
     response = client.get("/submissions-filter", headers=headers)
     assert response.json.get("filters") == []
     assert response.json.get("defaultSubmissionsFilter") is None
+    # Create form mapper entry
+    payload = {
+        "formId": "685bc0c99135c75802703046",
+        "formName": "Sample form",
+        "processKey": "onestepapproval",
+        "processName": "One Step Approval",
+        "status": "active",
+        "comments": "test",
+        "anonymous": False,
+        "formType": "form",
+        "parentFormId": "685bc0c99135c75802703046",
+    }
+    create_mapper_custom(payload)
+    # Create analyze submissions filter entry
     response = client.post(
         "/submissions-filter", headers=headers, json=filter_payload()
     )
@@ -79,6 +93,7 @@ def test_get_analyze_submissions_filter_list(app, client, session, jwt):
     filters = response.json.get("filters")
     assert len(filters) == 1
     assert filters[0].get("parentFormId") == "685bc0c99135c75802703046"
+    assert filters[0].get("formId") == "685bc0c99135c75802703046"
     assert response.json["filters"][0].get("id") is not None
     filter_id = response.json["filters"][0].get("id")
     # Add default submissions filter

@@ -36,7 +36,7 @@ googleapis-common-protos==1.69.2
 grpcio==1.71.0
 gunicorn==23.0.0
 h11==0.16.0
-h2==4.2.0
+h2==4.3.0
 hpack==4.1.0
 huggingface-hub==0.34.3
 hyperframe==6.1.0
@@ -96,7 +96,7 @@ sortedcontainers==2.4.0
 sympy==1.14.0
 tokenizers==0.21.1
 tomli==2.2.1
-torch==2.7.1
+torch==2.8.0
 tqdm==4.67.1
 transformers==4.54.1
 trio-websocket==0.12.2

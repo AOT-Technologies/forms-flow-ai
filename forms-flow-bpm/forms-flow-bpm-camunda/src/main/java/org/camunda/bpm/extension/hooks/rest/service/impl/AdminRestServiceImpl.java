@@ -37,6 +37,7 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.ANONYMOU
 public class AdminRestServiceImpl implements AdminRestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminRestServiceImpl.class);
+    private static final String ROLE_MANAGE_ADVANCE_WORKFLOWS = "ROLE_manage_advance_workflows";
 
     @Autowired
     private RestAPIBuilderConfigProperties restAPIBuilderConfigProperties;
@@ -118,6 +119,13 @@ public class AdminRestServiceImpl implements AdminRestService {
         createAuthorization(tenantKey, "ROLE_view_tasks", Resources.AUTHORIZATION, "*");
         createAuthorization(tenantKey, "ROLE_view_tasks", Resources.DECISION_DEFINITION, "*");
         createAuthorization(tenantKey, "ROLE_view_tasks", Resources.DECISION_REQUIREMENTS_DEFINITION, "*");
+
+        // Added deployment, tenant, process definition, decision definition permission for manage_advance_workflows role
+        createAuthorization(tenantKey, ROLE_MANAGE_ADVANCE_WORKFLOWS, Resources.DEPLOYMENT, "*");
+        createAuthorization(tenantKey, ROLE_MANAGE_ADVANCE_WORKFLOWS, Resources.TENANT, tenantKey);
+        createAuthorization(tenantKey, ROLE_MANAGE_ADVANCE_WORKFLOWS, Resources.PROCESS_DEFINITION, "*");
+        createAuthorization(tenantKey, ROLE_MANAGE_ADVANCE_WORKFLOWS, Resources.DECISION_DEFINITION, "*");
+        createAuthorization(tenantKey, ROLE_MANAGE_ADVANCE_WORKFLOWS, Resources.DECISION_REQUIREMENTS_DEFINITION, "*");
 
         LOGGER.info("Finished creating authorizations for tenant");
     }

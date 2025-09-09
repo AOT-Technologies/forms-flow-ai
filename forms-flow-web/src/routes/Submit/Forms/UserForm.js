@@ -406,7 +406,7 @@ const View = React.memo((props) => {
         <div className={`wizard-tab ${scrollableOverview}`}>
           {(isPublic || formStatus === "active") ? (
             <Form
-              form={form}
+              src={form}
               submission={isDraftEdit ? draftData : submission}
               url={url}
               options={{
@@ -420,7 +420,7 @@ const View = React.memo((props) => {
                   setDraftData({ data: formRef.current?.data });
                 }
               }}
-              formReady={(e) => formRef.current = e}
+              onFormReady={(e) => formRef.current = e}
               onSubmit={(data) => {
                 setPoll(false);
                 exitType.current = "SUBMIT";

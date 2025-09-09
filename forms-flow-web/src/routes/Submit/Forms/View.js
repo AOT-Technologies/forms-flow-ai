@@ -397,7 +397,7 @@ const View = React.memo((props) => {
   <div className="ms-4 me-4 wizard-tab service-task-details p-3">
     {(isPublic || (formStatus === "active") ) ?  (
       <Form
-        form={form}
+        src={form}
         submission={submission}
         url={url}
         options={{

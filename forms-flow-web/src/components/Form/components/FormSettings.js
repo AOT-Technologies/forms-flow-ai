@@ -19,7 +19,7 @@ import {
   CheckboxCheckedIcon,
   CheckboxUncheckedIcon,
 } from "@formsflow/components";
-import {  convertSelectedValueToMultiSelectOption } from "../../../helper/helper";
+import {  convertSelectedValueToMultiSelectOption, removeTenantKeywithSlash, addTenantkey } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
@@ -27,7 +27,6 @@ import { copyText } from "../../../apiManager/services/formatterService";
 import _camelCase from "lodash/camelCase";
 import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
 import PropTypes from 'prop-types';
-import { removeTenantKeywithSlash, addTenantkey } from "../../../helper/helper";
 import {MULTITENANCY_ENABLED} from "../../../constants/constants";
 
 //CONST VARIABLES
@@ -235,37 +234,50 @@ const FormSettings = forwardRef((props, ref) => {
     }
   };
 
-  useImperativeHandle(ref, () => {
-    // Convert display role names back to original role names for backend
-    const convertRolesForBackend = (rolesState) => {
-      const convertedState = {};
-      Object.keys(rolesState).forEach(section => {
-        const sectionData = rolesState[section];
-        convertedState[section] = {
-          ...sectionData,
-          selectedRoles: sectionData.selectedRoles?.map(selectedRole => {
-            // Find the original role name from userRoles
-            const originalRoleData = userRoles.find(role => 
-              role[multiSelectOptionKey] === selectedRole[multiSelectOptionKey]
-            );
-            return {
-              ...selectedRole,
-              [multiSelectOptionKey]:
-                originalRoleData?.originalRole ||
-                selectedRole[multiSelectOptionKey],
-            };
-          }) || []
-        };
-      });
-      return convertedState;
-    };
+// Extract role conversion to a separate function
+const convertSelectedRole = (selectedRole, userRoles, multiSelectOptionKey) => {
+  const originalRoleData = userRoles.find(role => 
+    role[multiSelectOptionKey] === selectedRole[multiSelectOptionKey]
+  );
+  
+  return {
+    ...selectedRole,
+    [multiSelectOptionKey]: originalRoleData?.originalRole || selectedRole[multiSelectOptionKey],
+  };
+};
 
-    return {
-      formDetails: { ...formDetails, anonymous: isAnonymous },
-      rolesState: convertRolesForBackend(rolesState),
-      validateField,
-    };
+// Process section data separately
+const convertSectionRoles = (sectionData, userRoles, multiSelectOptionKey) => {
+  return {
+    ...sectionData,
+    selectedRoles: sectionData.selectedRoles?.map(selectedRole => 
+      convertSelectedRole(selectedRole, userRoles, multiSelectOptionKey)
+    ) || []
+  };
+};
+
+// Main conversion function
+const convertRolesForBackend = (rolesState, userRoles, multiSelectOptionKey) => {
+  const convertedState = {};
+  
+  Object.keys(rolesState).forEach(section => {
+    convertedState[section] = convertSectionRoles(
+      rolesState[section], 
+      userRoles,
+      multiSelectOptionKey
+    );
   });
+  
+  return convertedState;
+};
+
+useImperativeHandle(ref, () => {
+  return {
+    formDetails: { ...formDetails, anonymous: isAnonymous },
+    rolesState: convertRolesForBackend(rolesState, userRoles, multiSelectOptionKey),
+    validateField,
+  };
+});
 
   useEffect(() => {
     const isAnyRoleEmpty = Object.values(rolesState).some(

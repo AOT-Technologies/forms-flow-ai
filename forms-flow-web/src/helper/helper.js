@@ -30,6 +30,18 @@ const removeTenantKey = (value, tenantkey) => {
   }
 };
 
+const removeTenantKeywithSlash = (value, tenantkey, multitenancyEnabled) => {
+  // Match optional leading slash, then tenantkey (case-insensitive), then hyphen
+  const regex = new RegExp(`^/?${tenantkey}-`, 'i');
+
+  if (multitenancyEnabled && regex.test(value)) {
+    return value.replace(regex, '');
+  } 
+  else{
+    return value;
+  }
+};
+
 const textTruncate = (wordLength, targetLength, text) => {
   return text?.length > wordLength
     ? text.substring(0, targetLength) + "..."
@@ -103,6 +115,7 @@ export { generateUniqueId,
   replaceUrl, 
   addTenantkey, 
   removeTenantKey, 
+  removeTenantKeywithSlash,
   textTruncate, 
   renderPage, 
   filterSelectOptionByLabel, 

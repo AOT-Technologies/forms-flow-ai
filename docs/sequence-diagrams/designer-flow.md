@@ -23,27 +23,10 @@ sequenceDiagram
     forms-db-->>forms-api: 
     forms-api -->> web-api: Form created
     deactivate forms-api
+    web-api ->> web-api-db: Create records in form process mapper
     web-api ->> web-api-db: Create audit records
-    web-api-db -->> web-api: 
-    deactivate web-api
-    web-api ->> web: Form records created
-    deactivate web
-    web -->> Designer : Form Design saved
-
-    Designer ->> web: Save form mapper
-    activate web
-    web ->> web-api : Create form mapper
-    Note over web,web-api: "POST /form"
-    activate web-api
-    web-api ->> web-api-db : Create records in form process mapper
-    web-api-db -->> web-api : 
-    deactivate web-api
-    web-api -->> web : 
-
-    web ->> web-api : Create authorization
-    Note over web,web-api: "POST /authorizations/resource/<form-id>"
-    activate web-api
-    web-api ->> web-api-db : Create authorization records
+    web-api ->> web-api-db: Create authorization records
+    web-api ->> web-api-db: Create records in process table
     web-api-db -->> web-api : 
     web-api -->> web : 
     deactivate web-api

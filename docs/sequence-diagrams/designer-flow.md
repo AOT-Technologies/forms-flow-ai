@@ -24,10 +24,13 @@ sequenceDiagram
     forms-api -->> web-api: Form created
     deactivate forms-api
     web-api ->> web-api-db: Create records in form process mapper
+    web-api-db -->> web-api:
     web-api ->> web-api-db: Create audit records
+    web-api-db -->> web-api:
     web-api ->> web-api-db: Create authorization records
+    web-api-db -->> web-api:
     web-api ->> web-api-db: Create records in process table
-    web-api-db -->> web-api : 
+    web-api-db -->> web-api:
     web-api -->> web : 
     deactivate web-api
     web -->> Designer : 

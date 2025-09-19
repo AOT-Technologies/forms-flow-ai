@@ -1211,7 +1211,6 @@ const handleSaveLayout = () => {
             >
               <Card>
                 <Card.Header>
-                  {createDesigns && (
                     <div>
                       <h2>{t("Layout")}</h2>
                     {(createDesigns || viewDesigns) && (
@@ -1237,7 +1236,6 @@ const handleSaveLayout = () => {
                       </>
                     )}
                     </div>
-                  )}
 
                   {(createDesigns) && (
                     <div>

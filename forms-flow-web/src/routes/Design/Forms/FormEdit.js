@@ -18,7 +18,8 @@ import {
   HistoryModal,
   ImportModal,
   CustomInfo,
-  CardsSwitchIcon
+  CardsSwitchIcon,
+  PromptModal,
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -1111,19 +1112,20 @@ const handleSaveLayout = () => {
       );
     } else {
       return (
-        <ConfirmModal
+        <PromptModal
           {...commonProps}
-          title={t("Are You Sure You Want to Delete This Form?")}
-          message={t("This action cannot be undone.")}
+          type="warning"
+          title={t("Delete form?")}
+          message={t("Deleting a form is permanent and cannot be undone.")}
           secondaryBtnAction={deleteModal}
-          primaryBtnText={t("No, Keep This Form")}
-          secondaryBtnText={t("Yes, Delete the Form")}
-          secondoryBtndataTestid="yes-delete-button"
-          primaryBtndataTestid="no-delete-button"
-          primaryBtnariaLabel="No, Keep This Form"
-          secondoryBtnariaLabel="Yes, Delete the Form"
-          secondaryBtnDisable={isDeletionLoading}
-          secondaryBtnLoading={isDeletionLoading}
+          primaryBtnText={t("Delete Form")}
+          primaryBtndataTestid="delete-form-button"
+          primaryBtnariaLabel="Delete Form"
+          primaryBtnDisable={isDeletionLoading}
+          primaryBtnLoading={isDeletionLoading}
+          secondaryBtnText={t("Cancel")}
+          secondoryBtndataTestid="cancel-delete-button"
+          secondoryBtnariaLabel="Cancel"
           datatestId="delete-form-modal-message"
         />
       );
@@ -1145,7 +1147,7 @@ const handleSaveLayout = () => {
   return (
     <div>
       <div>
-        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={t("You have made changes that are not saved yet. The unsaved changes could be either on the Layout or the Flow side.")} />
+        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={t("Discarding changes is permanent and cannot be undone.")} />
         <LoadingOverlay active={formSubmitted || loadingVersioning} spinner text={t("Loading...")}>
           <SettingsModal
             show={showSettingsModal}

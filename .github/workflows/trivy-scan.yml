@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - bugfix/fwf-5372-fix-code-scanning-issues
   workflow_dispatch:
 
 permissions: write-all

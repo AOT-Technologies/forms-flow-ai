@@ -402,6 +402,12 @@
             <version>6.2.11</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http2</artifactId>
+            <version>4.2.4.Final</version>
+        </dependency>
+
     </dependencies>
 
     <build>

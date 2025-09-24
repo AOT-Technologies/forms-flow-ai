@@ -90,17 +90,17 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
           titleDataTestId="unsaved-changes-title"
           message={t(message)}
           messageSecondary={t(secondaryMessage)}
-          primaryBtnText={t("Discard Changes")}
-          primaryBtndataTestid="discard-action-button"
-          primaryBtnariaLabel={t("Discard Changes")}
+          primaryBtnText={t("Save")}
+          primaryBtndataTestid="save-action-button"
+          primaryBtnariaLabel={t("Save Changes")}
           primaryBtnAction={() => {
-            handleConfirm(true);
-          }}
-          secondaryBtnText={t("Save")}
-          secondoryBtndataTestid="save-action-button"
-          secondoryBtnariaLabel={t("Save Changes")}
-          secondaryBtnAction={() => {
             handleConfirm(false);
+          }}
+          secondaryBtnText={t("Discard Changes")}
+          secondoryBtndataTestid="discard-action-button"
+          secondoryBtnariaLabel={t("Discard Changes")}
+          secondaryBtnAction={() => {
+            handleConfirm(true);
           }}
         />
       )}

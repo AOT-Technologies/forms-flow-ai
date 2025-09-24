@@ -1117,15 +1117,16 @@ const handleSaveLayout = () => {
           type="warning"
           title={t("Delete form?")}
           message={t("Deleting a form is permanent and cannot be undone.")}
-          secondaryBtnAction={deleteModal}
           primaryBtnText={t("Delete Form")}
           primaryBtndataTestid="delete-form-button"
           primaryBtnariaLabel="Delete Form"
+          primaryBtnAction={deleteModal}
           primaryBtnDisable={isDeletionLoading}
           primaryBtnLoading={isDeletionLoading}
           secondaryBtnText={t("Cancel")}
           secondoryBtndataTestid="cancel-delete-button"
           secondoryBtnariaLabel="Cancel"
+          secondaryBtnAction={handleCloseActionModal}
           datatestId="delete-form-modal-message"
         />
       );

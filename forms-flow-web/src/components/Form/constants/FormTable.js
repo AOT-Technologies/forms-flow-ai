@@ -15,7 +15,7 @@ import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
 import { HelperServices } from "@formsflow/service";
-import { CustomButton,TableFooter ,NoDataFound, TableSkeleton } from "@formsflow/components";
+import { TableFooter ,NoDataFound, TableSkeleton , V8CustomButton} from "@formsflow/components";
 import userRoles from "../../../constants/permissions";
 import SortableHeader from '../../CustomComponents/SortableHeader';
 
@@ -184,12 +184,12 @@ function FormTable() {
                       </td>
                       <td className="text-end">
                       {(createDesigns || viewDesigns) && (
-                        <CustomButton
+                        <V8CustomButton
                           label={createDesigns ? "Edit" : "View"}
                           onClick={() => viewOrEditForm(e._id, 'edit')}
                           dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
                           ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
-                          actionTable
+                          variant="primary"
                         /> )}
                       </td>
                     </tr>

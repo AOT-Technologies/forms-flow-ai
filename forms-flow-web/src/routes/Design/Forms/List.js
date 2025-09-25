@@ -41,7 +41,8 @@ import {
   ImportModal,
   CustomSearch,
   CustomButton,
-  useSuccessCountdown
+  useSuccessCountdown,
+  V8CustomButton
 } from "@formsflow/components";
 import { HelperServices } from '@formsflow/service';
 import { useMutation } from "react-query";
@@ -362,10 +363,50 @@ const List = React.memo((props) => {
         </div>
       ) : (
         <>
+                <div className="toast-section">
+                  {/* <p>Toast message</p> */}
+                </div>  
+                
+                <div className="header-section-1">
+                    <div className="section-seperation-left">
+                        <h4> Build</h4>  
+                    </div>
+                    <div className="section-seperation-right">
+                        <V8CustomButton
+                            label={t("Create New Form")}
+                            onClick={() => setNewFormModal(true)}
+                            dataTestId="create-form-button"
+                            ariaLabel="Create Form"
+                            variant="primary"
+                        />
+                    </div>
+                </div>
+
+                <div className="header-section-2">
+                  <div className="section-seperation-left">
+                                <CustomSearch
+                                  search={search}
+                                  setSearch={setSearch}
+                                  handleSearch={handleSearch}
+                                  handleClearSearch={handleClearSearch}
+                                  placeholder={t("Search Form Name and Description")}
+                                  searchLoading={searchFormLoading}
+                                  title={t("Search Form Name and Description")}
+                                  dataTestId="form-search-input"
+                                />
+                    </div>
+                 </div>
+
+                 <div className="body-section">
+                    {renderTable()}
+                 </div>
+
+
+        
           {(
               <div className="table-bar">
                 <div className="filters">
-                  <CustomSearch
+                  {/* <CustomSearch
                     search={search}
                     setSearch={setSearch}
                     handleSearch={handleSearch}
@@ -374,9 +415,10 @@ const List = React.memo((props) => {
                     searchLoading={searchFormLoading}
                     title={t("Search Form Name and Description")}
                     dataTestId="form-search-input"
-                  />
+                  /> */}
                 </div>
-                <div className="actions">
+                {/* hiding for the time being. */}
+                <div className="actions" style={{display:"none"}}>
                   <FilterSortActions
                     showSortModal={showSortModal}
                     handleFilterIconClick={handleFilterIconClick}
@@ -390,7 +432,7 @@ const List = React.memo((props) => {
                     filterAriaLabel="Filter the form list"
                     refreshDataTestId="form-list-refresh"
                     refreshAriaLabel="Refresh the form list"
-                  />
+                  /> 
 
                   {createDesigns && (
                     <CustomButton
@@ -443,7 +485,7 @@ const List = React.memo((props) => {
                 </div>
               </div>
           )}
-         {renderTable()}
+         {/* {renderTable()} */}
         </>
       )}
     </>

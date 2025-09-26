@@ -2,6 +2,18 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.3.0 - Date To be updated
+
+*Upgrade notes:*
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.3.11
+
+`Generic Changes`
+
+* Fixed security vulnerabilities
+
 ## 7.2.0 - To be updated
 
 `Added`

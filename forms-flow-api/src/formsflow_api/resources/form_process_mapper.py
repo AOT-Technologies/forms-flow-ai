@@ -570,6 +570,7 @@ class FormResourceByFormId(Resource):
             CREATE_FILTERS,
             VIEW_FILTERS,
             MANAGE_ALL_FILTERS,
+            ANALYZE_SUBMISSIONS_VIEW,
         ]
     )
     @profiletime

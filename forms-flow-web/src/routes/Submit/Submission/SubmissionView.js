@@ -178,8 +178,8 @@ const ViewApplication = React.memo(() => {
         </div>
 
         <div className="buttons">
-          {(viewSubmissionHistory || 
-              analyze_submissions_view_history) && (
+          {((isFromFormEntries && viewSubmissionHistory) ||
+  (!isFromFormEntries && analyze_submissions_view_history)) && (
           <CustomButton
             label={t("History")}
             dataTestId="handle-submission-history-testid"

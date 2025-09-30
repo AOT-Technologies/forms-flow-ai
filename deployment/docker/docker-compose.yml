@@ -15,8 +15,8 @@ services:
       MONGO_INITDB_DATABASE: ${FORMIO_DB_NAME:-formio}
     volumes:
       - ./../../forms-flow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
-      - ./mongodb/data/db/:/data/db/
-      - ./mongodb/data/log/:/var/log/mongodb/
+      - mongodb_data:/data/db/
+      - mongodb_logs:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
       - forms-flow-network
@@ -56,7 +56,7 @@ services:
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
     volumes:
-      - ./postgres/camunda:/var/lib/postgresql/data
+      - postgres_camunda:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     restart: always
@@ -212,7 +212,7 @@ services:
       - '6432:5432'
     restart: always
     volumes:
-      - ./postgres/webapi:/var/lib/postgresql/data
+      - postgres_webapi:/var/lib/postgresql/data
     networks:
       - forms-flow-network
 
@@ -408,3 +408,7 @@ networks:
 volumes:
   mdb-data:
   postgres:
+  postgres_camunda:
+  postgres_webapi:
+  mongodb_data:
+  mongodb_logs:

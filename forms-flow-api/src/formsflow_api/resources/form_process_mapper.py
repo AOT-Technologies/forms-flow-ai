@@ -1,5 +1,7 @@
 """API endpoints for managing form resource."""
 
+# pylint: disable=too-many-lines
+
 import json
 from http import HTTPStatus
 
@@ -958,3 +960,36 @@ class FormDataResource(Resource):
             form_service.get_form_data(form_id, auth_type, is_designer),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/form-flow-builder", methods=["POST", "OPTIONS"])
+class FormFlowBuilderResource(Resource):
+    """Resource for form worklow creation."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.doc(body=form_create_request_model)
+    @API.response(
+        201, "CREATED:- Successful request.", model=form_create_response_model
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post():
+        """Create a form with an associated flow, authorization rules, and history tracking."""
+        data = request.get_json()
+        response = FormProcessMapperService.create_form_with_process(
+            data, bool(auth.has_role([CREATE_DESIGNS]))
+        )
+        return response

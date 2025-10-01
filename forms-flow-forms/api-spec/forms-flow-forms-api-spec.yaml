@@ -141,7 +141,6 @@ paths:
             x-jwt-token:
               schema:
                 type: string
-                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTAyMTUsImV4cCI6MTY1NTkwNDYxNX0.4IEK2N7j9et_VyN2kTDrgb_IUz5ByY9LQgB_Twvs8vE
             Content-Type:
               schema:
                 type: string
@@ -522,7 +521,6 @@ paths:
           in: header
           schema:
             type: string
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTAyMTUsImV4cCI6MTY1NTkwNDYxNX0.4IEK2N7j9et_VyN2kTDrgb_IUz5ByY9LQgB_Twvs8vE
       responses:
         '201':
           description: Created
@@ -546,7 +544,6 @@ paths:
             x-jwt-token:
               schema:
                 type: string
-                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTA4MjMsImV4cCI6MTY1NTkwNTIyM30.aGDjT15_APtrqg5It5PrxK-ygv6vCEmwnpLl899u5a8
             Content-Type:
               schema:
                 type: string

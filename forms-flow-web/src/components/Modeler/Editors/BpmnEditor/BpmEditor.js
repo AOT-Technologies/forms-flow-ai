@@ -96,7 +96,7 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
         <div
           id="canvas"
           ref={containerRef}
-          className="bpm-modeler-container grab-cursor"
+          className="bpm-modeler-container grab-cursor border border-dark border-1"
           data-testid="bpmneditor-canvas"
         ></div>
  

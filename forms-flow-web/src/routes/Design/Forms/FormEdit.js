@@ -966,7 +966,17 @@ const handleSaveLayout = () => {
       case "unpublish":
         return {
           title: t("Unpublish"),
-          message: t( "By unpublishing this form & flow, you will make it unavailable for new submissions."),
+          message: (
+            <CustomInfo
+              className="note"
+              heading={t("Note")}
+              content={t(
+                "By unpublishing this form & flow, you will make it unavailable for new submissions."
+              )
+              }
+              dataTestId="unpublish-info"
+            />
+          ),
           primaryBtnAction: confirmPublishOrUnPublish,
           secondaryBtnAction: closeModal,
           primaryBtnText: t("Unpublish This Form & Flow"),
@@ -1214,7 +1224,6 @@ const handleSaveLayout = () => {
             >
               <Card>
                 <Card.Header>
-                  {createDesigns && (
                     <div>
                       <h2>{t("Layout")}</h2>
                     {(createDesigns || viewDesigns) && (
@@ -1240,7 +1249,6 @@ const handleSaveLayout = () => {
                       </>
                     )}
                     </div>
-                  )}
 
                   {(createDesigns) && (
                     <div>

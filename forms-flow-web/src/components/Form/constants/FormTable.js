@@ -9,11 +9,10 @@ import { resetFormProcessData } from "../../../apiManager/services/processServic
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
-import { HelperServices } from "@formsflow/service";
+import { HelperServices,StyleServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { V8CustomButton,RefreshIcon,NewSortDownIcon,V8CustomDropdownButton } from "@formsflow/components";
-    // import { alpha, styled } from '@mui/material/styles';
-    // import { gridClasses } from '@mui/x-data-grid';
+
 
 function FormDataGrid() {
   const dispatch = useDispatch();
@@ -30,7 +29,7 @@ function FormDataGrid() {
   const { createDesigns, viewDesigns } = userRoles();
   const { t } = useTranslation();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
+  const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
 
   // Mapping between DataGrid field names and reducer sort keys
   const gridFieldToSortKey = {
@@ -110,7 +109,7 @@ function FormDataGrid() {
         <V8CustomButton
           // label="new button"
           variant="secondary"
-          icon={<RefreshIcon />}
+          icon={<RefreshIcon color={iconColor} />}
           iconOnly
           onClick={handleRefresh}
         />
@@ -120,15 +119,6 @@ function FormDataGrid() {
       cellClassName: "last-column",
       renderCell: params => (
         (createDesigns || viewDesigns) && (
-          // <button
-          //   onClick={() => {
-          //     dispatch(resetFormProcessData());
-          //     dispatch(push(`${redirectUrl}formflow/${params.row._id}/edit`));
-          //   }}
-          //   aria-label={`${createDesigns ? "Edit" : "View"} Form Button`}
-          // >
-          //   {createDesigns ? t("Edit") : t("View")}
-          // </button>
           <V8CustomDropdownButton
           label={t("Edit")}
           variant="secondary"
@@ -141,11 +131,6 @@ function FormDataGrid() {
     },
   ];
 
-  // DataGrid event handlers, mirroring your Redux updates
-//   const handlePageChange = (params) => {
-//     dispatch(setBPMFormListPage(params.page + 1));
-//   };
-
 const viewOrEditForm = (formId, path) => {
   dispatch(resetFormProcessData());
   dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
@@ -157,7 +142,6 @@ const viewOrEditForm = (formId, path) => {
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
     if (!model || !model.field || !model.sort) {
-      //TBD : we can use helper service here later 
       const resetSort = Object.keys(formsort).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
         return acc;
@@ -174,7 +158,6 @@ const viewOrEditForm = (formId, path) => {
       acc[columnKey] = { sortOrder: columnKey === mappedKey ? order : "asc" };
       return acc;
     }, {});
-
     dispatch(setBpmFormSort({ ...updatedSort, activeKey: mappedKey }));
   };
   
@@ -189,14 +172,6 @@ const viewOrEditForm = (formId, path) => {
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({...filters}));
   };
-
-//   // MUI Detail Panel: for expandable row
-//   const getDetailPanelContent = React.useCallback((params) => (
-//     <div style={{ padding: 16 }}>
-//       <div>{t("Description")}: {params.row.description ? (new DOMParser().parseFromString(params.row.description, 'text/html').body.textContent) : ""}</div>
-//       {/* add other expanded details if needed */}
-//     </div>
-//   ), [t]);
   
   const activeKey = bpmForms.sort?.activeKey || "formName";
   const activeField = sortKeyToGridField[activeKey] || activeKey;
@@ -236,17 +211,15 @@ const viewOrEditForm = (formId, path) => {
         pageSizeOptions={[10, 25, 50, 100]}
         rowHeight={55}
         disableRowSelectionOnClick
-        // loading = {false}
-        // components={{
-        //   ColumnSortedAscendingIcon: RefreshIcon  ,
-        //   ColumnSortedDescendingIcon: RefreshIcon,
-        //   ColumnUnsortedIcon: RefreshIcon,
-        // }}
         slots={{
-          columnSortedDescendingIcon: NewSortDownIcon,
+          columnSortedDescendingIcon: () => (
+            <div>
+              <NewSortDownIcon color={iconColor} />
+            </div>
+          ),
           columnSortedAscendingIcon: () => (
             <div style={{ transform: "rotate(180deg)" }}>
-              <NewSortDownIcon />
+              <NewSortDownIcon color={iconColor} />
             </div>
           ),
           // columnUnsortedIcon: RefreshIcon,

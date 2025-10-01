@@ -52,7 +52,8 @@ import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
-  getFormProcesses
+  getFormProcesses,
+  getApplicationCount
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
 import SettingsModal from "../../../components/Modals/SettingsModal.js";
@@ -814,7 +815,15 @@ const handleSaveLayout = () => {
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
-        dispatch(getFormProcesses(formId));
+        // Refresh mapper data and application count after unpublish to ensure UI state is updated
+        await new Promise((resolve) => {
+          dispatch(getFormProcesses(formId, (err, data) => {
+            if (!err && data?.id) {
+              dispatch(getApplicationCount(data.id));
+            }
+            resolve();
+          }));
+        });
       }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);
@@ -1077,19 +1086,22 @@ const handleSaveLayout = () => {
       setIsDeletionLoading(true);
       dispatch(deleteForm("form", formId,() => {
         // Callback after form deletion;
-        dispatch(push(`${redirectUrl}formflow`));
+        if (processListData.id) {
+          dispatch(
+            unPublishForm(processListData.id, (err) => {
+              const message = `${_.capitalize(
+                processListData?.formType
+              )} deletion ${err ? "unsuccessful" : "successfully"}`;
+              toast[err ? "error" : "success"](t(message));
+              setIsDeletionLoading(false);
+              dispatch(push(`${redirectUrl}formflow`));
+            })
+          );
+        } else {
+          setIsDeletionLoading(false);
+          dispatch(push(`${redirectUrl}formflow`));
+        }
       }));
-    }
-
-    if (processListData.id) {
-      dispatch(
-        unPublishForm(processListData.id, (err) => {
-          const message = `${_.capitalize(
-            processListData?.formType
-          )} deletion ${err ? "unsuccessful" : "successfully"}`;
-          toast[err ? "error" : "success"](t(message));
-        })
-      );
     }
 
     dispatch(

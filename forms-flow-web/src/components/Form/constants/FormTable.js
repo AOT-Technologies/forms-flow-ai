@@ -14,7 +14,7 @@ import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { V8CustomButton,RefreshIcon,NewSortDownIcon,V8CustomDropdownButton } from "@formsflow/components";
 
 
-function FormDataGrid() {
+function FormTable() {
   const dispatch = useDispatch();
   const tenantKey = useSelector(state => state.tenants?.tenantId);
   const bpmForms = useSelector(state => state.bpmForms);
@@ -235,4 +235,4 @@ const viewOrEditForm = (formId, path) => {
   );
 }
 
-export default FormDataGrid;
+export default FormTable;

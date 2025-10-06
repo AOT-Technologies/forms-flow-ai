@@ -292,6 +292,46 @@ export_response_model = API.model(
     },
 )
 
+combined_form_workflow_request_model = API.model(
+    "CombinedFormRequestWorkflow",
+    {
+        "formData": fields.Nested(form_create_model),
+        "processData": fields.String(),
+        "authorizations": fields.Nested(authorization_list_model),
+        "processType": fields.String(),
+        "taskVariables": fields.List(fields.Nested(task_variables_model)),
+    },
+)
+
+process_response_model = API.model(
+    "ProcessResponse",
+    {
+        "id": fields.String(),
+        "processKey": fields.String(),
+        "parentProcessKey": fields.String(),
+        "processType": fields.String(),
+        "processData": fields.String(),
+        "name": fields.String(),
+        "created": fields.String(),
+        "modified": fields.String(),
+        "createdBy": fields.String(),
+        "modifiedBy": fields.String(),
+        "status": fields.String(),
+        "tenant": fields.String(),
+        "isSubflow": fields.Boolean(),
+    },
+)
+
+combined_form_workflow_response_model = API.model(
+    "CombinedFormResponseWorkflow",
+    {
+        "formData": fields.Nested(form_create_response_model),
+        "process": fields.Nested(process_response_model),
+        "authorizations": fields.Nested(authorization_list_model),
+        "mapper": fields.Nested(mapper_create_response_model),
+    },
+)
+
 
 @cors_preflight("GET,OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
@@ -970,9 +1010,11 @@ class FormFlowBuilderResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
-    @API.doc(body=form_create_request_model)
+    @API.doc(body=combined_form_workflow_request_model)
     @API.response(
-        201, "CREATED:- Successful request.", model=form_create_response_model
+        201,
+        "CREATED:- Successful request.",
+        model=combined_form_workflow_response_model,
     )
     @API.response(
         400,
@@ -987,9 +1029,9 @@ class FormFlowBuilderResource(Resource):
         "FORBIDDEN:- Authorization will not help.",
     )
     def post():
-        """Create a form with an associated flow, authorization rules, and history tracking."""
+        """Creates a new form along with its associated workflow, authorization rules, and history tracking."""
         data = request.get_json()
         response = FormProcessMapperService.create_form_with_process(
             data, bool(auth.has_role([CREATE_DESIGNS]))
         )
-        return response
+        return response, HTTPStatus.CREATED

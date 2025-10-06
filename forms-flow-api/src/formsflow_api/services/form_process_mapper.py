@@ -585,7 +585,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                     "formData": response,
                     "authorizations": authorization_data,
                     "mapper": mapper_response,
-                    "processData": process_response,
+                    "process": process_response,
                 }
         return response
 

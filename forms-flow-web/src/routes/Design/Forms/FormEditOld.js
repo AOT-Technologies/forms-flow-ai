@@ -1,7 +1,7 @@
 import React, { useReducer, useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, useLocation } from "react-router-dom";
-// import { Card } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { Card } from "react-bootstrap";
 import {
   Errors,
   FormBuilder,
@@ -9,18 +9,17 @@ import {
   Form,
 } from "@aot-technologies/formio-react";
 import {
-  V8CustomButton,
+  CustomButton,
   ConfirmModal,
-  //BackToPrevIcon,
-  //HistoryIcon,
-  //PreviewIcon,
+  BackToPrevIcon,
+  HistoryIcon,
+  PreviewIcon,
   FormBuilderModal,
   HistoryModal,
   ImportModal,
   CustomInfo,
-  //CardsSwitchIcon,
+  CardsSwitchIcon,
   PromptModal,
-  FormStatusIcon
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -54,9 +53,7 @@ import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
-  getFormProcesses,
-  getProcessHistory,
-  fetchRevertingProcessData
+  getFormProcesses
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
 import SettingsModal from "../../../components/Modals/SettingsModal.js";
@@ -66,16 +63,12 @@ import NewVersionModal from "../../../components/Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import {
-  generateUniqueId,
-  // textTruncate,
-  convertMultiSelectOptionToValue,
-} from "../../../helper/helper.js";
+import { generateUniqueId, textTruncate,
+  convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
-
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -87,76 +80,12 @@ const ACTION_OPERATIONS = {
 const FORM_LAYOUT = "FORM_LAYOUT";
 const FLOW_LAYOUT = "FLOW_LAYOUT";
 
-// Tab configuration
-const tabConfig = {
-  primary: {
-    form: {
-      label: "Form",
-      query: "?tab=form",
-      secondary: {
-        settings: {
-          label: "Settings",
-          query: "?tab=form&sub=settings"
-        },
-        history: {
-          label: "History",
-          query: "?tab=form&sub=history"
-        },
-        preview: {
-          label: "Preview",
-          query: "?tab=form&sub=preview"
-        },
-      }
-    },
-    bpmn: {
-      label: "BPMN",
-      query: "?tab=bpmn",
-      secondary: {
-        editor: {
-          label: "Editor",
-          query: "?tab=bpmn&sub=editor"
-        },
-        history: {
-          label: "History",
-          query: "?tab=bpmn&sub=history"
-        },
-        variables: {
-          label: "Variables",
-          query: "?tab=bpmn&sub=variables",
-          tertiary: {
-            system: {
-              label: "System",
-              query: "?tab=bpmn&sub=variables&subsub=system"
-            },
-            form: {
-              label: "Form",
-              query: "?tab=bpmn&sub=variables&subsub=form"
-            }
-          }
-        }
-      }
-    },
-    // actions: {
-    //   label: "Actions",
-    //   query: "?tab=actions"
-    // }
-  }
-};
-
 const EditComponent = () => {
   const dispatch = useDispatch();
   const { formId } = useParams();
-  const location = useLocation();
   const { t } = useTranslation();
   //this variable handle the flow and layot tab switching
   const sideTabRef = useRef(null);
-
-  // Tab state management
-  const [activeTab, setActiveTab] = useState({
-    primary: 'form',
-    secondary: null,
-    tertiary: null
-  });
 
   /* ------------------------------- mapper data ------------------------------ */
   const { formProcessList: processListData, formPreviousData: previousData } =
@@ -178,52 +107,10 @@ const EditComponent = () => {
   const { form: formData, error: errors } = useSelector((state) => state.form);
 
   /* ----------------- current form data when user is editing ----------------- */
-  // Initialize form state properly for new forms
-  const getInitialFormState = () => {
-    // If it's a new form (no formId or isNewForm flag), use empty form structure
-    if (!formId || formData?.isNewForm) {
-      return {
-        _id: null,
-        title: "Untitled Form",
-        name: "untitled-form",
-        display: "form",
-        type: "form",
-        components: [],
-        settings: {},
-        properties: {},
-        tags: [],
-        access: [],
-        submissionAccess: [],
-        owner: null,
-        created: new Date().toISOString(),
-        modified: new Date().toISOString(),
-        machineName: "untitled-form",
-        isNewForm: true
-      };
-    }
-    // For existing forms, use the formData from Redux store
-    return _cloneDeep(formData);
-  };
-
   const [form, dispatchFormAction] = useReducer(
     currentFormReducer,
-    getInitialFormState()
+    _cloneDeep(formData)
   );
-
-  // Update form state when Redux store formData changes (especially for new forms)
-  useEffect(() => {
-    if (formData && (!formId || formData?.isNewForm)) {
-      // For new forms, ensure we have the latest formData from Redux store
-      if (formData.isNewForm && formData.components?.length === 0) {
-        dispatchFormAction({ type: "replaceForm", value: _cloneDeep(formData) });
-      }
-    } else if (formData && formId && !formData.isNewForm) {
-      // For existing forms, update if the formData has changed
-      if (formData._id !== form._id) {
-        dispatchFormAction({ type: "replaceForm", value: _cloneDeep(formData) });
-      }
-    }
-  }, [formData, formId, form._id]);
 
   /* ------------------ handling form layout and flow layouts ----------------- */
   const [currentLayout, setCurrentLayout] = useState(FORM_LAYOUT);
@@ -493,10 +380,6 @@ const EditComponent = () => {
     restoredFormId,
   } = useSelector((state) => state.formRestore);
 
-  /* ------------------------- BPMN history variables ------------------------- */
-  const [showBpmnHistoryModal, setShowBpmnHistoryModal] = useState(false);
-  const [bpmnHistoryData, setBpmnHistoryData] = useState({ processHistory: [], totalCount: 0 });
-
   /* -------------------------- getting process data -------------------------- */
   const [isProcessDetailsLoading, setIsProcessDetailsLoading] = useState(false);
 
@@ -509,7 +392,7 @@ const EditComponent = () => {
     processListData?.status == "active"
   );
   // const [isPublishLoading, setIsPublishLoading] = useState(false);
-  const  publishText = isPublished ? "Unpublish" : "Publish";
+  const publishText = isPublished ? "Unpublish" : "Publish";
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const applicationCount = useSelector(
@@ -535,64 +418,16 @@ const EditComponent = () => {
     FORM: "FORM",
     WORKFLOW: "WORKFLOW",
   };
-  
-  // Check if we're on the create route - defined once for reuse
-  const isCreateRoute = location.pathname.includes('/create');
-  
-  // Parse URL parameters for tab state
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    
-    // On create route, always default to 'form' tab
-    const tab = isCreateRoute ? "form" : (queryParams.get("tab") || "form");
-    const sub = queryParams.get("sub");
-    const subsub = queryParams.get("subsub");
-    
-    setActiveTab({
-      primary: tab,
-      secondary: sub,
-      tertiary: subsub
-    });
-
-    // Legacy support for view parameter
     const view = queryParams.get("view");
-    if (view === "flow" && !isCreateRoute) {
+    if (view === "flow") {
       setCurrentLayout(FLOW_LAYOUT);
       sideTabRef.current = true;
     } else {
       setCurrentLayout(FORM_LAYOUT);
     }
-  }, [location.search, location.pathname]);
-
-  // Tab navigation functions
-  const handleTabClick = (primary, secondary = null, tertiary = null) => {
-    // Prevent switching to BPMN tab on create route
-    if (isCreateRoute && primary === 'bpmn') {
-      return;
-    }
-    
-    const newTab = { primary, secondary, tertiary };
-    setActiveTab(newTab);
-    
-    // Update URL with new tab parameters
-    const queryParams = new URLSearchParams();
-    queryParams.set("tab", primary);
-    if (secondary) queryParams.set("sub", secondary);
-    if (tertiary) queryParams.set("subsub", tertiary);
-    
-    if (isCreateRoute || !formId) {
-      // On create route (no formId yet), preserve current pathname and only change search
-      dispatch(
-        push({
-          pathname: location.pathname,
-          search: `?${queryParams.toString()}`,
-        })
-      );
-    } else {
-      const newUrl = `${redirectUrl}formflow/${formId}/edit?${queryParams.toString()}`;
-      dispatch(push(newUrl));
-    }
-  };
+  }, [location.search]);
 
   const handleCurrentLayout = (e) => {
     //wehn the current is assigned with element then only the visible class will render
@@ -601,23 +436,12 @@ const EditComponent = () => {
     setCurrentLayout(newLayout);
 
     const queryParams = newLayout === FLOW_LAYOUT ? "view=flow" : "";
-    if (isCreateRoute || !formId) {
-      // Keep current path on create route
-      dispatch(
-        push({
-          pathname: location.pathname,
-          search: queryParams ? `?${queryParams}` : "",
-        })
-      );
-    } else {
-      const newUrl = `${redirectUrl}formflow/${formId}/edit`;
-      dispatch(
-        push({
-          pathname: newUrl,
-          search: queryParams && `?${queryParams}`,
-        })
-      );
-    }
+    const newUrl = `${redirectUrl}formflow/${formId}/edit`;
+
+    dispatch(push({
+      pathname: newUrl,
+      search: queryParams && `?${queryParams}`
+    }));
   };
 
 const handleSaveLayout = () => {
@@ -860,9 +684,9 @@ const handleSaveLayout = () => {
     }
   };
 
-  // const backToForm = () => {
-  //   dispatch(push(`${redirectUrl}formflow`));
-  // };
+  const backToForm = () => {
+    dispatch(push(`${redirectUrl}formflow`));
+  };
   const closeHistoryModal = () => {
     setShowHistoryModal(false);
   };
@@ -886,48 +710,6 @@ const handleSaveLayout = () => {
 
   const loadMoreBtnAction = () => {
     fetchFormHistory(processListData?.parentFormId);
-  };
-
-  /* ------------------------- BPMN history handlers ------------------------- */
-  const handleBpmnHistory = () => {
-    setShowBpmnHistoryModal(true);
-    setBpmnHistoryData({ processHistory: [], totalCount: 0 });
-    if (processData?.parentProcessKey) {
-      fetchBpmnHistory(processData.parentProcessKey, 1, 4);
-    }
-  };
-
-  const fetchBpmnHistory = async (parentProcessKey, page = 1, limit = 4) => {
-    try {
-      const response = await getProcessHistory({ parentProcessKey, page, limit });
-      setBpmnHistoryData(response.data);
-    } catch (error) {
-      console.error("Error fetching BPMN history:", error);
-      setBpmnHistoryData({ processHistory: [], totalCount: 0 });
-    }
-  };
-
-  const loadMoreBpmnHistory = () => {
-    if (processData?.parentProcessKey) {
-      fetchBpmnHistory(processData.parentProcessKey);
-    }
-  };
-
-  const revertBpmnHistory = async (processId) => {
-    try {
-      const response = await fetchRevertingProcessData(processId);
-      // Update the process data with reverted data
-      dispatch(setProcessData(response.data));
-      setWorkflowIsChanged(true);
-      toast.success(t("Process reverted successfully"));
-    } catch (error) {
-      console.error("Error reverting BPMN history:", error);
-      toast.error(t("Failed to revert process"));
-    }
-  };
-
-  const closeBpmnHistoryModal = () => {
-    setShowBpmnHistoryModal(false);
   };
 
   const revertFormBtnAction = (cloneId) => {
@@ -1261,7 +1043,7 @@ const handleSaveLayout = () => {
   const modalContent = getModalContent();
 
   // loading up to set the data to the form variable
-  if ((!form || (!form._id && !form.isNewForm)) || restoreFormDataLoading) {
+  if (!form?._id || restoreFormDataLoading) {
     return (
       <div className="d-flex justify-content-center">
         <div className="spinner-grow" aria-live="polite">
@@ -1372,52 +1154,167 @@ const handleSaveLayout = () => {
       openConfirmModal(isPublished ? "unpublish" : "publish");
     }
   };
+  
+  return (
+    <div>
+      <div>
+        <NavigateBlocker isBlock={(formChangeState.changed || workflowIsChanged) && (!isMigrationLoading && !isDeletionLoading)} message={t("Discarding changes is permanent and cannot be undone.")} />
+        <LoadingOverlay active={formSubmitted || loadingVersioning} spinner text={t("Loading...")}>
+          <SettingsModal
+            show={showSettingsModal}
+            isSaving={isSettingsSaving}
+            handleClose={handleToggleSettingsModal}
+            handleConfirm={handleConfirmSettings}
+          />
 
-  // Render tab content based on active tab
-  const renderTabContent = () => {
-    switch (activeTab.primary) {
-      case 'form':
-        return (
-          <div className="form-builder custom-scroll">
-            {!createDesigns ? (
-              <div className="px-4 pt-4 form-preview">
-                <Form
-                  form={form}
-                  options={{
-                    disableAlerts: true,
-                    noAlerts: true,
-                    language: lang, 
-                    i18n: RESOURCE_BUNDLES_DATA,
-                    buttonSettings: { showCancel: false },
-                  }}
-                />
+          <Errors errors={errors} />
+
+          <div className="nav-bar">
+            
+              <div className="icon-back" onClick={backToForm}>
+                <BackToPrevIcon data-testid="back-to-prev"/>
               </div>
-            ) : (
-              <FormBuilder
-                key={form._id}
-                form={form}
-                onChange={formChange}
-                options={{
-                  language: lang,
-                  alwaysConfirmComponentRemoval: true,
-                  i18n: RESOURCE_BUNDLES_DATA,
-                }}
-                onDeleteComponent={captureFormChanges}
-              />
-            )}
-          </div>
-        );
-      case 'bpmn':
-        return (
-          <div className="bpmn-editor">
-            {isProcessDetailsLoading ? (
-              <div className="d-flex justify-content-center p-4">
-                <div className="spinner-grow" aria-live="polite">
-                  <span className="sr-only">{t("Loading...")}</span>
+
+              <div className="description">
+                <p className="text-main">
+                  {textTruncate(300,300,formData.title)}
+                </p>
+
+                <p className="status" data-testid={`form-status-${form._id}`}>
+                  <span className={`status-${isPublished ? "live" : "draft"}`}></span>
+
+                  {isPublished ? t("Live") : t("Draft")}
+                </p>
+              </div>
+
+              {(createDesigns || viewDesigns) && (
+                <div className="buttons">
+                  
+                  <CustomButton
+                    label={t("Settings")}
+                    onClick={handleToggleSettingsModal}
+                    dataTestId="editor-settings-testid"
+                    ariaLabel={t("Designer Settings Button")}
+                    dark
+                  />
+
+                  <CustomButton
+                    label={t("Actions")}
+                    onClick={editorActions}
+                    dataTestId="designer-action-testid"
+                    ariaLabel={(t) => t("Designer Actions Button")}
+                    dark
+                  />
+                  
+                  {createDesigns && <CustomButton
+                    label={t(publishText)}
+                    onClick={handlePublishClick}
+                    dataTestId="handle-publish-testid"
+                    ariaLabel={`${t(publishText)} ${t("Button")}`}
+                    darkPrimary
+                  />}
                 </div>
-              </div>
-            ) : (
-              <FlowEdit
+              )}
+            
+          </div>
+
+          <div className="d-flex">
+            <div
+              className={`wraper form-wraper ${isFormLayout ? "visible" : ""}`}
+            >
+              <Card>
+                <Card.Header>
+                    <div>
+                      <h2>{t("Layout")}</h2>
+                    {(createDesigns || viewDesigns) && (
+                      <>
+                      <CustomButton
+                        icon={<HistoryIcon />}
+                        label={t("History")}
+                        onClick={() => handleFormHistory()}
+                        dataTestId="handle-form-history-testid"
+                        ariaLabel={t("Form History Button")}
+                        iconWithText
+                      />
+
+                      <CustomButton
+                        className="mx-2"
+                        icon={<PreviewIcon />}
+                        label={t("Preview")}
+                        onClick={handlePreview}
+                        dataTestId="handle-preview-testid"
+                        ariaLabel={t("Preview Button")}
+                        iconWithText
+                      />
+                      </>
+                    )}
+                    </div>
+
+                  {(createDesigns) && (
+                    <div>
+                      <CustomButton
+                        disabled={!formChangeState.changed}
+                        label={t("Save Layout")}
+                        onClick={
+                          isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
+
+                        }
+                        dataTestId="save-form-layout"
+                        ariaLabel={t("Save Form Layout")
+                        }
+                      />
+                      <CustomButton
+                        label={t("Discard Changes")}
+                        onClick={() => {
+                          openConfirmModal("discard");
+                        }}
+                        disabled={!formChangeState.changed}
+                        dataTestId="discard-button-testid"
+                        ariaLabel={t("cancelBtnariaLabel")}
+                        secondary
+                      />
+                    </div>
+                  )}
+                </Card.Header>
+                <div className="form-edit">
+                <Card.Body>
+                  <div className="form-builder custom-scroll">
+                    {!createDesigns ? (
+                      <div className="px-4 pt-4 form-preview">
+                        <Form
+                          form={form}
+                          options={{
+                            disableAlerts: true,
+                            noAlerts: true,
+                            language: lang, i18n: RESOURCE_BUNDLES_DATA,
+                            buttonSettings: { showCancel: false },
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <FormBuilder
+                        key={form._id}
+                        form={form}
+                        onChange={formChange}
+
+                        options={{
+                          language: lang,
+                          alwaysConfirmComponentRemoval: true,
+                          i18n: RESOURCE_BUNDLES_DATA,
+                        }}
+                        onDeleteComponent={captureFormChanges}
+                      />
+                    )}
+                  </div>
+                </Card.Body>
+                </div>
+              </Card>
+            </div>
+            <div
+              className={`wraper flow-wraper ${isFlowLayout ? "visible" : ""}`}
+            >
+              {/* TBD: Add a loader instead. */}
+              {isProcessDetailsLoading ? <>loading...</> : <FlowEdit
                 ref={flowRef}
                 setWorkflowIsChanged={setWorkflowIsChanged}
                 workflowIsChanged={workflowIsChanged}
@@ -1426,259 +1323,37 @@ const handleSaveLayout = () => {
                 migration={migration}
                 redirectUrl={redirectUrl}
                 setMigration={setMigration}
-                isMigrated={processListData.isMigrated}
+                isMigrated = {processListData.isMigrated}
                 mapperId={processListData.id}
                 layoutNotsaved={formChangeState.changed}
                 handleCurrentLayout={handleCurrentLayout}
                 isMigrationLoading={isMigrationLoading}
                 setIsMigrationLoading={setIsMigrationLoading}
                 handleUnpublishAndSaveChanges={handleUnpublishAndSaveChanges}
-              />
-            )}
+              />}
+            </div>
+            <button
+              className={`form-flow-wraper ${ isFormLayout ? "right" : "left"
+              } ${sideTabRef.current && "visible"}`}
+              onClick={handleCurrentLayout}
+              data-testid="form-flow-wraper-button"
+            >
+              <span>
+                {isFormLayout ? t("Flow") : t("Layout")}
+              </span>
+              <CardsSwitchIcon />
+            </button>
           </div>
-        );
-      default:
-        return null;
-    }
-  };
-
-  // Render secondary controls based on active primary tab
-  const renderSecondaryControls = () => {
-    const currentTab = tabConfig.primary[activeTab.primary];
-    if (!currentTab?.secondary) return null;
-
-    return (
-      <div className="secondary-controls d-flex gap-2">
-        {Object.entries(currentTab.secondary).map(([key, config]) => {
-          // Disable history and preview buttons on create route
-          const isDisabled = config.disabled || (isCreateRoute && (key === 'history' || key === 'preview'));
-          
-          return (
-            <V8CustomButton
-              key={key}
-              label={t(config.label)}
-              onClick={() => {
-                if (isDisabled) return; // Don't execute if disabled
-                
-                if (key === 'settings') {
-                  handleToggleSettingsModal();
-                } else if (key === 'history') {
-                  if (activeTab.primary === 'form') {
-                    handleFormHistory();
-                  } else if (activeTab.primary === 'bpmn') {
-                    handleBpmnHistory();
-                  }
-                } else if (key === 'preview') {
-                  handlePreview();
-                } else if (key === 'editor') {
-                  handleTabClick('bpmn', 'editor');
-                } else if (key === 'variables') {
-                  handleTabClick('bpmn', 'variables');
-                }
-              }}
-              disabled={isDisabled}
-              dataTestId={`${activeTab.primary}-${key}-button`}
-              ariaLabel={t(`${config.label} Button`)}
-              variant="secondary"
-              selected={activeTab.secondary === key}
-            />
-          );
-        })}
+        </LoadingOverlay>
       </div>
-    );
-  };
-
-  // Render tertiary controls for BPMN Variables
-  const renderTertiaryControls = () => {
-    if (activeTab.primary === 'bpmn' && activeTab.secondary === 'variables') {
-      const variablesConfig = tabConfig.primary.bpmn.secondary.variables;
-      if (!variablesConfig?.tertiary) return null;
-
-      return (
-        <div className="tertiary-controls d-flex gap-2 mt-2">
-          {Object.entries(variablesConfig.tertiary).map(([key, config]) => (
-            <V8CustomButton
-              key={key}
-              label={t(config.label)}
-              onClick={() => handleTabClick('bpmn', 'variables', key)}
-              dataTestId={`bpmn-variables-${key}-button`}
-              ariaLabel={t(`${config.label} Button`)}
-              variant="secondary"
-              selected={activeTab.tertiary === key}
-            />
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  return (
-    <div className="form-create-edit-layout">
-      <NavigateBlocker
-        isBlock={
-          (formChangeState.changed || workflowIsChanged) &&
-          !isMigrationLoading &&
-          !isDeletionLoading
-        }
-        message={t("Discarding changes is permanent and cannot be undone.")}
-      />
-
-      <LoadingOverlay
-        active={formSubmitted || loadingVersioning}
-        spinner
-        text={t("Loading...")}
-      >
-        <SettingsModal
-          show={showSettingsModal}
-          isSaving={isSettingsSaving}
-          handleClose={handleToggleSettingsModal}
-          handleConfirm={handleConfirmSettings}
-        />
-
-        <Errors errors={errors} />
-
-        <div className="">
-          <div className="">
-            {/* Header Section 1 - Back button and form title */}
-            <div className="header-section-1">
-              <div className="section-seperation-left">
-                {/* <div
-                  className="icon-back"
-                  onClick={backToForm}
-                  data-testid="back-to-prev"
-                >
-                  <BackToPrevIcon />
-                </div> */}
-                 <p className="form-title">
-                   
-                     {formData?.title || t("Untitled Form")}
-                   
-                 </p>
-              </div>
-              <div className="section-seperation-right">
-                 <div
-                   className="form-status"
-                   data-testid={`form-status-${form?._id || 'new'}`}
-                 >
-                  <FormStatusIcon color={isPublished ? "#00C49A" : "#DAD9DA"} />
-                  <span className="status-text">
-                    {isPublished ? t("Published") : t("Unpublished")}
-                  </span>
-                </div>
-                {createDesigns && (
-                  <>
-                  <V8CustomButton
-                  disabled={!formChangeState.changed}
-                  label={t("Save")}
-                  onClick={
-                    isPublished
-                      ? handleUnpublishAndSaveChanges
-                      : handleSaveLayout
-                  }
-                  dataTestId="save-form-layout"
-                  ariaLabel={t("Save Form Layout")}
-                />
-                      <V8CustomButton
-                        label={t(publishText)}
-                        onClick={handlePublishClick}
-                        dataTestId="handle-publish-testid"
-                        ariaLabel={`${t(publishText)} ${t("Button")}`}
-                        darkPrimary
-                      />
-                  </>
-                  
-                    )}
-              </div>
-            </div>
-
-            {/* Header Section 2 - Action buttons */}
-            <div className="header-section-2">
-              <div className="section-seperation-left">
-                {(createDesigns || viewDesigns) && (
-                  <div className="action-buttons d-flex">
-                    
-                     <div className="section-seperation-left">
-                   {Object.entries(tabConfig.primary).map(([key, config]) => {
-                     // Disable BPMN tab on create route
-                     const isDisabled = key === 'bpmn' && isCreateRoute;
-                     
-                     return (
-                       <V8CustomButton
-                         key={key}
-                         onClick={() => !isDisabled && handleTabClick(key)}
-                         data-testid={`tab-${key}`}
-                         aria-label={t(`${config.label} Tab`)}
-                         role="tab"
-                         aria-selected={activeTab.primary === key}
-                         label={t(config.label)}
-                         selected={activeTab.primary === key}
-                         disabled={isDisabled}
-                       />
-                     );
-                   })}
-                  <V8CustomButton
-                      label={t("Actions")}
-                      onClick={editorActions}
-                      dataTestId="designer-action-testid"
-                      ariaLabel={t("Designer Actions Button")}
-                      dark
-                    />
-              </div>
-              
-                  </div>
-                )}
-              </div>
-              
-            </div>
-
-            {/* Header Section 3 - Tab navigation */}
-            <div className="header-section-3">
-              <div className="section-seperation-left">
-                {renderSecondaryControls()}
-              </div>
-              <div className="section-seperation-right">
-                {createDesigns && (
-                  <div className="form-actions d-flex gap-2">
-                    
-                    <V8CustomButton
-                      label={t("Discard Changes")}
-                      onClick={() => openConfirmModal("discard")}
-                      disabled={!formChangeState.changed}
-                      dataTestId="discard-button-testid"
-                      ariaLabel={t("Discard Changes Button")}
-                      secondary
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Header Section 4 - Tertiary controls */}
-            {activeTab.primary === 'bpmn' && activeTab.secondary === 'variables' && (
-              <div className="header-section-4">
-                <div className="section-seperation-left">
-                  {renderTertiaryControls()}
-                </div>
-              </div>
-            )} 
-
-            {/* Body Section - Main content */}
-            <div className="body-section formedit-layout">{renderTabContent()}</div>
-          </div>
-        </div>
-      </LoadingOverlay>
-
-      {/* Modals */}
       <ActionModal
         newActionModal={newActionModal}
         onClose={onCloseActionModal}
         CategoryType={CategoryType.FORM}
         onAction={handleActionWithUnsavedCheck}
         published={isPublished}
-        isMigrated={processListData.isMigrated}
+        isMigrated = {processListData.isMigrated}
       />
-
       <FormBuilderModal
         modalHeader={t("Duplicate")}
         nameLabel={t("New Form Name")}
@@ -1694,21 +1369,19 @@ const handleSaveLayout = () => {
         nameError={nameError}
       />
 
-      {selectedAction === ACTION_OPERATIONS.IMPORT && (
-        <ImportModal
-          importLoader={importLoader}
-          importError={importError}
-          showModal={selectedAction === ACTION_OPERATIONS.IMPORT}
-          uploadActionType={UploadActionType}
-          formName={formTitle}
-          onClose={handleCloseSelectedAction}
-          handleImport={handleImport}
-          fileItems={fileItems}
-          headerText={t("Import File")}
-          primaryButtonText={primaryButtonText}
-          fileType=".json, .bpmn"
-        />
-      )}
+      {selectedAction === ACTION_OPERATIONS.IMPORT && <ImportModal
+        importLoader={importLoader}
+        importError={importError}
+        showModal={selectedAction === ACTION_OPERATIONS.IMPORT}
+        uploadActionType={UploadActionType}
+        formName={formTitle}
+        onClose={handleCloseSelectedAction}
+        handleImport={handleImport}
+        fileItems={fileItems}
+        headerText={t("Import File")}
+        primaryButtonText={primaryButtonText}
+        fileType=".json, .bpmn"
+      />}
 
       <ExportModal
         showExportModal={selectedAction === ACTION_OPERATIONS.EXPORT}
@@ -1756,22 +1429,6 @@ const handleSaveLayout = () => {
         historyCount={formHistoryData.totalCount}
         disableAllRevertButton={isPublished}
       />
-
-      <HistoryModal
-        show={showBpmnHistoryModal}
-        onClose={closeBpmnHistoryModal}
-        title={t("BPMN History")}
-        loadMoreBtnText={t("Load More")}
-        loadMoreBtndataTestId="load-more-bpmn-history"
-        revertBtnText={t("Revert To This")}
-        allHistory={bpmnHistoryData.processHistory}
-        loadMoreBtnAction={loadMoreBpmnHistory}
-        categoryType={CategoryType.WORKFLOW}
-        revertBtnAction={revertBpmnHistory}
-        historyCount={bpmnHistoryData.totalCount}
-        disableAllRevertButton={isPublished}
-      />
-
       {renderDeleteModal()}
     </div>
   );

@@ -14,6 +14,7 @@ import { fetchFormAuthorizationDetials } from "../../../apiManager/services/auth
 import { Formio, getForm } from "@aot-technologies/formio-react";
 import Loading from "../../../containers/Loading.js";
 import NotFound from "../../../components/NotFound/index.js";
+import { addHiddenApplicationComponent } from "../../../constants/applicationComponent.js";
 
 const Index = () => {
   const { formId } = useParams();
@@ -23,7 +24,6 @@ const Index = () => {
   );
   const apiCallError = useSelector((state) => state.errors?.apiCallError);
   const [mapperDataLoading, setMapperDataLoading] = useState(false);
-  const [newFormLoading, setNewFormLoading] = useState(false);
 
   // fetch form and mapper data along with authorization data
   const errorHandling = (err) => {
@@ -47,9 +47,7 @@ const Index = () => {
     dispatch(setFormAuthVerifyLoading(true));
     
     // If no formId, it's a new form creation
-    if (!formId) {
-      setNewFormLoading(true);
-      
+    if (!formId) {      
       // Set empty form data for new form
       const newFormData = {
         _id: null,
@@ -69,8 +67,10 @@ const Index = () => {
         machineName: "untitled-form",
         isNewForm: true
       };
+      // Inject hidden components for new forms
+      const newFormWithHidden = addHiddenApplicationComponent({ ...newFormData });
       // this global state is used to store the form data when initialy create the form using form-design api
-      dispatch(setFormSuccessData("form", newFormData));
+      dispatch(setFormSuccessData("form", newFormWithHidden));
       
       // Set empty authorization details for new form
       dispatch(setFormAuthorizationDetails({
@@ -81,7 +81,6 @@ const Index = () => {
       
       // Set both loading states to false for new forms
       dispatch(setFormAuthVerifyLoading(false));
-      setNewFormLoading(false);
       return;
     }
     
@@ -113,9 +112,9 @@ const Index = () => {
 
   // For new forms (no formId), use local state
   // For existing forms, check both formAuthVerifyLoading and mapperDataLoading
-  const shouldShowLoading = formId ? (formAuthVerifyLoading || mapperDataLoading) : newFormLoading;
   
-  if (shouldShowLoading) {
+  
+  if (formAuthVerifyLoading || mapperDataLoading) {
     return <Loading />;
   }
   if (apiCallError) {

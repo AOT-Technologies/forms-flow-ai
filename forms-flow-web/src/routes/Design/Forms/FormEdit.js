@@ -76,7 +76,6 @@ import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocke
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
 
-
 // constant values
 const ACTION_OPERATIONS = {
   DUPLICATE : "DUPLICATE",
@@ -180,28 +179,7 @@ const EditComponent = () => {
   /* ----------------- current form data when user is editing ----------------- */
   // Initialize form state properly for new forms
   const getInitialFormState = () => {
-    // If it's a new form (no formId or isNewForm flag), use empty form structure
-    if (!formId || formData?.isNewForm) {
-      return {
-        _id: null,
-        title: "Untitled Form",
-        name: "untitled-form",
-        display: "form",
-        type: "form",
-        components: [],
-        settings: {},
-        properties: {},
-        tags: [],
-        access: [],
-        submissionAccess: [],
-        owner: null,
-        created: new Date().toISOString(),
-        modified: new Date().toISOString(),
-        machineName: "untitled-form",
-        isNewForm: true
-      };
-    }
-    // For existing forms, use the formData from Redux store
+    // Always use the formData from Redux store (which is already set up in FormEditIndex.js)
     return _cloneDeep(formData);
   };
 
@@ -1543,17 +1521,8 @@ const handleSaveLayout = () => {
             {/* Header Section 1 - Back button and form title */}
             <div className="header-section-1">
               <div className="section-seperation-left">
-                {/* <div
-                  className="icon-back"
-                  onClick={backToForm}
-                  data-testid="back-to-prev"
-                >
-                  <BackToPrevIcon />
-                </div> */}
                  <p className="form-title">
-                   
                      {formData?.title || t("Untitled Form")}
-                   
                  </p>
               </div>
               <div className="section-seperation-right">

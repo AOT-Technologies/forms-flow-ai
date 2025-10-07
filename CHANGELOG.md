@@ -2,6 +2,17 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+
+## 8.0.0 
+
+`Added`
+
+**forms-flow-api**
+
+
+* Added a new `/form-flow-builder` endpoint to handle form, workflow, authorization, and settings creation.
+
+
 ## 7.3.0 - Date To be updated
 
 *Upgrade notes:*

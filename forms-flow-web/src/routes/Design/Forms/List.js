@@ -141,10 +141,10 @@ const List = React.memo((props) => {
     dispatch(setBpmFormSearch(search));
     dispatch(setBPMFormListPage(1));
   };
-  const handleClearSearch = () => {
-    setSearch("");
-    dispatch(setBpmFormSearch(""));
-  };
+  // const handleClearSearch = () => {
+  //   setSearch("");
+  //   dispatch(setBpmFormSearch(""));
+  // };
   const { forms, getFormsInit } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
@@ -388,7 +388,7 @@ const List = React.memo((props) => {
                                   search={search}
                                   setSearch={setSearch}
                                   handleSearch={handleSearch}
-                                  handleClearSearch={handleClearSearch}
+
                                   placeholder={t("Search Form Name and Description")}
                                   searchLoading={searchFormLoading}
                                   title={t("Search Form Name and Description")}
@@ -406,16 +406,6 @@ const List = React.memo((props) => {
           {(
               <div className="table-bar">
                 <div className="filters">
-                  {/* <CustomSearch
-                    search={search}
-                    setSearch={setSearch}
-                    handleSearch={handleSearch}
-                    handleClearSearch={handleClearSearch}
-                    placeholder={t("Search Form Name and Description")}
-                    searchLoading={searchFormLoading}
-                    title={t("Search Form Name and Description")}
-                    dataTestId="form-search-input"
-                  /> */}
                 </div>
                 {/* hiding for the time being. */}
                 <div className="actions" style={{display:"none"}}>

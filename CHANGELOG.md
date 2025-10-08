@@ -32,6 +32,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * In single domain instances, Reviewer action may fail. As a quick fix refer [here](https://aottech.atlassian.net/browse/FWF-5201?focusedCommentId=32131).
 * A fix has been implemented allowing users with only the “Manage Advanced Flows” permission to publish subflows and DMNs.
 In a multitenant environment, this change may apply to existing tenants only after creating a new tenant or adding authorizations in the Camunda deployment. Refer [here](https://aottech.atlassian.net/browse/FWF-5304?focusedCommentId=32506)
+* When editing filters in the reviewer page, unchecking or checking one variable (e.g., name) causes another variable (task) to be unintentionally affected.
+* Deploying workflows(subflows) with a Message Start Event fails if another deployed workflow already uses the same message name. This results in a Camunda deployment error indicating a duplicate message event subscription.
 
 
 ## 7.2.0 - 2025-08-14

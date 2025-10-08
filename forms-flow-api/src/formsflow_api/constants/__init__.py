@@ -214,6 +214,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Task outcome configuration not found for the given task Id",
         HTTPStatus.BAD_REQUEST,
     )
+    FORM_PAYLOAD_MISSING = (
+        "Form payload is missing in the request",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

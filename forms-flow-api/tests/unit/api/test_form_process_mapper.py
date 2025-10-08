@@ -19,6 +19,7 @@ from tests.utilities.base_test import (
     get_draft_create_payload,
     get_form_request_payload,
     get_formio_form_request_payload,
+    get_process_request_payload,
 )
 
 
@@ -273,6 +274,65 @@ def test_get_task_variable_based_on_form_process_mapper_id(
 
     rv = client.get(f"/form/applicationid/{application_id}", headers=headers)
     assert rv.status_code == 200
+
+
+def test_form_flow_builder_creation(app, client, session, jwt, mock_redis_client):
+    """Testing form flow builder create API with full payload."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    task_variables = [{"key": "applicationId", "label": "Application ID", "type": "string"}]
+
+    payload = {
+        "formData": form_data,
+        "processData": get_process_request_payload()["processData"],
+        "processType": "BPMN",
+        "authorizations": get_authorizations(None),
+        "taskVariables": task_variables
+    }
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+    assert response.json.get("formData") is not None
+    assert response.json["formData"].get("title") == form_data.get("title")
+    assert response.json.get("process") is not None
+    assert response.json.get("mapper") is not None
+    assert response.json.get("authorizations") is not None
+
+
+def test_form_flow_builder_minimal(app, client, session, jwt, mock_redis_client):
+    """Testing form flow builder create API with minimal payload."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    payload = {
+        "formData": form_data
+    }
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+    assert response.json.get("formData") is not None
+    assert response.json["formData"].get("title") == form_data.get("title")
+    assert response.json.get("process") is not None
+    assert response.json.get("mapper") is not None
+    assert response.json.get("authorizations") is not None
+
+
+def test_form_flow_builder_invalid_payload(app, client, session, jwt, mock_redis_client):
+    """Testing form flow builder create API with invalid payload."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Missing required formData
+    payload = {
+        "processData": get_process_request_payload()["processData"],
+        "processType": "BPMN"
+    }
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 400
 
 
 def test_formio_form_creation(app, client, session, jwt, mock_redis_client):

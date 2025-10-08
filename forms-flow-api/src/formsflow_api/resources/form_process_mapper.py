@@ -1035,3 +1035,34 @@ class FormFlowBuilderResource(Resource):
             data, bool(auth.has_role([CREATE_DESIGNS]))
         )
         return response, HTTPStatus.CREATED
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/form-flow-edit", methods=["POST", "OPTIONS"])
+class FormFlowBuilderUpdateResource(Resource):
+    """Resource for form, worklow and settings update."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.doc(body=form_update_request_model)
+    @API.response(200, "CREATED:- Successful request.", model=form_update_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post():
+        """Update form design, form history, flow and settings."""
+        data = request.get_json()
+        response = FormProcessMapperService.update_form_process(
+            data, bool(auth.has_role([CREATE_DESIGNS]))
+        )
+        return response, HTTPStatus.OK

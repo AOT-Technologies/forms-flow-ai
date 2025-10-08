@@ -33,6 +33,7 @@ from formsflow_api.schemas import FormProcessMapperSchema, ProcessDataSchema
 from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.external.bpm import BPMService
 
+from .filter import FilterService
 from .form_history_logs import FormHistoryService
 from .process import ProcessService
 
@@ -1186,5 +1187,74 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         response = FormProcessMapperService.create_form(
             data, is_designer, combine_save=True
         )
+
+        return response
+
+    @classmethod
+    def update_form_process(
+        cls, request_data, is_designer
+    ):  # pylint:disable=too-many-locals
+        """Update form design, form history, process details, authorizations and mapper details."""
+        response = {}
+
+        # Update form design
+        form_data = request_data.get("formData")
+        if form_data:
+            current_app.logger.debug("Updating form design..")
+            form_id = form_data.get("_id")
+            if not form_id:
+                raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+            form_response = FormProcessMapperService.form_design_update(
+                form_data, form_id
+            )
+            response["formData"] = form_response
+
+        # Update mapper details
+        mapper_data = request_data.get("mapper")
+        if mapper_data:
+            current_app.logger.debug("Updating mapper details..")
+            task_variable = mapper_data.get("taskVariables", [])
+            mapper_id = mapper_data.get("id")
+            # If task variables are present, update filter variables and serialize them
+            if "taskVariables" in mapper_data:
+                FilterService.update_filter_variables(
+                    task_variable, mapper_data.get("formId")
+                )
+                mapper_data["taskVariables"] = json.dumps(task_variable)
+
+            # Load the mapper data into the schema
+            mapper_schema = FormProcessMapperSchema()
+            dict_data = mapper_schema.load(mapper_data)
+            mapper = FormProcessMapperService.update_mapper(mapper_id, dict_data)
+            # Dump the updated mapper data into the response schema
+            mapper_response = mapper_schema.dump(mapper)
+            if task_variables := mapper_response.get("taskVariables"):
+                mapper_response["taskVariables"] = json.loads(task_variables)
+            # Get major and minor version of the from from form history
+            major_version, minor_version = FormProcessMapperService.get_form_version(
+                mapper
+            )
+            mapper_response["majorVersion"] = major_version
+            mapper_response["minorVersion"] = minor_version
+            response["mapper"] = mapper_response
+        # Update authorizations
+        authorization_data = request_data.get("authorizations")
+        if authorization_data:
+            current_app.logger.debug("Updating authorization details..")
+            AuthorizationService.create_or_update_resource_authorization(
+                authorization_data, is_designer=is_designer
+            )
+            response["authorizations"] = authorization_data
+        # Update process details
+        process_req_data = request_data.get("process")
+        if process_req_data:
+            current_app.logger.debug("Updating process details..")
+            process_id = process_req_data.get("id")
+            process_data = process_req_data.get("processData")
+            process_type = process_req_data.get("processType")
+            process_response = ProcessService.update_process(
+                process_id, process_data, process_type
+            )
+            response["process"] = process_response
 
         return response

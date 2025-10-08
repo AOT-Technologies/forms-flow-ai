@@ -14,7 +14,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Fixed security vulnerabilities
 
-## 7.2.0 - To be updated
+## 7.2.0 - 2025-08-14
 
 `Added`
 

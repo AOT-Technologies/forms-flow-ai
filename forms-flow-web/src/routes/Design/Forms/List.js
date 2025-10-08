@@ -47,7 +47,7 @@ import {
 import { HelperServices } from '@formsflow/service';
 import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
-import { navigateToDesignFormEdit } from "../../../helper/routerHelper.js";
+import { navigateToDesignFormEdit, navigateToDesignFormCreate } from "../../../helper/routerHelper.js";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
 
 const List = React.memo((props) => {
@@ -374,7 +374,7 @@ const List = React.memo((props) => {
                     <div className="section-seperation-right">
                         <V8CustomButton
                             label={t("Create New Form")}
-                            onClick={() => setNewFormModal(true)}
+                            onClick={() => navigateToDesignFormCreate(dispatch, tenantKey)}
                             dataTestId="create-form-button"
                             ariaLabel="Create Form"
                             variant="primary"

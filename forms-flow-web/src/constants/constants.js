@@ -226,7 +226,8 @@ const MAIN_ROUTE = {
   DASHBOARDS: "dashboards",
   ANALYZESUBMISSIONS: "submissions",
   ADMIN: "admin",
-  NOTFOUND: "404"
+  NOTFOUND: "404",
+  FORM_CREATE: "formflow/create"
 };
 
 const getBaseRoute = (tenantId) => {
@@ -248,6 +249,7 @@ export const getRoute = (tenantId) => ({
   ADMIN: getBaseRoute(tenantId) + MAIN_ROUTE.ADMIN,
   NOTFOUND: getBaseRoute(tenantId) + MAIN_ROUTE.NOTFOUND,
   FORM_ENTRIES: getBaseRoute(tenantId) + MAIN_ROUTE.FORM_ENTRIES,
+  FORM_CREATE: getBaseRoute(tenantId) + MAIN_ROUTE.FORM_CREATE
 });
 
 export const USER_NAME_DISPLAY_CLAIM = window._env_?.REACT_APP_USER_NAME_DISPLAY_CLAIM || process.env.REACT_APP_USER_NAME_DISPLAY_CLAIM || "preferred_username";

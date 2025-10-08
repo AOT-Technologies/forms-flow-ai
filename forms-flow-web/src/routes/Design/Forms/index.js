@@ -48,6 +48,11 @@ export default React.memo(() => {
       <Switch>
         <Route exact path={`${BASE_ROUTE}formflow`} component={List} />
         <GenericRoute
+          path={`${BASE_ROUTE}formflow/create`}
+          component={EditForm}
+          roles={['create_designs', 'view_designs']}
+        />
+        <GenericRoute
           path={`${BASE_ROUTE}formflow/:formId?/edit`}
           component={EditForm}
           roles={['create_designs', 'view_designs']}

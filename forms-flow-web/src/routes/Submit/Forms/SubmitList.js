@@ -130,7 +130,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   }, [getFormsInit, pageNo, limit, formSort, searchText]);
 
     const breadcrumbItems = [
-    { label: "Submit", path: "/form" },
+    { label: "Submit" },
   ];
 
   return (

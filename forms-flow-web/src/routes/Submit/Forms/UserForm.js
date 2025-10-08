@@ -61,7 +61,7 @@ import { setFormStatusLoading } from "../../../actions/processActions";
 import { renderPage, textTruncate } from "../../../helper/helper";
 import PropTypes from "prop-types";
 // import { Card } from "react-bootstrap";
-import { BackToPrevIcon } from "@formsflow/components";
+import { BackToPrevIcon, BreadCrumbs, BreadcrumbVariant, V8CustomButton } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import { cloneDeep } from "lodash";
 import { HelperServices } from "@formsflow/service";
@@ -323,50 +323,11 @@ const View = React.memo((props) => {
     }
   };
 
-  const renderHeader = () => (
-    <div className="nav-bar">
-        <SubmissionError
-          modalOpen={props.submissionError.modalOpen}
-          message={props.submissionError.message}
-          onConfirm={props.onConfirm}
-        ></SubmissionError>
-        
-        { !isPublic && 
-        <div className="icon-back" onClick={handleBack}>
-          <BackToPrevIcon data-testid="back-to-form-list" ariaLabel="Back to Form List" />
-        </div>
-        }
+  const breadcrumbItems = [
+    { label: "Submit", path: "/form" },
+    { label: form.title, path: `/form/${parentFormId}/entries`}
+  ];
 
-        <div className="description">
-          <p className="text-main">
-            {textTruncate(100, 97, form.title)}
-          </p>
-
-          <p className="status" data-testid={`form-status-${form._id}`}>
-            {renderModifiedDate()}
-          </p>
-        </div>
-
-        {/* <div className="d-flex justify-content-between align-items-center">
-          <div className="icon-title-container">
-            {!isPublic && <BackToPrevIcon
-              title={t("Back to Form List")}
-              data-testid="back-to-form-list"
-              onClick={handleBack}
-            />}
-            <div className="user-form-header-text">
-              {textTruncate(100, 97, form.title)}
-            </div>
-          </div>
-
-          <div className="d-flex align-items-center">
-            <span className="form-modified-date me-3">
-              {renderModifiedDate()}
-            </span>
-          </div>
-        </div> */}
-    </div>
-  );
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
@@ -394,8 +355,18 @@ const View = React.memo((props) => {
   }
 
   return (
-    <div className="userform-wrapper">
-      {renderHeader()}
+    <>
+        <div className="header-section-1">
+            <div className="section-seperation-left d-block">
+                <BreadCrumbs 
+                  items={breadcrumbItems}
+                  variant={BreadcrumbVariant.MINIMIZED}
+                  underline 
+                /> 
+                <h4>{draftSubmission?.isDraft ? draftId : t("New Submission")}</h4>
+            </div>
+        </div>
+
       <Errors errors={errors} />
       <LoadingOverlay
         active={isFormSubmissionLoading}
@@ -403,7 +374,7 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className={`wizard-tab ${scrollableOverview}`}>
+        <div className="body-section">
           {(isPublic || formStatus === "active") ? (
             <Form
               form={form}
@@ -433,7 +404,7 @@ const View = React.memo((props) => {
           )}
         </div>
       </LoadingOverlay>
-    </div>
+      </>
   );
 });
 

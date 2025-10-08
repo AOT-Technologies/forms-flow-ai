@@ -481,7 +481,7 @@ const FlowEdit = forwardRef(({ isPublished = false, CategoryType,
           form={form}
           show={showVariableModal}
           onClose={handleCloseVariableModal}
-          saveBtnDisabled={isPublished}
+          saveBtnDisabled={isPublished || !createDesigns}
           savedFormVariables={savedFormVariables}
           primaryBtnAction={handleSaveVariables}
           systemVariables={SystemVariables}

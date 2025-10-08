@@ -41,6 +41,7 @@ class SubmissionsFilterSchema(Schema):
     parent_form_id = fields.Str(
         required=True, data_key="parentFormId", validate=not_empty_string
     )
+    form_id = fields.Str(dump_only=True, data_key="formId")
     variables = fields.List(
         fields.Nested(VariableSchema), required=True, validate=validate_non_empty_list
     )

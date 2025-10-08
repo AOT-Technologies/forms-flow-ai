@@ -65,16 +65,6 @@ sequenceDiagram
     forms-api -->> web: 
     deactivate web
 
-    activate web
-    web ->> forms-api: Get form submission
-    Note over web,forms-api: "GET /form/:form-id/submission/:submission-id"
-    activate forms-api
-    forms-api ->> forms-db: Get form submission data
-    forms-db -->> forms-api: 
-    deactivate forms-api
-    forms-api -->> web: 
-    deactivate web
-
     Reviewer ->> web: Claim a task
     activate web
     web ->> bpm-api: Claim

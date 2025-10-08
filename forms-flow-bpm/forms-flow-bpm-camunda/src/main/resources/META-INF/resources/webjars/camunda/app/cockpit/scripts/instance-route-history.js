@@ -3686,7 +3686,7 @@ var moment$1 = {exports: {}};
 	    function unescapeFormat(s) {
 	        return regexEscape(
 	            s
-	                .replace('\\', '')
+	                .replace(/\\/g, '')
 	                .replace(
 	                    /\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g,
 	                    function (matched, p1, p2, p3, p4) {
@@ -22806,7 +22806,7 @@ function transform$1(node, transforms) {
  * @return {string}
  */
 function componentsToPath(elements) {
-  return elements.flat().join(',').replace(/,?([A-z]),?/g, '$1');
+  return elements.flat().join(',').replace(/,?([A-Za-z]),?/g, '$1');
 }
 
 /**
@@ -38240,7 +38240,7 @@ function BpmnRenderer(
   function colorEscape(str) {
 
     // only allow characters and numbers
-    return str.replace(/[^0-9a-zA-z]+/g, '_');
+    return str.replace(/[^0-9A-Za-z]+/g, '_');
   }
 
   function marker(type, fill, stroke) {

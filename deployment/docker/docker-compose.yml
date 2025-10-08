@@ -15,15 +15,15 @@ services:
       MONGO_INITDB_DATABASE: ${FORMIO_DB_NAME:-formio}
     volumes:
       - ./../../forms-flow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
-      - ./mongodb/data/db/:/data/db/
-      - ./mongodb/data/log/:/var/log/mongodb/
+      - mongodb_data:/data/db/
+      - mongodb_logs:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
       - forms-flow-network
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v7.1.0
+    image: formsflow/forms-flow-forms:v7.3.0
 
     # The app will restart until Mongo is listening
     restart: always
@@ -56,7 +56,7 @@ services:
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
     volumes:
-      - ./postgres/camunda:/var/lib/postgresql/data
+      - postgres_camunda:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     restart: always
@@ -147,13 +147,13 @@ services:
       context: ./../../forms-flow-web-root-config/
       dockerfile: Dockerfile
       args:
-        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.2.0/forms-flow-web.gz.js}
-        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v7.2.0/forms-flow-nav.gz.js}
-        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v7.2.0/forms-flow-service.gz.js}
-        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.2.0/forms-flow-components.gz.js}
-        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.2.0/forms-flow-admin.gz.js}
-        - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v7.2.0/forms-flow-review.gz.js}
-        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v7.2.0/forms-flow-submissions.gz.js}
+        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.3.0-rc/forms-flow-web.gz.js}
+        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v7.3.0-rc/forms-flow-nav.gz.js}
+        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v7.3.0-rc/forms-flow-service.gz.js}
+        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.3.0-rc/forms-flow-components.gz.js}
+        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.3.0-rc/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v7.3.0-rc/forms-flow-review.gz.js}
+        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v7.3.0-rc/forms-flow-submissions.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
     environment:
@@ -212,7 +212,7 @@ services:
       - '6432:5432'
     restart: always
     volumes:
-      - ./postgres/webapi:/var/lib/postgresql/data
+      - postgres_webapi:/var/lib/postgresql/data
     networks:
       - forms-flow-network
 
@@ -283,7 +283,7 @@ services:
       CSS_API_LOGIN_URL: ${CSS_API_LOGIN_URL:-}
       CSS_ENV: ${CSS_ENV:-}
       CSS_INTEGRATION_ID: ${CSS_INTEGRATION_ID:-}
-      USER_NAME_DISPLAY_CLAIM: ${USER_NAME_DISPLAY_CLAIM:-}
+      USER_NAME_DISPLAY_CLAIM: ${USER_NAME_DISPLAY_CLAIM:-preferred_username}
       GUNICORN_WORKERS: ${GUNICORN_WORKERS:-5}
       GUNICORN_THREADS: ${GUNICORN_THREADS:-10}
       GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
@@ -408,3 +408,7 @@ networks:
 volumes:
   mdb-data:
   postgres:
+  postgres_camunda:
+  postgres_webapi:
+  mongodb_data:
+  mongodb_logs:

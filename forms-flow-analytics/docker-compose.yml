@@ -47,10 +47,13 @@ services:
     restart: always
     env_file: .env
     volumes:
-      - ./postgres/analytics:/var/lib/postgresql/data
+      - postgres_analytics:/var/lib/postgresql/data
   # Uncomment the following to enable redash mail server
   # email:
   #   image: djfarrelly/maildev
   #   ports:
   #     - "1080:80"
   #   restart: unless-stopped
+
+volumes:
+  postgres_analytics:

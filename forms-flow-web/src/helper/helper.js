@@ -7,15 +7,15 @@ const replaceUrl = (URL, key, value) => {
   return URL.replace(key, value);
 };
 
-const addTenantkey = (value, tenantkey) => {
-  const tenantKeyCheck = value.match(`${tenantkey}-`);
-  if (
-    tenantKeyCheck && tenantKeyCheck[0].toLowerCase() === `${tenantkey.toLowerCase()}-`
-  ) {
-    return value.toLowerCase();
-  } else {
-    return `${tenantkey.toLowerCase()}-${value.toLowerCase()}`;
+
+const addTenantkey = (value, tenantKey) => {
+  if (!value || !tenantKey) return value || '';
+  const normalizedValue = value.toLowerCase();
+  const normalizedTenantKey = tenantKey.toLowerCase();
+  if (normalizedValue.startsWith(`${normalizedTenantKey}-`)) {
+    return normalizedValue;
   }
+  return `${normalizedTenantKey}-${normalizedValue}`;
 };
 
 const removeTenantKey = (value, tenantkey) => {
@@ -27,6 +27,18 @@ const removeTenantKey = (value, tenantkey) => {
     return value.replace(`${tenantkey.toLowerCase()}-`, "");
   } else {
     return false;
+  }
+};
+
+const removeTenantKeywithSlash = (value, tenantkey, multitenancyEnabled) => {
+  // Match optional leading slash, then tenantkey (case-insensitive), then hyphen
+  const regex = new RegExp(`^/?${tenantkey}-`, 'i');
+
+  if (multitenancyEnabled && regex.test(value)) {
+    return value.replace(regex, '');
+  } 
+  else{
+    return value;
   }
 };
 
@@ -103,6 +115,7 @@ export { generateUniqueId,
   replaceUrl, 
   addTenantkey, 
   removeTenantKey, 
+  removeTenantKeywithSlash,
   textTruncate, 
   renderPage, 
   filterSelectOptionByLabel, 

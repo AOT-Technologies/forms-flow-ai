@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from sqlalchemy import Index, UniqueConstraint
+from sqlalchemy import Index, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import ARRAY, JSON
 
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
 from .db import db
+from .form_process_mapper import FormProcessMapper
 
 
 class SubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
@@ -58,10 +59,52 @@ class SubmissionsFilter(db.Model, BaseModel, AuditDateTimeMixin):
 
     @classmethod
     def fetch_all_filter_preferences_by_user(cls, user: str, tenant: str | None = None):
-        """Get all filter preferences by user for a specific tenant."""
-        query = cls.query.filter_by(user=user, is_active=True)
+        """
+        Get all active filter preferences for a user, optionally filtered by tenant.
+
+        This method retrieves all filter preferences for the given user, joining with the
+        FormProcessMapper table to get the latest form mapping for each parent_form_id.
+        Only active filters are returned.
+
+        Args:
+            user (str): Unique identifier for the user.
+            tenant (str | None): Tenant identifier (optional).
+
+        Returns:
+            List of tuples containing filter preference and related form mapping fields.
+        """
+        # Subquery to get the latest FormProcessMapper ID for each parent_form_id
+        max_id_subquery = (
+            db.session.query(
+                FormProcessMapper.parent_form_id,
+                func.max(FormProcessMapper.id).label("max_id"),
+            )
+            .group_by(FormProcessMapper.parent_form_id)
+            .subquery()
+        )
+        # Join SubmissionsFilter with FormProcessMapper using the subquery to get latest mapping
+        query = (
+            cls.query.with_entities(
+                cls.id,
+                cls.tenant,
+                cls.user,
+                cls.parent_form_id,
+                cls.variables,
+                FormProcessMapper.form_id,
+            )
+            .join(
+                max_id_subquery, cls.parent_form_id == max_id_subquery.c.parent_form_id
+            )
+            .join(
+                FormProcessMapper,
+                (FormProcessMapper.parent_form_id == max_id_subquery.c.parent_form_id)
+                & (FormProcessMapper.id == max_id_subquery.c.max_id),
+            )
+            .filter(cls.user == user, cls.is_active)
+        )
+        # Optionally filter by tenant
         if tenant is not None:
-            query = query.filter_by(tenant=tenant)
+            query = query.filter(cls.tenant == tenant)
         return query.all()
 
     @classmethod

@@ -52,7 +52,8 @@ import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
-  getFormProcesses
+  getFormProcesses,
+  getApplicationCount
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
 import SettingsModal from "../../../components/Modals/SettingsModal.js";
@@ -62,7 +63,7 @@ import NewVersionModal from "../../../components/Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, addTenantkey, textTruncate,
+import { generateUniqueId, textTruncate,
   convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
@@ -409,6 +410,7 @@ const EditComponent = () => {
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
   const [isSettingsSaving, setIsSettingsSaving] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
   const onCloseActionModal = () => setNewActionModal(false);
   const processData = useSelector((state) => state.process?.processData);
 
@@ -452,6 +454,7 @@ const handleSaveLayout = () => {
 
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
+    setPendingAction(null); // Clear pending action when closing modals
     if (selectedAction === ACTION_OPERATIONS.IMPORT) {
       setFileItems({
         workflow: {
@@ -607,17 +610,14 @@ const handleSaveLayout = () => {
             : [],
       },
     };
-    const updatepath = MULTITENANCY_ENABLED
-      ? addTenantkey(formDetails.path, tenantKey)
-      : formDetails.path;
-
+  
     // update the form Access and submission access if anonymouse changed
     const formAccess = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", formDetails.anonymous);
     const submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", formDetails.anonymous);
     const newFormData = {
       title: formDetails.title,
       display: formDetails.display,
-      path: updatepath,
+      path: formDetails.path,
       submissionAccess: submissionAccess,
       access: formAccess,
     };
@@ -815,7 +815,15 @@ const handleSaveLayout = () => {
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
-        dispatch(getFormProcesses(formId));
+        // Refresh mapper data and application count after unpublish to ensure UI state is updated
+        await new Promise((resolve) => {
+          dispatch(getFormProcesses(formId, (err, data) => {
+            if (!err && data?.id) {
+              dispatch(getApplicationCount(data.id));
+            }
+            resolve();
+          }));
+        });
       }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);
@@ -965,12 +973,22 @@ const handleSaveLayout = () => {
         };
       case "unpublish":
         return {
-          title: t("Confirm Unpublish"),
-          message: t( "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailable for new submissions to those who currently have access to it. You can republish the form after making your edits."),
+          title: t("Unpublish"),
+          message: (
+            <CustomInfo
+              className="note"
+              heading={t("Note")}
+              content={t(
+                "By unpublishing this form & flow, you will make it unavailable for new submissions."
+              )
+              }
+              dataTestId="unpublish-info"
+            />
+          ),
           primaryBtnAction: confirmPublishOrUnPublish,
           secondaryBtnAction: closeModal,
-          primaryBtnText: t("Unpublish and Edit This Form"),
-          secondaryBtnText: t("Cancel, Keep This Form Unpublished"),
+          primaryBtnText: t("Unpublish This Form & Flow"),
+          secondaryBtnText: t("Cancel, Keep This Form & Flow Published"),
         };
       case "discard":
         return {
@@ -999,6 +1017,32 @@ const handleSaveLayout = () => {
           primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",
           secondaryBtnText: "Cancel, Keep This Form Published",
           };
+      case "unsavedChangesBeforeAction":
+        return {
+          title: t("You Have Unsaved Changes"),
+          message: (
+            <CustomInfo
+              heading={t("Note")}
+              content={t("You have unsaved changes. To proceed with the {{action}} action, you must either save your changes or discard them.", { action: pendingAction?.toLowerCase() || "requested" })}
+            />
+          ),
+          primaryBtnAction: () => {
+            // Stay in editor and cancel the action
+            setPendingAction(null);
+            closeModal();
+          },
+          secondaryBtnAction: () => {
+            // Discard changes and proceed with the action
+            discardChanges();
+            if (pendingAction) {
+              setSelectedAction(pendingAction);
+              setPendingAction(null);
+            }
+            closeModal();
+          },
+          primaryBtnText: t("Stay in the Editor"),
+          secondaryBtnText: t("Discard Changes and Continue"),
+        };
       default:
         return {};
     }
@@ -1017,8 +1061,23 @@ const handleSaveLayout = () => {
     );
   }
 
+  const handleActionWithUnsavedCheck = (action) => {
+    // Check if there are unsaved changes for specific actions that should not proceed
+    if ((formChangeState.changed || workflowIsChanged) && 
+        (action === ACTION_OPERATIONS.DUPLICATE || action === ACTION_OPERATIONS.IMPORT)) {
+      setPendingAction(action);
+      // Show confirmation modal for unsaved changes
+      setModalType("unsavedChangesBeforeAction");
+      setShowConfirmModal(true);
+      return;
+    }
+    // If no unsaved changes, proceed normally
+    setSelectedAction(action);
+  };
+
   const handleCloseActionModal = () => {
     setSelectedAction(null); // Reset action
+    setPendingAction(null); // Reset pending action
   };
 
   // deleting form hardly from formio and mark inactive in mapper table
@@ -1027,19 +1086,22 @@ const handleSaveLayout = () => {
       setIsDeletionLoading(true);
       dispatch(deleteForm("form", formId,() => {
         // Callback after form deletion;
-        dispatch(push(`${redirectUrl}formflow`));
+        if (processListData.id) {
+          dispatch(
+            unPublishForm(processListData.id, (err) => {
+              const message = `${_.capitalize(
+                processListData?.formType
+              )} deletion ${err ? "unsuccessful" : "successfully"}`;
+              toast[err ? "error" : "success"](t(message));
+              setIsDeletionLoading(false);
+              dispatch(push(`${redirectUrl}formflow`));
+            })
+          );
+        } else {
+          setIsDeletionLoading(false);
+          dispatch(push(`${redirectUrl}formflow`));
+        }
       }));
-    }
-
-    if (processListData.id) {
-      dispatch(
-        unPublishForm(processListData.id, (err) => {
-          const message = `${_.capitalize(
-            processListData?.formType
-          )} deletion ${err ? "unsuccessful" : "successfully"}`;
-          toast[err ? "error" : "success"](t(message));
-        })
-      );
     }
 
     dispatch(
@@ -1171,7 +1233,6 @@ const handleSaveLayout = () => {
             >
               <Card>
                 <Card.Header>
-                  {createDesigns && (
                     <div>
                       <h2>{t("Layout")}</h2>
                     {(createDesigns || viewDesigns) && (
@@ -1197,7 +1258,6 @@ const handleSaveLayout = () => {
                       </>
                     )}
                     </div>
-                  )}
 
                   {(createDesigns) && (
                     <div>
@@ -1299,7 +1359,7 @@ const handleSaveLayout = () => {
         newActionModal={newActionModal}
         onClose={onCloseActionModal}
         CategoryType={CategoryType.FORM}
-        onAction={setSelectedAction}
+        onAction={handleActionWithUnsavedCheck}
         published={isPublished}
         isMigrated = {processListData.isMigrated}
       />

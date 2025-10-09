@@ -29,7 +29,6 @@ import {
   setMaintainBPMFormPagination,
   setFormSubmitted,
 } from "../../../actions/formActions";
-import SubmissionError from "../../../containers/SubmissionError";
 import { publicApplicationStatus } from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { CUSTOM_EVENT_TYPE } from "../../../components/ServiceFlow/constants/customEventTypes";
@@ -58,13 +57,12 @@ import {
   getFormProcesses,
 } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
-import { renderPage, textTruncate } from "../../../helper/helper";
+import { renderPage } from "../../../helper/helper";
 import PropTypes from "prop-types";
 // import { Card } from "react-bootstrap";
-import { BackToPrevIcon, BreadCrumbs, BreadcrumbVariant, V8CustomButton } from "@formsflow/components";
-import { navigateToFormEntries } from "../../../helper/routerHelper";
+import { BreadCrumbs, BreadcrumbVariant } from "@formsflow/components";
+import { navigateToFormEntries, navigateToSubmitFormsListing } from "../../../helper/routerHelper";
 import { cloneDeep } from "lodash";
-import { HelperServices } from "@formsflow/service";
 import { useParams } from "react-router-dom";
 
 const View = React.memo((props) => {
@@ -90,8 +88,6 @@ const View = React.memo((props) => {
   } = useSelector((state) => state.formDelete) || {};
 
   const draftSubmissionId = draftSubmission?.applicationId || draftId;
-  //modified date
-  const draftModified = useSelector((state) => state.draft.draftModified?.modified);
 
   // Holds the latest data saved by the server
   const { formStatusLoading, processLoadError } =
@@ -138,10 +134,10 @@ const View = React.memo((props) => {
   */
   const draftCreateMethod = isAuthenticated ? draftCreate : publicDraftCreate;
   const draftUpdateMethod = isAuthenticated ? draftUpdate : publicDraftUpdate;
-  let scrollableOverview = "user-form-container";
-  if (form?.display === "wizard") {
-    scrollableOverview =  "user-form-container-with-wizard";
-  }
+  // let scrollableOverview = "user-form-container";
+  // if (form?.display === "wizard") {
+  //   scrollableOverview =  "user-form-container-with-wizard";
+  // }
 
   const getPublicForm = useCallback(
     (form_id, isObjectId, formObj) => {
@@ -306,28 +302,22 @@ const View = React.memo((props) => {
 
   };
 
-  const renderModifiedDate = () => {
-    if (draftModified && !isPublic) {
-      return (
-        <>
-          <span className="status-draft"></span> {t("Last modified on:")}{" "}
-          {HelperServices.getLocalDateAndTime(draftModified)}
-        </>
-      );
-    } else {
-      return (
-        <>
-          <span className="status-new"></span> {t("New Submission")}
-        </>
-      );
-    }
+  const redirectBackToForm = () => {
+    navigateToSubmitFormsListing(dispatch, tenantKey);
   };
 
   const breadcrumbItems = [
-    { label: "Submit", path: "/form" },
-    { label: form.title, path: `/form/${parentFormId}/entries`}
+    { id:"submit", label: t("Submit")},
+    { id:"form-title", label: form.title}
   ];
 
+  const handleBreadcrumbClick = (item) => {
+  if (item.id === "submit") {
+      redirectBackToForm();
+  }else if (item.id === "form-title") {
+      handleBack();
+  }
+  };
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
@@ -362,6 +352,7 @@ const View = React.memo((props) => {
                   items={breadcrumbItems}
                   variant={BreadcrumbVariant.MINIMIZED}
                   underline 
+                  onBreadcrumbClick={handleBreadcrumbClick}
                 /> 
                 <h4>{draftSubmission?.isDraft ? draftId : t("New Submission")}</h4>
             </div>

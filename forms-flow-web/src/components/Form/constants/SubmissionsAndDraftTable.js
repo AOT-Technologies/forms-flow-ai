@@ -291,6 +291,9 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
               noRowsVariant: "skeleton",
             },
           }}
+          localeText={{
+            noRowsLabel: t("No Entries have been found."),
+          }}
         />
       </Paper>
       <ConfirmModal

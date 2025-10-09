@@ -4,7 +4,6 @@ import {
   setBPMFormListLoading,
   setClientFormSearch,
   setClientFormListPage,
-  // setClientFormListSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -16,10 +15,7 @@ import ClientTable from "../../../components/Form/constants/ClientTable";
 import { CustomSearch ,   
   BreadCrumbs,
 } from "@formsflow/components";
-// import { navigateToSubmitFormsApplication } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
-// import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
-// import { HelperServices } from '@formsflow/service';
 
 // Extracted Search Component
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
@@ -57,14 +53,6 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   );
   // Local States
   const [search, setSearch] = useState(searchText || "");
-  // const [showSortModal, setShowSortModal] = useState(false);
-
-  // Sorting Options
-  // const optionSortBy = [
-  //   { value: "formName", label: t("Form Name") },
-  //   { value: "submissionCount", label: t("Submissions") },
-  //   { value: "latestSubmission", label: t("Latest Submission") },
-  // ];
 
   // Fetch Forms Function
   const fetchForms = () => {
@@ -79,20 +67,6 @@ const SubmitList = React.memo(({ getFormsInit }) => {
     }));
   };
 
-
-  // Handle Sorting
-  // const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-  //   const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
-  //   dispatch(setClientFormListSort({
-  //     ...resetSortOrders,
-  //     activeKey: selectedSortOption,
-  //     [selectedSortOption]: { sortOrder: selectedSortOrder },
-  //   }));
-  //   setShowSortModal(false);
-  // };
-
-  // Navigation Handler (Refactored)
-  // const navigateTo = (routeFunction) => routeFunction(dispatch, tenantId);
 
   // Effects
   useEffect(() => {
@@ -130,7 +104,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   }, [getFormsInit, pageNo, limit, formSort, searchText]);
 
     const breadcrumbItems = [
-    { label: "Submit" },
+    { id: "submit", label: "Submit" },
   ];
 
   return (
@@ -157,34 +131,6 @@ const SubmitList = React.memo(({ getFormsInit }) => {
                 />
           </div>
        </div>
-      {/* <div className="table-bar">
-        <div className="filters">
-          <SearchBar
-            search={search}
-            setSearch={setSearch}
-            handleSearch={handleSearch}
-            handleClearSearch={handleClearSearch}
-            searchLoading={searchFormLoading}
-          />
-        </div>
-        <div className="actions">
-          <FilterSortActions
-            showSortModal={showSortModal}
-            handleFilterIconClick={() => setShowSortModal(true)}
-            handleRefresh={fetchForms}
-            handleSortModalClose={() => setShowSortModal(false)}
-            handleSortApply={handleSortApply}
-            optionSortBy={optionSortBy}
-            defaultSortOption={formSort.activeKey}
-            defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}
-            filterDataTestId="form-list-filter"
-            filterAriaLabel="Filter the form list"
-            refreshDataTestId="form-list-refresh"
-            refreshAriaLabel="Refresh the form list"
-          />
-        </div>
-      </div> */}
-
       <div className="body-section">
           <ClientTable />
       </div>

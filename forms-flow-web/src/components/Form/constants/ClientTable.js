@@ -213,6 +213,9 @@ function ClientTable() {
               noRowsVariant: "skeleton",
             },
           }}
+          localeText={{
+            noRowsLabel: t("No Forms have been found."),
+          }}
         />
       </Paper>
       {showSubmissions && <SubmissionDrafts />}

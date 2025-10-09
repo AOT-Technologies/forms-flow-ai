@@ -10,7 +10,7 @@ import {
   setApplicationListSearchParams,
   setApplicationLoading
 } from "../../../actions/applicationActions";
-import { navigateToNewSubmission } from "../../../helper/routerHelper";
+import { navigateToNewSubmission, navigateToSubmitFormsListing } from "../../../helper/routerHelper";
 import { CustomSearch, BreadCrumbs, V8CustomButton } from "@formsflow/components";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
 import { useParams } from "react-router-dom";
@@ -53,7 +53,7 @@ const DraftsAndSubmissions = () => {
   );
   
   // Redux state selectors
-  // const tenantId = useSelector((state) => state.tenants?.tenantId);
+  const tenantId = useSelector((state) => state.tenants?.tenantId);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
   const {createSubmissions} = userRoles();
@@ -98,21 +98,33 @@ const DraftsAndSubmissions = () => {
     navigateToNewSubmission(dispatch, tenantKey, formId);
   };
 
+  const redirectBackToForm = () => {
+    navigateToSubmitFormsListing(dispatch, tenantId);
+  };
+
   // Fetch data when dependencies change
   useEffect(() => {
     fetchSubmissionsAndDrafts();
   }, [pageNo, limit, applicationSort, search, parentFormId,formId]);
   
   const breadcrumbItems = [
-    { label: t("Submit"), path: "/form" },
-    { label: formName || "" },
+    { id: "submit", label: t("Submit")},
+    { label: formName || ""}
   ];
+
+  const handleBreadcrumbClick = (item) => {
+  if (item.id === "submit") {
+    redirectBackToForm();
+  }
+  };
+
   return (
     <>
       <div className="header-section-1">
           <div className="section-seperation-left">
             <BreadCrumbs 
               items={breadcrumbItems} 
+              onBreadcrumbClick={handleBreadcrumbClick}
             /> 
           </div>
           <div className="section-seperation-right">

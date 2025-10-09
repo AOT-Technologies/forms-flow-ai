@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import startCase from "lodash/startCase";
 // import { Card } from "react-bootstrap";
 import {
-  CustomButton,
-  BackToPrevIcon,
   FormSubmissionHistoryModal,
   SubmissionHistoryWithViewButton,
   DownloadPDFButton,
+  V8CustomButton,
+  BreadCrumbs, 
+  BreadcrumbVariant
 } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
@@ -26,7 +26,6 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
-import { HelperServices } from "@formsflow/service";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
 import userRoles from "../../../constants/permissions";
@@ -34,6 +33,7 @@ import {
   getProcessActivities,
   getProcessDetails,
 } from "../../../apiManager/services/processServices";
+import { navigateToSubmitFormsListing, navigateToFormEntries } from "../../../helper/routerHelper";
 const ViewApplication = React.memo(() => {
   const { t } = useTranslation();
   const { applicationId } = useParams();
@@ -58,6 +58,9 @@ const ViewApplication = React.memo(() => {
   const [isDiagramLoading, setIsDiagramLoading] = useState(false);
   const [diagramXML, setDiagramXML] = useState("");
   const markers = useSelector((state) => state.process.processActivityList);
+  const parentFormId = useSelector(
+      (state) => state.form.form?.parentFormId
+  );
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [showHistoryModal, setShowHistoryModal] = useState(false);
@@ -146,61 +149,66 @@ const ViewApplication = React.memo(() => {
     );
   }
 
-  const backToSubmissionList = () => {
-    history.goBack();
+    // will be updated once application/draft listing page is ready
+  const handleBack = () => {
+    navigateToFormEntries(dispatch, tenantKey, parentFormId || applicationDetail.formId);
+
+  };
+
+  const redirectBackToForm = () => {
+    navigateToSubmitFormsListing(dispatch, tenantKey);
+  };
+
+  const breadcrumbItems = [
+    { id: "submit", label: t("Submit") },
+    { id: "form-title", label: form.title}
+  ];
+
+  const handleBreadcrumbClick = (item) => {
+  if (item.id === "submit") {
+      redirectBackToForm();
+  }else if (item.id === "form-title") {
+      handleBack();
+  }
   };
 
   return (
     <div>
       {/* Header Section */}
 
-      <div className="nav-bar">
-        <div className="icon-back" onClick={backToSubmissionList}>
-          <BackToPrevIcon />
+         <div className="header-section-1">
+            <div className="section-seperation-left d-block">
+                <BreadCrumbs 
+                  items={breadcrumbItems}
+                  variant={BreadcrumbVariant.MINIMIZED}
+                  underline
+                  onBreadcrumbClick={handleBreadcrumbClick} 
+                /> 
+                <h4>{applicationId}</h4>
+            </div>
         </div>
 
-        <div className="description">
-          <p className="text-main">
-            {startCase(applicationDetail.applicationName)}
-          </p>
-
-          <p className="status" data-testid={`form-status-${form._id}`}>
-            <span className="status-live"></span>
-
-            {t("Submitted on:")}&nbsp;
-
-            <span className="date" data-testid="submissions-date">
-              {HelperServices?.getLocalDateAndTime(applicationDetail.created)}
-            </span>
-
-            {/* <span data-testid="submissions-date">{HelperServices?.getLocalDateAndTime(applicationDetail.created)}</span> */}
-          </p>
-        </div>
-
-        <div className="buttons">
-          {((isFromFormEntries && viewSubmissionHistory) ||
-  (!isFromFormEntries && analyze_submissions_view_history)) && (
-          <CustomButton
-            label={t("History")}
-            dataTestId="handle-submission-history-testid"
-            ariaLabel={t("Submission History Button")}
-            onClick={() => setShowHistoryModal(true)}
-            dark
-          />
-          )}
-
+        <div className="header-section-2">
+            <div className="section-seperation-left">
+              {((isFromFormEntries && viewSubmissionHistory) ||
+              (!isFromFormEntries && analyze_submissions_view_history)) && (
+                    <V8CustomButton
+                      variant="secondary"
+                      label={t("History")}
+                    />
+               )}
           {(form?._id && submission?._id) && <DownloadPDFButton
             form_id={form._id}
             submission_id={submission._id}
             title={form.title}
           />}
+            </div>
         </div>
-      </div>
-      
-      
 
       {/* View Application Details */}
-      <View page="application-detail" />
+      <div className="body-section">
+        <View page="application-detail" />
+      </div>
       {(analyze_submissions_view_history && !isFromFormEntries) ?  
       <SubmissionHistoryWithViewButton
         show={showHistoryModal}

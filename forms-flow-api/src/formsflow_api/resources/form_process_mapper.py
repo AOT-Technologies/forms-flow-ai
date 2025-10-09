@@ -1037,16 +1037,20 @@ class FormFlowBuilderResource(Resource):
         return response, HTTPStatus.CREATED
 
 
-@cors_preflight("POST,OPTIONS")
-@API.route("/form-flow-edit", methods=["POST", "OPTIONS"])
+@cors_preflight("PUT,OPTIONS")
+@API.route("/form-flow-builder/<int:mapper_id>", methods=["PUT", "OPTIONS"])
 class FormFlowBuilderUpdateResource(Resource):
     """Resource for form, worklow and settings update."""
 
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
-    @API.doc(body=form_update_request_model)
-    @API.response(200, "CREATED:- Successful request.", model=form_update_model)
+    @API.doc(body=combined_form_workflow_response_model)
+    @API.response(
+        200,
+        "CREATED:- Successful request.",
+        model=combined_form_workflow_response_model,
+    )
     @API.response(
         400,
         "BAD_REQUEST:- Invalid request.",
@@ -1059,10 +1063,10 @@ class FormFlowBuilderUpdateResource(Resource):
         403,
         "FORBIDDEN:- Authorization will not help.",
     )
-    def post():
-        """Update form design, form history, flow and settings."""
+    def put(mapper_id: int):
+        """Single API to update form design, form history, flow, authorizations and mapper details."""
         data = request.get_json()
         response = FormProcessMapperService.update_form_process(
-            data, bool(auth.has_role([CREATE_DESIGNS]))
+            data, mapper_id, bool(auth.has_role([CREATE_DESIGNS]))
         )
         return response, HTTPStatus.OK

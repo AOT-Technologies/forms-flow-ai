@@ -1192,9 +1192,30 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
     @classmethod
     def update_form_process(
-        cls, request_data, is_designer
+        cls, request_data, mapper_id, is_designer
     ):  # pylint:disable=too-many-locals
-        """Update form design, form history, process details, authorizations and mapper details."""
+        """Update form, process, authorizations and mapper details in one call.
+
+        Args:
+            request_data (dict): Combined update payload that may include any of:
+                - formData (dict): Formio form JSON; must include `_id` when provided.
+                - mapper (dict): Mapper fields to update (e.g., formName, status,
+                  taskVariables, etc.). If `taskVariables` is present, it will be
+                  persisted and filter variables will be updated accordingly.
+                - authorizations (dict): Authorization configuration; created/updated for the
+                  associated resource when provided.
+                - process (dict): { id, processData, processType } used to update the process.
+            mapper_id (int): ID of the mapper record to update.
+            is_designer (bool): Whether the caller has designer permissions; used for
+                authorization updates.
+
+        Returns:
+            dict: A dictionary containing any of the updated sections, with keys among
+                { "formData", "mapper", "authorizations", "process" } depending on input.
+
+        Raises:
+            BusinessException: If required identifiers are missing or entities are invalid.
+        """
         response = {}
 
         # Update form design
@@ -1214,7 +1235,6 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if mapper_data:
             current_app.logger.debug("Updating mapper details..")
             task_variable = mapper_data.get("taskVariables", [])
-            mapper_id = mapper_data.get("id")
             # If task variables are present, update filter variables and serialize them
             if "taskVariables" in mapper_data:
                 FilterService.update_filter_variables(
@@ -1250,6 +1270,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if process_req_data:
             current_app.logger.debug("Updating process details..")
             process_id = process_req_data.get("id")
+            if not process_id:
+                raise BusinessException(BusinessErrorCode.INVALID_INPUT)
             process_data = process_req_data.get("processData")
             process_type = process_req_data.get("processType")
             process_response = ProcessService.update_process(

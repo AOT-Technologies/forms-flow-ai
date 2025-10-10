@@ -59,7 +59,7 @@ import {
   fetchRevertingProcessData
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
-import SettingsModal from "../../../components/Modals/SettingsModal.js";
+import SettingsTab from "./Settings.js";
 import FlowEdit from "./FlowEdit.js";
 import ExportModal from "../../../components/Modals/ExportModal.js";
 import NewVersionModal from "../../../components/Modals/NewVersionModal";
@@ -504,7 +504,7 @@ const EditComponent = () => {
     setShowSettingsModal(!showSettingsModal);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
-  const [isSettingsSaving, setIsSettingsSaving] = useState(false);
+  // const [isSettingsSaving, setIsSettingsSaving] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const onCloseActionModal = () => setNewActionModal(false);
   const processData = useSelector((state) => state.process?.processData);
@@ -725,12 +725,11 @@ const handleSaveLayout = () => {
     }
     return { roles: [], userName: preferred_username };
   };
-
   const handleConfirmSettings = async ({
     formDetails,
     rolesState,
   }) => {
-    setIsSettingsSaving(true);
+    // setIsSettingsSaving(true);
     const parentFormId = processListData.parentFormId;
     const mapper = {
       formId: form._id,
@@ -793,7 +792,7 @@ const handleSaveLayout = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setIsSettingsSaving(false);
+      // setIsSettingsSaving(false);
       handleToggleSettingsModal();
     }
   };
@@ -1355,6 +1354,16 @@ const handleSaveLayout = () => {
   const renderTabContent = () => {
     switch (activeTab.primary) {
       case 'form':
+        // Check if settings sub-tab is active
+        if (activeTab.secondary === 'settings') {
+          return (
+           
+              <SettingsTab
+                handleConfirm={handleConfirmSettings}
+              />
+            
+          );
+        }
         return (
           <div className="form-builder custom-scroll">
             {!createDesigns ? (
@@ -1439,7 +1448,7 @@ const handleSaveLayout = () => {
                 if (isDisabled) return; // Don't execute if disabled
                 
                 if (key === 'settings') {
-                  handleToggleSettingsModal();
+                  handleTabClick('form', 'settings');
                 } else if (key === 'history') {
                   if (activeTab.primary === 'form') {
                     handleFormHistory();
@@ -1507,12 +1516,6 @@ const handleSaveLayout = () => {
         spinner
         text={t("Loading...")}
       >
-        <SettingsModal
-          show={showSettingsModal}
-          isSaving={isSettingsSaving}
-          handleClose={handleToggleSettingsModal}
-          handleConfirm={handleConfirmSettings}
-        />
 
         <Errors errors={errors} />
 

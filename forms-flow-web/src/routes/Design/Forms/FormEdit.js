@@ -11,20 +11,13 @@ import {
 import {
   V8CustomButton,
   ConfirmModal,
-  //BackToPrevIcon,
-  //HistoryIcon,
-  //PreviewIcon,
   FormBuilderModal,
   HistoryModal,
   ImportModal,
   CustomInfo,
-  //CardsSwitchIcon,
   PromptModal,
   FormStatusIcon
 } from "@formsflow/components";
-import {
-  convertSelectedValueToMultiSelectOption
-} from "../../../helper/helper";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _cloneDeep from "lodash/cloneDeep";
@@ -71,9 +64,9 @@ import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
 import {
   generateUniqueId,
-  // textTruncate,
   convertMultiSelectOptionToValue,
-  removeTenantKeywithSlash
+  removeTenantKeywithSlash,
+  convertSelectedValueToMultiSelectOption
 } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";

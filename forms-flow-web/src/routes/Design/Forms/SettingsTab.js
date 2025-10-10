@@ -452,10 +452,13 @@ const SettingsTab = (
 };
 
 SettingsTab.propTypes = {
-  show: PropTypes.bool,
-  // handleClose: PropTypes.func.isRequired,
-  handleConfirm: PropTypes.func.isRequired,
-  isSaving: PropTypes.bool,
+  isCreateRoute: PropTypes.bool,
+  rolesState: PropTypes.object,
+  formDetails: PropTypes.object,
+  isAnonymous: PropTypes.bool,
+  setIsAnonymous: PropTypes.func,
+  setFormDetails: PropTypes.func,
+  setRolesState: PropTypes.func,
 };
 
 export default SettingsTab;

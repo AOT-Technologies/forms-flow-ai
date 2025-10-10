@@ -1,7 +1,7 @@
 <div align="center"><img src=".images/logo.png"/></div>
 <hr/> 
 
-<img src="https://img.shields.io/badge/release-v7.1.0-blue"/> <img src="https://img.shields.io/badge/LICENSE-Apache%202-green"/>
+<img src="https://img.shields.io/badge/release-v7.3.0-blue"/> <img src="https://img.shields.io/badge/LICENSE-Apache%202-green"/>
 
 [![Join the chat at https://gitter.im/forms-flow-ai/community](https://badges.gitter.im/forms-flow-ai/community.svg)](https://gitter.im/forms-flow-ai/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Join the chat at https://stackoverflow.com/questions/tagged/formsflow.ai](https://img.shields.io/badge/ask%20-on%20%20stackoverflow-F47F24)](https://stackoverflow.com/questions/tagged/formsflow.ai?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

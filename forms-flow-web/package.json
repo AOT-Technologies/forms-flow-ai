@@ -1,7 +1,7 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "7.3.0-rc",
+  "version": "7.3.0",
   "main": "single-spa-index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",

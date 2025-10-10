@@ -353,12 +353,6 @@ const PrivateRoute = React.memo((props) => {
             )}
             {ENABLE_FORMS_MODULE && (
               <DesignerRoute
-                path={ROUTE_TO.FORM_CREATE}
-                component={DesignFormRoutes}
-              />
-            )}
-            {ENABLE_FORMS_MODULE && (
-              <DesignerRoute
                 path={ROUTE_TO.FORMFLOW}
                 component={DesignFormRoutes}
               />

@@ -30,6 +30,7 @@ const API = {
   PROCESS_ACTIVITIES: `${BPM_BASE_URL_EXT}/v1/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_DESIGN: `${WEB_BASE_URL}/form/form-design`,
+  FORM_FLOW_BUILDER: `${WEB_BASE_URL}/form/form-flow-builder`,
   FORM_IMPORT: `${WEB_BASE_URL}/import`,
   PUBLISH: `${WEB_BASE_URL}/form/<mapper_id>/publish`,
   UN_PUBLISH: `${WEB_BASE_URL}/form/<mapper_id>/unpublish`,

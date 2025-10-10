@@ -7,6 +7,10 @@ export const formCreate = (formData) => {
   return RequestService.httpPOSTRequest(API.FORM_DESIGN, formData);
 };
 
+export const formFlowBuilderCreate = (requestData) => {
+  return RequestService.httpPOSTRequest(API.FORM_FLOW_BUILDER, requestData);
+};
+
 export const publish = (mapperId) => {
   const publishUrl = replaceUrl(API.PUBLISH, "<mapper_id>", mapperId);
   return RequestService.httpPOSTRequest(publishUrl);

@@ -28,6 +28,7 @@ import _cloneDeep from "lodash/cloneDeep";
 import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import ActionModal from "../../../components/Modals/ActionModal.js";
+import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 //for save form
 import { MULTITENANCY_ENABLED, MAX_FILE_SIZE } from "../../../constants/constants";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
@@ -40,6 +41,7 @@ import {
   publish,
   unPublish,
   getFormHistory,
+  formFlowBuilderCreate,
 } from "../../../apiManager/services/FormServices";
 import FileService from "../../../services/FileService";
 import {
@@ -56,7 +58,8 @@ import {
   unPublishForm,
   getFormProcesses,
   getProcessHistory,
-  fetchRevertingProcessData
+  fetchRevertingProcessData,
+  getApplicationCount
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
 import SettingsModal from "../../../components/Modals/SettingsModal.js";
@@ -179,8 +182,27 @@ const EditComponent = () => {
   /* ----------------- current form data when user is editing ----------------- */
   // Initialize form state properly for new forms
   const getInitialFormState = () => {
-    // Always use the formData from Redux store (which is already set up in FormEditIndex.js)
-    return _cloneDeep(formData);
+    // For new forms without formId, create minimal form structure
+    if (!formId) {
+      const newFormData = {
+        _id: null,
+        title: "Untitled Form",
+        name: "untitled-form",
+        display: "form",
+        type: "form",
+        components: [],
+        settings: {},
+        properties: {},
+        tags: [],
+        access: _cloneDeep(formAccess),
+        submissionAccess: _cloneDeep(submissionAccess),
+        isNewForm: true
+      };
+      // Add hidden application components
+      return addHiddenApplicationComponent(newFormData);
+    }
+    // For existing forms, use formData from Redux
+    return formData ? _cloneDeep(formData) : {};
   };
 
   const [form, dispatchFormAction] = useReducer(
@@ -188,20 +210,13 @@ const EditComponent = () => {
     getInitialFormState()
   );
 
-  // Update form state when Redux store formData changes (especially for new forms)
+  // Update form state when Redux store formData changes (especially after form creation)
   useEffect(() => {
-    if (formData && (!formId || formData?.isNewForm)) {
-      // For new forms, ensure we have the latest formData from Redux store
-      if (formData.isNewForm && formData.components?.length === 0) {
-        dispatchFormAction({ type: "replaceForm", value: _cloneDeep(formData) });
-      }
-    } else if (formData && formId && !formData.isNewForm) {
-      // For existing forms, update if the formData has changed
-      if (formData._id !== form._id) {
-        dispatchFormAction({ type: "replaceForm", value: _cloneDeep(formData) });
-      }
+    if (formData && formData._id && form._id !== formData._id) {
+      // Form was created or changed, update the local state
+      dispatchFormAction({ type: "replaceForm", value: _cloneDeep(formData) });
     }
-  }, [formData, formId, form._id]);
+  }, [formData?._id]);
 
   /* ------------------ handling form layout and flow layouts ----------------- */
   const [currentLayout, setCurrentLayout] = useState(FORM_LAYOUT);
@@ -726,10 +741,113 @@ const handleSaveLayout = () => {
     return { roles: [], userName: preferred_username };
   };
 
+  /* ----------- handle form creation with combined endpoint ---------- */
+  const handleCreateFormWithSettings = async ({ formDetails, rolesState }) => {
+    try {
+      setIsSettingsSaving(true);
+      
+      // Prepare form data
+      const formData = manipulatingFormData(
+        form,
+        MULTITENANCY_ENABLED,
+        tenantKey,
+        formAccessRoles,
+        submissionAccessRoles
+      );
+
+      // Update formData with settings from modal
+      formData.title = formDetails.title;
+      formData.name = formDetails.path;
+      formData.path = formDetails.path;
+      formData.display = formDetails.display;
+      formData.description = formDetails.description || "";
+      formData.componentChanged = true;
+      formData.newVersion = true;
+
+      // Update access and submission access with anonymous setting
+      const formAccess = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", formDetails.anonymous);
+      const submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", formDetails.anonymous);
+      formData.access = formAccess;
+      formData.submissionAccess = submissionAccess;
+
+      // Prepare authorizations
+      const applicationAuth = filterAuthorizationData(rolesState.APPLICATION);
+      const authorizations = {
+        application: {
+          resourceId: null,
+          resourceDetails: applicationAuth.resourceDetails || { submitter: false },
+          roles: applicationAuth.roles || [],
+          userName: applicationAuth.userName || null,
+        },
+        designer: {
+          resourceId: null,
+          resourceDetails: {},
+          ...filterAuthorizationData(rolesState.DESIGN),
+        },
+        form: {
+          resourceId: null,
+          resourceDetails: {},
+          roles: rolesState.FORM.selectedOption === "specifiedRoles"
+            ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
+            : [],
+        },
+      };
+
+      // Prepare combined request
+      const requestData = {
+        formData: formData,
+        authorizations: authorizations,
+      };
+
+      // Only include process data if it exists (backend will handle default creation)
+      if (processData?.processData) {
+        requestData.processData = processData.processData;
+        requestData.processType = processData.processType || "BPMN";
+      }
+
+      // Call the combined endpoint
+      const response = await formFlowBuilderCreate(requestData);
+      const {
+        formData: createdForm,
+        mapper,
+        process,
+      } = response.data;
+
+      // Update Redux store with the response
+      dispatch(setFormSuccessData("form", createdForm));
+      dispatch(setFormProcessesData(mapper));
+      dispatch(setFormPreviosData(mapper));
+      dispatch(setProcessData(process));
+      dispatch(getApplicationCount(mapper.id));
+      
+      // Reset form change state to prevent discard modal
+      setFormChangeState({ initial: false, changed: false });
+      
+      // Redirect to edit page with the new form ID
+      dispatch(push(`${redirectUrl}formflow/${createdForm._id}/edit`));
+      
+      toast.success(t("Form created successfully"));
+    } catch (error) {
+      console.error("Error creating form:", error);
+      const errorMessage = error.response?.data?.message || error.message || "Failed to create form";
+      toast.error(t(errorMessage));
+      dispatch(setFormFailureErrorData("form", errorMessage));
+    } finally {
+      setIsSettingsSaving(false);
+      handleToggleSettingsModal();
+    }
+  };
+
   const handleConfirmSettings = async ({
     formDetails,
     rolesState,
   }) => {
+    // Check if this is a new form creation
+    if (!formId || !form._id || form.isNewForm) {
+      return handleCreateFormWithSettings({ formDetails, rolesState });
+    }
+
+    // Existing form update logic
     setIsSettingsSaving(true);
     const parentFormId = processListData.parentFormId;
     const mapper = {
@@ -1239,7 +1357,11 @@ const handleSaveLayout = () => {
   const modalContent = getModalContent();
 
   // loading up to set the data to the form variable
-  if ((!form || (!form._id && !form.isNewForm)) || restoreFormDataLoading) {
+  // For new forms (!formId), we don't need to wait for form._id
+  if (!formId) {
+    // New form creation - no loading needed
+  } else if ((!form || !form._id) || restoreFormDataLoading) {
+    // Existing form - wait for data to load
     return (
       <div className="d-flex justify-content-center">
         <div className="spinner-grow" aria-live="polite">
@@ -1495,6 +1617,9 @@ const handleSaveLayout = () => {
     <div className="form-create-edit-layout">
       <NavigateBlocker
         isBlock={
+          // Don't block navigation for new forms that haven't been saved yet
+          formId &&
+          !form.isNewForm &&
           (formChangeState.changed || workflowIsChanged) &&
           !isMigrationLoading &&
           !isDeletionLoading
@@ -1538,12 +1663,14 @@ const handleSaveLayout = () => {
                 {createDesigns && (
                   <>
                   <V8CustomButton
-                  disabled={!formChangeState.changed}
+                  disabled={!formChangeState.changed && formId && !form.isNewForm}
                   label={t("Save")}
                   onClick={
-                    isPublished
-                      ? handleUnpublishAndSaveChanges
-                      : handleSaveLayout
+                    (!formId || form.isNewForm)
+                      ? handleToggleSettingsModal
+                      : isPublished
+                        ? handleUnpublishAndSaveChanges
+                        : handleSaveLayout
                   }
                   dataTestId="save-form-layout"
                   ariaLabel={t("Save Form Layout")}
@@ -1554,6 +1681,7 @@ const handleSaveLayout = () => {
                         dataTestId="handle-publish-testid"
                         ariaLabel={`${t(publishText)} ${t("Button")}`}
                         darkPrimary
+                        disabled={!formId || form.isNewForm}
                       />
                   </>
                   

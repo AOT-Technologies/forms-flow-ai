@@ -22,6 +22,9 @@ import {
   PromptModal,
   FormStatusIcon
 } from "@formsflow/components";
+import {
+  convertSelectedValueToMultiSelectOption
+} from "../../../helper/helper";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _cloneDeep from "lodash/cloneDeep";
@@ -59,7 +62,7 @@ import {
   fetchRevertingProcessData
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
-import SettingsTab from "./Settings.js";
+import SettingsTab from "./SettingsTab.js";
 import FlowEdit from "./FlowEdit.js";
 import ExportModal from "../../../components/Modals/ExportModal.js";
 import NewVersionModal from "../../../components/Modals/NewVersionModal";
@@ -70,6 +73,7 @@ import {
   generateUniqueId,
   // textTruncate,
   convertMultiSelectOptionToValue,
+  removeTenantKeywithSlash
 } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
@@ -172,7 +176,11 @@ const EditComponent = () => {
   // created a copy for access and submissin access
   const [formAccessRoles, setFormAccessRoles] = useState(_cloneDeep(formAccess));
   const [submissionAccessRoles, setSubmissionAccessRoles] = useState(_cloneDeep(submissionAccess));
+  const { path, display } = useSelector((state) => state.form.form);
 
+  const { authorizationDetails: formAuthorization } = useSelector(
+    (state) => state.process
+  );
   /* ---------------------------  form data --------------------------- */
   const { form: formData, error: errors } = useSelector((state) => state.form);
 
@@ -203,6 +211,18 @@ const EditComponent = () => {
     }
   }, [formData, formId, form._id]);
 
+  // Helper function to convert role names to display names for UI
+  const convertRoleToDisplayName = (roleName) => {
+    if (MULTITENANCY_ENABLED && tenantKey) {
+      const cleanedRole = removeTenantKeywithSlash(
+        roleName,
+        tenantKey,
+        MULTITENANCY_ENABLED
+      );
+      return cleanedRole !== false ? cleanedRole : roleName;
+    }
+    return roleName;
+  };
   /* ------------------ handling form layout and flow layouts ----------------- */
   const [currentLayout, setCurrentLayout] = useState(FORM_LAYOUT);
   const isFormLayout = currentLayout === FORM_LAYOUT;
@@ -226,15 +246,53 @@ const EditComponent = () => {
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
+  const setSelectedOption = (option, roles = []) =>
+    roles.length ? "specifiedRoles" : option;
+  const multiSelectOptionKey = "role";
+  const [rolesState, setRolesState] = useState({
+    DESIGN: {
+      selectedRoles: convertSelectedValueToMultiSelectOption(
+        formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+        multiSelectOptionKey
+      ),
+      selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
+    },
+    FORM: {
+      roleInput: "",
+      selectedRoles: convertSelectedValueToMultiSelectOption(
+        formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+        multiSelectOptionKey
+      ),
+      selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
+    },
+    APPLICATION: {
+      roleInput: "",
+      selectedRoles: convertSelectedValueToMultiSelectOption(
+        formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+        multiSelectOptionKey
+      ),
+      selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
+      /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
+       we assume that the submitter is true. */
+    }
 
+  });
+  const [formDetails, setFormDetails] = useState({
+    title: processListData.formName,
+    path: path,
+    description: processListData.description,
+    display: display,
+  });
+  const [isAnonymous, setIsAnonymous] = useState(
+    processListData.anonymous || false
+  );
 
+  
   /* ------------------------- migration states ------------------------- */
   const [isMigrationLoading, setIsMigrationLoading] = useState(false);
 
   /* ------------------------- deletion states ------------------------- */
   const [isDeletionLoading, setIsDeletionLoading] = useState(false);
-
-
   /* --------- validate form title exist or not --------- */
   const {
     mutate: validateFormTitle, // this function will trigger the api call
@@ -265,6 +323,8 @@ const EditComponent = () => {
     IMPORT: "import",
     VALIDATE: "validate",
   };
+
+
 
   // add and remove anonymouse access
   const addAndRemoveAnonymouseId = (data, type, isAnonymouse)=>{
@@ -452,7 +512,6 @@ const EditComponent = () => {
     if (process) {
       dispatch(setProcessData(process));
     }
-
     handleCloseSelectedAction();
   };
 
@@ -1059,6 +1118,62 @@ const handleSaveLayout = () => {
     }
   };
 
+  
+  //these are the functions for conversion of roles for backend (payload)
+  // and these will be used on form editcomponent when integrating save functinality 
+  
+  // Extract role conversion to a separate function
+  // const convertSelectedRole = (
+  //   selectedRole,
+  //   userRoles,
+  //   multiSelectOptionKey
+  // ) => {
+  //   const originalRoleData = userRoles.find(
+  //     (role) =>
+  //       role[multiSelectOptionKey] === selectedRole[multiSelectOptionKey]
+  //   );
+
+  //   return {
+  //     ...selectedRole,
+  //     [multiSelectOptionKey]:
+  //       originalRoleData?.originalRole || selectedRole[multiSelectOptionKey],
+  //   };
+  // };
+
+  // Process section data separately
+  // const convertSectionRoles = (
+  //   sectionData,
+  //   userRoles,
+  //   multiSelectOptionKey
+  // ) => {
+  //   return {
+  //     ...sectionData,
+  //     selectedRoles:
+  //       sectionData.selectedRoles?.map((selectedRole) =>
+  //         convertSelectedRole(selectedRole, userRoles, multiSelectOptionKey)
+  //       ) || [],
+  //   };
+  // };
+
+  // Main conversion function
+  // const convertRolesForBackend = (
+  //   rolesState,
+  //   userRoles,
+  //   multiSelectOptionKey
+  // ) => {
+  //   const convertedState = {};
+
+  //   Object.keys(rolesState).forEach((section) => {
+  //     convertedState[section] = convertSectionRoles(
+  //       rolesState[section],
+  //       userRoles,
+  //       multiSelectOptionKey
+  //     );
+  //   });
+
+  //   return convertedState;
+  // };
+
   const handleVersioning = (majorVersion, minorVersion) => {
     setVersion((prevVersion) => ({
       ...prevVersion,
@@ -1293,6 +1408,9 @@ const handleSaveLayout = () => {
     );
   };
 
+  // this values will be used in settings tab when integrating save functinality 
+  console.log(formDetails, "formDetails",rolesState, "rolesState",isAnonymous, "isAnonymous");
+
   const renderDeleteModal = () => {
     const hasSubmissions = processListData.id && applicationCount;
     const commonProps = {
@@ -1360,6 +1478,13 @@ const handleSaveLayout = () => {
            
               <SettingsTab
                 handleConfirm={handleConfirmSettings}
+                isCreateRoute={isCreateRoute}
+                rolesState={rolesState}
+                formDetails={formDetails}
+                isAnonymous={isAnonymous}
+                setIsAnonymous={setIsAnonymous}
+                setFormDetails={setFormDetails}
+                setRolesState={setRolesState}
               />
             
           );

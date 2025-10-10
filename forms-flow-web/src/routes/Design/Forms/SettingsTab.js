@@ -77,7 +77,6 @@ const SettingsTab = (
 
   /* ------------------------- validating form name and path ------------------------ */
   const validateField = async (field, value) => {
-    console.log(field, value, "hi validateField");
     if (!value?.trim()) {
       const errorMessage = `${
         field.charAt(0).toUpperCase() + field.slice(1)

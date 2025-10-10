@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
@@ -59,7 +59,7 @@ function ClientTable() {
 
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
-    if (!model || !model.field || !model.sort) {
+    if (!model?.field || !model?.sort) {
       const resetSort = Object.keys(formsort).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
         return acc;
@@ -175,6 +175,19 @@ function ClientTable() {
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = formsort?.[activeKey]?.sortOrder || "asc";
 
+  const renderDescIcon = useCallback(() => (
+    <div>
+      <NewSortDownIcon color={iconColor} />
+    </div>
+  ), [iconColor]);
+
+  const renderAscIcon = useCallback(() => (
+    <div style={{ transform: "rotate(180deg)" }}>
+      <NewSortDownIcon color={iconColor} />
+    </div>
+  ), [iconColor]);
+
+
   return (
     <>
       <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
@@ -195,16 +208,8 @@ function ClientTable() {
           disableRowSelectionOnClick
           getRowId={(row) => row.id}
           slots={{
-            columnSortedDescendingIcon: () => (
-              <div>
-                <NewSortDownIcon color={iconColor} />
-              </div>
-            ),
-            columnSortedAscendingIcon: () => (
-              <div style={{ transform: "rotate(180deg)" }}>
-                <NewSortDownIcon color={iconColor} />
-              </div>
-            ),
+            columnSortedDescendingIcon: renderDescIcon,
+            columnSortedAscendingIcon: renderAscIcon,
           }}
           slotProps={{
             loadingOverlay: {

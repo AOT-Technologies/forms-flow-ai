@@ -134,10 +134,6 @@ const View = React.memo((props) => {
   */
   const draftCreateMethod = isAuthenticated ? draftCreate : publicDraftCreate;
   const draftUpdateMethod = isAuthenticated ? draftUpdate : publicDraftUpdate;
-  // let scrollableOverview = "user-form-container";
-  // if (form?.display === "wizard") {
-  //   scrollableOverview =  "user-form-container-with-wizard";
-  // }
 
   const getPublicForm = useCallback(
     (form_id, isObjectId, formObj) => {

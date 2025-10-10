@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectRoot } from "@aot-technologies/formio-react";
 import { CLIENT_EDIT_STATUS } from "../../../constants/applicationConstants";
@@ -66,7 +66,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
 
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
-    if (!model || !model.field || !model.sort) {
+    if (!model?.field || !model?.sort) {
       const resetSort = Object.keys(applicationSort).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
         return acc;
@@ -244,6 +244,18 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = applicationSort?.[activeKey]?.sortOrder || "asc";
 
+    const renderDescIcon = useCallback(() => (
+      <div>
+        <NewSortDownIcon color={iconColor} />
+      </div>
+    ), [iconColor]);
+  
+    const renderAscIcon = useCallback(() => (
+      <div style={{ transform: "rotate(180deg)" }}>
+        <NewSortDownIcon color={iconColor} />
+      </div>
+    ), [iconColor]);
+
   return (
     <>
       <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
@@ -274,16 +286,8 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
             },
           }}
           slots={{
-            columnSortedDescendingIcon: () => (
-              <div>
-                <NewSortDownIcon color={iconColor} />
-              </div>
-            ),
-            columnSortedAscendingIcon: () => (
-              <div style={{ transform: "rotate(180deg)" }}>
-                <NewSortDownIcon color={iconColor} />
-              </div>
-            ),
+            columnSortedDescendingIcon: renderDescIcon,
+            columnSortedAscendingIcon: renderAscIcon,
           }}
           slotProps={{
             loadingOverlay: {

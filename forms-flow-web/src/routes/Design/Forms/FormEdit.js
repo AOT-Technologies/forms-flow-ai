@@ -20,7 +20,10 @@ import {
   CustomInfo,
   //CardsSwitchIcon,
   PromptModal,
-  FormStatusIcon
+  FormStatusIcon,
+  VariableSelection,
+  Switch,
+  CustomTextInput
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -75,6 +78,7 @@ import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
+import { SystemVariables } from '../../../constants/variables';
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -524,7 +528,11 @@ const EditComponent = () => {
     // On create route, always default to 'form' tab
     const tab = isCreateRoute ? "form" : (queryParams.get("tab") || "form");
     const sub = queryParams.get("sub");
-    const subsub = queryParams.get("subsub");
+    let subsub = queryParams.get("subsub");
+    
+    if (tab === 'bpmn' && sub === 'variables' && subsub === null) {
+      subsub = 'system';
+    }
     
     setActiveTab({
       primary: tab,
@@ -547,6 +555,10 @@ const EditComponent = () => {
     // Prevent switching to BPMN tab on create route
     if (isCreateRoute && primary === 'bpmn') {
       return;
+    }
+    
+    if (primary === 'bpmn' && secondary === 'variables' && tertiary === null) {
+      tertiary = 'system';
     }
     
     const newTab = { primary, secondary, tertiary };
@@ -1386,6 +1398,86 @@ const handleSaveLayout = () => {
           </div>
         );
       case 'bpmn':
+        if (activeTab.secondary === 'variables') {
+          switch (activeTab.tertiary) {
+            case 'system': {
+              const rowVariables = SystemVariables.map((variable, idx) => ({
+                id: idx + 1,
+                type: variable.labelOfComponent,
+                variable: variable.key,
+                altVariable: variable.altVariable,
+                selected: (
+                  <Switch
+                    type="primary"
+                    withIcon={true}
+                    checked={true}
+                    onChange={() => {}}
+                    ariaLabel="System variable always selected"
+                    dataTestId={`system-variable-switch-${variable.key || idx}`}
+                    disabled
+                  />
+                ),
+              }));
+              const columns = [
+                { field: 'type', headerName: 'Type', flex:1.5, sortable: false },
+                { field: 'variable', headerName: 'Variable', flex:1, sortable: false },
+                {
+                  field: 'altVariable',
+                  headerName: 'Alternative Field',
+                  flex: 1,
+                  sortable: false,
+                  renderCell: (params) => (
+                    <CustomTextInput
+                      value={params.row.altVariable}
+                      datatestid={`alt-variable-input-${params.row.variable}`}
+                      aria-label="System variable alternative field"
+                      placeholder=""
+                      setValue={(newVal) => {
+                        params.row.altVariable = newVal;
+                      }}
+                    />
+                  ),
+                },
+                {
+                  field: "selected",
+                  headerName: "Selected",
+                  flex: 1,
+                  sortable: false,
+                  renderCell: (params) => (
+                    <Switch
+                      type="primary"
+                      withIcon={true}
+                      checked={true}
+                      onChange={(e) => {
+                        params.row.selected = e;
+                      }}
+                      aria-label="System variable selection"
+                      datatestid={`system-variable-switch-${params.row.variable}`}
+                    />
+                  ),
+                },
+              ];
+              
+              return (
+                <VariableSelection
+                  rowVariables={rowVariables}
+                  columns={columns}
+                  tabKey='system'
+                  form={form}
+                />
+              );
+            }
+            case 'form':
+              return (
+                <VariableSelection
+                  tabKey='form'
+                  form={form}
+                />
+              );
+            default:
+              return null;
+          }
+        }
         return (
           <div className="bpmn-editor">
             {isProcessDetailsLoading ? (

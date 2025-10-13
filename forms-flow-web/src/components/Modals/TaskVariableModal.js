@@ -263,13 +263,13 @@ const FormComponent = React.memo(
       <div className="d-flex">
         <div className="flex-grow-1 form-hilighter form-field-container wizard-tab">
           <Form
-            form={updatedForm}
+            src={updatedForm}
             options={{
               viewAsHtml: true,
               readOnly: true,
-                          }}
-            showHiddenFields={false}
-            formReady={(e) => {
+              showHiddenFields: showHiddenFields
+            }}
+            onFormReady={(e) => {
               formRef.current = e;
             }}
           />

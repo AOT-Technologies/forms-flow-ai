@@ -1,4 +1,4 @@
-import utils from "@aot-technologies/formiojs/lib/utils";
+import utils from "@aot-technologies/formiojs/utils";
 
 // Factory function to create a hidden component with dynamic properties
 const createHiddenComponent = ({label, key, persistent, 

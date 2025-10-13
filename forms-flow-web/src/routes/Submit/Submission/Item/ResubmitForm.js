@@ -232,7 +232,7 @@ const Resubmit = React.memo(() => {
       >
         <div className={`wizard-tab ${scrollableOverview}`}>
             <Form
-              form={form}
+              src={form}
               submission={isFormSubmissionLoading ? updatedSubmissionData : submissionState}
               url={submissionState?.url}
               onSubmit={handleFormSubmit}

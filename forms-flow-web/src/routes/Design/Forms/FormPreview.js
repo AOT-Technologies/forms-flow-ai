@@ -44,7 +44,7 @@ const FormPreview = () => {
       <div className="preview-header-text mb-4">{form?.title}</div>
       <div>
         <Form
-          form={form}
+          src={form}
           options={{
             disableAlerts: true,
             noAlerts: true,

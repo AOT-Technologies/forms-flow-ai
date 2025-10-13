@@ -73,7 +73,7 @@ const View = React.memo((props) => {
         )}
         <div className="sub-container wizard-tab">
           <Form
-            form={form}
+            src={form}
             submission={updatedSubmission}
             url={url}
             onSubmit={onSubmit}

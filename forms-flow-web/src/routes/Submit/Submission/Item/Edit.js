@@ -122,7 +122,7 @@ const Edit = React.memo((props) => {
       >
         <div className="ms-4 mb-5 me-4 wizard-tab service-task-details">
           <Form
-            form={form}
+            src={form}
             submission={isFormSubmissionLoading ? updatedSubmissionData : updatedSubmission}
             url={url} 
             onSubmit={(submission) =>{

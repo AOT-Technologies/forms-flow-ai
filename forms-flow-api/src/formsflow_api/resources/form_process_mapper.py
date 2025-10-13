@@ -1066,7 +1066,7 @@ class FormFlowBuilderUpdateResource(Resource):
     def put(mapper_id: int):
         """Single API to update form design, form history, flow, authorizations and mapper details."""
         data = request.get_json()
-        response = FormProcessMapperService.update_form_process(
+        response = FormProcessMapperService().update_form_process(
             data, mapper_id, bool(auth.has_role([CREATE_DESIGNS]))
         )
         return response, HTTPStatus.OK

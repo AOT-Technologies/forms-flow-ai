@@ -1190,20 +1190,76 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         return response
 
-    @classmethod
-    def update_form_process(
-        cls, request_data, mapper_id, is_designer
-    ):  # pylint:disable=too-many-locals
+    def handle_form_data(self, form_data):
+        """Handler function for form data updates."""
+        current_app.logger.debug("Updating form design..")
+        form_id = form_data.get("_id")
+        if not form_id:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+        return FormProcessMapperService.form_design_update(form_data, form_id)
+
+    def handle_mapper_data(self, mapper_data, mapper_id=None):
+        """Handler function for mapper data updates."""
+        if mapper_id is None:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+
+        current_app.logger.debug("Updating mapper details..")
+        task_variable = mapper_data.get("taskVariables", [])
+
+        # If task variables are present, update filter variables and serialize them
+        if "taskVariables" in mapper_data:
+            FilterService.update_filter_variables(
+                task_variable, mapper_data.get("formId")
+            )
+            mapper_data["taskVariables"] = json.dumps(task_variable)
+
+        # Load the mapper data into the schema
+        mapper_schema = FormProcessMapperSchema()
+        dict_data = mapper_schema.load(mapper_data)
+        mapper = FormProcessMapperService.update_mapper(mapper_id, dict_data)
+
+        # Dump the updated mapper data into the response schema
+        mapper_response = mapper_schema.dump(mapper)
+        if task_variables := mapper_response.get("taskVariables"):
+            mapper_response["taskVariables"] = json.loads(task_variables)
+
+        # Get major and minor version of the from from form history
+        major_version, minor_version = FormProcessMapperService.get_form_version(mapper)
+        mapper_response["majorVersion"] = major_version
+        mapper_response["minorVersion"] = minor_version
+
+        return mapper_response
+
+    def handle_authorization_data(self, authorization_data, is_designer=False):
+        """Handler function for authorization updates."""
+        current_app.logger.debug("Updating authorization details..")
+        AuthorizationService.create_or_update_resource_authorization(
+            authorization_data, is_designer=is_designer
+        )
+        return authorization_data
+
+    def handle_process_data(self, process_data):
+        """Handler function for process updates."""
+        current_app.logger.debug("Updating process details..")
+        process_id = process_data.get("id")
+        if not process_id:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+
+        process_payload = process_data.get("processData")
+        process_type = process_data.get("processType")
+        return ProcessService.update_process(process_id, process_payload, process_type)
+
+    def update_form_process(self, request_data, mapper_id, is_designer):
         """Update form, process, authorizations and mapper details in one call.
 
         Args:
             request_data (dict): Combined update payload that may include any of:
                 - formData (dict): Formio form JSON; must include `_id` when provided.
                 - mapper (dict): Mapper fields to update (e.g., formName, status,
-                  taskVariables, etc.). If `taskVariables` is present, it will be
-                  persisted and filter variables will be updated accordingly.
+                taskVariables, etc.). If `taskVariables` is present, it will be
+                persisted and filter variables will be updated accordingly.
                 - authorizations (dict): Authorization configuration; created/updated for the
-                  associated resource when provided.
+                associated resource when provided.
                 - process (dict): { id, processData, processType } used to update the process.
             mapper_id (int): ID of the mapper record to update.
             is_designer (bool): Whether the caller has designer permissions; used for
@@ -1218,65 +1274,25 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         """
         response = {}
 
-        # Update form design
-        form_data = request_data.get("formData")
-        if form_data:
-            current_app.logger.debug("Updating form design..")
-            form_id = form_data.get("_id")
-            if not form_id:
-                raise BusinessException(BusinessErrorCode.INVALID_INPUT)
-            form_response = FormProcessMapperService.form_design_update(
-                form_data, form_id
-            )
-            response["formData"] = form_response
+        # Registry of handler functions for different data types
+        handlers = {
+            "formData": self.handle_form_data,
+            "mapper": self.handle_mapper_data,
+            "authorizations": self.handle_authorization_data,
+            "process": self.handle_process_data,
+        }
 
-        # Update mapper details
-        mapper_data = request_data.get("mapper")
-        if mapper_data:
-            current_app.logger.debug("Updating mapper details..")
-            task_variable = mapper_data.get("taskVariables", [])
-            # If task variables are present, update filter variables and serialize them
-            if "taskVariables" in mapper_data:
-                FilterService.update_filter_variables(
-                    task_variable, mapper_data.get("formId")
-                )
-                mapper_data["taskVariables"] = json.dumps(task_variable)
+        # Common context for all handlers
+        handler_context = {"mapper_id": mapper_id, "is_designer": is_designer}
 
-            # Load the mapper data into the schema
-            mapper_schema = FormProcessMapperSchema()
-            dict_data = mapper_schema.load(mapper_data)
-            mapper = FormProcessMapperService.update_mapper(mapper_id, dict_data)
-            # Dump the updated mapper data into the response schema
-            mapper_response = mapper_schema.dump(mapper)
-            if task_variables := mapper_response.get("taskVariables"):
-                mapper_response["taskVariables"] = json.loads(task_variables)
-            # Get major and minor version of the from from form history
-            major_version, minor_version = FormProcessMapperService.get_form_version(
-                mapper
-            )
-            mapper_response["majorVersion"] = major_version
-            mapper_response["minorVersion"] = minor_version
-            response["mapper"] = mapper_response
-        # Update authorizations
-        authorization_data = request_data.get("authorizations")
-        if authorization_data:
-            current_app.logger.debug("Updating authorization details..")
-            AuthorizationService.create_or_update_resource_authorization(
-                authorization_data, is_designer=is_designer
-            )
-            response["authorizations"] = authorization_data
-        # Update process details
-        process_req_data = request_data.get("process")
-        if process_req_data:
-            current_app.logger.debug("Updating process details..")
-            process_id = process_req_data.get("id")
-            if not process_id:
-                raise BusinessException(BusinessErrorCode.INVALID_INPUT)
-            process_data = process_req_data.get("processData")
-            process_type = process_req_data.get("processType")
-            process_response = ProcessService.update_process(
-                process_id, process_data, process_type
-            )
-            response["process"] = process_response
+        # Process each supported data type present in the request
+        for data_type, data in request_data.items():
+            if data_type in handlers and data is not None:
+                handler = handlers[data_type]
+                try:
+                    response[data_type] = handler(data, **handler_context)
+                except Exception as e:
+                    current_app.logger.error(f"Error processing {data_type}: {str(e)}")
+                    raise
 
         return response

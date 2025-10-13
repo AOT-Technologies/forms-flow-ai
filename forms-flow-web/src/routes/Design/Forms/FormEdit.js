@@ -112,6 +112,10 @@ const EditComponent = () => {
     _cloneDeep(formData)
   );
   const initialForm = useMemo(() => _cloneDeep(formData), [formData._id]);
+  const builderOptions = useRef({
+    language: lang,
+    alwaysConfirmComponentRemoval: true,
+  });
 
   /* ------------------ handling form layout and flow layouts ----------------- */
   const [currentLayout, setCurrentLayout] = useState(FORM_LAYOUT);
@@ -1306,12 +1310,7 @@ const handleSaveLayout = () => {
                         key={initialForm._id}
                         initialForm={initialForm}
                         onChange={formChange}
-
-                        options={{
-                          language: lang,
-                          alwaysConfirmComponentRemoval: true,
-                          i18n: RESOURCE_BUNDLES_DATA,
-                        }}
+                        options={builderOptions.current}
                         onDeleteComponent={captureFormChanges}
                       />
                     )}

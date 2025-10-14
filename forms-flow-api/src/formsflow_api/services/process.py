@@ -25,7 +25,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services.external.bpm import BPMService
 
-processSchema = ProcessDataSchema()
+processSchema = ProcessDataSchema()  # pylint: disable=invalid-name
 
 
 class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-methods

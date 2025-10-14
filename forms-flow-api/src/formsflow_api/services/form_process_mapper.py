@@ -1295,13 +1295,17 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         handler_context = {"mapper_id": mapper_id, "is_designer": is_designer}
 
         # Process each supported data type present in the request
-        for data_type, data in request_data.items():
-            if data_type in handlers and data is not None:
-                handler = handlers[data_type]
+        # Note: Update order matters
+        # Updating process last avoids autoflush errors caused by transient str XML in
+        # the Process entity before it's converted to bytes.
+
+        for key in ("formData", "mapper", "authorizations", "process"):
+            data = request_data.get(key)
+            if data is not None:
                 try:
-                    response[data_type] = handler(data, **handler_context)
+                    response[key] = handlers[key](data, **handler_context)
                 except Exception as e:
-                    current_app.logger.error(f"Error processing {data_type}: {str(e)}")
+                    current_app.logger.error(f"Error processing {key}: {str(e)}")
                     raise
 
         return response

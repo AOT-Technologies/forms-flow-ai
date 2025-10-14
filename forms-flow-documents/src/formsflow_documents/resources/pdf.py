@@ -7,8 +7,8 @@ from flask import current_app, make_response, render_template, request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
-    VIEW_SUBMISSIONS,
     ANALYZE_SUBMISSIONS_VIEW,
+    VIEW_SUBMISSIONS,
     auth,
     cors_preflight,
     profiletime,
@@ -172,23 +172,12 @@ class FormResourceExportPdf(Resource):
                 template_name, template_variable_name, token, timezone
             )
 
-        status = (
-            pdf_service.get_render_status(  # pylint:disable = too-many-function-args
-                token, template_name, template_variable_name
-            )
-        )
-        current_app.logger.info(f"pdf_service.get_render_status : {status}")
-        assert status == 200
         current_app.logger.info("Generating PDF...")
-        result = pdf_service.generate_pdf(
-            timezone, token, template_name, template_variable_name
+        result = pdf_service.generate_pdf_from_template(
+            timezone,
+            token,
         )
         if result:
-            if use_template:
-                current_app.logger.info("Removing temporary files...")
-                pdf_service.delete_template(template_name)
-                if template_variable_name:
-                    pdf_service.delete_template(template_variable_name)
             return result
         response, status = (
             {

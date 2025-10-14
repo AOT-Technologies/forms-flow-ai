@@ -8,7 +8,7 @@ from src.graphql.schema import (
 )
 from src.models.formio.submission import SubmissionsModel
 from src.models.webapi.application import Application
-from src.utils import get_logger
+from src.utils import get_logger, convert_datetimes_to_string
 
 logger = get_logger(__name__)
 
@@ -88,6 +88,8 @@ class SubmissionService:
         parent_form_id: str,
         filters: Dict,
         selected_form_fields: List[str],
+        created_before: Optional[str],
+        created_after: Optional[str],
         page_no: int,
         limit: int,
     ) -> Optional[PaginatedSubmissionResponse]:
@@ -123,15 +125,18 @@ class SubmissionService:
             f"extracted filter by mongo {mongo_search} and webapi {webapi_search}"
         )
 
-        is_paginate_on_webapi_side = not mongo_search
         is_sort_on_webapi_side = sort_by in webapi_fields
+        is_paginate_on_webapi_side = not mongo_search and is_sort_on_webapi_side
         sort_params = {"sort_by": sort_by, "sort_order": sort_order}
+        logger.info(f"is_paginate_on_webapi_side: {is_paginate_on_webapi_side}")
         webapi_side_submissions, total_count = (
             await Application.get_authorized_applications(
                 tenant_key=tenant_key,
                 roles=user_groups,
                 is_paginate=is_paginate_on_webapi_side,
                 filter=webapi_search,
+                created_before=created_before,
+                created_after=created_after,
                 page_no=page_no,
                 limit=limit,
                 parent_form_id=parent_form_id,
@@ -178,14 +183,14 @@ class SubmissionService:
                     created_by=row.get("created_by"),
                     application_status=row.get("application_status"),
                     created=row.get("created"),
-                    data=row.get("submission_data", {}),
+                    data=convert_datetimes_to_string(row.get("submission_data", {})),
                 )
                 for row in data
             ],
             total_count=(
-                mongo_side_submissions.get("total_count")
+                mongo_side_submissions.get("total_count", 0)
                 if mongo_search
-                and parent_form_id  # if mongo side submission is empty then use webapi side submission count
+                and needs_mongo_submissions
                 else total_count
             ),
             page_no=page_no,

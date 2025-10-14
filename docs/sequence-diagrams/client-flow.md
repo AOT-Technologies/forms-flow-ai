@@ -13,16 +13,29 @@ sequenceDiagram
     participant bpm-api as BPM Api
     participant bpm-db as BPM Database
 
-    Client ->> web: Enter form data
-    activate web
-    web ->> web-api: Auto save drafts
-    Note over web,web-api: "POST /draft"
-    activate web-api
-    web-api ->> web-api-db: Save draft and application
-    web-api-db -->> web-api: 
-    deactivate web-api
-    web-api ->> web: 
-    deactivate web
+    alt Drafts enabled
+        Client ->> web: Enter form data
+        activate web
+        web ->> web-api: Auto save drafts
+        Note over web,web-api: "POST /draft"
+        activate web-api
+        web-api ->> web-api-db: Save draft and application
+        web-api-db -->> web-api:
+        web-api -->> web:
+        deactivate web-api
+
+        web ->> web-api: Update drafts
+        Note over web,web-api: "PUT /application/:application-id"
+        activate web-api
+        web-api ->> web-api-db: Update draft
+        web-api-db -->> web-api:
+        web-api -->> web:
+        deactivate web-api
+        deactivate web
+    else Drafts not enabled
+        Client ->> web: Enter form data
+        Note over Client,web: (No draft save/update)
+    end
 
     Client ->> web: Submit Form
     activate web
@@ -36,7 +49,7 @@ sequenceDiagram
 
     alt Drafts enabled
         web ->> web-api: Submit application
-        Note over web,web-api: "POST /draft/:id/submit"
+        Note over web,web-api: "POST /application/:application-id/submit"
         activate web-api
         web-api->>web-api-db: Mark draft as INACTIVE
         web-api-db -->> web-api: 

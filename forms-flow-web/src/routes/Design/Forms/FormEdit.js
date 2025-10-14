@@ -17,7 +17,8 @@ import {
   FormBuilderModal,
   HistoryModal,
   ImportModal,
-  CustomInfo
+  CustomInfo,
+  CardsSwitchIcon
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -51,7 +52,8 @@ import {
   saveFormProcessMapperPut,
   getProcessDetails,
   unPublishForm,
-  getFormProcesses
+  getFormProcesses,
+  getApplicationCount
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
 import SettingsModal from "../../../components/Modals/SettingsModal.js";
@@ -61,11 +63,12 @@ import NewVersionModal from "../../../components/Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
-import { generateUniqueId, addTenantkey, textTruncate,
+import { generateUniqueId, textTruncate,
   convertMultiSelectOptionToValue } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
+import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -388,7 +391,7 @@ const EditComponent = () => {
   const [isPublished, setIsPublished] = useState(
     processListData?.status == "active"
   );
-  const [isPublishLoading, setIsPublishLoading] = useState(false);
+  // const [isPublishLoading, setIsPublishLoading] = useState(false);
   const publishText = isPublished ? "Unpublish" : "Publish";
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -407,6 +410,7 @@ const EditComponent = () => {
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
   const [isSettingsSaving, setIsSettingsSaving] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
   const onCloseActionModal = () => setNewActionModal(false);
   const processData = useSelector((state) => state.process?.processData);
 
@@ -450,6 +454,7 @@ const handleSaveLayout = () => {
 
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
+    setPendingAction(null); // Clear pending action when closing modals
     if (selectedAction === ACTION_OPERATIONS.IMPORT) {
       setFileItems({
         workflow: {
@@ -605,24 +610,27 @@ const handleSaveLayout = () => {
             : [],
       },
     };
-    const updatepath = MULTITENANCY_ENABLED
-      ? addTenantkey(formDetails.path, tenantKey)
-      : formDetails.path;
-
+  
     // update the form Access and submission access if anonymouse changed
     const formAccess = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", formDetails.anonymous);
     const submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", formDetails.anonymous);
-    const formData = {
+    const newFormData = {
       title: formDetails.title,
       display: formDetails.display,
-      path: updatepath,
+      path: formDetails.path,
       submissionAccess: submissionAccess,
       access: formAccess,
     };
+ 
+    if(formDetails.display !== form.display){
+      newFormData["components"] = formDetails.display == "form" ? 
+      convertToNormalForm(formData.components) : convertToWizardForm(formData.components);
+    }
+ 
 
     try {
       await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
-      const updateFormResponse = await formUpdate(form._id, formData);
+      const updateFormResponse = await formUpdate(form._id, newFormData);
       dispatchFormAction({
         type: "formChange",
         value: { ...updateFormResponse.data, components: form.components },
@@ -798,7 +806,7 @@ const handleSaveLayout = () => {
     try {
       const actionFunction = isPublished ? unPublish : publish;
       closeModal();
-      setIsPublishLoading(true);
+      // setIsPublishLoading(true);
       if (!isPublished) {
 
         await flowRef.current.saveFlow({processId: processData.id,showToast: false});
@@ -807,7 +815,15 @@ const handleSaveLayout = () => {
       await actionFunction(processListData.id);
       if (isPublished) {
         await fetchProcessDetails(processListData);
-        dispatch(getFormProcesses(formId));
+        // Refresh mapper data and application count after unpublish to ensure UI state is updated
+        await new Promise((resolve) => {
+          dispatch(getFormProcesses(formId, (err, data) => {
+            if (!err && data?.id) {
+              dispatch(getApplicationCount(data.id));
+            }
+            resolve();
+          }));
+        });
       }
       setPromptNewVersion(isPublished);
       setIsPublished(!isPublished);
@@ -815,7 +831,7 @@ const handleSaveLayout = () => {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
     } finally {
-      setIsPublishLoading(false);
+      // setIsPublishLoading(false);
     }
   };
 
@@ -957,12 +973,22 @@ const handleSaveLayout = () => {
         };
       case "unpublish":
         return {
-          title: t("Confirm Unpublish"),
-          message: t( "This form is currently live. To save changes to form edits, you need to unpublish it first. By Unpublishing this form, you will make it unavailable for new submissions to those who currently have access to it. You can republish the form after making your edits."),
+          title: t("Unpublish"),
+          message: (
+            <CustomInfo
+              className="note"
+              heading={t("Note")}
+              content={t(
+                "By unpublishing this form & flow, you will make it unavailable for new submissions."
+              )
+              }
+              dataTestId="unpublish-info"
+            />
+          ),
           primaryBtnAction: confirmPublishOrUnPublish,
           secondaryBtnAction: closeModal,
-          primaryBtnText: t("Unpublish and Edit This Form"),
-          secondaryBtnText: t("Cancel, Keep This Form Unpublished"),
+          primaryBtnText: t("Unpublish This Form & Flow"),
+          secondaryBtnText: t("Cancel, Keep This Form & Flow Published"),
         };
       case "discard":
         return {
@@ -991,6 +1017,32 @@ const handleSaveLayout = () => {
           primaryBtnText: isFlowLayout ? "Unpublish and Save Flow" : "Unpublish and Save Layout",
           secondaryBtnText: "Cancel, Keep This Form Published",
           };
+      case "unsavedChangesBeforeAction":
+        return {
+          title: t("You Have Unsaved Changes"),
+          message: (
+            <CustomInfo
+              heading={t("Note")}
+              content={t("You have unsaved changes. To proceed with the {{action}} action, you must either save your changes or discard them.", { action: pendingAction?.toLowerCase() || "requested" })}
+            />
+          ),
+          primaryBtnAction: () => {
+            // Stay in editor and cancel the action
+            setPendingAction(null);
+            closeModal();
+          },
+          secondaryBtnAction: () => {
+            // Discard changes and proceed with the action
+            discardChanges();
+            if (pendingAction) {
+              setSelectedAction(pendingAction);
+              setPendingAction(null);
+            }
+            closeModal();
+          },
+          primaryBtnText: t("Stay in the Editor"),
+          secondaryBtnText: t("Discard Changes and Continue"),
+        };
       default:
         return {};
     }
@@ -1009,11 +1061,23 @@ const handleSaveLayout = () => {
     );
   }
 
-  //TBD: check the behaviour when a form has some submission and still in draft mode
-
+  const handleActionWithUnsavedCheck = (action) => {
+    // Check if there are unsaved changes for specific actions that should not proceed
+    if ((formChangeState.changed || workflowIsChanged) && 
+        (action === ACTION_OPERATIONS.DUPLICATE || action === ACTION_OPERATIONS.IMPORT)) {
+      setPendingAction(action);
+      // Show confirmation modal for unsaved changes
+      setModalType("unsavedChangesBeforeAction");
+      setShowConfirmModal(true);
+      return;
+    }
+    // If no unsaved changes, proceed normally
+    setSelectedAction(action);
+  };
 
   const handleCloseActionModal = () => {
     setSelectedAction(null); // Reset action
+    setPendingAction(null); // Reset pending action
   };
 
   // deleting form hardly from formio and mark inactive in mapper table
@@ -1022,19 +1086,22 @@ const handleSaveLayout = () => {
       setIsDeletionLoading(true);
       dispatch(deleteForm("form", formId,() => {
         // Callback after form deletion;
-        dispatch(push(`${redirectUrl}formflow`));
+        if (processListData.id) {
+          dispatch(
+            unPublishForm(processListData.id, (err) => {
+              const message = `${_.capitalize(
+                processListData?.formType
+              )} deletion ${err ? "unsuccessful" : "successfully"}`;
+              toast[err ? "error" : "success"](t(message));
+              setIsDeletionLoading(false);
+              dispatch(push(`${redirectUrl}formflow`));
+            })
+          );
+        } else {
+          setIsDeletionLoading(false);
+          dispatch(push(`${redirectUrl}formflow`));
+        }
       }));
-    }
-
-    if (processListData.id) {
-      dispatch(
-        unPublishForm(processListData.id, (err) => {
-          const message = `${_.capitalize(
-            processListData?.formType
-          )} deletion ${err ? "unsuccessful" : "successfully"}`;
-          toast[err ? "error" : "success"](t(message));
-        })
-      );
     }
 
     dispatch(
@@ -1111,122 +1178,112 @@ const handleSaveLayout = () => {
 
           <Errors errors={errors} />
 
-          <Card className="editor-header">
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center justify-content-between">
-                  <BackToPrevIcon onClick={backToForm} data-testid="back-to-prev"/>
-                  <div className="mx-4 editor-header-text" >
-                    {textTruncate(75,75,formData.title)}
-                  </div>
-                  <span
-                    data-testid={`form-status-${form._id}`}
-                    className="d-flex align-items-center white-text mx-3"
-                  >
-                    <div
-                      className={`status-${isPublished ? "live" : "draft"}`}
-                    ></div>
-                    {isPublished ? t("Live") : t("Draft")}
-                  </span>
-                </div>
-                {(createDesigns || viewDesigns) && (
-                  <div>
-                    <CustomButton
-                      variant="dark"
-                      size="md"
-                      label={t("Settings")}
-                      onClick={handleToggleSettingsModal}
-                      dataTestId="editor-settings-testid"
-                      ariaLabel={t("Designer Settings Button")}
-                    />
-                    <CustomButton
-                      variant="dark"
-                      size="md"
-                      className="mx-2"
-                      label={t("Actions")}
-                      onClick={editorActions}
-                      dataTestId="designer-action-testid"
-                      ariaLabel={(t) => t("Designer Actions Button")}
-                    />
-                     {createDesigns && <CustomButton
-                      variant="light"
-                      size="md"
-                      label={t(publishText)}
-                      buttonLoading={isPublishLoading}
-                      onClick={handlePublishClick}
-                      dataTestId="handle-publish-testid"
-                      ariaLabel={`${t(publishText)} ${t("Button")}`}
-                    />}
-                  </div>
-                )}
+          <div className="nav-bar">
+            
+              <div className="icon-back" onClick={backToForm}>
+                <BackToPrevIcon data-testid="back-to-prev"/>
               </div>
-            </Card.Body>
-          </Card>
-          <div className="d-flex mb-3">
+
+              <div className="description">
+                <p className="text-main">
+                  {textTruncate(300,300,formData.title)}
+                </p>
+
+                <p className="status" data-testid={`form-status-${form._id}`}>
+                  <span className={`status-${isPublished ? "live" : "draft"}`}></span>
+
+                  {isPublished ? t("Live") : t("Draft")}
+                </p>
+              </div>
+
+              {(createDesigns || viewDesigns) && (
+                <div className="buttons">
+                  
+                  <CustomButton
+                    label={t("Settings")}
+                    onClick={handleToggleSettingsModal}
+                    dataTestId="editor-settings-testid"
+                    ariaLabel={t("Designer Settings Button")}
+                    dark
+                  />
+
+                  <CustomButton
+                    label={t("Actions")}
+                    onClick={editorActions}
+                    dataTestId="designer-action-testid"
+                    ariaLabel={(t) => t("Designer Actions Button")}
+                    dark
+                  />
+                  
+                  {createDesigns && <CustomButton
+                    label={t(publishText)}
+                    onClick={handlePublishClick}
+                    dataTestId="handle-publish-testid"
+                    ariaLabel={`${t(publishText)} ${t("Button")}`}
+                    darkPrimary
+                  />}
+                </div>
+              )}
+            
+          </div>
+
+          <div className="d-flex">
             <div
               className={`wraper form-wraper ${isFormLayout ? "visible" : ""}`}
             >
               <Card>
                 <Card.Header>
-                  <div
-                    className="d-flex justify-content-between align-items-center"
-                    style={{ width: "100%" }}
-                  >
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="mx-2 builder-header-text">{t("Layout")}</div>
-                      {(createDesigns || viewDesigns) && (
-                        <div>
-                          <CustomButton
-                            variant="secondary"
-                            size="md"
-                            icon={<HistoryIcon />}
-                            label={t("History")}
-                            onClick={() => handleFormHistory()}
-                            dataTestId="handle-form-history-testid"
-                            ariaLabel={t("Form History Button")}
-                          />
-                          <CustomButton
-                            variant="secondary"
-                            size="md"
-                            className="mx-2"
-                            icon={<PreviewIcon />}
-                            label={t("Preview")}
-                            onClick={handlePreview}
-                            dataTestId="handle-preview-testid"
-                            ariaLabel={t("Preview Button")}
-                          />
-                        </div>
-                      )}
-                    </div>
-                    {(createDesigns) && (
-                      <div>
-                        <CustomButton
-                          variant="primary"
-                          size="md"
-                          className="mx-2"
-                          disabled={!formChangeState.changed}
-                          label={t("Save Layout")}
-                          onClick={
-                            isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
+                    <div>
+                      <h2>{t("Layout")}</h2>
+                    {(createDesigns || viewDesigns) && (
+                      <>
+                      <CustomButton
+                        icon={<HistoryIcon />}
+                        label={t("History")}
+                        onClick={() => handleFormHistory()}
+                        dataTestId="handle-form-history-testid"
+                        ariaLabel={t("Form History Button")}
+                        iconWithText
+                      />
 
-                          }
-                          dataTestId="save-form-layout"
-                          ariaLabel={t("Save Form Layout")}
-                        />
-                        <CustomButton
-                          variant="secondary"
-                          size="md"
-                          label={t("Discard Changes")}
-                          onClick={() => {
-                            openConfirmModal("discard");
-                          }}
-                          disabled={!formChangeState.changed}
-                          dataTestId="discard-button-testid"
-                          ariaLabel={t("cancelBtnariaLabel")}
-                        />
-                      </div>
+                      <CustomButton
+                        className="mx-2"
+                        icon={<PreviewIcon />}
+                        label={t("Preview")}
+                        onClick={handlePreview}
+                        dataTestId="handle-preview-testid"
+                        ariaLabel={t("Preview Button")}
+                        iconWithText
+                      />
+                      </>
                     )}
-                  </div>
+                    </div>
+
+                  {(createDesigns) && (
+                    <div>
+                      <CustomButton
+                        disabled={!formChangeState.changed}
+                        label={t("Save Layout")}
+                        onClick={
+                          isPublished ? handleUnpublishAndSaveChanges :  handleSaveLayout
+
+                        }
+                        dataTestId="save-form-layout"
+                        ariaLabel={t("Save Form Layout")
+                        }
+                      />
+                      <CustomButton
+                        label={t("Discard Changes")}
+                        onClick={() => {
+                          openConfirmModal("discard");
+                        }}
+                        disabled={!formChangeState.changed}
+                        dataTestId="discard-button-testid"
+                        ariaLabel={t("cancelBtnariaLabel")}
+                        secondary
+                      />
+                    </div>
+                  )}
                 </Card.Header>
                 <div className="form-edit">
                 <Card.Body>
@@ -1285,12 +1342,15 @@ const handleSaveLayout = () => {
               />}
             </div>
             <button
-              className={`border-0 form-flow-wraper-${ isFormLayout ? "right" : "left"
+              className={`form-flow-wraper ${ isFormLayout ? "right" : "left"
               } ${sideTabRef.current && "visible"}`}
               onClick={handleCurrentLayout}
               data-testid="form-flow-wraper-button"
             >
-              {isFormLayout ? t("Flow") : t("Layout")}
+              <span>
+                {isFormLayout ? t("Flow") : t("Layout")}
+              </span>
+              <CardsSwitchIcon />
             </button>
           </div>
         </LoadingOverlay>
@@ -1299,7 +1359,7 @@ const handleSaveLayout = () => {
         newActionModal={newActionModal}
         onClose={onCloseActionModal}
         CategoryType={CategoryType.FORM}
-        onAction={setSelectedAction}
+        onAction={handleActionWithUnsavedCheck}
         published={isPublished}
         isMigrated = {processListData.isMigrated}
       />

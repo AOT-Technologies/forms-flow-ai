@@ -81,7 +81,7 @@
         },
         {
           "name": "create_filters",
-          "description": "Manage filters you create",
+          "description": "Manage personal filters",
           "composite": false,
           "clientRole": true,
           "attributes": {}
@@ -268,12 +268,9 @@
           "realmRoles": [],
           "clientRoles": {
             "forms-flow-web": [
-              "manage_integrations",
               "view_designs",
               "create_designs",
-              "manage_advance_workflows",
-              "manage_templates",
-              "manage_bundles"
+              "manage_advance_workflows"
             ]
           }
         },
@@ -290,7 +287,7 @@
               },
               "realmRoles": [],
               "clientRoles": {
-                "forms-flow-web": ["manage_tasks", "view_tasks", "view_filters"]
+                "forms-flow-web": ["manage_tasks", "view_tasks", "view_filters", "create_filters", "assign_task_to_others", "reviewer_view_history"]
               }
             },
             {
@@ -302,7 +299,7 @@
               },
               "realmRoles": [],
               "clientRoles": {
-                "forms-flow-web": ["manage_tasks", "view_tasks", "view_filters"]
+                "forms-flow-web": ["manage_tasks", "view_tasks", "view_filters", "assign_task_to_others", "reviewer_view_history"]
               }
             }
           ],
@@ -322,10 +319,7 @@
               "assign_task_to_others",
               "reviewer_view_history",
               "manage_all_filters",
-              "analyze_metrics_view",
-              "analyze_submissions_view",
-              "analyze_submissions_view_history",
-              "analyze_process_view"
+              "analyze_metrics_view"
             ]
           }
         }

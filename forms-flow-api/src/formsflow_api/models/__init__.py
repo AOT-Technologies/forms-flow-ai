@@ -11,12 +11,14 @@ from .filter_preferences import FilterPreferences
 from .form_history_logs import FormHistory
 from .form_process_mapper import FormProcessMapper
 from .process import Process, ProcessStatus, ProcessType
+from .submissions_filter import SubmissionsFilter
 from .theme import Themes
 from .user import User
 
 __all__ = [
     "db",
     "ma",
+    "SubmissionsFilter",
     "Application",
     "ApplicationHistory",
     "BaseModel",

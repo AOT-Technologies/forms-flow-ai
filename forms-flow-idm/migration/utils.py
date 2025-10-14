@@ -34,6 +34,13 @@ def get_access_token():
     response.raise_for_status()
     return response.json()['access_token']
 
+def get_request_data(token, url):
+    """Get data from a given URL with the provided token."""
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    response_json = response.json()
+    return response_json
 
 def get_client_id(token, client_name):
     """Retrieve the client ID (UUID) based on the client name."""
@@ -104,6 +111,25 @@ def update_client_role(token, client_id, roles):
         else:
             print(f"Failed to update role {role_name}: {response.text}")    
 
+def get_groups(token):
+    """Retrieve all groups in the realm."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/groups?briefRepresentation=false"
+    groups = get_request_data(token, url)    
+    return groups
+
+def get_sub_groups(token, group_id):
+    """Retrieve sub-groups of a given group."""
+    if not group_id:
+        raise ValueError("Group ID cannot be None or empty.")
+    url = f"{_get_base_url()}/admin/realms/{REALM}/groups/{group_id}/children?briefRepresentation=false"
+    sub_groups = get_request_data(token, url)    
+    return sub_groups
+
+def get_group_id_by_path(token, group_path):
+    """Retrieve a group id(UUID) by its path."""
+    url = f"{_get_base_url()}/admin/realms/{REALM}/group-by-path/{group_path}"
+    group = get_request_data(token , url)
+    return group["id"] if group else None
 
 def get_group_id(token, group_name):
     """Retrieve the group ID (UUID) based on the group name."""
@@ -253,3 +279,161 @@ def add_user_to_group(access_token, user_id, group_id):
     headers = {"Authorization": f"Bearer {access_token}"}
     response = requests.put(url, headers=headers)
     response.raise_for_status()
+
+def role_changes_710():
+    """Permission/Role changes for version 7.1.0:
+    - Add new permissions
+    - Remove obsolete roles
+    - Update descriptions for existing roles
+    """
+    # New roles to be added to the forms-flow-web client
+    roles_to_add = [
+        {
+            "name": "analyze_metrics_view",
+            "description": "View metrics",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "analyze_process_view",
+            "description": "View submissions process diagram",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "analyze_submissions_view",
+            "description": "View submissions",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "analyze_submissions_view_history",
+            "description": "View submissions history",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "assign_task_to_others",
+            "description": "Assign/re-assign tasks to anybody within the group",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "manage_advance_workflows",
+            "description": "Manage advance flows (BPMNs + SubFlows + Decision Tables)",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "manage_bundles",
+            "description": "Manage bundles",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "manage_links",
+            "description": "View links",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "manage_templates",
+            "description": "Manage templates",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "reviewer_view_history",
+            "description": "View task history",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "submission_view_history",
+            "description": "View submission history",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        },
+        {
+            "name": "reviewer_process_view",
+            "description": "View process diagram in task",
+            "composite": False,
+            "clientRole": True,
+            "attributes": {}
+        }
+    ]
+    # Roles to be removed from the forms-flow-web client
+    roles_to_remove = ["create_bpmn_flows", "manage_subflows", "manage_decision_tables", "admin"]
+
+    # Roles to be updated in the forms-flow-web client
+    # Note: The roles_to_update list contains roles that are being updated with new descriptions.
+    roles_to_update= [
+        {
+            "name": "view_designs",
+            "description": "View forms & flows"
+        },
+        {
+            "name": "create_designs",
+            "description": "Manage forms & flows you create and that are shared with you"
+        },
+        {
+            "name": "view_filters",
+            "description": "View filters"
+        },
+        {
+            "name": "manage_integrations",
+            "description": "Manage integrations"
+        },
+        {
+            "name": "view_dashboards",
+            "description": "View dashboards"
+        },
+        {
+            "name": "manage_tasks",
+            "description": "Work on tasks (assign to themselves + complete tasks)"
+        },
+        {
+            "name": "create_submissions",
+            "description": "Manage submissions (create, save drafts, resubmit)"
+        },
+        {
+            "name": "create_filters",
+            "description": "Manage filters you create"
+        },
+        {
+            "name": "view_tasks",
+            "description": "View tasks"
+        },
+        {
+            "name": "manage_dashboard_authorizations",
+            "description": "Manage dashboards"
+        },
+        {
+            "name": "view_submissions",
+            "description": "View their own past submissions"
+        },
+        {
+            "name": "manage_all_filters",
+            "description": "Manage all shared filters (delete and edit filters others shared, excluding private filters)",
+        },
+        {
+            "name": "manage_users",
+            "description": "Manage users"
+        },
+        {
+            "name": "manage_roles",
+            "description": "Manage roles"
+        }  
+    ]
+    return roles_to_add, roles_to_remove, roles_to_update

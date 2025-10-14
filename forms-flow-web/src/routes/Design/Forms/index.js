@@ -44,7 +44,7 @@ export default React.memo(() => {
   }
 
   return (
-    <div data-testid="Form-index">
+    // <div data-testid="Form-index">
       <Switch>
         <Route exact path={`${BASE_ROUTE}formflow`} component={List} />
         <GenericRoute
@@ -57,6 +57,6 @@ export default React.memo(() => {
           component={FormPreview}
         />
       </Switch>
-    </div>
+    // </div>
   );
 });

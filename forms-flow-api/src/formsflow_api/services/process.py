@@ -230,10 +230,20 @@ class ProcessService:  # pylint: disable=too-few-public-methods,too-many-public-
         current_app.logger.debug(
             f"Process key: {process_key}, Process name: {process_name}"
         )
+        # this code used to handle the pool component
+        participant = None
+        if process_type.lower() == "bpmn":
+            ns = {"bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"}
+            # TBD: currently the root return process target that's why namespace used here again
+            participant = root.find(".//bpmn:participant", namespaces=ns)
+
         # Note: If id have space in name, then process view in bpmn modeller throws error
         if process is not None:
             process.set("id", process_key or process_name)
             process.set("name", process_name)
+            if participant is not None and participant.get("processRef"):
+                participant.set("processRef", process_name)
+                participant.set("name", process_name)
 
         # Convert the XML tree back to a string
         updated_xml = etree.tostring(

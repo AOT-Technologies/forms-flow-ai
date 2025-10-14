@@ -5,7 +5,7 @@ const initialState = {
   error: "",
   forms: [],
   isActive: false,
-  limit: 5,
+  limit: 10,
   formListPage: 1,
   totalForms: 0,
   bpmFormLoading: false,
@@ -22,7 +22,7 @@ const initialState = {
     status: { sortOrder: "asc" },
   },
   clientFormSearch: "",
-  submitFormLimit: 5,  
+  submitFormLimit: 10,  
   submitListPage: 1,
   submitFormSort: {
     activeKey: "formName",

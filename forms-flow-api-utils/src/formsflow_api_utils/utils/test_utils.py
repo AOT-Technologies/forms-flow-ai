@@ -3,7 +3,7 @@
 import time
 from flask import current_app
 
-from .permisions import CREATE_SUBMISSIONS
+from .permissions import CREATE_SUBMISSIONS
 
 
 token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}

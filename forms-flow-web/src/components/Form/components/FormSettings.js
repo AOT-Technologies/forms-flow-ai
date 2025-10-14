@@ -1,3 +1,4 @@
+
 import React, {
   useEffect,
   useState,
@@ -5,26 +6,28 @@ import React, {
   forwardRef,
   useRef
 } from "react";
-import { Form, FormControl, InputGroup } from "react-bootstrap";
+// import { Form, FormControl, InputGroup } from "react-bootstrap";
+// import { Form } from "react-bootstrap";
 import {
   CopyIcon,
+  CheckIcon,
   CustomInfo,
   FormInput,
   FormTextArea,
   CustomTabs,
-  DropdownMultiSelect
+  DropdownMultiSelect,
+  CheckboxCheckedIcon,
+  CheckboxUncheckedIcon,
 } from "@formsflow/components";
-
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import {  addTenantkeyAsSuffix, convertSelectedValueToMultiSelectOption } from "../../../helper/helper";
+import {  convertSelectedValueToMultiSelectOption, removeTenantKeywithSlash, addTenantkey } from "../../../helper/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import { useTranslation } from "react-i18next";
 import { copyText } from "../../../apiManager/services/formatterService";
 import _camelCase from "lodash/camelCase";
 import { validateFormName, validatePathName } from "../../../apiManager/services/FormServices";
-import { HelperServices } from "@formsflow/service";
 import PropTypes from 'prop-types';
+import {MULTITENANCY_ENABLED} from "../../../constants/constants";
 
 //CONST VARIABLES
 const DESIGN = "DESIGN";
@@ -43,6 +46,7 @@ const FormSettings = forwardRef((props, ref) => {
     (state) => state.process
   );
   const {parentFormId,formId} = useSelector((state) => state.process.formProcessList);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
   const [copied, setCopied] = useState(false);
@@ -63,29 +67,46 @@ const FormSettings = forwardRef((props, ref) => {
     title: "",
     path: "",
   });
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
-  const [urlPath,setUrlPath] = useState(publicUrlPath);
   const setSelectedOption = (option, roles = [])=> roles.length ? "specifiedRoles" : option;
   const multiSelectOptionKey = "role";
+
+  // Helper function to convert role names to display names for UI
+  const convertRoleToDisplayName = (roleName) => {
+    if (MULTITENANCY_ENABLED && tenantKey) {
+      const cleanedRole = removeTenantKeywithSlash(
+        roleName,
+        tenantKey,
+        MULTITENANCY_ENABLED
+      );
+      return cleanedRole !== false ? cleanedRole : roleName;
+    }
+    return roleName;
+  };
   /* ------------------------- authorization variables ------------------------ */
   const [rolesState, setRolesState] = useState({
     DESIGN: {
-      selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.DESIGNER?.roles,
-         multiSelectOptionKey),
+      selectedRoles: convertSelectedValueToMultiSelectOption(
+        formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+        multiSelectOptionKey
+      ),
       selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
     },
     FORM: {
       roleInput: "",
-      selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.FORM?.roles,
-        multiSelectOptionKey),
+      selectedRoles: convertSelectedValueToMultiSelectOption(
+        formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+        multiSelectOptionKey
+      ),
       selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
     },
     APPLICATION: {
       roleInput: "",
-      selectedRoles: convertSelectedValueToMultiSelectOption(formAuthorization.APPLICATION?.roles,
-         multiSelectOptionKey),
+      selectedRoles: convertSelectedValueToMultiSelectOption(
+        formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+        multiSelectOptionKey
+      ),
       selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
       /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
        we assume that the submitter is true. */
@@ -93,20 +114,6 @@ const FormSettings = forwardRef((props, ref) => {
 
   });
 
-  /* --------Updating path if multitenant enabled-------------------------- */
-  useEffect(()=>{
-    if(MULTITENANCY_ENABLED){
-      const updatedDisplayPath = HelperServices.removeTenantKeyFromData(formDetails.path,tenantKey);
-      setFormDetails((prev) => {
-        return {
-          ...prev,
-          path: updatedDisplayPath
-        };
-      });
-      const updatedUrlPath = addTenantkeyAsSuffix(publicUrlPath,tenantKey);
-      setUrlPath(updatedUrlPath);
-    }
-  },[MULTITENANCY_ENABLED]);
 
   /* ------------------------- validating form name and path ------------------------ */
 
@@ -150,7 +157,12 @@ const FormSettings = forwardRef((props, ref) => {
     setErrors((prev) => ({ ...prev, [name]: "" }));
     blurStatus.current[name] = false;  
     let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;
-  
+
+    // For path field, add tenant key if multi-tenancy is enabled
+    if (name === "path" && MULTITENANCY_ENABLED && tenantKey) {
+      updatedValue = addTenantkey(updatedValue, tenantKey);
+    }
+
     if (type === "checkbox") {
       setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
     } else {
@@ -169,12 +181,30 @@ const FormSettings = forwardRef((props, ref) => {
       .then((res) => {
         if (res) {
           const { data = [] } = res;
-          setUserRoles(data.map((role,index) => ({[multiSelectOptionKey]:role.name, id: index})));
+          setUserRoles(data.map((role,index) => {
+            const originalRoleName = role.name;
+            let displayRoleName = originalRoleName;
+            
+            // Remove tenant key if multi-tenancy is enabled and tenantKey exists
+            if (MULTITENANCY_ENABLED && tenantKey) {
+              const cleanedRole = removeTenantKeywithSlash(
+                originalRoleName,
+                tenantKey,
+                MULTITENANCY_ENABLED
+              );
+              displayRoleName = cleanedRole !== false ? cleanedRole : originalRoleName;
+            }
+            
+            return {
+              [multiSelectOptionKey]: displayRoleName, // For UI display
+              originalRole: originalRoleName, // For backend communication
+              id: index
+            };
+          }));
         }
       })
       .catch((error) => console.error("error", error));
-  }, [dispatch]);
-
+  }, [dispatch, tenantKey]);
 
 
   const handleRoleStateChange = (section, key, value = []) => {
@@ -189,7 +219,12 @@ const FormSettings = forwardRef((props, ref) => {
 
   const copyPublicUrl = async () => {
     try {
-      await copyText(`${urlPath}${formDetails.path}`);
+      // If multi-tenancy is enabled and the path already contains tenant key, use it as is
+      // Otherwise, construct the full URL with tenant key
+      const fullUrl = MULTITENANCY_ENABLED && tenantKey 
+        ? `${window.location.origin}/public/form/${formDetails.path}`
+        : `${publicUrlPath}${formDetails.path}`;
+      await copyText(fullUrl);
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -199,13 +234,50 @@ const FormSettings = forwardRef((props, ref) => {
     }
   };
 
-  useImperativeHandle(ref, () => {
-    return {
-      formDetails: { ...formDetails, anonymous: isAnonymous },
-      rolesState: rolesState,
-      validateField,
-    };
+// Extract role conversion to a separate function
+const convertSelectedRole = (selectedRole, userRoles, multiSelectOptionKey) => {
+  const originalRoleData = userRoles.find(role => 
+    role[multiSelectOptionKey] === selectedRole[multiSelectOptionKey]
+  );
+  
+  return {
+    ...selectedRole,
+    [multiSelectOptionKey]: originalRoleData?.originalRole || selectedRole[multiSelectOptionKey],
+  };
+};
+
+// Process section data separately
+const convertSectionRoles = (sectionData, userRoles, multiSelectOptionKey) => {
+  return {
+    ...sectionData,
+    selectedRoles: sectionData.selectedRoles?.map(selectedRole => 
+      convertSelectedRole(selectedRole, userRoles, multiSelectOptionKey)
+    ) || []
+  };
+};
+
+// Main conversion function
+const convertRolesForBackend = (rolesState, userRoles, multiSelectOptionKey) => {
+  const convertedState = {};
+  
+  Object.keys(rolesState).forEach(section => {
+    convertedState[section] = convertSectionRoles(
+      rolesState[section], 
+      userRoles,
+      multiSelectOptionKey
+    );
   });
+  
+  return convertedState;
+};
+
+useImperativeHandle(ref, () => {
+  return {
+    formDetails: { ...formDetails, anonymous: isAnonymous },
+    rolesState: convertRolesForBackend(rolesState, userRoles, multiSelectOptionKey),
+    validateField,
+  };
+});
 
   useEffect(() => {
     const isAnyRoleEmpty = Object.values(rolesState).some(
@@ -235,9 +307,9 @@ const FormSettings = forwardRef((props, ref) => {
   const tabs = [
     {
       eventKey: "Basic",
-      title: <span data-testid="tab-title-basic">Basic</span>,
+      title: <span data-testid="tab-title-basic">{t("Basic")}</span>,
       content: (
-        <div className="settings-sections">
+        <>
         <FormInput
           required
           value={formDetails.title}
@@ -251,7 +323,9 @@ const FormSettings = forwardRef((props, ref) => {
           turnOnLoader={isValidating.name}
           onBlur={() => handleBlur('title', formDetails.title)}   
           maxLength={200} 
+          id="formflow-name"
           />
+
         <FormTextArea
           dataTestId="form-description"
           label={t("Description")}
@@ -262,11 +336,12 @@ const FormSettings = forwardRef((props, ref) => {
           data-testid="form-description"
           maxRows={3}
           minRows={3}
+          id="form-description"
         />
         <CustomInfo heading={t("Note")}
         content={t("Allowing the addition of multiple pages in a single form will prevent you from using this form in a bundle later.")} />
 
-        <Form.Check
+        {/* <Form.Check
           data-testid="form-edit-wizard-display"
           type="checkbox"
           id="formDisplaychange"
@@ -275,15 +350,30 @@ const FormSettings = forwardRef((props, ref) => {
           name="display"
           onChange={handleFormDetailsChange}
           className="field-label"
-        />
-        </div>
+        /> */}
+
+
+        <label htmlFor="allow-adding-multiple-pages" className="input-checkbox">
+          <input
+            id="allow-adding-multiple-pages"
+            type="checkbox"
+            checked={formDetails.display === "wizard"}
+            onChange={handleFormDetailsChange}
+            data-testid="form-edit-wizard-display"
+            name="display"
+            />
+          <span>Allow adding multiple pages in this form</span>
+          {formDetails.display === "wizard" ? <CheckboxCheckedIcon /> : <CheckboxUncheckedIcon /> }
+        </label>
+
+        </>
       ),
     },
     {
       eventKey: "Permissions",
-      title: <span data-testid="tab-title-permissions">Permissions</span>,
+      title: <span data-testid="tab-title-permissions">{t("Permissions")}</span>,
       content: (
-        <div className="settings-sections">
+        <>
         <DropdownMultiSelect
           dropdownLabel="Who Can View/Edit This Form"
           enableMultiSelect= { 
@@ -292,11 +382,11 @@ const FormSettings = forwardRef((props, ref) => {
           inputDropDownSelectedValue={rolesState?.DESIGN?.selectedOption}
           inputDropDownOptions={[
             {
-              label: t("Only You"),
+              label: t("Only owner"),
               value:"onlyYou",
             },
             {
-              label: t("You and specified roles"),
+              label: t("Owner and specific roles"),
               value: "specifiedRoles",
             },
           ]}
@@ -309,7 +399,7 @@ const FormSettings = forwardRef((props, ref) => {
          displayValue={multiSelectOptionKey}
          ariaLabel="design-permission"
          dataTestId="design-permission"
-         
+          id="who-can-view"
         />
 
         <DropdownMultiSelect
@@ -339,9 +429,12 @@ const FormSettings = forwardRef((props, ref) => {
           displayValue={multiSelectOptionKey}
           ariaLabel="form-permission"
           dataTestId="form-permission"
-
+          id="who-can-create"
         />
-        <Form.Check
+
+
+
+        {/* <Form.Check
           type="checkbox"
           id="anonymouseCheckbox"
           label={t("Also allow anonymous users to create submissions")}
@@ -350,7 +443,21 @@ const FormSettings = forwardRef((props, ref) => {
             setIsAnonymous(!isAnonymous);
           }}
           className="field-label"
-        />
+        /> */}
+
+        <label htmlFor="anonymouse-checkbox" className="input-checkbox">
+          <input
+            id="anonymouse-checkbox"
+            type="checkbox"
+            checked={isAnonymous}
+            onChange={() => {
+              setIsAnonymous(!isAnonymous);
+            }}
+            data-testid="form-edit-allow-anonymous"
+            />
+          <span>{t("Also allow anonymous users to create submissions")}</span>
+          {isAnonymous ? <CheckboxCheckedIcon /> : <CheckboxUncheckedIcon /> }
+        </label>
 
 
         <DropdownMultiSelect
@@ -379,53 +486,74 @@ const FormSettings = forwardRef((props, ref) => {
          onMultiSelectionChange={handleRoleSelectForApplication}
           displayValue={multiSelectOptionKey}
           dataTestId="application-permission"
+          id="who-can-submit"
         />
 
-        </div>
+        </>
       ),
     },
     {
       eventKey :"Link",
-      title : <span data-testid="tab-title-link">Link</span>,
+      title : <span data-testid="tab-title-link">{t("Link")}</span>,
       content : (
-        <div className="settings-sections">
-        <CustomInfo heading={t("Note")} dataTestId={"form-url-info"}
-        content={t("Making changes to your form URL will make your form inaccessible from your current URL.")} />
-        <Form.Group className="settings-input w-100" controlId="url-input">
-          <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
-          <InputGroup className="url-input" data-testid="url-input-group">
-            <InputGroup.Text className="url-non-edit">
-              {urlPath}
-            </InputGroup.Text>
+        <>
+          <CustomInfo heading={t("Note")} dataTestId={"form-url-info"}
+            content={t("Making changes to your form URL will make your form inaccessible from your current URL.")}
+          />
 
-            <FormControl
-              type="text"
-              data-test-id="url-edit-input"
-              value={formDetails.path}
-              className="url-edit"
-              name="path"
-              onChange={handleFormDetailsChange}
-              onBlur={() => handleBlur('path', formDetails.path)}           />
-            <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
-              {copied ? <i className="fa fa-check" /> : <CopyIcon />}
-            </InputGroup.Text>
-          </InputGroup>
-          {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
+          <FormInput
+            value={MULTITENANCY_ENABLED && tenantKey 
+              ? removeTenantKeywithSlash(formDetails.path, tenantKey, MULTITENANCY_ENABLED) 
+              : formDetails.path}
+            label={MULTITENANCY_ENABLED && tenantKey 
+              ? `${publicUrlPath}${tenantKey}-` 
+              : publicUrlPath}
+            onChange={handleFormDetailsChange}
+            data-test-id="url-edit-input"
+            name="path"
+            type="text"
+            ariaLabel={t("Form Url")}
+            onBlur={() => handleBlur('path', formDetails.path)} 
+            icon={copied ? <CheckIcon className="svgIcon-success" /> : <CopyIcon />}
+            onIconClick={copyPublicUrl}
+            id="formflow-url"
+            feedback={errors.path ? errors.path : ""}
+          />
 
-        </Form.Group>
-        </div>
+          {/* Below code is not removed . Can be used for reference */}
+          {/* <Form.Group className="settings-input w-100" controlId="url-input">
+            <Form.Label className="field-label">{t("URL")} <span className='required-icon'>*</span></Form.Label>
+            <InputGroup className="url-input" data-testid="url-input-group">
+              <InputGroup.Text className="url-non-edit">
+                {urlPath}
+              </InputGroup.Text>
+
+              <FormControl
+                type="text"
+                data-test-id="url-edit-input"
+                value={formDetails.path}
+                className="url-edit"
+                name="path"
+                onChange={handleFormDetailsChange}
+                onBlur={() => handleBlur('path', formDetails.path)}           />
+              <InputGroup.Text className="url-copy" onClick={copyPublicUrl}>
+                {copied ? <i className="fa fa-check" /> : <CopyIcon />}
+              </InputGroup.Text>
+            </InputGroup>
+            {errors.path && <div className="validation-text mt-2">{errors.path}</div>}
+          </Form.Group> */}
+        </>
       )
     }
   ];
   return (
-    <div className="settings-tab-container">
+    <div className="tabs">
       <CustomTabs
        defaultActiveKey={key}
        onSelect={setKey}
        tabs={tabs}
        dataTestId="template-form-flow-tabs"
        ariaLabel="Template forms flow  tabs"
-       className="custom-tab"
        /> 
     </div>     
   );

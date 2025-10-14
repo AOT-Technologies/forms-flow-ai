@@ -43,6 +43,14 @@ Integrating new module into formsflow is straight forward but the module should 
    - Update the layout and specify the path to activate the module (Not applicable for utility modules).
    - We recommend using single-spa CLI to create new module. 
 
+### forms-flow-root-config Setup
+
+[Instructions for root-config setup](../deployment/Individual-deployment/README.md)
+
+### Additional reference
+
+Check out the [installation documentation](https://aot-technologies.github.io/forms-flow-installation-doc/) for installation instructions and [features documentation](https://aot-technologies.github.io/forms-flow-ai-doc) to explore features and capabilities in detail.
+
 ### Additional reference
 
 Check out the [installation documentation](https://aot-technologies.github.io/forms-flow-installation-doc/) for installation instructions and [features documentation](https://aot-technologies.github.io/forms-flow-ai-doc) to explore features and capabilities in detail.

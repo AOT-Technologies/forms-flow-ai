@@ -482,9 +482,9 @@ export const TableFooter = ({
 
 export const NoDataFound = ({message,dataTestId}) => {
   return (
-    <div>
-      <span className="no-data-text" data-testid={dataTestId}>{message}</span>
-    </div>
+    <tbody className="table-empty">
+      <p className="empty-message" data-testid={dataTestId}>{message}</p>
+    </tbody>
   );
 };
 
@@ -575,20 +575,13 @@ ConfirmModal.propTypes = {
 
 export const BackToPrevIcon = ({ onClick, dataTestId, ...props }) => (
   <svg
+    viewBox="0 0 16 16"
+    className="svgIcon-primaryInverse"
     xmlns="http://www.w3.org/2000/svg"
-    width="32"
-    height="33"
-    viewBox="0 0 32 33"
-    fill="none"
     onClick={onClick}
-    data-testid={dataTestId}
-  >
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M29.9998 16.5C29.9998 16.2348 29.8945 15.9805 29.7069 15.7929C29.5194 15.6054 29.2651 15.5 28.9998 15.5H5.41383L11.7078 9.20804C11.8008 9.11507 11.8746 9.00469 11.9249 8.88321C11.9752 8.76173 12.0011 8.63153 12.0011 8.50004C12.0011 8.36855 11.9752 8.23835 11.9249 8.11688C11.8746 7.9954 11.8008 7.88502 11.7078 7.79204C11.6149 7.69907 11.5045 7.62531 11.383 7.575C11.2615 7.52468 11.1313 7.49878 10.9998 7.49878C10.8683 7.49878 10.7381 7.52468 10.6167 7.575C10.4952 7.62531 10.3848 7.69907 10.2918 7.79204L2.29183 15.792C2.19871 15.8849 2.12482 15.9953 2.07441 16.1168C2.024 16.2383 1.99805 16.3685 1.99805 16.5C1.99805 16.6316 2.024 16.7618 2.07441 16.8833C2.12482 17.0048 2.19871 17.1152 2.29183 17.208L10.2918 25.208C10.3848 25.301 10.4952 25.3748 10.6167 25.4251C10.7381 25.4754 10.8683 25.5013 10.9998 25.5013C11.1313 25.5013 11.2615 25.4754 11.383 25.4251C11.5045 25.3748 11.6149 25.301 11.7078 25.208C11.8008 25.1151 11.8746 25.0047 11.9249 24.8832C11.9752 24.7617 12.0011 24.6315 12.0011 24.5C12.0011 24.3686 11.9752 24.2384 11.9249 24.1169C11.8746 23.9954 11.8008 23.885 11.7078 23.792L5.41383 17.5H28.9998C29.2651 17.5 29.5194 17.3947 29.7069 17.2071C29.8945 17.0196 29.9998 16.7653 29.9998 16.5Z"
-      fill="white"
-    />
+    data-testid={dataTestId}>
+      
+    <path d="M15 8L1 8M1 8L5 3M1 8L5 13"/>
   </svg>
 );
 
@@ -665,9 +658,9 @@ export const ReusableProcessTableRow = ({ item, buttonLabel, dataTestId="reusabl
       <td className="w-25">
         <span className="d-flex justify-content-end">
           <button
-            className="btn btn-secondary btn-sm"
             aria-label={`Edit ${item.processKey} Button`}
             data-testid={`edit-button-${item.processKey}`}
+            actionTable
           >
             Edit
           </button>
@@ -796,18 +789,11 @@ export const AngleLeftIcon = ({
  
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="10"
-        height="15"
         viewBox="0 0 10 15"
-        fill="none"
         onClick={onClick}
+        className="svgIcon-primary"
       >
-        <path
-          d="M8.2501 14.0005L1.74951 7.4999L8.24951 0.999901"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="M11.7503 1.99971L5.24972 8.50029L11.7497 15.0003"/>
       </svg>
   );
 }

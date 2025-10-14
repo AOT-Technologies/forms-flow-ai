@@ -79,3 +79,4 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
         data_key="includeSubmissionsCount", required=False
     )
     parentFormId = fields.Str(data_key="parentFormId", required=False)
+    all_forms = fields.Bool(data_key="allForms", required=False)

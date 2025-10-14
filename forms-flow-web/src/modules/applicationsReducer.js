@@ -12,7 +12,7 @@ export const initialState = {
   applicationCount: 0,
   applicationDetailStatusCode: "",
   activePage: 1,
-  countPerPage: 5,
+  countPerPage: 10,
   applicationStatus: [],
   iserror: false,
   error: "",

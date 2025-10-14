@@ -10,7 +10,6 @@ import {
 } from "@aot-technologies/formio-react";
 import {
   V8CustomButton,
-  ConfirmModal,
   FormBuilderModal,
   HistoryModal,
   ImportModal,
@@ -109,8 +108,8 @@ const tabConfig = {
       query: "?tab=bpmn",
       secondary: {
         editor: {
-          label: "Editor",
-          query: "?tab=bpmn&sub=editor"
+          label: "Layout",
+          query: "?tab=bpmn&sub=layout"
         },
         history: {
           label: "History",
@@ -978,6 +977,16 @@ const handleSaveLayout = () => {
     setShowConfirmModal(false);
   };
 
+  const handleWorkflowDiscard = () => {
+    // Handle workflow discard similar to FlowEdit.js handleDiscardConfirm
+    if (flowRef.current) {
+      // Import the existing process data back to the BPMN editor
+      flowRef.current?.handleImport(processData?.processData);
+      // Reset workflow change state
+      setWorkflowIsChanged(false);
+    }
+  };
+
   const editorActions = () => {
     setNewActionModal(true);
   };
@@ -1285,17 +1294,25 @@ const handleSaveLayout = () => {
           primaryBtnText: t("Unpublish This Form & Flow"),
           secondaryBtnText: t("Cancel, Keep This Form & Flow Published"),
         };
-      case "discard":
-        return {
-          title: t("Discard Layout Changes?"),
-          message:
-            t("Are you sure you want to discard all the changes to the layout of the form?"),
-          messageSecondary: t("This action cannot be undone."),
-          primaryBtnAction: discardChanges,
-          secondaryBtnAction: closeModal,
-          primaryBtnText: t("Yes, Discard Changes"),
-          secondaryBtnText: t("No, Keep My Changes"),
-        };
+       case "discard":
+         return {
+           title: t("Discard Changes?"),
+           message:
+             t("Discarding changes is permanent and cannot be undone.?"),
+             secondaryBtnAction : () => {
+             if (formChangeState.changed) {
+               discardChanges();
+             }
+             if (workflowIsChanged) {
+               // Handle workflow discard similar to FlowEdit.js
+               handleWorkflowDiscard();
+             }
+             closeModal();
+           },
+           primaryBtnAction: closeModal,
+           secondaryBtnText: t("Discard Changes"),
+           primaryBtnText: t("cancel"),
+         };
       case "unpublishBeforeSaving":
         return {
           title: "Unpublish Before Saving",
@@ -1405,28 +1422,28 @@ const handleSaveLayout = () => {
   console.log(formDetails, "formDetails",rolesState, "rolesState",isAnonymous, "isAnonymous");
 
   const renderDeleteModal = () => {
-    const hasSubmissions = processListData.id && applicationCount;
+    // const hasSubmissions = processListData.id && applicationCount;
     const commonProps = {
       show: selectedAction === ACTION_OPERATIONS.DELETE,
       primaryBtnAction: handleCloseActionModal,
       onClose: handleCloseActionModal,
     };
 
-    if (hasSubmissions) {
-      return (
-        <ConfirmModal
-          {...commonProps}
-          title={t("You Cannot Delete This Form & Flow")}
-          message={<CustomInfo heading={t("Note")} content={t(
-            "You cannot delete a form & flow that has submissions associated with it."
-          )} />}
-          secondaryBtnAction={handleCloseActionModal}
-          secondaryBtnText={t("Dismiss")}
-          secondoryBtndataTestid="dismiss-button"
-          secondoryBtnariaLabel="Dismiss button"
-        />
-      );
-    } else {
+    // if (hasSubmissions) {
+    //   return (
+    //     <ConfirmModal
+    //       {...commonProps}
+    //       title={t("You Cannot Delete This Form & Flow")}
+    //       message={<CustomInfo heading={t("Note")} content={t(
+    //         "You cannot delete a form & flow that has submissions associated with it."
+    //       )} />}
+    //       secondaryBtnAction={handleCloseActionModal}
+    //       secondaryBtnText={t("Dismiss")}
+    //       secondoryBtndataTestid="dismiss-button"
+    //       secondoryBtnariaLabel="Dismiss button"
+    //     />
+    //   );
+    // } else {
       return (
         <PromptModal
           {...commonProps}
@@ -1446,7 +1463,7 @@ const handleSaveLayout = () => {
           datatestId="delete-form-modal-message"
         />
       );
-    }
+    // }
   };
 
   const handlePublishClick = () => {
@@ -1659,7 +1676,7 @@ const handleSaveLayout = () => {
                 {createDesigns && (
                   <>
                   <V8CustomButton
-                  disabled={!formChangeState.changed}
+                  disabled={!formChangeState.changed && !workflowIsChanged}
                   label={t("Save")}
                   onClick={
                     isPublished
@@ -1734,7 +1751,7 @@ const handleSaveLayout = () => {
                     <V8CustomButton
                       label={t("Discard Changes")}
                       onClick={() => openConfirmModal("discard")}
-                      disabled={!formChangeState.changed}
+                      disabled={!formChangeState.changed && !workflowIsChanged}
                       dataTestId="discard-button-testid"
                       ariaLabel={t("Discard Changes Button")}
                       secondary
@@ -1818,7 +1835,7 @@ const handleSaveLayout = () => {
       />
 
       {showConfirmModal && (
-        <ConfirmModal
+        <PromptModal
           show={showConfirmModal}
           title={modalContent.title}
           message={modalContent.message}
@@ -1828,7 +1845,7 @@ const handleSaveLayout = () => {
           secondaryBtnAction={modalContent.secondaryBtnAction}
           primaryBtnText={modalContent.primaryBtnText}
           secondaryBtnText={modalContent.secondaryBtnText}
-          size="md"
+          type="warning"
         />
       )}
 

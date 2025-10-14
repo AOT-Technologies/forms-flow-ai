@@ -140,25 +140,25 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
   };
 
   const columns = [
-    { field: "id", headerName: t("Submission ID"), flex: 1.5, sortable: true },
+    { field: "id", headerName: t("Submission ID"), flex: 1, sortable: true },
     {
       field: "created",
       headerName: t("Submitted On"),
       flex: 1,
       sortable: true,
-      renderCell: (params) => HelperServices.getLocalDateAndTime(params.value),
+      renderCell: (params) => HelperServices.getLocaldate(params.value),
     },
     {
       field: "modified",
       headerName: t("Last Modified On"),
       flex: 1,
       sortable: true,
-      renderCell: (params) => HelperServices.getLocalDateAndTime(params.value),
+      renderCell: (params) => HelperServices.getLocaldate(params.value),
     },
     {
       field: "isDraft",
       headerName: t("Type"),
-      flex: 0.8,
+      flex: 1,
       sortable: true,
       renderCell: (params) => (
         <span className="d-flex align-items-center">
@@ -198,7 +198,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
           return (
             <div>
               <V8CustomButton
-                variant="secondary"
+                variant="warning"
                 label={t("Delete")}
                 onClick={() => deleteDraft(item)}
                 className="me-2"

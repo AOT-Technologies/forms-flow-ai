@@ -11,7 +11,6 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
-import { Translation } from "react-i18next";
 import {
   resetFormProcessData
 } from "../../../apiManager/services/processServices";
@@ -40,8 +39,8 @@ function FormTable() {
 
   const pageOptions = [
     {
-      text: "5",
-      value: 5,
+      text: "10",
+      value: 10,
     },
     {
       text: "25",
@@ -102,126 +101,123 @@ function FormTable() {
   };
 
   if (searchFormLoading || isApplicationCountLoading) {
-    return <TableSkeleton columns={5} rows={7} pagination={7} />;
+    return <TableSkeleton columns={5} rows={10} pagination={7} />;
   }
 
   return (
-   <div className="min-height-400">
-          <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm mb-0">
-              <thead className="table-header">
-                <tr>
-                  <th className="w-20">
-                  <SortableHeader
-                   columnKey="formName"
-                   title="Name"
-                   currentSort={formsort}
-                   handleSort={handleSort}
-                   className="gap-2"
-                  />
-                  </th>
-                  <th className="w-30" scope="col">{t("Description")}</th>
-                  <th className="w-13" scope="col">
-                  <SortableHeader
-                  columnKey="modified"
-                  title="Last Edited"
-                  currentSort={formsort}
-                  handleSort={handleSort}
-                  className="gap-2"
-                  />
-                  </th>
-                  <th className="w-13" scope="col">
-                  <SortableHeader
-                    columnKey="visibility"
-                    title="Visibility"
-                    currentSort={formsort}
-                    handleSort={handleSort}
-                    className="gap-2"/>
-                  </th>
-                  <th className="w-12" scope="col" colSpan="4">
-                    <SortableHeader
-                    columnKey="status"
-                    title="Status"
-                    currentSort={formsort}
-                    handleSort={handleSort}
-                    className="gap-2"/>
-                  </th>
-                  <th className="w-12" colSpan="4" aria-label="Search Forms by form title"></th>
-                </tr>
-              </thead>
-
-              {formData?.length ? (
-                <tbody>
-                  {formData?.map((e, index) => {
-                    const isExpanded = expandedRowIndex === index;
-
-                    return (
-                      <tr key={index}>
-                        <td className="w-20">
-                          <div className="d-flex">
-                            <span className="text-container">{e.title}</span>
-                          </div>
-                        </td>
-                        <td className="w-30 cursor-pointer">
-                          <span className={isExpanded ? "text-container-expand" : "text-container"}
-                            onClick={() => toggleRow(index)}
-                            data-testid="description-cell"
-                            >
-                            {stripHtml(e.description ? e.description : "")}
-                          </span>
-                        </td>
-                        <td className="w-13">{HelperServices?.getLocaldate(e.modified)}</td>
-                        <td className="w-13">{e.anonymous ? t("Public") : t("Private")}</td>
-                        <td className="w-12">
-                          <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
-                            {e.status === "active" ? (
-                                <span className="status-live"></span>
-                            ) : (
-                              <span className="status-draft"></span>
-                            )}
-                            {e.status === "active" ? t("Live") : t("Draft")}
-                          </span>
-                        </td>
-                        <td className="w-12 text-end">
-                        {(createDesigns || viewDesigns) && (
-                          <CustomButton
-                            variant="secondary"
-                            size="sm"
-                            label={
-                              <Translation>
-                                {(t) => t(createDesigns ? "Edit" : "View")}
-                              </Translation>
-                            }
-                            onClick={() => viewOrEditForm(e._id, 'edit')}
-                            className=""
-                            dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
-                            ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
-                          /> )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                    {formData.length ? (
-                      <TableFooter
-                      limit={limit}
-                      activePage={pageNo}
-                      totalCount={totalForms}
-                      handlePageChange={handlePageChange}
-                      onLimitChange={onSizePerPageChange}
-                      pageOptions={pageOptions}
-                    />
-                    ) : (
-                      <td colSpan={3}></td>
-                    )}
-                </tbody>
-              ) : !searchFormLoading ? (
-                <NoDataFound
-                message={t('No forms have been found. Create a new form by clicking the "New Form & Flow" button in the top right.')}
+    <div className="custom-table-wrapper-outter">
+      <div className="custom-table-wrapper-inner">
+        <table className="table custom-tables">
+          <thead className="table-header">
+            <tr>
+              
+              <SortableHeader
+                columnKey="formName"
+                title="Name"
+                currentSort={formsort}
+                handleSort={handleSort}
+                className="w-20"
               />
-              ) : null}
-            </table>
-          </div>
-        </div>
+              
+              <th className="w-30" scope="col">{t("Description")}</th>
+              
+              <SortableHeader
+              columnKey="modified"
+              title="Last Edited"
+              currentSort={formsort}
+              handleSort={handleSort}
+              className="w-13"
+              />
+              
+              
+              <SortableHeader
+                columnKey="visibility"
+                title="Visibility"
+                currentSort={formsort}
+                handleSort={handleSort}
+                className="w-13"/>
+              
+              
+                <SortableHeader
+                columnKey="status"
+                title="Status"
+                currentSort={formsort}
+                handleSort={handleSort}
+                className="w-12"/>
+              
+              <th className="text-end" aria-label="Search Forms by form title"></th>
+            </tr>
+          </thead>
+
+          {formData?.length ? (
+            <>
+              <tbody>
+                {formData?.map((e, index) => {
+                  const isExpanded = expandedRowIndex === index;
+
+                  return (
+                    <tr key={index}>
+                      <td className="w-20">
+                        <div className="d-flex">
+                          <span className="text-container">{e.title}</span>
+                        </div>
+                      </td>
+                      <td className="w-30 cursor-pointer">
+                        <span className={isExpanded ? "text-container-expand" : "text-container"}
+                          onClick={() => toggleRow(index)}
+                          data-testid="description-cell"
+                          >
+                          {stripHtml(e.description ? e.description : "")}
+                        </span>
+                      </td>
+                      <td className="w-13">{HelperServices?.getLocaldate(e.modified)}</td>
+                      <td className="w-13">{e.anonymous ? t("Public") : t("Private")}</td>
+                      <td className="w-12">
+                        <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
+                          {e.status === "active" ? (
+                              <span className="status-live"></span>
+                          ) : (
+                            <span className="status-draft"></span>
+                          )}
+                          {e.status === "active" ? t("Live") : t("Draft")}
+                        </span>
+                      </td>
+                      <td className="text-end">
+                      {(createDesigns || viewDesigns) && (
+                        <CustomButton
+                          label={createDesigns ? "Edit" : "View"}
+                          onClick={() => viewOrEditForm(e._id, 'edit')}
+                          dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
+                          ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
+                          actionTable
+                        /> )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </>
+          ) : !searchFormLoading ? (
+            <tbody className="table-empty">
+              <NoDataFound message={t('No forms have been found. Create a new form by clicking the "New Form & Flow" button in the top right.')}/>
+            </tbody>
+          ) : null}
+        </table>
+      </div>
+
+      {formData.length ? (
+        <TableFooter
+          limit={limit}
+          activePage={pageNo}
+          totalCount={totalForms}
+          handlePageChange={handlePageChange}
+          onLimitChange={onSizePerPageChange}
+          pageOptions={pageOptions}
+        />
+      ) : (
+        <></>
+      )}
+    </div>
   );
 }
 

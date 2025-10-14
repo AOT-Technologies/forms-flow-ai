@@ -3,6 +3,7 @@
 import json
 import os
 import tempfile
+import shutil
 import urllib.parse
 import uuid
 from typing import Any, Tuple, Union
@@ -19,6 +20,7 @@ from formsflow_api_utils.utils.pdf import (
 from jinja2 import Environment, FileSystemLoader
 from nested_lookup import get_occurrences_and_values
 
+from formsflow_documents.filters import is_b64image
 from formsflow_documents.utils import DocUtils
 
 
@@ -32,6 +34,7 @@ class PDFService:
         "__form_io_url",
         "__host_name",
         "__chrome_driver_path",
+        "__chrome_driver_timeout",
         "form_id",
         "submission_id",
         "formio",
@@ -45,11 +48,14 @@ class PDFService:
         submission_id: submissionid corresponding to the PDF.
         """
         self.__is_form_adaptor = current_app.config.get("CUSTOM_SUBMISSION_ENABLED")
-        self.__is_enable_compact_form_view = current_app.config.get("ENABLE_COMPACT_FORM_VIEW")
+        self.__is_enable_compact_form_view = current_app.config.get(
+            "ENABLE_COMPACT_FORM_VIEW"
+        )
         self.__custom_submission_url = current_app.config.get("CUSTOM_SUBMISSION_URL")
         self.__form_io_url = current_app.config.get("FORMIO_URL")
         self.__host_name = current_app.config.get("FORMSFLOW_DOC_API_URL")
         self.__chrome_driver_path = current_app.config.get("CHROME_DRIVER_PATH")
+        self.__chrome_driver_timeout = current_app.config.get("CHROME_DRIVER_TIMEOUT")
         self.form_id = form_id
         self.submission_id = submission_id
         self.formio = FormioService()
@@ -90,6 +96,10 @@ class PDFService:
     def __get_chrome_driver_path(self) -> str:
         """Returns the configured chrome driver path."""
         return self.__chrome_driver_path
+
+    def __get_chrome_driver_timeout(self) -> int:
+        """Returns the configured chrome driver timeout."""
+        return self.__chrome_driver_timeout
 
     def __get_headers(self, token):
         """Returns the headers."""
@@ -371,6 +381,7 @@ class PDFService:
             self.__get_render_url(template_name, template_variable_name),
             self.__get_chrome_driver_path(),
             args=self.__get_render_args(timezone, token, bool(template_name)),
+            chrome_driver_timeout=self.__get_chrome_driver_timeout(),
         )
         return pdf_response(pdf, self.generate_pdf_file_name()) if pdf else False
 
@@ -394,6 +405,7 @@ class PDFService:
                 html_content,
                 self.__get_chrome_driver_path(),
                 args=self.__get_render_args(timezone, token, True),
+                chrome_driver_timeout=self.__get_chrome_driver_timeout(),
             )
             return pdf
         except Exception as e:  # pylint:disable=broad-exception-caught
@@ -422,6 +434,21 @@ class PDFService:
         )
         return response
 
+    def copy_templates_to_temp(self, temp_dir):
+        """Copy template.html from the source directory to the temporary directory."""
+        current_app.logger.debug("Copying template.html to temporary directory...")
+        source_dir = os.path.dirname(__file__).replace("services", "templates")
+        source_file = os.path.join(source_dir, "template.html")
+        dest_file = os.path.join(temp_dir, "template.html")
+
+        # Create destination directory if it doesn't exist
+        os.makedirs(temp_dir, exist_ok=True)
+
+        # Copy template.html if it doesn't already exist in the temp directory
+        if os.path.isfile(source_file) and not os.path.exists(dest_file):
+            shutil.copy2(source_file, dest_file)
+            current_app.logger.debug(f"Copied template.html to {temp_dir}")
+
     def create_pdf_from_custom_template(
         self, template_name, template_variable_name, token, timezone
     ):
@@ -440,6 +467,13 @@ class PDFService:
             # Set up Jinja environment with the temp directory
             env = Environment(loader=FileSystemLoader(temp_dir), autoescape=True)
             template_obj = env.get_template(template_name)
+
+            if not template_variable_name:
+                # When generating PDF without template variables,
+                # copy necessary templates to the temporary directory if not already present
+                self.copy_templates_to_temp(temp_dir)
+                # Update the Jinja environment to include the is_signature function
+                env.globals.update(is_signature=is_b64image)
 
             # Render the template directly
             rendered_html = template_obj.render(**render_data)
@@ -460,3 +494,72 @@ class PDFService:
         except Exception as e:  # pylint:disable=broad-exception-caught
             current_app.logger.error(f"Error in direct template rendering: {str(e)}")
         return None
+
+    def generate_pdf_from_template(  # pylint: disable-msg=too-many-locals
+        self,
+        timezone: str,
+        token: str,
+    ) -> Any:
+        """Generate PDF."""
+        # Get render data
+        render_data = self.get_render_data(False, None, token)
+        current_app.logger.debug("Render data received for PDF generation")
+        # Get the template folder path
+        template_dir = self.get_template_path(is_temp=False)
+        current_app.logger.info(f"Template directory: {template_dir}")
+
+        # Setup environment
+        env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+
+        # Override `url_for` to output relative paths like static/style.css
+        # Avoids url_for undefined error outside Flask
+        env.globals["url_for"] = (
+            lambda endpoint, **values: f"static/{values['filename']}"
+        )
+
+        # Load default template and render
+        template = env.get_template("index.html")
+        html = template.render(**render_data)
+
+        # Create a temporary file to store the HTML content
+        fd, temp_html_path = tempfile.mkstemp(suffix=".html")
+        with os.fdopen(fd, "w") as f:
+            f.write(html)
+
+        # Use file:// protocol to access the temporary file
+        temp_url = f"file://{temp_html_path}"  # noqa: E231
+
+        # Move the static files to a temporary directory
+        temp_dir = os.path.join(tempfile.gettempdir())
+        current_app.logger.debug(f"Template directory: {temp_dir}")
+        # Copy static folder only if it doesn't already exist in temp directory
+        temp_static_dir = os.path.join(temp_dir, "static")
+        current_app.logger.debug("Copying static files to temporary directory...")
+        if not os.path.exists(temp_static_dir):
+            # get static files path
+            static_dir = os.path.dirname(__file__)
+            static_dir = static_dir.replace("services", "static")
+            shutil.copytree(static_dir, temp_static_dir)
+        else:
+            current_app.logger.info(
+                "Static folder already exists in temp directory, skipping copy."
+            )
+
+        # Use the existing function to generate PDF from URL
+        pdf = get_pdf_from_html(
+            temp_url,
+            self.__get_chrome_driver_path(),
+            args=self.__get_render_args(timezone, token, False),
+            chrome_driver_timeout=self.__get_chrome_driver_timeout(),
+        )
+        # Clean up temporary file
+        try:
+            os.unlink(temp_html_path)
+        except Exception:  # pylint:disable=broad-exception-caught
+            pass  # Ignore cleanup errors
+
+        return (
+            self.create_pdf_response(pdf, self.generate_pdf_file_name())
+            if pdf
+            else False
+        )

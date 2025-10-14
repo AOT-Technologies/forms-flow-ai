@@ -64,8 +64,8 @@ const ApplicationTable = () => {
 
   const pageOptions = [
     {
-      text: "5",
-      value: 5,
+      text: "10",
+      value: 10,
     },
     {
       text: "25",
@@ -177,7 +177,7 @@ const ApplicationTable = () => {
         text={t("Loading...")}
       >
         <div className="table-responsive" style={{ maxHeight: "75vh", overflowY: "auto" }}>
-        <table className="table custom-table table-responsive-sm">
+        <table className="table custom-table">
           <thead>
             <tr>
               <th>

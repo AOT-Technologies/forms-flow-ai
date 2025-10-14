@@ -14,7 +14,7 @@ const DesignerProcessRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      if (user.some(i => i === "create_designs" || i === "view_designs")) {
+      if (user.some(i => i === "create_designs" || i === "view_designs" || i === "manage_advance_workflows")) {
         return <Component {...props} />;
       } else {
         return <AccessDenied userRoles={user} />;
@@ -41,7 +41,8 @@ const Processes = () => {
   }
 
   return (
-    <div data-testid="Process-index">
+    // <div data-testid="Process-index">
+    <>
       <Switch>
         <Route exact path={`${BASE_ROUTE}:viewType`} component={ProcessTable} />
         <DesignerProcessRoute
@@ -56,7 +57,8 @@ const Processes = () => {
         />
         <Redirect exact to="/404" />
       </Switch>
-    </div>
+      </>
+   //</div> 
   );
 };
 

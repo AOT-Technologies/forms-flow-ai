@@ -23,7 +23,7 @@ import { HelperServices } from '@formsflow/service';
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
   const { t } = useTranslation();
   return (
-    <div className="width-25 search-box">
+   
       <CustomSearch
         search={search}
         setSearch={setSearch}
@@ -34,7 +34,6 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
         title={t("Search Form Name and Description")}
         dataTestId="form-search-input"
       />
-    </div>
   );
 };
 
@@ -129,16 +128,18 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   }, [getFormsInit, pageNo, limit, formSort, searchText]);
 
   return (
-    <div>
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <SearchBar
-          search={search}
-          setSearch={setSearch}
-          handleSearch={handleSearch}
-          handleClearSearch={handleClearSearch}
-          searchLoading={searchFormLoading}
-        />
-        <div className="d-md-flex justify-content-end align-items-center button-align">
+    <>
+      <div className="table-bar">
+        <div className="filters">
+          <SearchBar
+            search={search}
+            setSearch={setSearch}
+            handleSearch={handleSearch}
+            handleClearSearch={handleClearSearch}
+            searchLoading={searchFormLoading}
+          />
+        </div>
+        <div className="actions">
           <FilterSortActions
             showSortModal={showSortModal}
             handleFilterIconClick={() => setShowSortModal(true)}
@@ -156,7 +157,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
         </div>
       </div>
       <ClientTable />
-    </div>
+    </>
   );
 });
 

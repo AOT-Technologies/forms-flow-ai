@@ -7,6 +7,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
+    ANALYZE_SUBMISSIONS_VIEW,
     CREATE_DESIGNS,
     CREATE_FILTERS,
     CREATE_SUBMISSIONS,
@@ -305,6 +306,7 @@ class FormResourceList(Resource):
             CREATE_FILTERS,
             VIEW_FILTERS,
             MANAGE_ALL_FILTERS,
+            ANALYZE_SUBMISSIONS_VIEW,
         ]
     )
     @profiletime
@@ -379,6 +381,7 @@ class FormResourceList(Resource):
         form_type: str = dict_data.get("form_type", None)
         is_active = dict_data.get("is_active", None)
         active_forms = dict_data.get("active_forms", None)
+        all_forms = dict_data.get("all_forms", False)
         # when ignore_designer true, exclude designer priorities like
         # listing both active and inactive forms or listing forms created by the designer.
         ignore_designer = dict_data.get("ignore_designer", False)
@@ -408,6 +411,7 @@ class FormResourceList(Resource):
             is_designer=is_designer,
             active_forms=active_forms,
             include_submissions_count=include_submissions_count,
+            all_forms=all_forms,
         )
         return (
             (
@@ -566,6 +570,7 @@ class FormResourceByFormId(Resource):
             CREATE_FILTERS,
             VIEW_FILTERS,
             MANAGE_ALL_FILTERS,
+            ANALYZE_SUBMISSIONS_VIEW,
         ]
     )
     @profiletime

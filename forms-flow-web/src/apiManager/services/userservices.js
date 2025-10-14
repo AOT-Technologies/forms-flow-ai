@@ -1,5 +1,5 @@
 import API from "../endpoints/index";
-import { StorageService, RequestService } from "@formsflow/service";
+import { RequestService, fetchAndStoreFormioRoles } from "@formsflow/service";
 import { setAccessForForm, setRoleIds } from "../../actions/roleActions";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { setTenantData } from "../../actions/tenantActions";
@@ -7,30 +7,23 @@ import { setTenantData } from "../../actions/tenantActions";
 export const getFormioRoleIds = (...rest) => {
   // eslint-disable-next-line
   const done = rest.length ? rest[0] : () => {};
-  const url = MULTITENANCY_ENABLED ? API.GET_TENANT_DATA : API.FORMIO_ROLES;
+
   return (dispatch) => {
-    RequestService.httpGETRequest(
-      url,
-      {},
-      StorageService.get(StorageService.User.AUTH_TOKEN),
-      true
-    )
-      .then((res) => {
-        const token = res.headers["x-jwt-token"];
-        if (res.data && res.data.form && token) {
-          StorageService.save("formioToken", token);
-          localStorage.setItem("roleIds", JSON.stringify(res.data.form));
-          dispatch(setRoleIds(res.data?.form));
-          dispatch(setAccessForForm(res.data?.form));
+      fetchAndStoreFormioRoles()
+      .then((result) => {
+        if (result.success && result.data?.form) {
+          const form = result.data.form;
+          dispatch(setRoleIds(form));
+          dispatch(setAccessForForm(form));
           if (MULTITENANCY_ENABLED) {
-            dispatch(setTenantData(res.data));
+            dispatch(setTenantData(result.data));
           }
-          done(null, res.data.form);
+          done(null, form);
         } else {
           if (MULTITENANCY_ENABLED) {
             dispatch(setTenantData({}));
           }
-          done(res, null);
+          done(result.error, null);
         }
       })
       .catch((error) => {

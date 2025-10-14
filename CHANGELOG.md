@@ -2,6 +2,103 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.3.0 - 2025-10-14
+
+`Modified`
+
+**forms-flow-web**
+* Form.io token fetching logic has been moved to the service micro-frontend.
+
+`Fixed`
+
+* Sorting is now available for all columns on the review task listing page.
+* Fixed minor issues in Reviewer & Analyze Submissions page.
+* Fixed PDF generation issue with a generic custom theme.
+
+*Upgrade notes:*
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.3.11
+
+`Generic Changes`
+
+* Fixed security vulnerabilities
+
+`Known Issues`
+
+* Select boxes are not displayed in the review filter search and analyze-submission side filter due to existing limitations.
+* If a new major version of a form is created after the Task filter is configured on the reviewer page, the filter will continue retrieving submissions from the previous form version. The new version will only be reflected once the form is reselected in the filter.
+* In single domain instances, Reviewer action may fail. As a quick fix refer [here](https://aottech.atlassian.net/browse/FWF-5201?focusedCommentId=32131).
+* A fix has been implemented allowing users with only the “Manage Advanced Flows” permission to publish subflows and DMNs.
+In a multitenant environment, this change may apply to existing tenants only after creating a new tenant or adding authorizations in the Camunda deployment. Refer [here](https://aottech.atlassian.net/browse/FWF-5304?focusedCommentId=32506)
+* When editing filters in the reviewer page, unchecking or checking one variable (e.g., name) causes another variable (task) to be unintentionally affected.
+* Deploying workflows(subflows) with a Message Start Event fails if another deployed workflow already uses the same message name. This results in a Camunda deployment error indicating a duplicate message event subscription.
+
+
+## 7.2.0 - 2025-08-14
+
+`Added`
+
+**forms-flow-tools**
+* Added Git management tools
+   * Added pre-push check for testing changes
+
+**forms-flow-web**
+* Added collapsible search UI to support data-layer in analyze submissions.
+
+**forms-flow-documents**
+* Added new environment variable:
+   * CHROME_DRIVER_TIMEOUT to specify timeout for the chrome driver to wait for the page to load
+
+**forms-flow-api**
+* Added the `submissions_filter` table to store user-specific filter preferences for analyzing submissions.
+* Added the `default_submissions_filter` column to the user table to record each user's default filter for submission analysis.
+* Implemented new endpoints for managing analyze submissions filters:
+   * `/submissions-filter` for creating, updating, and listing filters.
+   * `/submissions-filter/<id>` for retrieving or deleting a filter by its ID.
+* Added alembic migration script to set roles to empty for attribute filters with no users. 
+This prevents the need to update attribute filters every time a task filter is modified, except in the case of private attribute filters.
+
+**forms-flow-idm**
+* To migrate the new roles(permissions) to the exsiting groups Refer [here](./forms-flow-idm/migration/README.md#720)
+
+`Modified`
+
+**forms-flow-api**
+* Updated create_filters description from "Manage filters you create" to “Manage personal filters”
+* Introduced the allForms parameter in the form list endpoint to retrieve both active and inactive forms.
+
+**forms-flow-data-layer**
+* Updated data layer to support field-level searches within individual forms or across all submissions in analyze-submissions.
+
+`Fixed`
+
+* Task filters no longer require manual selection for 'tasks accessible to'; the current user is automatically selected when not explicitly chosen.
+* Fixed the issue where the SUBMIT tab was incorrectly highlighted instead of the ANALYZE > SUBMISSIONS tab when viewing submission details from ANALYZE.
+
+*Upgrade notes:*
+
+**forms-flow-api**
+
+   * Flask version upgraded from 3.1.0 to 3.1.1
+
+**forms-flow-data-analysis-api**
+
+   * Flask version upgraded from 3.1.0 to 3.1.1
+
+`Generic Changes`
+
+* Added UI changes to support data-layer implementation for Analyze submissions in micro-frontend.
+
+`Known Issues`
+
+* Selectboxes, textAreaWithAnalysis and survey form components cannot be selected in the variable selection modal.
+* Some advanced components (with data types other than text or number) may not function correctly when used in field filters on the reviewer listing page.
+* Certain advanced components may not display their values in the reviewer listing page.
+* Sorting is not available for all columns on the review task listing page.
+* The date field filter in Analyze Submissions currently supports only the DD-MM-YYYY date format.
+
 
 ## 7.1.0 - 2025-07-01
 
@@ -86,6 +183,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 **formsflow-bpm**
 * FormAccessTokenCacheListener is removed from the codebase (As outlined in the Removed section of the  forms-flow-bpm [v4.0.5](./CHANGELOG.md#405---2022-04-19))
+* Exposed Camunda delete API for process-instance, process-definition, task, deployment.
 
 *Upgrade notes:*
 
@@ -141,6 +239,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 `Modified`
 * Issue with Simple conditional logic option of formio components not returning component names fixed
+
 
 
 ## 7.0.0 - 2025-01-10

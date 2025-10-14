@@ -59,8 +59,8 @@ const BaseRouting = React.memo(
       return <LandingPage />;
     }
     return (
-      <div className="container  mt-4">
-        <div className="min-container-height ps-md-3">
+      <div className="page-content">
+        
           <ToastContainer
           position="bottom-right"
           autoClose={3000}
@@ -92,7 +92,6 @@ const BaseRouting = React.memo(
             </Route>
             <Route path="/404" exact={true} component={NotFound} />
           </Switch>
-        </div>
         {isAuth ? <Footer /> : null}
       </div>
     );

@@ -31,7 +31,7 @@ const ProcessTable = React.memo(() => {
   const isBPMN = viewType === "subflow";
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const { createDesigns } = userRoles();
+  const { createDesigns, manageAdvancedWorkFlows } = userRoles();
   const ProcessContents = isBPMN
     ? {
       processType: "BPMN",
@@ -65,16 +65,16 @@ const ProcessTable = React.memo(() => {
   const sortConfig = useSelector((state) =>
     isBPMN ? state.process.bpmsort : state.process.dmnSort
   );
-
+  
   const [bpmnState, setBpmnState] = useState({
     activePage: 1,
-    limit: 5,
+    limit: 10,
     sortConfig: sortConfig,
   });
 
   const [dmnState, setDmnState] = useState({
     activePage: 1,
-    limit: 5,
+    limit: 10,
     sortConfig: sortConfig,
   });
   const [searchDMN, setSearchDMN] = useState(searchTextDMN || "");
@@ -254,8 +254,8 @@ const ProcessTable = React.memo(() => {
 
   return (
     <>
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <div className="d-md-flex align-items-center p-0 search-box input-group input-group width-25">
+      <div className="table-bar">
+        <div className="filters">
           <CustomSearch
             search={search}
             setSearch={isBPMN ? setSearchBPMN : setSearchDMN}
@@ -267,7 +267,7 @@ const ProcessTable = React.memo(() => {
             dataTestId={`${ProcessContents.processType}-search-input`}
           />
         </div>
-        <div className="d-md-flex justify-content-end align-items-center button-align">
+        <div className="actions">
           <FilterSortActions
             showSortModal={showSortModal}
             handleFilterIconClick={handleFilterIconClick}
@@ -282,58 +282,49 @@ const ProcessTable = React.memo(() => {
             refreshDataTestId={ProcessContents.refreshDataTestId}
             refreshAriaLabel={ProcessContents.refreshAriaLabel}
           />
-          {createDesigns && (<CustomButton
-            variant="primary"
-            size="sm"
+          {(createDesigns || manageAdvancedWorkFlows) && (<CustomButton
             label={t(`New ${ProcessContents.processType}`)}
             onClick={handleCreateProcess}
             dataTestid={`create-${ProcessContents.processType}-button`}
             ariaLabel={` Create ${ProcessContents.processType}`}
+            action
           />)}
         </div>
       </div>
-      {isLoading ? <TableSkeleton columns={5} rows={7} /> :
-        <div className="min-height-400 pt-3">
-          <div className="custom-tables-wrapper">
-            <table className="table custom-tables table-responsive-sm">
+      {isLoading ? <TableSkeleton columns={5} rows={10} /> :
+        <div className="custom-table-wrapper-outter">
+          <div className="custom-table-wrapper-inner">
+            <table className="table custom-tables">
               <thead className="table-header">
                 <tr>
-                  <th className="w-25" scope="col">
                     <SortableHeader
                       columnKey="name"
                       title="Name"
                       currentSort={sortConfig}
                       handleSort={handleSort}
-                      className="gap-2"
+                      className="w-25"
                     />
-                  </th>
-                  <th className="w-20" scope="col">
                     <SortableHeader
                       columnKey="processKey"
                       title="ID"
                       currentSort={sortConfig}
                       handleSort={handleSort}
-                      className="gap-2"
+                      className="w-20"
                     />
-                  </th>
-                  <th className="w-15" scope="col">
                     <SortableHeader
                       columnKey="modified"
                       title="Last Edited"
                       currentSort={sortConfig}
                       handleSort={handleSort}
-                      className="gap-2"
+                      className="w-15"
                     />
-                  </th>
-                  <th className="w-15" scope="col">
                     <SortableHeader
                       columnKey="status"
                       title="Status"
                       currentSort={sortConfig}
                       handleSort={handleSort}
-                      className="gap-2"
+                      className="w-15"
                     />
-                  </th>
                   <th
                     className="w-25"
                     colSpan="4"
@@ -342,6 +333,7 @@ const ProcessTable = React.memo(() => {
                 </tr>
               </thead>
               {processList.length ? (
+                <>
                 <tbody>
                   {processList.map((processItem) => (
                     <ReusableProcessTableRow
@@ -351,28 +343,38 @@ const ProcessTable = React.memo(() => {
                       buttonLabel={ProcessContents.processType}
                     />
                   ))}
-                  <TableFooter
-                    limit={currentState.limit}
-                    activePage={currentState.activePage}
-                    totalCount={totalCount}
-                    handlePageChange={handlePageChange}
-                    onLimitChange={onLimitChange}
-                    pageOptions={[
-                      { text: "5", value: 5 },
-                      { text: "10", value: 10 },
-                      { text: "25", value: 25 },
-                      { text: "50", value: 50 },
-                      { text: "100", value: 100 },
-                      { text: "All", value: totalCount },
-                    ]}
-                  />
                 </tbody>
-              ) : (
-                !isLoading &&  <NoDataFound message={t(`${ProcessContents.message}`)} />
-              )}
+                </>
+              ) : !isLoading ? (
+                <tbody className="table-empty">
+                  <NoDataFound message={t(`${ProcessContents.message}`)} />
+                </tbody>
+              ) : null}
             </table>
           </div>
-        </div>}
+
+          
+
+          {processList.length ? (
+            <TableFooter
+                limit={currentState.limit}
+                activePage={currentState.activePage}
+                totalCount={totalCount}
+                handlePageChange={handlePageChange}
+                onLimitChange={onLimitChange}
+                pageOptions={[
+                  { text: "10", value: 10 },
+                  { text: "25", value: 25 },
+                  { text: "50", value: 50 },
+                  { text: "100", value: 100 },
+                  { text: "All", value: totalCount },
+                ]}
+              />
+            ) : (
+              <></>
+            )}
+        </div>
+      }
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}

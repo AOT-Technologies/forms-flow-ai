@@ -2,12 +2,13 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import startCase from "lodash/startCase";
-import { Card } from "react-bootstrap";
+// import { Card } from "react-bootstrap";
 import {
   CustomButton,
   BackToPrevIcon,
   FormSubmissionHistoryModal,
   SubmissionHistoryWithViewButton,
+  DownloadPDFButton,
 } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
@@ -26,7 +27,6 @@ import {
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { HelperServices } from "@formsflow/service";
-import DownloadPDFButton from "../../../components/Form/ExportAsPdf/downloadPdfButton";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
 import userRoles from "../../../constants/permissions";
@@ -153,51 +153,51 @@ const ViewApplication = React.memo(() => {
   return (
     <div>
       {/* Header Section */}
-      <Card className="editor-header">
-        <Card.Body>
-          <div className="d-flex justify-content-between align-items-center">
-            {/* Left: Back Icon & Application Name */}
-            <div className="d-flex align-items-center">
-              <BackToPrevIcon onClick={backToSubmissionList} />
-              <div className="ms-4 editor-header-text">
-                {startCase(applicationDetail.applicationName)}
-              </div>
-            </div>
 
-            {/* Center: Submitted On Date - Right Aligned */}
-            <div
-              data-testid="submissions-details"
-              className="d-flex align-items-center white-text ms-auto me-4"
-            >
-              <span className="status-live"></span>
-              {t("Submitted On")}:{" "}
-              <span data-testid="submissions-date">
-                {HelperServices?.getLocalDateAndTime(applicationDetail.created)}
-              </span>
-            </div>
+      <div className="nav-bar">
+        <div className="icon-back" onClick={backToSubmissionList}>
+          <BackToPrevIcon />
+        </div>
 
-            {/* Right: Buttons */}
-            <div className="form-submission-button">
-              {(viewSubmissionHistory || 
-              analyze_submissions_view_history) && (
-                <CustomButton
-                  variant="gray-dark"
-                  size="table"
-                  label={t("History")}
-                  dataTestId="handle-submission-history-testid"
-                  ariaLabel={t("Submission History Button")}
-                  onClick={() => setShowHistoryModal(true)}
-                />
-              )}
-              <DownloadPDFButton
-                form_id={form._id}
-                submission_id={submission._id}
-                title={form.title}
-              />
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+        <div className="description">
+          <p className="text-main">
+            {startCase(applicationDetail.applicationName)}
+          </p>
+
+          <p className="status" data-testid={`form-status-${form._id}`}>
+            <span className="status-live"></span>
+
+            {t("Submitted on:")}&nbsp;
+
+            <span className="date" data-testid="submissions-date">
+              {HelperServices?.getLocalDateAndTime(applicationDetail.created)}
+            </span>
+
+            {/* <span data-testid="submissions-date">{HelperServices?.getLocalDateAndTime(applicationDetail.created)}</span> */}
+          </p>
+        </div>
+
+        <div className="buttons">
+          {((isFromFormEntries && viewSubmissionHistory) ||
+  (!isFromFormEntries && analyze_submissions_view_history)) && (
+          <CustomButton
+            label={t("History")}
+            dataTestId="handle-submission-history-testid"
+            ariaLabel={t("Submission History Button")}
+            onClick={() => setShowHistoryModal(true)}
+            dark
+          />
+          )}
+
+          {(form?._id && submission?._id) && <DownloadPDFButton
+            form_id={form._id}
+            submission_id={submission._id}
+            title={form.title}
+          />}
+        </div>
+      </div>
+      
+      
 
       {/* View Application Details */}
       <View page="application-detail" />

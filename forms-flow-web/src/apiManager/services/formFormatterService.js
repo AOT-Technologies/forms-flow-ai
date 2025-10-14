@@ -12,10 +12,10 @@ export const manipulatingFormData = (
   newFormData.submissionAccess = submissionAccess;
   newFormData.access = formAccess;
   if (MULTITENANCY_ENABLED && tenantKey) {
-    if (newFormData.path) {
+    if (newFormData.path && !newFormData.path.includes(tenantKey)) {
       newFormData.path = addTenantkey(newFormData.path, tenantKey);
     }
-    if (newFormData.name) {
+    if (newFormData.name && !newFormData.name.includes(tenantKey)) {
       newFormData.name = addTenantkey(newFormData.name, tenantKey);
     }
   }

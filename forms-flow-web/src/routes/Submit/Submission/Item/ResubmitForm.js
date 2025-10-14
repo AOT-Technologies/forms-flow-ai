@@ -185,8 +185,13 @@ const Resubmit = React.memo(() => {
     }
   };
 
+  let scrollableOverview = "user-form-container";
+  if (form?.display === "wizard") {
+    scrollableOverview =  "user-form-container-with-wizard";
+  }
+
   const renderHeader = () => (
-    <Card className="user-form-header">
+    <Card className="nav-bar user-form-header">
       <Card.Body>
         <SubmissionError
           modalOpen={submissionError.modalOpen}
@@ -225,7 +230,7 @@ const Resubmit = React.memo(() => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className="wizard-tab user-form-container">
+        <div className={`wizard-tab ${scrollableOverview}`}>
             <Form
               form={form}
               submission={isFormSubmissionLoading ? updatedSubmissionData : submissionState}

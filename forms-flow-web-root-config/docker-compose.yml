@@ -5,13 +5,13 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.1.0/forms-flow-web.gz.js}
-        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v7.1.0/forms-flow-nav.gz.js}
-        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v7.1.0/forms-flow-service.gz.js}
-        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.1.0/forms-flow-components.gz.js}
-        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.1.0/forms-flow-admin.gz.js}
-        - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v7.1.0/forms-flow-review.gz.js}
-        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v7.1.0/forms-flow-submissions.gz.js}
+        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.3.0/forms-flow-web.gz.js}
+        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v7.3.0/forms-flow-nav.gz.js}
+        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v7.3.0/forms-flow-service.gz.js}
+        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.3.0/forms-flow-components.gz.js}
+        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v7.3.0/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v7.3.0/forms-flow-review.gz.js}
+        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v7.3.0/forms-flow-submissions.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
     environment:

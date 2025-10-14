@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
-import { Card } from "react-bootstrap";
+// import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
 import userRoles from "../../../constants/permissions";
@@ -12,7 +12,7 @@ import {
   setApplicationLoading
 } from "../../../actions/applicationActions";
 import { navigateToSubmitFormsListing, navigateToNewSubmission } from "../../../helper/routerHelper";
-import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon } from "@formsflow/components";
+import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon, ButtonDropdown } from "@formsflow/components";
 import { HelperServices } from '@formsflow/service';
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
@@ -73,11 +73,33 @@ const DraftsAndSubmissions = () => {
   const [showSortModal, setShowSortModal] = useState(false);
 
   // Dropdown filter options
+  // const dropdownItems = [
+  //   { label: t("All"), onClick: () => handleSelection("All"), dataTestId: "all-submissions-button", ariaLabel: "View all submissions" },
+  //   { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
+  //   { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
+  // ];
+
   const dropdownItems = [
-    { label: t("All"), onClick: () => handleSelection("All"), dataTestId: "all-submissions-button", ariaLabel: "View all submissions" },
-    { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
-    { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
+    {
+      content: <span>{t("All")}</span>,
+      onClick: () => handleSelection("All"),
+      dataTestId: "all-submissions-button",
+      ariaLabel: "View all submissions",
+    },
+    {
+      content: <span>{t("Draft")}</span>,
+      onClick: () => handleSelection("Draft"),
+      dataTestId: "draft-submissions-button",
+      ariaLabel: "View draft submissions",
+    },
+    {
+      content: <span>{t("Submissions")}</span>,
+      onClick: () => handleSelection("Submissions"),
+      dataTestId: "completed-submissions-button",
+      ariaLabel: "View completed submissions",
+    },
   ];
+  
  //options for sortmodal
  const optionSortBy = [   
     { value: "id", label: t("Submission Id") },
@@ -144,33 +166,31 @@ const DraftsAndSubmissions = () => {
   }, [pageNo, limit, applicationSort, search, selectedItem, parentFormId,formId]);
 
   return (
-    <div>
+    <>
       {/* Header */}
-      <Card className="editor-header">
-        <Card.Body>
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
-              <BackToPrevIcon onClick={redirectBackToForm} data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
-              <div className="mx-4 editor-header-text">
-                {formName}
-              </div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+      <div className="nav-bar">
+        <div className="icon-back" onClick={redirectBackToForm}>
+          <BackToPrevIcon data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
+        </div>
+
+        <div className="description">
+          <p className="text-main">
+            {formName || ""}
+          </p>
+        </div>
+      </div>
 
       {/* Actions */}
-      <div className="d-md-flex justify-content-between align-items-center pb-3 flex-wrap">
-        <div className="d-md-flex justify-content-start align-items-center button-align">
-          <CustomButton
-            className="appliation-dropdown"
-            isDropdown
-            variant="primary"
-            size="sm"
+      <div className="table-bar">
+        <div className="filters">
+
+          <ButtonDropdown
             label={t(selectedItem)}
             dropdownItems={dropdownItems}
-            data-testid="submission-filter-dropdown"
-            aria-label="Submission Filter Dropdown"
+            dropdownType="DROPDOWN_ONLY"
+            dataTestId="submission-filter-dropdown"
+            ariaLabel="Submission Filter Dropdown"
+            className="input-filter"
           />
           <ConnectIcon />
           <SearchBar
@@ -184,7 +204,7 @@ const DraftsAndSubmissions = () => {
           />
         </div>
 
-        <div className="d-md-flex justify-content-end align-items-center button-align">
+        <div className="actions">
           <FilterSortActions
             showSortModal={showSortModal}
             handleSortApply={handleSortApply}
@@ -198,12 +218,11 @@ const DraftsAndSubmissions = () => {
             refreshDataTestId="form-list-refresh"
           />
           {createSubmissions && <CustomButton
-            variant="primary"
-            size="sm"
             label={t("New Submission")}
             onClick={submitNewForm}
             dataTestId="create-form-button"
             ariaLabel="Create Form"
+            action
           />}
         </div>
       </div>
@@ -212,7 +231,7 @@ const DraftsAndSubmissions = () => {
       <SubmissionsAndDraftTable
         fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
       />
-    </div>
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ import PubSub from "pubsub-js";
 import microfrontendLayout from "./microfrontend-layout.html";
 import multitenantLayout from "./microfrontend-multitenant-layout.html";
 import { register as registerServiceWorker } from './serviceWorkerSetup';
+import { applyCompactFormStyles } from "@formsflow/service";
 
 // PubSub methods
 const publish = (event, data) => PubSub.publish(event, data);
@@ -51,6 +52,9 @@ registerServiceWorker({
     }
   },
 });
+// 🧠 Compact form view
+const ENABLE_COMPACT_FORM_STYLE =
+  window._env_?.REACT_APP_ENABLE_COMPACT_FORM_VIEW === "true";
 
 // Multi-tenancy
 const MULTI_TENANCY_ENABLED =
@@ -116,6 +120,9 @@ function loadCustomTheme() {
 
 // ======= 🚀 Load Theme then Start Single SPA ========
 loadCustomTheme().then(() => {
+   if (ENABLE_COMPACT_FORM_STYLE) {
+    applyCompactFormStyles(); // ✅ apply once globally
+  }
   layoutEngine.activate();
   start();
 });

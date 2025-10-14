@@ -4,7 +4,7 @@ Flask-Caching==2.3.1
 Flask-Migrate==4.1.0
 Flask-Moment==1.0.6
 Flask-SQLAlchemy==3.1.1
-Flask==3.1.0
+Flask==3.1.1
 Jinja2==3.1.6
 Mako==1.3.9
 MarkupSafe==3.0.2
@@ -30,15 +30,15 @@ flake8-import-order==0.18.2
 flask-jwt-oidc==0.8.0
 flask-marshmallow==1.3.0
 flask-restx==1.3.0
-formsflow_api_utils @ git+https://github.com/aot-technologies/forms-flow-ai.git@release/7.1.0#subdirectory=forms-flow-api-utils
+formsflow_api_utils @ git+https://github.com/aot-technologies/forms-flow-ai.git@release/7.3.0#subdirectory=forms-flow-api-utils
 fsspec==2025.3.0
 googleapis-common-protos==1.69.2
 grpcio==1.71.0
 gunicorn==23.0.0
-h11==0.14.0
-h2==4.2.0
+h11==0.16.0
+h2==4.3.0
 hpack==4.1.0
-huggingface-hub==0.29.3
+huggingface-hub==0.34.3
 hyperframe==6.1.0
 idna==3.10
 importlib_metadata==8.6.1
@@ -67,7 +67,7 @@ opentelemetry-semantic-conventions==0.52b0
 opentelemetry-util-http==0.52b0
 outcome==1.3.0.post0
 packaging==24.2
-protobuf==5.29.3
+protobuf==5.29.5
 psycopg2-binary==2.9.10
 pyOpenSSL==25.0.0
 pyasn1==0.4.8
@@ -81,7 +81,7 @@ pytz==2025.1
 redis==5.2.1
 referencing==0.36.2
 regex==2024.11.6
-requests==2.32.3
+requests==2.32.4
 rpds-py==0.23.1
 rsa==4.9
 safetensors==0.5.3
@@ -89,20 +89,20 @@ selenium-wire==5.1.0
 selenium==4.29.0
 sentencepiece==0.2.0
 sentry-sdk==2.23.1
-setuptools==76.1.0
+setuptools==80.9.0
 six==1.17.0
 sniffio==1.3.1
 sortedcontainers==2.4.0
-sympy==1.13.1
+sympy==1.14.0
 tokenizers==0.21.1
 tomli==2.2.1
-torch==2.6.0
+torch==2.8.0
 tqdm==4.67.1
-transformers==4.49.0
+transformers==4.54.1
 trio-websocket==0.12.2
 trio==0.29.0
 typing_extensions==4.12.2
-urllib3==2.3.0
+urllib3==2.5.0
 websocket-client==1.8.0
 wrapt==1.17.2
 wsproto==1.2.0

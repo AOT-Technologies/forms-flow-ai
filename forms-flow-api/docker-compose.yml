@@ -11,7 +11,7 @@ services:
       - '6432:5432'
     restart: unless-stopped
     volumes:
-      - ./postgres/webapi:/var/lib/postgresql/data
+      - postgres_webapi:/var/lib/postgresql/data
     networks:
       - forms-flow-webapi-network
 
@@ -79,3 +79,4 @@ networks:
 
 volumes:
   mdb-data:
+  postgres_webapi:

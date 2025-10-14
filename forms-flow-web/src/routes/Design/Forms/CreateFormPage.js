@@ -149,7 +149,7 @@ const CreateFormPage = () => {
       uploadTimerRef.current = setInterval(() => {
         setUploadProgress((prevProgress) => {
           const nextProgress = prevProgress + UPLOAD_PROGRESS_INCREMENT;
-          return nextProgress >= COMPLETE_PROGRESS ? COMPLETE_PROGRESS : nextProgress;
+          return Math.min(nextProgress, COMPLETE_PROGRESS);
         });
       }, UPLOAD_PROGRESS_INTERVAL);
     } else {
@@ -272,7 +272,11 @@ const CreateFormPage = () => {
               onRetry={resetUploadState}
               onDone={resetUploadState}
               file={selectedFile}
-              progress={isUploading ? uploadProgress : selectedFile ? COMPLETE_PROGRESS : 0}
+              progress={(() => {
+                if (isUploading) return uploadProgress;
+                if (selectedFile) return COMPLETE_PROGRESS;
+                return 0;
+              })()}
               error={uploadError}
               ariaLabel={t("Upload .json file area")}
               dataTestId="form-upload-area"
@@ -330,7 +334,7 @@ const CreateFormPage = () => {
               handleFileUpload(file);
             }
           }}
-          aria-hidden="true"
+          tabIndex={-1}
         />
       </div>
     </>

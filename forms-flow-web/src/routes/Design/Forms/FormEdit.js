@@ -1451,7 +1451,7 @@ const handleSaveLayout = () => {
                       onChange={(e) => {
                         params.row.selected = e;
                       }}
-                      aria-label="System variable selection"
+                      aria-label={t("System variable selection")}
                       datatestid={`system-variable-switch-${params.row.variable}`}
                     />
                   ),

@@ -29,7 +29,11 @@ from formsflow_api.models import (
     ProcessStatus,
     ProcessType,
 )
-from formsflow_api.schemas import FormProcessMapperSchema, ProcessDataSchema
+from formsflow_api.schemas import (
+    FormProcessMapperRequestSchema,
+    FormProcessMapperSchema,
+    ProcessDataSchema,
+)
 from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.external.bpm import BPMService
 
@@ -1190,7 +1194,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         return response
 
-    def handle_form_data(self, form_data):
+    def handle_form_data(self, form_data, **kwargs):  # pylint:disable=unused-argument
         """Handler function for form data updates."""
         current_app.logger.debug("Updating form design..")
         form_id = form_data.get("_id")
@@ -1198,7 +1202,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             raise BusinessException(BusinessErrorCode.INVALID_INPUT)
         return FormProcessMapperService.form_design_update(form_data, form_id)
 
-    def handle_mapper_data(self, mapper_data, mapper_id=None):
+    def handle_mapper_data(
+        self, mapper_data, mapper_id=None, **kwargs
+    ):  # pylint:disable=unused-argument
         """Handler function for mapper data updates."""
         if mapper_id is None:
             raise BusinessException(BusinessErrorCode.INVALID_INPUT)
@@ -1214,12 +1220,11 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             mapper_data["taskVariables"] = json.dumps(task_variable)
 
         # Load the mapper data into the schema
-        mapper_schema = FormProcessMapperSchema()
-        dict_data = mapper_schema.load(mapper_data)
+        dict_data = FormProcessMapperRequestSchema().load(mapper_data)
         mapper = FormProcessMapperService.update_mapper(mapper_id, dict_data)
 
         # Dump the updated mapper data into the response schema
-        mapper_response = mapper_schema.dump(mapper)
+        mapper_response = FormProcessMapperSchema().dump(mapper)
         if task_variables := mapper_response.get("taskVariables"):
             mapper_response["taskVariables"] = json.loads(task_variables)
 
@@ -1230,7 +1235,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         return mapper_response
 
-    def handle_authorization_data(self, authorization_data, is_designer=False):
+    def handle_authorization_data(
+        self, authorization_data, is_designer=False, **kwargs
+    ):  # pylint:disable=unused-argument
         """Handler function for authorization updates."""
         current_app.logger.debug("Updating authorization details..")
         AuthorizationService.create_or_update_resource_authorization(
@@ -1238,7 +1245,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         )
         return authorization_data
 
-    def handle_process_data(self, process_data):
+    def handle_process_data(
+        self, process_data, **kwargs
+    ):  # pylint:disable=unused-argument
         """Handler function for process updates."""
         current_app.logger.debug("Updating process details..")
         process_id = process_data.get("id")

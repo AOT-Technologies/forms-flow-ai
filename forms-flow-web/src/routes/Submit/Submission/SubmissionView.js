@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-// import { Card } from "react-bootstrap";
+import { DataGrid } from "@mui/x-data-grid";
+import Paper from "@mui/material/Paper";
 import {
   FormSubmissionHistoryModal,
   SubmissionHistoryWithViewButton,
   DownloadPDFButton,
   V8CustomButton,
-  BreadCrumbs, 
-  BreadcrumbVariant
+  BreadCrumbs,
+  BreadcrumbVariant,
+  RefreshIcon,
 } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
@@ -20,6 +22,7 @@ import View from "../../../routes/Submit/Submission/Item/View";
 import { getForm, getSubmission } from "@aot-technologies/formio-react";
 import NotFound from "../../../components/NotFound";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
@@ -34,6 +37,78 @@ import {
   getProcessDetails,
 } from "../../../apiManager/services/processServices";
 import { navigateToSubmitFormsListing, navigateToFormEntries } from "../../../helper/routerHelper";
+import { HelperServices, StyleServices } from "@formsflow/service";
+
+const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
+  const { t } = useTranslation();
+
+  const columns = [
+    {
+      field: "Completed",
+      headerName: t("Completed"),
+      flex: 1.5,
+      sortable: false,
+    },
+    {
+      field: "created",
+      headerName: t("Created"),
+      flex: 1.5,
+      sortable: false,
+      renderCell: (params) => HelperServices.getLocaldate(params.value),
+    },
+    {
+      field: "applicationStatus",
+      headerName: t("Status"),
+      flex: 1,
+      sortable: false,
+    },
+    {
+      field: "actions",
+      align: "right",
+      sortable: false,
+      renderHeader: () => (
+        <V8CustomButton
+          variant="secondary"
+          icon={<RefreshIcon color={iconColor} />}
+          iconOnly
+          onClick={onRefresh}
+          />
+        )
+    },
+  ];
+
+  const rows = historyData || [];
+
+  return (
+   <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        loading={loading}
+        getRowId={(row) => row.submissionId || `${row.formId}-${row.created}`}
+        disableColumnMenu 
+        localeText={{
+          noRowsLabel: t("No history found"),
+        }}
+        slotProps={{
+          loadingOverlay: {
+            variant: "skeleton",
+            noRowsVariant: "skeleton",
+          },
+        }}
+      />
+    </Paper>
+  );
+};
+
+HistoryDataGrid.propTypes = {
+  historyData: PropTypes.array,
+  onRefresh: PropTypes.func,
+  iconColor: PropTypes.string,
+  loading: PropTypes.bool,
+};
+
+
 const ViewApplication = React.memo(() => {
   const { t } = useTranslation();
   const { applicationId } = useParams();
@@ -61,9 +136,11 @@ const ViewApplication = React.memo(() => {
   const parentFormId = useSelector(
       (state) => state.form.form?.parentFormId
   );
+  const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showHistoryGrid, setShowHistoryGrid] = useState(false);
   const { appHistory, isHistoryListLoading } = useSelector(
     useMemo(
       () => (state) => ({
@@ -73,6 +150,11 @@ const ViewApplication = React.memo(() => {
       []
     )
   );
+
+  const handleHistoryRefresh = () => {
+    dispatch(setUpdateHistoryLoader(true));
+    dispatch(fetchApplicationAuditHistoryList(applicationId));
+  };
 
   useEffect(() => {
     dispatch(setUpdateHistoryLoader(true));
@@ -161,15 +243,15 @@ const ViewApplication = React.memo(() => {
 
   const breadcrumbItems = [
     { id: "submit", label: t("Submit") },
-    { id: "form-title", label: form.title}
+    { id: "form-title", label: form.title },
   ];
 
   const handleBreadcrumbClick = (item) => {
-  if (item.id === "submit") {
+    if (item.id === "submit") {
       redirectBackToForm();
-  }else if (item.id === "form-title") {
+    } else if (item.id === "form-title") {
       handleBack();
-  }
+    }
   };
 
   return (
@@ -188,26 +270,46 @@ const ViewApplication = React.memo(() => {
             </div>
         </div>
 
-        <div className="header-section-2">
-            <div className="section-seperation-left">
-              {((isFromFormEntries && viewSubmissionHistory) ||
-              (!isFromFormEntries && analyze_submissions_view_history)) && (
-                    <V8CustomButton
-                      variant="secondary"
-                      label={t("History")}
-                    />
-               )}
-          {(form?._id && submission?._id) && <DownloadPDFButton
-            form_id={form._id}
-            submission_id={submission._id}
-            title={form.title}
-          />}
-            </div>
+      <div className="header-section-2">
+        <div className="section-seperation-left">
+          {((isFromFormEntries && viewSubmissionHistory) ||
+            (!isFromFormEntries && analyze_submissions_view_history)) && (
+            <>
+              <V8CustomButton
+                variant="secondary"
+                label={t("Form")}
+                selected={!showHistoryGrid}
+                onClick={() => setShowHistoryGrid(false)}
+              />
+              <V8CustomButton
+                variant="secondary"
+                label={t("History")}
+                selected={showHistoryGrid}
+                onClick={() => setShowHistoryGrid(true)}
+              />
+            </>
+          )}
+          {(form?._id && submission?._id) && (
+            <DownloadPDFButton
+              form_id={form._id}
+              submission_id={submission._id}
+              title={form.title}
+            />
+          )}
         </div>
+      </div>
 
-      {/* View Application Details */}
       <div className="body-section">
-        <View page="application-detail" />
+        {showHistoryGrid ? (
+          <HistoryDataGrid
+            historyData={appHistory}
+            onRefresh={handleHistoryRefresh}
+            iconColor={iconColor}
+            loading={isHistoryListLoading}
+          />
+        ) : (
+          <View page="application-detail" />
+        )}
       </div>
       {(analyze_submissions_view_history && !isFromFormEntries) ?  
       <SubmissionHistoryWithViewButton

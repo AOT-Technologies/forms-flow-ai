@@ -1,6 +1,6 @@
 {
   "name": "@formsflow/root-config",
-  "version": "7.1.0",
+  "version": "7.3.0",
   "scripts": {
     "start": "webpack serve --port 3000 --env isLocal",
     "lint": "eslint src --ext js",

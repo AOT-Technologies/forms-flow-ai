@@ -22,6 +22,7 @@ import View from "../../../routes/Submit/Submission/Item/View";
 import { getForm, getSubmission } from "@aot-technologies/formio-react";
 import NotFound from "../../../components/NotFound";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
@@ -98,6 +99,13 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
       />
     </Paper>
   );
+};
+
+HistoryDataGrid.propTypes = {
+  historyData: PropTypes.array,
+  onRefresh: PropTypes.func,
+  iconColor: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
 

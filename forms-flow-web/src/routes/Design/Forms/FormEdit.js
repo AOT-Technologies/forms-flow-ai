@@ -677,6 +677,7 @@ const EditComponent = () => {
     setShowSettingsModal(!showSettingsModal);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
+  const [currentBpmnXml, setCurrentBpmnXml] = useState(null);
   // const [isSettingsSaving, setIsSettingsSaving] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const onCloseActionModal = () => setNewActionModal(false);
@@ -697,50 +698,61 @@ const EditComponent = () => {
   }, [isCreateRoute, isNavigatingAfterSave]);
 
   // Parse URL parameters for tab state
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
+useEffect(() => {
+  const queryParams = new URLSearchParams(location.search);
+  const tab = queryParams.get("tab") || "form";
+  const sub = queryParams.get("sub");
+  let subsub = queryParams.get("subsub");
 
-    // On create route, always default to 'form' tab
-    const tab = isCreateRoute ? "form" : (queryParams.get("tab") || "form");
-    const sub = queryParams.get("sub");
-    let subsub = queryParams.get("subsub");
+  if (tab === 'bpmn' && sub === 'variables' && subsub === null) {
+    subsub = 'system';
+  }
 
-    if (tab === 'bpmn' && sub === 'variables' && subsub === null) {
-      subsub = 'system';
-    }
+  setActiveTab({
+    primary: tab,
+    secondary: sub,
+    tertiary: subsub
+  });
 
-    setActiveTab({
-      primary: tab,
-      secondary: sub,
-      tertiary: subsub
-    });
-
-    // Legacy support for view parameter
-    const view = queryParams.get("view");
-    if (view === "flow") {
-      setCurrentLayout(FLOW_LAYOUT);
-      sideTabRef.current = true;
-    } else {
-      setCurrentLayout(FORM_LAYOUT);
-    }
-  }, [location.search, location.pathname]);
+  // Legacy support for view parameter
+  const view = queryParams.get("view");
+  if (view === "flow") {
+    setCurrentLayout(FLOW_LAYOUT);
+    sideTabRef.current = true;
+  } else {
+    setCurrentLayout(FORM_LAYOUT);
+  }
+}, [location.search, location.pathname, isCreateRoute]);
 
   // Tab navigation functions
-  const handleTabClick = (primary, secondary = null, tertiary = null) => {
+  const handleTabClick = async (primary, secondary = null, tertiary = null) => {
     // Allow BPMN tab on create route
     if (primary === 'bpmn' && secondary === 'variables' && tertiary === null) {
       tertiary = 'system';
     }
-
+  
+    // CAPTURE CURRENT BPMN XML BEFORE SWITCHING AWAY FROM BPMN TAB
+    if (activeTab.primary === 'bpmn' && primary !== 'bpmn') {
+      try {
+        const bpmnModeler = flowRef.current?.getBpmnModeler();
+        if (bpmnModeler) {
+          const { xml } = await bpmnModeler.saveXML({ format: true });
+          setCurrentBpmnXml(xml); // Store in local state
+        }
+      } catch (error) {
+        console.error('Error capturing BPMN XML:', error);
+      }
+    }
+  
     const newTab = { primary, secondary, tertiary };
     setActiveTab(newTab);
-
+  
     // Update URL with new tab parameters
     const queryParams = new URLSearchParams();
     queryParams.set("tab", primary);
     if (secondary) queryParams.set("sub", secondary);
     if (tertiary) queryParams.set("subsub", tertiary);
-
+  
     if (isCreateRoute || !formId) {
       // On create route (no formId yet), preserve current pathname and only change search
       dispatch(
@@ -754,6 +766,7 @@ const EditComponent = () => {
       dispatch(push(newUrl));
     }
   };
+  
 
   const handleCurrentLayout = (e) => {
     //wehn the current is assigned with element then only the visible class will render
@@ -1284,26 +1297,6 @@ const handleSaveLayout = () => {
       // Reset workflow change state
       setWorkflowIsChanged(false);
       
-      // On create route, ensure form still has hidden components after workflow discard
-      if (isCreateRoute) {
-        // Check if form components might have been affected
-        const currentComponents = form.components || [];
-        const hasHiddenComponents = currentComponents.some(
-          comp => comp.key === 'applicationId' || comp.key === 'submit'
-        );
-        
-        if (!hasHiddenComponents) {
-          // Re-add hidden components if they were lost
-          const formWithHiddenComponents = addHiddenApplicationComponent({
-            ...form,
-            components: currentComponents
-          });
-          dispatchFormAction({
-            type: "replaceForm",
-            value: formWithHiddenComponents,
-          });
-        }
-      }
     }
   };
 
@@ -1967,6 +1960,8 @@ const handleSaveLayout = () => {
                   setIsMigrationLoading={setIsMigrationLoading}
                   handleUnpublishAndSaveChanges={handleUnpublishAndSaveChanges}
                   isCreateRoute={isCreateRoute}
+                  currentBpmnXml={currentBpmnXml} 
+                  setCurrentBpmnXml={setCurrentBpmnXml}
                 />
               )}
             </div>

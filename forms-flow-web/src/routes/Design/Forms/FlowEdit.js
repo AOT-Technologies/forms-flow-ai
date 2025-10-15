@@ -59,6 +59,8 @@ const FlowEdit = forwardRef(
       isMigrationLoading,
       setIsMigrationLoading,
       isCreateRoute = false,
+      currentBpmnXml = null,  
+      setCurrentBpmnXml = () => {},
       // handleUnpublishAndSaveChanges,
     },
     ref
@@ -133,9 +135,19 @@ const FlowEdit = forwardRef(
     const handleToggleHistoryModal = () =>
       setShowHistoryModal(!showHistoryModal);
 
-    const enableWorkflowChange = () => {
-      setWorkflowIsChanged(true); // this function passed from parent
-    };
+
+const enableWorkflowChange = async () => {  
+  setWorkflowIsChanged(true); // this function passed from parent
+  try {
+    const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+    if (bpmnModeler) {
+      const { xml } = await bpmnModeler.saveXML({ format: true });
+      setCurrentBpmnXml(xml);
+    }
+  } catch (error) {
+    console.error('Error updating current BPMN XML:', error);
+  }
+};
 
     const disableWorkflowChange = () => {
       setWorkflowIsChanged(false); // this function passed from parent
@@ -391,7 +403,7 @@ const FlowEdit = forwardRef(
                     bpmnXml={
                       isReverted
                         ? historyData?.processData
-                        : (processData?.processData || defaultBpmnXml)
+                        : (currentBpmnXml || processData?.processData || defaultBpmnXml)
                     }
                   />
                 )}
@@ -559,6 +571,8 @@ FlowEdit.propTypes = {
   isMigrationLoading: PropTypes.bool,
   setIsMigrationLoading: PropTypes.func,
   isCreateRoute: PropTypes.bool,
+  currentBpmnXml: PropTypes.string,
+  setCurrentBpmnXml: PropTypes.func,
 };
 
 export default FlowEdit;

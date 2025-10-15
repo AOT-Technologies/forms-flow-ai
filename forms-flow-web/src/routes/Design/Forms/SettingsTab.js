@@ -276,6 +276,7 @@ const SettingsTab = (
           <div className="description-container">
             <p className="settings-labels">Form Description</p>
             <CustomTextArea
+              value={formDetails.description}
               setValue={(val) =>
                 handleFormDetailsChange({
                   target: { name: "description", value: val, type: "text" },
@@ -285,6 +286,7 @@ const SettingsTab = (
               maxRows={3}
               minRows={3}
               id="form-description"
+              dataTestId="form-description"
             />
           </div>
           {/*  need to use custom checkbox when component is ready */}
@@ -323,7 +325,7 @@ const SettingsTab = (
           <DropdownMultiSelect
             dropdownLabel="Who Can View/Edit This Form"
             enableMultiSelect={rolesState?.DESIGN?.selectedOption !== "onlyYou"}
-            inputDropDownSelectedValue={rolesState?.DESIGN?.selectedOption}
+            value={rolesState?.DESIGN?.selectedOption}
             options={[
               {
                 label: t("Only owner"),
@@ -352,7 +354,7 @@ const SettingsTab = (
               enableMultiSelect={
                 rolesState?.FORM?.selectedOption !== "registeredUsers"
               }
-              inputDropDownSelectedValue={rolesState.FORM.selectedOption}
+              value={rolesState.FORM.selectedOption}
               options={[
                 {
                   label: t("Registered users"),
@@ -397,7 +399,7 @@ const SettingsTab = (
             enableMultiSelect={
               rolesState?.APPLICATION?.selectedOption !== "submitter"
             }
-            inputDropDownSelectedValue={rolesState.APPLICATION.selectedOption}
+            value={rolesState.APPLICATION.selectedOption}
             options={[
               {
                 label: t("Submitter"),

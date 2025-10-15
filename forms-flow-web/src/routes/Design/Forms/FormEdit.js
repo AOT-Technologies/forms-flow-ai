@@ -10,7 +10,6 @@ import {
 } from "@aot-technologies/formio-react";
 import {
   V8CustomButton,
-  ConfirmModal,
   FormBuilderModal,
   HistoryModal,
   ImportModal,
@@ -113,8 +112,8 @@ const tabConfig = {
       query: "?tab=bpmn",
       secondary: {
         editor: {
-          label: "Editor",
-          query: "?tab=bpmn&sub=editor"
+          label: "Layout",
+          query: "?tab=bpmn&sub=layout"
         },
         history: {
           label: "History",
@@ -150,7 +149,8 @@ const EditComponent = () => {
   const { t } = useTranslation();
   //this variable handle the flow and layot tab switching
   const sideTabRef = useRef(null);
-
+   // Check if we're on the create route - defined once for reuse
+   const isCreateRoute = location.pathname.includes('/create');
   // Tab state management
   const [activeTab, setActiveTab] = useState({
     primary: 'form',
@@ -246,43 +246,139 @@ const EditComponent = () => {
   const setSelectedOption = (option, roles = []) =>
     roles.length ? "specifiedRoles" : option;
   const multiSelectOptionKey = "role";
-  const [rolesState, setRolesState] = useState({
-    DESIGN: {
-      selectedRoles: convertSelectedValueToMultiSelectOption(
-        formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-        multiSelectOptionKey
-      ),
-      selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
-    },
-    FORM: {
-      roleInput: "",
-      selectedRoles: convertSelectedValueToMultiSelectOption(
-        formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-        multiSelectOptionKey
-      ),
-      selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
-    },
-    APPLICATION: {
-      roleInput: "",
-      selectedRoles: convertSelectedValueToMultiSelectOption(
-        formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-        multiSelectOptionKey
-      ),
-      selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
-      /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
-       we assume that the submitter is true. */
+  // Initialize roles state with proper defaults for new forms
+  const getInitialRolesState = () => {
+    // For new forms (no formId), use default values
+    if (isCreateRoute) {
+      return {
+        DESIGN: {
+          selectedRoles: [],
+          selectedOption: "onlyYou",
+        },
+        FORM: {
+          roleInput: "",
+          selectedRoles: [],
+          selectedOption: "registeredUsers",
+        },
+        APPLICATION: {
+          roleInput: "",
+          selectedRoles: [],
+          selectedOption: "submitter",
+        }
+      };
     }
+    
+    // For existing forms, use authorization data
+    return {
+      DESIGN: {
+        selectedRoles: convertSelectedValueToMultiSelectOption(
+          formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          multiSelectOptionKey
+        ),
+        selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
+      },
+      FORM: {
+        roleInput: "",
+        selectedRoles: convertSelectedValueToMultiSelectOption(
+          formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          multiSelectOptionKey
+        ),
+        selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
+      },
+      APPLICATION: {
+        roleInput: "",
+        selectedRoles: convertSelectedValueToMultiSelectOption(
+          formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          multiSelectOptionKey
+        ),
+        selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
+        /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
+         we assume that the submitter is true. */
+      }
+    };
+  };
 
-  });
-  const [formDetails, setFormDetails] = useState({
-    title: processListData.formName,
-    path: path,
-    description: processListData.description,
-    display: display,
-  });
-  const [isAnonymous, setIsAnonymous] = useState(
-    processListData.anonymous || false
-  );
+  const [rolesState, setRolesState] = useState(getInitialRolesState());
+
+  // Initialize form details with proper defaults for new forms
+  const getInitialFormDetails = () => {
+    // For new forms (no formId), use default values
+    if (isCreateRoute) {
+      return {
+        title: "",
+        path: "",
+        description: "",
+        display: "form",
+      };
+    }
+    
+    // For existing forms, use process list data
+    return {
+      title: processListData.formName,
+      path: path,
+      description: processListData.description,
+      display: display,
+    };
+  };
+
+  const [formDetails, setFormDetails] = useState(getInitialFormDetails());
+  
+  // Initialize anonymous state with proper defaults for new forms
+  const getInitialAnonymousState = () => {
+    // For new forms (no formId), use default value
+    if (isCreateRoute) {
+      return false;
+    }
+    
+    // For existing forms, use process list data
+    return processListData.anonymous || false;
+  };
+
+  const [isAnonymous, setIsAnonymous] = useState(getInitialAnonymousState());
+
+  // Update roles state when formAuthorization changes (for existing forms)
+  useEffect(() => {
+    if (!isCreateRoute && formAuthorization) {
+      setRolesState({
+        DESIGN: {
+          selectedRoles: convertSelectedValueToMultiSelectOption(
+            formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+            multiSelectOptionKey
+          ),
+          selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
+        },
+        FORM: {
+          roleInput: "",
+          selectedRoles: convertSelectedValueToMultiSelectOption(
+            formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+            multiSelectOptionKey
+          ),
+          selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
+        },
+        APPLICATION: {
+          roleInput: "",
+          selectedRoles: convertSelectedValueToMultiSelectOption(
+            formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+            multiSelectOptionKey
+          ),
+          selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
+        }
+      });
+    }
+  }, [formAuthorization, isCreateRoute]);
+
+  // Update form details when processListData changes (for existing forms)
+  useEffect(() => {
+    if (!isCreateRoute && processListData) {
+      setFormDetails({
+        title: processListData.formName,
+        path: path,
+        description: processListData.description,
+        display: display,
+      });
+      setIsAnonymous(processListData.anonymous || false);
+    }
+  }, [processListData, path, display, isCreateRoute]);
 
   
   /* ------------------------- migration states ------------------------- */
@@ -570,8 +666,7 @@ const EditComponent = () => {
     WORKFLOW: "WORKFLOW",
   };
   
-  // Check if we're on the create route - defined once for reuse
-  const isCreateRoute = location.pathname.includes('/create');
+ 
   
   // Parse URL parameters for tab state
   useEffect(() => {
@@ -756,9 +851,11 @@ const handleSaveLayout = () => {
 
   const fetchProcessDetails = async (processListData) => {
     //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id.
+   if(!isCreateRoute){
     const mapperId = processListData.id;
     const response = await getProcessDetails({processKey:processListData.processKey, mapperId});
     dispatch(setProcessData(response.data));
+   }
   };
 
   useEffect(async () => {
@@ -988,6 +1085,16 @@ const handleSaveLayout = () => {
     });
     setFormChangeState(prev => ({ ...prev, changed: false }));
     setShowConfirmModal(false);
+  };
+
+  const handleWorkflowDiscard = () => {
+    // Handle workflow discard similar to FlowEdit.js handleDiscardConfirm
+    if (flowRef.current) {
+      // Import the existing process data back to the BPMN editor
+      flowRef.current?.handleImport(processData?.processData);
+      // Reset workflow change state
+      setWorkflowIsChanged(false);
+    }
   };
 
   const editorActions = () => {
@@ -1297,17 +1404,25 @@ const handleSaveLayout = () => {
           primaryBtnText: t("Unpublish This Form & Flow"),
           secondaryBtnText: t("Cancel, Keep This Form & Flow Published"),
         };
-      case "discard":
-        return {
-          title: t("Discard Layout Changes?"),
-          message:
-            t("Are you sure you want to discard all the changes to the layout of the form?"),
-          messageSecondary: t("This action cannot be undone."),
-          primaryBtnAction: discardChanges,
-          secondaryBtnAction: closeModal,
-          primaryBtnText: t("Yes, Discard Changes"),
-          secondaryBtnText: t("No, Keep My Changes"),
-        };
+       case "discard":
+         return {
+           title: t("Discard Changes?"),
+           message:
+             t("Discarding changes is permanent and cannot be undone.?"),
+             secondaryBtnAction : () => {
+             if (formChangeState.changed) {
+               discardChanges();
+             }
+             if (workflowIsChanged) {
+               // Handle workflow discard similar to FlowEdit.js
+               handleWorkflowDiscard();
+             }
+             closeModal();
+           },
+           primaryBtnAction: closeModal,
+           secondaryBtnText: t("Discard Changes"),
+           primaryBtnText: t("cancel"),
+         };
       case "unpublishBeforeSaving":
         return {
           title: "Unpublish Before Saving",
@@ -1417,28 +1532,28 @@ const handleSaveLayout = () => {
   console.log(formDetails, "formDetails",rolesState, "rolesState",isAnonymous, "isAnonymous");
 
   const renderDeleteModal = () => {
-    const hasSubmissions = processListData.id && applicationCount;
+    // const hasSubmissions = processListData.id && applicationCount;
     const commonProps = {
       show: selectedAction === ACTION_OPERATIONS.DELETE,
       primaryBtnAction: handleCloseActionModal,
       onClose: handleCloseActionModal,
     };
 
-    if (hasSubmissions) {
-      return (
-        <ConfirmModal
-          {...commonProps}
-          title={t("You Cannot Delete This Form & Flow")}
-          message={<CustomInfo heading={t("Note")} content={t(
-            "You cannot delete a form & flow that has submissions associated with it."
-          )} />}
-          secondaryBtnAction={handleCloseActionModal}
-          secondaryBtnText={t("Dismiss")}
-          secondoryBtndataTestid="dismiss-button"
-          secondoryBtnariaLabel="Dismiss button"
-        />
-      );
-    } else {
+    // if (hasSubmissions) {
+    //   return (
+    //     <ConfirmModal
+    //       {...commonProps}
+    //       title={t("You Cannot Delete This Form & Flow")}
+    //       message={<CustomInfo heading={t("Note")} content={t(
+    //         "You cannot delete a form & flow that has submissions associated with it."
+    //       )} />}
+    //       secondaryBtnAction={handleCloseActionModal}
+    //       secondaryBtnText={t("Dismiss")}
+    //       secondoryBtndataTestid="dismiss-button"
+    //       secondoryBtnariaLabel="Dismiss button"
+    //     />
+    //   );
+    // } else {
       return (
         <PromptModal
           {...commonProps}
@@ -1458,7 +1573,7 @@ const handleSaveLayout = () => {
           datatestId="delete-form-modal-message"
         />
       );
-    }
+    // }
   };
 
   const handlePublishClick = () => {
@@ -1751,7 +1866,7 @@ const handleSaveLayout = () => {
                 {createDesigns && (
                   <>
                   <V8CustomButton
-                  disabled={!formChangeState.changed}
+                  disabled={!formChangeState.changed && !workflowIsChanged}
                   label={t("Save")}
                   onClick={
                     isPublished
@@ -1826,7 +1941,7 @@ const handleSaveLayout = () => {
                     <V8CustomButton
                       label={t("Discard Changes")}
                       onClick={() => openConfirmModal("discard")}
-                      disabled={!formChangeState.changed}
+                      disabled={!formChangeState.changed && !workflowIsChanged}
                       dataTestId="discard-button-testid"
                       ariaLabel={t("Discard Changes Button")}
                       secondary
@@ -1910,7 +2025,7 @@ const handleSaveLayout = () => {
       />
 
       {showConfirmModal && (
-        <ConfirmModal
+        <PromptModal
           show={showConfirmModal}
           title={modalContent.title}
           message={modalContent.message}
@@ -1920,7 +2035,7 @@ const handleSaveLayout = () => {
           secondaryBtnAction={modalContent.secondaryBtnAction}
           primaryBtnText={modalContent.primaryBtnText}
           secondaryBtnText={modalContent.secondaryBtnText}
-          size="md"
+          type="warning"
         />
       )}
 

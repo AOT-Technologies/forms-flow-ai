@@ -1,73 +1,55 @@
-// Import statements
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { DataGrid } from "@mui/x-data-grid";
+import Paper from "@mui/material/Paper";
 import {
   setClientFormLimit,
   setClientFormListPage,
   setClientFormListSort
 } from "../../../actions/formActions";
-import { HelperServices } from "@formsflow/service";
+import { HelperServices, StyleServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
-import { TableFooter, CustomButton, NoDataFound, TableSkeleton } from "@formsflow/components";
-import SortableHeader from '../../CustomComponents/SortableHeader';
+import {
+  V8CustomButton,
+  NewSortDownIcon,
+  RefreshIcon
+} from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
-
+import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices"; 
+import { setFormSearchLoading } from "../../../actions/checkListActions";  
 
 function ClientTable() {
-  // Redux hooks and state management
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const bpmForms = useSelector((state) => state.bpmForms);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
+  const searchText = useSelector((state) => state.bpmForms.clientFormSearch); 
   const [showSubmissions, setShowSubmissions] = useState(false);
-  // Local state
-  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
 
-  // Derived state from Redux
   const formData = bpmForms?.forms || [];
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
+  const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
+  const gridFieldToSortKey = {
+    title: "formName",
+    submissionsCount: "submissionCount",
+    latestSubmission: "latestSubmission",
+  };
 
-  // Constants
-  const pageOptions = [
-    { text: "10", value: 10 },
-    { text: "25", value: 25 },
-    { text: "50", value: 50 },
-    { text: "100", value: 100 },
-    { text: "All", value: totalForms },
-  ];
+  const sortKeyToGridField = {
+    formName: "title",
+    submissionCount: "submissionsCount",
+    latestSubmission: "latestSubmission",
+  };
 
-  // Utility functions
   const stripHtml = (html) => {
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
-  };
-
-  const handleKeyPress = (e, index) => {
-    if (e.key === "Enter" || e.key === " ") {
-      toggleRow(index);
-    }
-  };
-
-  // Event handlers
-  const handleSort = (key) => {
-    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
-
-    // Reset all other columns to default (ascending) except the active one
-    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
-      acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
-      return acc;
-    }, {});
-
-    dispatch(setClientFormListSort({
-      ...updatedSort,
-      activeKey: key,
-    }));
   };
 
   const showFormEntries = (parentFormId) => {
@@ -75,149 +57,174 @@ function ClientTable() {
     navigateToFormEntries(dispatch, tenantKey, parentFormId);
   };
 
+  const handleSortChange = (modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(formsort).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
+      dispatch(setClientFormListPage(1));
+      return;
+    }
 
-  const handlePageChange = (page) => {
-    dispatch(setClientFormListPage(page));
+    const mappedKey = gridFieldToSortKey[model.field] || model.field;
+    const order = model.sort;
+
+    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
+      acc[columnKey] = {
+        sortOrder: columnKey === mappedKey ? order : "asc",
+      };
+      return acc;
+    }, {});
+    dispatch(setClientFormListSort({ ...updatedSort, activeKey: mappedKey }));
   };
 
-  const onSizePerPageChange = (newLimit) => {
-    dispatch(setClientFormLimit(newLimit));
-    dispatch(setClientFormListPage(1));
+  const onPaginationModelChange = ({ page, pageSize }) => {
+    if (limit !== pageSize) {
+      dispatch(setClientFormLimit(pageSize));
+      dispatch(setClientFormListPage(1));
+    } else if (pageNo - 1 !== page) {
+      dispatch(setClientFormListPage(page + 1));
+    }
   };
 
-  const toggleRow = (index) => {
-    setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
+    const handleRefresh = () => {
+    dispatch(setFormSearchLoading(true));
+    dispatch(fetchBPMFormList({
+      pageNo,
+      limit,
+      formSort: formsort,
+      formName: searchText,
+      showForOnlyCreateSubmissionUsers: true,
+      includeSubmissionsCount: true
+    }));
   };
 
-  // UI Components
-  const noDataFound = () => {
-    return (
-      <tbody className="table-empty">
-        <NoDataFound message={t('No forms have been found.')}/>
-      </tbody>
-    );
-  };
+  const columns = [
+    {
+      field: "title",
+      headerName: t("Form Name"),
+      flex: 1,
+      sortable: true,
+    },
+    {
+      field: "description",
+      headerName: t("Description"),
+      flex: 1,
+      sortable: false,
+      renderCell: (params) => (
+        <span title={stripHtml(params.row.description)}>
+          {stripHtml(params.row.description)}
+        </span>
+      ),
+    },
+    {
+      field: "submissionsCount",
+      headerName: t("Submissions"),
+      flex: 1,
+      sortable: true,
+    },
+    {
+      field: "latestSubmission",
+      headerName: t("Latest Submission"),
+      flex: 1,
+      sortable: true,
+      renderCell: (params) =>
+        HelperServices?.getLocaldate(params.row.latestSubmission),
+    },
+    {
+      field: "actions",
+      align: "right",
+      renderHeader: () => (
+        <V8CustomButton
+          variant="secondary"
+          icon={<RefreshIcon color={iconColor} />}
+          iconOnly
+          onClick={handleRefresh}
+        />
+      ),
+      flex: 1,
+      sortable: false,
+      cellClassName: "last-column",
+      renderCell: params => (
+        <V8CustomButton
+          label="Select"
+          variant="secondary"
+          onClick={() => showFormEntries(params.row.parentFormId)}
+        />
+      )
+    },
+  ];
 
-  //Skeleton Loading
-  if (searchFormLoading) {
-    return <TableSkeleton columns={5} rows={10} pagination={7} />;
-  }
+  const rows = React.useMemo(() => {
+    return (formData || []).map((f) => ({
+      ...f,
+      id: f._id,
+      title: f.title,
+    }));
+  }, [formData]);
+
+  const paginationModel = React.useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
+
+  const activeKey = formsort?.activeKey || "formName";
+  const activeField = sortKeyToGridField[activeKey] || activeKey;
+  const activeOrder = formsort?.[activeKey]?.sortOrder || "asc";
+
+  const renderDescIcon = useCallback(() => (
+    <div>
+      <NewSortDownIcon color={iconColor} />
+    </div>
+  ), [iconColor]);
+
+  const renderAscIcon = useCallback(() => (
+    <div style={{ transform: "rotate(180deg)" }}>
+      <NewSortDownIcon color={iconColor} />
+    </div>
+  ), [iconColor]);
+
 
   return (
-      <>
-        <div className="custom-table-wrapper-outter">
-          <div className="custom-table-wrapper-inner">
-            <table className="table custom-tables" data-testid="client-table">
-              <thead className="table-header">
-                <tr>
-                    <SortableHeader
-                      columnKey="formName"
-                      title="Form Name"
-                      currentSort={formsort}
-                      handleSort={handleSort}
-                      className="w-30"
-                    />
-                  <th className="w-30" scope="col" data-testid="description-header">
-                    {t("Description")}
-                  </th>
+    <>
+      <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          rowCount={totalForms}
+          loading={searchFormLoading}
+          paginationMode="server"
+          sortingMode="server"
+          disableColumnMenu
+          sortModel={[{ field: activeField, sort: activeOrder }]}
+          onSortModelChange={handleSortChange}
+          paginationModel={paginationModel}
+          onPaginationModelChange={onPaginationModelChange}
+          pageSizeOptions={[10, 25, 50, 100]}
+          rowHeight={55}
+          disableRowSelectionOnClick
+          getRowId={(row) => row.id}
+          slots={{
+            columnSortedDescendingIcon: renderDescIcon,
+            columnSortedAscendingIcon: renderAscIcon,
+          }}
+          slotProps={{
+            loadingOverlay: {
 
-                    <SortableHeader
-                      columnKey="submissionCount"
-                      title="Submissions"
-                      currentSort={formsort}
-                      handleSort={handleSort}
-                      className="w-13" />
-
-                  
-                    <SortableHeader
-                      columnKey="latestSubmission"
-                      title={t("Latest Submission")}
-                      currentSort={formsort}
-                      handleSort={handleSort}
-                      className="w-15" />
-                  
-                  <th className="w-12" aria-label="Select a Form"></th>
-                </tr>
-              </thead>
-              {formData?.length ? (
-                <>
-                <tbody>
-                    {formData.map((e, index) => {
-                      const isExpanded = expandedRowIndex === index;
-                      return (
-                        <React.Fragment key={index}>
-                          <tr>
-                            <td className="w-30">
-                              <span
-                                data-testid={`form-title-${e._id}`}
-                                className="text-container"
-                              >
-                                {e.title}
-                              </span>
-                            </td>
-                            <td className="w-30">
-                              <span
-                                data-testid="description-cell"
-                                className={` cursor-pointer ${isExpanded ? "text-container-expand" : "text-container"}`}
-                                role="button"
-                                tabIndex="0"
-                                aria-expanded={isExpanded} // Adds accessibility
-                                onClick={() => toggleRow(index)}
-                                onKeyDown={(e) => handleKeyPress(e, index)}
-                              >
-                                {stripHtml(e.description ? e.description : "")}
-                              </span>
-                            </td>
-                            <td
-                              data-testid={`Submissions-count-${e._id}`} className="w-13">
-                              {e.submissionsCount}
-                            </td>
-                            <td
-                              data-testid={`latest-submission-${e._id}`} className="w-15">
-                              {HelperServices?.getLocaldate(e.latestSubmission)}
-                            </td>
-
-                            <td className=" w-12 ">
-                              <div className="d-flex justify-content-end">
-                                <CustomButton
-                                    variant="secondary"
-                                    size="table"
-                                    label={t("Select")}
-                                    onClick={() => showFormEntries(e.parentFormId)}
-                                    dataTestId={`form-submit-button-${e.parentFormId}`}
-                                    aria-label={t("Select a form")}
-                                    actionTable
-                                />
-                              </div>
-                            </td>
-                          </tr>
-
-                        </React.Fragment>
-                      );
-                    })}
-                </tbody>
-                </>
-              ) : !searchFormLoading ? (
-                noDataFound()
-              ) : null}
-            </table>
-          </div>
-
-          {formData.length ? (
-            <TableFooter
-              limit={limit}
-              activePage={pageNo}
-              totalCount={totalForms}
-              handlePageChange={handlePageChange}
-              onLimitChange={onSizePerPageChange}
-              pageOptions={pageOptions}
-            />
-          ) : (
-            <></>
-          )}
-        </div>
-        {showSubmissions && <SubmissionDrafts />}
-      </>
+              variant: "skeleton",
+              noRowsVariant: "skeleton",
+            },
+          }}
+          localeText={{
+            noRowsLabel: t("No Forms have been found."),
+          }}
+        />
+      </Paper>
+      {showSubmissions && <SubmissionDrafts />}
+    </>
   );
 }
 

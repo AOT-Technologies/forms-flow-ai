@@ -48,7 +48,7 @@ export const convertToNormalForm = (components) => {
 
   for (const comp of components) {
     if (comp?.type === "panel" && Array.isArray(comp.components)) {
-      flattened.push(comp.components);
+      flattened.push(...comp.components);
     } else {
       flattened.push(comp);
     }

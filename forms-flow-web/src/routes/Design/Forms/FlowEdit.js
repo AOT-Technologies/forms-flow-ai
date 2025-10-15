@@ -9,9 +9,11 @@ import {
   CustomButton,
   ConfirmModal,
   HistoryModal,
-  VariableModal,
+  CurlyBracketsIcon,
+  VariableSelection,
   CloseIcon,
-  CustomInfo
+  CustomInfo,
+  Switch
 } from "@formsflow/components";
 // import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -266,7 +268,49 @@ const FlowEdit = forwardRef(
     const handleBackToLayout = () => {
       handleCloseUnsavedChangesModal();
       handleCurrentLayout();
-    };
+  };
+  
+  const getSystemVariables = () => {
+    return SystemVariables.map((variable, idx) => ({
+      id: idx + 1,
+      type: variable.labelOfComponent,
+      variable: variable.key,
+      altVariable: variable.altVariable,
+      selected: (
+        <Switch
+          type="primary"
+          withIcon={true}
+          checked={true}
+          onChange={() => {}}
+          ariaLabel="System variable always selected"
+          dataTestId={`system-variable-switch-${variable.key || idx}`}
+          disabled
+        />
+      ),
+    }));
+  };
+
+  const columns = [
+    { field: 'type', headerName: 'Type', flex: 1.5, sortable: false },
+    { field: 'variable', headerName: 'Variable', width: 130, sortable: false },
+    { field: 'altVariable', headerName: 'Alternative Field', width: 130, sortable: false },
+    {
+      field: "selected",
+      headerName: "Selected",
+      width: 130,
+      sortable: false,
+      renderCell: (params) => (
+        <Switch
+          type="primary"
+          withIcon={true}
+          checked={true}
+          onChange={() => { console.log(params.row.id); }}
+          aria-label="System variable always selected"
+          datatestid={`system-variable-switch-${params.row.variable}`}
+        />
+      ),
+    },
+  ];
 
     return (
       <>
@@ -457,23 +501,24 @@ const FlowEdit = forwardRef(
                   secondary
                 />
               </div>
-            </Modal.Footer>
-          </Modal>
-        )}
-        {/* Show variable modal when layout is saved */}
-        {!layoutNotsaved && showVariableModal && (
-          <VariableModal
-            form={form}
-            show={showVariableModal}
-            onClose={handleCloseVariableModal}
-            saveBtnDisabled={isPublished || !createDesigns}
-            savedFormVariables={savedFormVariables}
-            primaryBtnAction={handleSaveVariables}
-            systemVariables={SystemVariables}
-          />
-        )}
-      </>
-    );
+          </Modal.Footer>
+        </Modal>
+      )}
+      {/* Show variable modal when layout is saved */}
+      {!layoutNotsaved && showVariableModal && (
+        <VariableSelection
+          form={form}
+          show={showVariableModal}
+          onClose={handleCloseVariableModal}
+          saveBtnDisabled={isPublished || !createDesigns}
+          savedFormVariables={savedFormVariables}
+          primaryBtnAction={handleSaveVariables}
+          rowVariables={getSystemVariables()}
+          columns={columns}
+        />
+      )}
+    </>
+  );
   }
 );
 

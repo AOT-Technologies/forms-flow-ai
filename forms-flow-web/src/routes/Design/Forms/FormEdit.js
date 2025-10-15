@@ -145,7 +145,8 @@ const EditComponent = () => {
   const { t } = useTranslation();
   //this variable handle the flow and layot tab switching
   const sideTabRef = useRef(null);
-
+   // Check if we're on the create route - defined once for reuse
+   const isCreateRoute = location.pathname.includes('/create');
   // Tab state management
   const [activeTab, setActiveTab] = useState({
     primary: 'form',
@@ -241,43 +242,139 @@ const EditComponent = () => {
   const setSelectedOption = (option, roles = []) =>
     roles.length ? "specifiedRoles" : option;
   const multiSelectOptionKey = "role";
-  const [rolesState, setRolesState] = useState({
-    DESIGN: {
-      selectedRoles: convertSelectedValueToMultiSelectOption(
-        formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-        multiSelectOptionKey
-      ),
-      selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
-    },
-    FORM: {
-      roleInput: "",
-      selectedRoles: convertSelectedValueToMultiSelectOption(
-        formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-        multiSelectOptionKey
-      ),
-      selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
-    },
-    APPLICATION: {
-      roleInput: "",
-      selectedRoles: convertSelectedValueToMultiSelectOption(
-        formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-        multiSelectOptionKey
-      ),
-      selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
-      /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
-       we assume that the submitter is true. */
+  // Initialize roles state with proper defaults for new forms
+  const getInitialRolesState = () => {
+    // For new forms (no formId), use default values
+    if (isCreateRoute) {
+      return {
+        DESIGN: {
+          selectedRoles: [],
+          selectedOption: "onlyYou",
+        },
+        FORM: {
+          roleInput: "",
+          selectedRoles: [],
+          selectedOption: "registeredUsers",
+        },
+        APPLICATION: {
+          roleInput: "",
+          selectedRoles: [],
+          selectedOption: "submitter",
+        }
+      };
     }
+    
+    // For existing forms, use authorization data
+    return {
+      DESIGN: {
+        selectedRoles: convertSelectedValueToMultiSelectOption(
+          formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          multiSelectOptionKey
+        ),
+        selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
+      },
+      FORM: {
+        roleInput: "",
+        selectedRoles: convertSelectedValueToMultiSelectOption(
+          formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          multiSelectOptionKey
+        ),
+        selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
+      },
+      APPLICATION: {
+        roleInput: "",
+        selectedRoles: convertSelectedValueToMultiSelectOption(
+          formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          multiSelectOptionKey
+        ),
+        selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
+        /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
+         we assume that the submitter is true. */
+      }
+    };
+  };
 
-  });
-  const [formDetails, setFormDetails] = useState({
-    title: processListData.formName,
-    path: path,
-    description: processListData.description,
-    display: display,
-  });
-  const [isAnonymous, setIsAnonymous] = useState(
-    processListData.anonymous || false
-  );
+  const [rolesState, setRolesState] = useState(getInitialRolesState());
+
+  // Initialize form details with proper defaults for new forms
+  const getInitialFormDetails = () => {
+    // For new forms (no formId), use default values
+    if (isCreateRoute) {
+      return {
+        title: "",
+        path: "",
+        description: "",
+        display: "form",
+      };
+    }
+    
+    // For existing forms, use process list data
+    return {
+      title: processListData.formName,
+      path: path,
+      description: processListData.description,
+      display: display,
+    };
+  };
+
+  const [formDetails, setFormDetails] = useState(getInitialFormDetails());
+  
+  // Initialize anonymous state with proper defaults for new forms
+  const getInitialAnonymousState = () => {
+    // For new forms (no formId), use default value
+    if (isCreateRoute) {
+      return false;
+    }
+    
+    // For existing forms, use process list data
+    return processListData.anonymous || false;
+  };
+
+  const [isAnonymous, setIsAnonymous] = useState(getInitialAnonymousState());
+
+  // Update roles state when formAuthorization changes (for existing forms)
+  useEffect(() => {
+    if (!isCreateRoute && formAuthorization) {
+      setRolesState({
+        DESIGN: {
+          selectedRoles: convertSelectedValueToMultiSelectOption(
+            formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+            multiSelectOptionKey
+          ),
+          selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
+        },
+        FORM: {
+          roleInput: "",
+          selectedRoles: convertSelectedValueToMultiSelectOption(
+            formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+            multiSelectOptionKey
+          ),
+          selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
+        },
+        APPLICATION: {
+          roleInput: "",
+          selectedRoles: convertSelectedValueToMultiSelectOption(
+            formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+            multiSelectOptionKey
+          ),
+          selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
+        }
+      });
+    }
+  }, [formAuthorization, isCreateRoute]);
+
+  // Update form details when processListData changes (for existing forms)
+  useEffect(() => {
+    if (!isCreateRoute && processListData) {
+      setFormDetails({
+        title: processListData.formName,
+        path: path,
+        description: processListData.description,
+        display: display,
+      });
+      setIsAnonymous(processListData.anonymous || false);
+    }
+  }, [processListData, path, display, isCreateRoute]);
 
   
   /* ------------------------- migration states ------------------------- */
@@ -565,8 +662,7 @@ const EditComponent = () => {
     WORKFLOW: "WORKFLOW",
   };
   
-  // Check if we're on the create route - defined once for reuse
-  const isCreateRoute = location.pathname.includes('/create');
+ 
   
   // Parse URL parameters for tab state
   useEffect(() => {
@@ -743,9 +839,11 @@ const handleSaveLayout = () => {
 
   const fetchProcessDetails = async (processListData) => {
     //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id.
+   if(!isCreateRoute){
     const mapperId = processListData.id;
     const response = await getProcessDetails({processKey:processListData.processKey, mapperId});
     dispatch(setProcessData(response.data));
+   }
   };
 
   useEffect(async () => {

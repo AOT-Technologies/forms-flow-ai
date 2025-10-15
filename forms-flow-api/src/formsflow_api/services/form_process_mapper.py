@@ -1258,6 +1258,14 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         process_type = process_data.get("processType")
         return ProcessService.update_process(process_id, process_payload, process_type)
 
+    def validate_request_data(self, request_data, expected_keys):
+        """Check if at least one expected key exists and is not None."""
+        has_valid_data = any(request_data.get(key) is not None for key in expected_keys)
+
+        if not has_valid_data:
+            raise BusinessException(BusinessErrorCode.MISSING_REQUIRED_KEYS)
+        return True
+
     def update_form_process(self, request_data, mapper_id, is_designer):
         """Update form, process, authorizations and mapper details in one call.
 
@@ -1281,6 +1289,9 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         Raises:
             BusinessException: If required identifiers are missing or entities are invalid.
         """
+        # Validate that at least one updatable section(with keys) is present
+        expected_keys = ("formData", "mapper", "authorizations", "process")
+        self.validate_request_data(request_data, expected_keys)
         response = {}
 
         # Registry of handler functions for different data types

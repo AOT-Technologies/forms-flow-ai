@@ -1773,20 +1773,22 @@ const handleSaveLayout = () => {
         disableAllRevertButton={isPublished}
       /> */}
 
-      <HistoryPage
-        show={showBpmnHistoryModal}
-        onClose={closeBpmnHistoryModal}
-        title={t("BPMN History")}
-        loadMoreBtnText={t("Load More")}
-        loadMoreBtndataTestId="load-more-bpmn-history"
-        revertBtnText={t("Revert To This")}
-        allHistory={bpmnHistoryData.processHistory}
-        loadMoreBtnAction={loadMoreBpmnHistory}
-        categoryType={CategoryType.WORKFLOW}
-        revertBtnAction={revertBpmnHistory}
-        historyCount={bpmnHistoryData.totalCount}
-        disableAllRevertButton={isPublished}
-      />
+      {showBpmnHistoryModal && (
+        <HistoryPage
+          show={showBpmnHistoryModal}
+          onClose={closeBpmnHistoryModal}
+          title={t("BPMN History")}
+          loadMoreBtnText={t("Load More")}
+          loadMoreBtndataTestId="load-more-bpmn-history"
+          revertBtnText={t("Revert To This")}
+          allHistory={bpmnHistoryData.processHistory}
+          loadMoreBtnAction={loadMoreBpmnHistory}
+          categoryType={CategoryType.WORKFLOW}
+          revertBtnAction={revertBpmnHistory}
+          historyCount={bpmnHistoryData.totalCount}
+          disableAllRevertButton={isPublished}
+        />
+      )}
 
       {renderDeleteModal()}
     </div>

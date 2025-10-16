@@ -1041,43 +1041,51 @@ const handleSaveLayout = () => {
   };
 
   /* ------------------------ Save form with workflow for create route ------------------------ */
-  const saveFormWithWorkflow = async () => {
-    try {
-      setFormSubmitted(true);
+const saveFormWithWorkflow = async () => {
+  try {
+    setFormSubmitted(true);
 
-      // Prepare form data
-      const formData = manipulatingFormData(
-        form,
-        MULTITENANCY_ENABLED,
-        tenantKey,
-        formAccessRoles,
-        submissionAccessRoles
-      );
-      // Add required fields from settings
-      formData.title = formDetails.title;
-      formData.name = formDetails.path;
-      formData.path = formDetails.path;
-      formData.description = formDetails.description || "";
-      formData.display = formDetails.display;
-      formData.componentChanged = true;
-      formData.newVersion = true;
-      formData.anonymous = isAnonymous;
+    // Prepare form data
+    const formData = manipulatingFormData(
+      form,
+      MULTITENANCY_ENABLED,
+      tenantKey,
+      formAccessRoles,
+      submissionAccessRoles
+    );
+    // Add required fields from settings
+    formData.title = formDetails.title;
+    formData.name = formDetails.path;
+    formData.path = formDetails.path;
+    formData.description = formDetails.description || "";
+    formData.display = formDetails.display;
+    formData.componentChanged = true;
+    formData.newVersion = true;
+    formData.anonymous = isAnonymous;
+    
+    // Update form access and submission access based on isAnonymous
+    if (isAnonymous) {
+      formData.access = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", true);
+      formData.submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", true);
+    } else {
+      // Keep the default access roles from manipulatingFormData
+      formData.access = formAccessRoles;
+      formData.submissionAccess = submissionAccessRoles;
+    }
 
-      // Conditionally update access based on isAnonymous
-      let formAccess, submissionAccess;
-      if (isAnonymous) {
-        formAccess = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", true);
-        submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", true);
-      }
-      formData.access = formAccess;
-      formData.submissionAccess = submissionAccess;
-      
-      // Get workflow data from FlowEdit component
-      let processData = null;
-      let processType = "BPMN";
+    // Get workflow data from FlowEdit component only if user has interacted with BPMN
+    let processData = null;
+    let processType = null;
+    let includeWorkflow = false;
+
+    // Check if user has visited/modified the BPMN tab
+    const bpmnModeler = flowRef.current?.getBpmnModeler();
+    if (bpmnModeler || currentBpmnXml || workflowIsChanged) {
+      // User has interacted with workflow, so include it
+      includeWorkflow = true;
+      processType = "BPMN";
 
       // Extract BPMN XML from the modeler
-      const bpmnModeler = flowRef.current?.getBpmnModeler();
       if (bpmnModeler) {
         try {
           const { createXMLFromModeler } = await import("../../../helper/processHelper.js");
@@ -1093,87 +1101,92 @@ const handleSaveLayout = () => {
           setFormSubmitted(false);
           return; // Stop the save process
         }
-      } else {
-        // If no modeler found, log warning but continue with null processData
-        console.warn("No BPMN modeler found, proceeding without workflow data");
+      } else if (currentBpmnXml) {
+        // Use cached BPMN XML if modeler isn't currently mounted
+        processData = currentBpmnXml;
       }
-
-      // Prepare authorizations
-      const filterAuthorizationData = (authorizationData) => {
-        if(authorizationData.selectedOption === "submitter"){
-          return {roles: [], userName: null, resourceDetails:{submitter:true}};
-        }
-        if (authorizationData.selectedOption === "specifiedRoles") {
-          return { roles: convertMultiSelectOptionToValue(authorizationData.selectedRoles, "role"), userName: "" };
-        }
-        return { roles: [], userName: preferred_username };
-      };
-
-      const authorizations = {
-        application: {
-          resourceId: null,
-          resourceDetails:{submitter:false},
-          ...filterAuthorizationData(rolesState.APPLICATION),
-        },
-        designer: {
-          resourceId: null,
-          resourceDetails: {},
-          ...filterAuthorizationData(rolesState.DESIGN),
-        },
-        form: {
-          resourceId: null,
-          resourceDetails: {},
-          roles:
-            rolesState.FORM.selectedOption === "specifiedRoles"
-              ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
-              : [],
-        },
-      };
-
-      // Prepare the payload
-      const payload = {
-        formData,
-        processData,
-        processType,
-        authorizations
-      };
-            
-      // Call the new combined API
-      const response = await createFormWithWorkflow(payload);
-      const { data } = response;
-
-      // Update Redux store with response data
-      if (data.formData) {
-        dispatch(setFormSuccessData("form", data.formData));
-      }
-      if (data.mapper) {
-        dispatch(setFormPreviosData(data.mapper));
-        dispatch(setFormProcessesData(data.mapper));
-      }
-      if (data.process) {
-        dispatch(setProcessData(data.process));
-      }
-      if (data.authorizations) {
-        dispatch(setFormAuthorizationDetails(data.authorizations));
-      }
-
-      // Reset form change state and workflow change state
-      setFormChangeState({ initial: false, changed: false });
-      setWorkflowIsChanged(false);
-      setIsNavigatingAfterSave(true);
-
-      // Navigate to edit page with the new form ID
-      const formId = data.formData._id;
-      toast.success(t("Form and workflow created successfully"));
-      dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
-    } catch (err) {
-      const error = err.response?.data || err.message;
-      toast.error(error?.message || t("Failed to create form and workflow"));
-      dispatch(setFormFailureErrorData("form", error));
-    } finally {
-      setFormSubmitted(false);
     }
-  };
+
+    // Prepare authorizations
+    const filterAuthorizationData = (authorizationData) => {
+      if(authorizationData.selectedOption === "submitter"){
+        return {roles: [], userName: null, resourceDetails:{submitter:true}};
+      }
+      if (authorizationData.selectedOption === "specifiedRoles") {
+        return { roles: convertMultiSelectOptionToValue(authorizationData.selectedRoles, "role"), userName: "" };
+      }
+      return { roles: [], userName: preferred_username };
+    };
+
+    const authorizations = {
+      application: {
+        resourceId: null,
+        resourceDetails:{submitter:false},
+        ...filterAuthorizationData(rolesState.APPLICATION),
+      },
+      designer: {
+        resourceId: null,
+        resourceDetails: {},
+        ...filterAuthorizationData(rolesState.DESIGN),
+      },
+      form: {
+        resourceId: null,
+        resourceDetails: {},
+        roles:
+          rolesState.FORM.selectedOption === "specifiedRoles"
+            ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
+            : [],
+      },
+    };
+
+    // Prepare the payload - only include workflow data if user has interacted with BPMN
+    const payload = {
+      formData,
+      authorizations
+    };
+
+    // Only include processData and processType if workflow was created/modified
+    if (includeWorkflow) {
+      payload.processData = processData;
+      payload.processType = processType;
+    }
+          
+    // Call the new combined API
+    const response = await createFormWithWorkflow(payload);
+    const { data } = response;
+
+    // Update Redux store with response data
+    if (data.formData) {
+      dispatch(setFormSuccessData("form", data.formData));
+    }
+    if (data.mapper) {
+      dispatch(setFormPreviosData(data.mapper));
+      dispatch(setFormProcessesData(data.mapper));
+    }
+    if (data.process) {
+      dispatch(setProcessData(data.process));
+    }
+    if (data.authorizations) {
+      dispatch(setFormAuthorizationDetails(data.authorizations));
+    }
+
+    // Reset form change state and workflow change state
+    setFormChangeState({ initial: false, changed: false });
+    setWorkflowIsChanged(false);
+    setIsNavigatingAfterSave(true);
+
+    // Navigate to edit page with the new form ID
+    const formId = data.formData._id;
+    toast.success(t("Form and workflow created successfully"));
+    dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
+  } catch (err) {
+    const error = err.response?.data || err.message;
+    toast.error(error?.message || t("Failed to create form and workflow"));
+    dispatch(setFormFailureErrorData("form", error));
+  } finally {
+    setFormSubmitted(false);
+  }
+};
 
   // const backToForm = () => {
   //   dispatch(push(`${redirectUrl}formflow`));

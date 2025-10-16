@@ -59,7 +59,7 @@ const BaseRouting = React.memo(
       return <LandingPage />;
     }
     return (
-      <div className="page-content">
+      <div className="page-layout">
         
           <ToastContainer
           position="bottom-right"

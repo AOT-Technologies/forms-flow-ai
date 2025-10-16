@@ -101,7 +101,8 @@
 /* ------------------- this is for diagram settings icons end  ------------------- */
 
 .bpm-modeler-container { 
-   height: calc(100vh - 15rem);
+      height: 100%;
+      border: 1px solid $gray-medium;
 }
 
 .bpmn-viewer-container {
@@ -122,7 +123,7 @@
 }
 .properties-panel-parent {
   border-left: 1px solid $gray-medium;
-  border: 1px solid var(--ff-dark);
+  border: 1px solid $gray-medium;
   // border-left: none;
 }
 

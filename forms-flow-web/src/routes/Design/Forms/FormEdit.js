@@ -15,12 +15,13 @@ import {
   //HistoryIcon,
   //PreviewIcon,
   FormBuilderModal,
-  HistoryModal,
+  HistoryPage,
   ImportModal,
   CustomInfo,
   //CardsSwitchIcon,
   PromptModal,
-  FormStatusIcon
+  FormStatusIcon,
+  BreadCrumbs
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -172,6 +173,7 @@ const EditComponent = () => {
   // created a copy for access and submissin access
   const [formAccessRoles, setFormAccessRoles] = useState(_cloneDeep(formAccess));
   const [submissionAccessRoles, setSubmissionAccessRoles] = useState(_cloneDeep(submissionAccess));
+  const [formHistoryLoading, setFormHistoryLoading] = useState(false);
 
   /* ---------------------------  form data --------------------------- */
   const { form: formData, error: errors } = useSelector((state) => state.form);
@@ -260,7 +262,9 @@ const EditComponent = () => {
         setNameError(errorMessage);  // Set the error message from the server
       }
     }
-  );
+    );
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
+  
   const UploadActionType = {
     IMPORT: "import",
     VALIDATE: "validate",
@@ -495,7 +499,7 @@ const EditComponent = () => {
   );
 
   const formHistory = formHistoryData.formHistory || [];
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  // const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalType, setModalType] = useState("");
 
@@ -542,6 +546,13 @@ const EditComponent = () => {
     }
   }, [location.search, location.pathname]);
 
+  useEffect(() => {
+    if (activeTab.primary === "form" && activeTab.secondary === "history") {
+      handleFormHistory();
+    }
+  }, [activeTab.primary, activeTab.secondary, processListData?.parentFormId,
+      paginationModel.pageSize]);
+
   // Tab navigation functions
   const handleTabClick = (primary, secondary = null, tertiary = null) => {
     // Prevent switching to BPMN tab on create route
@@ -550,6 +561,7 @@ const EditComponent = () => {
     }
     
     const newTab = { primary, secondary, tertiary };
+    console.log("newTab", newTab);
     setActiveTab(newTab);
     
     // Update URL with new tab parameters
@@ -557,6 +569,7 @@ const EditComponent = () => {
     queryParams.set("tab", primary);
     if (secondary) queryParams.set("sub", secondary);
     if (tertiary) queryParams.set("subsub", tertiary);
+    console.log("queryParams", queryParams);
     
     if (isCreateRoute || !formId) {
       // On create route (no formId yet), preserve current pathname and only change search
@@ -568,6 +581,7 @@ const EditComponent = () => {
       );
     } else {
       const newUrl = `${redirectUrl}formflow/${formId}/edit?${queryParams.toString()}`;
+      console.log("newUrl", newUrl);
       dispatch(push(newUrl));
     }
   };
@@ -841,13 +855,18 @@ const handleSaveLayout = () => {
   // const backToForm = () => {
   //   dispatch(push(`${redirectUrl}formflow`));
   // };
-  const closeHistoryModal = () => {
-    setShowHistoryModal(false);
-  };
+  // const closeHistoryModal = () => {
+  //   setShowHistoryModal(false);
+  // };
   const fetchFormHistory = (parentFormId, page, limit) => {
-    getFormHistory(parentFormId, page, limit)
+    setFormHistoryLoading(true);
+    parentFormId = parentFormId && typeof parentFormId === 'string' ? parentFormId : processListData?.parentFormId;
+    page = page ? page : paginationModel.page + 1;
+    limit = limit ? limit : paginationModel.pageSize;
+    getFormHistory(parentFormId,page, limit)
       .then((res) => {
         dispatch(setFormHistories(res.data));
+        setFormHistoryLoading(false);
       })
       .catch(() => {
         setFormHistories([]);
@@ -855,16 +874,17 @@ const handleSaveLayout = () => {
   };
 
   const handleFormHistory = () => {
-    setShowHistoryModal(true);
+    console.log("handleFormHistory", processListData);
+    // setShowHistoryModal(true);
     dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
     if (processListData?.parentFormId) {
-      fetchFormHistory(processListData?.parentFormId, 1, 4);
+      fetchFormHistory(processListData?.parentFormId, 1, paginationModel.pageSize);
     }
   };
 
-  const loadMoreBtnAction = () => {
-    fetchFormHistory(processListData?.parentFormId);
-  };
+  // const loadMoreBtnAction = () => {
+  //   fetchFormHistory(processListData?.parentFormId);
+  // };
 
   /* ------------------------- BPMN history handlers ------------------------- */
   const handleBpmnHistory = () => {
@@ -1355,6 +1375,22 @@ const handleSaveLayout = () => {
   const renderTabContent = () => {
     switch (activeTab.primary) {
       case 'form':
+        if (activeTab.secondary === 'history') {
+          return (
+            <HistoryPage
+              revertBtnText={t("Revert")}
+              allHistory={formHistory}
+              categoryType={CategoryType.FORM}
+              revertBtnAction={revertFormBtnAction}
+              historyCount={formHistoryData.totalCount}
+              disableAllRevertButton={isPublished}
+              loading={formHistoryLoading}
+              refreshBtnAction={fetchFormHistory}
+              paginationModel={paginationModel}
+              handlePaginationModelChange={setPaginationModel}
+            />
+          );
+        }
         return (
           <div className="form-builder custom-scroll">
             {!createDesigns ? (
@@ -1430,7 +1466,6 @@ const handleSaveLayout = () => {
         {Object.entries(currentTab.secondary).map(([key, config]) => {
           // Disable history and preview buttons on create route
           const isDisabled = config.disabled || (isCreateRoute && (key === 'history' || key === 'preview'));
-          
           return (
             <V8CustomButton
               key={key}
@@ -1442,6 +1477,8 @@ const handleSaveLayout = () => {
                   handleToggleSettingsModal();
                 } else if (key === 'history') {
                   if (activeTab.primary === 'form') {
+                    activeTab.secondary = 'history';
+                    handleTabClick('form', 'history');
                     handleFormHistory();
                   } else if (activeTab.primary === 'bpmn') {
                     handleBpmnHistory();
@@ -1518,6 +1555,16 @@ const handleSaveLayout = () => {
 
         <div className="">
           <div className="">
+            <BreadCrumbs
+              items={[
+                { label: t("Build"), href: "/formflow" },
+                { label: t("Create New Form"), href: location.pathname },
+              ]}
+              variant="minimized"
+              underlined={true}
+              dataTestId="buildForm-breadcrumb"
+              ariaLabel={t("Build Form Breadcrumb")}
+            />
             {/* Header Section 1 - Back button and form title */}
             <div className="header-section-1">
               <div className="section-seperation-left">
@@ -1711,9 +1758,9 @@ const handleSaveLayout = () => {
         />
       )}
 
-      <HistoryModal
-        show={showHistoryModal}
-        onClose={closeHistoryModal}
+      {/* <HistoryPage
+        // show={showHistoryModal}
+        // onClose={closeHistoryModal}
         title={t("History")}
         loadMoreBtnText={t("Load More")}
         loadMoreBtndataTestId="load-more-form-history"
@@ -1724,9 +1771,9 @@ const handleSaveLayout = () => {
         revertBtnAction={revertFormBtnAction}
         historyCount={formHistoryData.totalCount}
         disableAllRevertButton={isPublished}
-      />
+      /> */}
 
-      <HistoryModal
+      <HistoryPage
         show={showBpmnHistoryModal}
         onClose={closeBpmnHistoryModal}
         title={t("BPMN History")}

@@ -18,6 +18,7 @@ from formsflow_api.schemas.filter import FilterSchema
 from formsflow_api.schemas.form_process_mapper import (
     FormProcessMapperListReqSchema,
     FormProcessMapperListRequestSchema,
+    FormProcessMapperRequestSchema,
     FormProcessMapperSchema,
 )
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema

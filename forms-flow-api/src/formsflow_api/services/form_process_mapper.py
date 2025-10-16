@@ -29,10 +29,15 @@ from formsflow_api.models import (
     ProcessStatus,
     ProcessType,
 )
-from formsflow_api.schemas import FormProcessMapperSchema, ProcessDataSchema
+from formsflow_api.schemas import (
+    FormProcessMapperRequestSchema,
+    FormProcessMapperSchema,
+    ProcessDataSchema,
+)
 from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.external.bpm import BPMService
 
+from .filter import FilterService
 from .form_history_logs import FormHistoryService
 from .process import ProcessService
 
@@ -1186,5 +1191,132 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         response = FormProcessMapperService.create_form(
             data, is_designer, combine_save=True
         )
+
+        return response
+
+    def handle_form_data(self, form_data, **kwargs):  # pylint:disable=unused-argument
+        """Handler function for form data updates."""
+        current_app.logger.debug("Updating form design..")
+        form_id = form_data.get("_id")
+        if not form_id:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+        return FormProcessMapperService.form_design_update(form_data, form_id)
+
+    def handle_mapper_data(
+        self, mapper_data, mapper_id=None, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Handler function for mapper data updates."""
+        if mapper_id is None:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+
+        current_app.logger.debug("Updating mapper details..")
+        task_variable = mapper_data.get("taskVariables", [])
+
+        # If task variables are present, update filter variables and serialize them
+        if "taskVariables" in mapper_data:
+            FilterService.update_filter_variables(
+                task_variable, mapper_data.get("formId")
+            )
+            mapper_data["taskVariables"] = json.dumps(task_variable)
+
+        # Load the mapper data into the schema
+        dict_data = FormProcessMapperRequestSchema().load(mapper_data)
+        mapper = FormProcessMapperService.update_mapper(mapper_id, dict_data)
+
+        # Dump the updated mapper data into the response schema
+        mapper_response = FormProcessMapperSchema().dump(mapper)
+        if task_variables := mapper_response.get("taskVariables"):
+            mapper_response["taskVariables"] = json.loads(task_variables)
+
+        # Get major and minor version of the from from form history
+        major_version, minor_version = FormProcessMapperService.get_form_version(mapper)
+        mapper_response["majorVersion"] = major_version
+        mapper_response["minorVersion"] = minor_version
+
+        return mapper_response
+
+    def handle_authorization_data(
+        self, authorization_data, is_designer=False, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Handler function for authorization updates."""
+        current_app.logger.debug("Updating authorization details..")
+        AuthorizationService.create_or_update_resource_authorization(
+            authorization_data, is_designer=is_designer
+        )
+        return authorization_data
+
+    def handle_process_data(
+        self, process_data, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Handler function for process updates."""
+        current_app.logger.debug("Updating process details..")
+        process_id = process_data.get("id")
+        if not process_id:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+
+        process_payload = process_data.get("processData")
+        process_type = process_data.get("processType")
+        return ProcessService.update_process(process_id, process_payload, process_type)
+
+    def validate_request_data(self, request_data, expected_keys):
+        """Check if at least one expected key exists and is not None."""
+        has_valid_data = any(request_data.get(key) is not None for key in expected_keys)
+
+        if not has_valid_data:
+            raise BusinessException(BusinessErrorCode.MISSING_REQUIRED_KEYS)
+        return True
+
+    def update_form_process(self, request_data, mapper_id, is_designer):
+        """Update form, process, authorizations and mapper details in one call.
+
+        Args:
+            request_data (dict): Combined update payload that may include any of:
+                - formData (dict): Formio form JSON; must include `_id` when provided.
+                - mapper (dict): Mapper fields to update (e.g., formName, status,
+                taskVariables, etc.). If `taskVariables` is present, it will be
+                persisted and filter variables will be updated accordingly.
+                - authorizations (dict): Authorization configuration; created/updated for the
+                associated resource when provided.
+                - process (dict): { id, processData, processType } used to update the process.
+            mapper_id (int): ID of the mapper record to update.
+            is_designer (bool): Whether the caller has designer permissions; used for
+                authorization updates.
+
+        Returns:
+            dict: A dictionary containing any of the updated sections, with keys among
+                { "formData", "mapper", "authorizations", "process" } depending on input.
+
+        Raises:
+            BusinessException: If required identifiers are missing or entities are invalid.
+        """
+        # Validate that at least one updatable section(with keys) is present
+        expected_keys = ("formData", "mapper", "authorizations", "process")
+        self.validate_request_data(request_data, expected_keys)
+        response = {}
+
+        # Registry of handler functions for different data types
+        handlers = {
+            "formData": self.handle_form_data,
+            "mapper": self.handle_mapper_data,
+            "authorizations": self.handle_authorization_data,
+            "process": self.handle_process_data,
+        }
+
+        # Common context for all handlers
+        handler_context = {"mapper_id": mapper_id, "is_designer": is_designer}
+
+        # Process each supported data type present in the request
+        # Note: Update order matters
+        # Updating process last avoids autoflush errors caused by transient str XML in
+        # the Process entity before it's converted to bytes.
+
+        for key in ("formData", "mapper", "authorizations", "process"):
+            data = request_data.get(key)
+            if data is not None:
+                try:
+                    response[key] = handlers[key](data, **handler_context)
+                except Exception as e:
+                    current_app.logger.error(f"Error processing {key}: {str(e)}")
+                    raise
 
         return response

@@ -128,6 +128,7 @@ const CreateFormPage = () => {
 
       // Complete upload progress and navigate
       setUploadProgress(COMPLETE_PROGRESS);
+      setIsUploading(false);
       clearUploadTimer();
       navigateToDesignFormEdit(dispatch, tenantKey, formId);
     } catch (error) {

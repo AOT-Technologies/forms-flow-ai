@@ -10,15 +10,17 @@ import {
 } from "@aot-technologies/formio-react";
 import {
   V8CustomButton,
+  ConfirmModal,
+  //BackToPrevIcon,
+  //HistoryIcon,
+  //PreviewIcon,
   FormBuilderModal,
   HistoryModal,
-  ImportModal,
   CustomInfo,
+  FileUploadPanel,
   PromptModal,
   FormStatusIcon,
-  VariableSelection,
-  Switch,
-  CustomTextInput
+  NoteIcon
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -57,7 +59,7 @@ import {
   fetchRevertingProcessData
 } from "../../../apiManager/services/processServices";
 import _ from "lodash";
-import SettingsTab from "./SettingsTab.js";
+import SettingsModal from "../../../components/Modals/SettingsModal.js";
 import FlowEdit from "./FlowEdit.js";
 import ExportModal from "../../../components/Modals/ExportModal.js";
 import NewVersionModal from "../../../components/Modals/NewVersionModal";
@@ -66,15 +68,14 @@ import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
 import {
   generateUniqueId,
+  // textTruncate,
   convertMultiSelectOptionToValue,
-  removeTenantKeywithSlash,
-  convertSelectedValueToMultiSelectOption
 } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
-import { SystemVariables } from '../../../constants/variables';
+import EditorActions from "./EditActions";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -112,8 +113,8 @@ const tabConfig = {
       query: "?tab=bpmn",
       secondary: {
         editor: {
-          label: "Layout",
-          query: "?tab=bpmn&sub=layout"
+          label: "Editor",
+          query: "?tab=bpmn&sub=editor"
         },
         history: {
           label: "History",
@@ -135,10 +136,10 @@ const tabConfig = {
         }
       }
     },
-    // actions: {
-    //   label: "Actions",
-    //   query: "?tab=actions"
-    // }
+    actions: {
+      label: "Actions",
+      query: "?tab=actions"
+    }
   }
 };
 
@@ -149,8 +150,7 @@ const EditComponent = () => {
   const { t } = useTranslation();
   //this variable handle the flow and layot tab switching
   const sideTabRef = useRef(null);
-   // Check if we're on the create route - defined once for reuse
-   const isCreateRoute = location.pathname.includes('/create');
+
   // Tab state management
   const [activeTab, setActiveTab] = useState({
     primary: 'form',
@@ -173,11 +173,7 @@ const EditComponent = () => {
   // created a copy for access and submissin access
   const [formAccessRoles, setFormAccessRoles] = useState(_cloneDeep(formAccess));
   const [submissionAccessRoles, setSubmissionAccessRoles] = useState(_cloneDeep(submissionAccess));
-  const { path, display } = useSelector((state) => state.form.form);
 
-  const { authorizationDetails: formAuthorization } = useSelector(
-    (state) => state.process
-  );
   /* ---------------------------  form data --------------------------- */
   const { form: formData, error: errors } = useSelector((state) => state.form);
 
@@ -208,18 +204,6 @@ const EditComponent = () => {
     }
   }, [formData, formId, form._id]);
 
-  // Helper function to convert role names to display names for UI
-  const convertRoleToDisplayName = (roleName) => {
-    if (MULTITENANCY_ENABLED && tenantKey) {
-      const cleanedRole = removeTenantKeywithSlash(
-        roleName,
-        tenantKey,
-        MULTITENANCY_ENABLED
-      );
-      return cleanedRole !== false ? cleanedRole : roleName;
-    }
-    return roleName;
-  };
   /* ------------------ handling form layout and flow layouts ----------------- */
   const [currentLayout, setCurrentLayout] = useState(FORM_LAYOUT);
   const isFormLayout = currentLayout === FORM_LAYOUT;
@@ -243,149 +227,15 @@ const EditComponent = () => {
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
-  const setSelectedOption = (option, roles = []) =>
-    roles.length ? "specifiedRoles" : option;
-  const multiSelectOptionKey = "role";
-  // Initialize roles state with proper defaults for new forms
-  const getInitialRolesState = () => {
-    // For new forms (no formId), use default values
-    if (isCreateRoute) {
-      return {
-        DESIGN: {
-          selectedRoles: [],
-          selectedOption: "onlyYou",
-        },
-        FORM: {
-          roleInput: "",
-          selectedRoles: [],
-          selectedOption: "registeredUsers",
-        },
-        APPLICATION: {
-          roleInput: "",
-          selectedRoles: [],
-          selectedOption: "submitter",
-        }
-      };
-    }
-    
-    // For existing forms, use authorization data
-    return {
-      DESIGN: {
-        selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-          multiSelectOptionKey
-        ),
-        selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
-      },
-      FORM: {
-        roleInput: "",
-        selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-          multiSelectOptionKey
-        ),
-        selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
-      },
-      APPLICATION: {
-        roleInput: "",
-        selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-          multiSelectOptionKey
-        ),
-        selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
-        /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
-         we assume that the submitter is true. */
-      }
-    };
-  };
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const [rolesState, setRolesState] = useState(getInitialRolesState());
-
-  // Initialize form details with proper defaults for new forms
-  const getInitialFormDetails = () => {
-    // For new forms (no formId), use default values
-    if (isCreateRoute) {
-      return {
-        title: "",
-        path: "",
-        description: "",
-        display: "form",
-      };
-    }
-    
-    // For existing forms, use process list data
-    return {
-      title: processListData.formName,
-      path: path,
-      description: processListData.description,
-      display: display,
-    };
-  };
-
-  const [formDetails, setFormDetails] = useState(getInitialFormDetails());
-  
-  // Initialize anonymous state with proper defaults for new forms
-  const getInitialAnonymousState = () => {
-    // For new forms (no formId), use default value
-    if (isCreateRoute) {
-      return false;
-    }
-    
-    // For existing forms, use process list data
-    return processListData.anonymous || false;
-  };
-
-  const [isAnonymous, setIsAnonymous] = useState(getInitialAnonymousState());
-
-  // Update roles state when formAuthorization changes (for existing forms)
-  useEffect(() => {
-    if (!isCreateRoute && formAuthorization) {
-      setRolesState({
-        DESIGN: {
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
-        },
-        FORM: {
-          roleInput: "",
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
-        },
-        APPLICATION: {
-          roleInput: "",
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
-        }
-      });
-    }
-  }, [formAuthorization, isCreateRoute]);
-
-  // Update form details when processListData changes (for existing forms)
-  useEffect(() => {
-    if (!isCreateRoute && processListData) {
-      setFormDetails({
-        title: processListData.formName,
-        path: path,
-        description: processListData.description,
-        display: display,
-      });
-      setIsAnonymous(processListData.anonymous || false);
-    }
-  }, [processListData, path, display, isCreateRoute]);
-
-  
   /* ------------------------- migration states ------------------------- */
   const [isMigrationLoading, setIsMigrationLoading] = useState(false);
 
   /* ------------------------- deletion states ------------------------- */
   const [isDeletionLoading, setIsDeletionLoading] = useState(false);
+
+
   /* --------- validate form title exist or not --------- */
   const {
     mutate: validateFormTitle, // this function will trigger the api call
@@ -416,8 +266,6 @@ const EditComponent = () => {
     IMPORT: "import",
     VALIDATE: "validate",
   };
-
-
 
   // add and remove anonymouse access
   const addAndRemoveAnonymouseId = (data, type, isAnonymouse)=>{
@@ -552,6 +400,11 @@ const EditComponent = () => {
         dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
         return;
       }
+      // setActiveTab({
+      //   primary: 'form', 
+      //   secondary: null,   
+      //   tertiary: null  
+      // });
       updateLayout({formExtracted, responseData});
     }
   };
@@ -581,6 +434,7 @@ const EditComponent = () => {
     const { process, mapper } = responseData;
     const isNotFormPlusWorkflow = !forms[0]?.content;
     const extractedForm = forms[0]?.content || forms[0];
+  
 
     /* if form changed then the response contain mapper key and will update
     1. formio's form data
@@ -605,6 +459,7 @@ const EditComponent = () => {
     if (process) {
       dispatch(setProcessData(process));
     }
+
     handleCloseSelectedAction();
   };
 
@@ -656,7 +511,7 @@ const EditComponent = () => {
     setShowSettingsModal(!showSettingsModal);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
-  // const [isSettingsSaving, setIsSettingsSaving] = useState(false);
+  const [isSettingsSaving, setIsSettingsSaving] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const onCloseActionModal = () => setNewActionModal(false);
   const processData = useSelector((state) => state.process?.processData);
@@ -666,7 +521,8 @@ const EditComponent = () => {
     WORKFLOW: "WORKFLOW",
   };
   
- 
+  // Check if we're on the create route - defined once for reuse
+  const isCreateRoute = location.pathname.includes('/create');
   
   // Parse URL parameters for tab state
   useEffect(() => {
@@ -675,11 +531,7 @@ const EditComponent = () => {
     // On create route, always default to 'form' tab
     const tab = isCreateRoute ? "form" : (queryParams.get("tab") || "form");
     const sub = queryParams.get("sub");
-    let subsub = queryParams.get("subsub");
-    
-    if (tab === 'bpmn' && sub === 'variables' && subsub === null) {
-      subsub = 'system';
-    }
+    const subsub = queryParams.get("subsub");
     
     setActiveTab({
       primary: tab,
@@ -702,10 +554,6 @@ const EditComponent = () => {
     // Prevent switching to BPMN tab on create route
     if (isCreateRoute && primary === 'bpmn') {
       return;
-    }
-    
-    if (primary === 'bpmn' && secondary === 'variables' && tertiary === null) {
-      tertiary = 'system';
     }
     
     const newTab = { primary, secondary, tertiary };
@@ -732,7 +580,7 @@ const EditComponent = () => {
   };
 
   const handleCurrentLayout = (e) => {
-    //wehn the current is assigned with element then only the visible class will render
+    //wehn the current is assigned with element then only the visible class will 
     sideTabRef.current = e;
     const newLayout = isFormLayout ? FLOW_LAYOUT : FORM_LAYOUT;
     setCurrentLayout(newLayout);
@@ -851,11 +699,9 @@ const handleSaveLayout = () => {
 
   const fetchProcessDetails = async (processListData) => {
     //for the migration, if the diagram is not available in the db, it will fetch from camunda using maper id.
-   if(!isCreateRoute){
     const mapperId = processListData.id;
     const response = await getProcessDetails({processKey:processListData.processKey, mapperId});
     dispatch(setProcessData(response.data));
-   }
   };
 
   useEffect(async () => {
@@ -886,11 +732,12 @@ const handleSaveLayout = () => {
     }
     return { roles: [], userName: preferred_username };
   };
+
   const handleConfirmSettings = async ({
     formDetails,
     rolesState,
   }) => {
-    // setIsSettingsSaving(true);
+    setIsSettingsSaving(true);
     const parentFormId = processListData.parentFormId;
     const mapper = {
       formId: form._id,
@@ -953,7 +800,7 @@ const handleSaveLayout = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setIsSettingsSaving(false);
+      setIsSettingsSaving(false);
       handleToggleSettingsModal();
     }
   };
@@ -1087,20 +934,6 @@ const handleSaveLayout = () => {
     setShowConfirmModal(false);
   };
 
-  const handleWorkflowDiscard = () => {
-    // Handle workflow discard similar to FlowEdit.js handleDiscardConfirm
-    if (flowRef.current) {
-      // Import the existing process data back to the BPMN editor
-      flowRef.current?.handleImport(processData?.processData);
-      // Reset workflow change state
-      setWorkflowIsChanged(false);
-    }
-  };
-
-  const editorActions = () => {
-    setNewActionModal(true);
-  };
-
   const handlePublishAsNewVersion = ({ description, title }) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
@@ -1230,62 +1063,6 @@ const handleSaveLayout = () => {
     }
   };
 
-  
-  //these are the functions for conversion of roles for backend (payload)
-  // and these will be used on form editcomponent when integrating save functinality 
-  
-  // Extract role conversion to a separate function
-  // const convertSelectedRole = (
-  //   selectedRole,
-  //   userRoles,
-  //   multiSelectOptionKey
-  // ) => {
-  //   const originalRoleData = userRoles.find(
-  //     (role) =>
-  //       role[multiSelectOptionKey] === selectedRole[multiSelectOptionKey]
-  //   );
-
-  //   return {
-  //     ...selectedRole,
-  //     [multiSelectOptionKey]:
-  //       originalRoleData?.originalRole || selectedRole[multiSelectOptionKey],
-  //   };
-  // };
-
-  // Process section data separately
-  // const convertSectionRoles = (
-  //   sectionData,
-  //   userRoles,
-  //   multiSelectOptionKey
-  // ) => {
-  //   return {
-  //     ...sectionData,
-  //     selectedRoles:
-  //       sectionData.selectedRoles?.map((selectedRole) =>
-  //         convertSelectedRole(selectedRole, userRoles, multiSelectOptionKey)
-  //       ) || [],
-  //   };
-  // };
-
-  // Main conversion function
-  // const convertRolesForBackend = (
-  //   rolesState,
-  //   userRoles,
-  //   multiSelectOptionKey
-  // ) => {
-  //   const convertedState = {};
-
-  //   Object.keys(rolesState).forEach((section) => {
-  //     convertedState[section] = convertSectionRoles(
-  //       rolesState[section],
-  //       userRoles,
-  //       multiSelectOptionKey
-  //     );
-  //   });
-
-  //   return convertedState;
-  // };
-
   const handleVersioning = (majorVersion, minorVersion) => {
     setVersion((prevVersion) => ({
       ...prevVersion,
@@ -1404,25 +1181,17 @@ const handleSaveLayout = () => {
           primaryBtnText: t("Unpublish This Form & Flow"),
           secondaryBtnText: t("Cancel, Keep This Form & Flow Published"),
         };
-       case "discard":
-         return {
-           title: t("Discard Changes?"),
-           message:
-             t("Discarding changes is permanent and cannot be undone.?"),
-             secondaryBtnAction : () => {
-             if (formChangeState.changed) {
-               discardChanges();
-             }
-             if (workflowIsChanged) {
-               // Handle workflow discard similar to FlowEdit.js
-               handleWorkflowDiscard();
-             }
-             closeModal();
-           },
-           primaryBtnAction: closeModal,
-           secondaryBtnText: t("Discard Changes"),
-           primaryBtnText: t("cancel"),
-         };
+      case "discard":
+        return {
+          title: t("Discard Layout Changes?"),
+          message:
+            t("Are you sure you want to discard all the changes to the layout of the form?"),
+          messageSecondary: t("This action cannot be undone."),
+          primaryBtnAction: discardChanges,
+          secondaryBtnAction: closeModal,
+          primaryBtnText: t("Yes, Discard Changes"),
+          secondaryBtnText: t("No, Keep My Changes"),
+        };
       case "unpublishBeforeSaving":
         return {
           title: "Unpublish Before Saving",
@@ -1503,7 +1272,7 @@ const handleSaveLayout = () => {
   };
 
   // deleting form hardly from formio and mark inactive in mapper table
-  const deleteModal = () => {
+  const handleDelete = () => {
     if (!applicationCount) {
       setIsDeletionLoading(true);
       dispatch(deleteForm("form", formId,() => {
@@ -1528,52 +1297,54 @@ const handleSaveLayout = () => {
     );
   };
 
-  // this values will be used in settings tab when integrating save functinality 
-  console.log(formDetails, "formDetails",rolesState, "rolesState",isAnonymous, "isAnonymous");
-
   const renderDeleteModal = () => {
-    // const hasSubmissions = processListData.id && applicationCount;
+    setShowDeleteModal(true);
+  };
+  const handleCloseDelete = () => {
+    setShowDeleteModal(false);
+  };
+
+
+
+  const renderDeleteForml = () => {
+    const hasSubmissions = processListData.id && applicationCount;
     const commonProps = {
       show: selectedAction === ACTION_OPERATIONS.DELETE,
       primaryBtnAction: handleCloseActionModal,
       onClose: handleCloseActionModal,
     };
-
-    // if (hasSubmissions) {
-    //   return (
-    //     <ConfirmModal
-    //       {...commonProps}
-    //       title={t("You Cannot Delete This Form & Flow")}
-    //       message={<CustomInfo heading={t("Note")} content={t(
-    //         "You cannot delete a form & flow that has submissions associated with it."
-    //       )} />}
-    //       secondaryBtnAction={handleCloseActionModal}
-    //       secondaryBtnText={t("Dismiss")}
-    //       secondoryBtndataTestid="dismiss-button"
-    //       secondoryBtnariaLabel="Dismiss button"
-    //     />
-    //   );
-    // } else {
       return (
-        <PromptModal
+        <>
+        <div className="delete-section">
+          <V8CustomButton
+            variant="warning"
+            disabled ={hasSubmissions}
+            onClick = {renderDeleteModal}
+            label={t("Delete Form")}
+            aria-label={t("Delete Form")}
+            data-testid="delete-form-disabled-btn"
+          />
+         { Boolean(hasSubmissions) &&  <div className="delete-note">
+          <NoteIcon />
+          <div className="delete-note-text">
+          This form cannot be deleted as it has submissions associated with it
+          </div>
+          </div>}
+        </div>
+        
+        { showDeleteModal && <ConfirmModal
           {...commonProps}
-          type="warning"
-          title={t("Delete form?")}
-          message={t("Deleting a form is permanent and cannot be undone.")}
-          primaryBtnText={t("Delete Form")}
-          primaryBtndataTestid="delete-form-button"
-          primaryBtnariaLabel="Delete Form"
-          primaryBtnAction={deleteModal}
-          primaryBtnDisable={isDeletionLoading}
-          primaryBtnLoading={isDeletionLoading}
-          secondaryBtnText={t("Cancel")}
-          secondoryBtndataTestid="cancel-delete-button"
-          secondoryBtnariaLabel="Cancel"
+          title={t("You Cannot Delete This Form & Flow")}
+          message={<CustomInfo heading={t("Note")} content={t(
+            "You cannot delete a form & flow that has submissions associated with it."
+          )} />}
           secondaryBtnAction={handleCloseActionModal}
-          datatestId="delete-form-modal-message"
-        />
+          secondaryBtnText={t("Dismiss")}
+          secondoryBtndataTestid="dismiss-button"
+          secondoryBtnariaLabel="Dismiss button"
+        />}
+        </>
       );
-    // }
   };
 
   const handlePublishClick = () => {
@@ -1592,23 +1363,6 @@ const handleSaveLayout = () => {
   const renderTabContent = () => {
     switch (activeTab.primary) {
       case 'form':
-        // Check if settings sub-tab is active
-        if (activeTab.secondary === 'settings') {
-          return (
-           
-              <SettingsTab
-                handleConfirm={handleConfirmSettings}
-                isCreateRoute={isCreateRoute}
-                rolesState={rolesState}
-                formDetails={formDetails}
-                isAnonymous={isAnonymous}
-                setIsAnonymous={setIsAnonymous}
-                setFormDetails={setFormDetails}
-                setRolesState={setRolesState}
-              />
-            
-          );
-        }
         return (
           <div className="form-builder custom-scroll">
             {!createDesigns ? (
@@ -1640,86 +1394,6 @@ const handleSaveLayout = () => {
           </div>
         );
       case 'bpmn':
-        if (activeTab.secondary === 'variables') {
-          switch (activeTab.tertiary) {
-            case 'system': {
-              const rowVariables = SystemVariables.map((variable, idx) => ({
-                id: idx + 1,
-                type: variable.labelOfComponent,
-                variable: variable.key,
-                altVariable: variable.altVariable,
-                selected: (
-                  <Switch
-                    type="primary"
-                    withIcon={true}
-                    checked={true}
-                    onChange={() => {}}
-                    ariaLabel="System variable always selected"
-                    dataTestId={`system-variable-switch-${variable.key || idx}`}
-                    disabled
-                  />
-                ),
-              }));
-              const columns = [
-                { field: 'type', headerName: 'Type', flex:1.5, sortable: false },
-                { field: 'variable', headerName: 'Variable', flex:1, sortable: false },
-                {
-                  field: 'altVariable',
-                  headerName: 'Alternative Field',
-                  flex: 1,
-                  sortable: false,
-                  renderCell: (params) => (
-                    <CustomTextInput
-                      value={params.row.altVariable}
-                      datatestid={`alt-variable-input-${params.row.variable}`}
-                      aria-label="System variable alternative field"
-                      placeholder=""
-                      setValue={(newVal) => {
-                        params.row.altVariable = newVal;
-                      }}
-                    />
-                  ),
-                },
-                {
-                  field: "selected",
-                  headerName: "Selected",
-                  flex: 1,
-                  sortable: false,
-                  renderCell: (params) => (
-                    <Switch
-                      type="primary"
-                      withIcon={true}
-                      checked={true}
-                      onChange={(e) => {
-                        params.row.selected = e;
-                      }}
-                      aria-label={t("System variable selection")}
-                      datatestid={`system-variable-switch-${params.row.variable}`}
-                    />
-                  ),
-                },
-              ];
-              
-              return (
-                <VariableSelection
-                  rowVariables={rowVariables}
-                  columns={columns}
-                  tabKey='system'
-                  form={form}
-                />
-              );
-            }
-            case 'form':
-              return (
-                <VariableSelection
-                  tabKey='form'
-                  form={form}
-                />
-              );
-            default:
-              return null;
-          }
-        }
         return (
           <div className="bpmn-editor">
             {isProcessDetailsLoading ? (
@@ -1749,6 +1423,15 @@ const handleSaveLayout = () => {
             )}
           </div>
         );
+      case 'actions':
+        return (
+          <EditorActions 
+          renderUpload={renderFileUpload}
+          renderDeleteForm={renderDeleteForml}
+          mapperId={processListData.id} 
+          formTitle={form.title}
+          />
+        ) ;
       default:
         return null;
     }
@@ -1773,7 +1456,7 @@ const handleSaveLayout = () => {
                 if (isDisabled) return; // Don't execute if disabled
                 
                 if (key === 'settings') {
-                  handleTabClick('form', 'settings');
+                  handleToggleSettingsModal();
                 } else if (key === 'history') {
                   if (activeTab.primary === 'form') {
                     handleFormHistory();
@@ -1825,6 +1508,25 @@ const handleSaveLayout = () => {
     return null;
   };
 
+  const renderFileUpload = () => {
+    return (
+      <FileUploadPanel
+      onClose={() => console.log("Closed")}
+       uploadActionType={UploadActionType}
+      importError={null}
+      importLoader={importLoader}
+      formName={formTitle}
+      description="Upload a new form definition to import."
+      handleImport={handleImport}
+      fileItems={fileItems}
+      fileType={UploadActionType}
+      primaryButtonText={primaryButtonText}
+      headerText="Import Configuration"
+      processVersion={null}
+    />
+    );
+  };
+
   return (
     <div className="form-create-edit-layout">
       <NavigateBlocker
@@ -1841,6 +1543,29 @@ const handleSaveLayout = () => {
         spinner
         text={t("Loading...")}
       >
+        <SettingsModal
+          show={showSettingsModal}
+          isSaving={isSettingsSaving}
+          handleClose={handleToggleSettingsModal}
+          handleConfirm={handleConfirmSettings}
+        />
+
+      {selectedAction === ACTION_OPERATIONS.IMPORT && (
+        <FileUploadPanel
+        onClose={() => console.log("Closed")}
+        uploadActionType={{ IMPORT: "IMPORT", VALIDATE: "VALIDATE" }}
+        importError={null}
+        importLoader={importLoader}
+        formName={formTitle}
+        description="Upload a new form definition to import."
+        handleImport={handleImport}
+        fileItems={fileItems}
+        fileType={UploadActionType}
+        primaryButtonText={primaryButtonText}
+        headerText="Import Configuration"
+        processVersion={null}
+      />
+      )}
 
         <Errors errors={errors} />
 
@@ -1866,7 +1591,7 @@ const handleSaveLayout = () => {
                 {createDesigns && (
                   <>
                   <V8CustomButton
-                  disabled={!formChangeState.changed && !workflowIsChanged}
+                  disabled={!formChangeState.changed}
                   label={t("Save")}
                   onClick={
                     isPublished
@@ -1914,13 +1639,6 @@ const handleSaveLayout = () => {
                        />
                      );
                    })}
-                  <V8CustomButton
-                      label={t("Actions")}
-                      onClick={editorActions}
-                      dataTestId="designer-action-testid"
-                      ariaLabel={t("Designer Actions Button")}
-                      dark
-                    />
               </div>
               
                   </div>
@@ -1930,7 +1648,7 @@ const handleSaveLayout = () => {
             </div>
 
             {/* Header Section 3 - Tab navigation */}
-            <div className="header-section-3">
+            { activeTab?.primary !== "actions" && <div className="header-section-3">
               <div className="section-seperation-left">
                 {renderSecondaryControls()}
               </div>
@@ -1941,7 +1659,7 @@ const handleSaveLayout = () => {
                     <V8CustomButton
                       label={t("Discard Changes")}
                       onClick={() => openConfirmModal("discard")}
-                      disabled={!formChangeState.changed && !workflowIsChanged}
+                      disabled={!formChangeState.changed}
                       dataTestId="discard-button-testid"
                       ariaLabel={t("Discard Changes Button")}
                       secondary
@@ -1949,7 +1667,7 @@ const handleSaveLayout = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </div>}
 
             {/* Header Section 4 - Tertiary controls */}
             {activeTab.primary === 'bpmn' && activeTab.secondary === 'variables' && (
@@ -1991,21 +1709,6 @@ const handleSaveLayout = () => {
         nameError={nameError}
       />
 
-      {selectedAction === ACTION_OPERATIONS.IMPORT && (
-        <ImportModal
-          importLoader={importLoader}
-          importError={importError}
-          showModal={selectedAction === ACTION_OPERATIONS.IMPORT}
-          uploadActionType={UploadActionType}
-          formName={formTitle}
-          onClose={handleCloseSelectedAction}
-          handleImport={handleImport}
-          fileItems={fileItems}
-          headerText={t("Import File")}
-          primaryButtonText={primaryButtonText}
-          fileType=".json, .bpmn"
-        />
-      )}
 
       <ExportModal
         showExportModal={selectedAction === ACTION_OPERATIONS.EXPORT}
@@ -2025,7 +1728,7 @@ const handleSaveLayout = () => {
       />
 
       {showConfirmModal && (
-        <PromptModal
+        <ConfirmModal
           show={showConfirmModal}
           title={modalContent.title}
           message={modalContent.message}
@@ -2035,7 +1738,7 @@ const handleSaveLayout = () => {
           secondaryBtnAction={modalContent.secondaryBtnAction}
           primaryBtnText={modalContent.primaryBtnText}
           secondaryBtnText={modalContent.secondaryBtnText}
-          type="warning"
+          size="md"
         />
       )}
 
@@ -2069,7 +1772,17 @@ const handleSaveLayout = () => {
         disableAllRevertButton={isPublished}
       />
 
-      {renderDeleteModal()}
+      <PromptModal
+        show={showDeleteModal}
+        onClose={handleCloseDelete}
+        title="Delete Item"
+        message="Are you sure you want to delete this item?"
+        type="warning"
+        primaryBtnText="Delete"
+        primaryBtnAction={handleDelete}
+        secondaryBtnText="Cancel"
+        secondaryBtnAction={handleCloseDelete}
+      />  
     </div>
   );
 };

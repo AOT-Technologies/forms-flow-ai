@@ -1,0 +1,121 @@
+import React, { useState } from "react";
+import { getFormExport } from "../../../apiManager/services/FormServices";
+import _ from "lodash";
+import {
+  V8CustomButton,
+  SelectDropdown,
+  CustomProgressBar,
+} from "@formsflow/components";
+
+const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) => {
+  const [progress, setProgress] = useState(0);
+  const [isError, setIsError] = useState(false);
+  const formExportOptions = [
+    { label: "JSON", value: "json" }
+  ];
+  const [selectedValue, setSelectedValue] = useState("json");
+
+  const handleSelectChange = (value) => {
+    setSelectedValue(value);
+  };
+
+
+  const fileName = `${_.camelCase(formTitle)}.json`;
+
+  const exportForm = () => {
+    setProgress(0);
+    setIsError(false);
+
+    getFormExport(mapperId, {
+      responseType: "blob",
+      onDownloadProgress: (progressEvent) => {
+        if (progressEvent.lengthComputable) {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setProgress(percentCompleted);
+        } else {
+          setProgress((prev) => Math.min(prev + 10, 100));
+        }
+      },
+    })
+      .then((response) => {
+        const jsonString = JSON.stringify(response.data, null, 2);
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setProgress(100);
+      })
+      .catch(() => {
+        setProgress(100);
+        setIsError(true);
+      });
+  };
+
+  const handleExportClick = () => {
+    exportForm();
+  };
+
+  return (
+    <div className="form-edit-actions">
+      <div className="grid-section">
+        <div className="actions-header">Import Form</div>
+        <div className="upload-action-content">
+          {renderUpload ? renderUpload() : <p>No upload component</p>}
+        </div>
+      </div>
+
+      <div className="grid-section">
+        <div className="actions-header">Export Form</div>
+        <div className="actions-contents">
+        <div className="export-section">
+            <div className="export-dropdown-section">
+            <SelectDropdown
+              options={formExportOptions}
+              value={selectedValue}
+              onChange={handleSelectChange}
+              searchDropdown={false}
+              ariaLabel="Select export format"
+              dataTestId="form-export-dropdown"
+            />
+          <V8CustomButton
+            variant="primary"
+             onClick= {handleExportClick}
+            data-testid="form-export-btn"
+            aria-label="Export Form"
+            label="Export"
+        />
+     </div>
+
+     <div className="export-progress-section">
+            <div>Exporting PDF</div>
+            <div className="export-progress">
+            <CustomProgressBar 
+              progress={progress} 
+              color={isError ? "error" : undefined}
+            />
+            </div>
+     </div>
+     
+      </div>
+          </div>
+      </div>
+
+      <div className="grid-section">
+        <div className="actions-header">
+          <div className="delete-header">Delete Form</div>
+        </div>
+        <div className="actions-contents">
+          {renderDeleteForm ? renderDeleteForm() : <p>No delete component</p>}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ActionsPage;

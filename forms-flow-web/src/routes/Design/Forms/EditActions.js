@@ -66,7 +66,7 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
       <div className="grid-section">
         <div className="actions-header">Import Form</div>
         <div className="upload-action-content">
-          {renderUpload ? renderUpload() : <p>No upload component</p>}
+          {renderUpload && renderUpload() }
         </div>
       </div>
 
@@ -111,7 +111,7 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
           <div className="delete-header">Delete Form</div>
         </div>
         <div className="actions-contents">
-          {renderDeleteForm ? renderDeleteForm() : <p>No delete component</p>}
+          {renderDeleteForm && renderDeleteForm()}
         </div>
       </div>
     </div>

@@ -251,6 +251,7 @@ const SettingsTab = (
 
 
   return (
+    <>
     <div className="form-edit-settings">
       <div className="grid-section">
         <div className="settings-header">
@@ -450,6 +451,7 @@ const SettingsTab = (
         saveButtonText={t("Save URL")}
       />
     </div>
+    </>
   );
 };
 

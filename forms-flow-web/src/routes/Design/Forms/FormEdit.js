@@ -1843,6 +1843,7 @@ const saveFormWithWorkflow = async () => {
               handlePaginationModelChange={setPaginationModel}
             />
           );
+        }
         // Check if settings sub-tab is active
         if (activeTab.secondary === 'settings') {
           return (

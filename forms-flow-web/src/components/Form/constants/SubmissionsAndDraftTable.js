@@ -258,7 +258,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
 
   return (
     <>
-      <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
+      <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
         <DataGrid
           columns={columns}
           rows={rows}

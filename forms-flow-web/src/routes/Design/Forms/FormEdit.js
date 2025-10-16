@@ -400,11 +400,11 @@ const EditComponent = () => {
         dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
         return;
       }
-      // setActiveTab({
-      //   primary: 'form', 
-      //   secondary: null,   
-      //   tertiary: null  
-      // });
+      setActiveTab({
+        primary: 'form', 
+        secondary: null,   
+        tertiary: null  
+      });
       updateLayout({formExtracted, responseData});
     }
   };

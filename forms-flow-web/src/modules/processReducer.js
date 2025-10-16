@@ -108,6 +108,7 @@ const process = (state = initialState, action) => {
         isProcessDiagramLoading: true,
         applicationCount: 0,
         applicationCountResponse: false,
+        processData: {},
       };
     case ACTION_CONSTANTS.WORKFLOW_ASSOCIATION_CHANGED:
       return { ...state, workflowAssociated: action.payload };

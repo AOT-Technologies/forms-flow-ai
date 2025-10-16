@@ -8,7 +8,7 @@ import { BASE_ROUTE } from "../../../constants/constants";
 import Loading from "../../../containers/Loading";
 import AccessDenied from "../../../components/AccessDenied";
 import FormPreview from "./FormPreview";
-
+import CreateFormPage from "./CreateFormPage";
 const GenericRoute = ({ component: Component, roles, ...rest }) => {
   const userRoles = useSelector((state) => state.user.roles || []);
   
@@ -47,6 +47,12 @@ export default React.memo(() => {
     // <div data-testid="Form-index">
       <Switch>
         <Route exact path={`${BASE_ROUTE}formflow`} component={List} />
+        <GenericRoute
+          exact
+          path={`${BASE_ROUTE}formflow/build`}
+          component={CreateFormPage}
+          roles={['create_designs']}
+        />
         <GenericRoute
           path={`${BASE_ROUTE}formflow/create`}
           component={EditForm}

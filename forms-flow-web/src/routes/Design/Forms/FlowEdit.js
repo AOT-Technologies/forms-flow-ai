@@ -9,7 +9,7 @@ import {
   CustomButton,
   ConfirmModal,
   HistoryModal,
-  CurlyBracketsIcon,
+  //CurlyBracketsIcon,
   VariableSelection,
   CloseIcon,
   CustomInfo,
@@ -41,6 +41,7 @@ import userRoles from "../../../constants/permissions.js";
 import BPMNViewer from "../../../components/BPMN/BpmnViewer.js";
 import Modal from "react-bootstrap/Modal";  
 import { SystemVariables } from '../../../constants/variables';
+import { createDefaultBpmnXml } from "../../../constants/defaultBpmnTemplate.js";
 
 const FlowEdit = forwardRef(
   (
@@ -57,6 +58,9 @@ const FlowEdit = forwardRef(
       handleCurrentLayout,
       isMigrationLoading,
       setIsMigrationLoading,
+      isCreateRoute = false,
+      currentBpmnXml = null,  
+      setCurrentBpmnXml = () => {},
       // handleUnpublishAndSaveChanges,
     },
     ref
@@ -66,6 +70,14 @@ const FlowEdit = forwardRef(
     const bpmnRef = useRef();
     const processData = useSelector((state) => state.process?.processData);
     const [lintErrors, setLintErrors] = useState([]);
+    
+    // Initialize default BPMN for create route
+    const [defaultBpmnXml] = useState(() => {
+      if (isCreateRoute) {
+        return createDefaultBpmnXml();
+      }
+      return null;
+    });
     const [showDiscardModal, setShowDiscardModal] = useState(false);
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [isReverted, setIsReverted] = useState(false);
@@ -123,9 +135,19 @@ const FlowEdit = forwardRef(
     const handleToggleHistoryModal = () =>
       setShowHistoryModal(!showHistoryModal);
 
-    const enableWorkflowChange = () => {
-      setWorkflowIsChanged(true); // this function passed from parent
-    };
+
+const enableWorkflowChange = async () => {  
+  setWorkflowIsChanged(true); // this function passed from parent
+  try {
+    const bpmnModeler = bpmnRef.current?.getBpmnModeler();
+    if (bpmnModeler) {
+      const { xml } = await bpmnModeler.saveXML({ format: true });
+      setCurrentBpmnXml(xml);
+    }
+  } catch (error) {
+    console.error('Error updating current BPMN XML:', error);
+  }
+};
 
     const disableWorkflowChange = () => {
       setWorkflowIsChanged(false); // this function passed from parent
@@ -159,8 +181,13 @@ const FlowEdit = forwardRef(
     //handle discard changes
     const handleDiscardConfirm = () => {
       if (bpmnRef.current) {
+        // On create route, revert to default XML; on edit route, revert to original processData
+        const xmlToRevert = isCreateRoute 
+          ? defaultBpmnXml 
+          : processData?.processData;
+        
         //import the existing process data to bpmn
-        bpmnRef.current?.handleImport(processData?.processData);
+        bpmnRef.current?.handleImport(xmlToRevert);
         isReverted && setIsReverted(!isReverted); //once it reverted then need to make it false
         disableWorkflowChange();
         handleDiscardModal();
@@ -226,6 +253,12 @@ const FlowEdit = forwardRef(
       handleSaveFlowClick, // expose for parent (FormEdit) to trigger Save Flow
       handleImport: (xml) => {
         bpmnRef.current?.handleImport(xml);
+      },
+      getBpmnModeler: () => {
+        return bpmnRef.current?.getBpmnModeler();
+      },
+      getDefaultXml: () => {
+        return defaultBpmnXml;
       },
     }));
 
@@ -361,7 +394,7 @@ const FlowEdit = forwardRef(
             >
               <div className="flow-builder">
                 {!createDesigns ? (
-                  <BPMNViewer bpmnXml={processData?.processData || null} />
+                  <BPMNViewer bpmnXml={processData?.processData || defaultBpmnXml} />
                 ) : (
                   <BpmnEditor
                     onChange={enableWorkflowChange} //handled is workflow changed or not
@@ -370,7 +403,7 @@ const FlowEdit = forwardRef(
                     bpmnXml={
                       isReverted
                         ? historyData?.processData
-                        : processData?.processData
+                        : (currentBpmnXml || processData?.processData || defaultBpmnXml)
                     }
                   />
                 )}
@@ -537,6 +570,9 @@ FlowEdit.propTypes = {
   handleCurrentLayout: PropTypes.func,
   isMigrationLoading: PropTypes.bool,
   setIsMigrationLoading: PropTypes.func,
+  isCreateRoute: PropTypes.bool,
+  currentBpmnXml: PropTypes.string,
+  setCurrentBpmnXml: PropTypes.func,
 };
 
 export default FlowEdit;

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Edit as FormEdit } from './FormEdit.js';
 import { setApiCallError } from "../../../actions/ErroHandling.js";
-import { resetFormData, setFormAuthVerifyLoading, setFormAuthorizationDetails, setFormSuccessData } from "../../../actions/formActions.js";
+import { resetFormData, setFormAuthVerifyLoading, setFormAuthorizationDetails } from "../../../actions/formActions.js";
 import {
     getFormProcesses,
     resetFormProcessData,
@@ -14,7 +14,6 @@ import { fetchFormAuthorizationDetials } from "../../../apiManager/services/auth
 import { Formio, getForm } from "@aot-technologies/formio-react";
 import Loading from "../../../containers/Loading.js";
 import NotFound from "../../../components/NotFound/index.js";
-import { addHiddenApplicationComponent } from "../../../constants/applicationComponent.js";
 
 const Index = () => {
   const { formId } = useParams();
@@ -46,32 +45,8 @@ const Index = () => {
     dispatch(resetFormProcessData());
     dispatch(setFormAuthVerifyLoading(true));
     
-    // If no formId, it's a new form creation
+    // If no formId, it's a new form creation - just set minimal state
     if (!formId) {      
-      // Set empty form data for new form
-      const newFormData = {
-        _id: null,
-        title: "Untitled Form",
-        name: "untitled-form",
-        display: "form",
-        type: "form",
-        components: [],
-        settings: {},
-        properties: {},
-        tags: [],
-        access: [],
-        submissionAccess: [],
-        owner: null,
-        created: new Date().toISOString(),
-        modified: new Date().toISOString(),
-        machineName: "untitled-form",
-        isNewForm: true
-      };
-      // Inject hidden components for new forms
-      const newFormWithHidden = addHiddenApplicationComponent({ ...newFormData });
-      // this global state is used to store the form data when initialy create the form using form-design api
-      dispatch(setFormSuccessData("form", newFormWithHidden));
-      
       // Set empty authorization details for new form
       dispatch(setFormAuthorizationDetails({
         application: { roles: [], userName: null, resourceDetails: { submitter: false } },
@@ -79,7 +54,7 @@ const Index = () => {
         reviewer: { roles: [], userName: null, resourceDetails: {} }
       }));
       
-      // Set both loading states to false for new forms
+      // Set loading state to false for new forms
       dispatch(setFormAuthVerifyLoading(false));
       return;
     }

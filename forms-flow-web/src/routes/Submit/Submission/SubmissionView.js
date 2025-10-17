@@ -80,7 +80,7 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
   const rows = historyData || [];
 
   return (
-   <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
+   <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
       <DataGrid
         rows={rows}
         columns={columns}

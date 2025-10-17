@@ -19,7 +19,9 @@ import {
   BreadCrumbs,
   VariableSelection,
   Switch,
-  CustomTextInput
+  CustomTextInput,
+  FileUploadPanel,
+  NoteIcon
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -79,6 +81,7 @@ import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocke
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
 import { SystemVariables } from '../../../constants/variables';
+import EditorActions from "./EditActions";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -139,10 +142,10 @@ const tabConfig = {
         }
       }
     },
-    // actions: {
-    //   label: "Actions",
-    //   query: "?tab=actions"
-    // }
+    actions: {
+      label: "Actions",
+      query: "?tab=actions"
+    }
   }
 };
 
@@ -577,6 +580,11 @@ const EditComponent = () => {
         dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
         return;
       }
+      setActiveTab({
+        primary: 'form', 
+        secondary: null,   
+        tertiary: null  
+      });
       updateLayout({formExtracted, responseData});
     }
   };
@@ -686,6 +694,7 @@ const EditComponent = () => {
   const [pendingAction, setPendingAction] = useState(null);
   const onCloseActionModal = () => setNewActionModal(false);
   const processData = useSelector((state) => state.process?.processData);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const CategoryType = {
     FORM: "FORM",
@@ -1332,9 +1341,6 @@ const saveFormWithWorkflow = async () => {
     }
   };
 
-  const editorActions = () => {
-    setNewActionModal(true);
-  };
 
   const handlePublishAsNewVersion = ({ description, title }) => {
     setFormSubmitted(true);
@@ -1733,13 +1739,13 @@ const saveFormWithWorkflow = async () => {
     setSelectedAction(action);
   };
 
-  const handleCloseActionModal = () => {
-    setSelectedAction(null); // Reset action
-    setPendingAction(null); // Reset pending action
-  };
+  // const handleCloseActionModal = () => {
+  //   setSelectedAction(null); // Reset action
+  //   setPendingAction(null); // Reset pending action
+  // };
 
   // deleting form hardly from formio and mark inactive in mapper table
-  const deleteModal = () => {
+  const handleDelete = () => {
     if (!applicationCount) {
       setIsDeletionLoading(true);
       dispatch(deleteForm("form", formId,() => {
@@ -1764,16 +1770,37 @@ const saveFormWithWorkflow = async () => {
     );
   };
 
-  // this values will be used in settings tab when integrating save functinality
-  
 
-  const renderDeleteModal = () => {
-    // const hasSubmissions = processListData.id && applicationCount;
-    const commonProps = {
-      show: selectedAction === ACTION_OPERATIONS.DELETE,
-      primaryBtnAction: handleCloseActionModal,
-      onClose: handleCloseActionModal,
-    };
+   const renderFileUpload = () => {
+    return (
+      <FileUploadPanel
+      onClose={() => console.log("Closed")}
+       uploadActionType={UploadActionType}
+      importError={null}
+      importLoader={importLoader}
+      formName={formTitle}
+      description="Upload a new form definition to import."
+      handleImport={handleImport}
+      fileItems={fileItems}
+      fileType={UploadActionType}
+      primaryButtonText={primaryButtonText}
+      headerText="Import Configuration"
+      processVersion={null}
+    />
+    );
+  };
+
+   const renderDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+  const handleCloseDelete = () => {
+    setShowDeleteModal(false);
+  };
+
+  // this values will be used in settings tab when integrating save functinality
+
+  const renderDeleteForml = () => {
+    const hasSubmissions = processListData.id && applicationCount;
 
     // if (hasSubmissions) {
     //   return (
@@ -1790,25 +1817,40 @@ const saveFormWithWorkflow = async () => {
     //     />
     //   );
     // } else {
-      return (
-        <PromptModal
-          {...commonProps}
-          type="warning"
-          title={t("Delete form?")}
-          message={t("Deleting a form is permanent and cannot be undone.")}
-          primaryBtnText={t("Delete Form")}
-          primaryBtndataTestid="delete-form-button"
-          primaryBtnariaLabel="Delete Form"
-          primaryBtnAction={deleteModal}
-          primaryBtnDisable={isDeletionLoading}
-          primaryBtnLoading={isDeletionLoading}
-          secondaryBtnText={t("Cancel")}
-          secondoryBtndataTestid="cancel-delete-button"
-          secondoryBtnariaLabel="Cancel"
-          secondaryBtnAction={handleCloseActionModal}
-          datatestId="delete-form-modal-message"
-        />
-      );
+     
+        return (
+          <>
+          <div className="delete-section">
+            <V8CustomButton
+              variant="warning"
+              disabled ={hasSubmissions}
+              onClick = {renderDeleteModal}
+              label={t("Delete Form")}
+              aria-label={t("Delete Form")}
+              data-testid="delete-form-disabled-btn"
+            />
+           { Boolean(hasSubmissions) &&  <div className="delete-note">
+            <NoteIcon />
+            <div className="delete-note-text">
+            This form cannot be deleted as it has submissions associated with it
+            </div>
+            </div>}
+          </div>
+{/*   
+          { showDeleteModal && <ConfirmModal
+            {...commonProps}
+            title={t("You Cannot Delete This Form & Flow")}
+            message={<CustomInfo heading={t("Note")} content={t(
+              "You cannot delete a form & flow that has submissions associated with it."
+            )} />}
+            secondaryBtnAction={handleCloseActionModal}
+            secondaryBtnText={t("Dismiss")}
+            secondoryBtndataTestid="dismiss-button"
+            secondoryBtnariaLabel="Dismiss button"
+          />} */}
+          </>
+        );
+  
     // }
   };
 
@@ -1843,6 +1885,7 @@ const saveFormWithWorkflow = async () => {
               handlePaginationModelChange={setPaginationModel}
             />
           );
+        }
         // Check if settings sub-tab is active
         if (activeTab.secondary === 'settings') {
           return (
@@ -2015,6 +2058,15 @@ const saveFormWithWorkflow = async () => {
           </>
         );
       }
+      case 'actions':
+        return (
+          <EditorActions 
+          renderUpload={renderFileUpload}
+          renderDeleteForm={renderDeleteForml}
+          mapperId={processListData.id} 
+          formTitle={form.title}
+          />
+        ) ;
       default:
         return null;
     }
@@ -2195,13 +2247,6 @@ const saveFormWithWorkflow = async () => {
                           );
                         }
                       )}
-                      <V8CustomButton
-                        label={t("Actions")}
-                        onClick={editorActions}
-                        dataTestId="designer-action-testid"
-                        ariaLabel={t("Designer Actions Button")}
-                        dark
-                      />
                     </div>
                   </div>
                 )}
@@ -2209,7 +2254,7 @@ const saveFormWithWorkflow = async () => {
             </div>
 
             {/* Header Section 3 - Tab navigation */}
-            <div className="header-section-3">
+            { activeTab?.primary !== "actions" && <div className="header-section-3">
               <div className="section-seperation-left">
                 {renderSecondaryControls()}
               </div>
@@ -2231,7 +2276,7 @@ const saveFormWithWorkflow = async () => {
                   </div>
                 )}
               </div>
-            </div>
+            </div>}
 
             {/* Header Section 4 - Tertiary controls */}
             {activeTab.primary === "bpmn" &&
@@ -2356,7 +2401,18 @@ const saveFormWithWorkflow = async () => {
         />
       )}
 
-      {renderDeleteModal()}
+        <PromptModal
+        show={showDeleteModal}
+        onClose={handleCloseDelete}
+        title="Delete Item"
+        message="Are you sure you want to delete this item?"
+        type="warning"
+        primaryBtnText="Delete"
+        primaryBtnAction={handleDelete}
+        secondaryBtnText="Cancel"
+        secondaryBtnAction={handleCloseDelete}
+      />  
+
     </div>
   );
 };

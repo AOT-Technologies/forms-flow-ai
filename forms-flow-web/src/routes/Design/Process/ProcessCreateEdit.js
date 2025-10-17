@@ -22,7 +22,7 @@ import {
 import {
   ConfirmModal,
   ErrorModal,
-  HistoryModal,
+  HistoryPage,
   V8CustomButton,
   FormStatusIcon
 } from "@formsflow/components";
@@ -754,7 +754,7 @@ const ProcessCreateEdit = ({ type }) => {
           primaryBtnText={t("Dismiss")}
         />
       )}
-      <HistoryModal
+      <HistoryPage
         show={activeTab.secondary === 'history'}
         onClose={() => handleTabClick('layout')}
         title={t("History")}

@@ -90,7 +90,6 @@ public class OAuth2LoginSecurityConfig  {
 				.securityMatcher(AntPathRequestMatcher.antMatcher("/engine-rest-ext/**"))
 				.authorizeHttpRequests(auth -> auth				 
 						.requestMatchers(
-								antMatcher(HttpMethod.OPTIONS,"/engine-rest/**"),
 								antMatcher(HttpMethod.OPTIONS,"/engine-rest-ext/v1/**"),
 								antMatcher(HttpMethod.OPTIONS, "/forms-flow-bpm-socket/**"),
 								antMatcher(HttpMethod.OPTIONS, "/engine-rest/**"),

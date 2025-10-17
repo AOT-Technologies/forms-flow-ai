@@ -180,7 +180,6 @@ const EditComponent = () => {
   // created a copy for access and submissin access
   const [formAccessRoles, setFormAccessRoles] = useState(_cloneDeep(formAccess));
   const [submissionAccessRoles, setSubmissionAccessRoles] = useState(_cloneDeep(submissionAccess));
-  const [formHistoryLoading, setFormHistoryLoading] = useState(false);
   const { path, display } = useSelector((state) => state.form.form);
 
   const { authorizationDetails: formAuthorization } = useSelector(
@@ -438,7 +437,7 @@ const EditComponent = () => {
       }
     }
     );
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
+  const [paginationModel] = useState({ page: 0, pageSize: 10 });
   
   const UploadActionType = {
     IMPORT: "import",
@@ -657,7 +656,6 @@ const EditComponent = () => {
   } = useSelector((state) => state.formRestore);
 
   /* ------------------------- BPMN history variables ------------------------- */
-  const [showBpmnHistoryModal, setShowBpmnHistoryModal] = useState(false);
   const [bpmnHistoryData, setBpmnHistoryData] = useState({ processHistory: [], totalCount: 0 });
 
   /* -------------------------- getting process data -------------------------- */
@@ -740,6 +738,9 @@ useEffect(() => {
   useEffect(() => {
     if (activeTab.primary === "form" && activeTab.secondary === "history") {
       handleFormHistory();
+    }
+    if (activeTab.primary === "bpmn" && activeTab.secondary === "history") {
+      handleBpmnHistory();
     }
   }, [activeTab.primary, activeTab.secondary, processListData?.parentFormId,
       paginationModel.pageSize]);
@@ -1217,14 +1218,12 @@ const saveFormWithWorkflow = async () => {
   //   setShowHistoryModal(false);
   // };
   const fetchFormHistory = (parentFormId, page, limit) => {
-    setFormHistoryLoading(true);
     parentFormId = parentFormId && typeof parentFormId === 'string' ? parentFormId : processListData?.parentFormId;
     page = page ? page : paginationModel.page + 1;
     limit = limit ? limit : paginationModel.pageSize;
     getFormHistory(parentFormId,page, limit)
       .then((res) => {
         dispatch(setFormHistories(res.data));
-        setFormHistoryLoading(false);
       })
       .catch(() => {
         setFormHistories([]);
@@ -1233,7 +1232,6 @@ const saveFormWithWorkflow = async () => {
 
   const handleFormHistory = () => {
     console.log("handleFormHistory", processListData);
-    // setShowHistoryModal(true);
     dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
     if (processListData?.parentFormId) {
       fetchFormHistory(processListData?.parentFormId, 1, paginationModel.pageSize);
@@ -1246,7 +1244,6 @@ const saveFormWithWorkflow = async () => {
 
   /* ------------------------- BPMN history handlers ------------------------- */
   const handleBpmnHistory = () => {
-    setShowBpmnHistoryModal(true);
     setBpmnHistoryData({ processHistory: [], totalCount: 0 });
     if (processData?.parentProcessKey) {
       fetchBpmnHistory(processData.parentProcessKey, 1, 4);
@@ -1282,9 +1279,7 @@ const saveFormWithWorkflow = async () => {
     }
   };
 
-  const closeBpmnHistoryModal = () => {
-    setShowBpmnHistoryModal(false);
-  };
+
 
   const revertFormBtnAction = (cloneId) => {
     dispatch(setRestoreFormId(cloneId));
@@ -1870,6 +1865,7 @@ const saveFormWithWorkflow = async () => {
   const renderTabContent = () => {
     switch (activeTab.primary) {
       case 'form':
+        // Check if history sub-tab is active
         if (activeTab.secondary === 'history') {
           return (
             <HistoryPage
@@ -1879,28 +1875,26 @@ const saveFormWithWorkflow = async () => {
               revertBtnAction={revertFormBtnAction}
               historyCount={formHistoryData.totalCount}
               disableAllRevertButton={isPublished}
-              loading={formHistoryLoading}
+              loading={false}
               refreshBtnAction={fetchFormHistory}
               paginationModel={paginationModel}
-              handlePaginationModelChange={setPaginationModel}
+              handlePaginationModelChange={() => {}}
             />
           );
         }
         // Check if settings sub-tab is active
         if (activeTab.secondary === 'settings') {
           return (
-
-              <SettingsTab
-                handleConfirm={handleConfirmSettings}
-                isCreateRoute={isCreateRoute}
-                rolesState={rolesState}
-                formDetails={formDetails}
-                isAnonymous={isAnonymous}
-                setIsAnonymous={setIsAnonymous}
-                setFormDetails={setFormDetails}
-                setRolesState={setRolesState}
-              />
-
+            <SettingsTab
+              handleConfirm={handleConfirmSettings}
+              isCreateRoute={isCreateRoute}
+              rolesState={rolesState}
+              formDetails={formDetails}
+              isAnonymous={isAnonymous}
+              setIsAnonymous={setIsAnonymous}
+              setFormDetails={setFormDetails}
+              setRolesState={setRolesState}
+            />
           );
         }
         return (
@@ -2024,8 +2018,8 @@ const saveFormWithWorkflow = async () => {
             {/* Show variable content when on variables tab */}
             {variableContent && <div className="variable-content">{variableContent}</div>}
             
-            {/* Always keep FlowEdit mounted but hide when showing variables */}
-            <div className="bpmn-editor" style={{ display: variableContent ? 'none' : 'block' }}>
+            {/* Always keep FlowEdit mounted but hide when showing variables or history */}
+            <div className="bpmn-editor" style={{ display: (variableContent || activeTab.secondary === 'history') ? 'none' : 'block' }}>
               {isProcessDetailsLoading ? (
                 <div className="d-flex justify-content-center p-4">
                   <div className="spinner-grow" aria-live="polite">
@@ -2093,11 +2087,9 @@ const saveFormWithWorkflow = async () => {
                   handleTabClick('form', 'settings');
                 } else if (key === 'history') {
                   if (activeTab.primary === 'form') {
-                    activeTab.secondary = 'history';
                     handleTabClick('form', 'history');
-                    handleFormHistory();
                   } else if (activeTab.primary === 'bpmn') {
-                    handleBpmnHistory();
+                    handleTabClick('bpmn', 'history');
                   }
                 } else if (key === 'preview') {
                   handlePreview();
@@ -2194,12 +2186,14 @@ const saveFormWithWorkflow = async () => {
                 </div>
                 {createDesigns && (
                   <>
+                  {/* {
+                  logic for save button disabled
+                    isCreateRoute
+                      ? !formDetails.title?.trim()
+                      : !formChangeState.changed && !workflowIsChanged
+                  } */}
                     <V8CustomButton
-                      disabled={
-                        isCreateRoute
-                          ? !formDetails.title?.trim()
-                          : !formChangeState.changed && !workflowIsChanged
-                      }
+                      disabled={true}
                       label={t("Save")}
                       onClick={
                         isPublished
@@ -2210,6 +2204,7 @@ const saveFormWithWorkflow = async () => {
                       ariaLabel={t("Save Form Layout")}
                     />
                     <V8CustomButton
+                      disabled={true}
                       label={t(publishText)}
                       onClick={handlePublishClick}
                       dataTestId="handle-publish-testid"
@@ -2235,13 +2230,26 @@ const saveFormWithWorkflow = async () => {
                           return (
                             <V8CustomButton
                               key={key}
-                              onClick={() => handleTabClick(key)}
+                              onClick={() => {
+                                // When clicking a primary tab, always go to the main view
+                                // Only skip navigation if already on the main view
+                                const isOnMainView = activeTab.primary === key && 
+                                  !activeTab.secondary && 
+                                  !activeTab.tertiary;
+                                
+                                if (isOnMainView) {
+                                  // Already on this tab's main view, avoid navigation
+                                  return;
+                                }
+                                // Switch to main view (clearing secondary and tertiary)
+                                handleTabClick(key, null, null);
+                              }}
                               data-testid={`tab-${key}`}
                               aria-label={t(`${config.label} Tab`)}
                               role="tab"
-                              aria-selected={activeTab.primary === key}
+                              aria-selected={activeTab.primary === key && !activeTab.secondary}
                               label={t(config.label)}
-                              selected={activeTab.primary === key}
+                              selected={activeTab.primary === key && !activeTab.secondary}
                               //disabled={isDisabled}
                             />
                           );
@@ -2289,9 +2297,27 @@ const saveFormWithWorkflow = async () => {
               )}
 
             {/* Body Section - Main content */}
-            <div className="body-section formedit-layout">
+            <div className="body-section formedit-layout" style={{ display: (activeTab.primary === 'bpmn' && activeTab.secondary === 'history') ? 'none' : 'block' }}>
               {renderTabContent()}
             </div>
+
+            {/* BPMN History Section - Show when on BPMN history tab */}
+            {(activeTab.primary === 'bpmn' && activeTab.secondary === 'history') && (
+              <div className="body-section">
+                <HistoryPage
+                  title={t("BPMN History")}
+                  loadMoreBtnText={t("Load More")}
+                  loadMoreBtndataTestId="load-more-bpmn-history"
+                  revertBtnText={t("Revert To This")}
+                  allHistory={bpmnHistoryData.processHistory}
+                  loadMoreBtnAction={loadMoreBpmnHistory}
+                  categoryType={CategoryType.WORKFLOW}
+                  revertBtnAction={revertBpmnHistory}
+                  historyCount={bpmnHistoryData.totalCount}
+                  disableAllRevertButton={isPublished}
+                />
+              </div>
+            )}
           </div>
         </div>
       </LoadingOverlay>
@@ -2369,37 +2395,7 @@ const saveFormWithWorkflow = async () => {
         />
       )}
 
-      {/* <HistoryPage
-        // show={showHistoryModal}
-        // onClose={closeHistoryModal}
-        title={t("History")}
-        loadMoreBtnText={t("Load More")}
-        loadMoreBtndataTestId="load-more-form-history"
-        revertBtnText={t("Revert To This")}
-        allHistory={formHistory}
-        loadMoreBtnAction={loadMoreBtnAction}
-        categoryType={CategoryType.FORM}
-        revertBtnAction={revertFormBtnAction}
-        historyCount={formHistoryData.totalCount}
-        disableAllRevertButton={isPublished}
-      /> */}
 
-      {showBpmnHistoryModal && (
-        <HistoryPage
-          show={showBpmnHistoryModal}
-          onClose={closeBpmnHistoryModal}
-          title={t("BPMN History")}
-          loadMoreBtnText={t("Load More")}
-          loadMoreBtndataTestId="load-more-bpmn-history"
-          revertBtnText={t("Revert To This")}
-          allHistory={bpmnHistoryData.processHistory}
-          loadMoreBtnAction={loadMoreBpmnHistory}
-          categoryType={CategoryType.WORKFLOW}
-          revertBtnAction={revertBpmnHistory}
-          historyCount={bpmnHistoryData.totalCount}
-          disableAllRevertButton={isPublished}
-        />
-      )}
 
         <PromptModal
         show={showDeleteModal}

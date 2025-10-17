@@ -2036,7 +2036,7 @@ const saveFormWithWorkflow = async () => {
                   handleTabClick('form', 'settings');
                 } else if (key === 'history') {
                   if (activeTab.primary === 'form') {
-                    handleTabClick('bpmn', 'history');
+                    handleTabClick('form', 'history');
                   } else if (activeTab.primary === 'bpmn') {
                     handleTabClick('bpmn', 'history');
                   }

@@ -2,7 +2,20 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 7.3.0 - Date To be updated
+
+## 8.0.0 
+
+`Added`
+
+**forms-flow-api**
+
+
+* Added new endpoints to manage form flow creation and updates:
+   * `/form-flow-builder` - Create form design, workflow, authorizations, and mapper details.
+   * `/form-flow-builder/<mapper-id>` - Update existing configurations.
+
+
+## 7.3.0 - 2025-10-14
 
 `Modified`
 

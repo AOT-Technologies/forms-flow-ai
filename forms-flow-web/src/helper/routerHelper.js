@@ -15,6 +15,9 @@ const navigateToDesignFormCreate = (dispatch,tenantId) => {
   navigateTo(dispatch,`${getRoute(tenantId).FORMFLOW}/create`);
 };
 
+const navigateToDesignFormBuild = (dispatch,tenantId) => {
+  navigateTo(dispatch,`${getRoute(tenantId).FORMFLOW}/build`);
+};
 const navigateToDesignFormEdit = (dispatch,tenantId,formId) => {
   navigateTo(dispatch,`${getRoute(tenantId).FORMFLOW}/${formId}/edit`);
 };
@@ -63,10 +66,10 @@ const navigateToResubmit = (dispatch, tenantId, formId, submissionId ) => {
 
 
 
-
 export {
   navigateToDesignFormsListing,
   navigateToDesignFormCreate,
+  navigateToDesignFormBuild,
   navigateToDesignFormEdit,
   navigateToSubmitFormsApplication,
   navigateToSubmitFormsDraft,

@@ -80,3 +80,26 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     )
     parentFormId = fields.Str(data_key="parentFormId", required=False)
     all_forms = fields.Bool(data_key="allForms", required=False)
+
+
+class FormProcessMapperRequestSchema(AuditDateTimeSchema):
+    """This class manages form process mapper requestschema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    form_id = fields.Str(data_key="formId")
+    form_name = fields.Str(data_key="formName")
+    form_type = fields.Str(data_key="formType")
+    process_key = fields.Str(data_key="processKey")
+    process_name = fields.Str(data_key="processName")
+    comments = fields.Str(data_key="comments")
+    is_anonymous = fields.Bool(data_key="anonymous")
+    task_variable = fields.Str(data_key="taskVariables")
+    process_tenant = fields.Str(data_key="processTenant")
+    deleted = fields.Boolean(data_key="deleted")
+    description = fields.Str(data_key="description")
+    prompt_new_version = fields.Bool(data_key="promptNewVersion", dump_only=True)
+    is_migrated = fields.Bool(data_key="isMigrated", required=False)

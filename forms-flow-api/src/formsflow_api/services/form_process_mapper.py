@@ -29,10 +29,15 @@ from formsflow_api.models import (
     ProcessStatus,
     ProcessType,
 )
-from formsflow_api.schemas import FormProcessMapperSchema
+from formsflow_api.schemas import (
+    FormProcessMapperRequestSchema,
+    FormProcessMapperSchema,
+    ProcessDataSchema,
+)
 from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.external.bpm import BPMService
 
+from .filter import FilterService
 from .form_history_logs import FormHistoryService
 from .process import ProcessService
 
@@ -392,25 +397,124 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         process = Process.create_from_dict(process_dict)
         return process
 
-    @staticmethod
-    @user_context
-    def create_form(data, is_designer, **kwargs):  # pylint:disable=too-many-locals
-        """Service to handle form create."""
-        current_app.logger.info("Creating form..")
-        user: UserContext = kwargs["user"]
+    @classmethod
+    def create_formio_form(
+        cls,
+        data,
+    ):
+        """Service to handle form create in formio."""
+        current_app.logger.info("Creating form in formio..")
         # Initialize formio service and get formio token to create the form
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()
         # creating form and get response from formio
         response = formio_service.create_form(data, form_io_token)
+        return response
+
+    @classmethod
+    def create_authorization_for_form(
+        cls, parent_form_id, is_designer, user, authorization_data=None
+    ):
+        """
+        Creates or updates authorization settings for a form resource.
+
+        This method either updates the provided authorization data with the correct
+        resource ID or generates default authorization data for the given form.
+        It then calls the AuthorizationService to create or update the resource
+        authorization accordingly.
+
+        Args:
+            parent_form_id (str): The unique identifier of the parent form.
+            is_designer (bool): Flag indicating if the user is a designer.
+            user (User): The user object containing user information.
+            authorization_data (dict, optional): Existing authorization data to update.
+                If None, default authorization data will be created.
+
+        Returns:
+            dict: The authorization data used to create or update the resource authorization.
+        """
+        if authorization_data:
+            # Incase of combine save of form and authorization settings the resourceId is unknown
+            # So update with parent form id
+            for section in authorization_data:
+                if authorization_data[section].get("resourceId") is None:
+                    authorization_data[section]["resourceId"] = parent_form_id
+        else:
+            # create default data for authorization of the resource
+            authorization_data = {
+                "application": {
+                    "resourceId": parent_form_id,
+                    "resourceDetails": {"submitter": True},
+                    "roles": [],
+                    "userName": None,
+                },
+                "designer": {
+                    "resourceId": parent_form_id,
+                    "resourceDetails": {},
+                    "roles": [],
+                    "userName": user.user_name,
+                },
+                "form": {
+                    "resourceId": parent_form_id,
+                    "resourceDetails": {},
+                    "roles": [],
+                },
+            }
+        current_app.logger.debug(
+            "Creating default data for authorization of the resource.."
+        )
+        AuthorizationService.create_or_update_resource_authorization(
+            authorization_data, is_designer=is_designer
+        )
+        return authorization_data
+
+    @classmethod
+    def create_process(cls, process_data, process_type, process_name):
+        """
+        Creates a process based on the provided process data and type, or creates a default process if not provided.
+
+        Args:
+            process_data (dict): The data required to create the process. If None, a default process is created.
+            process_type (str): The type of the process to be created. Required if process_data is provided.
+            process_name (str): The name of the process to be created.
+        Returns:
+            dict: The response from the process creation.
+        """
+        if process_data and process_type:
+            # Incase of duplicate form we get process data from payload
+            process_response = ProcessService.create_process(
+                process_data, process_type, process_name, process_name
+            )
+        else:
+            # create entry in process with default flow.
+            process_response = FormProcessMapperService.create_default_process(
+                process_name
+            )
+        return process_response
+
+    @staticmethod
+    @user_context
+    def create_form(
+        data, is_designer, combine_save=False, **kwargs
+    ):  # pylint:disable=too-many-locals
+        """Service to handle form create."""
+        current_app.logger.info("Creating form..")
+        user: UserContext = kwargs["user"]
+
+        # create the form in formo
+        response = FormProcessMapperService.create_formio_form(data)
         form_id = response.get("_id")
         parent_form_id = data.get("parentFormId", form_id)
         # is_new_form=True if creating a new form, False if creating a new version
         is_new_form = parent_form_id == form_id
         process_key = None
-        anonymous = False
+        anonymous = False if not data.get("anonymous") else data.get("anonymous")
         description = data.get("description", "")
-        task_variable = [*default_task_variables]
+        task_variable = (
+            [*default_task_variables]
+            if not data.get("taskVariables")
+            else data.get("taskVariables")
+        )
         is_migrated = True
         current_app.logger.info(f"Creating new form {is_new_form}")
         # If creating new version for a existing form, fetch process key, name from mapper
@@ -458,31 +562,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             }
         )
         if is_new_form:
-            # create default data for authorization of the resource
-            authorization_data = {
-                "application": {
-                    "resourceId": parent_form_id,
-                    "resourceDetails": {"submitter": True},
-                    "roles": [],
-                    "userName": None,
-                },
-                "designer": {
-                    "resourceId": parent_form_id,
-                    "resourceDetails": {},
-                    "roles": [],
-                    "userName": user.user_name,
-                },
-                "form": {
-                    "resourceId": parent_form_id,
-                    "resourceDetails": {},
-                    "roles": [],
-                },
-            }
-            current_app.logger.debug(
-                "Creating default data for authorization of the resource.."
-            )
-            AuthorizationService.create_or_update_resource_authorization(
-                authorization_data, is_designer=is_designer
+            authorization_data = FormProcessMapperService.create_authorization_for_form(
+                parent_form_id, is_designer, user, data.get("authorizations")
             )
             # validate process key already exists, if exists append mapper id to process_key.
             updated_process_name = (
@@ -495,14 +576,22 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             )
             process_data = data.get("processData")
             process_type = data.get("processType")
-            if process_data and process_type:
-                # Incase of duplicate form we get process data from payload
-                ProcessService.create_process(
-                    process_data, process_type, process_name, process_name
-                )
-            else:
-                # create entry in process with default flow.
-                FormProcessMapperService.create_default_process(process_name)
+            process_data_response = FormProcessMapperService.create_process(
+                process_data, process_type, process_name
+            )
+            if combine_save:
+                mapper_response = FormProcessMapperSchema().dump(mapper)
+
+                process_response = ProcessDataSchema().dump(process_data_response)
+
+                if task_variables := mapper_response.get("taskVariables"):
+                    mapper_response["taskVariables"] = json.loads(task_variables)
+                response = {
+                    "formData": response,
+                    "authorizations": authorization_data,
+                    "mapper": mapper_response,
+                    "process": process_response,
+                }
         return response
 
     def _remove_tenant_key(self, form_json, tenant_key):
@@ -1060,3 +1149,174 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         form_json = formio_service.get_form_by_id(form_id, form_io_token)
 
         return form_json
+
+    @classmethod
+    def create_form_with_process(cls, request_data, is_designer):
+        """Create a form with process and authorization in a single operation.
+
+        Args:
+            request_data (dict): Contains form data, process data and authorization
+                {
+                    formData (dict): Form configuration data
+                    processData (str): BPMN XML string or JSON for low code process
+                    processType (str): Type of process (BPMN or LOWCODE)
+                    authorizations (dict): Authorization configuration
+                    taskVariables (list): List of task variables
+                }
+            is_designer (bool): Whether the request is from a designer
+
+        Returns:
+            dict: Created form and associated process details
+        """
+        data = request_data.get("formData")
+        if not data:
+            raise BusinessException(BusinessErrorCode.FORM_PAYLOAD_MISSING)
+        process_data = request_data.get("processData")
+        process_type = request_data.get("processType")
+        authorizations = request_data.get("authorizations")
+        task_variables = request_data.get("taskVariables")
+
+        # Add task variables to form data
+        if task_variables:
+            data["taskVariables"] = task_variables
+
+        if process_data and process_type:
+            data["processData"] = process_data
+            data["processType"] = process_type
+
+        if authorizations:
+            data["authorizations"] = authorizations
+
+        # Create form and associated process
+        response = FormProcessMapperService.create_form(
+            data, is_designer, combine_save=True
+        )
+
+        return response
+
+    def handle_form_data(self, form_data, **kwargs):  # pylint:disable=unused-argument
+        """Handler function for form data updates."""
+        current_app.logger.debug("Updating form design..")
+        form_id = form_data.get("_id")
+        if not form_id:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+        return FormProcessMapperService.form_design_update(form_data, form_id)
+
+    def handle_mapper_data(
+        self, mapper_data, mapper_id=None, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Handler function for mapper data updates."""
+        if mapper_id is None:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+
+        current_app.logger.debug("Updating mapper details..")
+        task_variable = mapper_data.get("taskVariables", [])
+
+        # If task variables are present, update filter variables and serialize them
+        if "taskVariables" in mapper_data:
+            FilterService.update_filter_variables(
+                task_variable, mapper_data.get("formId")
+            )
+            mapper_data["taskVariables"] = json.dumps(task_variable)
+
+        # Load the mapper data into the schema
+        dict_data = FormProcessMapperRequestSchema().load(mapper_data)
+        mapper = FormProcessMapperService.update_mapper(mapper_id, dict_data)
+
+        # Dump the updated mapper data into the response schema
+        mapper_response = FormProcessMapperSchema().dump(mapper)
+        if task_variables := mapper_response.get("taskVariables"):
+            mapper_response["taskVariables"] = json.loads(task_variables)
+
+        # Get major and minor version of the from from form history
+        major_version, minor_version = FormProcessMapperService.get_form_version(mapper)
+        mapper_response["majorVersion"] = major_version
+        mapper_response["minorVersion"] = minor_version
+
+        return mapper_response
+
+    def handle_authorization_data(
+        self, authorization_data, is_designer=False, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Handler function for authorization updates."""
+        current_app.logger.debug("Updating authorization details..")
+        AuthorizationService.create_or_update_resource_authorization(
+            authorization_data, is_designer=is_designer
+        )
+        return authorization_data
+
+    def handle_process_data(
+        self, process_data, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Handler function for process updates."""
+        current_app.logger.debug("Updating process details..")
+        process_id = process_data.get("id")
+        if not process_id:
+            raise BusinessException(BusinessErrorCode.INVALID_INPUT)
+
+        process_payload = process_data.get("processData")
+        process_type = process_data.get("processType")
+        return ProcessService.update_process(process_id, process_payload, process_type)
+
+    def validate_request_data(self, request_data, expected_keys):
+        """Check if at least one expected key exists and is not None."""
+        has_valid_data = any(request_data.get(key) is not None for key in expected_keys)
+
+        if not has_valid_data:
+            raise BusinessException(BusinessErrorCode.MISSING_REQUIRED_KEYS)
+        return True
+
+    def update_form_process(self, request_data, mapper_id, is_designer):
+        """Update form, process, authorizations and mapper details in one call.
+
+        Args:
+            request_data (dict): Combined update payload that may include any of:
+                - formData (dict): Formio form JSON; must include `_id` when provided.
+                - mapper (dict): Mapper fields to update (e.g., formName, status,
+                taskVariables, etc.). If `taskVariables` is present, it will be
+                persisted and filter variables will be updated accordingly.
+                - authorizations (dict): Authorization configuration; created/updated for the
+                associated resource when provided.
+                - process (dict): { id, processData, processType } used to update the process.
+            mapper_id (int): ID of the mapper record to update.
+            is_designer (bool): Whether the caller has designer permissions; used for
+                authorization updates.
+
+        Returns:
+            dict: A dictionary containing any of the updated sections, with keys among
+                { "formData", "mapper", "authorizations", "process" } depending on input.
+
+        Raises:
+            BusinessException: If required identifiers are missing or entities are invalid.
+        """
+        # Validate that at least one updatable section(with keys) is present
+        expected_keys = ("formData", "mapper", "authorizations", "process")
+        self.validate_request_data(request_data, expected_keys)
+        response = {}
+
+        # Registry of handler functions for different data types
+        handlers = {
+            "formData": self.handle_form_data,
+            "mapper": self.handle_mapper_data,
+            "authorizations": self.handle_authorization_data,
+            "process": self.handle_process_data,
+        }
+
+        # Common context for all handlers
+        handler_context = {"mapper_id": mapper_id, "is_designer": is_designer}
+
+        # Process each supported data type present in the request
+        # Note: Update order matters
+        # Updating process last avoids autoflush errors caused by transient str XML in
+        # the Process entity before it's converted to bytes.
+
+        for key in ("formData", "mapper", "authorizations", "process"):
+            data = request_data.get(key)
+            if data is not None:
+                try:
+                    response[key] = handlers[key](data, **handler_context)
+                except Exception as e:
+                    current_app.logger.error(f"Error processing {key}: {str(e)}")
+                    raise
+
+        return response

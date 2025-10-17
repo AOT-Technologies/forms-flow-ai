@@ -32,7 +32,8 @@ const App = React.memo((props) => {
   }, []);
 
   return (
-    <div className={`${hasMultitenancyHeader ? 'main-container-with-custom-header ' : 'main-container' } ${isPreviewRoute && 'm-0'}`}>
+    //need to handle multitentant container. 
+    <div className={`${hasMultitenancyHeader ? 'main-container-with-custom-header ' : ' page-container' } ${isPreviewRoute && 'm-0'}`}>
       <Helmet>
         {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
       </Helmet>

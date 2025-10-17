@@ -41,12 +41,13 @@ import {
   ImportModal,
   CustomSearch,
   CustomButton,
-  useSuccessCountdown
+  useSuccessCountdown,
+  V8CustomButton
 } from "@formsflow/components";
 import { HelperServices } from '@formsflow/service';
 import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
-import { navigateToDesignFormEdit } from "../../../helper/routerHelper.js";
+import { navigateToDesignFormEdit, navigateToDesignFormBuild } from "../../../helper/routerHelper.js";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
 
 const List = React.memo((props) => {
@@ -140,10 +141,10 @@ const List = React.memo((props) => {
     dispatch(setBpmFormSearch(search));
     dispatch(setBPMFormListPage(1));
   };
-  const handleClearSearch = () => {
-    setSearch("");
-    dispatch(setBpmFormSearch(""));
-  };
+  // const handleClearSearch = () => {
+  //   setSearch("");
+  //   dispatch(setBpmFormSearch(""));
+  // };
   const { forms, getFormsInit } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
@@ -362,21 +363,52 @@ const List = React.memo((props) => {
         </div>
       ) : (
         <>
+                <div className="toast-section">
+                  {/* <p>Toast message</p> */}
+                </div>  
+                
+                <div className="header-section-1">
+                    <div className="section-seperation-left">
+                        <h4> Build</h4>  
+                    </div>
+                    <div className="section-seperation-right">
+                        <V8CustomButton
+                            label={t("Create New Form")}
+                            onClick={() => navigateToDesignFormBuild(dispatch, tenantKey)}
+                            dataTestId="create-form-button"
+                            ariaLabel="Create Form"
+                            variant="primary"
+                        />
+                    </div>
+                </div>
+
+                <div className="header-section-2">
+                  <div className="section-seperation-left">
+                                <CustomSearch
+                                  search={search}
+                                  setSearch={setSearch}
+                                  handleSearch={handleSearch}
+
+                                  placeholder={t("Search Form Name and Description")}
+                                  searchLoading={searchFormLoading}
+                                  title={t("Search Form Name and Description")}
+                                  dataTestId="form-search-input"
+                                />
+                    </div>
+                 </div>
+
+                 <div className="body-section">
+                    {renderTable()}
+                 </div>
+
+
+        
           {(
               <div className="table-bar">
                 <div className="filters">
-                  <CustomSearch
-                    search={search}
-                    setSearch={setSearch}
-                    handleSearch={handleSearch}
-                    handleClearSearch={handleClearSearch}
-                    placeholder={t("Search Form Name and Description")}
-                    searchLoading={searchFormLoading}
-                    title={t("Search Form Name and Description")}
-                    dataTestId="form-search-input"
-                  />
                 </div>
-                <div className="actions">
+                {/* hiding for the time being. */}
+                <div className="actions" style={{display:"none"}}>
                   <FilterSortActions
                     showSortModal={showSortModal}
                     handleFilterIconClick={handleFilterIconClick}
@@ -390,7 +422,7 @@ const List = React.memo((props) => {
                     filterAriaLabel="Filter the form list"
                     refreshDataTestId="form-list-refresh"
                     refreshAriaLabel="Refresh the form list"
-                  />
+                  /> 
 
                   {createDesigns && (
                     <CustomButton
@@ -443,7 +475,7 @@ const List = React.memo((props) => {
                 </div>
               </div>
           )}
-         {renderTable()}
+         {/* {renderTable()} */}
         </>
       )}
     </>

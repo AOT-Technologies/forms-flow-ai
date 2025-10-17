@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 import {
@@ -20,14 +20,12 @@ import {
   createNewDecision,
 } from "../../../components/Modeler/helpers/helper";
 import {
-  CustomButton,
-  HistoryIcon,
-  BackToPrevIcon,
   ConfirmModal,
   ErrorModal,
   HistoryModal,
+  V8CustomButton,
+  FormStatusIcon
 } from "@formsflow/components";
-import { Card } from "react-bootstrap";
 import ActionModal from "../../../components/Modals/ActionModal";
 import ExportDiagram from "../../../components/Modals/ExportDiagrams";
 import { toast } from "react-toastify";
@@ -56,6 +54,7 @@ const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
 const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
+  const location = useLocation();
   const isCreate = step === "create";
   const isBPMN = type === "BPMN";
   const Process = isBPMN
@@ -83,11 +82,11 @@ const ProcessCreateEdit = ({ type }) => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const processData = useSelector((state) => state.process?.processData);
   const [selectedAction, setSelectedAction] = useState(null);
-  const [newActionModal, setNewActionModal] = useState(false);
   const [lintErrors, setLintErrors] = useState([]);
   const [exportError, setExportError] = useState(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [activeTab, setActiveTab] = useState({ primary: 'layout', secondary: null, tertiary: null });
   
   const defaultProcessXmlData = useSelector(
     (state) => state.process.defaultProcessXmlData
@@ -96,7 +95,6 @@ const ProcessCreateEdit = ({ type }) => {
     (state) => state.process.defaultDmnXmlData
   );
   const [savingFlow, setSavingFlow] = useState(false);
-  const [historyModalShow, setHistoryModalShow] = useState(false);
   const [isPublished, setIsPublished] = useState(
     processData?.status === "Published"
   );
@@ -108,9 +106,64 @@ const ProcessCreateEdit = ({ type }) => {
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   
   const isDataFetched = useRef();
+
+  const tabConfig = {
+    primary: {
+      layout: {
+        label: "Layout",
+        query: "?tab=layout",
+        secondary: {
+          history: {
+            label: "History",
+            query: "?tab=layout&sub=history"
+          }
+        }
+      },
+      actions: {
+        label: "Actions",
+        query: "?tab=actions"
+      }
+  
+    } 
+  };
+
   useEffect(() => {
     setIsPublished(processData.status === "Published");
   }, [processData]);
+
+  const handleTabClick = (primary, secondary = null, tertiary = null) => {
+    if (isCreate && primary !== 'layout') {
+      return;
+    }
+    
+    const newTab = { primary, secondary, tertiary };
+    setActiveTab(newTab);
+    
+    const queryParams = new URLSearchParams();
+    queryParams.set("tab", primary);
+    if (secondary) queryParams.set("sub", secondary);
+    if (tertiary) queryParams.set("subsub", tertiary);
+    
+    dispatch(
+        push({
+          pathname: location.pathname,
+          search: `?${queryParams.toString()}`,
+        })
+    );
+  };
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const tab = isCreate ? "layout" : (queryParams.get("tab") || "layout");
+    const sub = queryParams.get("sub");
+    const subsub = queryParams.get("subsub");
+    
+    setActiveTab({
+      primary: tab,
+      secondary: sub,
+      tertiary: subsub
+    });
+  }, [location.search, isCreate]);
 
   
   const publishText = isPublished ? t("Unpublish") : t("Publish");
@@ -147,6 +200,16 @@ const ProcessCreateEdit = ({ type }) => {
       getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
   );
 
+  useEffect(() => {
+    if (activeTab.secondary === 'history') {
+        fetchAllHistories({
+            parentProcessKey: processData.parentProcessKey,
+            page: 1,
+            limit: 4,
+        });
+    }
+}, [activeTab]);
+
   /* --------- fetch a perticular history when click the revert button -------- */
   const {
     data: { data: historyData } = {},
@@ -163,8 +226,6 @@ const ProcessCreateEdit = ({ type }) => {
   const processDataXML = isReverted
     ? historyData?.processData
     : processData?.processData;
-  // handle history modal
-  const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
   const enableWorkflowChange = ()=>{
     setIsWorkflowChanged(true);
@@ -251,15 +312,6 @@ const ProcessCreateEdit = ({ type }) => {
     if (!isPublished) {
       toast.success(t(`${Process.name} is already up to date`));
     }
-  };
-
-  const handleProcessHistory = () => {
-    handleToggleHistoryModal();
-    fetchAllHistories({
-      parentProcessKey: processData.parentProcessKey, // passing process key to get histories data
-      page: 1,
-      limit: 4,
-    });
   };
 
   const loadMoreBtnAction = () => {
@@ -420,11 +472,9 @@ const ProcessCreateEdit = ({ type }) => {
     }
   };
 
-  const cancel = () => {
-    dispatch(push(`${redirectUrl}${Process.route}`));
-  };
-
-  const editorActions = () => setNewActionModal(true);
+    // const cancel = () => {
+  //   dispatch(push(`${redirectUrl}${Process.route}`));
+  // };
 
   const handleDuplicateProcess = () => {
     handleToggleConfirmModal();
@@ -534,6 +584,51 @@ const ProcessCreateEdit = ({ type }) => {
     }
   };
 
+  const renderSecondaryControls = () => {
+    const currentTab = tabConfig.primary[activeTab.primary];
+    if (!currentTab?.secondary) return null;
+    return (
+      <div className="d-flex gap-2">
+        {Object.entries(currentTab.secondary).map(([key, config]) => {
+            const isDisabled = isCreate && key === 'history';
+            return (
+                <V8CustomButton
+                    key={key}
+                    label={t(config.label)}
+                    onClick={() => !isDisabled && handleTabClick(activeTab.primary, key)}
+                    selected={activeTab.secondary === key}
+                    disabled={isDisabled}
+                />
+            );
+        })}
+      </div>
+    );
+  };
+
+  const renderTabContent = () => {
+    if (activeTab.primary === 'layout') {
+        return (
+            <LoadingOverlay active={historyLoading} spinner text={t("Loading...")}>
+                {isBPMN ? (
+                  <BpmnEditor
+                    onChange={enableWorkflowChange}
+                    ref={bpmnRef}
+                    bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
+                    setLintErrors={setLintErrors}
+                  />
+                ) : (
+                  <DmnEditor
+                    onChange={enableWorkflowChange}
+                    ref={dmnRef}
+                    dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
+                  />
+                )}
+            </LoadingOverlay>
+        );
+    }
+    return null;
+  };
+
   return (
     <div>
       <NavigateBlocker isBlock={isWorkflowChanged} message={"You have made changes that are not saved yet"}  />
@@ -550,144 +645,84 @@ const ProcessCreateEdit = ({ type }) => {
         size="md"
       />
 
-      <div className="nav-bar">
-        <div className="icon-back" onClick={cancel}>
-          <BackToPrevIcon
-            onClick={cancel}
-            data-testid="back-to-prev-icon-testid"
-            aria-label={t("Back to Previous")}
-          />
-        </div>
-
-        <div className="description">
-          <p className="text-main">
-            {isCreate ? t(`Unsaved ${diagramType}`) : processName}
-          </p>
-
-          <p className="status">
-            {!isCreate && (
-              <>
-                <span className={`status-${isPublished ? "live" : "draft"}`}>
-                </span>
-                {isPublished ? t("Live") : t("Draft")}
-              </>
-            )}
-          </p>
-        </div>
-
-        <div className="buttons">
-          <button
-            className="button-dark"
-            onClick={editorActions}
-            aria-label={t("Designer Actions Button")}
-            data-testid="designer-action-testid"
-            >
-              {t("Actions")}
-          </button>
-
-          <button
-            className="button-dark-primary"
-            onClick={() => {
-              isPublished
-                ? openConfirmModal("unpublish")
-                : openConfirmModal("publish");
-            }}
-            aria-label={`${t(publishText)} ${t("Button")}`}
-            data-testid={isPublished ? "handle-unpublish-testid" : "handle-publish-testid"}
-            disabled={isPublishLoading}
-            >
-              {t(publishText)}
-          </button>
-
-          {/* <CustomButton
-            variant="dark"
-            size="md"
-            className="mx-2"
-            label={t("Actions")}
-            onClick={editorActions}
-            dataTestId="designer-action-testid"
-            ariaLabel={t("Designer Actions Button")}
-          /> */}
-          {/* <CustomButton
-            variant="light"
-            size="md"
-            label={t(publishText)}
-            buttonLoading={isPublishLoading}
-            onClick={() => {
-              isPublished
-                ? openConfirmModal("unpublish")
-                : openConfirmModal("publish");
-            }}
-            disabled={isPublishLoading}
-            dataTestId={isPublished ? "handle-unpublish-testid" : "handle-publish-testid"}
-            ariaLabel={`${t(publishText)} ${t("Button")}`}
-          /> */}
-        </div>
-      </div>
-
-      <Card>
-        <div className="wraper">
-          <Card.Header>
-              <div>
-                <h2>{t("Flow")}</h2>
-                {!isCreate && (
-                  <CustomButton
-                    icon={<HistoryIcon />}
-                    onClick={handleProcessHistory}
-                    label={t("History")}
-                    dataTestId={`${diagramType.toLowerCase()}-history-button-testid`}
-                    ariaLabel={t(`${diagramType} History Button`)}
-                    iconWithText
+            <div className="header-section-1">
+              <div className="section-seperation-left">
+                 <p className="form-title">
+                     {isCreate ? t(`Unsaved ${diagramType}`) : processName}
+                 </p>
+              </div>
+              <div className="section-seperation-right">
+                 <div
+                   className="form-status"
+                   data-testid={`process-status-${processData?.id || 'new'}`}
+                  >
+                  <FormStatusIcon color={isPublished ? "#00C49A" : "#DAD9DA"} />
+                  <span className="status-text">
+                    {isPublished ? t("Published") : t("Unpublished")}
+                  </span>
+                </div>
+                  <>
+                  <V8CustomButton
+                    onClick={saveFlow}
+                    label={t(`Save ${diagramType}`)}
+                    loading={savingFlow}
+                    disabled={savingFlow || isPublished || !isWorkflowChanged}
+                    dataTestId={`save-${diagramType.toLowerCase()}-layout`}
+                    ariaLabel={t(`Save ${diagramType} Layout`)}
                   />
-                )}
+                  <V8CustomButton
+                    onClick={() => {
+                    isPublished
+                            ? openConfirmModal("unpublish")
+                            : openConfirmModal("publish");
+                    }}
+                    label={t(publishText)}
+                    aria-label={`${t(publishText)} ${t("Button")}`}
+                    data-testid={isPublished ? "handle-unpublish-testid" : "handle-publish-testid"}
+                    disabled={isPublishLoading}
+                  />
+                  </>
               </div>
-              <div>
-                <CustomButton
-                  onClick={saveFlow}
-                  label={t(`Save ${diagramType}`)}
-                  buttonLoading={savingFlow}
-                  disabled={savingFlow || isPublished || !isWorkflowChanged}
-                  dataTestId={`save-${diagramType.toLowerCase()}-layout`}
-                  ariaLabel={t(`Save ${diagramType} Layout`)}
-                />
-                <CustomButton
-                  onClick={() => openConfirmModal("discard")}
-                  label={t("Discard Changes")}
-                  disabled={!isWorkflowChanged}
-                  dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
-                  ariaLabel={t(`Discard ${diagramType} Changes`)}
-                  secondary
-                />
+            </div>
+
+            <div className="header-section-2">
+              <div className="section-seperation-left">
+                {Object.entries(tabConfig.primary).map(([key, config]) => {
+                    const isDisabled = isCreate && key !== 'layout';
+                    return (
+                        <V8CustomButton
+                            key={key}
+                            label={t(config.label)}
+                            onClick={() => !isDisabled && handleTabClick(key)}
+                            selected={activeTab.primary === key}
+                            disabled={isDisabled}
+                        />
+                    );
+                })}
               </div>
-          </Card.Header>
+            </div>  
+
+            <div className="header-section-3">
+                <div className="section-seperation-left">
+                    {renderSecondaryControls()}          
+                </div>
+                <div className="section-seperation-right">   
+                      <V8CustomButton
+                        label={t("Discard Changes")}
+                        onClick={() => openConfirmModal("discard")}
+                        disabled={!isWorkflowChanged}
+                        dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
+                        ariaLabel={t(`Discard ${diagramType} Changes`)}
+                      />           
+                </div>
+             </div>    
+        <div className="body-section">
+          {renderTabContent()}
         </div>
-        <Card.Body className="workflow-edit-container">
-          <LoadingOverlay
-            active={historyLoading}
-            spinner
-            text={t("Loading...")}
-          >
-            {isBPMN ? (
-              <BpmnEditor
-                onChange={enableWorkflowChange}
-                ref={bpmnRef}
-                bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
-                setLintErrors={setLintErrors}
-              />
-            ) : (
-              <DmnEditor
-                onChange={enableWorkflowChange}
-                ref={dmnRef}
-                dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
-              />
-            )}
-          </LoadingOverlay>
-        </Card.Body>
-      </Card>
 
       <ActionModal
-        newActionModal={newActionModal}
-        onClose={() => setNewActionModal(false)}
+        newActionModal={activeTab.primary === 'actions'}
+        onClose={() => handleTabClick('layout')}
         CategoryType={CategoryType.WORKFLOW}
         onAction={(action) => {
           if (action === "DUPLICATE") {
@@ -720,8 +755,8 @@ const ProcessCreateEdit = ({ type }) => {
         />
       )}
       <HistoryModal
-        show={historyModalShow}
-        onClose={handleToggleHistoryModal}
+        show={activeTab.secondary === 'history'}
+        onClose={() => handleTabClick('layout')}
         title={t("History")}
         loadMoreBtnText={t("Load More")}
         revertBtnText={t("Revert To This")}

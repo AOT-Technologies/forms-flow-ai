@@ -1,223 +1,237 @@
-import React, {  useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { push } from "connected-react-router";
-import {
-  setBPMFormLimit,
-  setBPMFormListPage,
-
-  setBpmFormSort,
-} from "../../../actions/formActions";
-import {
-  MULTITENANCY_ENABLED,
-} from "../../../constants/constants";
+import * as React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { DataGrid } from "@mui/x-data-grid";
+import Paper from "@mui/material/Paper";
 import { useTranslation } from "react-i18next";
-import {
-  resetFormProcessData
-} from "../../../apiManager/services/processServices";
-import { HelperServices } from "@formsflow/service";
-import { CustomButton,TableFooter ,NoDataFound, TableSkeleton } from "@formsflow/components";
+import { push } from "connected-react-router";
+import { setBPMFormLimit, setBPMFormListPage, setBpmFormSort } from "../../../actions/formActions";
+import { resetFormProcessData } from "../../../apiManager/services/processServices";
+import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
+import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
-import SortableHeader from '../../CustomComponents/SortableHeader';
+import { HelperServices,StyleServices } from "@formsflow/service";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { V8CustomButton,RefreshIcon,NewSortDownIcon,V8CustomDropdownButton } from "@formsflow/components";
+
 
 function FormTable() {
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
-  const { t } = useTranslation();
-  const bpmForms = useSelector((state) => state.bpmForms);
-  const formData = (() => bpmForms.forms)() || [];
-  const pageNo = useSelector((state) => state.bpmForms.formListPage);
-  const limit = useSelector((state) => state.bpmForms.limit);
-  const totalForms = useSelector((state) => state.bpmForms.totalForms);
-  const formsort = useSelector((state) => state.bpmForms.sort);
-  const searchFormLoading = useSelector(
-    (state) => state.formCheckList.searchFormLoading
-  );
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const bpmForms = useSelector(state => state.bpmForms);
+  const formData = bpmForms.forms || [];
+  const pageNo = useSelector(state => state.bpmForms.formListPage);
+  const limit = useSelector(state => state.bpmForms.limit);
+  const totalForms = useSelector(state => state.bpmForms.totalForms);
+  const formsort = useSelector(state => state.bpmForms.sort);
+  const searchFormLoading = useSelector(state => state.formCheckList.searchFormLoading);
+  const isApplicationCountLoading = useSelector(state => state.process.isApplicationCountLoading);
+  const searchText = useSelector(state => state.bpmForms.searchText);
   const { createDesigns, viewDesigns } = userRoles();
-  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
+  const { t } = useTranslation();
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
 
-  const pageOptions = [
+  // Mapping between DataGrid field names and reducer sort keys
+  const gridFieldToSortKey = {
+    title: "formName",
+    modified: "modified",
+    anonymous: "visibility",
+    status: "status",
+  };
+
+  const sortKeyToGridField = {
+    formName: "title",
+    modified: "modified",
+    visibility: "anonymous",
+    status: "status",
+  };
+
+  // Prepare DataGrid columns
+  const columns = [
     {
-      text: "10",
-      value: 10,
+      field: "title",
+      headerName: t("Name"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
     },
     {
-      text: "25",
-      value: 25,
+      field: "description",
+      headerName: t("Description"),
+      flex: 1,
+      sortable: false,
+      width: 180,
+      height: 55,
+      renderCell: params => (
+        <span>
+          {params.row.description ? (new DOMParser().parseFromString(params.row.description, 'text/html').body.textContent) : ""}
+        </span>
+      )
     },
     {
-      text: "50",
-      value: 50,
+      field: "modified",
+      headerName: t("Last Edited"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: params => HelperServices.getLocaldate(params.row.modified),
     },
     {
-      text: "100",
-      value: 100,
+      field: "anonymous",
+      headerName: t("Visibility"),
+      flex: 1,
+      sortable: true,
+      renderCell: params => params.value ? t("Public") : t("Private"),
+      width: 180,
+      height: 55,
     },
     {
-      text: "All",
-      value: totalForms,
+      field: "status",
+      headerName: t("Status"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: params => (
+        <span className="d-flex align-items-center">
+          {params.value === "active" ?
+            <span className="status-live"></span> :
+            <span className="status-draft"></span>}
+          {params.value === "active" ? t("Live") : t("Draft")}
+        </span>
+      ),
+    },
+    {
+      field: "actions",
+      renderHeader: () => (
+        <V8CustomButton
+          // label="new button"
+          variant="secondary"
+          icon={<RefreshIcon color={iconColor} />}
+          iconOnly
+          onClick={handleRefresh}
+        />
+      ),
+      flex: 1,
+      sortable: false,
+      cellClassName: "last-column",
+      renderCell: params => (
+        (createDesigns || viewDesigns) && (
+          <V8CustomDropdownButton
+          label={t("Edit")}
+          variant="secondary"
+          menuPosition="right"
+          dropdownItems={[]}
+          onLabelClick= {() => viewOrEditForm(params.row._id, "edit")}
+        />
+        )
+      )
     },
   ];
 
-
-  const handleSort = (key) => {
-    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
-  
-    // Reset all other columns to default (ascending) except the active one
-    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
-      acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
-      return acc;
-    }, {});
-  
-    dispatch(setBpmFormSort({
-      ...updatedSort,
-      activeKey: key,
-    }));
-  };
-  
-
-  const viewOrEditForm = (formId, path) => {
-    dispatch(resetFormProcessData());
-    dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
-  };
-
+const viewOrEditForm = (formId, path) => {
+  dispatch(resetFormProcessData());
+  dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
+};
   const handlePageChange = (page) => {
     dispatch(setBPMFormListPage(page));
   };
+  
+  const handleSortChange = (modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    if (!model || !model.field || !model.sort) {
+      const resetSort = Object.keys(formsort).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
+      dispatch(setBPMFormListPage(1)); 
+      return;
+    }
 
-  const onSizePerPageChange = (limit) => {
-    dispatch(setBPMFormLimit(limit));
+    const mappedKey = gridFieldToSortKey[model.field] || model.field;
+    const order = model.sort; 
+
+    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? order : "asc" };
+      return acc;
+    }, {});
+    dispatch(setBpmFormSort({ ...updatedSort, activeKey: mappedKey }));
+  };
+  
+
+  const handleLimitChange = (limitVal) => {
+    dispatch(setBPMFormLimit(limitVal));
     dispatch(setBPMFormListPage(1));
   };
 
-  const stripHtml = (html) => {
-    let doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || "";
+  const handleRefresh = () => {
+    let filters = {pageNo, limit, formSort: formsort, formName: searchText};
+    dispatch(setFormSearchLoading(true));
+    dispatch(fetchBPMFormList({...filters}));
   };
-
-  const toggleRow = (index) => {
-    setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
+  
+  const activeKey = bpmForms.sort?.activeKey || "formName";
+  const activeField = sortKeyToGridField[activeKey] || activeKey;
+  const activeOrder = bpmForms.sort?.[activeKey]?.sortOrder || "asc";
+  const onPaginationModelChange = ({ page, pageSize }) => {
+    if (limit !== pageSize) handleLimitChange(pageSize);
+    else if ((pageNo - 1) !== page) handlePageChange(page + 1);
   };
-
-  if (searchFormLoading || isApplicationCountLoading) {
-    return <TableSkeleton columns={5} rows={10} pagination={7} />;
-  }
-
+  const rows = React.useMemo(() => {
+    return (formData || []).map((f) => ({
+      ...f,
+      id: f._id || f.path || f.name,
+    })).filter(r => r.id);
+  }, [formData]);
+  const paginationModel = React.useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
+  
+  
   return (
-    <div className="custom-table-wrapper-outter">
-      <div className="custom-table-wrapper-inner">
-        <table className="table custom-tables">
-          <thead className="table-header">
-            <tr>
-              
-              <SortableHeader
-                columnKey="formName"
-                title="Name"
-                currentSort={formsort}
-                handleSort={handleSort}
-                className="w-20"
-              />
-              
-              <th className="w-30" scope="col">{t("Description")}</th>
-              
-              <SortableHeader
-              columnKey="modified"
-              title="Last Edited"
-              currentSort={formsort}
-              handleSort={handleSort}
-              className="w-13"
-              />
-              
-              
-              <SortableHeader
-                columnKey="visibility"
-                title="Visibility"
-                currentSort={formsort}
-                handleSort={handleSort}
-                className="w-13"/>
-              
-              
-                <SortableHeader
-                columnKey="status"
-                title="Status"
-                currentSort={formsort}
-                handleSort={handleSort}
-                className="w-12"/>
-              
-              <th className="text-end" aria-label="Search Forms by form title"></th>
-            </tr>
-          </thead>
-
-          {formData?.length ? (
-            <>
-              <tbody>
-                {formData?.map((e, index) => {
-                  const isExpanded = expandedRowIndex === index;
-
-                  return (
-                    <tr key={index}>
-                      <td className="w-20">
-                        <div className="d-flex">
-                          <span className="text-container">{e.title}</span>
-                        </div>
-                      </td>
-                      <td className="w-30 cursor-pointer">
-                        <span className={isExpanded ? "text-container-expand" : "text-container"}
-                          onClick={() => toggleRow(index)}
-                          data-testid="description-cell"
-                          >
-                          {stripHtml(e.description ? e.description : "")}
-                        </span>
-                      </td>
-                      <td className="w-13">{HelperServices?.getLocaldate(e.modified)}</td>
-                      <td className="w-13">{e.anonymous ? t("Public") : t("Private")}</td>
-                      <td className="w-12">
-                        <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
-                          {e.status === "active" ? (
-                              <span className="status-live"></span>
-                          ) : (
-                            <span className="status-draft"></span>
-                          )}
-                          {e.status === "active" ? t("Live") : t("Draft")}
-                        </span>
-                      </td>
-                      <td className="text-end">
-                      {(createDesigns || viewDesigns) && (
-                        <CustomButton
-                          label={createDesigns ? "Edit" : "View"}
-                          onClick={() => viewOrEditForm(e._id, 'edit')}
-                          dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
-                          ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
-                          actionTable
-                        /> )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </>
-          ) : !searchFormLoading ? (
-            <tbody className="table-empty">
-              <NoDataFound message={t('No forms have been found. Create a new form by clicking the "New Form & Flow" button in the top right.')}/>
-            </tbody>
-          ) : null}
-        </table>
-      </div>
-
-      {formData.length ? (
-        <TableFooter
-          limit={limit}
-          activePage={pageNo}
-          totalCount={totalForms}
-          handlePageChange={handlePageChange}
-          onLimitChange={onSizePerPageChange}
-          pageOptions={pageOptions}
-        />
-      ) : (
-        <></>
-      )}
-    </div>
+    <Paper sx={{ height: {sm: 400, md: 510, lg: 665}, width: "100%" }}>
+      <DataGrid
+        disableColumnResize // disabed resizing
+        columns={columns}
+        rows={rows}
+        rowCount={totalForms}
+        loading={searchFormLoading || isApplicationCountLoading}
+        paginationMode="server"
+        sortingMode="server"
+        disableColumnMenu
+        sortModel={[{ field: activeField, sort: activeOrder }]}
+        onSortModelChange={handleSortChange}
+        paginationModel={paginationModel}
+        getRowId={(row) => row.id}
+        onPaginationModelChange={onPaginationModelChange}
+        pageSizeOptions={[10, 25, 50, 100]}
+        rowHeight={55}
+        disableRowSelectionOnClick
+        slots={{
+          columnSortedDescendingIcon: () => (
+            <div>
+              <NewSortDownIcon color={iconColor} />
+            </div>
+          ),
+          columnSortedAscendingIcon: () => (
+            <div style={{ transform: "rotate(180deg)" }}>
+              <NewSortDownIcon color={iconColor} />
+            </div>
+          ),
+          // columnUnsortedIcon: RefreshIcon,
+        }}
+        slotProps={{
+          loadingOverlay: {
+            variant: 'skeleton',
+            noRowsVariant: 'skeleton',
+          },
+        }}
+      />
+    </Paper>
   );
 }
 

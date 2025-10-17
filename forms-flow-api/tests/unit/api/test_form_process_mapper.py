@@ -19,7 +19,9 @@ from tests.utilities.base_test import (
     get_draft_create_payload,
     get_form_request_payload,
     get_formio_form_request_payload,
+    get_process_request_payload,
 )
+from .test_process import ensure_process_data_binary
 
 
 def test_form_process_mapper_list(app, client, session, jwt):
@@ -273,6 +275,65 @@ def test_get_task_variable_based_on_form_process_mapper_id(
 
     rv = client.get(f"/form/applicationid/{application_id}", headers=headers)
     assert rv.status_code == 200
+
+
+def test_form_flow_builder_creation(app, client, session, jwt, mock_redis_client):
+    """Testing form flow builder create API with full payload."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    task_variables = [{"key": "applicationId", "label": "Application ID", "type": "string"}]
+
+    payload = {
+        "formData": form_data,
+        "processData": get_process_request_payload()["processData"],
+        "processType": "BPMN",
+        "authorizations": get_authorizations(None),
+        "taskVariables": task_variables
+    }
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+    assert response.json.get("formData") is not None
+    assert response.json["formData"].get("title") == form_data.get("title")
+    assert response.json.get("process") is not None
+    assert response.json.get("mapper") is not None
+    assert response.json.get("authorizations") is not None
+
+
+def test_form_flow_builder_minimal(app, client, session, jwt, mock_redis_client):
+    """Testing form flow builder create API with minimal payload."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    payload = {
+        "formData": form_data
+    }
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+    assert response.json.get("formData") is not None
+    assert response.json["formData"].get("title") == form_data.get("title")
+    assert response.json.get("process") is not None
+    assert response.json.get("mapper") is not None
+    assert response.json.get("authorizations") is not None
+
+
+def test_form_flow_builder_invalid_payload(app, client, session, jwt, mock_redis_client):
+    """Testing form flow builder create API with invalid payload."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Missing required formData
+    payload = {
+        "processData": get_process_request_payload()["processData"],
+        "processType": "BPMN"
+    }
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 400
 
 
 def test_formio_form_creation(app, client, session, jwt, mock_redis_client):
@@ -969,3 +1030,126 @@ def test_get_form_data_for_application(
     )
     assert response.status_code == 200
     assert response.json is not None
+
+
+def test_form_flow_builder_update(app, client, session, jwt, mock_redis_client):
+    """Testing form flow builder update API."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Create initial form and mapper using form flow builder create endpoint
+    form_data = get_formio_form_request_payload()
+    payload = {
+        "formData": form_data
+    }
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+    assert response.json is not None
+    assert response.json.get("formData") is not None
+    form_id = response.json["formData"].get("_id")
+    mapper_id = response.json.get("mapper").get("id")
+    process_id = response.json.get("process").get("id")
+    ensure_process_data_binary(process_id)
+    # Ensure no pending dirty state before the next request (avoid autoflush issues)
+    session.commit()
+
+    # Prepare update payload with mapper data and process data
+    mapper_data = {
+        "formId": form_id,
+        "formName": "Updated Test Form",
+        "description": "Test form description",
+        "formType": "form",
+    }
+
+    process_payload = {
+        "id": process_id,
+        "processData": get_process_request_payload()["processData"],
+        "processType": "BPMN",
+    }
+    # Update mapper and process using form flow builder update endpoint
+    payload = {
+        "mapper": mapper_data,
+        "process": process_payload,
+    }
+    response = client.put(f"/form/form-flow-builder/{mapper_id}", headers=headers, json=payload)
+    assert response.status_code == 200
+    assert response.json is not None
+
+    # Update authorizations using form flow builder update endpoint
+    payload = {
+        "authorizations": get_authorizations(form_id),
+    }
+    response = client.put(f"/form/form-flow-builder/{mapper_id}", headers=headers, json=payload)
+    assert response.status_code == 200
+    assert response.json is not None
+    assert response.json.get("authorizations") is not None
+
+
+def test_form_flow_builder_update_invalid_mapper_id(app, client, session, jwt, mock_redis_client):
+    """Testing form flow builder update API with invalid mapper ID."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    # Use non-existent mapper ID
+    invalid_mapper_id = 99999
+
+    mapper_data = {
+        "formId": "1234",
+        "formName": "Test Form",
+        "status": "active",
+        "formType": "form",
+        "parentFormId": "1234"
+    }
+
+    payload = {
+        "mapper": mapper_data
+    }
+
+    response = client.put(f"/form/form-flow-builder/{invalid_mapper_id}", headers=headers, json=payload)
+    assert response.status_code == 400
+
+
+def test_form_flow_builder_update_unauthorized(app, client, session, jwt, mock_redis_client, create_mapper):
+    """Testing form flow builder update API without proper authorization."""
+    # Test without authorization header
+    mapper_id = create_mapper["id"]
+
+    mapper_data = {
+        "formId": create_mapper["formId"],
+        "formName": "Unauthorized Test Form",
+        "status": "active",
+        "formType": "form",
+        "parentFormId": create_mapper["formId"]
+    }
+
+    payload = {
+        "mapper": mapper_data
+    }
+
+    response = client.put(f"/form/form-flow-builder/{mapper_id}", json=payload)
+    assert response.status_code == 401
+
+
+def test_form_flow_builder_update_invalid_payload(app, client, session, jwt, mock_redis_client, create_mapper):
+    """Testing form flow builder update API with invalid payload."""
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    mapper_id = create_mapper["id"]
+
+    # Test with empty payload
+    payload = {}
+    response = client.put(f"/form/form-flow-builder/{mapper_id}", headers=headers, json=payload)
+    assert response.status_code == 200  # Empty payload should still return success
+
+    # Test with invalid form data (missing _id)
+    # Form data must include _id for update
+    # Here get_formio_form_request_payload doesn't have _id
+    form_data = get_formio_form_request_payload()
+
+    payload = {
+        "formData": form_data
+    }
+
+    response = client.put(f"/form/form-flow-builder/{mapper_id}", headers=headers, json=payload)
+    assert response.status_code == 400

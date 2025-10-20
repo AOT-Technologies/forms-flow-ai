@@ -115,6 +115,7 @@ const EditComponent = () => {
   const builderOptions = useRef({
     language: lang,
     alwaysConfirmComponentRemoval: true,
+    i18n: RESOURCE_BUNDLES_DATA,
   });
 
   /* ------------------ handling form layout and flow layouts ----------------- */

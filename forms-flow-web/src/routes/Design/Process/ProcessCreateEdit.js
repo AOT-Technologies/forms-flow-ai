@@ -57,21 +57,22 @@ const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
   const isCreate = step === "create";
   const isBPMN = type === "BPMN";
-  const Process = isBPMN
-    ? {
+  const Process = {
+    BPMN: {
       name: "Subflow",
       type: "BPMN",
       route: "subflow",
       extension: ".bpmn",
       fileType: "text/bpmn",
-    }
-    : {
+    },
+    DMN: {
       name: "Decision Table",
       type: "DMN",
       route: "decision-table",
       extension: ".dmn",
       fileType: "text/dmn",
-    };
+    }
+  }[isBPMN ? 'BPMN' : 'DMN'];
 
   const diagramType = Process.type;
   const dispatch = useDispatch();
@@ -188,7 +189,7 @@ const ProcessCreateEdit = ({ type }) => {
     {
       cacheTime: 0, // Disable caching if not disabled the previous data will be cached
       staleTime: 0, // Data is always treated as stale
-      enabled: !!processKey && !isDataFetched.current, // Run only if processKey exists and data hasn't been fetched
+      enabled: Boolean(processKey) && !isDataFetched.current, // Run only if processKey exists and data hasn't been fetched
       onSuccess: ({ data }) => {
         isDataFetched.current = true;
         setIsPublished(data.status === "Published");
@@ -224,9 +225,7 @@ const ProcessCreateEdit = ({ type }) => {
     },
   });
 
-  const processDataXML = isReverted
-    ? historyData?.processData
-    : processData?.processData;
+  const processDataXML = isReverted ? historyData?.processData : processData?.processData;
   // handle history modal
   // const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
@@ -529,7 +528,9 @@ const ProcessCreateEdit = ({ type }) => {
   };
   const handleCloseErrorModal = () => setShowErrorModal(false);
 
-  if (isProcessDetailsLoading) return <Loading />;
+  if (isProcessDetailsLoading) {
+    return <Loading />;
+  }
 
   const getModalContent = () => {
     const getModalConfig = (
@@ -624,8 +625,11 @@ const ProcessCreateEdit = ({ type }) => {
 
             <BreadCrumbs
               items={[
-                { label: t("Build"), href: isBPMN ? `/${Process.route}` : `/${Process.route}` },
-                { label: isCreate ? t(`Create New Flow`) : t(`Edit Flow`), href: location?.pathname || "" },
+                { label: t("Build"), href: `/${Process.route}` },
+                { 
+                  label: isCreate ? t("Create New Flow") : t("Edit Flow"), 
+                  href: location?.pathname || "" 
+                },
               ]}
               variant="minimized"
               underlined={true}
@@ -660,9 +664,11 @@ const ProcessCreateEdit = ({ type }) => {
                   />
                   <V8CustomButton
                     onClick={() => {
-                    isPublished
-                            ? openConfirmModal("unpublish")
-                            : openConfirmModal("publish");
+                      if (isPublished) {
+                        openConfirmModal("unpublish");
+                      } else {
+                        openConfirmModal("publish");
+                      }
                     }}
                     label={t(publishText)}
                     aria-label={`${t(publishText)} ${t("Button")}`}
@@ -723,26 +729,26 @@ const ProcessCreateEdit = ({ type }) => {
           />
         ) : (
           showEditor && (
-          <LoadingOverlay
-            active={historyLoading}
-            spinner
-            text={t("Loading...")}
-          >
-            {isBPMN ? (
-              <BpmnEditor
-                onChange={enableWorkflowChange}
-                ref={bpmnRef}
-                bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
-                setLintErrors={setLintErrors}
-              />
-            ) : (
-              <DmnEditor
-                onChange={enableWorkflowChange}
-                ref={dmnRef}
-                dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
-              />
-            )}
-          </LoadingOverlay>
+            <LoadingOverlay
+              active={historyLoading}
+              spinner
+              text={t("Loading...")}
+            >
+              {isBPMN ? (
+                <BpmnEditor
+                  onChange={enableWorkflowChange}
+                  ref={bpmnRef}
+                  bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
+                  setLintErrors={setLintErrors}
+                />
+              ) : (
+                <DmnEditor
+                  onChange={enableWorkflowChange}
+                  ref={dmnRef}
+                  dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
+                />
+              )}
+            </LoadingOverlay>
           )
         )}
         </div>

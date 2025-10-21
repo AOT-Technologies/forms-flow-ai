@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
 import {
   FormSubmissionHistoryModal,
   SubmissionHistoryWithViewButton,
@@ -11,6 +9,7 @@ import {
   BreadCrumbs,
   BreadcrumbVariant,
   RefreshIcon,
+  ReusableTable
 } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
@@ -80,24 +79,15 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
   const rows = historyData || [];
 
   return (
-   <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        loading={loading}
-        getRowId={(row) => row.submissionId || `${row.formId}-${row.created}`}
-        disableColumnMenu 
-        localeText={{
-          noRowsLabel: t("No history found"),
-        }}
-        slotProps={{
-          loadingOverlay: {
-            variant: "skeleton",
-            noRowsVariant: "skeleton",
-          },
-        }}
-      />
-    </Paper>
+    <ReusableTable
+      rows={rows}
+      columns={columns}
+      loading={loading}
+      getRowId={(row) => row.submissionId || `${row.formId}-${row.created}`}
+      noRowsLabel={t("No history found")}
+      paginationMode="client"
+      sortingMode="client"
+    />
   );
 };
 

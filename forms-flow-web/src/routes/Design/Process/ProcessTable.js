@@ -273,10 +273,10 @@ const ProcessTable = React.memo(() => {
       height: 55,
       renderCell: params => (
         <span className="d-flex align-items-center">
-          {params.value === "active" ?
+          {params.row.status === "Published" ?
             <span className="status-live"></span> :
             <span className="status-draft"></span>}
-          {params.value === "active" ? t("Live") : t("Draft")}
+          {params.row.status === "Published" ? t("Live") : t("Draft")}
         </span>
       ),
     },

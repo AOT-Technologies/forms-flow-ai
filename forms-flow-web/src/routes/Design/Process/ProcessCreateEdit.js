@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef , useCallback} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
 import { push } from "connected-react-router";
@@ -22,11 +22,12 @@ import {
 import {
   ConfirmModal,
   ErrorModal,
-  HistoryModal,
+  // HistoryModal,
   V8CustomButton,
-  FormStatusIcon
+  FormStatusIcon,
+  FileUploadArea,
 } from "@formsflow/components";
-import ActionModal from "../../../components/Modals/ActionModal";
+import ProcessActionsTab from "./ProcessActionsTab";
 import ExportDiagram from "../../../components/Modals/ExportDiagrams";
 import { toast } from "react-toastify";
 import {
@@ -45,12 +46,17 @@ import {
 } from "../../../actions/processActions";
 import { useMutation, useQuery } from "react-query";
 import LoadingOverlay from "react-loading-overlay-ts";
-import ImportProcess from "../../../components/Modals/ImportProcess";
+// import ImportProcess from "../../../components/Modals/ImportProcess";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker.jsx";
+import FileService from "../../../services/FileService";
+
 
 const EXPORT = "EXPORT";
-const IMPORT = "IMPORT";
-const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
+// Constants
+const UPLOAD_PROGRESS_INCREMENT = 5;
+const UPLOAD_PROGRESS_INTERVAL = 300;
+const INITIAL_UPLOAD_PROGRESS = 10;
+const COMPLETE_PROGRESS = 100;
 
 const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
@@ -77,6 +83,7 @@ const ProcessCreateEdit = ({ type }) => {
   const dispatch = useDispatch();
   const bpmnRef = useRef();
   const dmnRef = useRef();
+  const uploadTimerRef = useRef(null);
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -84,6 +91,7 @@ const ProcessCreateEdit = ({ type }) => {
   const [selectedAction, setSelectedAction] = useState(null);
   const [lintErrors, setLintErrors] = useState([]);
   const [exportError, setExportError] = useState(null);
+  const [importError, setImportError] = useState(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [activeTab, setActiveTab] = useState({ primary: 'layout', secondary: null, tertiary: null });
@@ -104,7 +112,9 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
-  
+  const [importLoader, setImportLoader] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [selectedFile, setSelectedFile] = useState(null);
   const isDataFetched = useRef();
 
   const tabConfig = {
@@ -126,7 +136,28 @@ const ProcessCreateEdit = ({ type }) => {
   
     } 
   };
-
+    /**
+   * Manages simulated upload progress while awaiting server response
+   */
+    useEffect(() => {
+      if (importLoader) {
+        // clearUploadTimer();
+  
+        uploadTimerRef.current = setInterval(() => {
+          setUploadProgress((prevProgress) => {
+            const nextProgress = prevProgress + UPLOAD_PROGRESS_INCREMENT;
+            return Math.min(nextProgress, COMPLETE_PROGRESS);
+          });
+        }, UPLOAD_PROGRESS_INTERVAL);
+      } 
+      // else {
+      //   clearUploadTimer();
+      // }
+  
+      // return () => {
+      //   clearUploadTimer();
+      // };
+    }, [importLoader]);
   useEffect(() => {
     setIsPublished(processData.status === "Published");
   }, [processData]);
@@ -440,6 +471,82 @@ const ProcessCreateEdit = ({ type }) => {
     handleToggleConfirmModal();
   };
 
+
+  // IMPORT FUNCTIONS
+
+
+  // Validate file type
+  const isValidFileType = (file) => {
+    return file?.name?.endsWith(Process.extension);
+  };
+
+  // Validate XML content structure
+  const isValidXMLContent = (xmlContent) => {
+    try {
+      // Check if the content contains the expected root element
+      const expectedElement = isBPMN ? 'bpmn:definitions' : 'definitions';
+      return xmlContent.includes(expectedElement);
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const handleImport = async (file) => {
+    setImportLoader(true);
+    setImportError(null);
+    setUploadProgress(INITIAL_UPLOAD_PROGRESS);
+    setSelectedFile(file); // Set file first so error state can be displayed
+    
+    try {
+      // Validate file type
+      if (!isValidFileType(file)) {
+        setImportError(
+          t(`The file format is invalid. Please import a ${Process.extension} file.`)
+        );
+        setImportLoader(false);
+        setUploadProgress(0);
+        return;
+      }
+
+      // Read file content
+      const fileContent = await file.text();
+
+      // Validate XML content
+      if (!fileContent || fileContent.trim() === '') {
+        setImportError(t('The file is empty. Please import a valid file.'));
+        setImportLoader(false);
+        setUploadProgress(0);
+        return;
+      }
+
+      // Validate XML structure
+      if (!isValidXMLContent(fileContent)) {
+        setImportError(
+          t(`The file content is invalid. Please import a valid ${Process.type} file.`)
+        );
+        setImportLoader(false);
+        setUploadProgress(0);
+        return;
+      }
+      
+      setUploadProgress(COMPLETE_PROGRESS);
+      // Import to editor
+      const ref = isBPMN ? bpmnRef : dmnRef;
+      if (ref.current) {
+        ref.current?.handleImport(fileContent);
+        enableWorkflowChange();
+        // toast.success(t(`${Process.type} imported successfully`));
+      }
+    } catch (error) {
+      console.error('Import failed:', error);
+      setImportError(
+        t(error.message || 'An error occurred during import. Please try again.')
+      );
+      setUploadProgress(0);
+    } finally {
+      setImportLoader(false);
+    }
+  };
   const handleExport = async () => {
     try {
       let data = "";
@@ -470,6 +577,81 @@ const ProcessCreateEdit = ({ type }) => {
     } catch (error) {
       setExportError(t(error.message || "Export failed due to an error."));
     }
+  };
+  const resetUploadState = useCallback(() => {
+    setImportLoader(false);
+    setImportError(null);
+    setUploadProgress(0);
+    setSelectedFile(null);
+
+  }, []);
+  const handleFileInputChange = useCallback(
+    (eventOrFile) => {
+      // Handle both event object and direct file
+      const file = eventOrFile?.target?.files?.[0] || eventOrFile;
+      if (file) {
+        handleImport(file);
+      }
+    },
+    [handleImport]
+  );
+  // Handle importing process and dispatching upon success
+  const processImport = async (fileContent) => {
+    try {
+      const {xml} = await extractFileDetails(fileContent);
+      if(!xml) return;
+      const processId = processData.id;
+      const fileType = Process.extension;
+      if (processId) {
+        // Update an existing process
+        const response = await updateProcess({
+          id: processId,
+          data:xml,
+          type: fileType === ".bpmn" ? "bpmn" : "dmn"
+        });
+        dispatch(setProcessData(response?.data));
+        handleImportData(xml);
+        dispatch(push(`${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`)); 
+      } 
+      else {
+        // Create a new process and redirect
+        const response = await createProcess({ data: xml, type: fileType === ".bpmn" ? "bpmn" : "dmn" });
+        if (response) {
+          dispatch(push(`${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`));
+        }
+      }
+    } catch (error) {
+      console.error("Error during import:", error);
+      setImportError(error?.response?.data?.message || "An error occurred during import.");
+    }
+  };
+
+  // Extract file details asynchronously
+  const extractFileDetails = async (fileContent) => {
+    const extractedXml = await FileService.extractFileDetails(fileContent);
+    return extractedXml;
+  };
+  const renderUploadArea = () => {
+    return (
+      <FileUploadArea
+        onCancel={resetUploadState}
+        onRetry={resetUploadState}
+        onDone={() => processImport(selectedFile)}
+        file={selectedFile}
+        progress={uploadProgress}
+        error={importError}
+        className="grid-item"
+        fileType={Process.fileType}
+        primaryButtonText={
+          importError ? t("Try Again") : t("Confirm and Replace")
+        }
+        dataTestId={`upload-${Process.type}-area`}
+        onFileSelect={handleFileInputChange}
+        ariaLabel={t(
+          `Drag and drop a ${Process.extension} file or click to browse for ${Process.type}`
+        )}
+      />
+    );
   };
 
     // const cancel = () => {
@@ -577,12 +759,16 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const modalContent = getModalContent();
+
+
   const handleImportData = (xml) => {
     const ref = isBPMN ? bpmnRef : dmnRef;
     if (ref.current) {
       ref.current?.handleImport(xml);
     }
   };
+  
+  
 
   const renderSecondaryControls = () => {
     const currentTab = tabConfig.primary[activeTab.primary];
@@ -629,6 +815,9 @@ const ProcessCreateEdit = ({ type }) => {
     return null;
   };
 
+  console.log(historiesData,'historiesData');
+  console.log(fetchHistoryData,'fetchHistoryData');
+  console.log(loadMoreBtnAction,'loadMoreBtnAction'); 
   return (
     <div>
       <NavigateBlocker isBlock={isWorkflowChanged} message={"You have made changes that are not saved yet"}  />
@@ -716,24 +905,17 @@ const ProcessCreateEdit = ({ type }) => {
                       />           
                 </div>
              </div>    
-        <div className="body-section">
+        <div className="body-section bpmn-dmn-edit-layout">
           {renderTabContent()}
         </div>
 
-      <ActionModal
-        newActionModal={activeTab.primary === 'actions'}
-        onClose={() => handleTabClick('layout')}
-        CategoryType={CategoryType.WORKFLOW}
-        onAction={(action) => {
-          if (action === "DUPLICATE") {
-            openConfirmModal("duplicate");
-          }
-          setSelectedAction(action);
-        }}
-        isCreate={isCreate}
-        published={isPublished}
-        diagramType={diagramType}
-      />
+      
+       <ProcessActionsTab
+         newActionModal={activeTab.primary === 'actions'}
+         diagramType={diagramType}
+         renderUpload={renderUploadArea}
+         onExport={handleExport}
+       />
 
       <ExportDiagram
         showExportModal={selectedAction === EXPORT}
@@ -754,7 +936,7 @@ const ProcessCreateEdit = ({ type }) => {
           primaryBtnText={t("Dismiss")}
         />
       )}
-      <HistoryModal
+      {/* <HistoryModal
         show={activeTab.secondary === 'history'}
         onClose={() => handleTabClick('layout')}
         title={t("History")}
@@ -767,8 +949,8 @@ const ProcessCreateEdit = ({ type }) => {
         historyCount={historiesData?.totalCount || 0}
         currentVersionId={processData.id}
         disableAllRevertButton={isPublished}
-      />
-      {selectedAction === IMPORT && <ImportProcess
+      /> */}
+      {/* {selectedAction === IMPORT && <ImportProcess
         showModal={selectedAction === IMPORT}
         closeImport={() => setSelectedAction(null)}
         processId={processData.id}
@@ -779,10 +961,11 @@ const ProcessCreateEdit = ({ type }) => {
         }}
         setImportXml={handleImportData}
         fileType={Process.extension}
-      />}
+      />} */}
     </div>
   );
 };
+
 ProcessCreateEdit.propTypes = {
   type: PropTypes.string.isRequired,
 };

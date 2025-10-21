@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 import {
@@ -52,9 +52,9 @@ import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocke
 const EXPORT = "EXPORT";
 const IMPORT = "IMPORT";
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
-
 const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
+  const location = useLocation();
   const isCreate = step === "create";
   const isBPMN = type === "BPMN";
   const Process = {
@@ -80,7 +80,12 @@ const ProcessCreateEdit = ({ type }) => {
   const dmnRef = useRef();
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  
+  // Helper function to get redirect URL
+  const getRedirectUrl = () => {
+    return MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  };
+  const redirectUrl = getRedirectUrl();
   const processData = useSelector((state) => state.process?.processData);
   const [selectedAction, setSelectedAction] = useState(null);
   const [newActionModal, setNewActionModal] = useState(false);
@@ -178,7 +183,12 @@ const ProcessCreateEdit = ({ type }) => {
   }, [processData]);
 
   
-  const publishText = isPublished ? t("Unpublish") : t("Publish");
+  // Helper function to get publish text
+  const getPublishText = () => {
+    return isPublished ? t("Unpublish") : t("Publish");
+  };
+  const publishText = getPublishText();
+  
   const processName = processData.name;
   const fileName = (processName + Process.extension).replaceAll(" ", "");
   
@@ -225,7 +235,11 @@ const ProcessCreateEdit = ({ type }) => {
     },
   });
 
-  const processDataXML = isReverted ? historyData?.processData : processData?.processData;
+  // Helper function to get process data XML
+  const getProcessDataXML = () => {
+    return isReverted ? historyData?.processData : processData?.processData;
+  };
+  const processDataXML = getProcessDataXML();
   // handle history modal
   // const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
@@ -528,8 +542,17 @@ const ProcessCreateEdit = ({ type }) => {
   };
   const handleCloseErrorModal = () => setShowErrorModal(false);
 
-  if (isProcessDetailsLoading) {
-    return <Loading />;
+  // Helper function to render loading state
+  const renderLoadingState = () => {
+    if (isProcessDetailsLoading) {
+      return <Loading />;
+    }
+    return null;
+  };
+
+  const loadingComponent = renderLoadingState();
+  if (loadingComponent) {
+    return loadingComponent;
   }
 
   const getModalContent = () => {
@@ -600,11 +623,38 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const modalContent = getModalContent();
+  
+  // Helper function to get editor reference
+  const getEditorRef = () => {
+    return isBPMN ? bpmnRef : dmnRef;
+  };
+  
   const handleImportData = (xml) => {
-    const ref = isBPMN ? bpmnRef : dmnRef;
+    const ref = getEditorRef();
     if (ref.current) {
       ref.current?.handleImport(xml);
     }
+  };
+
+  // Helper function to render editor component
+  const renderEditor = () => {
+    if (isBPMN) {
+      return (
+        <BpmnEditor
+          onChange={enableWorkflowChange}
+          ref={bpmnRef}
+          bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
+          setLintErrors={setLintErrors}
+        />
+      );
+    }
+    return (
+      <DmnEditor
+        onChange={enableWorkflowChange}
+        ref={dmnRef}
+        dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
+      />
+    );
   };
 
   return (
@@ -734,20 +784,7 @@ const ProcessCreateEdit = ({ type }) => {
               spinner
               text={t("Loading...")}
             >
-              {isBPMN ? (
-                <BpmnEditor
-                  onChange={enableWorkflowChange}
-                  ref={bpmnRef}
-                  bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
-                  setLintErrors={setLintErrors}
-                />
-              ) : (
-                <DmnEditor
-                  onChange={enableWorkflowChange}
-                  ref={dmnRef}
-                  dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
-                />
-              )}
+              {renderEditor()}
             </LoadingOverlay>
           )
         )}

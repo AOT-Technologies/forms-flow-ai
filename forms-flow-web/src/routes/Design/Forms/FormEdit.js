@@ -19,7 +19,9 @@ import {
   BreadCrumbs,
   VariableSelection,
   Switch,
-  CustomTextInput
+  CustomTextInput,
+  FileUploadPanel,
+  NoteIcon
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -79,6 +81,7 @@ import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocke
 import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../../actions/processActions.js";
 import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
 import { SystemVariables } from '../../../constants/variables';
+import EditorActions from "./EditActions";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -157,10 +160,10 @@ const tabConfig = {
         }
       }
     },
-    // actions: {
-    //   label: "Actions",
-    //   query: "?tab=actions"
-    // }
+    actions: {
+      label: "Actions",
+      query: "?tab=actions"
+    }
   }
 };
 
@@ -453,7 +456,7 @@ const EditComponent = () => {
       }
     }
     );
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
+  const [paginationModel] = useState({ page: 0, pageSize: 10 });
   
   const UploadActionType = {
     IMPORT: "import",
@@ -595,6 +598,11 @@ const EditComponent = () => {
         dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
         return;
       }
+      setActiveTab({
+        primary: 'form', 
+        secondary: null,   
+        tertiary: null  
+      });
       updateLayout({formExtracted, responseData});
     }
   };
@@ -667,7 +675,6 @@ const EditComponent = () => {
   } = useSelector((state) => state.formRestore);
 
   /* ------------------------- BPMN history variables ------------------------- */
-  const [showBpmnHistoryModal, setShowBpmnHistoryModal] = useState(false);
   const [bpmnHistoryData, setBpmnHistoryData] = useState({ processHistory: [], totalCount: 0 });
 
   /* -------------------------- getting process data -------------------------- */
@@ -704,6 +711,7 @@ const EditComponent = () => {
   const [pendingAction, setPendingAction] = useState(null);
   const onCloseActionModal = () => setNewActionModal(false);
   const processData = useSelector((state) => state.process?.processData);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const CategoryType = {
     FORM: "FORM",
@@ -1227,14 +1235,12 @@ const saveFormWithWorkflow = async () => {
   //   setShowHistoryModal(false);
   // };
   const fetchFormHistory = (parentFormId, page, limit) => {
-    setFormHistoryLoading(true);
     parentFormId = parentFormId && typeof parentFormId === 'string' ? parentFormId : processListData?.parentFormId;
     page = page ? page : paginationModel.page + 1;
     limit = limit ? limit : paginationModel.pageSize;
     getFormHistory(parentFormId,page, limit)
       .then((res) => {
         dispatch(setFormHistories(res.data));
-        setFormHistoryLoading(false);
       })
       .catch(() => {
         setFormHistories([]);
@@ -1259,6 +1265,10 @@ const saveFormWithWorkflow = async () => {
     if (!parentKey) {
       setFlowHistoryLoading(false);
       return;
+    }
+    setBpmnHistoryData({ processHistory: [], totalCount: 0 });
+    if (processData?.parentProcessKey) {
+      fetchBpmnHistory(processData.parentProcessKey, 1, 4);
     }
     setFlowHistoryLoading(true);
     // setShowBpmnHistoryModal(true);
@@ -1304,9 +1314,7 @@ const saveFormWithWorkflow = async () => {
     }
   };
 
-  const closeBpmnHistoryModal = () => {
-    setShowBpmnHistoryModal(false);
-  };
+
 
   const revertFormBtnAction = (cloneId) => {
     dispatch(setRestoreFormId(cloneId));
@@ -1363,9 +1371,6 @@ const saveFormWithWorkflow = async () => {
     }
   };
 
-  const editorActions = () => {
-    setNewActionModal(true);
-  };
 
   const handlePublishAsNewVersion = ({ description, title }) => {
     setFormSubmitted(true);
@@ -1764,13 +1769,13 @@ const saveFormWithWorkflow = async () => {
     setSelectedAction(action);
   };
 
-  const handleCloseActionModal = () => {
-    setSelectedAction(null); // Reset action
-    setPendingAction(null); // Reset pending action
-  };
+  // const handleCloseActionModal = () => {
+  //   setSelectedAction(null); // Reset action
+  //   setPendingAction(null); // Reset pending action
+  // };
 
   // deleting form hardly from formio and mark inactive in mapper table
-  const deleteModal = () => {
+  const handleDelete = () => {
     if (!applicationCount) {
       setIsDeletionLoading(true);
       dispatch(deleteForm("form", formId,() => {
@@ -1795,16 +1800,37 @@ const saveFormWithWorkflow = async () => {
     );
   };
 
-  // this values will be used in settings tab when integrating save functinality
-  
 
-  const renderDeleteModal = () => {
-    // const hasSubmissions = processListData.id && applicationCount;
-    const commonProps = {
-      show: selectedAction === ACTION_OPERATIONS.DELETE,
-      primaryBtnAction: handleCloseActionModal,
-      onClose: handleCloseActionModal,
-    };
+   const renderFileUpload = () => {
+    return (
+      <FileUploadPanel
+      onClose={() => console.log("Closed")}
+       uploadActionType={UploadActionType}
+      importError={null}
+      importLoader={importLoader}
+      formName={formTitle}
+      description="Upload a new form definition to import."
+      handleImport={handleImport}
+      fileItems={fileItems}
+      fileType={UploadActionType}
+      primaryButtonText={primaryButtonText}
+      headerText="Import Configuration"
+      processVersion={null}
+    />
+    );
+  };
+
+   const renderDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+  const handleCloseDelete = () => {
+    setShowDeleteModal(false);
+  };
+
+  // this values will be used in settings tab when integrating save functinality
+
+  const renderDeleteForml = () => {
+    const hasSubmissions = processListData.id && applicationCount;
 
     // if (hasSubmissions) {
     //   return (
@@ -1821,25 +1847,40 @@ const saveFormWithWorkflow = async () => {
     //     />
     //   );
     // } else {
-      return (
-        <PromptModal
-          {...commonProps}
-          type="warning"
-          title={t("Delete form?")}
-          message={t("Deleting a form is permanent and cannot be undone.")}
-          primaryBtnText={t("Delete Form")}
-          primaryBtndataTestid="delete-form-button"
-          primaryBtnariaLabel="Delete Form"
-          primaryBtnAction={deleteModal}
-          primaryBtnDisable={isDeletionLoading}
-          primaryBtnLoading={isDeletionLoading}
-          secondaryBtnText={t("Cancel")}
-          secondoryBtndataTestid="cancel-delete-button"
-          secondoryBtnariaLabel="Cancel"
-          secondaryBtnAction={handleCloseActionModal}
-          datatestId="delete-form-modal-message"
-        />
-      );
+     
+        return (
+          <>
+          <div className="delete-section">
+            <V8CustomButton
+              variant="warning"
+              disabled ={hasSubmissions}
+              onClick = {renderDeleteModal}
+              label={t("Delete Form")}
+              aria-label={t("Delete Form")}
+              data-testid="delete-form-disabled-btn"
+            />
+           { Boolean(hasSubmissions) &&  <div className="delete-note">
+            <NoteIcon />
+            <div className="delete-note-text">
+            This form cannot be deleted as it has submissions associated with it
+            </div>
+            </div>}
+          </div>
+{/*   
+          { showDeleteModal && <ConfirmModal
+            {...commonProps}
+            title={t("You Cannot Delete This Form & Flow")}
+            message={<CustomInfo heading={t("Note")} content={t(
+              "You cannot delete a form & flow that has submissions associated with it."
+            )} />}
+            secondaryBtnAction={handleCloseActionModal}
+            secondaryBtnText={t("Dismiss")}
+            secondoryBtndataTestid="dismiss-button"
+            secondoryBtnariaLabel="Dismiss button"
+          />} */}
+          </>
+        );
+  
     // }
   };
 
@@ -1881,6 +1922,7 @@ const saveFormWithWorkflow = async () => {
   const renderTabContent = () => {
     switch (activeTab.primary) {
       case 'form':
+        // Check if history sub-tab is active
         if (activeTab.secondary === 'history') {
           return (
             <HistoryPage
@@ -1890,7 +1932,7 @@ const saveFormWithWorkflow = async () => {
               revertBtnAction={revertFormBtnAction}
               historyCount={formHistoryData.totalCount}
               disableAllRevertButton={isPublished}
-              loading={formHistoryLoading}
+              loading={false}
               refreshBtnAction={fetchFormHistory}
               paginationModel={paginationModel}
               handlePaginationModelChange={handlePaginationModelChange}
@@ -1900,18 +1942,16 @@ const saveFormWithWorkflow = async () => {
         // Check if settings sub-tab is active
         if (activeTab.secondary === 'settings') {
           return (
-
-              <SettingsTab
-                handleConfirm={handleConfirmSettings}
-                isCreateRoute={isCreateRoute}
-                rolesState={rolesState}
-                formDetails={formDetails}
-                isAnonymous={isAnonymous}
-                setIsAnonymous={setIsAnonymous}
-                setFormDetails={setFormDetails}
-                setRolesState={setRolesState}
-              />
-
+            <SettingsTab
+              handleConfirm={handleConfirmSettings}
+              isCreateRoute={isCreateRoute}
+              rolesState={rolesState}
+              formDetails={formDetails}
+              isAnonymous={isAnonymous}
+              setIsAnonymous={setIsAnonymous}
+              setFormDetails={setFormDetails}
+              setRolesState={setRolesState}
+            />
           );
         }
         return (
@@ -2077,8 +2117,8 @@ const saveFormWithWorkflow = async () => {
             {/* Show variable content when on variables tab */}
             {variableContent && <div className="variable-content">{variableContent}</div>}
             
-            {/* Always keep FlowEdit mounted but hide when showing variables */}
-            <div className="bpmn-editor" style={{ display: variableContent ? 'none' : 'block' }}>
+            {/* Always keep FlowEdit mounted but hide when showing variables or history */}
+            <div className="bpmn-editor" style={{ display: (variableContent || activeTab.secondary === 'history') ? 'none' : 'block' }}>
               {isProcessDetailsLoading ? (
                 <div className="d-flex justify-content-center p-4">
                   <div className="spinner-grow" aria-live="polite">
@@ -2111,6 +2151,15 @@ const saveFormWithWorkflow = async () => {
           </>
         );
       }
+      case 'actions':
+        return (
+          <EditorActions 
+          renderUpload={renderFileUpload}
+          renderDeleteForm={renderDeleteForml}
+          mapperId={processListData.id} 
+          formTitle={form.title}
+          />
+        ) ;
       default:
         return null;
     }
@@ -2137,7 +2186,6 @@ const saveFormWithWorkflow = async () => {
                   handleTabClick('form', 'settings');
                 } else if (key === 'history') {
                   if (activeTab.primary === 'form') {
-                    activeTab.secondary = 'history';
                     handleTabClick('form', 'history');
                     handleFormHistory();
                   } else if (activeTab.primary === 'flow') {
@@ -2145,7 +2193,7 @@ const saveFormWithWorkflow = async () => {
                     handleBpmnHistory();
                     // handleTabClick('flow', 'history');
                   } else if (activeTab.primary === 'bpmn') {
-                    handleBpmnHistory();
+                    handleTabClick('bpmn', 'history');
                   }
                 } else if (key === 'preview') {
                   handlePreview();
@@ -2242,12 +2290,14 @@ const saveFormWithWorkflow = async () => {
                 </div>
                 {createDesigns && (
                   <>
+                  {/* {
+                  logic for save button disabled
+                    isCreateRoute
+                      ? !formDetails.title?.trim()
+                      : !formChangeState.changed && !workflowIsChanged
+                  } */}
                     <V8CustomButton
-                      disabled={
-                        isCreateRoute
-                          ? !formDetails.title?.trim()
-                          : !formChangeState.changed && !workflowIsChanged
-                      }
+                      disabled={true}
                       label={t("Save")}
                       onClick={
                         isPublished
@@ -2258,6 +2308,7 @@ const saveFormWithWorkflow = async () => {
                       ariaLabel={t("Save Form Layout")}
                     />
                     <V8CustomButton
+                      disabled={true}
                       label={t(publishText)}
                       onClick={handlePublishClick}
                       dataTestId="handle-publish-testid"
@@ -2283,25 +2334,31 @@ const saveFormWithWorkflow = async () => {
                           return (
                             <V8CustomButton
                               key={key}
-                              onClick={() => handleTabClick(key)}
+                              onClick={() => {
+                                // When clicking a primary tab, always go to the main view
+                                // Only skip navigation if already on the main view
+                                const isOnMainView = activeTab.primary === key && 
+                                  !activeTab.secondary && 
+                                  !activeTab.tertiary;
+                                
+                                if (isOnMainView) {
+                                  // Already on this tab's main view, avoid navigation
+                                  return;
+                                }
+                                // Switch to main view (clearing secondary and tertiary)
+                                handleTabClick(key, null, null);
+                              }}
                               data-testid={`tab-${key}`}
                               aria-label={t(`${config.label} Tab`)}
                               role="tab"
-                              aria-selected={activeTab.primary === key}
+                              aria-selected={activeTab.primary === key && !activeTab.secondary}
                               label={t(config.label)}
-                              selected={activeTab.primary === key}
+                              selected={activeTab.primary === key && !activeTab.secondary}
                               //disabled={isDisabled}
                             />
                           );
                         }
                       )}
-                      <V8CustomButton
-                        label={t("Actions")}
-                        onClick={editorActions}
-                        dataTestId="designer-action-testid"
-                        ariaLabel={t("Designer Actions Button")}
-                        dark
-                      />
                     </div>
                   </div>
                 )}
@@ -2309,7 +2366,7 @@ const saveFormWithWorkflow = async () => {
             </div>
 
             {/* Header Section 3 - Tab navigation */}
-            <div className="header-section-3">
+            { activeTab?.primary !== "actions" && <div className="header-section-3">
               <div className="section-seperation-left">
                 {renderSecondaryControls()}
               </div>
@@ -2331,7 +2388,7 @@ const saveFormWithWorkflow = async () => {
                   </div>
                 )}
               </div>
-            </div>
+            </div>}
 
             {/* Header Section 4 - Tertiary controls */}
             {activeTab.primary === "bpmn" &&
@@ -2344,9 +2401,27 @@ const saveFormWithWorkflow = async () => {
               )}
 
             {/* Body Section - Main content */}
-            <div className="body-section formedit-layout">
+            <div className="body-section formedit-layout" style={{ display: (activeTab.primary === 'bpmn' && activeTab.secondary === 'history') ? 'none' : 'block' }}>
               {renderTabContent()}
             </div>
+
+            {/* BPMN History Section - Show when on BPMN history tab */}
+            {(activeTab.primary === 'bpmn' && activeTab.secondary === 'history') && (
+              <div className="body-section">
+                <HistoryPage
+                  title={t("BPMN History")}
+                  loadMoreBtnText={t("Load More")}
+                  loadMoreBtndataTestId="load-more-bpmn-history"
+                  revertBtnText={t("Revert To This")}
+                  allHistory={bpmnHistoryData.processHistory}
+                  loadMoreBtnAction={loadMoreBpmnHistory}
+                  categoryType={CategoryType.WORKFLOW}
+                  revertBtnAction={revertBpmnHistory}
+                  historyCount={bpmnHistoryData.totalCount}
+                  disableAllRevertButton={isPublished}
+                />
+              </div>
+            )}
           </div>
         </div>
       </LoadingOverlay>
@@ -2424,39 +2499,20 @@ const saveFormWithWorkflow = async () => {
         />
       )}
 
-      {/* <HistoryPage
-        // show={showHistoryModal}
-        // onClose={closeHistoryModal}
-        title={t("History")}
-        loadMoreBtnText={t("Load More")}
-        loadMoreBtndataTestId="load-more-form-history"
-        revertBtnText={t("Revert To This")}
-        allHistory={formHistory}
-        loadMoreBtnAction={loadMoreBtnAction}
-        categoryType={CategoryType.FORM}
-        revertBtnAction={revertFormBtnAction}
-        historyCount={formHistoryData.totalCount}
-        disableAllRevertButton={isPublished}
-      /> */}
 
-      {showBpmnHistoryModal && (
-        <HistoryPage
-          show={showBpmnHistoryModal}
-          onClose={closeBpmnHistoryModal}
-          title={t("BPMN History")}
-          loadMoreBtnText={t("Load More")}
-          loadMoreBtndataTestId="load-more-bpmn-history"
-          revertBtnText={t("Revert To This")}
-          allHistory={bpmnHistoryData.processHistory}
-          loadMoreBtnAction={loadMoreBpmnHistory}
-          categoryType={CategoryType.WORKFLOW}
-          revertBtnAction={revertBpmnHistory}
-          historyCount={bpmnHistoryData.totalCount}
-          disableAllRevertButton={isPublished}
-        />
-      )}
 
-      {renderDeleteModal()}
+        <PromptModal
+        show={showDeleteModal}
+        onClose={handleCloseDelete}
+        title="Delete Item"
+        message="Are you sure you want to delete this item?"
+        type="warning"
+        primaryBtnText="Delete"
+        primaryBtnAction={handleDelete}
+        secondaryBtnText="Cancel"
+        secondaryBtnAction={handleCloseDelete}
+      />  
+
     </div>
   );
 };

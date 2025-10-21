@@ -15,7 +15,18 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * `/form-flow-builder/<mapper-id>` - Update existing configurations.
 
 
-## 7.3.0 - Date To be updated
+## 7.3.0 - 2025-10-14
+
+`Modified`
+
+**forms-flow-web**
+* Form.io token fetching logic has been moved to the service micro-frontend.
+
+`Fixed`
+
+* Sorting is now available for all columns on the review task listing page.
+* Fixed minor issues in Reviewer & Analyze Submissions page.
+* Fixed PDF generation issue with a generic custom theme.
 
 `Modified`
 

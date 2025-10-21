@@ -8,7 +8,7 @@ import {
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
 import { useTranslation } from "react-i18next";
-import { ConfirmModal, V8CustomButton, NewSortDownIcon, RefreshIcon } from "@formsflow/components";
+import { PromptModal, V8CustomButton, NewSortDownIcon, RefreshIcon } from "@formsflow/components";
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit } from "../../../helper/routerHelper";
@@ -258,7 +258,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
 
   return (
     <>
-      <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
+      <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
         <DataGrid
           columns={columns}
           rows={rows}
@@ -300,21 +300,22 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
           }}
         />
       </Paper>
-      <ConfirmModal
+      <PromptModal
         show={showDeleteModal}
-        primaryBtnAction={handleCloseActionModal}
         onClose={handleCloseActionModal}
-        title={t("Are You Sure You Want to Delete This Draft?")}
+        type="warning"
+        title={t("Are You Sure You Want to Delete This Draft? ")}
         message={t("This action cannot be undone.")}
-        secondaryBtnAction={confirmDraftDelete}
         primaryBtnText={t("No, Keep This Draft")}
+        primaryBtnAction={handleCloseActionModal}
+        primaryBtnDisable={isDeletionLoading}
+        primaryBtnLoading={isDeletionLoading}
         secondaryBtnText={t("Yes, Delete this Draft")}
-        secondoryBtndataTestid="yes-delete-button"
+        secondaryBtnAction={confirmDraftDelete}
         primaryBtndataTestid="no-delete-button"
         primaryBtnariaLabel="No, Keep This Draft"
         secondoryBtnariaLabel="Yes, Delete this Draft"
-        secondaryBtnDisable={isDeletionLoading}
-        secondaryBtnLoading={isDeletionLoading}
+        secondoryBtndataTestid="confirm-delete-draft"
       />
     </>
   );

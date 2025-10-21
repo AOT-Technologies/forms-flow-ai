@@ -66,7 +66,6 @@ const navigateToResubmit = (dispatch, tenantId, formId, submissionId ) => {
 
 
 
-
 export {
   navigateToDesignFormsListing,
   navigateToDesignFormCreate,

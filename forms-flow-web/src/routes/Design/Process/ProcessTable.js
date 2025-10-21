@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  CustomButton,
   CustomSearch,
-  ReusableProcessTableRow,
-  TableFooter,
-  NoDataFound,
+  V8CustomButton,
+  V8CustomDropdownButton,
   BuildModal,
-  TableSkeleton
+  RefreshIcon,
+  NewSortDownIcon,
+
 } from "@formsflow/components";
-import { HelperServices } from '@formsflow/service';
-import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
 import { useTranslation } from "react-i18next";
+import { DataGrid } from '@mui/x-data-grid';
+import Paper from "@mui/material/Paper";
 import { useParams } from "react-router-dom";
-import SortableHeader from "../../../components/CustomComponents/SortableHeader";
 import { fetchAllProcesses } from "../../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { push } from "connected-react-router";
@@ -26,6 +25,9 @@ import {
   setDmnSort
 } from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
+import { HelperServices,StyleServices } from "@formsflow/service";
+
+
 const ProcessTable = React.memo(() => {
   const { viewType } = useParams();
   const isBPMN = viewType === "subflow";
@@ -58,6 +60,7 @@ const ProcessTable = React.memo(() => {
   );
   const searchTextDMN = useSelector((state) => state.process.dmnSearchText);
   const searchTextBPMN = useSelector((state) => state.process.bpmnSearchText);
+  const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
   const totalCount = useSelector((state) =>
     isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
   );
@@ -90,13 +93,7 @@ const ProcessTable = React.memo(() => {
   const setCurrentState = isBPMN ? setBpmnState : setDmnState;
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const [showSortModal, setShowSortModal] = useState(false);
-  const optionSortBy = [
-    { value: "name", label: t("Name") },
-    { value: "processKey", label: t("Id") },
-    { value: "status", label: t("Status") },
-    { value: "modified", label: t("Last Edited") },
-  ];
+  
   const fetchProcesses = () => {
     setIsLoading(true);
     dispatch(
@@ -118,26 +115,19 @@ const ProcessTable = React.memo(() => {
     );
   };
 
-  const handleFilterIconClick = () => {
-    setShowSortModal(true);
-  };
+ 
+  // const handleSortApply = (selectedSortOption, selectedSortOrder) => {
+  //   setIsLoading(true);
+  //   const action = isBPMN ? setBpmSort : setDmnSort;
+  //   const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
+  //   dispatch(action({
+  //     ...resetSortOrders,
+  //     activeKey: selectedSortOption,
+  //     [selectedSortOption]: { sortOrder: selectedSortOrder },
+  //   }));
 
-  const handleSortModalClose = () => {
-    setShowSortModal(false);
-  };
-  const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-    setIsLoading(true);
-    const action = isBPMN ? setBpmSort : setDmnSort;
-    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
-    dispatch(action({
-      ...resetSortOrders,
-      activeKey: selectedSortOption,
-      [selectedSortOption]: { sortOrder: selectedSortOrder },
-    }));
-
-    setIsLoading(false);
-    setShowSortModal(false);
-  };
+  //   setIsLoading(false);
+  // };
 
 
   const handleRefresh = () => {
@@ -156,12 +146,18 @@ const ProcessTable = React.memo(() => {
     }
   }, [search, dispatch, isBPMN]);
 
-  const handleSort = (key) => {
+  const handleSort = (model) => {
+    // DataGrid passes an array sort model; pick the first entry
+    const next = Array.isArray(model) ? model[0] : model;
+    if (!next || !next.field) {
+      return;
+    }
+    const key = next.field;
+    const requestedOrder = next.sort || "asc";
+
     const newSortConfig = {
       activeKey: key,
-      [key]: {
-        sortOrder: sortConfig[key]?.sortOrder === "asc" ? "desc" : "asc",
-      },
+      [key]: { sortOrder: requestedOrder },
     };
     // Reset all other sort keys to default (ascending)
     Object.keys(sortConfig).forEach((sortKey) => {
@@ -186,16 +182,6 @@ const ProcessTable = React.memo(() => {
     handlePageChange(1);
   };
 
-  const handleClearSearch = () => {
-    if (isBPMN) {
-      setSearchBPMN("");
-      dispatch(setBpmnSearchText(""));
-    } else {
-      setSearchDMN("");
-      dispatch(setDmnSearchText(""));
-    }
-    handlePageChange(1);
-  };
 
   const handlePageChange = (page) => {
     setCurrentState((prevState) => ({
@@ -252,129 +238,163 @@ const ProcessTable = React.memo(() => {
     },
   ];
 
+  const columns = [
+    {
+      field: "name",
+      headerName: t("Name"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+    },
+    {
+      field: "processKey",
+      headerName: t("ID"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+    },
+    {
+      field: "modified",
+      headerName: t("Last Edited"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: params => HelperServices.getLocaldate(params.row.modified),
+    },
+    {
+      field: "status",
+      headerName: t("Status"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: params => (
+        <span className="d-flex align-items-center">
+          {params.value === "active" ?
+            <span className="status-live"></span> :
+            <span className="status-draft"></span>}
+          {params.value === "active" ? t("Live") : t("Draft")}
+        </span>
+      ),
+    },
+    {
+      field: "actions",
+      renderHeader: () => (
+        <V8CustomButton
+          // label="new button"
+          variant="secondary"
+          icon={<RefreshIcon color={iconColor} />}
+          iconOnly
+          onClick={handleRefresh}
+        />
+      ),
+      flex: 1,
+      sortable: false,
+      cellClassName: "last-column",
+      renderCell: params => (
+        (createDesigns || manageAdvancedWorkFlows) && (
+          <V8CustomDropdownButton
+          label={t("Edit")}
+          variant="secondary"
+          menuPosition="right"
+          dropdownItems={[]}
+          onLabelClick= {() => gotoEdit(params.row)}
+        />
+        )
+      )
+    },
+  ];
+  const paginationModel = React.useMemo(
+    () => ({ page: currentState.activePage - 1, pageSize: currentState.limit }),
+    [currentState.activePage, currentState.limit]
+  );
+  const onPaginationModelChange = ({ page, pageSize }) => {
+    if (currentState.limit !== pageSize) {
+      onLimitChange(pageSize);
+    } else if (currentState.activePage - 1 !== page) {
+      handlePageChange(page + 1);
+    }
+  };
   return (
     <>
-      <div className="table-bar">
-        <div className="filters">
+      <div className="toast-section">{/* <p>Toast message</p> */}</div>
+      <div className="header-section-1">
+        <div className="section-seperation-left">
+          <h4> Build</h4>
+        </div>
+        <div className="section-seperation-right">
+          {(createDesigns || manageAdvancedWorkFlows) && (
+            <V8CustomButton
+              variant="primary"
+              label={t(`New ${ProcessContents.processType}`)}
+              onClick={handleCreateProcess}
+              dataTestid={`create-${ProcessContents.processType}-button`}
+              ariaLabel={` Create ${ProcessContents.processType}`}
+            />
+          )}
+        </div>
+      </div>
+      <div className="header-section-2">
+        <div className="section-seperation-left">
           <CustomSearch
             search={search}
             setSearch={isBPMN ? setSearchBPMN : setSearchDMN}
             handleSearch={handleSearch}
-            handleClearSearch={handleClearSearch}
             placeholder={t(`Search ${ProcessContents.processType} Name`)}
             searchLoading={searchLoading}
             title={t(`Search ${ProcessContents.processType} Name`)}
             dataTestId={`${ProcessContents.processType}-search-input`}
           />
         </div>
-        <div className="actions">
-          <FilterSortActions
-            showSortModal={showSortModal}
-            handleFilterIconClick={handleFilterIconClick}
-            handleRefresh={handleRefresh}
-            handleSortModalClose={handleSortModalClose}
-            handleSortApply={handleSortApply}
-            optionSortBy={optionSortBy}
-            defaultSortOption={sortConfig.activeKey}
-            defaultSortOrder={sortConfig[sortConfig.activeKey]?.sortOrder}
-            filterDataTestId={ProcessContents.filterDataTestId}
-            filterAriaLabel={ProcessContents.filterAriaLabel}
-            refreshDataTestId={ProcessContents.refreshDataTestId}
-            refreshAriaLabel={ProcessContents.refreshAriaLabel}
-          />
-          {(createDesigns || manageAdvancedWorkFlows) && (<CustomButton
-            label={t(`New ${ProcessContents.processType}`)}
-            onClick={handleCreateProcess}
-            dataTestid={`create-${ProcessContents.processType}-button`}
-            ariaLabel={` Create ${ProcessContents.processType}`}
-            action
-          />)}
-        </div>
       </div>
-      {isLoading ? <TableSkeleton columns={5} rows={10} /> :
-        <div className="custom-table-wrapper-outter">
-          <div className="custom-table-wrapper-inner">
-            <table className="table custom-tables">
-              <thead className="table-header">
-                <tr>
-                    <SortableHeader
-                      columnKey="name"
-                      title="Name"
-                      currentSort={sortConfig}
-                      handleSort={handleSort}
-                      className="w-25"
-                    />
-                    <SortableHeader
-                      columnKey="processKey"
-                      title="ID"
-                      currentSort={sortConfig}
-                      handleSort={handleSort}
-                      className="w-20"
-                    />
-                    <SortableHeader
-                      columnKey="modified"
-                      title="Last Edited"
-                      currentSort={sortConfig}
-                      handleSort={handleSort}
-                      className="w-15"
-                    />
-                    <SortableHeader
-                      columnKey="status"
-                      title="Status"
-                      currentSort={sortConfig}
-                      handleSort={handleSort}
-                      className="w-15"
-                    />
-                  <th
-                    className="w-25"
-                    colSpan="4"
-                    aria-label="edit-button"
-                  ></th>
-                </tr>
-              </thead>
-              {processList.length ? (
-                <>
-                <tbody>
-                  {processList.map((processItem) => (
-                    <ReusableProcessTableRow
-                      key={processItem.id}
-                      item={processItem}
-                      gotoEdit={gotoEdit}
-                      buttonLabel={ProcessContents.processType}
-                    />
-                  ))}
-                </tbody>
-                </>
-              ) : !isLoading ? (
-                <tbody className="table-empty">
-                  <NoDataFound message={t(`${ProcessContents.message}`)} />
-                </tbody>
-              ) : null}
-            </table>
-          </div>
+      <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
+        <DataGrid
+          disableColumnResize // disabed resizing
+          columns={columns}
+          rows={processList}
+          rowCount={totalCount}
+          loading={searchLoading || isLoading}
+          paginationMode="server"
+          sortingMode="server"
+          disableColumnMenu
+          sortModel={[
+            {
+              field: sortConfig.activeKey,
+              sort: sortConfig[sortConfig.activeKey].sortOrder,
+            },
+          ]}
+          onSortModelChange={handleSort}
+          paginationModel={paginationModel}
+          getRowId={(row) => row.id}
+          onPaginationModelChange={onPaginationModelChange}
+          pageSizeOptions={[10, 25, 50, 100]}
+          rowHeight={55}
+          disableRowSelectionOnClick
+          slots={{
+            columnSortedDescendingIcon: () => (
+              <div>
+                <NewSortDownIcon color={iconColor} />
+              </div>
+            ),
+            columnSortedAscendingIcon: () => (
+              <div style={{ transform: "rotate(180deg)" }}>
+                <NewSortDownIcon color={iconColor} />
+              </div>
+            ),
+            // columnUnsortedIcon: RefreshIcon,
+          }}
+          slotProps={{
+            loadingOverlay: {
+              variant: "skeleton",
+              noRowsVariant: "skeleton",
+            },
+          }}
+        />
+      </Paper>
 
-          
-
-          {processList.length ? (
-            <TableFooter
-                limit={currentState.limit}
-                activePage={currentState.activePage}
-                totalCount={totalCount}
-                handlePageChange={handlePageChange}
-                onLimitChange={onLimitChange}
-                pageOptions={[
-                  { text: "10", value: 10 },
-                  { text: "25", value: 25 },
-                  { text: "50", value: 50 },
-                  { text: "100", value: 100 },
-                  { text: "All", value: totalCount },
-                ]}
-              />
-            ) : (
-              <></>
-            )}
-        </div>
-      }
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}

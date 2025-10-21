@@ -9,6 +9,7 @@ import {
   CustomButton,
   ConfirmModal,
   HistoryPage,
+  // HistoryModal,
   //CurlyBracketsIcon,
   VariableSelection,
   CloseIcon,
@@ -26,7 +27,6 @@ import { push } from "connected-react-router";
 import { processMigrate } from "../../../apiManager/services/FormServices";
 import {
   updateProcess,
-  getProcessHistory,
   fetchRevertingProcessData,
   saveFormProcessMapperPut
 } from "../../../apiManager/services/processServices.js";
@@ -47,7 +47,6 @@ const FlowEdit = forwardRef(
   (
     {
       isPublished = false,
-      CategoryType,
       setWorkflowIsChanged,
       migration,
       setMigration,
@@ -80,7 +79,6 @@ const FlowEdit = forwardRef(
       return null;
     });
     const [showDiscardModal, setShowDiscardModal] = useState(false);
-    const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [isReverted, setIsReverted] = useState(false);
     const [showVariableModal, setShowVariableModal] = useState(false);
     const [showUnsavedChangesModal, setShowUnsavedChangesModal] =
@@ -108,20 +106,19 @@ const FlowEdit = forwardRef(
       setSavedFormVariables(updatedLabels);
     }, [formProcessList]);
     /* --------- fetching all process history when click history button --------- */
-    const {
-      data: { data: historiesData } = {}, // response data destructured
-      mutate: fetchHistories, // mutate function used to call the api function and here mutate renamed to fetch histories
-      // isLoading: historiesLoading,
-      // isError: historiesError,
-    } = useMutation(
-      ({ parentProcessKey, page, limit }) =>
-        getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
-    );
+    // const {
+    //   // data: { data: historiesData } = {}, // response data destructured
+    //   mutate: fetchHistories, // mutate function used to call the api function and here mutate renamed to fetch histories
+    //   // isLoading: historiesLoading,
+    //   // isError: historiesError,
+    // } = useMutation(
+    //   ({ parentProcessKey, page, limit }) =>
+    //     getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
+    // );
 
     /* --------- fetch a perticular history when click the revert button -------- */
     const {
       data: { data: historyData } = {},
-      mutate: fetchHistoryData,
       isLoading: historyLoading,
       // isError: historyDataError,
     } = useMutation((processId) => fetchRevertingProcessData(processId), {
@@ -132,8 +129,6 @@ const FlowEdit = forwardRef(
     });
 
     const handleDiscardModal = () => setShowDiscardModal(!showDiscardModal);
-    const handleToggleHistoryModal = () =>
-      setShowHistoryModal(!showHistoryModal);
 
 
 const enableWorkflowChange = async () => {  
@@ -203,9 +198,9 @@ const enableWorkflowChange = async () => {
     //   });
     // };
 
-    const loadMoreBtnAction = () => {
-      fetchHistories({ parentProcessKey: processData.parentProcessKey });
-    };
+    // const loadMoreBtnAction = () => {
+    //   fetchHistories({ parentProcessKey: processData.parentProcessKey });
+    // };
     const handleSaveFlowClick = () => {
       //On clicking the save flow it checks if the current flow has already been migrated, if not, it tries to migrate first.
       if (shouldShowMigrationModal()) {
@@ -491,7 +486,7 @@ const enableWorkflowChange = async () => {
           disableAllRevertButton={
             processData.status === "Published" || isPublished
           }
-        />
+        /> */}
         {/* Show unsaved changes modal when layout is not saved */}
         {showUnsavedChangesModal && (
           <Modal
@@ -556,9 +551,6 @@ const enableWorkflowChange = async () => {
 );
 
 FlowEdit.propTypes = {
-  CategoryType: PropTypes.shape({
-    WORKFLOW: PropTypes.string.isRequired,
-  }).isRequired,
   isPublished: PropTypes.bool.isRequired,
   setWorkflowIsChanged: PropTypes.func,
   migration: PropTypes.bool,

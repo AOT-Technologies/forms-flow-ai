@@ -63,8 +63,30 @@ const navigateToResubmit = (dispatch, tenantId, formId, submissionId ) => {
   navigateTo(dispatch,`${getRoute(tenantId).FORM}/${formId}/submissions/${submissionId}/resubmit`);
 };
 
+/* ---------------------------  Process Creation Routes --------------------------- */
+const navigateToSubflowBuild = (dispatch, tenantId) => {
+  navigateTo(dispatch, `${getRoute(tenantId).SUBFLOW}/build`);
+};
 
+const navigateToDecisionTableBuild = (dispatch, tenantId) => {
+  navigateTo(dispatch, `${getRoute(tenantId).DECISIONTABLE}/build`);
+};
 
+const navigateToSubflowCreate = (dispatch, tenantId) => {
+  navigateTo(dispatch, `${getRoute(tenantId).SUBFLOW}/create`);
+};
+
+const navigateToDecisionTableCreate = (dispatch, tenantId) => {
+  navigateTo(dispatch, `${getRoute(tenantId).DECISIONTABLE}/create`);
+};
+
+const navigateToSubflowEdit = (dispatch, tenantId, processKey) => {
+  navigateTo(dispatch, `${getRoute(tenantId).SUBFLOW}/edit/${processKey}`);
+};
+
+const navigateToDecisionTableEdit = (dispatch, tenantId, processKey) => {
+  navigateTo(dispatch, `${getRoute(tenantId).DECISIONTABLE}/edit/${processKey}`);
+};
 
 export {
   navigateToDesignFormsListing,
@@ -79,4 +101,10 @@ export {
   navigateToDraftEdit,
   navigateToViewSubmission,  
   navigateToResubmit,
+  navigateToSubflowBuild,
+  navigateToDecisionTableBuild,
+  navigateToSubflowCreate,
+  navigateToDecisionTableCreate,
+  navigateToSubflowEdit,
+  navigateToDecisionTableEdit,
 };

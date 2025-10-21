@@ -456,7 +456,7 @@ const EditComponent = () => {
       }
     }
     );
-  const [paginationModel] = useState({ page: 0, pageSize: 10 });
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
   
   const UploadActionType = {
     IMPORT: "import",
@@ -669,6 +669,7 @@ const EditComponent = () => {
   /* ------------------------- form history variables ------------------------- */
   const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
+
   const {
     formHistoryData = {},
     restoredFormId,
@@ -1235,12 +1236,14 @@ const saveFormWithWorkflow = async () => {
   //   setShowHistoryModal(false);
   // };
   const fetchFormHistory = (parentFormId, page, limit) => {
+    setFormHistoryLoading(true);
     parentFormId = parentFormId && typeof parentFormId === 'string' ? parentFormId : processListData?.parentFormId;
     page = page ? page : paginationModel.page + 1;
     limit = limit ? limit : paginationModel.pageSize;
     getFormHistory(parentFormId,page, limit)
       .then((res) => {
         dispatch(setFormHistories(res.data));
+        setFormHistoryLoading(false);
       })
       .catch(() => {
         setFormHistories([]);
@@ -1267,16 +1270,7 @@ const saveFormWithWorkflow = async () => {
       return;
     }
     setBpmnHistoryData({ processHistory: [], totalCount: 0 });
-    if (processData?.parentProcessKey) {
-      fetchBpmnHistory(processData.parentProcessKey, 1, 4);
-    }
     setFlowHistoryLoading(true);
-    // setShowBpmnHistoryModal(true);
-    // setBpmnHistoryData({ processHistory: [], totalCount: 0 });
-    // if (processData?.parentProcessKey) {
-    //   fetchBpmnHistory(processData.parentProcessKey, paginationModel.page + 1,
-    //     paginationModel.pageSize);
-    // }
     fetchBpmnHistory(parentKey, paginationModel.page + 1, paginationModel.pageSize);
   };
 
@@ -1313,8 +1307,6 @@ const saveFormWithWorkflow = async () => {
       toast.error(t("Failed to revert process"));
     }
   };
-
-
 
   const revertFormBtnAction = (cloneId) => {
     dispatch(setRestoreFormId(cloneId));
@@ -1932,7 +1924,7 @@ const saveFormWithWorkflow = async () => {
               revertBtnAction={revertFormBtnAction}
               historyCount={formHistoryData.totalCount}
               disableAllRevertButton={isPublished}
-              loading={false}
+              loading={formHistoryLoading}
               refreshBtnAction={fetchFormHistory}
               paginationModel={paginationModel}
               handlePaginationModelChange={handlePaginationModelChange}

@@ -8,7 +8,7 @@ import React, {
 import {
   CustomButton,
   ConfirmModal,
-  HistoryModal,
+  HistoryPage,
   //CurlyBracketsIcon,
   VariableSelection,
   CloseIcon,
@@ -70,6 +70,7 @@ const FlowEdit = forwardRef(
     const bpmnRef = useRef();
     const processData = useSelector((state) => state.process?.processData);
     const [lintErrors, setLintErrors] = useState([]);
+    const { createDesigns } = userRoles();
     
     // Initialize default BPMN for create route
     const [defaultBpmnXml] = useState(() => {
@@ -81,7 +82,6 @@ const FlowEdit = forwardRef(
     const [showDiscardModal, setShowDiscardModal] = useState(false);
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [isReverted, setIsReverted] = useState(false);
-    const { createDesigns } = userRoles();
     const [showVariableModal, setShowVariableModal] = useState(false);
     const [showUnsavedChangesModal, setShowUnsavedChangesModal] =
       useState(false);
@@ -476,7 +476,7 @@ const enableWorkflowChange = async () => {
           />
         )}
 
-        <HistoryModal
+        <HistoryPage
           show={showHistoryModal}
           onClose={handleToggleHistoryModal}
           title={t("History")}

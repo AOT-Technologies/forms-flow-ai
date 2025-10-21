@@ -13,10 +13,10 @@ const ProcessActionsTab = ({
   newActionModal,
   renderUpload,
   onExport,
-  diagramType
+  diagramType,
 }) => {
   const { t } = useTranslation();
-//   const primaryColor = StyleServices.getCSSVariable("--ff-primary");
+  //   const primaryColor = StyleServices.getCSSVariable("--ff-primary");
 
   // Get diagram-specific labels
   const diagramLabel = diagramType || "Process";
@@ -28,12 +28,9 @@ const ProcessActionsTab = ({
   const [isExporting, setIsExporting] = useState(false);
 
   // Export format options based on diagram type
-  const formExportOptions = [
-    { label: diagramLabel, value: "XML"}
-  ];
+  const formExportOptions = [{ label: diagramLabel, value: "XML" }];
 
   if (!newActionModal) return null;
-
 
   const handleSelectChange = (value) => {
     setSelectedValue(value);
@@ -41,7 +38,7 @@ const ProcessActionsTab = ({
 
   const handleExportClick = async () => {
     if (!onExport) return;
-    
+
     setIsExporting(true);
     setProgress(0);
     setIsError(false);
@@ -49,7 +46,7 @@ const ProcessActionsTab = ({
     try {
       // Simulate progress
       const progressInterval = setInterval(() => {
-        setProgress(prev => {
+        setProgress((prev) => {
           if (prev >= 90) {
             clearInterval(progressInterval);
             return 90;
@@ -60,17 +57,16 @@ const ProcessActionsTab = ({
 
       // Call the actual export function
       await onExport(selectedValue);
-      
+
       // Complete progress
       clearInterval(progressInterval);
       setProgress(100);
-      
+
       // Reset after success
       setTimeout(() => {
         setProgress(0);
         setIsExporting(false);
       }, 1000);
-      
     } catch (error) {
       setIsError(true);
       setProgress(0);
@@ -112,7 +108,9 @@ const ProcessActionsTab = ({
             </div>
             {isExporting && (
               <div className="export-progress-section">
-                <div>{t("Export process as")} {selectedValue}</div>
+                <div>
+                  {t("Export process as")} {selectedValue}
+                </div>
                 <div className="export-progress">
                   <CustomProgressBar
                     progress={progress}
@@ -136,5 +134,3 @@ ProcessActionsTab.propTypes = {
 };
 
 export default ProcessActionsTab;
-
-

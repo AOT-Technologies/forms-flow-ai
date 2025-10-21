@@ -598,31 +598,44 @@ const ProcessCreateEdit = ({ type }) => {
   // Handle importing process and dispatching upon success
   const processImport = async (fileContent) => {
     try {
-      const {xml} = await extractFileDetails(fileContent);
-      if(!xml) return;
+      const { xml } = await extractFileDetails(fileContent);
+      if (!xml) return;
       const processId = processData.id;
       const fileType = Process.extension;
       if (processId) {
         // Update an existing process
         const response = await updateProcess({
           id: processId,
-          data:xml,
-          type: fileType === ".bpmn" ? "bpmn" : "dmn"
+          data: xml,
+          type: fileType === ".bpmn" ? "bpmn" : "dmn",
         });
         dispatch(setProcessData(response?.data));
         handleImportData(xml);
-        dispatch(push(`${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`)); 
-      } 
-      else {
+        dispatch(
+          push(
+            `${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`
+          )
+        );
+      } else {
         // Create a new process and redirect
-        const response = await createProcess({ data: xml, type: fileType === ".bpmn" ? "bpmn" : "dmn" });
+        const response = await createProcess({
+          data: xml,
+          type: fileType === ".bpmn" ? "bpmn" : "dmn",
+        });
         if (response) {
-          dispatch(push(`${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`));
+          dispatch(
+            push(
+              `${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`
+            )
+          );
         }
       }
+      resetUploadState();
     } catch (error) {
       console.error("Error during import:", error);
-      setImportError(error?.response?.data?.message || "An error occurred during import.");
+      setImportError(
+        error?.response?.data?.message || "An error occurred during import."
+      );
     }
   };
 
@@ -891,7 +904,7 @@ const ProcessCreateEdit = ({ type }) => {
               </div>
             </div>  
 
-            <div className="header-section-3">
+            { activeTab.primary === 'layout' && <div className="header-section-3">
                 <div className="section-seperation-left">
                     {renderSecondaryControls()}          
                 </div>
@@ -904,7 +917,7 @@ const ProcessCreateEdit = ({ type }) => {
                         ariaLabel={t(`Discard ${diagramType} Changes`)}
                       />           
                 </div>
-             </div>    
+             </div> }   
         <div className="body-section bpmn-dmn-edit-layout">
           {renderTabContent()}
         </div>

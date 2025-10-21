@@ -76,6 +76,7 @@ jobs:
       SKIP_IN_CI: "True"
       USE_DOCKER_MOCK: "True"
       JWT_OIDC_TEST_PRIVATE_KEY_PEM: ${{ secrets.JWT_OIDC_TEST_PRIVATE_KEY_PEM }}
+      FORMIO_TEST_JWT_TOKEN: ${{ secrets.FORMIO_TEST_JWT_TOKEN}}
 
     runs-on: ubuntu-24.04
     strategy:

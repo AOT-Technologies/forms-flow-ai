@@ -7,8 +7,7 @@ import React, {
 } from "react";
 import {
   CustomButton,
-  ConfirmModal,
-  // HistoryPage,
+  PromptModal,
   // HistoryModal,
   //CurlyBracketsIcon,
   VariableSelection,
@@ -344,19 +343,23 @@ const enableWorkflowChange = async () => {
       <>
         {/* <Card> */}
         <div>
-          <ConfirmModal
+          <PromptModal
             show={showDiscardModal}
             title={t(`Discard Flow Changes?`)}
             message={t(
               "Are you sure you want to discard all unsaved changes to the flow of the form?"
             )}
-            messageSecondary={t("This action cannot be undone.")}
             primaryBtnAction={handleDiscardConfirm}
             onClose={handleDiscardModal}
             primaryBtnText={t("Yes, Discard All Unsaved Changes")}
             secondaryBtnText={t("No, Keep The Changes")}
             secondaryBtnAction={handleDiscardModal}
-            size="sm"
+            type="warning"
+            size="md"
+            primaryBtndataTestid="discard-confirm-button"
+            secondoryBtndataTestid="discard-cancel-button"
+            primaryBtnariaLabel={t("Yes, Discard All Unsaved Changes")}
+            secondoryBtnariaLabel={t("No, Keep The Changes")}
           />
           {/* <div className="head">
             {createDesigns && (
@@ -409,9 +412,10 @@ const enableWorkflowChange = async () => {
           {/* </Card> */}
         </div>
         {showMigrationModal && (
-          <ConfirmModal
+          <PromptModal
             show={showMigrationModal}
             title={t("***Migration Notice***")}
+            size="lg"
             message={
               <div>
                 <div className="message-primary mb-3">
@@ -458,7 +462,6 @@ const enableWorkflowChange = async () => {
               </div>
             }
             primaryBtnDisable={!isMigrationChecked}
-            messageSecondary={null} // You can set this to `null` or remove it entirely if unused
             primaryBtnAction={handleMigration}
             onClose={handleCloseMigration}
             primaryBtnText={t(
@@ -467,7 +470,13 @@ const enableWorkflowChange = async () => {
             secondaryBtnText={t("Cancel")}
             secondaryBtnAction={handleCloseMigration}
             buttonLoading={isMigrationLoading}
-            size="sm"
+            type="info"
+            primaryBtndataTestid="migration-confirm-button"
+            secondoryBtndataTestid="migration-cancel-button"
+            primaryBtnariaLabel={t(
+              "Link this form that will keep the current flow and its history"
+            )}
+            secondoryBtnariaLabel={t("Cancel")}
           />
         )}
 

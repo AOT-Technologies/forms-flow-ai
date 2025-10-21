@@ -26,6 +26,10 @@ import {
 } from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
 import { HelperServices,StyleServices } from "@formsflow/service";
+import {
+  navigateToSubflowBuild,
+  navigateToDecisionTableBuild,
+} from "../../../helper/routerHelper";
 
 
 const ProcessTable = React.memo(() => {
@@ -210,7 +214,11 @@ const ProcessTable = React.memo(() => {
   };
 
   const handleCreateProcess = () => {
-    setShowBuildModal(true);
+    if (isBPMN) {
+      navigateToSubflowBuild(dispatch, tenantKey);
+    } else {
+      navigateToDecisionTableBuild(dispatch, tenantKey);
+    }
   };
 
   const handleBuildModal = () => {
@@ -273,10 +281,10 @@ const ProcessTable = React.memo(() => {
       height: 55,
       renderCell: params => (
         <span className="d-flex align-items-center">
-          {params.value === "active" ?
+          {params.value === "Published" ?
             <span className="status-live"></span> :
             <span className="status-draft"></span>}
-          {params.value === "active" ? t("Live") : t("Draft")}
+          {params.value === "Published" ? t("Live") : t("Draft")}
         </span>
       ),
     },

@@ -1255,25 +1255,33 @@ const saveFormWithWorkflow = async () => {
 
   /* ------------------------- BPMN history handlers ------------------------- */
   const handleBpmnHistory = () => {
-    console.log("processData on handleBpmnHistory", processData);
+    const parentKey = processData?.parentProcessKey;
+    if (!parentKey) {
+      setFlowHistoryLoading(false);
+      return;
+    }
     setFlowHistoryLoading(true);
     // setShowBpmnHistoryModal(true);
-    setBpmnHistoryData({ processHistory: [], totalCount: 0 });
-    if (processData?.parentProcessKey) {
-      fetchBpmnHistory(processData.parentProcessKey, paginationModel.page + 1,
-        paginationModel.pageSize);
-    }
+    // setBpmnHistoryData({ processHistory: [], totalCount: 0 });
+    // if (processData?.parentProcessKey) {
+    //   fetchBpmnHistory(processData.parentProcessKey, paginationModel.page + 1,
+    //     paginationModel.pageSize);
+    // }
+    fetchBpmnHistory(parentKey, paginationModel.page + 1, paginationModel.pageSize);
   };
 
   const fetchBpmnHistory = async (parentProcessKey, page, limit) => {
     try {
       const response = await getProcessHistory({ parentProcessKey, page, limit });
-      console.log("response 1272", response.data);
-      setBpmnHistoryData(response.data);
-      setFlowHistoryLoading(false);
+      // setBpmnHistoryData(response.data);
+      // setFlowHistoryLoading(false);
+      const data = response?.data || { processHistory: [], totalCount: 0 };
+      setBpmnHistoryData(data);
     } catch (error) {
       console.error("Error fetching BPMN history:", error);
       setBpmnHistoryData({ processHistory: [], totalCount: 0 });
+    } finally {
+      setFlowHistoryLoading(false);
     }
   };
 
@@ -1285,7 +1293,6 @@ const saveFormWithWorkflow = async () => {
 
   const revertBpmnHistory = async (processId) => {
     try {
-      console.log("processId on revertBpmnHistory", processId);
       const response = await fetchRevertingProcessData(processId);
       // Update the process data with reverted data
       dispatch(setProcessData(response.data));
@@ -1850,12 +1857,23 @@ const saveFormWithWorkflow = async () => {
   const handlePaginationModelChange = (newPaginationModel) => {
     setPaginationModel(newPaginationModel);
     if (activeTab.primary === 'form' && activeTab.secondary === 'history') {
-      fetchFormHistory(processListData?.parentFormId, newPaginationModel.page + 1,
-        newPaginationModel.pageSize);
+      if (processListData?.parentFormId) {
+          fetchFormHistory(
+            processListData.parentFormId,
+            newPaginationModel.page + 1,
+            newPaginationModel.pageSize
+          );
+        }
     }
     if (activeTab.primary === 'flow' && activeTab.secondary === 'history') {
-      fetchBpmnHistory(processData.parentProcessKey, newPaginationModel.page + 1,
-        newPaginationModel.pageSize);
+        if (processData?.parentProcessKey) {
+          setFlowHistoryLoading(true);
+          fetchBpmnHistory(
+            processData.parentProcessKey,
+            newPaginationModel.page + 1,
+            newPaginationModel.pageSize
+          );
+        }
     }
   };
 
@@ -1929,7 +1947,6 @@ const saveFormWithWorkflow = async () => {
       
       case 'flow':
         if (activeTab.secondary === 'history' && processData?.parentProcessKey) {
-          console.log("bpmnHistoryData in render", bpmnHistoryData);
           return (
             <HistoryPage
               revertBtnText={t("Revert")}

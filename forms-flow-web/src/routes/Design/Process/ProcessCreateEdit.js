@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 import {
@@ -22,9 +22,10 @@ import {
 import {
   ConfirmModal,
   ErrorModal,
-  HistoryModal,
+  HistoryPage,
   V8CustomButton,
-  FormStatusIcon
+  FormStatusIcon,
+  BreadCrumbs
 } from "@formsflow/components";
 import ActionModal from "../../../components/Modals/ActionModal";
 import ExportDiagram from "../../../components/Modals/ExportDiagrams";
@@ -54,7 +55,6 @@ const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 
 const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
-  const location = useLocation();
   const isCreate = step === "create";
   const isBPMN = type === "BPMN";
   const Process = isBPMN
@@ -82,11 +82,12 @@ const ProcessCreateEdit = ({ type }) => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const processData = useSelector((state) => state.process?.processData);
   const [selectedAction, setSelectedAction] = useState(null);
+  const [newActionModal, setNewActionModal] = useState(false);
   const [lintErrors, setLintErrors] = useState([]);
   const [exportError, setExportError] = useState(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [activeTab, setActiveTab] = useState({ primary: 'layout', secondary: null, tertiary: null });
+  const [showEditor, setShowEditor] = useState(true);
   
   const defaultProcessXmlData = useSelector(
     (state) => state.process.defaultProcessXmlData
@@ -104,66 +105,76 @@ const ProcessCreateEdit = ({ type }) => {
   const [isPublishLoading, setIsPublishLoading] = useState(false);
   const [isReverted, setIsReverted] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
-  
-  const isDataFetched = useRef();
+   const [activeTab, setActiveTab] = useState({
+      primary: 'layout',
+      secondary: null,
+      tertiary: null
+    });
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
 
   const tabConfig = {
-    primary: {
-      layout: {
-        label: "Layout",
-        query: "?tab=layout",
-        secondary: {
-          history: {
-            label: "History",
-            query: "?tab=layout&sub=history"
-          }
-        }
-      },
-      actions: {
-        label: "Actions",
-        query: "?tab=actions"
+  primary: {
+    layout: {
+      label: "Layout",
+      query: "?tab=layout",
+      secondary: {
+         history: {
+          label: "History",
+          query: "?tab=form&sub=history"
+        },
       }
-  
-    } 
+    }, 
+    // actions: {
+    //   label: "Actions",
+    //   query: "?tab=actions"
+    // }
+  }
+};
+  // Update history list whenever History tab becomes active
+  useEffect(() => {
+    if (activeTab.primary === "layout" && activeTab.secondary === "history") {
+      handleProcessHistory();
+    }
+  }, [activeTab.primary, activeTab.secondary, paginationModel.pageSize]);
+
+  const handleTabClick = (primary, secondary = null, tertiary = null) => {
+    setActiveTab({ primary, secondary, tertiary });
   };
 
+  const renderSecondaryControls = () => {
+      const currentTab = tabConfig.primary[activeTab.primary];
+      if (!currentTab?.secondary) return null;
+  
+      return (
+        <div className="secondary-controls d-flex gap-2">
+          {Object.entries(currentTab.secondary).map(([key, config]) => {
+            // Disable history on create route
+            const isDisabled = config.disabled || (isCreate && key === 'history');
+            return (
+              <V8CustomButton
+                key={key}
+                label={t(config.label)}
+                onClick={() => {
+                  if (isDisabled) return; // Don't execute if disabled
+                  if (key === 'history') {
+                    handleTabClick('layout', 'history');
+                  }
+                }}
+                disabled={isDisabled}
+                dataTestId={`${activeTab.primary}-${key}-button`}
+                ariaLabel={t(`${config.label} Button`)}
+                variant="secondary"
+                selected={activeTab.secondary === key}
+              />
+            );
+          })}
+        </div>
+      );
+    };
+  const isDataFetched = useRef();
   useEffect(() => {
     setIsPublished(processData.status === "Published");
   }, [processData]);
-
-  const handleTabClick = (primary, secondary = null, tertiary = null) => {
-    if (isCreate && primary !== 'layout') {
-      return;
-    }
-    
-    const newTab = { primary, secondary, tertiary };
-    setActiveTab(newTab);
-    
-    const queryParams = new URLSearchParams();
-    queryParams.set("tab", primary);
-    if (secondary) queryParams.set("sub", secondary);
-    if (tertiary) queryParams.set("subsub", tertiary);
-    
-    dispatch(
-        push({
-          pathname: location.pathname,
-          search: `?${queryParams.toString()}`,
-        })
-    );
-  };
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const tab = isCreate ? "layout" : (queryParams.get("tab") || "layout");
-    const sub = queryParams.get("sub");
-    const subsub = queryParams.get("subsub");
-    
-    setActiveTab({
-      primary: tab,
-      secondary: sub,
-      tertiary: subsub
-    });
-  }, [location.search, isCreate]);
 
   
   const publishText = isPublished ? t("Unpublish") : t("Publish");
@@ -200,16 +211,6 @@ const ProcessCreateEdit = ({ type }) => {
       getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
   );
 
-  useEffect(() => {
-    if (activeTab.secondary === 'history') {
-        fetchAllHistories({
-            parentProcessKey: processData.parentProcessKey,
-            page: 1,
-            limit: 4,
-        });
-    }
-}, [activeTab]);
-
   /* --------- fetch a perticular history when click the revert button -------- */
   const {
     data: { data: historyData } = {},
@@ -226,6 +227,8 @@ const ProcessCreateEdit = ({ type }) => {
   const processDataXML = isReverted
     ? historyData?.processData
     : processData?.processData;
+  // handle history modal
+  // const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
   const enableWorkflowChange = ()=>{
     setIsWorkflowChanged(true);
@@ -312,6 +315,23 @@ const ProcessCreateEdit = ({ type }) => {
     if (!isPublished) {
       toast.success(t(`${Process.name} is already up to date`));
     }
+  };
+
+  const handleProcessHistory = () => {
+    fetchAllHistories({
+      parentProcessKey: processData.parentProcessKey,
+      page: 1,
+      limit: paginationModel.pageSize,
+    });
+  };
+
+  const handlePaginationModelChange = (model) => {
+    setPaginationModel(model);
+    fetchAllHistories({
+      parentProcessKey: processData.parentProcessKey,
+      page: (model?.page || 0) + 1,
+      limit: model?.pageSize || paginationModel.pageSize,
+    });
   };
 
   const loadMoreBtnAction = () => {
@@ -472,9 +492,11 @@ const ProcessCreateEdit = ({ type }) => {
     }
   };
 
-    // const cancel = () => {
+  // const cancel = () => {
   //   dispatch(push(`${redirectUrl}${Process.route}`));
   // };
+
+  const editorActions = () => setNewActionModal(true);
 
   const handleDuplicateProcess = () => {
     handleToggleConfirmModal();
@@ -584,51 +606,6 @@ const ProcessCreateEdit = ({ type }) => {
     }
   };
 
-  const renderSecondaryControls = () => {
-    const currentTab = tabConfig.primary[activeTab.primary];
-    if (!currentTab?.secondary) return null;
-    return (
-      <div className="d-flex gap-2">
-        {Object.entries(currentTab.secondary).map(([key, config]) => {
-            const isDisabled = isCreate && key === 'history';
-            return (
-                <V8CustomButton
-                    key={key}
-                    label={t(config.label)}
-                    onClick={() => !isDisabled && handleTabClick(activeTab.primary, key)}
-                    selected={activeTab.secondary === key}
-                    disabled={isDisabled}
-                />
-            );
-        })}
-      </div>
-    );
-  };
-
-  const renderTabContent = () => {
-    if (activeTab.primary === 'layout') {
-        return (
-            <LoadingOverlay active={historyLoading} spinner text={t("Loading...")}>
-                {isBPMN ? (
-                  <BpmnEditor
-                    onChange={enableWorkflowChange}
-                    ref={bpmnRef}
-                    bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
-                    setLintErrors={setLintErrors}
-                  />
-                ) : (
-                  <DmnEditor
-                    onChange={enableWorkflowChange}
-                    ref={dmnRef}
-                    dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
-                  />
-                )}
-            </LoadingOverlay>
-        );
-    }
-    return null;
-  };
-
   return (
     <div>
       <NavigateBlocker isBlock={isWorkflowChanged} message={"You have made changes that are not saved yet"}  />
@@ -644,6 +621,17 @@ const ProcessCreateEdit = ({ type }) => {
         secondaryBtnText={modalContent.secondaryBtnText}
         size="md"
       />
+
+            <BreadCrumbs
+              items={[
+                { label: t("Build"), href: isBPMN ? `/${Process.route}` : `/${Process.route}` },
+                { label: isCreate ? t(`Create New Flow`) : t(`Edit Flow`), href: location?.pathname || "" },
+              ]}
+              variant="minimized"
+              underlined={true}
+              dataTestId={`${diagramType.toLowerCase()}-breadcrumb`}
+              ariaLabel={t(`${diagramType} Breadcrumb`)}
+            />
 
             <div className="header-section-1">
               <div className="section-seperation-left">
@@ -686,43 +674,82 @@ const ProcessCreateEdit = ({ type }) => {
             </div>
 
             <div className="header-section-2">
-              <div className="section-seperation-left">
-                {Object.entries(tabConfig.primary).map(([key, config]) => {
-                    const isDisabled = isCreate && key !== 'layout';
-                    return (
-                        <V8CustomButton
-                            key={key}
-                            label={t(config.label)}
-                            onClick={() => !isDisabled && handleTabClick(key)}
-                            selected={activeTab.primary === key}
-                            disabled={isDisabled}
-                        />
-                    );
-                })}
-              </div>
+                <div className="section-seperation-left">
+                    <V8CustomButton
+                        label={t("Layout")}
+                        onClick={() => setShowEditor(true)}
+                        selected={showEditor}
+                        dataTestId="designer-layout-testid"
+                        ariaLabel={t("Designer Layout Button")}
+                      />  
+                    <V8CustomButton
+                        label={t("Actions")}
+                        onClick={editorActions}
+                        dataTestId="designer-action-testid"
+                        ariaLabel={t("Designer Actions Button")}
+                      />                
+                </div>
             </div>  
 
             <div className="header-section-3">
                 <div className="section-seperation-left">
-                    {renderSecondaryControls()}          
+                  {renderSecondaryControls()}
                 </div>
                 <div className="section-seperation-right">   
-                      <V8CustomButton
-                        label={t("Discard Changes")}
-                        onClick={() => openConfirmModal("discard")}
-                        disabled={!isWorkflowChanged}
-                        dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
-                        ariaLabel={t(`Discard ${diagramType} Changes`)}
-                      />           
+                  <V8CustomButton
+                    label={t("Discard Changes")}
+                    onClick={() => openConfirmModal("discard")}
+                    disabled={!isWorkflowChanged}
+                    dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
+                    ariaLabel={t(`Discard ${diagramType} Changes`)}
+                  />
                 </div>
-             </div>    
+             </div>
         <div className="body-section">
-          {renderTabContent()}
+        {activeTab.secondary === 'history' ? (
+          <HistoryPage
+            title={t("History")}
+            loadMoreBtnText={t("Load More")}
+            revertBtnText={t("Revert To This")}
+            allHistory={historiesData?.processHistory || []}
+            loadMoreBtnAction={loadMoreBtnAction}
+            categoryType={CategoryType.WORKFLOW}
+            revertBtnAction={fetchHistoryData}
+            historyCount={historiesData?.totalCount || 0}
+            currentVersionId={processData.id}
+            disableAllRevertButton={isPublished}
+            paginationModel={paginationModel}
+            handlePaginationModelChange={handlePaginationModelChange}
+          />
+        ) : (
+          showEditor && (
+          <LoadingOverlay
+            active={historyLoading}
+            spinner
+            text={t("Loading...")}
+          >
+            {isBPMN ? (
+              <BpmnEditor
+                onChange={enableWorkflowChange}
+                ref={bpmnRef}
+                bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
+                setLintErrors={setLintErrors}
+              />
+            ) : (
+              <DmnEditor
+                onChange={enableWorkflowChange}
+                ref={dmnRef}
+                dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
+              />
+            )}
+          </LoadingOverlay>
+          )
+        )}
         </div>
 
       <ActionModal
-        newActionModal={activeTab.primary === 'actions'}
-        onClose={() => handleTabClick('layout')}
+        newActionModal={newActionModal}
+        onClose={() => setNewActionModal(false)}
         CategoryType={CategoryType.WORKFLOW}
         onAction={(action) => {
           if (action === "DUPLICATE") {
@@ -754,20 +781,7 @@ const ProcessCreateEdit = ({ type }) => {
           primaryBtnText={t("Dismiss")}
         />
       )}
-      <HistoryModal
-        show={activeTab.secondary === 'history'}
-        onClose={() => handleTabClick('layout')}
-        title={t("History")}
-        loadMoreBtnText={t("Load More")}
-        revertBtnText={t("Revert To This")}
-        allHistory={historiesData?.processHistory || []}
-        loadMoreBtnAction={loadMoreBtnAction}
-        categoryType={CategoryType.WORKFLOW}
-        revertBtnAction={fetchHistoryData}
-        historyCount={historiesData?.totalCount || 0}
-        currentVersionId={processData.id}
-        disableAllRevertButton={isPublished}
-      />
+      {/* Inline HistoryPage is rendered within the body based on activeTab */}
       {selectedAction === IMPORT && <ImportProcess
         showModal={selectedAction === IMPORT}
         closeImport={() => setSelectedAction(null)}

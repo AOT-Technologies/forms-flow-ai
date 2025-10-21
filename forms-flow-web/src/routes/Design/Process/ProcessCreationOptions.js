@@ -53,8 +53,8 @@ const ProcessCreationOptions = () => {
     ? {
         name: "Subflow",
         nameKey: "subflow",
-        breadcrumbLabel: t("Create New Sub flow"),
-        createText: t("Create sub flow from scratch"),
+        breadcrumbLabel: t("Create a New Sub flow"),
+        createText: t("Create asub flow from scratch"),
         uploadText: t("Upload an existing sub flow"),
         fileExtension: ".bpmn",
         fileType: "text/bpmn",
@@ -64,7 +64,7 @@ const ProcessCreationOptions = () => {
     : {
         name: "Decision Table",
         nameKey: "decision-table",
-        breadcrumbLabel: t("Create New Decision Table"),
+        breadcrumbLabel: t("Create a New Decision Table"),
         createText: t("Create a decision table from scratch"),
         uploadText: t("Upload an existing decision table"),
         fileExtension: ".dmn",

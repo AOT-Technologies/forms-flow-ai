@@ -766,7 +766,6 @@ useEffect(() => {
     }
   
     const newTab = { primary, secondary, tertiary };
-    console.log("newTab", newTab);
     setActiveTab(newTab);
   
     // Update URL with new tab parameters
@@ -785,7 +784,6 @@ useEffect(() => {
       );
     } else {
       const newUrl = `${redirectUrl}formflow/${formId}/edit?${queryParams.toString()}`;
-      console.log("newUrl", newUrl);
       dispatch(push(newUrl));
     }
   };
@@ -1231,7 +1229,6 @@ const saveFormWithWorkflow = async () => {
   };
 
   const handleFormHistory = () => {
-    console.log("handleFormHistory", processListData);
     dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
     if (processListData?.parentFormId) {
       fetchFormHistory(processListData?.parentFormId, 1, paginationModel.pageSize);

@@ -309,7 +309,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         primaryBtnText={t("No, Keep This Draft")}
         primaryBtnAction={handleCloseActionModal}
         primaryBtnDisable={isDeletionLoading}
-        primaryBtnLoading={isDeletionLoading}
+        buttonLoading={isDeletionLoading}
         secondaryBtnText={t("Yes, Delete this Draft")}
         secondaryBtnAction={confirmDraftDelete}
         primaryBtndataTestid="no-delete-button"

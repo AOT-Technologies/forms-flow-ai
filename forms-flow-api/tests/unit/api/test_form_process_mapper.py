@@ -1140,7 +1140,7 @@ def test_form_flow_builder_update_invalid_payload(app, client, session, jwt, moc
     # Test with empty payload
     payload = {}
     response = client.put(f"/form/form-flow-builder/{mapper_id}", headers=headers, json=payload)
-    assert response.status_code == 200  # Empty payload should still return success
+    assert response.status_code == 400
 
     # Test with invalid form data (missing _id)
     # Form data must include _id for update

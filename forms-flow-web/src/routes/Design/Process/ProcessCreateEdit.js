@@ -20,8 +20,7 @@ import {
   createNewDecision,
 } from "../../../components/Modeler/helpers/helper";
 import {
-  ConfirmModal,
-  ErrorModal,
+  PromptModal,
   HistoryPage,
   V8CustomButton,
   FormStatusIcon,
@@ -660,17 +659,21 @@ const ProcessCreateEdit = ({ type }) => {
   return (
     <div>
       <NavigateBlocker isBlock={isWorkflowChanged} message={"You have made changes that are not saved yet"}  />
-      <ConfirmModal
+      <PromptModal
         show={showConfirmModal}
         title={modalContent.title}
         message={modalContent.message}
-        messageSecondary={modalContent.messageSecondary || ""}
         primaryBtnAction={modalContent.primaryBtnAction}
         onClose={closeModal}
         secondaryBtnAction={modalContent.secondaryBtnAction}
         primaryBtnText={modalContent.primaryBtnText}
         secondaryBtnText={modalContent.secondaryBtnText}
-        size="md"
+        type="warning"
+        size={modalType === "unpublish" ? "lg" : "md"}
+        primaryBtndataTestid="confirm-primary-button"
+        secondoryBtndataTestid="confirm-secondary-button"
+        primaryBtnariaLabel={modalContent.primaryBtnText}
+        secondoryBtnariaLabel={modalContent.secondaryBtnText}
       />
 
             <BreadCrumbs
@@ -815,16 +818,20 @@ const ProcessCreateEdit = ({ type }) => {
         errorMessage={exportError}
       />
       {showErrorModal && (
-        <ErrorModal
+        <PromptModal
           show={showErrorModal}
           onClose={handleCloseErrorModal}
           title={t("Error(s)")}
           message={errorMessage}
           primaryBtnAction={handleCloseErrorModal}
           primaryBtnText={t("Dismiss")}
+          size="lg"
+          type="error"
+          primaryBtndataTestid="error-dismiss-button"
+          primaryBtnariaLabel={t("Dismiss")}
         />
       )}
-      {/* Inline HistoryPage is rendered within the body based on activeTab */}
+    
       {selectedAction === IMPORT && <ImportProcess
         showModal={selectedAction === IMPORT}
         closeImport={() => setSelectedAction(null)}

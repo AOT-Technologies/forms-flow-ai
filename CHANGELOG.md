@@ -28,6 +28,17 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 * Fixed minor issues in Reviewer & Analyze Submissions page.
 * Fixed PDF generation issue with a generic custom theme.
 
+`Modified`
+
+**forms-flow-web**
+* Form.io token fetching logic has been moved to the service micro-frontend.
+
+`Fixed`
+
+* Sorting is now available for all columns on the review task listing page.
+* Fixed minor issues in Reviewer & Analyze Submissions page.
+* Fixed PDF generation issue with a generic custom theme.
+
 *Upgrade notes:*
 
 **forms-flow-bpm**

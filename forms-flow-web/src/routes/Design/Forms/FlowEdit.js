@@ -480,7 +480,7 @@ const enableWorkflowChange = async () => {
           />
         )}
 
-        {/* <HistoryModal
+        {/* <HistoryPage
           show={showHistoryModal}
           onClose={handleToggleHistoryModal}
           title={t("History")}

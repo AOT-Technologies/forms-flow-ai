@@ -21,7 +21,6 @@ import PropTypes from "prop-types";
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
   const { t } = useTranslation();
   return (
-   
       <CustomSearch
         search={search}
         setSearch={setSearch}
@@ -31,6 +30,7 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
         searchLoading={searchLoading}
         title={t("Search Form Name and Description")}
         dataTestId="form-search-input"
+        width="22rem"
       />
   );
 };
@@ -128,6 +128,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
                   searchLoading={searchFormLoading}
                   title={t("Search")}
                   dataTestId="form-search-input"
+                  width="22rem"
                 />
           </div>
        </div>

@@ -9,7 +9,7 @@ import {
   CustomTextArea,
   DropdownMultiSelect,
   CustomUrl,
-  // CustomCheckbox,
+  CustomCheckbox,
 } from "@formsflow/components";
 import {
   removeTenantKeywithSlash,
@@ -113,7 +113,7 @@ const SettingsTab = (
   /* ---------------------- handling form details change ---------------------- */
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    const sanitizedValue = value.replace(/[#+]/g, "");
+    const sanitizedValue = value?.replace(/[#+]/g, "");
     setErrors((prev) => ({ ...prev, [name]: "" }));
     blurStatus.current[name] = false;  
     let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;
@@ -124,7 +124,7 @@ const SettingsTab = (
     }
 
     if (type === "checkbox") {
-      setFormDetails((prev) => ({ ...prev, [name]: e.target.checked ? "wizard" : "form" }));
+      setFormDetails((prev) => ({ ...prev, [name]: e.target.value ? "wizard" : "form" }));
       return;
     }
 
@@ -290,19 +290,22 @@ const SettingsTab = (
               dataTestId="form-description"
             />
           </div>
-          {/*  need to use custom checkbox when component is ready */}
-          {/* <CustomCheckbox
-            onChange={handleFormDetailsChange}
-            aria-label={t("Allow multiple pages in this form")}
-            id="allow-adding-multiple-pages"
-            label={t("Allow multiple pages in this form")}
-            items={allowMultiplePagesOption}
-            selectedValues={formDetails.display === "wizard" ? ["wizard"] : []}
-            name="display"
-            inline={true}
-            variant="secondary"
-          /> */}
-          <label
+            
+            <div className="ms-4">
+              <CustomCheckbox
+                onChange={(e) => handleFormDetailsChange({ target: { name: "display", value: e[0], type: "checkbox" } })}
+                aria-label={t("Allow multiple pages in this form")}
+                id="allow-adding-multiple-pages"
+                items={[{ label: "Allow adding multiple pages in this form", value: "wizard" }]}
+                selectedValues={formDetails.display === "wizard" ? ["wizard"] : []}
+                name="display"
+                inline={true}
+                variant="secondary"
+                size="small"
+                dataTestId="form-edit-wizard-display"
+                />
+            </div>
+          {/* <label
             htmlFor="allow-adding-multiple-pages"
             className="input-checkbox"
           >
@@ -315,7 +318,7 @@ const SettingsTab = (
               name="display"
             />
             <span>Allow adding multiple pages in this form</span>
-          </label>
+          </label> */}
         </div>
       </div>
       <div className="grid-section">
@@ -379,7 +382,7 @@ const SettingsTab = (
               variant="secondary"
             />
 
-            <label htmlFor="anonymouse-checkbox" className="input-checkbox">
+            {/* <label htmlFor="anonymouse-checkbox" className="input-checkbox">
               <input
                 id="anonymouse-checkbox"
                 type="checkbox"
@@ -392,7 +395,23 @@ const SettingsTab = (
               <span>
                 {t("Also allow anonymous users to create submissions")}
               </span>
-            </label>
+            </label> */}
+            <div className="ms-4">
+                <CustomCheckbox
+                  onChange={() => {
+                    setIsAnonymous(!isAnonymous);
+                  }}
+                  aria-label={t("Also allow anonymous users to create submissions")}
+                  id="anonymous-checkbox"
+                  items={[{ label: "Also allow anonymous users to create submissions", value: "isAnonymous" }]}
+                  selectedValues={isAnonymous ? ["isAnonymous"] : []}
+                  name="anonymous"
+                  inline={true}
+                  variant="secondary"
+                  size="small"
+                  dataTestId="form-edit-allow-anonymous"
+                />
+            </div>
           </div>
 
           <DropdownMultiSelect

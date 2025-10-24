@@ -1251,7 +1251,6 @@ const saveFormWithWorkflow = async () => {
   };
 
   const handleFormHistory = () => {
-    // setShowHistoryModal(true);
     dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
     if (processListData?.parentFormId) {
       fetchFormHistory(processListData?.parentFormId, 1, paginationModel.pageSize);

@@ -30,6 +30,7 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
         searchLoading={searchLoading}
         title={t("Search Form Name and Description")}
         dataTestId="form-search-input"
+        width="22rem"
       />
     </div>
   );
@@ -148,6 +149,7 @@ const DraftsAndSubmissions = () => {
                         searchLoading={searchFormLoading}
                         title={t("Search")}
                         dataTestId="form-search-input"
+                        width="22rem"
                       />
                 </div>
              </div>

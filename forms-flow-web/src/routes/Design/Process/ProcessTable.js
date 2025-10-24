@@ -355,6 +355,7 @@ const ProcessTable = React.memo(() => {
             searchLoading={searchLoading}
             title={t(`Search ${ProcessContents.processType} Name`)}
             dataTestId={`${ProcessContents.processType}-search-input`}
+            width="22rem"
           />
         </div>
       </div>

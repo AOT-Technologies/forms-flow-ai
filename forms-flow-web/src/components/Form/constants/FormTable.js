@@ -6,18 +6,18 @@ import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import { setBPMFormLimit, setBPMFormListPage, setBpmFormSort, setFormDeleteStatus } from "../../../actions/formActions";
 import { resetFormProcessData, unPublishForm, getApplicationCount, getProcessDetails } from "../../../apiManager/services/processServices";
-import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
+import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
 import { HelperServices, StyleServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { V8CustomButton, RefreshIcon, NewSortDownIcon, V8CustomDropdownButton, PromptModal } from "@formsflow/components";
 import { deleteForm } from "@aot-technologies/formio-react";
-import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import { formCreate } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import _cloneDeep from "lodash/cloneDeep";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
   const dispatch = useDispatch();
@@ -271,7 +271,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
                 deleteAction(params.row);
               }
             },
-            className: params.row.status !== "active" ? "delete-dropdown-item" : "",
+            className: params.row.status === "active" ? "" : "delete-dropdown-item",
           },
         ];
         return (createDesigns || viewDesigns) && (
@@ -405,5 +405,11 @@ const viewOrEditForm = (formId, path) => {
      </> 
   );
 }
+
+FormTable.propTypes = {
+  isDuplicating: PropTypes.bool.isRequired,
+  setIsDuplicating: PropTypes.func.isRequired,
+  setDuplicateProgress: PropTypes.func.isRequired,
+};
 
 export default FormTable;

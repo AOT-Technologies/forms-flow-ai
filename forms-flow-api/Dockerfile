@@ -20,15 +20,12 @@ RUN : \
     && pip install -r requirements.txt 
 
 ADD . /forms-flow-api/app
-RUN pip install -e .
-
-# Clean up installed packages which are no longer needed
-RUN pip uninstall ecdsa -y
-
-RUN apt-get purge -y --auto-remove \
+RUN pip install -e . \
+    && pip uninstall ecdsa -y \
+    && apt-get purge -y --auto-remove \
       sqlite3 libsqlite3-0 git \
-      && apt-get clean \
-      && rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 
 EXPOSE 5000

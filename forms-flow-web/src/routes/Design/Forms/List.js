@@ -42,7 +42,10 @@ import {
   CustomSearch,
   CustomButton,
   useSuccessCountdown,
-  V8CustomButton
+  V8CustomButton,
+  Alert,
+  AlertVariant,
+  CustomProgressBar
 } from "@formsflow/components";
 import { HelperServices } from '@formsflow/service';
 import { useMutation } from "react-query";
@@ -62,6 +65,8 @@ const List = React.memo((props) => {
   const [importLoader, setImportLoader] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
   const { successState, startSuccessCountdown } = useSuccessCountdown();
+  const [isDuplicating, setIsDuplicating] = useState(false);
+  const [duplicateProgress, setDuplicateProgress] = useState(0);
 
 
   const handleFilterIconClick = () => {
@@ -345,7 +350,10 @@ const List = React.memo((props) => {
   };
   const renderTable = () => {
     if (createDesigns || viewDesigns) {
-      return <FormTable />;
+      return <FormTable 
+               isDuplicating={isDuplicating} 
+               setIsDuplicating={setIsDuplicating}
+               setDuplicateProgress={setDuplicateProgress}/>;
     }
     if (createSubmissions) {
       return <ClientTable />;
@@ -364,7 +372,12 @@ const List = React.memo((props) => {
       ) : (
         <>
                 <div className="toast-section">
-                  {/* <p>Toast message</p> */}
+                        <Alert
+                          message={t("Duplicating the form")}
+                          variant={AlertVariant.FOCUS}
+                          isShowing={isDuplicating}
+                          rightContent={<CustomProgressBar progress={duplicateProgress} />}
+                        />
                 </div>  
                 
                 <div className="header-section-1">

@@ -305,6 +305,7 @@ const SettingsTab = (
                 variant="secondary"
                 size="small"
                 dataTestId="form-edit-wizard-display"
+                optionClassName="form-edit-checkbox"
                 />
             </div>
           {/* <label
@@ -412,6 +413,7 @@ const SettingsTab = (
                   variant="secondary"
                   size="small"
                   dataTestId="form-edit-allow-anonymous"
+                  optionClassName="form-edit-checkbox"
                 />
             </div>
           </div>
@@ -469,7 +471,9 @@ const SettingsTab = (
           setFormDetails(prev => ({ ...prev, path: updatedPath }));
           handleBlur("path", updatedPath);
         }}
-        saveButtonText={t("Save URL")}
+          saveButtonText={t("Save URL")}
+          showInfoSection={true}
+          infoText={t("Changing this link will make the previous link inaccessible.")}
       />
     </div>
     </>

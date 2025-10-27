@@ -272,6 +272,7 @@ const SettingsTab = (
               }
               onBlur={() => handleBlur('title', formDetails.title)}
               maxLength={200}
+              placeholder={t("Add form name")}
             />
           </div>
           <div className="description-container">
@@ -288,6 +289,7 @@ const SettingsTab = (
               minRows={3}
               id="form-description"
               dataTestId="form-description"
+              placeholder={t("Add description")}
             />
           </div>
             
@@ -332,7 +334,7 @@ const SettingsTab = (
             value={rolesState?.DESIGN?.selectedOption}
             options={[
               {
-                label: t("Only owner"),
+                label: t("Only you"),
                 value: "onlyYou",
               },
               {

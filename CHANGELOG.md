@@ -14,6 +14,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * `/form-flow-builder` - Create form design, workflow, authorizations, and mapper details.
    * `/form-flow-builder/<mapper-id>` - Update existing configurations.
 
+*Upgrade notes:*
+
+* Keycloak Version upgraded to 26.4.1
+
 
 ## 7.3.0 - 2025-10-14
 

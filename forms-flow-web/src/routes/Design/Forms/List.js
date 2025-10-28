@@ -393,6 +393,7 @@ const List = React.memo((props) => {
                                   searchLoading={searchFormLoading}
                                   title={t("Search Form Name and Description")}
                                   dataTestId="form-search-input"
+                                  width="22rem"
                                 />
                     </div>
                  </div>

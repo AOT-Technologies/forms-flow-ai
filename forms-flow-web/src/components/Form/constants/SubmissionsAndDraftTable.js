@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectRoot } from "@aot-technologies/formio-react";
 import { CLIENT_EDIT_STATUS } from "../../../constants/applicationConstants";
@@ -8,17 +8,16 @@ import {
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
 import { useTranslation } from "react-i18next";
-import { PromptModal, V8CustomButton, NewSortDownIcon, RefreshIcon } from "@formsflow/components";
+import { PromptModal, V8CustomButton, RefreshIcon, ReusableTable } from "@formsflow/components";
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import { HelperServices, StyleServices } from "@formsflow/service";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
 
 const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
+    const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const {
@@ -38,7 +37,6 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteDraftId, setDeleteDraftId] = useState('');
     const [isDeletionLoading, setIsDeletionLoading] = useState(false);
-    const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
   const gridFieldToSortKey = {
     id: "id",
@@ -244,38 +242,21 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = applicationSort?.[activeKey]?.sortOrder || "asc";
 
-    const renderDescIcon = useCallback(() => (
-      <div>
-        <NewSortDownIcon color={iconColor} />
-      </div>
-    ), [iconColor]);
-  
-    const renderAscIcon = useCallback(() => (
-      <div style={{ transform: "rotate(180deg)" }}>
-        <NewSortDownIcon color={iconColor} />
-      </div>
-    ), [iconColor]);
-
   return (
     <>
-      <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          rowCount={totalForms}
-          loading={isApplicationLoading || searchFormLoading}
-          paginationMode="server"
-          sortingMode="server"
-          disableColumnMenu
-          sortModel={[{ field: activeField, sort: activeOrder }]}
-          onSortModelChange={handleSortChange}
-          paginationModel={paginationModel}
-          onPaginationModelChange={onPaginationModelChange}
-          pageSizeOptions={[10, 25, 50, 100]}
-          rowHeight={55}
-          disableRowSelectionOnClick
-          getRowId={(row) => row.id}
-          sx={{
+      <ReusableTable
+        columns={columns}
+        rows={rows}
+        rowCount={totalForms}
+        loading={isApplicationLoading || searchFormLoading}
+        sortModel={[{ field: activeField, sort: activeOrder }]}
+        onSortModelChange={handleSortChange}
+        paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationModelChange}
+        getRowId={(row) => row.id}
+        noRowsLabel={t("No Entries have been found.")}
+        dataGridProps={{
+          sx: {
             "& .MuiDataGrid-columnHeader--sortable": {
               "& .MuiDataGrid-iconButtonContainer": {
                 visibility: "visible",
@@ -284,22 +265,9 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
                 opacity: 0.3,
               },
             },
-          }}
-          slots={{
-            columnSortedDescendingIcon: renderDescIcon,
-            columnSortedAscendingIcon: renderAscIcon,
-          }}
-          slotProps={{
-            loadingOverlay: {
-              variant: "skeleton",
-              noRowsVariant: "skeleton",
-            },
-          }}
-          localeText={{
-            noRowsLabel: t("No Entries have been found."),
-          }}
-        />
-      </Paper>
+          },
+        }}
+      />
       <PromptModal
         show={showDeleteModal}
         onClose={handleCloseActionModal}
@@ -309,7 +277,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         primaryBtnText={t("No, Keep This Draft")}
         primaryBtnAction={handleCloseActionModal}
         primaryBtnDisable={isDeletionLoading}
-        primaryBtnLoading={isDeletionLoading}
+        buttonLoading={isDeletionLoading}
         secondaryBtnText={t("Yes, Delete this Draft")}
         secondaryBtnAction={confirmDraftDelete}
         primaryBtndataTestid="no-delete-button"

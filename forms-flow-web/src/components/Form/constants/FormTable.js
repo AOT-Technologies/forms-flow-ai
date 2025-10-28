@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
 import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import { setBPMFormLimit, setBPMFormListPage, setBpmFormSort } from "../../../actions/formActions";
@@ -9,9 +7,9 @@ import { resetFormProcessData } from "../../../apiManager/services/processServic
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
-import { HelperServices,StyleServices } from "@formsflow/service";
+import { HelperServices, StyleServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { V8CustomButton,RefreshIcon,NewSortDownIcon,V8CustomDropdownButton } from "@formsflow/components";
+import { V8CustomButton, RefreshIcon, V8CustomDropdownButton, ReusableTable } from "@formsflow/components";
 
 
 function FormTable() {
@@ -135,8 +133,16 @@ const viewOrEditForm = (formId, path) => {
   dispatch(resetFormProcessData());
   dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
 };
-  const handlePageChange = (page) => {
+
+  // Handler for page changes - both DataGrid and Redux use 0-based indexing
+  const onPageChange = (event, page) => {
     dispatch(setBPMFormListPage(page));
+  };
+
+  // Handler for page size changes
+  const onPageSizeChange = (event, pageSize) => {
+    dispatch(setBPMFormLimit(pageSize));
+    dispatch(setBPMFormListPage(0));  // Reset to first page (0-based)
   };
   
   const handleSortChange = (modelArray) => {
@@ -147,7 +153,7 @@ const viewOrEditForm = (formId, path) => {
         return acc;
       }, {});
       dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
-      dispatch(setBPMFormListPage(1)); 
+      dispatch(setBPMFormListPage(0));  // Reset to first page (0-based)
       return;
     }
 
@@ -162,11 +168,6 @@ const viewOrEditForm = (formId, path) => {
   };
   
 
-  const handleLimitChange = (limitVal) => {
-    dispatch(setBPMFormLimit(limitVal));
-    dispatch(setBPMFormListPage(1));
-  };
-
   const handleRefresh = () => {
     let filters = {pageNo, limit, formSort: formsort, formName: searchText};
     dispatch(setFormSearchLoading(true));
@@ -176,9 +177,21 @@ const viewOrEditForm = (formId, path) => {
   const activeKey = bpmForms.sort?.activeKey || "formName";
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = bpmForms.sort?.[activeKey]?.sortOrder || "asc";
+
+
+  // DataGrid's onPaginationModelChange - handles both page and pageSize changes
   const onPaginationModelChange = ({ page, pageSize }) => {
-    if (limit !== pageSize) handleLimitChange(pageSize);
-    else if ((pageNo - 1) !== page) handlePageChange(page + 1);
+    console.log("bug Pagination model changed", page, pageSize);
+    console.log("bug pageNo", pageNo, "limit", limit);
+    
+    // Check if page size changed
+    if (limit !== pageSize) {
+      onPageSizeChange(null, pageSize);
+    } 
+    // Check if page changed (both DataGrid and Redux use 0-based indexing)
+    else if (pageNo !== page) {
+      onPageChange(null, page);
+    }
   };
   const rows = React.useMemo(() => {
     return (formData || []).map((f) => ({
@@ -186,52 +199,25 @@ const viewOrEditForm = (formId, path) => {
       id: f._id || f.path || f.name,
     })).filter(r => r.id);
   }, [formData]);
+  
   const paginationModel = React.useMemo(
-    () => ({ page: pageNo - 1, pageSize: limit }),
+    () => ({ page: pageNo, pageSize: limit }),
     [pageNo, limit]
   );
   
-  
   return (
-    <Paper sx={{ height: {sm: 400, md: 510, lg: 665}, width: "100%" }}>
-      <DataGrid
-        disableColumnResize // disabed resizing
-        columns={columns}
-        rows={rows}
-        rowCount={totalForms}
-        loading={searchFormLoading || isApplicationCountLoading}
-        paginationMode="server"
-        sortingMode="server"
-        disableColumnMenu
-        sortModel={[{ field: activeField, sort: activeOrder }]}
-        onSortModelChange={handleSortChange}
-        paginationModel={paginationModel}
-        getRowId={(row) => row.id}
-        onPaginationModelChange={onPaginationModelChange}
-        pageSizeOptions={[10, 25, 50, 100]}
-        rowHeight={55}
-        disableRowSelectionOnClick
-        slots={{
-          columnSortedDescendingIcon: () => (
-            <div>
-              <NewSortDownIcon color={iconColor} />
-            </div>
-          ),
-          columnSortedAscendingIcon: () => (
-            <div style={{ transform: "rotate(180deg)" }}>
-              <NewSortDownIcon color={iconColor} />
-            </div>
-          ),
-          // columnUnsortedIcon: RefreshIcon,
-        }}
-        slotProps={{
-          loadingOverlay: {
-            variant: 'skeleton',
-            noRowsVariant: 'skeleton',
-          },
-        }}
-      />
-    </Paper>
+    <ReusableTable
+
+      columns={columns}
+      rows={rows}
+      rowCount={totalForms}
+      loading={searchFormLoading || isApplicationCountLoading}
+      sortModel={[{ field: activeField, sort: activeOrder }]}
+      onSortModelChange={handleSortChange}
+      paginationModel={paginationModel}
+      onPaginationModelChange={onPaginationModelChange}
+      getRowId={(row) => row.id}
+    />
   );
 }
 

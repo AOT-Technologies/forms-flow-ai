@@ -25,6 +25,7 @@ import {
   V8CustomButton,
   FormStatusIcon,
   FileUploadArea,
+  BreadCrumbs
 } from "@formsflow/components";
 import ProcessActionsTab from "./ProcessActionsTab";
 import ExportDiagram from "../../../components/Modals/ExportDiagrams";
@@ -57,26 +58,28 @@ const UPLOAD_PROGRESS_INTERVAL = 300;
 const INITIAL_UPLOAD_PROGRESS = 10;
 const COMPLETE_PROGRESS = 100;
 
+const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 const ProcessCreateEdit = ({ type }) => {
   const { processKey, step } = useParams();
   const location = useLocation();
   const isCreate = step === "create";
   const isBPMN = type === "BPMN";
-  const Process = isBPMN
-    ? {
+  const Process = {
+    BPMN: {
       name: "Subflow",
       type: "BPMN",
       route: "subflow",
       extension: ".bpmn",
       fileType: "text/bpmn",
-    }
-    : {
+    },
+    DMN: {
       name: "Decision Table",
       type: "DMN",
       route: "decision-table",
       extension: ".dmn",
       fileType: "text/dmn",
-    };
+    }
+  }[isBPMN ? 'BPMN' : 'DMN'];
 
   const diagramType = Process.type;
   const dispatch = useDispatch();
@@ -85,7 +88,12 @@ const ProcessCreateEdit = ({ type }) => {
   const uploadTimerRef = useRef(null);
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  
+  // Helper function to get redirect URL
+  const getRedirectUrl = () => {
+    return MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  };
+  const redirectUrl = getRedirectUrl();
   const processData = useSelector((state) => state.process?.processData);
   const [selectedAction, setSelectedAction] = useState(null);
   const [lintErrors, setLintErrors] = useState([]);
@@ -93,7 +101,7 @@ const ProcessCreateEdit = ({ type }) => {
   const [importError, setImportError] = useState(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [activeTab, setActiveTab] = useState({ primary: 'layout', secondary: null, tertiary: null });
+  const [showEditor, setShowEditor] = useState(true);
   
   const defaultProcessXmlData = useSelector(
     (state) => state.process.defaultProcessXmlData
@@ -115,25 +123,40 @@ const ProcessCreateEdit = ({ type }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
   const isDataFetched = useRef();
+   const [activeTab, setActiveTab] = useState({
+      primary: 'layout',
+      secondary: null,
+      tertiary: null
+    });
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
 
   const tabConfig = {
-    primary: {
-      layout: {
-        label: "Layout",
-        query: "?tab=layout",
-        secondary: {
-          history: {
-            label: "History",
-            query: "?tab=layout&sub=history"
-          }
-        }
-      },
-      actions: {
-        label: "Actions",
-        query: "?tab=actions"
+  primary: {
+    layout: {
+      label: "Layout",
+      query: "?tab=layout",
+      secondary: {
+         history: {
+          label: "History",
+          query: "?tab=form&sub=history"
+        },
       }
-  
-    } 
+    }, 
+    // actions: {
+    //   label: "Actions",
+    //   query: "?tab=actions"
+    // }
+  }
+};
+  // Update history list whenever History tab becomes active
+  useEffect(() => {
+    if (activeTab.primary === "layout" && activeTab.secondary === "history") {
+      handleProcessHistory();
+    }
+  }, [activeTab.primary, activeTab.secondary, paginationModel.pageSize]);
+
+  const handleTabClick = (primary, secondary = null, tertiary = null) => {
+    setActiveTab({ primary, secondary, tertiary });
   };
     /**
    * Manages simulated upload progress while awaiting server response
@@ -157,46 +180,48 @@ const ProcessCreateEdit = ({ type }) => {
       //   clearUploadTimer();
       // };
     }, [importLoader]);
+
+  const renderSecondaryControls = () => {
+      const currentTab = tabConfig.primary[activeTab.primary];
+      if (!currentTab?.secondary) return null;
+  
+      return (
+        <div className="secondary-controls d-flex gap-2">
+          {Object.entries(currentTab.secondary).map(([key, config]) => {
+            // Disable history on create route
+            const isDisabled = config.disabled || (isCreate && key === 'history');
+            return (
+              <V8CustomButton
+                key={key}
+                label={t(config.label)}
+                onClick={() => {
+                  if (isDisabled) return; // Don't execute if disabled
+                  if (key === 'history') {
+                    handleTabClick('layout', 'history');
+                  }
+                }}
+                disabled={isDisabled}
+                dataTestId={`${activeTab.primary}-${key}-button`}
+                ariaLabel={t(`${config.label} Button`)}
+                variant="secondary"
+                selected={activeTab.secondary === key}
+              />
+            );
+          })}
+        </div>
+      );
+    };
   useEffect(() => {
     setIsPublished(processData.status === "Published");
   }, [processData]);
 
-  const handleTabClick = (primary, secondary = null, tertiary = null) => {
-    if (isCreate && primary !== 'layout') {
-      return;
-    }
-    
-    const newTab = { primary, secondary, tertiary };
-    setActiveTab(newTab);
-    
-    const queryParams = new URLSearchParams();
-    queryParams.set("tab", primary);
-    if (secondary) queryParams.set("sub", secondary);
-    if (tertiary) queryParams.set("subsub", tertiary);
-    
-    dispatch(
-        push({
-          pathname: location.pathname,
-          search: `?${queryParams.toString()}`,
-        })
-    );
-  };
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const tab = isCreate ? "layout" : (queryParams.get("tab") || "layout");
-    const sub = queryParams.get("sub");
-    const subsub = queryParams.get("subsub");
-    
-    setActiveTab({
-      primary: tab,
-      secondary: sub,
-      tertiary: subsub
-    });
-  }, [location.search, isCreate]);
-
   
-  const publishText = isPublished ? t("Unpublish") : t("Publish");
+  // Helper function to get publish text
+  const getPublishText = () => {
+    return isPublished ? t("Unpublish") : t("Publish");
+  };
+  const publishText = getPublishText();
+  
   const processName = processData.name;
   const fileName = (processName + Process.extension).replaceAll(" ", "");
   
@@ -207,7 +232,7 @@ const ProcessCreateEdit = ({ type }) => {
     {
       cacheTime: 0, // Disable caching if not disabled the previous data will be cached
       staleTime: 0, // Data is always treated as stale
-      enabled: !!processKey && !isDataFetched.current, // Run only if processKey exists and data hasn't been fetched
+      enabled: Boolean(processKey) && !isDataFetched.current, // Run only if processKey exists and data hasn't been fetched
       onSuccess: ({ data }) => {
         isDataFetched.current = true;
         setIsPublished(data.status === "Published");
@@ -230,16 +255,6 @@ const ProcessCreateEdit = ({ type }) => {
       getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
   );
 
-  useEffect(() => {
-    if (activeTab.secondary === 'history') {
-        fetchAllHistories({
-            parentProcessKey: processData.parentProcessKey,
-            page: 1,
-            limit: 4,
-        });
-    }
-}, [activeTab]);
-
   /* --------- fetch a perticular history when click the revert button -------- */
   const {
     data: { data: historyData } = {},
@@ -253,9 +268,13 @@ const ProcessCreateEdit = ({ type }) => {
     },
   });
 
-  const processDataXML = isReverted
-    ? historyData?.processData
-    : processData?.processData;
+  // Helper function to get process data XML
+  const getProcessDataXML = () => {
+    return isReverted ? historyData?.processData : processData?.processData;
+  };
+  const processDataXML = getProcessDataXML();
+  // handle history modal
+  // const handleToggleHistoryModal = () => setHistoryModalShow(!historyModalShow);
 
   const enableWorkflowChange = ()=>{
     setIsWorkflowChanged(true);
@@ -342,6 +361,23 @@ const ProcessCreateEdit = ({ type }) => {
     if (!isPublished) {
       toast.success(t(`${Process.name} is already up to date`));
     }
+  };
+
+  const handleProcessHistory = () => {
+    fetchAllHistories({
+      parentProcessKey: processData.parentProcessKey,
+      page: 1,
+      limit: paginationModel.pageSize,
+    });
+  };
+
+  const handlePaginationModelChange = (model) => {
+    setPaginationModel(model);
+    fetchAllHistories({
+      parentProcessKey: processData.parentProcessKey,
+      page: (model?.page || 0) + 1,
+      limit: model?.pageSize || paginationModel.pageSize,
+    });
   };
 
   const loadMoreBtnAction = () => {
@@ -666,9 +702,14 @@ const ProcessCreateEdit = ({ type }) => {
     );
   };
 
-    // const cancel = () => {
+  // const cancel = () => {
   //   dispatch(push(`${redirectUrl}${Process.route}`));
   // };
+
+  const editorActions = () => {
+    setShowEditor(false);
+    setActiveTab({ primary: 'actions', secondary: null, tertiary: null });
+  };
 
   const handleDuplicateProcess = () => {
     handleToggleConfirmModal();
@@ -701,7 +742,18 @@ const ProcessCreateEdit = ({ type }) => {
   };
   const handleCloseErrorModal = () => setShowErrorModal(false);
 
-  if (isProcessDetailsLoading) return <Loading />;
+  // Helper function to render loading state
+  const renderLoadingState = () => {
+    if (isProcessDetailsLoading) {
+      return <Loading />;
+    }
+    return null;
+  };
+
+  const loadingComponent = renderLoadingState();
+  if (loadingComponent) {
+    return loadingComponent;
+  }
 
   const getModalContent = () => {
     const getModalConfig = (
@@ -773,8 +825,14 @@ const ProcessCreateEdit = ({ type }) => {
   const modalContent = getModalContent();
 
 
+  
+  // Helper function to get editor reference
+  const getEditorRef = () => {
+    return isBPMN ? bpmnRef : dmnRef;
+  };
+  
   const handleImportData = (xml) => {
-    const ref = isBPMN ? bpmnRef : dmnRef;
+    const ref = getEditorRef();
     if (ref.current) {
       ref.current?.handleImport(xml);
     }
@@ -782,54 +840,28 @@ const ProcessCreateEdit = ({ type }) => {
   
   
 
-  const renderSecondaryControls = () => {
-    const currentTab = tabConfig.primary[activeTab.primary];
-    if (!currentTab?.secondary) return null;
+  // Helper function to render editor component
+  const renderEditor = () => {
+    if (isBPMN) {
+      return (
+        <BpmnEditor
+          onChange={enableWorkflowChange}
+          ref={bpmnRef}
+          bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
+          setLintErrors={setLintErrors}
+        />
+      );
+    }
     return (
-      <div className="d-flex gap-2">
-        {Object.entries(currentTab.secondary).map(([key, config]) => {
-            const isDisabled = isCreate && key === 'history';
-            return (
-                <V8CustomButton
-                    key={key}
-                    label={t(config.label)}
-                    onClick={() => !isDisabled && handleTabClick(activeTab.primary, key)}
-                    selected={activeTab.secondary === key}
-                    disabled={isDisabled}
-                />
-            );
-        })}
-      </div>
+      <DmnEditor
+        onChange={enableWorkflowChange}
+        ref={dmnRef}
+        dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
+      />
     );
   };
 
-  const renderTabContent = () => {
-    if (activeTab.primary === 'layout') {
-        return (
-            <LoadingOverlay active={historyLoading} spinner text={t("Loading...")}>
-                {isBPMN ? (
-                  <BpmnEditor
-                    onChange={enableWorkflowChange}
-                    ref={bpmnRef}
-                    bpmnXml={isCreate ? defaultProcessXmlData : processDataXML}
-                    setLintErrors={setLintErrors}
-                  />
-                ) : (
-                  <DmnEditor
-                    onChange={enableWorkflowChange}
-                    ref={dmnRef}
-                    dmnXml={isCreate ? defaultDmnXmlData : processDataXML}
-                  />
-                )}
-            </LoadingOverlay>
-        );
-    }
-    return null;
-  };
 
-  console.log(historiesData,'historiesData');
-  console.log(fetchHistoryData,'fetchHistoryData');
-  console.log(loadMoreBtnAction,'loadMoreBtnAction'); 
   return (
     <div>
       <NavigateBlocker isBlock={isWorkflowChanged} message={"You have made changes that are not saved yet"}  />
@@ -849,6 +881,20 @@ const ProcessCreateEdit = ({ type }) => {
         primaryBtnariaLabel={modalContent.primaryBtnText}
         secondoryBtnariaLabel={modalContent.secondaryBtnText}
       />
+
+            <BreadCrumbs
+              items={[
+                { label: t("Build"), href: `/${Process.route}` },
+                { 
+                  label: isCreate ? t("Create New Flow") : t("Edit Flow"), 
+                  href: location?.pathname || "" 
+                },
+              ]}
+              variant="minimized"
+              underlined={true}
+              dataTestId={`${diagramType.toLowerCase()}-breadcrumb`}
+              ariaLabel={t(`${diagramType} Breadcrumb`)}
+            />
 
             <div className="header-section-1">
               <div className="section-seperation-left">
@@ -877,9 +923,11 @@ const ProcessCreateEdit = ({ type }) => {
                   />
                   <V8CustomButton
                     onClick={() => {
-                    isPublished
-                            ? openConfirmModal("unpublish")
-                            : openConfirmModal("publish");
+                      if (isPublished) {
+                        openConfirmModal("unpublish");
+                      } else {
+                        openConfirmModal("publish");
+                      }
                     }}
                     label={t(publishText)}
                     aria-label={`${t(publishText)} ${t("Button")}`}
@@ -891,48 +939,79 @@ const ProcessCreateEdit = ({ type }) => {
             </div>
 
             <div className="header-section-2">
-              <div className="section-seperation-left">
-                {Object.entries(tabConfig.primary).map(([key, config]) => {
-                    const isDisabled = isCreate && key !== 'layout';
-                    return (
-                        <V8CustomButton
-                            key={key}
-                            label={t(config.label)}
-                            onClick={() => !isDisabled && handleTabClick(key)}
-                            selected={activeTab.primary === key}
-                            disabled={isDisabled}
-                        />
-                    );
-                })}
-              </div>
+                <div className="section-seperation-left">
+                    <V8CustomButton
+                        label={t("Layout")}
+                        onClick={() => {
+                          setShowEditor(true);
+                          setActiveTab({ primary: 'layout', secondary: null, tertiary: null });
+                        }}
+                        selected={activeTab.primary === 'layout'}
+                        dataTestId="designer-layout-testid"
+                        ariaLabel={t("Designer Layout Button")}
+                      />  
+                    <V8CustomButton
+                        label={t("Actions")}
+                        onClick={editorActions}
+                        selected={activeTab.primary === 'actions'}
+                        dataTestId="designer-action-testid"
+                        ariaLabel={t("Designer Actions Button")}
+                      />                
+                </div>
             </div>  
 
             { activeTab.primary === 'layout' && <div className="header-section-3">
                 <div className="section-seperation-left">
-                    {renderSecondaryControls()}          
+                  {renderSecondaryControls()}
                 </div>
                 <div className="section-seperation-right">   
-                      <V8CustomButton
-                        label={t("Discard Changes")}
-                        onClick={() => openConfirmModal("discard")}
-                        disabled={!isWorkflowChanged}
-                        dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
-                        ariaLabel={t(`Discard ${diagramType} Changes`)}
-                      />           
+                  <V8CustomButton
+                    label={t("Discard Changes")}
+                    onClick={() => openConfirmModal("discard")}
+                    disabled={!isWorkflowChanged}
+                    dataTestId={`discard-${diagramType.toLowerCase()}-changes-testid`}
+                    ariaLabel={t(`Discard ${diagramType} Changes`)}
+                  />
                 </div>
              </div> }   
         <div className="body-section bpmn-dmn-edit-layout">
-          {renderTabContent()}
-        </div>
+          {/* {renderTabContent()} */}
 
       
-       <ProcessActionsTab
+       { activeTab.primary === 'actions' && <ProcessActionsTab
          newActionModal={activeTab.primary === 'actions'}
          diagramType={diagramType}
          renderUpload={renderUploadArea}
          onExport={handleExport}
-       />
+       />}
 
+
+       {activeTab.secondary === 'history' ? (
+          <HistoryPage
+            title={t("History")}
+            loadMoreBtnText={t("Load More")}
+            revertBtnText={t("Revert To This")}
+            allHistory={historiesData?.processHistory || []}
+            loadMoreBtnAction={loadMoreBtnAction}
+            categoryType={CategoryType.WORKFLOW}
+            revertBtnAction={fetchHistoryData}
+            historyCount={historiesData?.totalCount || 0}
+            currentVersionId={processData.id}
+            disableAllRevertButton={isPublished}
+            paginationModel={paginationModel}
+            handlePaginationModelChange={handlePaginationModelChange}
+          />
+        ) : (
+          showEditor && (
+            <LoadingOverlay
+              active={historyLoading}
+              spinner
+              text={t("Loading...")}
+            >
+              {renderEditor()}
+            </LoadingOverlay>
+          )
+        )}
       <ExportDiagram
         showExportModal={selectedAction === EXPORT}
         onClose={() => setSelectedAction(null)}
@@ -956,20 +1035,6 @@ const ProcessCreateEdit = ({ type }) => {
           primaryBtnariaLabel={t("Dismiss")}
         />
       )}
-      <HistoryPage
-        show={activeTab.secondary === 'history'}
-        onClose={() => handleTabClick('layout')}
-        title={t("History")}
-        loadMoreBtnText={t("Load More")}
-        revertBtnText={t("Revert To This")}
-        allHistory={historiesData?.processHistory || []}
-        loadMoreBtnAction={loadMoreBtnAction}
-        // categoryType={CategoryType.WORKFLOW}
-        revertBtnAction={fetchHistoryData}
-        historyCount={historiesData?.totalCount || 0}
-        currentVersionId={processData.id}
-        disableAllRevertButton={isPublished}
-      /> 
       {/* {selectedAction === IMPORT && <ImportProcess
         showModal={selectedAction === IMPORT}
         closeImport={() => setSelectedAction(null)}
@@ -982,6 +1047,7 @@ const ProcessCreateEdit = ({ type }) => {
         setImportXml={handleImportData}
         fileType={Process.extension}
       />} */}
+              </div>
     </div>
   );
 };

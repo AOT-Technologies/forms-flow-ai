@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
 import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import { setBPMFormLimit, setBPMFormListPage, setBpmFormSort, setFormDeleteStatus } from "../../../actions/formActions";
@@ -11,7 +9,7 @@ import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
 import { HelperServices, StyleServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { V8CustomButton, RefreshIcon, NewSortDownIcon, V8CustomDropdownButton, PromptModal } from "@formsflow/components";
+import { V8CustomButton, RefreshIcon, V8CustomDropdownButton, PromptModal, ReusableTable } from "@formsflow/components";
 import { deleteForm } from "@aot-technologies/formio-react";
 import { formCreate } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
@@ -343,53 +341,26 @@ const viewOrEditForm = (formId, path) => {
       id: f._id || f.path || f.name,
     })).filter(r => r.id);
   }, [formData]);
+  
   const paginationModel = React.useMemo(
     () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
   
-  
   return (
-    <>
-    <Paper sx={{ height: {sm: 400, md: 510, lg: 665}, width: "100%" }}>
-      <DataGrid
-        disableColumnResize // disabed resizing
-        columns={columns}
-        rows={rows}
-        rowCount={totalForms}
-        loading={searchFormLoading || isApplicationCountLoading}
-        paginationMode="server"
-        sortingMode="server"
-        disableColumnMenu
-        sortModel={[{ field: activeField, sort: activeOrder }]}
-        onSortModelChange={handleSortChange}
-        paginationModel={paginationModel}
-        getRowId={(row) => row.id}
-        onPaginationModelChange={onPaginationModelChange}
-        pageSizeOptions={[10, 25, 50, 100]}
-        rowHeight={55}
-        disableRowSelectionOnClick
-        slots={{
-          columnSortedDescendingIcon: () => (
-            <div>
-              <NewSortDownIcon color={iconColor} />
-            </div>
-          ),
-          columnSortedAscendingIcon: () => (
-            <div style={{ transform: "rotate(180deg)" }}>
-              <NewSortDownIcon color={iconColor} />
-            </div>
-          ),
-          // columnUnsortedIcon: RefreshIcon,
-        }}
-        slotProps={{
-          loadingOverlay: {
-            variant: 'skeleton',
-            noRowsVariant: 'skeleton',
-          },
-        }}
-      />
-    </Paper>
+   <>
+    <ReusableTable
+
+      columns={columns}
+      rows={rows}
+      rowCount={totalForms}
+      loading={searchFormLoading || isApplicationCountLoading}
+      sortModel={[{ field: activeField, sort: activeOrder }]}
+      onSortModelChange={handleSortChange}
+      paginationModel={paginationModel}
+      onPaginationModelChange={onPaginationModelChange}
+      getRowId={(row) => row.id}
+    />
     <PromptModal
         show={showDeleteModal}
         onClose={handleCloseDelete}
@@ -401,8 +372,8 @@ const viewOrEditForm = (formId, path) => {
         primaryBtnDisable={disableDelete}
         secondaryBtnText={t("Cancel")}
         secondaryBtnAction={handleCloseDelete}
-      />
-     </> 
+     />
+    </> 
   );
 }
 

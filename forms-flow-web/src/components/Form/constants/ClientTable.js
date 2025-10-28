@@ -1,7 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
 import {
   setClientFormLimit,
   setClientFormListPage,
@@ -11,13 +9,14 @@ import { HelperServices, StyleServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
 import {
   V8CustomButton,
-  NewSortDownIcon,
-  RefreshIcon
+  RefreshIcon,
+  ReusableTable
 } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices"; 
-import { setFormSearchLoading } from "../../../actions/checkListActions";  
+import { setFormSearchLoading } from "../../../actions/checkListActions";
+
 
 function ClientTable() {
   const dispatch = useDispatch();
@@ -175,54 +174,20 @@ function ClientTable() {
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = formsort?.[activeKey]?.sortOrder || "asc";
 
-  const renderDescIcon = useCallback(() => (
-    <div>
-      <NewSortDownIcon color={iconColor} />
-    </div>
-  ), [iconColor]);
-
-  const renderAscIcon = useCallback(() => (
-    <div style={{ transform: "rotate(180deg)" }}>
-      <NewSortDownIcon color={iconColor} />
-    </div>
-  ), [iconColor]);
-
-
   return (
     <>
-      <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          rowCount={totalForms}
-          loading={searchFormLoading}
-          paginationMode="server"
-          sortingMode="server"
-          disableColumnMenu
-          sortModel={[{ field: activeField, sort: activeOrder }]}
-          onSortModelChange={handleSortChange}
-          paginationModel={paginationModel}
-          onPaginationModelChange={onPaginationModelChange}
-          pageSizeOptions={[10, 25, 50, 100]}
-          rowHeight={55}
-          disableRowSelectionOnClick
-          getRowId={(row) => row.id}
-          slots={{
-            columnSortedDescendingIcon: renderDescIcon,
-            columnSortedAscendingIcon: renderAscIcon,
-          }}
-          slotProps={{
-            loadingOverlay: {
-
-              variant: "skeleton",
-              noRowsVariant: "skeleton",
-            },
-          }}
-          localeText={{
-            noRowsLabel: t("No Forms have been found."),
-          }}
-        />
-      </Paper>
+      <ReusableTable
+        columns={columns}
+        rows={rows}
+        rowCount={totalForms}
+        loading={searchFormLoading}
+        sortModel={[{ field: activeField, sort: activeOrder }]}
+        onSortModelChange={handleSortChange}
+        paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationModelChange}
+        getRowId={(row) => row.id}
+        noRowsLabel={t("No Forms have been found.")}
+      />
       {showSubmissions && <SubmissionDrafts />}
     </>
   );

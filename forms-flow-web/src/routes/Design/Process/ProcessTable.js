@@ -6,12 +6,9 @@ import {
   V8CustomDropdownButton,
   BuildModal,
   RefreshIcon,
-  NewSortDownIcon,
-
+  ReusableTable
 } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
-import { DataGrid } from '@mui/x-data-grid';
-import Paper from "@mui/material/Paper";
 import { useParams } from "react-router-dom";
 import { fetchAllProcesses } from "../../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
@@ -25,7 +22,7 @@ import {
   setDmnSort
 } from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
-import { HelperServices,StyleServices } from "@formsflow/service";
+import { HelperServices, StyleServices } from "@formsflow/service";
 import {
   navigateToSubflowBuild,
   navigateToDecisionTableBuild,
@@ -359,50 +356,23 @@ const ProcessTable = React.memo(() => {
           />
         </div>
       </div>
-      <Paper sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}>
-        <DataGrid
-          disableColumnResize // disabed resizing
-          columns={columns}
-          rows={processList}
-          rowCount={totalCount}
-          loading={searchLoading || isLoading}
-          paginationMode="server"
-          sortingMode="server"
-          disableColumnMenu
-          sortModel={[
-            {
-              field: sortConfig.activeKey,
-              sort: sortConfig[sortConfig.activeKey].sortOrder,
-            },
-          ]}
-          onSortModelChange={handleSort}
-          paginationModel={paginationModel}
-          getRowId={(row) => row.id}
-          onPaginationModelChange={onPaginationModelChange}
-          pageSizeOptions={[10, 25, 50, 100]}
-          rowHeight={55}
-          disableRowSelectionOnClick
-          slots={{
-            columnSortedDescendingIcon: () => (
-              <div>
-                <NewSortDownIcon color={iconColor} />
-              </div>
-            ),
-            columnSortedAscendingIcon: () => (
-              <div style={{ transform: "rotate(180deg)" }}>
-                <NewSortDownIcon color={iconColor} />
-              </div>
-            ),
-            // columnUnsortedIcon: RefreshIcon,
-          }}
-          slotProps={{
-            loadingOverlay: {
-              variant: "skeleton",
-              noRowsVariant: "skeleton",
-            },
-          }}
-        />
-      </Paper>
+      <ReusableTable
+        columns={columns}
+        rows={processList}
+        rowCount={totalCount}
+        loading={searchLoading || isLoading}
+        sortModel={[
+          {
+            field: sortConfig.activeKey,
+            sort: sortConfig[sortConfig.activeKey].sortOrder,
+          },
+        ]}
+        onSortModelChange={handleSort}
+        paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationModelChange}
+        getRowId={(row) => row.id}
+        sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}
+      />
 
       <BuildModal
         show={showBuildModal}

@@ -284,6 +284,12 @@ const EditComponent = () => {
   const { createDesigns,viewDesigns } = userRoles();
   const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });
   const [workflowIsChanged, setWorkflowIsChanged] = useState(false);
+  
+  // Track initial state for formDetails, rolesState, and isAnonymous to detect changes
+  const [initialFormDetails, setInitialFormDetails] = useState(null);
+  const [initialRolesState, setInitialRolesState] = useState(null);
+  const [initialIsAnonymous, setInitialIsAnonymous] = useState(null);
+  const [settingsChanged, setSettingsChanged] = useState(false);
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
   const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false); // Flag to prevent blocker during save navigation
@@ -423,6 +429,31 @@ const EditComponent = () => {
       setIsAnonymous(processListData.anonymous || false);
     }
   }, [processListData, path, display, isCreateRoute]);
+
+  // Initialize initial state for formDetails, rolesState, and isAnonymous
+  useEffect(() => {
+    if (formDetails && !initialFormDetails) {
+      setInitialFormDetails(_cloneDeep(formDetails));
+    }
+    if (rolesState && !initialRolesState) {
+      setInitialRolesState(_cloneDeep(rolesState));
+    }
+    if (isAnonymous !== null && initialIsAnonymous === null) {
+      setInitialIsAnonymous(isAnonymous);
+    }
+  }, [formDetails, rolesState, isAnonymous, initialFormDetails,
+    initialRolesState, initialIsAnonymous]);
+
+  // Track changes in formDetails, rolesState, and isAnonymous
+  useEffect(() => {
+    if (initialFormDetails && initialRolesState && initialIsAnonymous !== null) {
+      const formDetailsChanged = !_.isEqual(formDetails, initialFormDetails);
+      const rolesStateChanged = !_.isEqual(rolesState, initialRolesState);
+      const isAnonymousChanged = isAnonymous !== initialIsAnonymous;
+      setSettingsChanged(formDetailsChanged || rolesStateChanged || isAnonymousChanged);
+    }
+  }, [formDetails, rolesState, isAnonymous, initialFormDetails,
+    initialRolesState, initialIsAnonymous]);
 
 
   /* ------------------------- migration states ------------------------- */
@@ -1033,6 +1064,11 @@ const handleSaveLayout = () => {
         value: { ...updateFormResponse.data, components: form.components },
       });
       dispatch(setFormSuccessData("form", updateFormResponse.data));
+      
+      // Reset settings changed state after successful save
+      setSettingsChanged(false);
+      setInitialFormDetails(_cloneDeep(formDetails));
+      setInitialRolesState(_cloneDeep(rolesState));
     } catch (error) {
       console.error(error);
     } finally {
@@ -1042,7 +1078,7 @@ const handleSaveLayout = () => {
   };
 
   const handleUnpublishAndSaveChanges = () => {
-    if  (isPublished && (formChangeState.changed || workflowIsChanged)) {
+    if  (isPublished && (formChangeState.changed || workflowIsChanged || settingsChanged)) {
       setModalType("unpublishBeforeSaving");
       setShowConfirmModal(true);
     }
@@ -1343,6 +1379,23 @@ const saveFormWithWorkflow = async () => {
       });
     }
     setFormChangeState(prev => ({ ...prev, changed: false }));
+    setShowConfirmModal(false);
+  };
+
+  const discardSettingsChanges = () => {
+    // Reset formDetails to initial state
+    if (initialFormDetails) {
+      setFormDetails(_cloneDeep(initialFormDetails));
+    }
+    // Reset rolesState to initial state
+    if (initialRolesState) {
+      setRolesState(_cloneDeep(initialRolesState));
+    }
+    // Reset anonymous state to initial value
+    if (initialIsAnonymous !== null) {
+      setIsAnonymous(initialIsAnonymous);
+    }
+    setSettingsChanged(false);
     setShowConfirmModal(false);
   };
 
@@ -1673,10 +1726,11 @@ const saveFormWithWorkflow = async () => {
              t("Discarding changes is permanent and cannot be undone.?"),
              secondaryBtnAction : () => {
              // Only discard changes from the currently active tab
-             if (activeTab.primary === 'form' && formChangeState.changed) {
+             if (activeTab.primary === 'form' && activeTab.secondary === 'settings' && settingsChanged) {
+               discardSettingsChanges();
+             } else if (activeTab.primary === 'form' && formChangeState.changed) {
                discardChanges();
-             }
-             if (activeTab.primary === 'bpmn' && workflowIsChanged) {
+             } else if (activeTab.primary === 'bpmn' && workflowIsChanged) {
                // Handle workflow discard similar to FlowEdit.js
                handleWorkflowDiscard();
              }
@@ -1718,7 +1772,11 @@ const saveFormWithWorkflow = async () => {
           },
           secondaryBtnAction: () => {
             // Discard changes and proceed with the action
-            discardChanges();
+            if (settingsChanged) {
+              discardSettingsChanges();
+            } else {
+              discardChanges();
+            }
             if (pendingAction) {
               setSelectedAction(pendingAction);
               setPendingAction(null);
@@ -1748,7 +1806,7 @@ const saveFormWithWorkflow = async () => {
 
   const handleActionWithUnsavedCheck = (action) => {
     // Check if there are unsaved changes for specific actions that should not proceed
-    if ((formChangeState.changed || workflowIsChanged) &&
+    if ((formChangeState.changed || workflowIsChanged || settingsChanged) &&
         (action === ACTION_OPERATIONS.DUPLICATE || action === ACTION_OPERATIONS.IMPORT)) {
       setPendingAction(action);
       // Show confirmation modal for unsaved changes
@@ -2235,7 +2293,7 @@ const saveFormWithWorkflow = async () => {
     <div className="form-create-edit-layout">
       <NavigateBlocker
         isBlock={
-          (formChangeState.changed || workflowIsChanged) &&
+          (formChangeState.changed || workflowIsChanged || settingsChanged) &&
           !isMigrationLoading &&
           !isDeletionLoading &&
           !isNavigatingAfterSave
@@ -2368,8 +2426,10 @@ const saveFormWithWorkflow = async () => {
                       label={t("Discard Changes")}
                       onClick={() => openConfirmModal("discard")}
                       disabled={
-                        activeTab.primary === 'form' 
-                          ? !formChangeState.changed 
+                        activeTab.primary === 'form' && activeTab.secondary === 'settings'
+                          ? !settingsChanged
+                          : activeTab.primary === 'form'
+                          ? !formChangeState.changed
                           : !workflowIsChanged
                       }
                       dataTestId="discard-button-testid"

@@ -133,9 +133,11 @@ const viewOrEditForm = (formId, path) => {
   dispatch(resetFormProcessData());
   dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
 };
-  const handlePageChange = (page) => {
+
+const handlePageChange = (page) => {
     dispatch(setBPMFormListPage(page));
   };
+
   
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
@@ -145,8 +147,8 @@ const viewOrEditForm = (formId, path) => {
         return acc;
       }, {});
       dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
-      dispatch(setBPMFormListPage(1)); 
-      return;
+        dispatch(setBPMFormListPage(1));  
+        return;
     }
 
     const mappedKey = gridFieldToSortKey[model.field] || model.field;
@@ -160,11 +162,6 @@ const viewOrEditForm = (formId, path) => {
   };
   
 
-  const handleLimitChange = (limitVal) => {
-    dispatch(setBPMFormLimit(limitVal));
-    dispatch(setBPMFormListPage(1));
-  };
-
   const handleRefresh = () => {
     let filters = {pageNo, limit, formSort: formsort, formName: searchText};
     dispatch(setFormSearchLoading(true));
@@ -174,10 +171,19 @@ const viewOrEditForm = (formId, path) => {
   const activeKey = bpmForms.sort?.activeKey || "formName";
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = bpmForms.sort?.[activeKey]?.sortOrder || "asc";
+
+
+  const handleLimitChange = (limitVal) => {
+    dispatch(setBPMFormLimit(limitVal));
+    dispatch(setBPMFormListPage(1));
+  };
+
+  // DataGrid's onPaginationModelChange - handles both page and pageSize changes
   const onPaginationModelChange = ({ page, pageSize }) => {
     if (limit !== pageSize) handleLimitChange(pageSize);
     else if ((pageNo - 1) !== page) handlePageChange(page + 1);
   };
+
   const rows = React.useMemo(() => {
     return (formData || []).map((f) => ({
       ...f,

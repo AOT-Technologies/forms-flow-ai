@@ -134,16 +134,10 @@ const viewOrEditForm = (formId, path) => {
   dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
 };
 
-  // Handler for page changes - both DataGrid and Redux use 0-based indexing
-  const onPageChange = (event, page) => {
+const handlePageChange = (page) => {
     dispatch(setBPMFormListPage(page));
   };
 
-  // Handler for page size changes
-  const onPageSizeChange = (event, pageSize) => {
-    dispatch(setBPMFormLimit(pageSize));
-    dispatch(setBPMFormListPage(0));  // Reset to first page (0-based)
-  };
   
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
@@ -153,8 +147,8 @@ const viewOrEditForm = (formId, path) => {
         return acc;
       }, {});
       dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
-      dispatch(setBPMFormListPage(0));  // Reset to first page (0-based)
-      return;
+        dispatch(setBPMFormListPage(1));  
+        return;
     }
 
     const mappedKey = gridFieldToSortKey[model.field] || model.field;
@@ -179,20 +173,17 @@ const viewOrEditForm = (formId, path) => {
   const activeOrder = bpmForms.sort?.[activeKey]?.sortOrder || "asc";
 
 
+  const handleLimitChange = (limitVal) => {
+    dispatch(setBPMFormLimit(limitVal));
+    dispatch(setBPMFormListPage(1));
+  };
+
   // DataGrid's onPaginationModelChange - handles both page and pageSize changes
   const onPaginationModelChange = ({ page, pageSize }) => {
-    console.log("bug Pagination model changed", page, pageSize);
-    console.log("bug pageNo", pageNo, "limit", limit);
-    
-    // Check if page size changed
-    if (limit !== pageSize) {
-      onPageSizeChange(null, pageSize);
-    } 
-    // Check if page changed (both DataGrid and Redux use 0-based indexing)
-    else if (pageNo !== page) {
-      onPageChange(null, page);
-    }
+    if (limit !== pageSize) handleLimitChange(pageSize);
+    else if ((pageNo - 1) !== page) handlePageChange(page + 1);
   };
+
   const rows = React.useMemo(() => {
     return (formData || []).map((f) => ({
       ...f,
@@ -201,7 +192,7 @@ const viewOrEditForm = (formId, path) => {
   }, [formData]);
   
   const paginationModel = React.useMemo(
-    () => ({ page: pageNo, pageSize: limit }),
+    () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
   

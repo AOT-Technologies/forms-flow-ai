@@ -432,6 +432,7 @@ const EditComponent = () => {
 
   // Initialize initial state for formDetails, rolesState, and isAnonymous
   useEffect(() => {
+    // Set initial values if not already set
     if (formDetails && !initialFormDetails) {
       setInitialFormDetails(_cloneDeep(formDetails));
     }
@@ -441,19 +442,28 @@ const EditComponent = () => {
     if (isAnonymous !== null && initialIsAnonymous === null) {
       setInitialIsAnonymous(isAnonymous);
     }
-  }, [formDetails, rolesState, isAnonymous, initialFormDetails,
-    initialRolesState, initialIsAnonymous]);
 
-  // Track changes in formDetails, rolesState, and isAnonymous
-  useEffect(() => {
-    if (initialFormDetails && initialRolesState && initialIsAnonymous !== null) {
+    // Track changes only if initial values are set
+    if (
+      initialFormDetails &&
+      initialRolesState &&
+      initialIsAnonymous !== null
+    ) {
       const formDetailsChanged = !_.isEqual(formDetails, initialFormDetails);
       const rolesStateChanged = !_.isEqual(rolesState, initialRolesState);
       const isAnonymousChanged = isAnonymous !== initialIsAnonymous;
-      setSettingsChanged(formDetailsChanged || rolesStateChanged || isAnonymousChanged);
+      setSettingsChanged(
+        formDetailsChanged || rolesStateChanged || isAnonymousChanged
+      );
     }
-  }, [formDetails, rolesState, isAnonymous, initialFormDetails,
-    initialRolesState, initialIsAnonymous]);
+  }, [
+    formDetails,
+    rolesState,
+    isAnonymous,
+    initialFormDetails,
+    initialRolesState,
+    initialIsAnonymous,
+  ]);
 
 
   /* ------------------------- migration states ------------------------- */
@@ -1392,7 +1402,7 @@ const saveFormWithWorkflow = async () => {
       setRolesState(_cloneDeep(initialRolesState));
     }
     // Reset anonymous state to initial value
-    if (initialIsAnonymous !== null) {
+    if (!initialIsAnonymous) {
       setIsAnonymous(initialIsAnonymous);
     }
     setSettingsChanged(false);

@@ -74,7 +74,7 @@ jobs:
           --severity CRITICAL,HIGH,MEDIUM \
           --scanners vuln,secret,misconfig,license \
           --output trivy-${{ matrix.service.name }}-results.html \
-          --ignorefile ./.trivyignore.yaml \
+          --ignorefile "${{ github.workspace }}/.trivyignore.yaml" \
           docker.io/formsflow/${{ matrix.service.name }}:${{ matrix.service.tag }}
 
       - name: Upload Trivy Image Scan Results

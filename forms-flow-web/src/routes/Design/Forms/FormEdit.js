@@ -82,6 +82,7 @@ import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../
 import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
 import { SystemVariables } from '../../../constants/variables';
 import EditorActions from "./EditActions";
+import { StyleServices } from "@formsflow/service";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -2034,12 +2035,16 @@ const saveFormWithWorkflow = async () => {
                 ),
               }));
               const columns = [
-                { field: 'type', headerName: 'Type', flex:1.5, sortable: false },
-                { field: 'variable', headerName: 'Variable', flex:1, sortable: false },
+                { field: 'type', headerName: 'Type', flex: 2.8, sortable: false },
+                { field: 'variable', headerName: 'Variable', flex: 1.5, sortable: false, 
+                  renderCell: (params) => (
+                    <span style={{ color: StyleServices.getCSSVariable('--ff-gray-dark') }}>{params.value}</span>
+                  )
+                },
                 {
                   field: 'altVariable',
                   headerName: 'Alternative Field',
-                  flex: 1,
+                  flex: 3.2,
                   sortable: false,
                   renderCell: (params) => (
                     <CustomTextInput
@@ -2050,14 +2055,16 @@ const saveFormWithWorkflow = async () => {
                       setValue={(newVal) => {
                         params.row.altVariable = newVal;
                       }}
+                      style={{ color: StyleServices.getCSSVariable('--ff-gray-dark') }}
                     />
                   ),
                 },
                 {
                   field: "selected",
                   headerName: "Selected",
-                  flex: 1,
+                  flex: 1.3,
                   sortable: false,
+                  headerClassName: 'last-column',
                   renderCell: (params) => (
                     <Switch
                       type="primary"

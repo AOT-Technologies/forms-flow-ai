@@ -4,10 +4,10 @@
 <!-- Briefly describe the purpose of this PR and the problem it solves. -->
 
 **Related Jira Ticket:**  
-<!-- Ticket link like this format - https://yourcompany.atlassian.net/browse/PROJ-123 -->
+<!-- Ticket link like this format - https://aottech.atlassian.net/browse/FWF-5524 -->
 
 **DEPENDENCY PR:**  
-<!-- Dependency Ticket link like this format - https://yourcompany.atlassian.net/browse/PROJ-123 -->
+<!-- Dependency Ticket link like this format - https://github.com/AOT-Technologies/forms-flow-ai/pull/3012 -->
 
 **Type of Change:**
 - [ ] ✨ Feature
@@ -34,7 +34,7 @@
 - [ ] Required
 - [ ] Not Applicable
 
-**Screenshots (if applicable):**
+**Screenshots / Screen Recordings (if applicable):**
 <!-- Attach before/after screenshots or screen recordings for UI changes. -->
 
 ---
@@ -50,6 +50,9 @@
 **API Testing:**
 - [ ] Done
 - [ ] Not Applicable
+
+**Screenshots / Screen Recordings (if applicable):**
+<!-- Attach before/after screenshots or screen recordings . -->
 
 ## ✅ Checklist
 

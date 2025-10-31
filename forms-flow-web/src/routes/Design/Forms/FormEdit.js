@@ -82,6 +82,7 @@ import { setProcessData, setFormPreviosData, setFormProcessesData } from "../../
 import { convertToNormalForm, convertToWizardForm } from "../../../helper/convertFormDisplay.js";
 import { SystemVariables } from '../../../constants/variables';
 import EditorActions from "./EditActions";
+import { StyleServices } from "@formsflow/service";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -2037,7 +2038,7 @@ const saveFormWithWorkflow = async () => {
                 { field: 'type', headerName: 'Type', flex: 2.8, sortable: false },
                 { field: 'variable', headerName: 'Variable', flex: 1.5, sortable: false, 
                   renderCell: (params) => (
-                    <span style={{ color: '#7C7D7F' }}>{params.value}</span>
+                    <span style={{ color: StyleServices.getCSSVariable('--ff-gray-dark') }}>{params.value}</span>
                   )
                 },
                 {
@@ -2054,7 +2055,7 @@ const saveFormWithWorkflow = async () => {
                       setValue={(newVal) => {
                         params.row.altVariable = newVal;
                       }}
-                      style={{ color: '#7C7D7F' }}
+                      style={{ color: StyleServices.getCSSVariable('--ff-gray-dark') }}
                     />
                   ),
                 },

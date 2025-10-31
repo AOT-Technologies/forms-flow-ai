@@ -272,6 +272,7 @@ const SettingsTab = (
               }
               onBlur={() => handleBlur('title', formDetails.title)}
               maxLength={200}
+              placeholder={t("Add form name")}
             />
           </div>
           <div className="description-container">
@@ -288,6 +289,7 @@ const SettingsTab = (
               minRows={3}
               id="form-description"
               dataTestId="form-description"
+              placeholder={t("Add description")}
             />
           </div>
             
@@ -303,6 +305,7 @@ const SettingsTab = (
                 variant="secondary"
                 size="small"
                 dataTestId="form-edit-wizard-display"
+                optionClassName="form-edit-checkbox"
                 />
             </div>
           {/* <label
@@ -332,7 +335,7 @@ const SettingsTab = (
             value={rolesState?.DESIGN?.selectedOption}
             options={[
               {
-                label: t("Only owner"),
+                label: t("Only you"),
                 value: "onlyYou",
               },
               {
@@ -410,6 +413,7 @@ const SettingsTab = (
                   variant="secondary"
                   size="small"
                   dataTestId="form-edit-allow-anonymous"
+                  optionClassName="form-edit-checkbox"
                 />
             </div>
           </div>
@@ -467,7 +471,9 @@ const SettingsTab = (
           setFormDetails(prev => ({ ...prev, path: updatedPath }));
           handleBlur("path", updatedPath);
         }}
-        saveButtonText={t("Save URL")}
+          saveButtonText={t("Save URL")}
+          showInfoSection={true}
+          infoText={t("Changing this link will make the previous link inaccessible.")}
       />
     </div>
     </>

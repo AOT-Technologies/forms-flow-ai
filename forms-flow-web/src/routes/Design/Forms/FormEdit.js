@@ -200,7 +200,6 @@ const EditComponent = () => {
   const [formHistoryLoading, setFormHistoryLoading] = useState(false);
   const [flowHistoryLoading, setFlowHistoryLoading] = useState(false);
   const { path, display } = useSelector((state) => state.form.form);
-
   const { authorizationDetails: formAuthorization } = useSelector(
     (state) => state.process
   );
@@ -456,7 +455,7 @@ const EditComponent = () => {
       }
     }
     );
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
+    const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
   
   const UploadActionType = {
     IMPORT: "import",
@@ -1288,12 +1287,6 @@ const saveFormWithWorkflow = async () => {
     }
   };
 
-  const loadMoreBpmnHistory = () => {
-    if (processData?.parentProcessKey) {
-      fetchBpmnHistory(processData.parentProcessKey);
-    }
-  };
-
   const revertBpmnHistory = async (processId) => {
     try {
       const response = await fetchRevertingProcessData(processId);
@@ -1886,6 +1879,7 @@ const saveFormWithWorkflow = async () => {
       openConfirmModal(isPublished ? "unpublish" : "publish");
     }
   };
+  
   const handlePaginationModelChange = (newPaginationModel) => {
     setPaginationModel(newPaginationModel);
     if (activeTab.primary === 'form' && activeTab.secondary === 'history') {
@@ -1898,17 +1892,16 @@ const saveFormWithWorkflow = async () => {
         }
     }
     if (activeTab.primary === 'flow' && activeTab.secondary === 'history') {
-        if (processData?.parentProcessKey) {
-          setFlowHistoryLoading(true);
-          fetchBpmnHistory(
-            processData.parentProcessKey,
-            newPaginationModel.page + 1,
-            newPaginationModel.pageSize
-          );
-        }
+      if (processData?.parentProcessKey) {
+        setFlowHistoryLoading(true);
+        fetchBpmnHistory(
+          processData.parentProcessKey,
+          newPaginationModel.page + 1,
+          newPaginationModel.pageSize
+        );
+      }
     }
   };
-
   // Render tab content based on active tab
   const renderTabContent = () => {
     switch (activeTab.primary) {
@@ -2399,7 +2392,7 @@ const saveFormWithWorkflow = async () => {
             {/* BPMN History Section - Show when on BPMN history tab */}
             {(activeTab.primary === 'bpmn' && activeTab.secondary === 'history') && (
               <div className="body-section">
-                <HistoryPage
+                {/* <HistoryPage
                   title={t("BPMN History")}
                   loadMoreBtnText={t("Load More")}
                   loadMoreBtndataTestId="load-more-bpmn-history"
@@ -2410,6 +2403,18 @@ const saveFormWithWorkflow = async () => {
                   revertBtnAction={revertBpmnHistory}
                   historyCount={bpmnHistoryData.totalCount}
                   disableAllRevertButton={isPublished}
+                /> */}
+                <HistoryPage
+                  revertBtnText={t("Revert")}
+                  allHistory={bpmnHistoryData.processHistory}
+                  categoryType={CategoryType.WORKFLOW}
+                  revertBtnAction={(processId) => revertBpmnHistory(processId)}
+                  historyCount={bpmnHistoryData.totalCount}
+                  disableAllRevertButton={isPublished}
+                  refreshBtnAction={handleBpmnHistory}
+                  paginationModel={paginationModel}
+                  handlePaginationModelChange={handlePaginationModelChange}
+                  loading={flowHistoryLoading}
                 />
               </div>
             )}

@@ -1,23 +1,75 @@
-# Issue Tracking
+## 📝 Pull Request Summary
 
-JIRA: 
-Issue Type: BUG/ FEATURE
-DEPENDENCY PR:
-# Changes
-<!-- 
-What are the main changes in the PR?
-Give a high-level description of the changes.
-#Examples: Added a search feature, Renaming several fields, etc.
--->
+**Description:**
+<!-- Briefly describe the purpose of this PR and the problem it solves. -->
 
-# Screenshots (if applicable)
-<!-- 
-Add screenshots highlighting the changes.
--->
+**Related Jira Ticket:**  
+<!-- Ticket link like this format - https://yourcompany.atlassian.net/browse/PROJ-123 -->
 
-# Notes
-<!-- You can add any concerns highlighted during code review that cannot be addressed, any limitations in the changes, any subsequent actions to be taken, or anything noteworthy about the change that a reviewer would benefit from etc.-->
+**DEPENDENCY PR:**  
+<!-- Dependency Ticket link like this format - https://yourcompany.atlassian.net/browse/PROJ-123 -->
 
-# Checklist
-- [ ] Updated changelog
-- [ ] Added meaningful title for pull request
+**Type of Change:**
+- [ ] ✨ Feature
+- [ ] 🐞 Bug Fix
+- [ ] ♻️ Refactor
+- [ ] 🧹 Code Cleanup
+- [ ] 🧪 Test Addition / Update
+- [ ] 🔄 SYNC PR (for syncing different repos)
+- [ ] 📦 Dependency / Package Updates
+- [ ] 📘 Documentation Update
+- [ ] 🚀 Deployment / Config Change / Yaml changes
+
+---
+
+## 💻 Frontend Changes 
+
+**Modules/Components Affected:**
+<!-- List key components, pages, or hooks modified. -->
+
+**Summary of Frontend Changes:**
+<!-- Describe UI/UX or logic updates. -->
+
+**UI/UX Review:**
+- [ ] Required
+- [ ] Not Applicable
+
+**Screenshots (if applicable):**
+<!-- Attach before/after screenshots or screen recordings for UI changes. -->
+
+---
+
+## ⚙️ Backend Changes (Java / Python)
+
+**Modules/Endpoints Affected:**
+<!-- List controllers, services, or APIs modified. -->
+
+**Summary of Backend Changes:**
+<!-- Describe logic changes, data model updates, or new APIs added. -->
+
+**API Testing:**
+- [ ] Done
+- [ ] Not Applicable
+
+## ✅ Checklist
+
+- [ ] Code builds successfully without lint or type errors  
+- [ ] Unit tests added or updated [Backend]
+- [ ] UI verified [Frontend]   
+- [ ] Documentation updated (README / Confluence / API Docs)  
+- [ ] No sensitive information (keys, passwords, secrets) committed  
+- [ ] I have updated the **CHANGELOG** with relevant details  
+- [ ] I have given a **clear and meaningful PR title and description as per standard format**  
+- [ ] I have verified **cross-repo dependencies** (if any)  
+- [ ] I have confirmed **backward compatibility** with previous releases  
+
+
+
+**Details:**
+<!-- Add additional details if any of the above boxes are checked.[optional] -->
+
+---
+
+## 👥 Reviewer Notes
+
+<!-- Optional: Add context or special instructions for reviewers. -->

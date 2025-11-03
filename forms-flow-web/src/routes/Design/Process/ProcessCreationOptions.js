@@ -54,7 +54,7 @@ const ProcessCreationOptions = () => {
         name: "Subflow",
         nameKey: "subflow",
         breadcrumbLabel: t("Create a New Sub flow"),
-        createText: t("Create Subflow from scratch"),
+        createText: t("Create a Subflow from scratch"),
         uploadText: t("Upload an existing sub flow"),
         fileExtension: ".bpmn",
         fileType: "text/bpmn",

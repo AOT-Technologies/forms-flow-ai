@@ -227,7 +227,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>7.4.1.jre11</version>
+            <version>10.2.4.jre11</version>
         </dependency>
 
         <!-- Required to use Spin dataformat support -->

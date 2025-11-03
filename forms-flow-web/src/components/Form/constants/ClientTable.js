@@ -34,6 +34,9 @@ function ClientTable() {
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
   const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
+  // Track the most recent page requested to ignore older pagination events emitted by the grid
+  const lastRequestedPageRef = React.useRef(null);
+
   const gridFieldToSortKey = {
     title: "formName",
     submissionsCount: "submissionCount",
@@ -58,22 +61,36 @@ function ClientTable() {
 
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+
+    // No sort provided – only reset if not already at default
     if (!model?.field || !model?.sort) {
-      const resetSort = Object.keys(formsort).reduce((acc, key) => {
-        acc[key] = { sortOrder: "asc" };
-        return acc;
-      }, {});
-      dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
-      dispatch(setClientFormListPage(1));
+      const isAlreadyDefault =
+        (formsort?.activeKey || "formName") === "formName" &&
+        (formsort?.formName?.sortOrder || "asc") === "asc";
+      if (!isAlreadyDefault) {
+        const resetSort = Object.keys(formsort).reduce((acc, key) => {
+          acc[key] = { sortOrder: "asc" };
+          return acc;
+        }, {});
+        dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
+      }
       return;
     }
 
-    const mappedKey = gridFieldToSortKey[model.field] || model.field;
-    const order = model.sort;
+    // Guard: do nothing if incoming sort equals current sort
+    const incomingField = model.field;
+    const incomingOrder = model.sort;
+    const currentActiveKey = formsort?.activeKey || "formName";
+    const currentField = sortKeyToGridField[currentActiveKey] || currentActiveKey;
+    const currentOrder = formsort?.[currentActiveKey]?.sortOrder || "asc";
+    if (incomingField === currentField && incomingOrder === currentOrder) {
+      return;
+    }
 
+    const mappedKey = gridFieldToSortKey[incomingField] || incomingField;
     const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
       acc[columnKey] = {
-        sortOrder: columnKey === mappedKey ? order : "asc",
+        sortOrder: columnKey === mappedKey ? incomingOrder : "asc",
       };
       return acc;
     }, {});
@@ -81,11 +98,24 @@ function ClientTable() {
   };
 
   const onPaginationModelChange = ({ page, pageSize }) => {
-    if (limit !== pageSize) {
+    if (typeof page === "number" && pageNo - 1 !== page) {
+      const requestedPage = page + 1;
+      const lastRequestedPage = lastRequestedPageRef.current;
+
+      if (lastRequestedPage && requestedPage < lastRequestedPage) {
+        return;
+      }
+
+      lastRequestedPageRef.current = requestedPage;
+      dispatch(setClientFormListPage(requestedPage));
+      return;
+    }
+
+    const isValidPageSize = typeof pageSize === "number" && pageSize > 0;
+    if (isValidPageSize && limit !== pageSize) {
+      lastRequestedPageRef.current = 1;
       dispatch(setClientFormLimit(pageSize));
       dispatch(setClientFormListPage(1));
-    } else if (pageNo - 1 !== page) {
-      dispatch(setClientFormListPage(page + 1));
     }
   };
 

@@ -192,6 +192,11 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
       sortable: true,
       width: 180,
       height: 55,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "description",
@@ -200,11 +205,14 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
       sortable: false,
       width: 180,
       height: 55,
-      renderCell: params => (
-        <span>
-          {params.row.description ? (new DOMParser().parseFromString(params.row.description, 'text/html').body.textContent) : ""}
-        </span>
-      )
+      renderCell: params => {
+        const description = params.row.description ? (new DOMParser().parseFromString(params.row.description, 'text/html').body.textContent) : "";
+        return (
+          <span title={description}>
+            {description}
+          </span>
+        );
+      }
     },
     {
       field: "modified",
@@ -213,14 +221,28 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
       sortable: true,
       width: 180,
       height: 55,
-      renderCell: params => HelperServices.getLocaldate(params.row.modified),
+      renderCell: params => {
+        const dateValue = HelperServices.getLocaldate(params.row.modified);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "anonymous",
       headerName: t("Visibility"),
       flex: 1,
       sortable: true,
-      renderCell: params => params.value ? t("Public") : t("Private"),
+      renderCell: params => {
+        const visibility = params.value ? t("Public") : t("Private");
+        return (
+          <span title={visibility}>
+            {visibility}
+          </span>
+        );
+      },
       width: 180,
       height: 55,
     },
@@ -231,14 +253,19 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
       sortable: true,
       width: 180,
       height: 55,
-      renderCell: params => (
-        <span className="d-flex align-items-center">
-          {params.value === "active" ?
-            <span className="status-live"></span> :
-            <span className="status-draft"></span>}
-          {params.value === "active" ? t("Live") : t("Draft")}
-        </span>
-      ),
+      renderCell: params => {
+        const statusText = params.value === "active" ? t("Live") : t("Draft");
+        return (
+          <span className="d-flex align-items-center">
+            {params.value === "active" ?
+              <span className="status-live"></span> :
+              <span className="status-draft"></span>}
+            <span title={statusText}>
+              {statusText}
+            </span>
+          </span>
+        );
+      },
     },
     {
       field: "actions",

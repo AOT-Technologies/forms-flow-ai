@@ -107,31 +107,50 @@ function ClientTable() {
       headerName: t("Form Name"),
       flex: 1,
       sortable: true,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "description",
       headerName: t("Description"),
       flex: 1,
       sortable: false,
-      renderCell: (params) => (
-        <span title={stripHtml(params.row.description)}>
-          {stripHtml(params.row.description)}
-        </span>
-      ),
+      renderCell: (params) => {
+        const description = stripHtml(params.row.description);
+        return (
+          <span title={description}>
+            {description}
+          </span>
+        );
+      },
     },
     {
       field: "submissionsCount",
       headerName: t("Submissions"),
       flex: 1,
       sortable: true,
+      renderCell: (params) => (
+        <span>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "latestSubmission",
       headerName: t("Latest Submission"),
       flex: 1,
       sortable: true,
-      renderCell: (params) =>
-        HelperServices?.getLocaldate(params.row.latestSubmission),
+      renderCell: (params) => {
+        const dateValue = HelperServices?.getLocaldate(params.row.latestSubmission);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "actions",

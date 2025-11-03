@@ -294,7 +294,7 @@ const ProcessTable = React.memo(() => {
       width: 180,
       height: 55,
       renderCell: params => {
-        const statusText = params.row.status === "Published" ? t("Live") : t("Draft");
+        const statusText = params.row.status === "Published" ? t("Published") : t("Unpublished");
         return (
           <span className="d-flex align-items-center">
             {params.row.status === "Published" ?

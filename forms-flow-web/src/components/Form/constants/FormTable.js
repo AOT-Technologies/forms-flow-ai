@@ -254,7 +254,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
       width: 180,
       height: 55,
       renderCell: params => {
-        const statusText = params.value === "active" ? t("Live") : t("Draft");
+        const statusText = params.value === "active" ? t("Published") : t("Unpublished");
         return (
           <span className="d-flex align-items-center">
             {params.value === "active" ?

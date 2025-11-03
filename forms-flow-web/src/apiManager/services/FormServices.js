@@ -25,6 +25,11 @@ export const formUpdate = (form_id,formData) => {
   return RequestService.httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
 };
 
+export const formFlowUpdate = (data, mapperId) => {
+  const formFlowUpdateUrl = replaceUrl(API.FORM_FLOW_UPDATE, "<mapper_id>", mapperId);
+  return RequestService.httpPUTRequest(formFlowUpdateUrl, data);
+};
+
 export const processMigrate = (migrationData) => {
   return RequestService.httpPOSTRequest(API.PROCESS_MIGRATE, migrationData );
 };

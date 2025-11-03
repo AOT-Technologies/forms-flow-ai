@@ -15,6 +15,7 @@ import {
   setFormDeleteStatus,
   setBpmFormSearch,
   setBPMFormListPage,
+  setBPMFormLimit,
   setBpmFormSort,
   setFormSuccessData
 } from "../../../actions/formActions";
@@ -25,8 +26,13 @@ import {
 } from "../../../actions/checkListActions";
 import { useTranslation, Translation } from "react-i18next";
 import { unPublishForm } from "../../../apiManager/services/processServices";
-import FormTable from "./../../../components/Form/constants/FormTable.js";
-import ClientTable from "./../../../components/Form/constants/ClientTable";
+// FormTable removed; using DataGrid for both designer and submit tables
+import { DataGrid } from "@mui/x-data-grid";
+import Paper from "@mui/material/Paper";
+import { RefreshIcon } from "@formsflow/components";
+import { HelperServices } from "@formsflow/service";
+import { batch } from "react-redux";
+import { setClientFormLimit, setClientFormListPage, setClientFormListSort } from "../../../actions/formActions";
 import _ from "lodash";
 import _camelCase from "lodash/camelCase";
 import {
@@ -47,7 +53,6 @@ import {
   AlertVariant,
   CustomProgressBar
 } from "@formsflow/components";
-import { HelperServices } from '@formsflow/service';
 import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { navigateToDesignFormEdit, navigateToDesignFormBuild } from "../../../helper/routerHelper.js";
@@ -65,8 +70,8 @@ const List = React.memo((props) => {
   const [importLoader, setImportLoader] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
   const { successState, startSuccessCountdown } = useSuccessCountdown();
-  const [isDuplicating, setIsDuplicating] = useState(false);
-  const [duplicateProgress, setDuplicateProgress] = useState(0);
+  const [isDuplicating] = useState(false);
+  const [duplicateProgress] = useState(0);
 
 
   const handleFilterIconClick = () => {
@@ -150,7 +155,7 @@ const List = React.memo((props) => {
   //   setSearch("");
   //   dispatch(setBpmFormSearch(""));
   // };
-  const { forms, getFormsInit } = props;
+  const { forms } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
@@ -159,6 +164,15 @@ const List = React.memo((props) => {
   const pageNo = useSelector((state) => state.bpmForms.formListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const formSort = useSelector((state) => state.bpmForms.sort);
+  // Submit (client) listing state
+  const submitPageNo = useSelector((state) => state.bpmForms.submitListPage);
+  const submitLimit = useSelector((state) => state.bpmForms.submitFormLimit);
+  const submitFormSort = useSelector((state) => state.bpmForms.submitFormSort);
+  const clientSearchText = useSelector((state) => state.bpmForms.clientFormSearch);
+  const totalClientForms = useSelector((state) => state.bpmForms.totalForms) || 0;
+  const clientForms = useSelector((state) => state.bpmForms.forms) || [];
+  const totalDesignerForms = useSelector((state) => state.bpmForms.totalForms) || 0;
+  const designerForms = useSelector((state) => state.bpmForms.forms) || [];
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
@@ -184,6 +198,17 @@ const List = React.memo((props) => {
     let filters = {pageNo, limit, formSort, formName:searchText};
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({...filters}));
+  };
+  const fetchClientForms = () => {
+    dispatch(setFormSearchLoading(true));
+    dispatch(fetchBPMFormList({
+      pageNo: submitPageNo,
+      limit: submitLimit,
+      formSort: submitFormSort,
+      formName: clientSearchText,
+      showForOnlyCreateSubmissionUsers: true,
+      includeSubmissionsCount: true
+    }));
   };
   const onClose = () => {
     setNewFormModal(false);
@@ -263,16 +288,26 @@ const List = React.memo((props) => {
     }
   };
 
+  // Fetch designer list for DataGrid when designer/view tables are shown
   useEffect(() => {
-    fetchForms();
+    if (createDesigns || viewDesigns) {
+      fetchForms();
+    }
+  }, [createDesigns, viewDesigns, pageNo, limit, formSort, searchText]);
+
+  // Fetch for client listing when viewing submissions-only table
+  useEffect(() => {
+    if (createSubmissions && !createDesigns && !viewDesigns) {
+      fetchClientForms();
+    }
   }, [
-    getFormsInit,
-    dispatch,
+    createSubmissions,
     createDesigns,
-    pageNo,
-    limit,
-    formSort,
-    searchText,
+    viewDesigns,
+    submitPageNo,
+    submitLimit,
+    submitFormSort,
+    clientSearchText,
   ]);
 
   const validateForm = ({ title }) => {
@@ -349,14 +384,324 @@ const List = React.memo((props) => {
   fetchForms();
   };
   const renderTable = () => {
+    console.log("createDesigns", createDesigns);
+    console.log("viewDesigns", viewDesigns);
+    console.log("createSubmissions", createSubmissions);  
     if (createDesigns || viewDesigns) {
-      return <FormTable 
-               isDuplicating={isDuplicating} 
-               setIsDuplicating={setIsDuplicating}
-               setDuplicateProgress={setDuplicateProgress}/>;
+      // Designer DataGrid columns (similar to FormTable)
+      const gridFieldToSortKeyDesigner = {
+        title: "formName",
+        modified: "modified",
+        anonymous: "visibility",
+        status: "status",
+      };
+      const sortKeyToGridFieldDesigner = {
+        formName: "title",
+        modified: "modified",
+        visibility: "anonymous",
+        status: "status",
+      };
+      const designerColumns = [
+        { field: "title", headerName: t("Name"), flex: 1, sortable: true },
+        {
+          field: "description",
+          headerName: t("Description"),
+          flex: 1,
+          sortable: false,
+          renderCell: (params) => {
+            const text = params.row.description
+              ? new DOMParser().parseFromString(params.row.description, "text/html").body
+                  .textContent
+              : "";
+            return <span title={text}>{text}</span>;
+          },
+        },
+        {
+          field: "modified",
+          headerName: t("Last Edited"),
+          flex: 1,
+          sortable: true,
+          renderCell: (params) => (
+            <span title={HelperServices.getLocaldate(params.row.modified)}>
+              {HelperServices.getLocaldate(params.row.modified)}
+            </span>
+          ),
+        },
+        {
+          field: "anonymous",
+          headerName: t("Visibility"),
+          flex: 1,
+          sortable: true,
+          renderCell: (params) => (
+            <span title={params.value ? t("Public") : t("Private")}>
+              {params.value ? t("Public") : t("Private")}
+            </span>
+          ),
+        },
+        {
+          field: "status",
+          headerName: t("Status"),
+          flex: 1,
+          sortable: true,
+          renderCell: (params) => (
+            <span className="d-flex align-items-center">
+              {params.value === "active" ? (
+                <span className="status-live"></span>
+              ) : (
+                <span className="status-draft"></span>
+              )}
+              {params.value === "active" ? t("Live") : t("Draft")}
+            </span>
+          ),
+        },
+        {
+          field: "actions",
+          align: "right",
+          renderHeader: () => (
+            <V8CustomButton
+              variant="secondary"
+              icon={<RefreshIcon />}
+              iconOnly
+              onClick={handleRefresh}
+            />
+          ),
+          flex: 1,
+          sortable: false,
+          cellClassName: "last-column",
+        },
+      ];
+
+      const designerRows = React.useMemo(() => {
+        return (designerForms || []).map((f) => ({
+          id: f._id || f.path || f.name,
+          ...f,
+        }));
+      }, [designerForms]);
+
+      const designerActiveKey = formSort?.activeKey || "formName";
+      const designerActiveField =
+        sortKeyToGridFieldDesigner[designerActiveKey] || designerActiveKey;
+      const designerActiveOrder = formSort?.[designerActiveKey]?.sortOrder || "asc";
+      const designerSortModel = React.useMemo(
+        () => [{ field: designerActiveField, sort: designerActiveOrder }],
+        [designerActiveField, designerActiveOrder]
+      );
+      const handleDesignerSortModelChange = (modelArray) => {
+        const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+        if (!model?.field || !model?.sort) {
+          const resetSort = Object.keys(formSort || {}).reduce((acc, key) => {
+            acc[key] = { sortOrder: "asc" };
+            return acc;
+          }, {});
+          dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
+          dispatch(setBPMFormListPage(1));
+          return;
+        }
+        const incomingField = model.field;
+        const incomingOrder = model.sort;
+        const currentField =
+          sortKeyToGridFieldDesigner[formSort?.activeKey || "formName"] ||
+          formSort?.activeKey ||
+          "formName";
+        const currentOrder = formSort?.[formSort?.activeKey || "formName"]?.sortOrder || "asc";
+        if (incomingField === currentField && incomingOrder === currentOrder) return;
+        const mappedKey = gridFieldToSortKeyDesigner[incomingField] || incomingField;
+        const updatedSort = Object.keys(formSort || {}).reduce((acc, columnKey) => {
+          acc[columnKey] = { sortOrder: columnKey === mappedKey ? incomingOrder : "asc" };
+          return acc;
+        }, {});
+        dispatch(setBpmFormSort({ ...updatedSort, activeKey: mappedKey }));
+      };
+      const designerPaginationModel = React.useMemo(
+        () => ({ page: pageNo - 1, pageSize: limit }),
+        [pageNo, limit]
+      );
+      const onDesignerPaginationModelChange = ({ page, pageSize }) => {
+        const requestedPage = typeof page === "number" ? page + 1 : pageNo;
+        const requestedLimit = typeof pageSize === "number" ? pageSize : limit;
+        if (requestedPage === pageNo && requestedLimit === limit) return;
+        if (requestedLimit !== limit) {
+          dispatch(setBPMFormLimit(requestedLimit));
+          dispatch(setBPMFormListPage(1));
+        } else if (requestedPage !== pageNo) {
+          dispatch(setBPMFormListPage(requestedPage));
+        }
+      };
+
+      return (
+        <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
+          <DataGrid
+            columns={designerColumns}
+            rows={designerRows}
+            rowCount={totalDesignerForms}
+            loading={searchFormLoading}
+            paginationMode="server"
+            sortingMode="server"
+            sortModel={designerSortModel}
+            onSortModelChange={handleDesignerSortModelChange}
+            paginationModel={designerPaginationModel}
+            onPaginationModelChange={onDesignerPaginationModelChange}
+            getRowId={(row) => row.id}
+            pageSizeOptions={[10, 25, 50, 100]}
+            rowHeight={55}
+            disableColumnMenu
+            disableRowSelectionOnClick
+          />
+        </Paper>
+      );
     }
     if (createSubmissions) {
-      return <ClientTable />;
+      // Columns mirroring SubmitList.js
+      const gridFieldToSortKey = {
+        title: "formName",
+        submissionsCount: "submissionCount",
+        latestSubmission: "latestSubmission",
+      };
+      const sortKeyToGridField = {
+        formName: "title",
+        submissionCount: "submissionsCount",
+        latestSubmission: "latestSubmission",
+      };
+      const stripHtml = (html) => {
+        const doc = new DOMParser().parseFromString(html || "", "text/html");
+        return doc.body.textContent || "";
+      };
+      const columns = [
+        {
+          field: "title",
+          headerName: t("Form Name"),
+          flex: 1,
+          sortable: true,
+          renderCell: (params) => (
+            <span title={params.value}>{params.value}</span>
+          ),
+        },
+        {
+          field: "description",
+          headerName: t("Description"),
+          flex: 1,
+          sortable: false,
+          renderCell: (params) => {
+            const text = stripHtml(params.row.description);
+            return <span title={text}>{text}</span>;
+          },
+        },
+        {
+          field: "submissionsCount",
+          headerName: t("Submissions"),
+          flex: 1,
+          sortable: true,
+          renderCell: (params) => <span>{params.value}</span>,
+        },
+        {
+          field: "latestSubmission",
+          headerName: t("Latest Submission"),
+          flex: 1,
+          sortable: true,
+          renderCell: (params) => (
+            <span title={HelperServices?.getLocaldate(params.row.latestSubmission)}>
+              {HelperServices?.getLocaldate(params.row.latestSubmission)}
+            </span>
+          ),
+        },
+        {
+          field: "actions",
+          align: "right",
+          renderHeader: () => (
+            <V8CustomButton
+              variant="secondary"
+              icon={<RefreshIcon />}
+              iconOnly
+              onClick={fetchClientForms}
+            />
+          ),
+          flex: 1,
+          sortable: false,
+          cellClassName: "last-column",
+        },
+      ];
+      const clientRows = React.useMemo(() => {
+        return (clientForms || []).map((f) => ({
+          id: f._id,
+          title: f.title,
+          description: f.description,
+          submissionsCount: f.submissionsCount,
+          latestSubmission: f.latestSubmission,
+        }));
+      }, [clientForms]);
+      const activeKey = submitFormSort?.activeKey || "formName";
+      const activeField = sortKeyToGridField[activeKey] || activeKey;
+      const activeOrder = submitFormSort?.[activeKey]?.sortOrder || "asc";
+      const sortModel = React.useMemo(
+        () => [{ field: activeField, sort: activeOrder }],
+        [activeField, activeOrder]
+      );
+      const handleClientSortModelChange = (modelArray) => {
+        const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+        if (!model?.field || !model?.sort) {
+          const isAlreadyDefault =
+            (submitFormSort?.activeKey || "formName") === "formName" &&
+            (submitFormSort?.formName?.sortOrder || "asc") === "asc";
+          if (!isAlreadyDefault) {
+            const resetSort = Object.keys(submitFormSort || {}).reduce((acc, key) => {
+              acc[key] = { sortOrder: "asc" };
+              return acc;
+            }, {});
+            dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
+          }
+          return;
+        }
+        const incomingField = model.field;
+        const incomingOrder = model.sort;
+        const currentActiveKey = submitFormSort?.activeKey || "formName";
+        const currentField = sortKeyToGridField[currentActiveKey] || currentActiveKey;
+        const currentOrder = submitFormSort?.[currentActiveKey]?.sortOrder || "asc";
+        if (incomingField === currentField && incomingOrder === currentOrder) return;
+        const mappedKey = gridFieldToSortKey[incomingField] || incomingField;
+        const updatedSort = Object.keys(submitFormSort || {}).reduce((acc, columnKey) => {
+          acc[columnKey] = { sortOrder: columnKey === mappedKey ? incomingOrder : "asc" };
+          return acc;
+        }, {});
+        dispatch(setClientFormListSort({ ...updatedSort, activeKey: mappedKey }));
+      };
+      const paginationModel = React.useMemo(
+        () => ({ page: submitPageNo - 1, pageSize: submitLimit }),
+        [submitPageNo, submitLimit]
+      );
+      const onClientPaginationModelChange = ({ page, pageSize }) => {
+        const requestedPage = typeof page === "number" ? page + 1 : submitPageNo;
+        const requestedLimit = typeof pageSize === "number" ? pageSize : submitLimit;
+        if (requestedPage === submitPageNo && requestedLimit === submitLimit) return;
+        batch(() => {
+          if (requestedLimit !== submitLimit) {
+            dispatch(setClientFormLimit(requestedLimit));
+            dispatch(setClientFormListPage(1));
+          } else if (requestedPage !== submitPageNo) {
+            dispatch(setClientFormListPage(requestedPage));
+          }
+        });
+      };
+      return (
+        <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
+          <DataGrid
+            columns={columns}
+            rows={clientRows}
+            rowCount={totalClientForms}
+            loading={searchFormLoading}
+            paginationMode="server"
+            sortingMode="server"
+            sortModel={sortModel}
+            onSortModelChange={handleClientSortModelChange}
+            paginationModel={paginationModel}
+            onPaginationModelChange={onClientPaginationModelChange}
+            getRowId={(row) => row.id}
+            pageSizeOptions={[10, 25, 50, 100]}
+            rowHeight={55}
+            disableColumnMenu
+            disableRowSelectionOnClick
+          />
+        </Paper>
+      );
     }
     return null;
   };
@@ -497,7 +842,6 @@ const List = React.memo((props) => {
 });
 List.propTypes = {
   forms: PropTypes.object,
-  getFormsInit: PropTypes.bool,
 };
 const mapStateToProps = (state) => {
   return {

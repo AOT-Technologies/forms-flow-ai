@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  CustomSearch,
-  V8CustomButton,
-  V8CustomDropdownButton,
-  BuildModal,
-  RefreshIcon,
-  ReusableTable
-} from "@formsflow/components";
+import { CustomSearch, V8CustomButton, BuildModal } from "@formsflow/components";
+import FormListGrid from "../../../components/Form/FormListGrid";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import { fetchAllProcesses } from "../../../apiManager/services/processServices";
+// Grid handles fetching
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { push } from "connected-react-router";
 import ImportProcess from "../../../components/Modals/ImportProcess";
-import {
-  setBpmnSearchText,
-  setDmnSearchText,
-  setIsPublicDiagram,
-  setBpmSort,
-  setDmnSort
-} from "../../../actions/processActions";
+import { setBpmnSearchText, setDmnSearchText, setIsPublicDiagram } from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
-import { HelperServices, StyleServices } from "@formsflow/service";
+// import { HelperServices, StyleServices } from "@formsflow/service";
 import {
   navigateToSubflowBuild,
   navigateToDecisionTableBuild,
@@ -56,65 +44,25 @@ const ProcessTable = React.memo(() => {
     };
 
   // States and selectors
-  const processList = useSelector((state) =>
-    isBPMN ? state.process.processList : state.process.dmnProcessList
-  );
   const searchTextDMN = useSelector((state) => state.process.dmnSearchText);
   const searchTextBPMN = useSelector((state) => state.process.bpmnSearchText);
-  const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
-  const totalCount = useSelector((state) =>
-    isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
-  );
+  // const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const sortConfig = useSelector((state) =>
-    isBPMN ? state.process.bpmsort : state.process.dmnSort
-  );
   
-  const [bpmnState, setBpmnState] = useState({
-    activePage: 1,
-    limit: 10,
-    sortConfig: sortConfig,
-  });
-
-  const [dmnState, setDmnState] = useState({
-    activePage: 1,
-    limit: 10,
-    sortConfig: sortConfig,
-  });
+  // Local UI state
   const [searchDMN, setSearchDMN] = useState(searchTextDMN || "");
   const [searchBPMN, setSearchBPMN] = useState(searchTextBPMN || "");
   const search = isBPMN ? searchBPMN : searchDMN;
 
   const [showBuildModal, setShowBuildModal] = useState(false);
   const [importProcess, setImportProcess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
 
-  const currentState = isBPMN ? bpmnState : dmnState;
-  const setCurrentState = isBPMN ? setBpmnState : setDmnState;
+  // Pagination/sort handled by FormListGrid
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   
-  const fetchProcesses = () => {
-    setIsLoading(true);
-    dispatch(
-      fetchAllProcesses(
-        {
-          pageNo: currentState.activePage,
-          tenant_key: tenantKey,
-          processType: ProcessContents.processType,
-          limit: currentState.limit,
-          searchKey: search,
-          sortBy: sortConfig.activeKey,
-          sortOrder: sortConfig[sortConfig.activeKey].sortOrder,
-        },
-        () => {
-          setIsLoading(false);
-          setSearchLoading(false);
-        }
-      )
-    );
-  };
+  // const fetchProcesses = () => {};
 
  
   // const handleSortApply = (selectedSortOption, selectedSortOrder) => {
@@ -131,14 +79,9 @@ const ProcessTable = React.memo(() => {
   // };
 
 
-  const handleRefresh = () => {
-    fetchProcesses();
-  };
+  // const handleRefresh = () => {};
 
-  //fetching bpmn or dmn
-  useEffect(() => {
-    fetchProcesses();
-  }, [dispatch, currentState, tenantKey, searchTextBPMN, searchTextDMN, isBPMN, sortConfig]);
+  // fetching handled by FormListGrid
 
   //Update api call when search field is empty
   useEffect(() => {
@@ -147,32 +90,7 @@ const ProcessTable = React.memo(() => {
     }
   }, [search, dispatch, isBPMN]);
 
-  const handleSort = (model) => {
-    // DataGrid passes an array sort model; pick the first entry
-    const next = Array.isArray(model) ? model[0] : model;
-    if (!next || !next.field) {
-      return;
-    }
-    const key = next.field;
-    const requestedOrder = next.sort || "asc";
-
-    const newSortConfig = {
-      activeKey: key,
-      [key]: { sortOrder: requestedOrder },
-    };
-    // Reset all other sort keys to default (ascending)
-    Object.keys(sortConfig).forEach((sortKey) => {
-      if (sortKey !== key && sortKey !== "activeKey") {
-        newSortConfig[sortKey] = { sortOrder: "asc" };
-      }
-    });
-
-    if (isBPMN) {
-      dispatch(setBpmSort(newSortConfig));
-    } else {
-      dispatch(setDmnSort(newSortConfig));
-    }
-  };
+  // const handleSort = () => {};
   const handleSearch = () => {
     setSearchLoading(true);
     if (isBPMN) {
@@ -180,24 +98,11 @@ const ProcessTable = React.memo(() => {
     } else {
       dispatch(setDmnSearchText(searchDMN));
     }
-    handlePageChange(1);
+    // FormListGrid will handle resetting pagination
   };
 
 
-  const handlePageChange = (page) => {
-    setCurrentState((prevState) => ({
-      ...prevState,
-      activePage: page,
-    }));
-  };
-
-  const onLimitChange = (newLimit) => {
-    setCurrentState((prevState) => ({
-      ...prevState,
-      limit: newLimit,
-      activePage: 1,
-    }));
-  };
+  // const handlePaginationChange = () => {};
 
   const gotoEdit = (data) => {
     if (MULTITENANCY_ENABLED) {
@@ -243,86 +148,7 @@ const ProcessTable = React.memo(() => {
     },
   ];
 
-  const columns = [
-    {
-      field: "name",
-      headerName: t("Name"),
-      flex: 1,
-      sortable: true,
-      width: 180,
-      height: 55,
-    },
-    {
-      field: "processKey",
-      headerName: t("ID"),
-      flex: 1,
-      sortable: true,
-      width: 180,
-      height: 55,
-    },
-    {
-      field: "modified",
-      headerName: t("Last Edited"),
-      flex: 1,
-      sortable: true,
-      width: 180,
-      height: 55,
-      renderCell: params => HelperServices.getLocaldate(params.row.modified),
-    },
-    {
-      field: "status",
-      headerName: t("Status"),
-      flex: 1,
-      sortable: true,
-      width: 180,
-      height: 55,
-      renderCell: params => (
-        <span className="d-flex align-items-center">
-          {params.row.status === "Published" ?
-            <span className="status-live"></span> :
-            <span className="status-draft"></span>}
-          {params.row.status === "Published" ? t("Live") : t("Draft")}
-        </span>
-      ),
-    },
-    {
-      field: "actions",
-      renderHeader: () => (
-        <V8CustomButton
-          // label="new button"
-          variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
-          onClick={handleRefresh}
-        />
-      ),
-      flex: 1,
-      sortable: false,
-      cellClassName: "last-column",
-      renderCell: params => (
-        (createDesigns || manageAdvancedWorkFlows) && (
-          <V8CustomDropdownButton
-          label={t("Edit")}
-          variant="secondary"
-          menuPosition="right"
-          dropdownItems={[]}
-          onLabelClick= {() => gotoEdit(params.row)}
-        />
-        )
-      )
-    },
-  ];
-  const paginationModel = React.useMemo(
-    () => ({ page: currentState.activePage - 1, pageSize: currentState.limit }),
-    [currentState.activePage, currentState.limit]
-  );
-  const onPaginationModelChange = ({ page, pageSize }) => {
-    if (currentState.limit !== pageSize) {
-      onLimitChange(pageSize);
-    } else if (currentState.activePage - 1 !== page) {
-      handlePageChange(page + 1);
-    }
-  };
+  // Grid moved to FormListGrid
   return (
     <>
       <div className="toast-section">{/* <p>Toast message</p> */}</div>
@@ -356,22 +182,11 @@ const ProcessTable = React.memo(() => {
           />
         </div>
       </div>
-      <ReusableTable
-        columns={columns}
-        rows={processList}
-        rowCount={totalCount}
-        loading={searchLoading || isLoading}
-        sortModel={[
-          {
-            field: sortConfig.activeKey,
-            sort: sortConfig[sortConfig.activeKey].sortOrder,
-          },
-        ]}
-        onSortModelChange={handleSort}
-        paginationModel={paginationModel}
-        onPaginationModelChange={onPaginationModelChange}
-        getRowId={(row) => row.id}
-        sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}
+      <FormListGrid
+        mode="process"
+        processType={isBPMN ? "BPMN" : "DMN"}
+        onProcessEdit={gotoEdit}
+        canProcessEdit={createDesigns || manageAdvancedWorkFlows}
       />
 
       <BuildModal

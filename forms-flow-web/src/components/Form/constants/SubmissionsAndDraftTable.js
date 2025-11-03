@@ -138,43 +138,79 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
   };
 
   const columns = [
-    { field: "id", headerName: t("Submission ID"), flex: 1, sortable: true },
+    { 
+      field: "id", 
+      headerName: t("Submission ID"), 
+      flex: 1, 
+      sortable: true,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
+    },
     {
       field: "created",
       headerName: t("Submitted On"),
       flex: 1,
       sortable: true,
-      renderCell: (params) => HelperServices.getLocaldate(params.value),
+      renderCell: (params) => {
+        const dateValue = HelperServices.getLocaldate(params.value);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "modified",
       headerName: t("Last Modified On"),
       flex: 1,
       sortable: true,
-      renderCell: (params) => HelperServices.getLocaldate(params.value),
+      renderCell: (params) => {
+        const dateValue = HelperServices.getLocaldate(params.value);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "isDraft",
       headerName: t("Type"),
       flex: 1,
       sortable: true,
-      renderCell: (params) => (
-        <span className="d-flex align-items-center">
-          {params.value ? (
-            <span className="status-draft"></span>
-          ) : (
-            <span className="status-live"></span>
-          )}
-          {params.value ? t("Draft") : t("Submission")}
-        </span>
-      ),
+      renderCell: (params) => {
+        const typeText = params.value ? t("Draft") : t("Submission");
+        return (
+          <span className="d-flex align-items-center">
+            {params.value ? (
+              <span className="status-draft"></span>
+            ) : (
+              <span className="status-live"></span>
+            )}
+            <span title={typeText}>
+              {typeText}
+            </span>
+          </span>
+        );
+      },
     },
     {
       field: "applicationStatus",
       headerName: t("Status"),
       flex: 0.8,
       sortable: true,
-      renderCell: (params) => (params.row.isDraft ? "" : params.value),
+      renderCell: (params) => {
+        const statusValue = params.row.isDraft ? "" : params.value;
+        return (
+          <span title={statusValue}>
+            {statusValue}
+          </span>
+        );
+      },
     },
     {
       field: "actions",
@@ -182,6 +218,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
       flex: 1.5,
       sortable: false,
       align: "right",
+      cellClassName: "last-column",
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"

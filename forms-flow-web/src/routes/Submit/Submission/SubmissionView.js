@@ -47,24 +47,42 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
       headerName: t("Completed"),
       flex: 1.5,
       sortable: false,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "created",
       headerName: t("Created"),
       flex: 1.5,
       sortable: false,
-      renderCell: (params) => HelperServices.getLocaldate(params.value),
+      renderCell: (params) => {
+        const dateValue = HelperServices.getLocaldate(params.value);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "applicationStatus",
       headerName: t("Status"),
       flex: 1,
       sortable: false,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "actions",
       align: "right",
       sortable: false,
+      cellClassName: "last-column",
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"

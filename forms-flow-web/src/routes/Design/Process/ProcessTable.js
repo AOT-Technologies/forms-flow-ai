@@ -69,7 +69,7 @@ const ProcessTable = React.memo(() => {
   const sortConfig = useSelector((state) =>
     isBPMN ? state.process.bpmsort : state.process.dmnSort
   );
-  
+
   const [bpmnState, setBpmnState] = useState({
     activePage: 1,
     limit: 10,
@@ -94,7 +94,7 @@ const ProcessTable = React.memo(() => {
   const setCurrentState = isBPMN ? setBpmnState : setDmnState;
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  
+
   const fetchProcesses = () => {
     setIsLoading(true);
     dispatch(
@@ -116,7 +116,7 @@ const ProcessTable = React.memo(() => {
     );
   };
 
- 
+
   // const handleSortApply = (selectedSortOption, selectedSortOrder) => {
   //   setIsLoading(true);
   //   const action = isBPMN ? setBpmSort : setDmnSort;
@@ -294,7 +294,7 @@ const ProcessTable = React.memo(() => {
       width: 180,
       height: 55,
       renderCell: params => {
-        const statusText = params.row.status === "Published" ? t("Live") : t("Draft");
+        const statusText = params.row.status === "Published" ? t("Published") : t("Unpublished");
         return (
           <span className="d-flex align-items-center">
             {params.row.status === "Published" ?

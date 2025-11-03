@@ -30,16 +30,16 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
   const isApplicationCountLoading = useSelector(state => state.process.isApplicationCountLoading);
   const searchText = useSelector(state => state.bpmForms.searchText);
   const applicationCount = useSelector((state) => state.process?.applicationCount);
-  
+
   // Get form access data from Redux store
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
-  
+
   const { createDesigns, viewDesigns } = userRoles();
   const { t } = useTranslation();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
-  
+
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [deleteMessage, setDeleteMessage] = React.useState("");
@@ -115,12 +115,12 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
             mapperId: row.mapperId
           });
 
-      setDuplicateProgress(60);    
+      setDuplicateProgress(60);
       const originalForm = formResponse.data;
-      
+
       // Create duplicated form data
       const duplicatedForm = _cloneDeep(originalForm);
-      
+
       // Modify title, name, and path
       duplicatedForm.title = `${originalForm.title}-copy`;
       duplicatedForm.name = `${originalForm.name}-copy`;
@@ -128,16 +128,16 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
 
       duplicatedForm.processData = diagramResponse.data.processData;
       duplicatedForm.processType = diagramResponse.data.processType;
-      
+
       // Remove _id and other fields that should not be copied
       delete duplicatedForm._id;
       delete duplicatedForm.machineName;
       delete duplicatedForm.parentFormId;
-      
+
       // Set as new version
       duplicatedForm.componentChanged = true;
       duplicatedForm.newVersion = true;
-      
+
       setDuplicateProgress(80);
       // Manipulate form data with proper formatting
       const newFormData = manipulatingFormData(
@@ -147,17 +147,17 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
         formAccess,
         submissionAccess
       );
-      
+
       setDuplicateProgress(90);
       // Create the duplicated form
       const createResponse = await formCreate(newFormData);
 
       setDuplicateProgress(100);
       const createdForm = createResponse.data;
-            
+
       // Redirect to edit page of duplicated form
       dispatch(push(`${redirectUrl}formflow/${createdForm._id}/edit`));
-      
+
     } catch (err) {
       console.error("Error duplicating form:", err);
       // const errorMessage = err.response?.data?.message || err.message || "Failed to duplicate form";
@@ -254,7 +254,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
       width: 180,
       height: 55,
       renderCell: params => {
-        const statusText = params.value === "active" ? t("Live") : t("Draft");
+        const statusText = params.value === "active" ? t("Published") : t("Unpublished");
         return (
           <span className="d-flex align-items-center">
             {params.value === "active" ?
@@ -322,7 +322,7 @@ const handlePageChange = (page) => {
     dispatch(setBPMFormListPage(page));
   };
 
-  
+
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
     if (!model || !model.field || !model.sort) {
@@ -331,12 +331,12 @@ const handlePageChange = (page) => {
         return acc;
       }, {});
       dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
-        dispatch(setBPMFormListPage(1));  
+        dispatch(setBPMFormListPage(1));
         return;
     }
 
     const mappedKey = gridFieldToSortKey[model.field] || model.field;
-    const order = model.sort; 
+    const order = model.sort;
 
     const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
       acc[columnKey] = { sortOrder: columnKey === mappedKey ? order : "asc" };
@@ -344,14 +344,14 @@ const handlePageChange = (page) => {
     }, {});
     dispatch(setBpmFormSort({ ...updatedSort, activeKey: mappedKey }));
   };
-  
+
 
   const handleRefresh = () => {
     let filters = {pageNo, limit, formSort: formsort, formName: searchText};
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({...filters}));
   };
-  
+
   const activeKey = bpmForms.sort?.activeKey || "formName";
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = bpmForms.sort?.[activeKey]?.sortOrder || "asc";
@@ -374,12 +374,12 @@ const handlePageChange = (page) => {
       id: f._id || f.path || f.name,
     })).filter(r => r.id);
   }, [formData]);
-  
+
   const paginationModel = React.useMemo(
     () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
-  
+
   return (
    <>
     <ReusableTable
@@ -406,7 +406,7 @@ const handlePageChange = (page) => {
         secondaryBtnText={t("Cancel")}
         secondaryBtnAction={handleCloseDelete}
      />
-    </> 
+    </>
   );
 }
 

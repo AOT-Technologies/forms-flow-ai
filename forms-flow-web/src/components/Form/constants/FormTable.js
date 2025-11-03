@@ -236,7 +236,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
           {params.value === "active" ?
             <span className="status-live"></span> :
             <span className="status-draft"></span>}
-          {params.value === "active" ? t("Live") : t("Draft")}
+          {params.value === "active" ? t("Published") : t("Unpublished")}
         </span>
       ),
     },

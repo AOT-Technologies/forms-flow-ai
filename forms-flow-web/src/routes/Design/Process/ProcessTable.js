@@ -281,7 +281,7 @@ const ProcessTable = React.memo(() => {
           {params.row.status === "Published" ?
             <span className="status-live"></span> :
             <span className="status-draft"></span>}
-          {params.row.status === "Published" ? t("Live") : t("Draft")}
+          {params.row.status === "Published" ? t("Published") : t("Unpublished")}
         </span>
       ),
     },

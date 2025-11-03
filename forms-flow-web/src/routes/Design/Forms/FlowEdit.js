@@ -390,7 +390,7 @@ const enableWorkflowChange = async () => {
               spinner
               text={t("Loading...")}
             >
-              <div className="flow-builder">
+              <div className={`flow-builder ${isPublished ? 'published-builder' : 'unpublished-builder'}`}>
                 {!createDesigns ? (
                   <BPMNViewer bpmnXml={processData?.processData || defaultBpmnXml} />
                 ) : (

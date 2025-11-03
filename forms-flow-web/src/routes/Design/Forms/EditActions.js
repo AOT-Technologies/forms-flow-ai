@@ -15,6 +15,7 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
     { label: "JSON", value: "json" }
   ];
   const [selectedValue, setSelectedValue] = useState("json");
+  const [showProgress, setShowProgress] = useState(false);
 
   const handleSelectChange = (value) => {
     setSelectedValue(value);
@@ -24,7 +25,7 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
   const fileName = `${_.camelCase(formTitle)}.json`;
 
   const exportForm = () => {
-    setProgress(0);
+    setProgress(1);
     setIsError(false);
     setIsExporting(true);
 
@@ -84,15 +85,14 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
 
         setProgress(100);
         setIsError(true);
-        
-        // Wait a bit before hiding the progress bar to show error
-        setTimeout(() => {
-          setIsExporting(false);
-        }, 1500);
+      })
+      .finally (() => {
+        setTimeout(() => setShowProgress(false), 3000);
       });
   };
 
   const handleExportClick = () => {
+    setShowProgress(true);
     exportForm();
   };
 
@@ -128,17 +128,15 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
         />
      </div>
 
-     {isExporting && (
-       <div className="export-progress-section">
+     {showProgress && <div className="export-progress-section">
             <div>Exporting PDF</div>
-              <div className="export-progress">
-              <CustomProgressBar 
-                progress={progress} 
-                color={isError ? "error" : undefined}
-              />
-              </div>
-       </div>
-     )}
+            <div className="export-progress">
+            <CustomProgressBar 
+              progress={progress} 
+              color={isError ? "error" : undefined}
+            />
+            </div>
+     </div>}
      
       </div>
           </div>

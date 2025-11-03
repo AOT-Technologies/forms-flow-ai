@@ -108,7 +108,7 @@ function ClientTable() {
       flex: 1,
       sortable: true,
       renderCell: (params) => (
-        <span className="table-cell-ellipsis" title={params.value}>
+        <span title={params.value}>
           {params.value}
         </span>
       ),
@@ -121,7 +121,7 @@ function ClientTable() {
       renderCell: (params) => {
         const description = stripHtml(params.row.description);
         return (
-          <span className="table-cell-ellipsis" title={description}>
+          <span title={description}>
             {description}
           </span>
         );
@@ -133,7 +133,7 @@ function ClientTable() {
       flex: 1,
       sortable: true,
       renderCell: (params) => (
-        <span className="table-cell-ellipsis">
+        <span>
           {params.value}
         </span>
       ),
@@ -146,7 +146,7 @@ function ClientTable() {
       renderCell: (params) => {
         const dateValue = HelperServices?.getLocaldate(params.row.latestSubmission);
         return (
-          <span className="table-cell-ellipsis" title={dateValue}>
+          <span title={dateValue}>
             {dateValue}
           </span>
         );

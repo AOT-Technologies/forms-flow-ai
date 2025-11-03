@@ -251,6 +251,11 @@ const ProcessTable = React.memo(() => {
       sortable: true,
       width: 180,
       height: 55,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "processKey",
@@ -259,6 +264,11 @@ const ProcessTable = React.memo(() => {
       sortable: true,
       width: 180,
       height: 55,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "modified",
@@ -267,7 +277,14 @@ const ProcessTable = React.memo(() => {
       sortable: true,
       width: 180,
       height: 55,
-      renderCell: params => HelperServices.getLocaldate(params.row.modified),
+      renderCell: params => {
+        const dateValue = HelperServices.getLocaldate(params.row.modified);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "status",
@@ -276,14 +293,19 @@ const ProcessTable = React.memo(() => {
       sortable: true,
       width: 180,
       height: 55,
-      renderCell: params => (
-        <span className="d-flex align-items-center">
-          {params.row.status === "Published" ?
-            <span className="status-live"></span> :
-            <span className="status-draft"></span>}
-          {params.row.status === "Published" ? t("Live") : t("Draft")}
-        </span>
-      ),
+      renderCell: params => {
+        const statusText = params.row.status === "Published" ? t("Live") : t("Draft");
+        return (
+          <span className="d-flex align-items-center">
+            {params.row.status === "Published" ?
+              <span className="status-live"></span> :
+              <span className="status-draft"></span>}
+            <span title={statusText}>
+              {statusText}
+            </span>
+          </span>
+        );
+      },
     },
     {
       field: "actions",

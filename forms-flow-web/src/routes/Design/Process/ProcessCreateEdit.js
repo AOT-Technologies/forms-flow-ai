@@ -25,11 +25,13 @@ import {
   V8CustomButton,
   FormStatusIcon,
   FileUploadArea,
-  BreadCrumbs
+  BreadCrumbs,
+  Alert,
+  AlertVariant,
+  CustomProgressBar,
 } from "@formsflow/components";
 import ProcessActionsTab from "./ProcessActionsTab";
 import ExportDiagram from "../../../components/Modals/ExportDiagrams";
-import { toast } from "react-toastify";
 import {
   createXMLFromModeler,
   validateProcess,
@@ -120,8 +122,12 @@ const ProcessCreateEdit = ({ type }) => {
   const [isReverted, setIsReverted] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   const [importLoader, setImportLoader] = useState(false);
+  const [processHistoryLoading, setProcessHistoryLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showImportAlert, setShowImportAlert] = useState(false);
+  const [importAlertMessage, setImportAlertMessage] = useState("");
+  const [importProgress, setImportProgress] = useState(0);
   const isDataFetched = useRef();
    const [activeTab, setActiveTab] = useState({
       primary: 'layout',
@@ -148,15 +154,71 @@ const ProcessCreateEdit = ({ type }) => {
     // }
   }
 };
+  // Parse URL parameters for tab state
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const tab = queryParams.get("tab") || "layout";
+    const sub = queryParams.get("sub");
+    
+    setActiveTab({
+      primary: tab,
+      secondary: sub || null,
+      tertiary: null
+    });
+    
+    // Show editor when switching to layout tab
+    if (tab === "layout") {
+      setShowEditor(true);
+    } else if (tab === "actions") {
+      setShowEditor(false);
+    }
+  }, [location.search, location.pathname]);
+
   // Update history list whenever History tab becomes active
   useEffect(() => {
     if (activeTab.primary === "layout" && activeTab.secondary === "history") {
-      handleProcessHistory();
+      // Only fetch history if processData is loaded and has parentProcessKey
+      // This handles both tab switching and page refresh scenarios
+      if (processData?.parentProcessKey) {
+        handleProcessHistory();
+      }
     }
-  }, [activeTab.primary, activeTab.secondary, paginationModel.pageSize]);
+  }, [
+    activeTab.primary,
+    activeTab.secondary,
+    paginationModel.pageSize,
+    processData?.parentProcessKey,
+  ]);
 
   const handleTabClick = (primary, secondary = null, tertiary = null) => {
     setActiveTab({ primary, secondary, tertiary });
+    
+    // Show editor when switching to layout tab
+    if (primary === 'layout') {
+      setShowEditor(true);
+    } else if (primary === 'actions') {
+      setShowEditor(false);
+    }
+    
+    // Update URL with new tab parameters
+    const queryParams = new URLSearchParams();
+    queryParams.set("tab", primary);
+    if (secondary) queryParams.set("sub", secondary);
+    if (tertiary) queryParams.set("subsub", tertiary);
+    
+    if (isCreate || !processKey) {
+      // On create route (no processKey yet), preserve current pathname and only change search
+      dispatch(
+        push({
+          pathname: location.pathname,
+          search: `?${queryParams.toString()}`,
+        })
+      );
+    } else {
+      // On edit route, update URL with tab parameters
+      const newUrl = `${redirectUrl}${Process.route}/edit/${processKey}?${queryParams.toString()}`;
+      dispatch(push(newUrl));
+    }
   };
     /**
    * Manages simulated upload progress while awaiting server response
@@ -252,7 +314,15 @@ const ProcessCreateEdit = ({ type }) => {
     // isError: historiesError,
   } = useMutation(
     ({ parentProcessKey, page, limit }) =>
-      getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
+      getProcessHistory({ parentProcessKey, page, limit }), // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
+    {
+      onSuccess: () => {
+        setProcessHistoryLoading(false);
+      },
+      onError: () => {
+        setProcessHistoryLoading(false);
+      },
+    }
   );
 
   /* --------- fetch a perticular history when click the revert button -------- */
@@ -265,6 +335,10 @@ const ProcessCreateEdit = ({ type }) => {
     onSuccess: () => {
       setIsReverted(true);
       enableWorkflowChange();
+      // Redirect to layout tab after successful revert
+      if (processKey) {
+        handleTabClick('layout', null, null);
+      }
     },
   });
 
@@ -311,8 +385,7 @@ const ProcessCreateEdit = ({ type }) => {
     isCreateMode = isCreate,
   }) => {
     try {
-      const modeler = getModeler(isBPMN);
-      const xml = await createXMLFromModeler(modeler);
+      const xml = await getProcessXML();
 
       const isValid = validateXml(xml, isBPMN);
       if (!isValid) return;
@@ -320,7 +393,7 @@ const ProcessCreateEdit = ({ type }) => {
       const isEqual = await checkIfEqual(isCreate, xml);
       if (!isReverted && !isCreateMode && isEqual){
         disableWorkflowChange();
-        return handleAlreadyUpToDate(isPublishing);
+        return;
       }
 
       setSavingFlow(true);
@@ -345,6 +418,30 @@ const ProcessCreateEdit = ({ type }) => {
       : dmnRef.current?.getDmnModeler();
   };
 
+  // Helper function to get XML safely - tries modeler first, falls back to saved data
+  const getProcessXML = async () => {
+    const modeler = getModeler(isBPMN);
+    
+    // If modeler is available, get XML from it (includes any unsaved changes)
+    if (modeler) {
+      try {
+        return await createXMLFromModeler(modeler);
+      } catch (error) {
+        console.error("Error getting XML from modeler:", error);
+        // Fall through to use saved data
+      }
+    }
+    
+    // Fallback to saved process data (e.g., when on History tab)
+    const savedXml = getProcessDataXML();
+    if (savedXml) {
+      return savedXml;
+    }
+    
+    // If no saved data and no modeler, throw error
+    throw new Error(t("Unable to get process XML. Please ensure the process is saved or the editor is available."));
+  };
+
   const validateXml = (xml, isBPMN) => {
     return isBPMN
       ? validateProcess(xml, lintErrors, t)
@@ -357,13 +454,13 @@ const ProcessCreateEdit = ({ type }) => {
     return await comparisonFunc(processData?.processData, xml);
   };
 
-  const handleAlreadyUpToDate = (isPublished) => {
-    if (!isPublished) {
-      toast.success(t(`${Process.name} is already up to date`));
-    }
-  };
-
   const handleProcessHistory = () => {
+    // Only fetch if parentProcessKey exists
+    if (!processData?.parentProcessKey) {
+      setProcessHistoryLoading(false);
+      return;
+    }
+    setProcessHistoryLoading(true);
     fetchAllHistories({
       parentProcessKey: processData.parentProcessKey,
       page: 1,
@@ -373,6 +470,11 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handlePaginationModelChange = (model) => {
     setPaginationModel(model);
+    // Only fetch if parentProcessKey exists
+    if (!processData?.parentProcessKey) {
+      return;
+    }
+    setProcessHistoryLoading(true);
     fetchAllHistories({
       parentProcessKey: processData.parentProcessKey,
       page: (model?.page || 0) + 1,
@@ -381,6 +483,10 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const loadMoreBtnAction = () => {
+    // Only fetch if parentProcessKey exists
+    if (!processData?.parentProcessKey) {
+      return;
+    }
     fetchAllHistories({ parentProcessKey: processData.parentProcessKey });
   };
 
@@ -399,18 +505,8 @@ const ProcessCreateEdit = ({ type }) => {
       });
   };
 
-  const handleSaveSuccess = (response, isCreate, isPublished) => {
-    const processType = Process.type; // Uses Process.type directly
-    const actionMessage = isCreate ? t("created") : t("updated");
-    const processName = response.data?.name || response.data?.processKey;
-
-    if (!isPublished) {
-      toast.success(
-        t(
-          `${processType} ${processName} has been ${actionMessage} successfully`
-        )
-      );
-    }
+  const handleSaveSuccess = (response, isCreate) => {
+    // Toast message removed - using Alert component instead
 
     if (isCreate) {
       const editPath = Process.route; // Uses Process.route for the edit path
@@ -430,8 +526,7 @@ const ProcessCreateEdit = ({ type }) => {
 
   const confirmPublishOrUnPublish = async () => {
     try {
-      const modeler = getModeler(isBPMN);
-      const xml = await createXMLFromModeler(modeler);
+      const xml = await getProcessXML();
 
       const isValid = validateXml(xml, isBPMN);
       if (!isPublished && !isValid) return;
@@ -451,9 +546,7 @@ const ProcessCreateEdit = ({ type }) => {
 
       await performAction(actionFunction, xml, response);
 
-      toast.success(
-        t(`${isPublished ? "Unpublished" : "Published"} successfully`)
-      );
+      // Toast message removed - using Alert component instead
 
       if (!isPublished) {
         redirectToFlow();
@@ -461,7 +554,11 @@ const ProcessCreateEdit = ({ type }) => {
 
       setIsPublished(!isPublished);
     } catch (error) {
-      handlePublishError(isPublished, type);
+      console.error("Error during publish/unpublish:", error);
+      setErrorMessage(
+        t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${Process.type}. Please try again.`)
+      );
+      setShowErrorModal(true);
     } finally {
       setIsPublishLoading(false);
     }
@@ -495,12 +592,7 @@ const ProcessCreateEdit = ({ type }) => {
     dispatch(push(`${redirectUrl}${Process.route}`));
   };
 
-  const handlePublishError = (isPublished, type) => {
-    toast.error(
-      t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${type}`)
-    );
-  };
-
+ 
   const closeModal = () => {
     setModalType("");
     handleToggleConfirmModal();
@@ -570,7 +662,6 @@ const ProcessCreateEdit = ({ type }) => {
       if (ref.current) {
         ref.current?.handleImport(fileContent);
         enableWorkflowChange();
-        // toast.success(t(`${Process.type} imported successfully`));
       }
     } catch (error) {
       console.error('Import failed:', error);
@@ -632,11 +723,28 @@ const ProcessCreateEdit = ({ type }) => {
   );
   // Handle importing process and dispatching upon success
   const processImport = async (fileContent) => {
+    let progressInterval = null;
     try {
       const { xml } = await extractFileDetails(fileContent);
       if (!xml) return;
       const processId = processData.id;
       const fileType = Process.extension;
+      
+      // Show import progress alert
+      setImportAlertMessage(t(`Importing ${Process.type}...`));
+      setShowImportAlert(true);
+      setImportProgress(0);
+      
+      // Simulate progress
+      progressInterval = setInterval(() => {
+        setImportProgress((prev) => {
+          if (prev >= 90) {
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 150);
+      
       if (processId) {
         // Update an existing process
         const response = await updateProcess({
@@ -644,8 +752,27 @@ const ProcessCreateEdit = ({ type }) => {
           data: xml,
           type: fileType === ".bpmn" ? "bpmn" : "dmn",
         });
+        
+        // Clear progress interval
+        if (progressInterval) {
+          clearInterval(progressInterval);
+        }
+        setImportProgress(100);
+        
         dispatch(setProcessData(response?.data));
         handleImportData(xml);
+        
+        // Show success message
+        const successMessage = t(`${Process.type} imported successfully`);
+        setImportAlertMessage(successMessage);
+        
+        // Auto-hide alert after 3 seconds
+        setTimeout(() => {
+          setShowImportAlert(false);
+          setImportProgress(0);
+        }, 3000);
+        
+        // Redirect to layout page
         dispatch(
           push(
             `${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`
@@ -657,7 +784,24 @@ const ProcessCreateEdit = ({ type }) => {
           data: xml,
           type: fileType === ".bpmn" ? "bpmn" : "dmn",
         });
+        
+        // Clear progress interval
+        if (progressInterval) {
+          clearInterval(progressInterval);
+        }
+        setImportProgress(100);
+        
         if (response) {
+          // Show success message
+          const successMessage = t(`${Process.type} imported successfully`);
+          setImportAlertMessage(successMessage);
+          
+          // Auto-hide alert after 3 seconds
+          setTimeout(() => {
+            setShowImportAlert(false);
+            setImportProgress(0);
+          }, 3000);
+          
           dispatch(
             push(
               `${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`
@@ -668,9 +812,16 @@ const ProcessCreateEdit = ({ type }) => {
       resetUploadState();
     } catch (error) {
       console.error("Error during import:", error);
-      setImportError(
-        error?.response?.data?.message || "An error occurred during import."
-      );
+      const errorMessage = error?.response?.data?.message || t("An error occurred during import.");
+      setImportError(errorMessage);
+      
+      // Hide alert on error
+      if (progressInterval) {
+        clearInterval(progressInterval);
+      }
+      setShowImportAlert(false);
+      setImportProgress(0);
+      // Error message shown via importError state in FileUploadArea
     }
   };
 
@@ -698,6 +849,7 @@ const ProcessCreateEdit = ({ type }) => {
         ariaLabel={t(
           `Drag and drop a ${Process.extension} file or click to browse for ${Process.type}`
         )}
+        disabled={isPublished}
       />
     );
   };
@@ -707,8 +859,7 @@ const ProcessCreateEdit = ({ type }) => {
   // };
 
   const editorActions = () => {
-    setShowEditor(false);
-    setActiveTab({ primary: 'actions', secondary: null, tertiary: null });
+    handleTabClick('actions', null, null);
   };
 
   const handleDuplicateProcess = () => {
@@ -895,7 +1046,14 @@ const ProcessCreateEdit = ({ type }) => {
               dataTestId={`${diagramType.toLowerCase()}-breadcrumb`}
               ariaLabel={t(`${diagramType} Breadcrumb`)}
             />
-
+          <div className="toast-section">
+              <Alert
+                message={importAlertMessage}
+                variant={AlertVariant.FOCUS}
+                isShowing={showImportAlert}
+                rightContent={<CustomProgressBar progress={importProgress} />}
+              />
+            </div>
             <div className="header-section-1">
               <div className="section-seperation-left">
                  <p className="form-title">
@@ -942,10 +1100,7 @@ const ProcessCreateEdit = ({ type }) => {
                 <div className="section-seperation-left">
                     <V8CustomButton
                         label={t("Layout")}
-                        onClick={() => {
-                          setShowEditor(true);
-                          setActiveTab({ primary: 'layout', secondary: null, tertiary: null });
-                        }}
+                        onClick={() => handleTabClick('layout', null, null)}
                         selected={activeTab.primary === 'layout'}
                         dataTestId="designer-layout-testid"
                         ariaLabel={t("Designer Layout Button")}
@@ -974,7 +1129,7 @@ const ProcessCreateEdit = ({ type }) => {
                   />
                 </div>
              </div> }   
-        <div className="body-section bpmn-dmn-edit-layout">
+        <div className="body-section processedit-layout">
           {/* {renderTabContent()} */}
 
       
@@ -997,6 +1152,8 @@ const ProcessCreateEdit = ({ type }) => {
             revertBtnAction={fetchHistoryData}
             historyCount={historiesData?.totalCount || 0}
             currentVersionId={processData.id}
+            refreshBtnAction={handleProcessHistory}
+            loading={processHistoryLoading}
             disableAllRevertButton={isPublished}
             paginationModel={paginationModel}
             handlePaginationModelChange={handlePaginationModelChange}

@@ -6,11 +6,14 @@ import {
   V8CustomDropdownButton,
   BuildModal,
   RefreshIcon,
-  ReusableTable
+  ReusableTable,
+  Alert,
+  AlertVariant,
+  CustomProgressBar
 } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import { fetchAllProcesses } from "../../../apiManager/services/processServices";
+import { fetchAllProcesses, getProcessDetails } from "../../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { push } from "connected-react-router";
 import ImportProcess from "../../../components/Modals/ImportProcess";
@@ -19,7 +22,9 @@ import {
   setDmnSearchText,
   setIsPublicDiagram,
   setBpmSort,
-  setDmnSort
+  setDmnSort,
+  setProcessDiagramXML,
+  setDescisionDiagramXML
 } from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
 import { HelperServices, StyleServices } from "@formsflow/service";
@@ -89,6 +94,8 @@ const ProcessTable = React.memo(() => {
   const [importProcess, setImportProcess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [isDuplicating, setIsDuplicating] = useState(false);
+  const [duplicateProgress, setDuplicateProgress] = useState(0);
 
   const currentState = isBPMN ? bpmnState : dmnState;
   const setCurrentState = isBPMN ? setBpmnState : setDmnState;
@@ -210,6 +217,66 @@ const ProcessTable = React.memo(() => {
     );
   };
 
+  const handleDuplicate = async (row) => {
+    let progressInterval = null;
+    try {
+      setIsDuplicating(true);
+      setDuplicateProgress(1);
+      
+      // Simulate progress
+      const startProgressSimulation = () => {
+        progressInterval = setInterval(() => {
+          setDuplicateProgress((prev) => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return 90; // Cap at 90% until real operation completes
+            }
+            return prev + 5; // Increment by 5%
+          });
+        }, 150);
+      };
+      startProgressSimulation();
+      
+      // Fetch process details to get the processData
+      const response = await getProcessDetails({
+        processKey: row.processKey,
+        tenant_key: tenantKey
+      });
+      
+      // Set the diagram XML to Redux based on process type
+      if (isBPMN) {
+        dispatch(setProcessDiagramXML(response.data.processData));
+      } else {
+        dispatch(setDescisionDiagramXML(response.data.processData));
+      }
+      
+      // Clear the simulation interval
+      if (progressInterval) {
+        clearInterval(progressInterval);
+      }
+      
+      setDuplicateProgress(100);
+      
+      // Wait a bit before redirecting to show completion
+      setTimeout(() => {
+        // Navigate to create route only after progress reaches 100
+        dispatch(push(`${redirectUrl}${viewType}/create`));
+      }, 500);
+    } catch (error) {
+      console.error("Error duplicating process:", error);
+      // Clear the simulation interval on error
+      if (progressInterval) {
+        clearInterval(progressInterval);
+      }
+      setDuplicateProgress(100);
+      // Wait a bit before hiding the alert to show completion/error
+      setTimeout(() => {
+        setIsDuplicating(false);
+        setDuplicateProgress(0);
+      }, 3000);
+    }
+  };
+
   const handleCreateProcess = () => {
     if (isBPMN) {
       navigateToSubflowBuild(dispatch, tenantKey);
@@ -327,7 +394,12 @@ const ProcessTable = React.memo(() => {
           label={t("Edit")}
           variant="secondary"
           menuPosition="right"
-          dropdownItems={[]}
+          dropdownItems={[
+            {
+              label: t(`Duplicate ${ProcessContents.processType}`),
+              onClick: () => handleDuplicate(params.row),
+            },
+          ]}
           onLabelClick= {() => gotoEdit(params.row)}
         />
         )
@@ -347,7 +419,14 @@ const ProcessTable = React.memo(() => {
   };
   return (
     <>
-      <div className="toast-section">{/* <p>Toast message</p> */}</div>
+      <div className="toast-section">
+        <Alert
+          message={t(`Duplicating the ${ProcessContents.processType}`)}
+          variant={AlertVariant.FOCUS}
+          isShowing={isDuplicating}
+          rightContent={<CustomProgressBar progress={duplicateProgress} />}
+        />
+      </div>
       <div className="header-section-1">
         <div className="section-seperation-left">
           <h4> Build</h4>
@@ -356,7 +435,7 @@ const ProcessTable = React.memo(() => {
           {(createDesigns || manageAdvancedWorkFlows) && (
             <V8CustomButton
               variant="primary"
-              label={t(`New ${ProcessContents.processType}`)}
+              label={t(`Create new ${ProcessContents.processType}`)}
               onClick={handleCreateProcess}
               dataTestid={`create-${ProcessContents.processType}-button`}
               ariaLabel={` Create ${ProcessContents.processType}`}
@@ -378,6 +457,7 @@ const ProcessTable = React.memo(() => {
           />
         </div>
       </div>
+      <div className="body-section">
       <ReusableTable
         columns={columns}
         rows={processList}
@@ -395,7 +475,7 @@ const ProcessTable = React.memo(() => {
         getRowId={(row) => row.id}
         sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}
       />
-
+      </div>
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}

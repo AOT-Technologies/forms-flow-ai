@@ -1,8 +1,7 @@
-import React, { useMemo, useCallback, forwardRef, memo } from "react";
+import React, { useMemo, forwardRef, memo } from "react";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
-import { useTranslation } from "react-i18next";
-import { RefreshIcon, V8CustomButton, V8CustomDropdownButton, NewSortDownIcon } from "@formsflow/components";
+import { RefreshIcon, V8CustomButton, NewSortDownIcon } from "@formsflow/components";
 import { StyleServices } from "@formsflow/service";
 import PropTypes from "prop-types";
 
@@ -28,19 +27,9 @@ const FormListGrid = forwardRef(function FormListGrid(
     sx = { height: { sm: 400, md: 510, lg: 665 }, width: "100%" },
     disableColumnResize = false,
     onRefresh,
-    // Action column props
-    dropdownItems = [],
-    isDuplicating = false,
-    onActionLabelClick,
-    // Legacy props for backward compatibility
-    onSubmitSelect,
-    onDesignerEdit,
-    onProcessEdit,
-    canProcessEdit,
   },
   ref
 ) {
-  const { t } = useTranslation();
   const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
   // Default sort icons for DataGrid
@@ -60,19 +49,7 @@ const FormListGrid = forwardRef(function FormListGrid(
     [iconColor]
   );
 
-  // Safe dropdown items - support both array and function
-  const getDropdownItems = useCallback((row) => {
-    if (typeof dropdownItems === "function") {
-      const items = dropdownItems(row);
-      return Array.isArray(items) ? items : [];
-    }
-    if (Array.isArray(dropdownItems)) {
-      return dropdownItems;
-    }
-    return [];
-  }, [dropdownItems]);
-
-  // Enhance columns with refresh button and action handlers
+  // Enhance columns with refresh button in header if onRefresh is provided
   const effectiveColumns = useMemo(() => {
     return (columns || []).map((col) => {
       // Inject refresh button into header if onRefresh is provided
@@ -89,82 +66,9 @@ const FormListGrid = forwardRef(function FormListGrid(
           ),
         };
       }
-
-      // Inject row-level action buttons if no custom renderCell exists
-      if (col?.field === "actions" && !col?.renderCell) {
-        col = {
-          ...col,
-          renderCell: (params) => {
-            // Use dropdown if dropdownItems provided
-            const rowDropdownItems = getDropdownItems(params.row);
-            if (rowDropdownItems.length > 0) {
-              return (
-                <V8CustomDropdownButton
-                  label={t("Edit")}
-                  variant="secondary"
-                  menuPosition="right"
-                  dropdownItems={rowDropdownItems}
-                  disabled={isDuplicating}
-                  onLabelClick={() => {
-                    if (typeof onActionLabelClick === "function") {
-                      onActionLabelClick(params.row);
-                    } else if (typeof onDesignerEdit === "function") {
-                      onDesignerEdit(params.row);
-                    } else if (typeof onProcessEdit === "function" && canProcessEdit) {
-                      onProcessEdit(params.row);
-                    }
-                  }}
-                />
-              );
-            }
-
-            // Fallback to simple buttons based on provided handlers
-            if (typeof onSubmitSelect === "function") {
-              return (
-                <V8CustomButton
-                  label={t("Select")}
-                  variant="secondary"
-                  onClick={() => onSubmitSelect(params.row)}
-                />
-              );
-            }
-            if (typeof onDesignerEdit === "function") {
-              return (
-                <V8CustomButton
-                  label={t("Edit")}
-                  variant="secondary"
-                  onClick={() => onDesignerEdit(params.row)}
-                />
-              );
-            }
-            if (typeof onProcessEdit === "function" && canProcessEdit) {
-              return (
-                <V8CustomButton
-                  label={t("Edit")}
-                  variant="secondary"
-                  onClick={() => onProcessEdit(params.row)}
-                />
-              );
-            }
-            return null;
-          },
-        };
-      }
       return col;
     });
-  }, [
-    columns,
-    onRefresh,
-    iconColor,
-    getDropdownItems,
-    isDuplicating,
-    onActionLabelClick,
-    onDesignerEdit,
-    onProcessEdit,
-    canProcessEdit,
-    onSubmitSelect,
-    t,
-  ]);
+  }, [columns, onRefresh, iconColor]);
 
   // Compose sx to optionally hide column separators when resizing is disabled
   const composedGridSx = useMemo(() => {
@@ -226,13 +130,6 @@ FormListGrid.propTypes = {
   sx: PropTypes.object,
   disableColumnResize: PropTypes.bool,
   onRefresh: PropTypes.func,
-  dropdownItems: PropTypes.array,
-  isDuplicating: PropTypes.bool,
-  onActionLabelClick: PropTypes.func,
-  onSubmitSelect: PropTypes.func,
-  onDesignerEdit: PropTypes.func,
-  onProcessEdit: PropTypes.func,
-  canProcessEdit: PropTypes.bool,
 };
 
 export default memo(FormListGrid);

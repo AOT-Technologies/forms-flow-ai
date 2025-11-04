@@ -32,7 +32,7 @@ import { unPublishForm, resetFormProcessData, getApplicationCount, getProcessDet
 import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import FormListGrid from "../../../components/Form/FormListGrid";
 import { HelperServices } from "@formsflow/service";
-import { PromptModal } from "@formsflow/components";
+import { PromptModal, V8CustomDropdownButton } from "@formsflow/components";
 import { formCreate, formImport, validateFormName } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import _cloneDeep from "lodash/cloneDeep";
@@ -512,6 +512,27 @@ const List = React.memo((props) => {
     }
   }, [createSubmissions, createDesigns, viewDesigns, fetchSubmitForms]);
 
+  // Dropdown items for designer mode
+  const getDesignerDropdownItems = useCallback((row) => {
+    return [
+      {
+        label: t("Duplicate form"),
+        onClick: () => handleDuplicate(row),
+      },
+      {
+        label: row.status === "active" ? t("Unpublish") : t("Delete"),
+        onClick: () => {
+          if (row.status === "active") {
+            // dispatch(unPublishForm(row.mapperId));
+          } else {
+            deleteAction(row);
+          }
+        },
+        className: row.status === "active" ? "" : "delete-dropdown-item",
+      },
+    ];
+  }, [t, handleDuplicate, deleteAction]);
+
   // Column definitions
   const designerGridFieldToSortKey = useMemo(() => ({
     title: "formName",
@@ -592,9 +613,22 @@ const List = React.memo((props) => {
         flex: 1,
         sortable: false,
         cellClassName: "last-column",
+        renderCell: (params) => {
+          const rowDropdownItems = getDesignerDropdownItems(params.row);
+          return (
+            <V8CustomDropdownButton
+              label={t("Edit")}
+              variant="secondary"
+              menuPosition="right"
+              dropdownItems={rowDropdownItems}
+              disabled={isDuplicating}
+              onLabelClick={() => viewOrEditForm(params.row._id, "edit")}
+            />
+          );
+        },
       },
     ];
-  }, [t]);
+  }, [t, getDesignerDropdownItems, isDuplicating, viewOrEditForm]);
 
   const submitGridFieldToSortKey = useMemo(() => ({
     title: "formName",
@@ -655,9 +689,16 @@ const List = React.memo((props) => {
         flex: 1,
         sortable: false,
         cellClassName: "last-column",
+        renderCell: (params) => (
+          <V8CustomButton
+            label={t("Select")}
+            variant="secondary"
+            onClick={() => navigateToFormEntries(dispatch, tenantKey, params.row.parentFormId)}
+          />
+        ),
       },
     ];
-  }, [t]);
+  }, [t, dispatch, tenantKey]);
 
   // Rows mapping
   const designerRows = useMemo(() => {
@@ -759,27 +800,6 @@ const List = React.memo((props) => {
     });
   }, [dispatch, submitPageNo, submitLimit]);
 
-  // Dropdown items for designer mode
-  const getDesignerDropdownItems = useCallback((row) => {
-    return [
-      {
-        label: t("Duplicate form"),
-        onClick: () => handleDuplicate(row),
-      },
-      {
-        label: row.status === "active" ? t("Unpublish") : t("Delete"),
-        onClick: () => {
-          if (row.status === "active") {
-            // dispatch(unPublishForm(row.mapperId));
-          } else {
-            deleteAction(row);
-          }
-        },
-        className: row.status === "active" ? "" : "delete-dropdown-item",
-      },
-    ];
-  }, [t, handleDuplicate, deleteAction]);
-
   const renderTable = () => {
     if (createDesigns || viewDesigns) {
       return (
@@ -794,9 +814,6 @@ const List = React.memo((props) => {
           onPaginationModelChange={onDesignerPaginationModelChange}
           getRowId={(row) => row.id}
           onRefresh={fetchDesignerForms}
-          dropdownItems={getDesignerDropdownItems}
-          isDuplicating={isDuplicating}
-          onActionLabelClick={(row) => viewOrEditForm(row._id, "edit")}
         />
       );
     }
@@ -813,7 +830,6 @@ const List = React.memo((props) => {
           onPaginationModelChange={onSubmitPaginationModelChange}
           getRowId={(row) => row.id}
           onRefresh={fetchSubmitForms}
-          onSubmitSelect={(row) => navigateToFormEntries(dispatch, tenantKey, row.parentFormId)}
         />
       );
     }

@@ -402,7 +402,7 @@ const ProcessCreateEdit = ({ type }) => {
       disableWorkflowChange();
       dispatch(setProcessData(response.data));
       isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
-      handleSaveSuccess(response, isCreateMode, isPublishing);
+      handleSaveSuccess(response, isCreateMode);
       return response.data;
     } catch (error) {
       handleError();

@@ -12,6 +12,7 @@ import { CustomSearch ,
   BreadCrumbs,
 } from "@formsflow/components";
 import PropTypes from "prop-types";
+import { navigateToFormEntries } from "../../../helper/routerHelper";
 
 // Extracted Search Component
 const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
@@ -34,6 +35,7 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
 const SubmitList = React.memo(({ getFormsInit }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   // Redux Selectors
   const searchText = useSelector((state) => state.bpmForms.clientFormSearch);
@@ -118,7 +120,10 @@ const SubmitList = React.memo(({ getFormsInit }) => {
           </div>
        </div>
       <div className="body-section">
-        <FormListGrid mode="submit" />
+        <FormListGrid
+          mode="submit"
+          onSubmitSelect={(row) => navigateToFormEntries(dispatch, tenantKey, row.parentFormId)}
+        />
       </div>
     </>
   );

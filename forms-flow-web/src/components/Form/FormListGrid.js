@@ -4,7 +4,7 @@ import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
 import { HelperServices } from "@formsflow/service";
-import { RefreshIcon, V8CustomButton } from "@formsflow/components";
+import { RefreshIcon, V8CustomButton, V8CustomDropdownButton, NewSortDownIcon } from "@formsflow/components";
 import {
   setClientFormLimit,
   setClientFormListPage,
@@ -18,14 +18,41 @@ import { setFormSearchLoading } from "../../actions/checkListActions";
 import { fetchBPMFormList } from "../../apiManager/services/bpmFormServices";
 import { fetchAllProcesses } from "../../apiManager/services/processServices";
 import { setBpmSort, setDmnSort } from "../../actions/processActions";
+import { StyleServices } from "@formsflow/service";
 
 /**
  * Common server-backed DataGrid for forms listing.
  * mode: 'submit' | 'designer'
  */
-const FormListGrid = ({ mode = "submit", processType, onProcessEdit, canProcessEdit }) => {
+const FormListGrid = ({ mode = "submit", processType, onProcessEdit, canProcessEdit, onDesignerEdit, onSubmitSelect, disableColumnResize = true, dropdownItems = [], isDuplicating, viewOrEditForm }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
+  const dropdownItemsSafe = useMemo(
+    () => {
+      if (!dropdownItems || !Array.isArray(dropdownItems)) {
+        return [];
+      }
+      return dropdownItems;
+    },
+    [dropdownItems]
+  );
+  // Default sort icons for DataGrid
+  const defaultSlots = useMemo(
+    () => ({
+      columnSortedDescendingIcon: () => (
+        <div>
+          <NewSortDownIcon color={iconColor} />
+        </div>
+      ),
+      columnSortedAscendingIcon: () => (
+        <div style={{ transform: "rotate(180deg)" }}>
+          <NewSortDownIcon color={iconColor} />
+        </div>
+      ),
+    }),
+    [iconColor]
+  );
 
   const isSubmit = mode === "submit";
   const isProcess = mode === "process";
@@ -275,7 +302,7 @@ const FormListGrid = ({ mode = "submit", processType, onProcessEdit, canProcessE
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"
-          icon={<RefreshIcon />}
+          icon={<RefreshIcon color={iconColor} />}
           iconOnly
           onClick={() => {
             if (isProcess) {
@@ -320,12 +347,48 @@ const FormListGrid = ({ mode = "submit", processType, onProcessEdit, canProcessE
       sortable: false,
       cellClassName: "last-column",
       renderCell: (params) => {
-        if (isProcess && canProcessEdit && typeof onProcessEdit === "function") {
+        if (isProcess && canProcessEdit) {
           return (
-            <V8CustomButton
+            <V8CustomDropdownButton
               label={t("Edit")}
               variant="secondary"
-              onClick={() => onProcessEdit(params.row)}
+              menuPosition="right"
+              dropdownItems={dropdownItemsSafe}
+              disabled={isDuplicating}
+              onLabelClick={() => {
+                if (typeof viewOrEditForm === "function") {
+                  viewOrEditForm(params.row._id, "edit");
+                } else if (typeof onProcessEdit === "function") {
+                  onProcessEdit(params.row);
+                }
+              }}
+            />
+          );
+        }
+        if (isSubmit && typeof onSubmitSelect === "function") {
+          return (
+            <V8CustomButton
+              label={t("Select")}
+              variant="secondary"
+              onClick={() => onSubmitSelect(params.row)}
+            />
+          );
+        }
+        if (!isProcess && !isSubmit) {
+          return (
+            <V8CustomDropdownButton
+              label={t("Edit")}
+              variant="secondary"
+              menuPosition="right"
+              dropdownItems={dropdownItemsSafe}
+              disabled={isDuplicating}
+              onLabelClick={() => {
+                if (typeof viewOrEditForm === "function") {
+                  viewOrEditForm(params.row._id, "edit");
+                } else if (typeof onDesignerEdit === "function") {
+                  onDesignerEdit(params.row);
+                }
+              }}
             />
           );
         }
@@ -347,6 +410,10 @@ const FormListGrid = ({ mode = "submit", processType, onProcessEdit, canProcessE
     t,
     canProcessEdit,
     onProcessEdit,
+    dropdownItemsSafe,
+    isDuplicating,
+    viewOrEditForm,
+    onDesignerEdit,
   ]);
 
   // Rows mapping
@@ -450,6 +517,15 @@ const FormListGrid = ({ mode = "submit", processType, onProcessEdit, canProcessE
     });
   }, [dispatch, isProcess, isSubmit, pageNo, limit]);
 
+  // Apply column-resize disabling similar to ReusableTable
+  const gridSx = useMemo(() => ({
+    ...(disableColumnResize && {
+      '& .MuiDataGrid-columnSeparator': {
+        display: 'none !important',
+      },
+    }),
+  }), [disableColumnResize]);
+
   return (
     <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
       <DataGrid
@@ -457,6 +533,13 @@ const FormListGrid = ({ mode = "submit", processType, onProcessEdit, canProcessE
         rows={rows}
         rowCount={isProcess ? totalProcesses : totalForms}
         loading={isProcess ? isProcessLoading : searchFormLoading}
+        slots={defaultSlots}
+        slotProps={{
+          loadingOverlay: {
+            variant: 'skeleton',
+            noRowsVariant: 'skeleton',
+          },
+        }}
         paginationMode="server"
         sortingMode="server"
         sortModel={sortModel}
@@ -468,6 +551,8 @@ const FormListGrid = ({ mode = "submit", processType, onProcessEdit, canProcessE
         rowHeight={55}
         disableColumnMenu
         disableRowSelectionOnClick
+        disableColumnResize={disableColumnResize}
+        sx={gridSx}
       />
     </Paper>
   );

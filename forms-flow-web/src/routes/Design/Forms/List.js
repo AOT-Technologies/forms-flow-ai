@@ -46,7 +46,7 @@ import {
 } from "@formsflow/components";
 import { useMutation } from "react-query";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
-import { navigateToDesignFormEdit, navigateToDesignFormBuild } from "../../../helper/routerHelper.js";
+import { navigateToDesignFormEdit, navigateToDesignFormBuild, navigateToFormEntries } from "../../../helper/routerHelper.js";
 import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
 
 const List = React.memo((props) => {
@@ -329,10 +329,20 @@ const List = React.memo((props) => {
 
   const renderTable = () => {
     if (createDesigns || viewDesigns) {
-      return <FormListGrid mode="designer" />;
+      return (
+        <FormListGrid
+          mode="designer"
+          onDesignerEdit={(row) => navigateToDesignFormEdit(dispatch, tenantKey, row._id)}
+        />
+      );
     }
     if (createSubmissions) {
-      return <FormListGrid mode="submit" />;
+      return (
+        <FormListGrid
+          mode="submit"
+          onSubmitSelect={(row) => navigateToFormEntries(dispatch, tenantKey, row.parentFormId)}
+        />
+      );
     }
     return null;
   };

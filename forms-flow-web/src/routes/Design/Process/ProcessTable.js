@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CustomSearch, V8CustomButton, BuildModal } from "@formsflow/components";
-import FormListGrid from "../../../components/Form/FormListGrid";
+import WrappedTable from "../../../components/Form/WrappedTable";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
@@ -88,7 +88,7 @@ const ProcessTable = React.memo(() => {
 
   // const handleRefresh = () => {};
 
-  // fetching handled by FormListGrid
+  // fetching handled by WrappedTable
 
   //Update api call when search field is empty
   useEffect(() => {
@@ -105,7 +105,7 @@ const ProcessTable = React.memo(() => {
     } else {
       dispatch(setDmnSearchText(searchDMN));
     }
-    // FormListGrid will handle resetting pagination
+    // WrappedTable will handle resetting pagination
   };
 
 
@@ -291,7 +291,7 @@ const ProcessTable = React.memo(() => {
     },
   ];
 
-  // Grid moved to FormListGrid
+  // Grid moved to WrappedTable
   return (
     <>
       <div className="toast-section">{/* <p>Toast message</p> */}</div>
@@ -325,7 +325,7 @@ const ProcessTable = React.memo(() => {
           />
         </div>
       </div>
-      <FormListGrid
+      <WrappedTable
         columns={columns}
         rows={rows}
         rowCount={totalCount}

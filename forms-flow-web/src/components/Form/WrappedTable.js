@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
  * Generic DataGrid wrapper for forms/processes listing.
  * Accepts all data and handlers as props to keep it page-agnostic.
  */
-const FormListGrid = forwardRef(function FormListGrid(
+const WrappedTable = forwardRef(function WrappedTable(
   {
     columns = [],
     rows = [],
@@ -27,6 +27,10 @@ const FormListGrid = forwardRef(function FormListGrid(
     sx = { height: { sm: 400, md: 510, lg: 665 }, width: "100%" },
     disableColumnResize = false,
     onRefresh,
+    sortingMode = "server",
+    paginationMode = "server",
+    noRowsLabel,
+    dataGridProps = {},
   },
   ref
 ) {
@@ -78,16 +82,34 @@ const FormListGrid = forwardRef(function FormListGrid(
     return { ...hideSeparator, ...(sx || {}) };
   }, [disableColumnResize, sx]);
 
+  // Merge DataGrid sx overrides with composed styles
+  const mergedDataGridSx = useMemo(() => {
+    const incomingSx = (dataGridProps && dataGridProps.sx) || {};
+    return { ...composedGridSx, ...incomingSx };
+  }, [composedGridSx, dataGridProps]);
+
+  // Allow consumers to add/override slots and slotProps via dataGridProps
+  const finalSlots = useMemo(() => ({
+    ...defaultSlots,
+    ...(dataGridProps && dataGridProps.slots ? dataGridProps.slots : {}),
+  }), [defaultSlots, dataGridProps]);
+
+  const finalSlotProps = useMemo(() => ({
+    loadingOverlay: { variant: "skeleton", noRowsVariant: "skeleton" },
+    ...(dataGridProps && dataGridProps.slotProps ? dataGridProps.slotProps : {}),
+  }), [dataGridProps]);
+
   return (
     <Paper sx={sx}>
       <DataGrid
         ref={ref}
+        {...dataGridProps}
         columns={effectiveColumns}
         rows={rows}
         rowCount={rowCount}
         loading={loading}
-        sortingMode="server"
-        paginationMode="server"
+        sortingMode={sortingMode}
+        paginationMode={paginationMode}
         sortModel={sortModel}
         onSortModelChange={onSortModelChange}
         paginationModel={paginationModel}
@@ -98,19 +120,18 @@ const FormListGrid = forwardRef(function FormListGrid(
         disableColumnMenu={disableColumnMenu}
         disableRowSelectionOnClick={disableRowSelectionOnClick}
         disableColumnResize={disableColumnResize}
-        slots={defaultSlots}
-        slotProps={{
-          loadingOverlay: { variant: "skeleton", noRowsVariant: "skeleton" },
-        }}
-        sx={composedGridSx}
+        slots={finalSlots}
+        slotProps={finalSlotProps}
+        localeText={noRowsLabel ? { noRowsLabel } : undefined}
+        sx={mergedDataGridSx}
       />
     </Paper>
   );
 });
 
-FormListGrid.displayName = "FormListGrid";
+WrappedTable.displayName = "WrappedTable";
 
-FormListGrid.propTypes = {
+WrappedTable.propTypes = {
   columns: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired,
   rowCount: PropTypes.number.isRequired,
@@ -132,4 +153,5 @@ FormListGrid.propTypes = {
   onRefresh: PropTypes.func,
 };
 
-export default memo(FormListGrid);
+export default memo(WrappedTable);
+

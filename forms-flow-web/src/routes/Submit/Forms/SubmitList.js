@@ -10,7 +10,7 @@ import {
 import { setFormCheckList, setFormSearchLoading } from "../../../actions/checkListActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import { useTranslation } from "react-i18next";
-import FormListGrid from "../../../components/Form/FormListGrid";
+import WrappedTable from "../../../components/Form/WrappedTable";
 import { CustomSearch, BreadCrumbs, V8CustomButton } from "@formsflow/components";
 import { HelperServices } from "@formsflow/service";
 import PropTypes from "prop-types";
@@ -258,7 +258,7 @@ const SubmitList = React.memo(() => {
           </div>
        </div>
       <div className="body-section">
-        <FormListGrid
+            <WrappedTable
           columns={columns}
           rows={rows}
           rowCount={totalForms}

@@ -30,7 +30,7 @@ import {
 import { useTranslation, Translation } from "react-i18next";
 import { unPublishForm, resetFormProcessData, getApplicationCount, getProcessDetails } from "../../../apiManager/services/processServices";
 import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bpmFormServices";
-import FormListGrid from "../../../components/Form/FormListGrid";
+import WrappedTable from "../../../components/Form/WrappedTable";
 import { HelperServices } from "@formsflow/service";
 import { PromptModal, V8CustomDropdownButton } from "@formsflow/components";
 import { formCreate, formImport, validateFormName } from "../../../apiManager/services/FormServices";
@@ -401,7 +401,7 @@ const List = React.memo((props) => {
     }
   };
 
-  // Fetching is now handled by FormListGrid based on mode
+  // Fetching is now handled by WrappedTable based on mode
 
   const validateForm = ({ title }) => {
     if (!title || title.trim() === "") {
@@ -803,7 +803,7 @@ const List = React.memo((props) => {
   const renderTable = () => {
     if (createDesigns || viewDesigns) {
       return (
-        <FormListGrid
+        <WrappedTable
           columns={designerColumns}
           rows={designerRows}
           rowCount={totalDesignerForms}
@@ -819,7 +819,7 @@ const List = React.memo((props) => {
     }
     if (createSubmissions) {
       return (
-        <FormListGrid
+        <WrappedTable
           columns={submitColumns}
           rows={submitRows}
           rowCount={totalSubmitForms}

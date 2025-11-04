@@ -6,8 +6,17 @@ import { StyleServices } from "@formsflow/service";
 import PropTypes from "prop-types";
 
 /**
- * Generic DataGrid wrapper for forms/processes listing.
- * Accepts all data and handlers as props to keep it page-agnostic.
+ * Generic DataGrid wrapper component for listing tables across the application.
+ * 
+ * Features:
+ * - Supports both server-side and client-side pagination/sorting
+ * - Automatically injects refresh button in actions column header when onRefresh is provided
+ * - Custom sort icons with consistent styling
+ * - Skeleton loading overlay for better UX
+ * - Extensible via dataGridProps for additional DataGrid customization
+ * 
+ * This component accepts all data and handlers as props to remain page-agnostic,
+ * making it reusable across forms, processes, submissions, and other listing pages.
  */
 const WrappedTable = forwardRef(function WrappedTable(
   {
@@ -25,7 +34,7 @@ const WrappedTable = forwardRef(function WrappedTable(
     disableColumnMenu = true,
     disableRowSelectionOnClick = true,
     sx = { height: { sm: 400, md: 510, lg: 665 }, width: "100%" },
-    disableColumnResize = false,
+    disableColumnResize = true,
     onRefresh,
     sortingMode = "server",
     paginationMode = "server",
@@ -36,7 +45,7 @@ const WrappedTable = forwardRef(function WrappedTable(
 ) {
   const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
-  // Default sort icons for DataGrid
+  // Custom sort icons for DataGrid - uses NewSortDownIcon with consistent styling
   const defaultSlots = useMemo(
     () => ({
       columnSortedDescendingIcon: () => (
@@ -53,10 +62,10 @@ const WrappedTable = forwardRef(function WrappedTable(
     [iconColor]
   );
 
-  // Enhance columns with refresh button in header if onRefresh is provided
+  // Enhance columns: inject refresh button into actions column header if onRefresh is provided
+  // Only adds refresh button if actions column doesn't already have a custom renderHeader
   const effectiveColumns = useMemo(() => {
     return (columns || []).map((col) => {
-      // Inject refresh button into header if onRefresh is provided
       if (col?.field === "actions" && !col?.renderHeader && onRefresh) {
         col = {
           ...col,
@@ -74,7 +83,7 @@ const WrappedTable = forwardRef(function WrappedTable(
     });
   }, [columns, onRefresh, iconColor]);
 
-  // Compose sx to optionally hide column separators when resizing is disabled
+  // Compose base sx styles: hide column separators when resizing is disabled
   const composedGridSx = useMemo(() => {
     const hideSeparator = disableColumnResize
       ? { "& .MuiDataGrid-columnSeparator": { display: "none !important" } }
@@ -82,18 +91,22 @@ const WrappedTable = forwardRef(function WrappedTable(
     return { ...hideSeparator, ...(sx || {}) };
   }, [disableColumnResize, sx]);
 
-  // Merge DataGrid sx overrides with composed styles
+  // Merge base styles with any sx overrides from dataGridProps
+  // Allows consumers to extend/customize DataGrid styles
   const mergedDataGridSx = useMemo(() => {
     const incomingSx = (dataGridProps && dataGridProps.sx) || {};
     return { ...composedGridSx, ...incomingSx };
   }, [composedGridSx, dataGridProps]);
 
-  // Allow consumers to add/override slots and slotProps via dataGridProps
+  // Merge default slots with custom slots from dataGridProps
+  // Allows consumers to override or extend DataGrid slots (icons, overlays, etc.)
   const finalSlots = useMemo(() => ({
     ...defaultSlots,
     ...(dataGridProps && dataGridProps.slots ? dataGridProps.slots : {}),
   }), [defaultSlots, dataGridProps]);
 
+  // Merge default slot props with custom slot props from dataGridProps
+  // Default includes skeleton loading overlay for better UX
   const finalSlotProps = useMemo(() => ({
     loadingOverlay: { variant: "skeleton", noRowsVariant: "skeleton" },
     ...(dataGridProps && dataGridProps.slotProps ? dataGridProps.slotProps : {}),

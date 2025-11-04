@@ -128,6 +128,10 @@ const ProcessCreateEdit = ({ type }) => {
   const [showImportAlert, setShowImportAlert] = useState(false);
   const [importAlertMessage, setImportAlertMessage] = useState("");
   const [importProgress, setImportProgress] = useState(0);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState("");
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorAlertMessage, setErrorAlertMessage] = useState("");
   const isDataFetched = useRef();
    const [activeTab, setActiveTab] = useState({
       primary: 'layout',
@@ -385,6 +389,8 @@ const ProcessCreateEdit = ({ type }) => {
     isCreateMode = isCreate,
   }) => {
     try {
+      // Use getProcessXML() instead of directly getting from modeler
+      // This handles cases when on history tab where modeler might not be available
       const xml = await getProcessXML();
 
       const isValid = validateXml(xml, isBPMN);
@@ -393,7 +399,7 @@ const ProcessCreateEdit = ({ type }) => {
       const isEqual = await checkIfEqual(isCreate, xml);
       if (!isReverted && !isCreateMode && isEqual){
         disableWorkflowChange();
-        return;
+        return handleAlreadyUpToDate(isPublishing);
       }
 
       setSavingFlow(true);
@@ -402,7 +408,7 @@ const ProcessCreateEdit = ({ type }) => {
       disableWorkflowChange();
       dispatch(setProcessData(response.data));
       isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
-      handleSaveSuccess(response, isCreateMode);
+      handleSaveSuccess(response, isCreateMode, isPublishing);
       return response.data;
     } catch (error) {
       handleError();
@@ -452,6 +458,21 @@ const ProcessCreateEdit = ({ type }) => {
     if (isCreate) return false; // Skip comparison if creating
     const comparisonFunc = isBPMN ? compareXML : compareDmnXML;
     return await comparisonFunc(processData?.processData, xml);
+  };
+
+  const handleAlreadyUpToDate = (isPublishing) => {
+    // Only show alert if not publishing (when publishing, we allow it to proceed)
+    if (!isPublishing) {
+      const message = t(`${Process.name} is already up to date`);
+      setSuccessAlertMessage(message);
+      setShowSuccessAlert(true);
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 3000);
+      return; // Return undefined to block save when not publishing
+    }
+    // When publishing, return processData so publish can proceed
+    return processData;
   };
 
   const handleProcessHistory = () => {
@@ -505,10 +526,24 @@ const ProcessCreateEdit = ({ type }) => {
       });
   };
 
-  const handleSaveSuccess = (response, isCreate) => {
-    // Toast message removed - using Alert component instead
+  const handleSaveSuccess = (response, isCreate, isPublishing) => {
+    const processType = Process.type;
+    const actionMessage = isCreate ? t("created") : t("updated");
+    const processName = response.data?.name || response.data?.processKey;
 
-    if (isCreate) {
+    if (!isPublishing) {
+      const message = t(
+        `${processType} ${processName} has been ${actionMessage} successfully`
+      );
+      setSuccessAlertMessage(message);
+      setShowSuccessAlert(true);
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 3000);
+    }
+
+    // Only redirect if creating and NOT publishing (when publishing, we'll handle redirect after publish)
+    if (isCreate && !isPublishing) {
       const editPath = Process.route; // Uses Process.route for the edit path
       dispatch(
         push(`${redirectUrl}${editPath}/edit/${response.data.processKey}`)
@@ -546,19 +581,46 @@ const ProcessCreateEdit = ({ type }) => {
 
       await performAction(actionFunction, xml, response);
 
-      // Toast message removed - using Alert component instead
+      // Show success message with process name
+      const processName = response?.name || response?.processKey || processData?.name || processData?.processKey || "";
+      const message = isPublished 
+        ? t(`${Process.type} ${processName} has been unpublished successfully`)
+        : isCreate 
+          ? t(`${Process.type} ${processName} has been created and published successfully`)
+          : t(`${Process.type} ${processName} has been published successfully`);
+      
+      setSuccessAlertMessage(message);
+      setShowSuccessAlert(true);
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 3000);
 
       if (!isPublished) {
-        redirectToFlow();
+        // If creating and publishing, redirect to edit page; otherwise redirect to list
+        if (isCreate) {
+          const editPath = Process.route;
+          setTimeout(() => {
+            dispatch(
+              push(`${redirectUrl}${editPath}/edit/${response.processKey}`)
+            );
+          }, 3000); // Redirect after alert is shown
+        } else {
+          // Delay redirect to allow alert to be shown first
+          setTimeout(() => {
+            redirectToFlow();
+          }, 3000); // Redirect after alert is shown
+        }
       }
 
       setIsPublished(!isPublished);
     } catch (error) {
       console.error("Error during publish/unpublish:", error);
-      setErrorMessage(
-        t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${Process.type}. Please try again.`)
-      );
-      setShowErrorModal(true);
+      const errorMsg = t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${Process.type}. Please try again.`);
+      setErrorAlertMessage(errorMsg);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, 5000);
     } finally {
       setIsPublishLoading(false);
     }
@@ -1052,6 +1114,16 @@ const ProcessCreateEdit = ({ type }) => {
                 variant={AlertVariant.FOCUS}
                 isShowing={showImportAlert}
                 rightContent={<CustomProgressBar progress={importProgress} />}
+              />
+              <Alert
+                message={successAlertMessage}
+                variant={AlertVariant.SUCCESS}
+                isShowing={showSuccessAlert}
+              />
+              <Alert
+                message={errorAlertMessage}
+                variant={AlertVariant.ERROR}
+                isShowing={showErrorAlert}
               />
             </div>
             <div className="header-section-1">

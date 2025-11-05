@@ -302,9 +302,9 @@ const EditComponent = () => {
   const formBuilderInitializedRef = useRef(false);
   const [systemAltVariables, setSystemAltVariables] = useState(() => {
     const initial = {};
-    SystemVariables.forEach((v) => {
+    for (const v of SystemVariables) {
       initial[v.key] = v.altVariable || '';
-    });
+    }
     return initial;
   });
   const [migration, setMigration] = useState(false);
@@ -2340,7 +2340,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                 id: idx + 1,
                 type: variable.labelOfComponent,
                 variable: variable.key,
-                altVariable: systemAltVariables[variable.key] !== undefined ? systemAltVariables[variable.key] : (variable.altVariable || ''),
+                altVariable: systemAltVariables[variable.key],
                 selected: (
                   <Switch
                     type="primary"
@@ -2367,7 +2367,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                   sortable: false,
                   renderCell: (params) => (
                     <CustomTextInput
-                      value={systemAltVariables[params.row.variable] !== undefined ? systemAltVariables[params.row.variable] : (params.row.altVariable || '')}
+                      value={systemAltVariables[params.row.variable]}
                       datatestid={`alt-variable-input-${params.row.variable}`}
                       aria-label="System variable alternative field"
                       placeholder=""

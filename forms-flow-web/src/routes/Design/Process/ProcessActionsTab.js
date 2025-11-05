@@ -5,6 +5,7 @@ import {
   CustomProgressBar,
   SelectDropdown,
   V8CustomButton,
+  useProgressBar,
 } from "@formsflow/components";
 // import { StyleServices } from "@formsflow/service";
 
@@ -23,9 +24,16 @@ const ProcessActionsTab = ({
 
   // State for export functionality
   const [selectedValue, setSelectedValue] = useState("XML");
-  const [progress, setProgress] = useState(0);
   const [isError, setIsError] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  
+  // Use progress bar hook for export progress
+  const { progress, start, complete, reset } = useProgressBar({
+    increment: 10,
+    interval: 200,
+    useCap: true,
+    capProgress: 90,
+  });
 
   // Export format options based on diagram type
   const formExportOptions = [{ label: diagramLabel, value: "XML" }];
@@ -40,36 +48,27 @@ const ProcessActionsTab = ({
     if (!onExport) return;
 
     setIsExporting(true);
-    setProgress(0);
+    reset();
     setIsError(false);
 
     try {
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 200);
+      // Start progress simulation
+      start();
 
       // Call the actual export function
       await onExport(selectedValue);
 
       // Complete progress
-      clearInterval(progressInterval);
-      setProgress(100);
+      complete();
 
       // Reset after success
       setTimeout(() => {
-        setProgress(0);
+        reset();
         setIsExporting(false);
       }, 1000);
     } catch (error) {
       setIsError(true);
-      setProgress(0);
+      reset();
       setIsExporting(false);
     }
   };

@@ -5,10 +5,10 @@ import {
   V8CustomButton,
   SelectDropdown,
   CustomProgressBar,
+  useProgressBar,
 } from "@formsflow/components";
 
 const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) => {
-  const [progress, setProgress] = useState(0);
   const [isError, setIsError] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const formExportOptions = [
@@ -16,6 +16,15 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
   ];
   const [selectedValue, setSelectedValue] = useState("json");
   const [showProgress, setShowProgress] = useState(false);
+  
+  // Use progress bar hook for export progress
+  const { progress, start, stop, complete, setProgress, reset } = useProgressBar({
+    increment: 5,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+    initialProgress: 1,
+  });
 
   const handleSelectChange = (value) => {
     setSelectedValue(value);
@@ -25,24 +34,13 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
   const fileName = `${_.camelCase(formTitle)}.json`;
 
   const exportForm = () => {
+    reset();
     setProgress(1);
     setIsError(false);
     setIsExporting(true);
 
-    // Fallback progress simulation in case real progress doesn't fire
-    let progressInterval = null;
-    const startProgressSimulation = () => {
-      progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return 90; // Cap at 90% until real download completes
-          }
-          return prev + 5; // Increment by 5%
-        });
-      }, 150);
-    };
-    startProgressSimulation();
+    // Start fallback progress simulation
+    start();
 
     getFormExport(mapperId, {
       responseType: "blob",
@@ -51,15 +49,13 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );
-          setProgress(percentCompleted);
+          setProgress(percentCompleted); // Override with real progress
         }
       },
     })
       .then((response) => {
-        // Clear the simulation interval
-        if (progressInterval) {
-          clearInterval(progressInterval);
-        }
+        // Stop the simulation
+        stop();
 
         const jsonString = JSON.stringify(response.data, null, 2);
         const blob = new Blob([jsonString], { type: "application/json" });
@@ -70,7 +66,7 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
         link.click();
         document.body.removeChild(link);
 
-        setProgress(100);
+        complete();
         
         // Wait a bit before hiding the progress bar to show completion
         setTimeout(() => {
@@ -78,16 +74,17 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
         }, 500);
       })
       .catch(() => {
-        // Clear the simulation interval
-        if (progressInterval) {
-          clearInterval(progressInterval);
-        }
+        // Stop the simulation
+        stop();
 
-        setProgress(100);
+        complete();
         setIsError(true);
       })
       .finally (() => {
-        setTimeout(() => setShowProgress(false), 3000);
+        setTimeout(() => {
+          setShowProgress(false);
+          reset();
+        }, 3000);
       });
   };
 

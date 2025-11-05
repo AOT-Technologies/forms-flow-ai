@@ -29,6 +29,7 @@ import {
   Alert,
   AlertVariant,
   CustomProgressBar,
+  useProgressBar,
 } from "@formsflow/components";
 import ProcessActionsTab from "./ProcessActionsTab";
 import ExportDiagram from "../../../components/Modals/ExportDiagrams";
@@ -58,7 +59,6 @@ const EXPORT = "EXPORT";
 const UPLOAD_PROGRESS_INCREMENT = 5;
 const UPLOAD_PROGRESS_INTERVAL = 300;
 const INITIAL_UPLOAD_PROGRESS = 10;
-const COMPLETE_PROGRESS = 100;
 
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 const ProcessCreateEdit = ({ type }) => {
@@ -87,7 +87,6 @@ const ProcessCreateEdit = ({ type }) => {
   const dispatch = useDispatch();
   const bpmnRef = useRef();
   const dmnRef = useRef();
-  const uploadTimerRef = useRef(null);
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   
@@ -123,11 +122,36 @@ const ProcessCreateEdit = ({ type }) => {
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   const [importLoader, setImportLoader] = useState(false);
   const [processHistoryLoading, setProcessHistoryLoading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
   const [showImportAlert, setShowImportAlert] = useState(false);
   const [importAlertMessage, setImportAlertMessage] = useState("");
-  const [importProgress, setImportProgress] = useState(0);
+  
+  // Use progress bar hook for upload progress
+  const {
+    progress: uploadProgress,
+    start: startUpload,
+    stop: stopUpload,
+    complete: completeUpload,
+    reset: resetUpload,
+  } = useProgressBar({
+    increment: UPLOAD_PROGRESS_INCREMENT,
+    interval: UPLOAD_PROGRESS_INTERVAL,
+    useCap: false,
+    initialProgress: INITIAL_UPLOAD_PROGRESS,
+  });
+  
+  // Use progress bar hook for import progress
+  const {
+    progress: importProgress,
+    start: startImport,
+    complete: completeImport,
+    reset: resetImport,
+  } = useProgressBar({
+    increment: 10,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+  });
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [successAlertMessage, setSuccessAlertMessage] = useState("");
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -229,23 +253,16 @@ const ProcessCreateEdit = ({ type }) => {
    */
     useEffect(() => {
       if (importLoader) {
-        // clearUploadTimer();
-  
-        uploadTimerRef.current = setInterval(() => {
-          setUploadProgress((prevProgress) => {
-            const nextProgress = prevProgress + UPLOAD_PROGRESS_INCREMENT;
-            return Math.min(nextProgress, COMPLETE_PROGRESS);
-          });
-        }, UPLOAD_PROGRESS_INTERVAL);
-      } 
-      // else {
-      //   clearUploadTimer();
-      // }
-  
-      // return () => {
-      //   clearUploadTimer();
-      // };
-    }, [importLoader]);
+        resetUpload();
+        startUpload();
+      } else {
+        stopUpload();
+      }
+      
+      return () => {
+        stopUpload();
+      };
+    }, [importLoader, startUpload, stopUpload, resetUpload]);
 
   const renderSecondaryControls = () => {
       const currentTab = tabConfig.primary[activeTab.primary];
@@ -683,7 +700,7 @@ const ProcessCreateEdit = ({ type }) => {
   const handleImport = async (file) => {
     setImportLoader(true);
     setImportError(null);
-    setUploadProgress(INITIAL_UPLOAD_PROGRESS);
+    resetUpload();
     setSelectedFile(file); // Set file first so error state can be displayed
     
     try {
@@ -693,7 +710,7 @@ const ProcessCreateEdit = ({ type }) => {
           t(`The file format is invalid. Please import a ${Process.extension} file.`)
         );
         setImportLoader(false);
-        setUploadProgress(0);
+        resetUpload();
         return;
       }
 
@@ -704,7 +721,7 @@ const ProcessCreateEdit = ({ type }) => {
       if (!fileContent || fileContent.trim() === '') {
         setImportError(t('The file is empty. Please import a valid file.'));
         setImportLoader(false);
-        setUploadProgress(0);
+        resetUpload();
         return;
       }
 
@@ -714,11 +731,11 @@ const ProcessCreateEdit = ({ type }) => {
           t(`The file content is invalid. Please import a valid ${Process.type} file.`)
         );
         setImportLoader(false);
-        setUploadProgress(0);
+        resetUpload();
         return;
       }
       
-      setUploadProgress(COMPLETE_PROGRESS);
+      completeUpload();
       // Import to editor
       const ref = isBPMN ? bpmnRef : dmnRef;
       if (ref.current) {
@@ -730,7 +747,7 @@ const ProcessCreateEdit = ({ type }) => {
       setImportError(
         t(error.message || 'An error occurred during import. Please try again.')
       );
-      setUploadProgress(0);
+      resetUpload();
     } finally {
       setImportLoader(false);
     }
@@ -769,10 +786,10 @@ const ProcessCreateEdit = ({ type }) => {
   const resetUploadState = useCallback(() => {
     setImportLoader(false);
     setImportError(null);
-    setUploadProgress(0);
+    resetUpload();
     setSelectedFile(null);
 
-  }, []);
+  }, [resetUpload]);
   const handleFileInputChange = useCallback(
     (eventOrFile) => {
       // Handle both event object and direct file
@@ -785,7 +802,6 @@ const ProcessCreateEdit = ({ type }) => {
   );
   // Handle importing process and dispatching upon success
   const processImport = async (fileContent) => {
-    let progressInterval = null;
     try {
       const { xml } = await extractFileDetails(fileContent);
       if (!xml) return;
@@ -795,17 +811,10 @@ const ProcessCreateEdit = ({ type }) => {
       // Show import progress alert
       setImportAlertMessage(t(`Importing ${Process.type}...`));
       setShowImportAlert(true);
-      setImportProgress(0);
+      resetImport();
       
-      // Simulate progress
-      progressInterval = setInterval(() => {
-        setImportProgress((prev) => {
-          if (prev >= 90) {
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 150);
+      // Start progress simulation
+      startImport();
       
       if (processId) {
         // Update an existing process
@@ -815,11 +824,8 @@ const ProcessCreateEdit = ({ type }) => {
           type: fileType === ".bpmn" ? "bpmn" : "dmn",
         });
         
-        // Clear progress interval
-        if (progressInterval) {
-          clearInterval(progressInterval);
-        }
-        setImportProgress(100);
+        // Complete progress
+        completeImport();
         
         dispatch(setProcessData(response?.data));
         handleImportData(xml);
@@ -831,7 +837,7 @@ const ProcessCreateEdit = ({ type }) => {
         // Auto-hide alert after 3 seconds
         setTimeout(() => {
           setShowImportAlert(false);
-          setImportProgress(0);
+          resetImport();
         }, 3000);
         
         // Redirect to layout page
@@ -847,11 +853,8 @@ const ProcessCreateEdit = ({ type }) => {
           type: fileType === ".bpmn" ? "bpmn" : "dmn",
         });
         
-        // Clear progress interval
-        if (progressInterval) {
-          clearInterval(progressInterval);
-        }
-        setImportProgress(100);
+        // Complete progress
+        completeImport();
         
         if (response) {
           // Show success message
@@ -861,7 +864,7 @@ const ProcessCreateEdit = ({ type }) => {
           // Auto-hide alert after 3 seconds
           setTimeout(() => {
             setShowImportAlert(false);
-            setImportProgress(0);
+            resetImport();
           }, 3000);
           
           dispatch(
@@ -878,11 +881,8 @@ const ProcessCreateEdit = ({ type }) => {
       setImportError(errorMessage);
       
       // Hide alert on error
-      if (progressInterval) {
-        clearInterval(progressInterval);
-      }
       setShowImportAlert(false);
-      setImportProgress(0);
+      resetImport();
       // Error message shown via importError state in FileUploadArea
     }
   };

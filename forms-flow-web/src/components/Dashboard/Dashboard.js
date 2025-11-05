@@ -344,12 +344,12 @@ const Dashboard = React.memo(() => {
             ) : (
               <Modal
                 show={show}
-                size="sm"
+                size="lg"
                 onHide={() => setShow(false)}
                 aria-labelledby="example-custom-modal-styling-title"
                 className="align-content-center"
               >
-                <Modal.Header>
+                <Modal.Header className="justify-content-between">
                   <Modal.Title id="example-custom-modal-styling-title">
                     <p>{t("Submission Status")}</p>
                   </Modal.Title>

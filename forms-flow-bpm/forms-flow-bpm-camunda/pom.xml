@@ -227,7 +227,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>7.4.1.jre11</version>
+            <version>10.2.4.jre8</version>
         </dependency>
 
         <!-- Required to use Spin dataformat support -->
@@ -388,7 +388,7 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
-            <version>10.1.44</version>
+            <version>10.1.45</version>
         </dependency>
 
         <dependency>

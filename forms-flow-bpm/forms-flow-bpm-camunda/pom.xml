@@ -70,6 +70,27 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- Fix for netty vulnerability -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http</artifactId>
+                <version>4.1.125.Final</version>
+            </dependency>
+
+            <!-- Fix for commons-lang3 vulnerability -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.18.0</version>
+            </dependency>
+
+            <!-- Fix for bouncycastle vulnerability -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.78</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

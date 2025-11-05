@@ -10,10 +10,12 @@ import {
 const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) => {
   const [progress, setProgress] = useState(0);
   const [isError, setIsError] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const formExportOptions = [
     { label: "JSON", value: "json" }
   ];
   const [selectedValue, setSelectedValue] = useState("json");
+  const [showProgress, setShowProgress] = useState(false);
 
   const handleSelectChange = (value) => {
     setSelectedValue(value);
@@ -23,8 +25,24 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
   const fileName = `${_.camelCase(formTitle)}.json`;
 
   const exportForm = () => {
-    setProgress(0);
+    setProgress(1);
     setIsError(false);
+    setIsExporting(true);
+
+    // Fallback progress simulation in case real progress doesn't fire
+    let progressInterval = null;
+    const startProgressSimulation = () => {
+      progressInterval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90; // Cap at 90% until real download completes
+          }
+          return prev + 5; // Increment by 5%
+        });
+      }, 150);
+    };
+    startProgressSimulation();
 
     getFormExport(mapperId, {
       responseType: "blob",
@@ -34,12 +52,15 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
             (progressEvent.loaded * 100) / progressEvent.total
           );
           setProgress(percentCompleted);
-        } else {
-          setProgress((prev) => Math.min(prev + 10, 100));
         }
       },
     })
       .then((response) => {
+        // Clear the simulation interval
+        if (progressInterval) {
+          clearInterval(progressInterval);
+        }
+
         const jsonString = JSON.stringify(response.data, null, 2);
         const blob = new Blob([jsonString], { type: "application/json" });
         const link = document.createElement("a");
@@ -50,14 +71,28 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
         document.body.removeChild(link);
 
         setProgress(100);
+        
+        // Wait a bit before hiding the progress bar to show completion
+        setTimeout(() => {
+          setIsExporting(false);
+        }, 500);
       })
       .catch(() => {
+        // Clear the simulation interval
+        if (progressInterval) {
+          clearInterval(progressInterval);
+        }
+
         setProgress(100);
         setIsError(true);
+      })
+      .finally (() => {
+        setTimeout(() => setShowProgress(false), 3000);
       });
   };
 
   const handleExportClick = () => {
+    setShowProgress(true);
     exportForm();
   };
 
@@ -86,13 +121,14 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
           <V8CustomButton
             variant="primary"
              onClick= {handleExportClick}
+            disabled={isExporting}
             data-testid="form-export-btn"
             aria-label="Export Form"
             label="Export"
         />
      </div>
 
-     <div className="export-progress-section">
+     {showProgress && <div className="export-progress-section">
             <div>Exporting PDF</div>
             <div className="export-progress">
             <CustomProgressBar 
@@ -100,7 +136,7 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
               color={isError ? "error" : undefined}
             />
             </div>
-     </div>
+     </div>}
      
       </div>
           </div>

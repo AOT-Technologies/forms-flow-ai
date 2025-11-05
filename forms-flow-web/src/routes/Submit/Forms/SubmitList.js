@@ -29,7 +29,7 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
         searchLoading={searchLoading}
         title={t("Search Form Name and Description")}
         dataTestId="form-search-input"
-        width="22rem"
+        width="462px"
       />
   );
 };
@@ -253,7 +253,7 @@ const SubmitList = React.memo(() => {
                   searchLoading={searchFormLoading}
                   title={t("Search")}
                   dataTestId="form-search-input"
-                  width="22rem"
+                  width="462px"
                 />
           </div>
        </div>

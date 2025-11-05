@@ -57,7 +57,6 @@ const ProcessTable = React.memo(() => {
     isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
   );
   
-  // Local UI state
   const [searchDMN, setSearchDMN] = useState(searchTextDMN || "");
   const [searchBPMN, setSearchBPMN] = useState(searchTextBPMN || "");
   const search = isBPMN ? searchBPMN : searchDMN;
@@ -68,10 +67,8 @@ const ProcessTable = React.memo(() => {
   const [limit, setLimit] = useState(10);
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  
-  // const fetchProcesses = () => {};
 
- 
+
   // const handleSortApply = (selectedSortOption, selectedSortOrder) => {
   //   setIsLoading(true);
   //   const action = isBPMN ? setBpmSort : setDmnSort;
@@ -291,7 +288,6 @@ const ProcessTable = React.memo(() => {
     },
   ];
 
-  // Grid moved to WrappedTable
   return (
     <>
       <div className="toast-section">{/* <p>Toast message</p> */}</div>
@@ -321,7 +317,7 @@ const ProcessTable = React.memo(() => {
             searchLoading={searchLoading}
             title={t(`Search ${ProcessContents.processType} Name`)}
             dataTestId={`${ProcessContents.processType}-search-input`}
-            width="22rem"
+            width="462px"
           />
         </div>
       </div>

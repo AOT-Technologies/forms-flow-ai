@@ -2,22 +2,18 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 import { connect, useSelector, useDispatch, batch } from "react-redux";
 import { push } from "connected-react-router";
-import CreateFormModal from "../../../components/Modals/CreateFormModal.js";
 import { toast } from "react-toastify";
-import { addTenantkey } from "../../../helper/helper";
 import {
   selectRoot,
   deleteForm,
 } from "@aot-technologies/formio-react";
 import Loading from "../../../containers/Loading";
-import { MULTITENANCY_ENABLED, MAX_FILE_SIZE } from "../../../constants/constants";
 import {
   setBPMFormListLoading,
   setFormDeleteStatus,
   setBpmFormSearch,
   setBPMFormListPage,
   setBpmFormSort,
-  setFormSuccessData,
   setBPMFormLimit,
   setClientFormLimit,
   setClientFormListPage,
@@ -33,28 +29,20 @@ import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bp
 import WrappedTable from "../../../components/Form/WrappedTable";
 import { HelperServices } from "@formsflow/service";
 import { PromptModal, V8CustomDropdownButton } from "@formsflow/components";
-import { formCreate, formImport, validateFormName } from "../../../apiManager/services/FormServices";
+import { formCreate } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import _cloneDeep from "lodash/cloneDeep";
 import _ from "lodash";
-import _camelCase from "lodash/camelCase";
 import userRoles from "../../../constants/permissions.js";
-import FileService from "../../../services/FileService";
 import {
-  FormBuilderModal,
-  ImportModal,
   CustomSearch,
-  CustomButton,
-  useSuccessCountdown,
   V8CustomButton,
   Alert,
   AlertVariant,
   CustomProgressBar
 } from "@formsflow/components";
-import { useMutation } from "react-query";
-import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
-import { navigateToDesignFormEdit, navigateToDesignFormBuild, navigateToFormEntries } from "../../../helper/routerHelper.js";
-import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
+import { navigateToDesignFormBuild, navigateToFormEntries } from "../../../helper/routerHelper.js";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
@@ -62,12 +50,6 @@ const List = React.memo((props) => {
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [search, setSearch] = useState(searchText || "");
-  const [showBuildForm, setShowBuildForm] = useState(false);
-  const [importFormModal, setImportFormModal] = useState(false);
-  const [importError, setImportError] = useState("");
-  const [importLoader, setImportLoader] = useState(false);
-  const [showSortModal, setShowSortModal] = useState(false);
-  const { successState, startSuccessCountdown } = useSuccessCountdown();
   const [isDuplicating, setIsDuplicating] = useState(false);
   const [duplicateProgress, setDuplicateProgress] = useState(0);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -76,72 +58,7 @@ const List = React.memo((props) => {
   const [disableDelete, setDisableDelete] = useState(false);
   const [isAppCountLoading, setIsAppCountLoading] = useState(false);
 
-
-  const handleFilterIconClick = () => {
-    setShowSortModal(true); // Open the SortModal
-  };
-
-  const handleSortModalClose = () => {
-    setShowSortModal(false); // Close the SortModal
-  };
-
-  const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-    const resetSortOrders = optionSortBy.reduce((acc, option) => {
-      acc[option.value] = { sortOrder: "asc" };
-      return acc;
-    }, {});
-    dispatch(
-      setBpmFormSort({
-        ...resetSortOrders,
-        activeKey: selectedSortOption,
-        [selectedSortOption]: { sortOrder: selectedSortOrder },
-      })
-    );
-    setShowSortModal(false);
-  };
-
-  const ActionType = {
-    BUILD: "BUILD",
-    IMPORT: "IMPORT",
-  };
-
-  const UploadActionType = {
-    IMPORT: "import",
-    VALIDATE: "validate",
-  };
-
-  const [nameError, setNameError] = useState("");
   const dispatch = useDispatch();
-  const submissionAccess = useSelector(
-    (state) => state.user?.submissionAccess || []
-  );
-
-  const [formSubmitted, setFormSubmitted] = useState(false);
-
-  /* --------- validate form title exist or not --------- */
-  const {
-    mutate: validateFormTitle, // this function will trigger the API call
-    isLoading: validationLoading,
-    // isError: error,
-  } = useMutation(({ title }) => validateFormName(title), {
-    onSuccess: ({ data }, { createButtonClicked, ...variables }) => {
-      if (data && data.code === "FORM_EXISTS") {
-        setNameError(data.message); // Set exact error message
-      } else {
-        setNameError("");
-        // if the modal clicked createButton, need to call handleBuild
-        if (createButtonClicked) {
-          handleBuild(variables);
-        }
-      }
-    },
-    onError: (error) => {
-      const errorMessage =
-        error?.response?.data?.message ||
-        "An error occurred while validating the form name.";
-      setNameError(errorMessage); // Set the error message from the server
-    },
-  });
 
   useEffect(() => {
     setSearch(searchText);
@@ -181,20 +98,12 @@ const List = React.memo((props) => {
   const submitFormSort = useSelector((state) => state.bpmForms.submitFormSort);
   
   const formAccess = useSelector((state) => state.user?.formAccess || []);
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const applicationCount = useSelector((state) => state.process?.applicationCount);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const [newFormModal, setNewFormModal] = useState(false);
-  const [description, setDescription] = useState("");
-  const [formTitle, setFormTitle] = useState("");
-  const  optionSortBy = [
-    { value: "formName", label: t("Form Name") },
-    { value: "visibility", label: t("Visibility") },
-    { value: "status", label: t("Status") },
-    { value: "modified", label: t("Last Edited") },
-  ];
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
@@ -323,155 +232,6 @@ const List = React.memo((props) => {
     dispatch(resetFormProcessData());
     dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
   }, [dispatch, redirectUrl]);
-  const onClose = () => {
-    setNewFormModal(false);
-  };
-  const onCloseimportModal = () => {
-    setImportError("");
-    setImportFormModal(false);
-  };
-  const onCloseBuildModal = () => {
-    setShowBuildForm(false);
-    setNameError("");
-    setFormSubmitted(false);
-  };
-  const handleAction = (actionType) => {
-    switch (actionType) {
-      case ActionType.BUILD:
-        setShowBuildForm(true);
-        break;
-      case ActionType.IMPORT:
-        setImportFormModal(true);
-        break;
-    }
-    onClose();
-  };
-
-  const handleImport = async (fileContent, actionType) => {
-
-    if (fileContent.size > MAX_FILE_SIZE) {
-      setImportError(
-        `File size exceeds the ${
-          MAX_FILE_SIZE / (1024 * 1024)
-        }MB limit. Please upload a smaller file.`
-      );
-      return;
-    }
-
-    let data;
-    if (
-      [UploadActionType.VALIDATE, UploadActionType.IMPORT].includes(actionType)
-    ) {
-      data = { importType: "new", action: actionType };
-    } else {
-      console.error("Invalid UploadActionType provided");
-      return;
-    }
-
-    if (actionType === UploadActionType.IMPORT) {
-      setImportLoader(true);
-      setFormSubmitted(true);
-    }
-
-    try {
-      const dataString = JSON.stringify(data);
-      const res = await formImport(fileContent, dataString);
-      const { data: responseData } = res;
-      const formId = responseData.mapper?.formId;
-
-      setImportLoader(false);
-      setFormSubmitted(false);
-
-      if (actionType === UploadActionType.VALIDATE) {
-        const formExtracted = await FileService.extractFileDetails(fileContent);
-
-        if (Array.isArray(formExtracted?.forms)) {
-          setFormTitle(formExtracted?.forms[0]?.formTitle || "");
-          setDescription(
-            formExtracted?.forms[0]?.formDescription || ""
-          );
-        }
-      } else if (formId) {
-        navigateToDesignFormEdit(dispatch, tenantKey, formId);
-      }
-    } catch (err) {
-      setImportLoader(false);
-      setFormSubmitted(false);
-      setImportError(err?.response?.data?.message);
-    }
-  };
-
-  // Fetching is now handled by WrappedTable based on mode
-
-  const validateForm = ({ title }) => {
-    if (!title || title.trim() === "") {
-      return "This field is required";
-    }
-    return null;
-  };
-
-  const validateFormNameOnBlur = ({ title, ...rest }) => {
-    //the reset variable contain title, description, display  also sign for clicked in create button
-    const error = validateForm({ title });
-
-    if (error) {
-      setNameError(error);
-      return;
-    }
-    validateFormTitle({ title, ...rest });
-  };
-
-  const handleBuild = ({ description, display, title }) => {
-    setFormSubmitted(true);
-    const error = validateForm({ title });
-    if (error) {
-      setNameError(error);
-      return;
-    }
-    const name = _camelCase(title);
-    const newForm = {
-      display,
-      tags: ["common"],
-      submissionAccess: submissionAccess,
-      componentChanged: true,
-      newVersion: true,
-      components: [],
-      access: formAccess,
-      title,
-      name,
-      description,
-      path: name.toLowerCase(),
-    };
-    newForm.components = addHiddenApplicationComponent(newForm).components;
-
-    if (MULTITENANCY_ENABLED && tenantKey) {
-      newForm.tenantKey = tenantKey;
-      newForm.path = addTenantkey(newForm.path, tenantKey);
-      newForm.name = addTenantkey(newForm.name, tenantKey);
-    }
-    formCreate(newForm)
-      .then((res) => {
-        const form = res.data;
-        dispatch(setFormSuccessData("form", form));
-        startSuccessCountdown(() => {
-          navigateToDesignFormEdit(dispatch, tenantKey, form._id);
-        },2);
-      })
-      .catch((err) => {
-        let error;
-        if (err.response?.data) {
-          error = err.response.data;
-          console.log(error);
-          setNameError(error?.errors?.name?.message);
-        } else {
-          error = err.message;
-          setNameError(error?.errors?.name?.message);
-        }
-      })
-      .finally(() => {
-        setFormSubmitted(false);
-      });
-  };
 
   // Data fetching
   const fetchDesignerForms = useCallback(() => {
@@ -853,7 +613,7 @@ const List = React.memo((props) => {
                           isShowing={isDuplicating}
                           rightContent={<CustomProgressBar progress={duplicateProgress} />}
                         />
-                </div>  
+                </div> 
                 
                 <div className="header-section-1">
                     <div className="section-seperation-left">
@@ -881,7 +641,7 @@ const List = React.memo((props) => {
                                   searchLoading={searchFormLoading}
                                   title={t("Search Form Name and Description")}
                                   dataTestId="form-search-input"
-                                  width="22rem"
+                                  width="462px"
                                 />
                     </div>
                  </div>
@@ -889,79 +649,6 @@ const List = React.memo((props) => {
                  <div className="body-section">
                     {renderTable()}
                  </div>
-
-
-        
-          {(
-              <div className="table-bar">
-                <div className="filters">
-                </div>
-                {/* hiding for the time being. */}
-                <div className="actions" style={{display:"none"}}>
-                  <FilterSortActions
-                    showSortModal={showSortModal}
-                    handleFilterIconClick={handleFilterIconClick}
-                    handleSortModalClose={handleSortModalClose}
-                    handleSortApply={handleSortApply}
-                    optionSortBy={optionSortBy}
-                    defaultSortOption={formSort.activeKey}
-                    defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}
-                    filterDataTestId="form-list-filter"
-                    filterAriaLabel="Filter the form list"
-                  /> 
-
-                  {createDesigns && (
-                    <CustomButton
-                      label={t("New Form & Flow")}
-                      onClick={() => setNewFormModal(true)}
-                      dataTestId="create-form-button"
-                      ariaLabel="Create Form"
-                      action
-                    />
-                  )}
-                  <CreateFormModal
-                    newFormModal={newFormModal}
-                    actionType={ActionType}
-                    onClose={onClose}
-                    onAction={handleAction}
-                  />
-                  <FormBuilderModal
-                    modalHeader={t("Build New Form")}
-                    nameLabel={t("Form Name")}
-                    descriptionLabel={t("Form Description")}
-                    showBuildForm={showBuildForm}
-                    isSaveBtnLoading={formSubmitted}
-                    isFormNameValidating={validationLoading}
-                    onClose={onCloseBuildModal}
-                    onAction={handleAction}
-                    primaryBtnAction={handleBuild}
-                    setNameError={setNameError}
-                    nameValidationOnBlur={validateFormNameOnBlur}
-                    nameError={nameError}
-                    buildForm={true}
-                    showSuccess={successState?.showSuccess} // ✅ Pass success state
-                    successCountdown={successState?.countdown} // ✅ Pass countdown
-                  />
-                  {importFormModal && (
-                    <ImportModal
-                      importLoader={importLoader}
-                      importError={importError}
-                      showModal={importFormModal}
-                      uploadActionType={UploadActionType}
-                      formName={formTitle}
-                      formSubmitted={formSubmitted}
-                      description={description}
-                      onClose={onCloseimportModal}
-                      handleImport={handleImport}
-                      headerText={t("Import New Form")}
-                      primaryButtonText={t("Confirm and Edit Form")}
-                      fileType=".json"
-                    />
-                  )}
-                </div>
-              </div>
-          )}
-         {/* {renderTable()} */}
         </>
       )}
       <PromptModal

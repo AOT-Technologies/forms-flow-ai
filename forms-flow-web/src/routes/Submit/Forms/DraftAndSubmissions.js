@@ -14,7 +14,7 @@ import {
 } from "../../../actions/applicationActions";
 import { navigateToNewSubmission, navigateToSubmitFormsListing } from "../../../helper/routerHelper";
 import { CustomSearch, BreadCrumbs, V8CustomButton, PromptModal } from "@formsflow/components";
-import WrappedTable from "../../../components/Form/WrappedTable";
+import { WrappedTable } from "@formsflow/components";
 import { HelperServices } from "@formsflow/service";
 import { CLIENT_EDIT_STATUS } from "../../../constants/applicationConstants";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";

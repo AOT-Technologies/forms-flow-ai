@@ -10,7 +10,7 @@ import {
 import { setFormCheckList, setFormSearchLoading } from "../../../actions/checkListActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import { useTranslation } from "react-i18next";
-import WrappedTable from "../../../components/Form/WrappedTable";
+import { WrappedTable } from "@formsflow/components";
 import { CustomSearch, BreadCrumbs, V8CustomButton } from "@formsflow/components";
 import { HelperServices } from "@formsflow/service";
 import PropTypes from "prop-types";

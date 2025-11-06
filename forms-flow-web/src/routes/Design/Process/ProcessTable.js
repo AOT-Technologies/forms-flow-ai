@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CustomSearch, V8CustomButton, BuildModal } from "@formsflow/components";
-import WrappedTable from "../../../components/Form/WrappedTable";
+import { WrappedTable } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";

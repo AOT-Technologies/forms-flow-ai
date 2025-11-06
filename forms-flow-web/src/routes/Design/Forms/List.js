@@ -26,7 +26,7 @@ import {
 import { useTranslation, Translation } from "react-i18next";
 import { unPublishForm, resetFormProcessData, getApplicationCount, getProcessDetails } from "../../../apiManager/services/processServices";
 import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bpmFormServices";
-import WrappedTable from "../../../components/Form/WrappedTable";
+import { WrappedTable } from "@formsflow/components";
 import { HelperServices } from "@formsflow/service";
 import { PromptModal, V8CustomDropdownButton } from "@formsflow/components";
 import { formCreate } from "../../../apiManager/services/FormServices";

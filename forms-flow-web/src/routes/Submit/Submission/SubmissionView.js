@@ -9,8 +9,9 @@ import {
   BreadCrumbs,
   BreadcrumbVariant,
   RefreshIcon,
-  ReusableTable
+  
 } from "@formsflow/components";
+import { WrappedTable } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
 import {
@@ -40,10 +41,15 @@ import { HelperServices, StyleServices } from "@formsflow/service";
 
 const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
   const { t } = useTranslation();
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 1 });
+
+  const handlePaginationModelChange = (newModel) => {
+    setPaginationModel(newModel);
+  };
 
   const columns = [
     {
-      field: "Completed",
+      field: "Completed2",
       headerName: t("Completed"),
       flex: 1.5,
       sortable: false,
@@ -97,14 +103,17 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
   const rows = historyData || [];
 
   return (
-    <ReusableTable
+    <WrappedTable
       rows={rows}
       columns={columns}
       loading={loading}
       getRowId={(row) => row.submissionId || `${row.formId}-${row.created}`}
+      rowCount={rows.length}
       noRowsLabel={t("No history found")}
       paginationMode="client"
       sortingMode="client"
+      paginationModel={paginationModel}
+      onPaginationModelChange={handlePaginationModelChange}
     />
   );
 };

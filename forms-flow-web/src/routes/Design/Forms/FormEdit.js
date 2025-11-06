@@ -300,6 +300,13 @@ const EditComponent = () => {
   const [initialIsAnonymous, setInitialIsAnonymous] = useState(null);
   const [settingsChanged, setSettingsChanged] = useState(false);
   const formBuilderInitializedRef = useRef(false);
+  const [systemAltVariables, setSystemAltVariables] = useState(() => {
+    const initial = {};
+    for (const v of SystemVariables) {
+      initial[v.key] = v.altVariable || '';
+    }
+    return initial;
+  });
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
   const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false); // Flag to prevent blocker during save navigation
@@ -2333,7 +2340,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                 id: idx + 1,
                 type: variable.labelOfComponent,
                 variable: variable.key,
-                altVariable: variable.altVariable,
+                altVariable: systemAltVariables[variable.key],
                 selected: (
                   <Switch
                     type="primary"
@@ -2360,13 +2367,11 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                   sortable: false,
                   renderCell: (params) => (
                     <CustomTextInput
-                      value={params.row.altVariable}
+                      value={systemAltVariables[params.row.variable]}
                       datatestid={`alt-variable-input-${params.row.variable}`}
                       aria-label="System variable alternative field"
                       placeholder=""
-                      setValue={(newVal) => {
-                        params.row.altVariable = newVal;
-                      }}
+                      setValue={handleAltVariableInputChange(params)}
                       style={{ color: StyleServices.getCSSVariable('--ff-gray-dark') }}
                     />
                   ),
@@ -2466,6 +2471,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       default:
         return null;
     }
+  };
+
+  const handleAltVariableInputChange = (params) => {
+    return (newVal) => {
+      params.row.altVariable = newVal;
+      setSystemAltVariables(prev => ({ ...prev, [params.row.variable]: newVal }));
+    };
   };
 
   // Render secondary controls based on active primary tab

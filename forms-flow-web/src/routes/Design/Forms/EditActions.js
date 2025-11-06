@@ -129,7 +129,7 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
      </div>
 
      {showProgress && <div className="export-progress-section">
-            <div>Exporting PDF</div>
+            <div>Exporting JSON</div>
             <div className="export-progress">
             <CustomProgressBar 
               progress={progress} 

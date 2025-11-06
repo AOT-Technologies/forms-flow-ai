@@ -2371,10 +2371,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                       datatestid={`alt-variable-input-${params.row.variable}`}
                       aria-label="System variable alternative field"
                       placeholder=""
-                      setValue={(newVal) => {
-                        params.row.altVariable = newVal;
-                        setSystemAltVariables(prev => ({ ...prev, [params.row.variable]: newVal }));
-                      }}
+                      setValue={handleAltVariableInputChange(params)}
                       style={{ color: StyleServices.getCSSVariable('--ff-gray-dark') }}
                     />
                   ),
@@ -2474,6 +2471,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       default:
         return null;
     }
+  };
+
+  const handleAltVariableInputChange = (params) => {
+    return (newVal) => {
+      params.row.altVariable = newVal;
+      setSystemAltVariables(prev => ({ ...prev, [params.row.variable]: newVal }));
+    };
   };
 
   // Render secondary controls based on active primary tab

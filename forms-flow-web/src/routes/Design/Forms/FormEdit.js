@@ -122,24 +122,25 @@ const tabConfig = {
         },
       }
     },
-    flow: {
-      label: "Flow",
-      query: "?tab=flow",
-      secondary: {
-        layout: {
-          label: "Layout",
-          query: "?tab=flow&sub=layout"
-        },
-        history: {
-          label: "History",
-          query: "?tab=flow&sub=history"
-        },
-        variables : {
-          label: "Variables",
-          query: "?tab=flow&sub=variables"
-        },
-      }
-    },
+    //Commented out for the the time being.
+    // flow: {
+    //   label: "Flow",
+    //   query: "?tab=flow",
+    //   secondary: {
+    //     layout: {
+    //       label: "Layout",
+    //       query: "?tab=flow&sub=layout"
+    //     },
+    //     history: {
+    //       label: "History",
+    //       query: "?tab=flow&sub=history"
+    //     },
+    //     variables : {
+    //       label: "Variables",
+    //       query: "?tab=flow&sub=variables"
+    //     },
+    //   }
+    // },
     bpmn: {
       label: "BPMN",
       query: "?tab=bpmn",
@@ -657,10 +658,7 @@ const EditComponent = () => {
       if(promptNewVersion) setPromptNewVersion(false);
       /* ------------------------- if the form id changed ------------------------- */
       const formId = responseData.mapper?.formId;
-      if(formId && formData._id != formId){
-        dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
-        return;
-      }
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&subtab=builder`));
       setActiveTab({
         primary: 'form', 
         secondary: null,   
@@ -794,6 +792,16 @@ const EditComponent = () => {
     }
   }, [isCreateRoute, isNavigatingAfterSave]);
 
+  // Helper function to reset and reinitialize FormBuilder when switching to form/builder tab
+  const resetFormBuilderInitialization = (primaryTab, secondaryTab) => {
+    if (primaryTab === 'form' && (secondaryTab === 'builder' || secondaryTab === null)) {
+      formBuilderInitializedRef.current = false;
+      setTimeout(() => {
+        formBuilderInitializedRef.current = true;
+      }, 200);
+    }
+  };
+
   // Parse URL parameters for tab state
 useEffect(() => {
   const queryParams = new URLSearchParams(location.search);
@@ -805,10 +813,12 @@ useEffect(() => {
     subsub = 'system';
   }
 
-  // Set default secondary tab for form to 'builder'
   let secondaryTab = sub;
   if (tab === 'form' && !sub) {
     secondaryTab = 'builder';
+  }
+  if (tab === 'bpmn' && !sub) {
+    secondaryTab = 'editor';
   }
 
   setActiveTab({
@@ -818,12 +828,7 @@ useEffect(() => {
   });
 
   // Set FormBuilder initialization flag when component first loads on form/builder tab
-  if (tab === 'form' && (secondaryTab === 'builder' || secondaryTab === null)) {
-    formBuilderInitializedRef.current = false;
-    setTimeout(() => {
-      formBuilderInitializedRef.current = true;
-    }, 200);
-  }
+  resetFormBuilderInitialization(tab, secondaryTab);
 
   // Legacy support for view parameter
   const view = queryParams.get("view");
@@ -869,13 +874,7 @@ useEffect(() => {
     setActiveTab(newTab);
 
     // Set FormBuilder initialization flag when switching to form/builder tab
-    if (primary === 'form' && (secondary === 'builder' || secondary === null)) {
-      formBuilderInitializedRef.current = false;
-      // Clear the flag after a short delay to allow FormBuilder to initialize
-      setTimeout(() => {
-        formBuilderInitializedRef.current = true;
-      }, 200);
-    }
+    resetFormBuilderInitialization(primary, secondary);
   
     // Update URL with new tab parameters
     const queryParams = new URLSearchParams();
@@ -1171,7 +1170,7 @@ const handleSaveLayout = () => {
       newFormData.description = formDetails.description || ""; 
       newFormData.display = formDetails.display;
       newFormData.componentChanged = true;
-      newFormData.newVersion = true;
+      newFormData.newVersion = false;
       newFormData.anonymous = isAnonymous;
       newFormData.parentFormId = previousData.parentFormId;
       
@@ -1443,14 +1442,14 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       try {
         await publish(data.mapper.id);
         setIsPublished(true);
-        toast.success(t("Form published successfully"));
       } catch (publishError) {
         console.error("Error publishing after save:", publishError);
         toast.error(t("Form created but failed to publish"));
       }
     }
     
-    dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
+    // Navigate to edit route after saving
+    dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
   } catch (err) {
     const error = err.response?.data || err.message;
     toast.error(error?.message || t("Failed to create form and workflow"));
@@ -1706,7 +1705,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       const successMessage = wasPublished ? `${t("Unpublished")} ${formId}` : `${t("Published")} ${formId}`;
       setPublishAlertMessage(successMessage);
       
-      // Auto-hide alert after 5 seconds
+      // Auto-hide alert after 3 seconds
       setTimeout(() => {
         setShowPublishAlert(false);
         setPublishProgress(0);
@@ -1752,7 +1751,6 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Update message to success
       setPublishAlertMessage(`${t("Unpublished")} ${formTitle}`);
       
-      // Auto-hide alert after 5 seconds
       setTimeout(() => {
         setShowPublishAlert(false);
         setPublishProgress(0);
@@ -2636,7 +2634,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                       {Object.entries(tabConfig.primary).map(
                         ([key, config]) => {
                           // Determine default secondary tab for this primary tab
-                          const defaultSecondary = key === 'form' ? 'builder' : null;
+                          const defaultSecondary = key === 'form' ? 'builder' : key === 'bpmn' ? 'editor' : null;
                           const primaryDisabled = isCreateRoute && key === 'actions';
                           
                           // Check if this primary tab should be highlighted

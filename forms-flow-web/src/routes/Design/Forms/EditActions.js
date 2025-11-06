@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { getFormExport } from "../../../apiManager/services/FormServices";
 import _ from "lodash";
 import {
@@ -16,6 +16,7 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
   ];
   const [selectedValue, setSelectedValue] = useState("json");
   const [showProgress, setShowProgress] = useState(false);
+  const uploadContentRef = useRef(null);
 
   const handleSelectChange = (value) => {
     setSelectedValue(value);
@@ -96,11 +97,29 @@ const ActionsPage = ({ renderUpload, renderDeleteForm, mapperId, formTitle }) =>
     exportForm();
   };
 
+  const handleUploadAreaClick = (e) => {
+    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.closest('button')) {
+      return;
+    }
+    const uploadArea = uploadContentRef.current;
+    if (uploadArea) {
+      const fileInput = uploadArea.querySelector('input[type="file"]');
+      if (fileInput) {
+        fileInput.click();
+      }
+    }
+  };
+
   return (
     <div className="form-edit-actions">
       <div className="grid-section">
         <div className="actions-header">Import Form</div>
-        <div className="upload-action-content">
+        <div 
+          className="upload-action-content" 
+          ref={uploadContentRef}
+          onClick={handleUploadAreaClick}
+          style={{ cursor: 'pointer' }}
+        >
           {renderUpload && renderUpload() }
         </div>
       </div>

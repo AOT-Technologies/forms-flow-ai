@@ -134,3 +134,28 @@ class TaskOutcomeByIdResource(Resource):
         """
         response = TaskService().get_task_outcome_configuration(task_id)
         return response, HTTPStatus.OK
+
+
+@cors_preflight("POST, OPTIONS")
+@API.route("/<string:task_id>/complete", methods=["POST", "OPTIONS"])
+class TaskCompletionResource(Resource):
+    """Resource to complete task and capture task completion details."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    @API.expect()
+    @API.doc(
+        responses={
+            200: ("OK:- Successful request."),
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        }
+    )
+    def post(task_id: str):
+        """Complete a task."""
+        data = request.get_json()
+        if not data:
+            return {"message": "Invalid input"}, HTTPStatus.BAD_REQUEST
+        TaskService().complete_task(task_id, data)
+        return {"message": "Task completed successfully"}, HTTPStatus.OK

@@ -166,3 +166,11 @@ class FormioService:
         if query_params:
             url = f"{url}?{query_params}"
         return self._invoke_service(url, headers, method='GET')
+
+    def update_submission(self, form_id, submission_id, data, formio_token):
+        """Update form submission with the payload."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = (
+            f"{self.base_url}/form/{form_id}/submission/{submission_id}"
+        )
+        return self._invoke_service(url, headers, data=data, method='PUT')

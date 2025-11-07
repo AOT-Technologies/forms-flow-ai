@@ -22,3 +22,4 @@ class ApplicationHistorySchema(AuditDateTimeSchema):
     submission_id = fields.Str(data_key="submissionId", dump_only=True)
     color = fields.Str(allow_none=True)
     percentage = fields.Float(allow_none=True)
+    private_notes = fields.Str(data_key="privateNotes", allow_none=True)

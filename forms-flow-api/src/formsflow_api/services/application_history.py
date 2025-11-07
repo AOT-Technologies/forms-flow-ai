@@ -2,6 +2,7 @@
 
 from flask import current_app
 from formsflow_api_utils.utils import get_form_and_submission_id_from_form_url
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.models import Application, ApplicationHistory
 from formsflow_api.schemas import ApplicationHistorySchema
@@ -33,9 +34,14 @@ class ApplicationHistoryService:
         return application
 
     @staticmethod
-    def get_application_history(application_id):
+    @user_context
+    def get_application_history(application_id, **kwargs):
         """Get application by id."""
-        application_history = ApplicationHistory.get_application_history(application_id)
+        user: UserContext = kwargs["user"]
+        notes_permission = "reviewer_view_history" in user.roles
+        application_history = ApplicationHistory.get_application_history(
+            application_id, notes_permission
+        )
         schema = ApplicationHistorySchema()
         history_data = schema.dump(application_history, many=True)
         # This to make the API backward compatible by constructing the formUrl.

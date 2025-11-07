@@ -2,11 +2,19 @@
 
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models.tasks import TaskOutcomeConfiguration
-from formsflow_api.schemas.tasks import TaskOutcomeConfigurationSchema
+from formsflow_api.schemas.tasks import (
+    TaskCompletionSchema,
+    TaskOutcomeConfigurationSchema,
+)
+from formsflow_api.services.external import BPMService
+
+from .application import ApplicationService
+from .application_history import ApplicationHistoryService
 
 task_outcome_schema = TaskOutcomeConfigurationSchema()
 
@@ -64,3 +72,37 @@ class TaskService:
             response = task_outcome_schema.dump(task_outcome)
             return response
         raise BusinessException(BusinessErrorCode.TASK_OUTCOME_NOT_FOUND)
+
+    @user_context
+    def complete_task(self, task_id, request_data, **kwargs):
+        """Complete the task and capture task completion details."""
+        data = TaskCompletionSchema().load(request_data)
+        form_id = data["form_data"].get("form_id")
+        submission_id = data["form_data"].get("submission_id")
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        formio_service.update_submission(
+            form_id, submission_id, data["form_data"].get("data"), form_io_token
+        )
+        current_app.logger.debug("Formio submission updated...")
+
+        user: UserContext = kwargs["user"]
+        token = user.bearer_token
+        # Complete task in workflow
+        BPMService.complete_task(task_id, data["bpmn_data"], token)
+        current_app.logger.debug("Workflow task completed...")
+
+        # Update task completion details in application audit table
+        application_id = data["application_data"].get("application_id")
+        ApplicationHistoryService.create_application_history(
+            data["application_data"], application_id
+        )
+        current_app.logger.debug("Application audit captured...")
+        # Update application status, form_id and submission_id in application table
+        application_update_data = {
+            "application_status": data["application_data"].get("application_status"),
+            "submission_id": submission_id,
+            "latest_form_id": form_id,
+        }
+        ApplicationService.update_application(application_id, application_update_data)
+        current_app.logger.debug("Application details updated...")

@@ -11,7 +11,7 @@ import { HelperServices, StyleServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { V8CustomButton, RefreshIcon, V8CustomDropdownButton, PromptModal, ReusableTable } from "@formsflow/components";
 import { deleteForm } from "@aot-technologies/formio-react";
-import { formCreate } from "../../../apiManager/services/FormServices";
+import { formCreate, unPublish } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
 import _cloneDeep from "lodash/cloneDeep";
 import { toast } from "react-toastify";
@@ -281,7 +281,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
       flex: 1,
       sortable: false,
       cellClassName: "last-column",
-      renderCell: params => {
+      renderCell: (params) => {
         const dropdownItems = [
           {
             label: t("Duplicate form"),
@@ -289,9 +289,11 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
           },
           {
             label: params.row.status === "active" ? t("Unpublish") : t("Delete"),
-            onClick: () => {
+            onClick: async () => {
               if (params.row.status === "active") {
-                // dispatch(unPublishForm(params.row.mapperId));
+                await unPublish(params.row.mapperId).then(() => {
+                  dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
+                });
               } else {
                 deleteAction(params.row);
               }

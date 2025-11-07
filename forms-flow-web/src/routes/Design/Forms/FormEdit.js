@@ -312,6 +312,7 @@ const EditComponent = () => {
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
   const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false); // Flag to prevent blocker during save navigation
+  const isNavigatingAfterSaveRef = useRef(false); 
   const setSelectedOption = (option, roles = []) =>
     roles.length ? "specifiedRoles" : option;
   const multiSelectOptionKey = "role";
@@ -804,6 +805,7 @@ const EditComponent = () => {
   useEffect(() => {
     if (!isCreateRoute && isNavigatingAfterSave) {
       setIsNavigatingAfterSave(false);
+      isNavigatingAfterSaveRef.current = false;
     }
   }, [isCreateRoute, isNavigatingAfterSave]);
 
@@ -1155,10 +1157,11 @@ const handleSaveLayout = () => {
   };
 
   useEffect(() => {
-    // On create route, require form title to be updated (not empty and not "Untitled Form")
+    // On create route, require form title to be updated (not empty and not the default "Untitled Form")
     if (isCreateRoute) {
       const trimmedTitle = formDetails?.title?.trim();
-      const isTitleMissing = !trimmedTitle || trimmedTitle === "Untitled Form";
+      const defaultTitle = t("Untitled Form");
+      const isTitleMissing = !trimmedTitle || trimmedTitle === defaultTitle;
       setSaveDisabled(isTitleMissing);
       return;
     }
@@ -1166,7 +1169,7 @@ const handleSaveLayout = () => {
     const shouldDisable = !(isFormSettingsChanged || workflowIsChanged || formChangeState?.changed);
     setSaveDisabled(shouldDisable);
   }, [isFormSettingsChanged, workflowIsChanged, formChangeState.changed, 
-    isCreateRoute, formDetails?.title]);
+    isCreateRoute, formDetails?.title, t]);
 
   const saveFormData = async ({ showToast = true }) => {
     try {
@@ -1456,7 +1459,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     setWorkflowIsChanged(false);
     setSettingsChanged(false);
     setIsFormSettingsChanged(false);
-    // Set flag to prevent NavigateBlocker from showing modal during redirect
+    isNavigatingAfterSaveRef.current = true;
     setIsNavigatingAfterSave(true);
 
     // Navigate to edit page with the new form ID
@@ -1474,15 +1477,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       }
     }
     
-    // Use setTimeout to ensure state updates are applied before navigation
-    // This prevents NavigateBlocker from showing unsaved changes modal
-    setTimeout(() => {
-      dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
-    }, 0);
+    dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
   } catch (err) {
     const error = err.response?.data || err.message;
     toast.error(error?.message || t("Failed to create form and workflow"));
     dispatch(setFormFailureErrorData("form", error));
+    isNavigatingAfterSaveRef.current = false;
+    setIsNavigatingAfterSave(false);
   } finally {
     setFormSubmitted(false);
   }
@@ -2568,7 +2569,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           (formChangeState.changed || workflowIsChanged || settingsChanged) &&
           !isMigrationLoading &&
           !isDeletionLoading &&
-          !isNavigatingAfterSave
+          !isNavigatingAfterSave &&
+          !isNavigatingAfterSaveRef.current
         }
         message={t("Discarding changes is permanent and cannot be undone.")}
       />
@@ -2631,7 +2633,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                       ariaLabel={t("Save Form Layout")}
                     />
                     <V8CustomButton
-                      disabled={isCreateRoute && (!formDetails?.title || formDetails.title.trim() === "" || formDetails.title.trim() === "Untitled Form")}
+                      disabled={isCreateRoute && (!formDetails?.title || formDetails.title.trim() === "" || formDetails.title.trim() === t("Untitled Form"))}
                       label={t(publishText)}
                       onClick={handlePublishClick}
                       dataTestId="handle-publish-testid"

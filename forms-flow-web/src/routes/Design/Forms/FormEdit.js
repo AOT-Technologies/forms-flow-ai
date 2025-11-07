@@ -1155,9 +1155,18 @@ const handleSaveLayout = () => {
   };
 
   useEffect(() => {
+    // On create route, require form title to be updated (not empty and not "Untitled Form")
+    if (isCreateRoute) {
+      const trimmedTitle = formDetails?.title?.trim();
+      const isTitleMissing = !trimmedTitle || trimmedTitle === "Untitled Form";
+      setSaveDisabled(isTitleMissing);
+      return;
+    }
+    // On edit route, use existing logic
     const shouldDisable = !(isFormSettingsChanged || workflowIsChanged || formChangeState?.changed);
     setSaveDisabled(shouldDisable);
-  }, [isFormSettingsChanged, workflowIsChanged, formChangeState.changed]);
+  }, [isFormSettingsChanged, workflowIsChanged, formChangeState.changed, 
+    isCreateRoute, formDetails?.title]);
 
   const saveFormData = async ({ showToast = true }) => {
     try {
@@ -1442,10 +1451,12 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       dispatch(setFormAuthorizationDetails(data.authorizations));
     }
 
-    // Reset form change state and workflow change state
+    // Reset all change states to prevent unsaved changes modal on redirect
     setFormChangeState({ initial: false, changed: false });
     setWorkflowIsChanged(false);
-    //Need to add check of 
+    setSettingsChanged(false);
+    setIsFormSettingsChanged(false);
+    // Set flag to prevent NavigateBlocker from showing modal during redirect
     setIsNavigatingAfterSave(true);
 
     // Navigate to edit page with the new form ID
@@ -1463,8 +1474,11 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       }
     }
     
-    // Navigate to edit route after saving
-    dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
+    // Use setTimeout to ensure state updates are applied before navigation
+    // This prevents NavigateBlocker from showing unsaved changes modal
+    setTimeout(() => {
+      dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
+    }, 0);
   } catch (err) {
     const error = err.response?.data || err.message;
     toast.error(error?.message || t("Failed to create form and workflow"));
@@ -2617,7 +2631,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                       ariaLabel={t("Save Form Layout")}
                     />
                     <V8CustomButton
-                      disabled={false}
+                      disabled={isCreateRoute && (!formDetails?.title || formDetails.title.trim() === "" || formDetails.title.trim() === "Untitled Form")}
                       label={t(publishText)}
                       onClick={handlePublishClick}
                       dataTestId="handle-publish-testid"

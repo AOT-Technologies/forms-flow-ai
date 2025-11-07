@@ -24,6 +24,7 @@ import {
   Alert,
   AlertVariant,
   CustomProgressBar,
+  useProgressBar,
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -763,7 +764,14 @@ const EditComponent = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [showPublishAlert, setShowPublishAlert] = useState(false);
   const [publishAlertMessage, setPublishAlertMessage] = useState("");
-  const [publishProgress, setPublishProgress] = useState(0);
+  
+  // Use progress bar hook for publish/unpublish progress
+  const { progress: publishProgress, start, complete, reset } = useProgressBar({
+    increment: 10,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+  });
 
   const applicationCount = useSelector(
     (state) => state.process?.applicationCount
@@ -1681,23 +1689,15 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Show alert with progress bar
       setPublishAlertMessage(`${action} ${formTitle}`);
       setShowPublishAlert(true);
-      setPublishProgress(0);
+      reset();
       
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setPublishProgress((prev) => {
-          if (prev >= 90) {
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 150);
+      // Start progress simulation
+      start();
 
       await actionFunction(processListData.id);
       
       // Complete progress
-      clearInterval(progressInterval);
-      setPublishProgress(100);
+      complete();
       
       if (isPublished) {
         await fetchProcessDetails(processListData);
@@ -1716,13 +1716,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Auto-hide alert after 5 seconds
       setTimeout(() => {
         setShowPublishAlert(false);
-        setPublishProgress(0);
+        reset();
       }, 3000);
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
       setShowPublishAlert(false);
-      setPublishProgress(0);
+      reset();
     } finally {
       // setIsPublishLoading(false);
     }
@@ -1738,23 +1738,15 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Show alert with progress bar
       setPublishAlertMessage(`Unpublishing ${formId}`);
       setShowPublishAlert(true);
-      setPublishProgress(0);
+      reset();
       
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setPublishProgress((prev) => {
-          if (prev >= 90) {
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 150);
+      // Start progress simulation
+      start();
       
       await unPublish(processListData.id); // Unpublish the process
       
       // Complete progress
-      clearInterval(progressInterval);
-      setPublishProgress(100);
+      complete();
       
       // Update message to success
       setPublishAlertMessage(`${t("Unpublished")} ${formTitle}`);
@@ -1762,7 +1754,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Auto-hide alert after 5 seconds
       setTimeout(() => {
         setShowPublishAlert(false);
-        setPublishProgress(0);
+        reset();
       }, 3000);
       // Fetch mapper data
       dispatch(

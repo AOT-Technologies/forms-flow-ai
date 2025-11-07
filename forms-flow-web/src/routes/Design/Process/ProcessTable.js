@@ -9,7 +9,8 @@ import {
   ReusableTable,
   Alert,
   AlertVariant,
-  CustomProgressBar
+  CustomProgressBar,
+  useProgressBar
 } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -95,7 +96,15 @@ const ProcessTable = React.memo(() => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [isDuplicating, setIsDuplicating] = useState(false);
-  const [duplicateProgress, setDuplicateProgress] = useState(0);
+  
+  // Use progress bar hook for duplicate progress
+  const { progress: duplicateProgress, start, complete, reset } = useProgressBar({
+    increment: 5,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+    initialProgress: 1,
+  });
 
   const currentState = isBPMN ? bpmnState : dmnState;
   const setCurrentState = isBPMN ? setBpmnState : setDmnState;
@@ -218,24 +227,12 @@ const ProcessTable = React.memo(() => {
   };
 
   const handleDuplicate = async (row) => {
-    let progressInterval = null;
     try {
       setIsDuplicating(true);
-      setDuplicateProgress(1);
+      reset();
       
-      // Simulate progress
-      const startProgressSimulation = () => {
-        progressInterval = setInterval(() => {
-          setDuplicateProgress((prev) => {
-            if (prev >= 90) {
-              clearInterval(progressInterval);
-              return 90; // Cap at 90% until real operation completes
-            }
-            return prev + 5; // Increment by 5%
-          });
-        }, 150);
-      };
-      startProgressSimulation();
+      // Start progress simulation
+      start();
       
       // Fetch process details to get the processData
       const response = await getProcessDetails({
@@ -250,12 +247,8 @@ const ProcessTable = React.memo(() => {
         dispatch(setDescisionDiagramXML(response.data.processData));
       }
       
-      // Clear the simulation interval
-      if (progressInterval) {
-        clearInterval(progressInterval);
-      }
-      
-      setDuplicateProgress(100);
+      // Complete progress
+      complete();
       
       // Wait a bit before redirecting to show completion
       setTimeout(() => {
@@ -264,15 +257,12 @@ const ProcessTable = React.memo(() => {
       }, 500);
     } catch (error) {
       console.error("Error duplicating process:", error);
-      // Clear the simulation interval on error
-      if (progressInterval) {
-        clearInterval(progressInterval);
-      }
-      setDuplicateProgress(100);
+      // Complete progress on error
+      complete();
       // Wait a bit before hiding the alert to show completion/error
       setTimeout(() => {
         setIsDuplicating(false);
-        setDuplicateProgress(0);
+        reset();
       }, 3000);
     }
   };

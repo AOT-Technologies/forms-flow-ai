@@ -24,6 +24,7 @@ import {
   Alert,
   AlertVariant,
   CustomProgressBar,
+  useProgressBar,
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -301,6 +302,13 @@ const EditComponent = () => {
   const [initialIsAnonymous, setInitialIsAnonymous] = useState(null);
   const [settingsChanged, setSettingsChanged] = useState(false);
   const formBuilderInitializedRef = useRef(false);
+  const [systemAltVariables, setSystemAltVariables] = useState(() => {
+    const initial = {};
+    for (const v of SystemVariables) {
+      initial[v.key] = v.altVariable || '';
+    }
+    return initial;
+  });
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
   const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false); // Flag to prevent blocker during save navigation
@@ -754,7 +762,14 @@ const EditComponent = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [showPublishAlert, setShowPublishAlert] = useState(false);
   const [publishAlertMessage, setPublishAlertMessage] = useState("");
-  const [publishProgress, setPublishProgress] = useState(0);
+  
+  // Use progress bar hook for publish/unpublish progress
+  const { progress: publishProgress, start, complete, reset } = useProgressBar({
+    increment: 10,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+  });
 
   const applicationCount = useSelector(
     (state) => state.process?.applicationCount
@@ -1673,23 +1688,15 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Show alert with progress bar
       setPublishAlertMessage(`${action} ${formTitle}`);
       setShowPublishAlert(true);
-      setPublishProgress(0);
+      reset();
       
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setPublishProgress((prev) => {
-          if (prev >= 90) {
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 150);
+      // Start progress simulation
+      start();
 
       await actionFunction(processListData.id);
       
       // Complete progress
-      clearInterval(progressInterval);
-      setPublishProgress(100);
+      complete();
       
       if (isPublished) {
         await fetchProcessDetails(processListData);
@@ -1708,13 +1715,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Auto-hide alert after 3 seconds
       setTimeout(() => {
         setShowPublishAlert(false);
-        setPublishProgress(0);
+        reset();
       }, 3000);
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
       setShowPublishAlert(false);
-      setPublishProgress(0);
+      reset();
     } finally {
       // setIsPublishLoading(false);
     }
@@ -1730,30 +1737,22 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Show alert with progress bar
       setPublishAlertMessage(`Unpublishing ${formId}`);
       setShowPublishAlert(true);
-      setPublishProgress(0);
+      reset();
       
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setPublishProgress((prev) => {
-          if (prev >= 90) {
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 150);
+      // Start progress simulation
+      start();
       
       await unPublish(processListData.id); // Unpublish the process
       
       // Complete progress
-      clearInterval(progressInterval);
-      setPublishProgress(100);
+      complete();
       
       // Update message to success
       setPublishAlertMessage(`${t("Unpublished")} ${formTitle}`);
       
       setTimeout(() => {
         setShowPublishAlert(false);
-        setPublishProgress(0);
+        reset();
       }, 3000);
       // Fetch mapper data
       dispatch(
@@ -2331,7 +2330,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                 id: idx + 1,
                 type: variable.labelOfComponent,
                 variable: variable.key,
-                altVariable: variable.altVariable,
+                altVariable: systemAltVariables[variable.key],
                 selected: (
                   <Switch
                     type="primary"
@@ -2358,13 +2357,11 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                   sortable: false,
                   renderCell: (params) => (
                     <CustomTextInput
-                      value={params.row.altVariable}
+                      value={systemAltVariables[params.row.variable]}
                       datatestid={`alt-variable-input-${params.row.variable}`}
                       aria-label="System variable alternative field"
                       placeholder=""
-                      setValue={(newVal) => {
-                        params.row.altVariable = newVal;
-                      }}
+                      setValue={handleAltVariableInputChange(params)}
                       style={{ color: StyleServices.getCSSVariable('--ff-gray-dark') }}
                     />
                   ),
@@ -2464,6 +2461,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       default:
         return null;
     }
+  };
+
+  const handleAltVariableInputChange = (params) => {
+    return (newVal) => {
+      params.row.altVariable = newVal;
+      setSystemAltVariables(prev => ({ ...prev, [params.row.variable]: newVal }));
+    };
   };
 
   // Render secondary controls based on active primary tab

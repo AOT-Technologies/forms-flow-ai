@@ -6,6 +6,7 @@ import {
   //AiIcon,
   BreadCrumbs,
   FileUploadArea,
+  useProgressBar,
 } from "@formsflow/components";
 import {
   navigateToDesignFormEdit,
@@ -29,33 +30,29 @@ const CreateFormPage = () => {
   // State management
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState("");
 
   // Refs
   const fileInputRef = useRef(null);
-  const uploadTimerRef = useRef(null);
   const uploadAreaRef = useRef(null);
+  
+  // Use progress bar hook for upload progress
+  const { progress: uploadProgress, start, stop, complete, reset } = useProgressBar({
+    increment: UPLOAD_PROGRESS_INCREMENT,
+    interval: UPLOAD_PROGRESS_INTERVAL,
+    useCap: false,
+    initialProgress: INITIAL_UPLOAD_PROGRESS,
+  });
 
   /**
    * Resets the upload state to allow user to retry with a new file
    */
   const resetUploadState = useCallback(() => {
     setIsUploading(false);
-    setUploadProgress(0);
+    reset();
     setUploadError("");
     setSelectedFile(null);
-  }, []);
-
-  /**
-   * Clears the upload timer if it exists
-   */
-  const clearUploadTimer = useCallback(() => {
-    if (uploadTimerRef.current) {
-      clearInterval(uploadTimerRef.current);
-      uploadTimerRef.current = null;
-    }
-  }, []);
+  }, [reset]);
 
   /**
    * Validates the uploaded file
@@ -111,7 +108,7 @@ const CreateFormPage = () => {
     // Initialize upload state
     setSelectedFile(file);
     setUploadError("");
-    setUploadProgress(INITIAL_UPLOAD_PROGRESS);
+    reset();
     setIsUploading(true);
 
     try {
@@ -126,41 +123,46 @@ const CreateFormPage = () => {
         throw new Error("Form ID not received from server");
       }
 
-      // Complete upload progress and navigate
-      setUploadProgress(COMPLETE_PROGRESS);
-      setIsUploading(false);
-      clearUploadTimer();
-      navigateToDesignFormEdit(dispatch, tenantKey, formId);
+      // Complete upload progress
+      complete();
+      
+      // Wait for progress bar to show 100% before navigating (allows UI to update)
+      setTimeout(() => {
+        setIsUploading(false);
+        navigateToDesignFormEdit(dispatch, tenantKey, formId);
+      }, 500);
     } catch (error) {
+      // Set error first to avoid briefly rendering the completed state
       const errorMessage = error?.response?.data?.message || 
                           error?.message || 
                           t("Failed to import form");
       setUploadError(errorMessage);
-      setIsUploading(false);
+
+      // Complete progress after error so UI doesn't flash Done/Cancel
+      complete();
+
+      // Wait for progress bar to show 100% before finalizing state
+      setTimeout(() => {
+        setIsUploading(false);
+      }, 500);
     }
-  }, [validateFile, clearUploadTimer, dispatch, tenantKey, t]);
+  }, [validateFile, reset, complete, dispatch, tenantKey, t]);
 
   /**
    * Manages simulated upload progress while awaiting server response
    */
   useEffect(() => {
     if (isUploading) {
-      clearUploadTimer();
-      
-      uploadTimerRef.current = setInterval(() => {
-        setUploadProgress((prevProgress) => {
-          const nextProgress = prevProgress + UPLOAD_PROGRESS_INCREMENT;
-          return Math.min(nextProgress, COMPLETE_PROGRESS);
-        });
-      }, UPLOAD_PROGRESS_INTERVAL);
+      reset();
+      start();
     } else {
-      clearUploadTimer();
+      stop();
     }
 
     return () => {
-      clearUploadTimer();
+      stop();
     };
-  }, [isUploading, clearUploadTimer]);
+  }, [isUploading, start, stop, reset]);
 
   /**
    * Manages focus on the upload area when an error occurs

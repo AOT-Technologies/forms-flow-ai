@@ -984,6 +984,11 @@ const handleSaveLayout = () => {
             });
             dispatchFormAction({ type: "type", value: data.type });
             dispatchFormAction({ type: "display", value: data.display });
+
+            // Switch to form builder tab after successful revert
+            handleTabClick("form", "builder");
+            // Mark form as changed so user can save
+            setFormChangeState({ initial: true, changed: true });
           }
         })
         .catch(() => {
@@ -1012,6 +1017,11 @@ const handleSaveLayout = () => {
             });
             dispatchFormAction({ type: "type", value: data.type });
             dispatchFormAction({ type: "display", value: data.display });
+
+            // Switch to form builder tab after successful revert
+            handleTabClick('form', 'builder');
+            // Mark form as changed so user can save
+            setFormChangeState({ initial: true, changed: true });
           }
         })
         .catch((err) => {
@@ -1529,6 +1539,14 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Update the process data with reverted data
       dispatch(setProcessData(response.data));
       setWorkflowIsChanged(true);
+      
+      // Switch to appropriate tab based on current context
+      if (activeTab.primary === 'flow') {
+        handleTabClick('flow', 'layout');
+      } else if (activeTab.primary === 'bpmn') {
+        handleTabClick('bpmn', 'editor');
+      }
+      
       toast.success(t("Process reverted successfully"));
     } catch (error) {
       console.error("Error reverting BPMN history:", error);
@@ -2235,7 +2253,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
               revertBtnText={t("Revert")}
               allHistory={formHistory}
               categoryType={CategoryType.FORM}
-              revertBtnAction={revertFormBtnAction}
+              revertBtnAction={(formId) => revertFormBtnAction(formId)}
               historyCount={formHistoryData.totalCount}
               disableAllRevertButton={isPublished}
               loading={formHistoryLoading}

@@ -312,6 +312,7 @@ const EditComponent = () => {
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
   const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false); // Flag to prevent blocker during save navigation
+  const isNavigatingAfterSaveRef = useRef(false); 
   const setSelectedOption = (option, roles = []) =>
     roles.length ? "specifiedRoles" : option;
   const multiSelectOptionKey = "role";
@@ -804,6 +805,7 @@ const EditComponent = () => {
   useEffect(() => {
     if (!isCreateRoute && isNavigatingAfterSave) {
       setIsNavigatingAfterSave(false);
+      isNavigatingAfterSaveRef.current = false;
     }
   }, [isCreateRoute, isNavigatingAfterSave]);
 
@@ -1165,9 +1167,19 @@ const handleSaveLayout = () => {
   };
 
   useEffect(() => {
+    // On create route, require form title to be updated (not empty and not the default "Untitled Form")
+    if (isCreateRoute) {
+      const trimmedTitle = formDetails?.title?.trim();
+      const defaultTitle = t("Untitled Form");
+      const isTitleMissing = !trimmedTitle || trimmedTitle === defaultTitle;
+      setSaveDisabled(isTitleMissing);
+      return;
+    }
+    // On edit route, use existing logic
     const shouldDisable = !(isFormSettingsChanged || workflowIsChanged || formChangeState?.changed);
     setSaveDisabled(shouldDisable);
-  }, [isFormSettingsChanged, workflowIsChanged, formChangeState.changed]);
+  }, [isFormSettingsChanged, workflowIsChanged, formChangeState.changed, 
+    isCreateRoute, formDetails?.title, t]);
 
   const saveFormData = async ({ showToast = true }) => {
     try {
@@ -1452,10 +1464,12 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       dispatch(setFormAuthorizationDetails(data.authorizations));
     }
 
-    // Reset form change state and workflow change state
+    // Reset all change states to prevent unsaved changes modal on redirect
     setFormChangeState({ initial: false, changed: false });
     setWorkflowIsChanged(false);
-    //Need to add check of 
+    setSettingsChanged(false);
+    setIsFormSettingsChanged(false);
+    isNavigatingAfterSaveRef.current = true;
     setIsNavigatingAfterSave(true);
 
     // Navigate to edit page with the new form ID
@@ -1473,12 +1487,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       }
     }
     
-    // Navigate to edit route after saving
     dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
   } catch (err) {
     const error = err.response?.data || err.message;
     toast.error(error?.message || t("Failed to create form and workflow"));
     dispatch(setFormFailureErrorData("form", error));
+    isNavigatingAfterSaveRef.current = false;
+    setIsNavigatingAfterSave(false);
   } finally {
     setFormSubmitted(false);
   }
@@ -2572,7 +2587,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           (formChangeState.changed || workflowIsChanged || settingsChanged) &&
           !isMigrationLoading &&
           !isDeletionLoading &&
-          !isNavigatingAfterSave
+          !isNavigatingAfterSave &&
+          !isNavigatingAfterSaveRef.current
         }
         message={t("Discarding changes is permanent and cannot be undone.")}
       />
@@ -2635,7 +2651,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                       ariaLabel={t("Save Form Layout")}
                     />
                     <V8CustomButton
-                      disabled={false}
+                      disabled={isCreateRoute && (!formDetails?.title || formDetails.title.trim() === "" || formDetails.title.trim() === t("Untitled Form"))}
                       label={t(publishText)}
                       onClick={handlePublishClick}
                       dataTestId="handle-publish-testid"

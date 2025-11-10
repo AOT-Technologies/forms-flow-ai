@@ -157,5 +157,5 @@ class TaskCompletionResource(Resource):
         data = request.get_json()
         if not data:
             return {"message": "Invalid input"}, HTTPStatus.BAD_REQUEST
-        TaskService().complete_task(task_id, data)
-        return {"message": "Task completed successfully"}, HTTPStatus.OK
+        response = TaskService().complete_task(task_id, data)
+        return response, HTTPStatus.OK

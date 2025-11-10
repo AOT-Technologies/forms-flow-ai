@@ -41,11 +41,6 @@ class FormDataSchema(Schema):
         required=True,
         allow_none=False,
     )
-    submission_id = fields.String(
-        data_key="submissionId",
-        required=True,
-        allow_none=False,
-    )
     data = fields.Dict(required=True, allow_none=False)
 
 

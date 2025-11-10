@@ -42,6 +42,81 @@ task_outcome_response = API.inherit(
     },
 )
 
+# Task completion request models
+variable_value_model = API.model(
+    "TaskCompletionVariableValue",
+    {"value": fields.Raw(required=True, description="Variable value")},
+)
+
+bpmn_variables_model = API.model(
+    "TaskCompletionBpmnVariables",
+    {
+        "formUrl": fields.Nested(
+            variable_value_model, required=True, description="Form URL used by Camunda"
+        ),
+        "applicationId": fields.Nested(
+            variable_value_model, required=True, description="Application ID"
+        ),
+        "webFormUrl": fields.Nested(
+            variable_value_model, required=True, description="Web form URL"
+        ),
+        "action": fields.Nested(
+            variable_value_model,
+            required=True,
+            description="Action string (e.g., Reviewed)",
+        ),
+    },
+)
+
+bpmn_data_model = API.model(
+    "TaskCompletionBpmnData",
+    {
+        "variables": fields.Nested(
+            bpmn_variables_model, required=True, description="Camunda variables"
+        ),
+    },
+)
+
+form_data_model = API.model(
+    "TaskCompletionFormData",
+    {
+        "formId": fields.String(required=True, description="Form.io form ID"),
+        "data": fields.Raw(required=True, description="Form submission data"),
+    },
+)
+
+application_data_model = API.model(
+    "TaskCompletionApplicationData",
+    {
+        "applicationId": fields.Integer(required=True, description="Application ID"),
+        "applicationStatus": fields.String(
+            required=True, description="Application status"
+        ),
+        "formUrl": fields.String(
+            required=True, description="Form URL of created submission"
+        ),
+        "submittedBy": fields.String(
+            required=True, description="User name who submitted"
+        ),
+        "privateNotes": fields.String(required=False, description="Private notes"),
+    },
+)
+
+task_completion_request_model = API.model(
+    "TaskCompletionRequest",
+    {
+        "formData": fields.Nested(
+            form_data_model, required=True, description="Form.io submission info"
+        ),
+        "bpmnData": fields.Nested(
+            bpmn_data_model, required=True, description="Camunda completion variables"
+        ),
+        "applicationData": fields.Nested(
+            application_data_model, required=True, description="Application metadata"
+        ),
+    },
+)
+
 
 @cors_preflight("POST, OPTIONS")
 @API.route("/task-outcome-configuration", methods=["POST", "OPTIONS"])
@@ -144,7 +219,7 @@ class TaskCompletionResource(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @API.expect()
+    @API.expect(task_completion_request_model)
     @API.doc(
         responses={
             200: ("OK:- Successful request."),
@@ -153,7 +228,41 @@ class TaskCompletionResource(Resource):
         }
     )
     def post(task_id: str):
-        """Complete a task."""
+        """Complete a Camunda task and return the workflow response.
+
+        Args:
+            task_id (str): Identifier of the Camunda user task to complete.
+
+        Returns:
+            tuple[dict, HTTPStatus]: Response body from the BPM service and HTTP status.
+
+        Request JSON:
+            {
+                "formData": {
+                    "formId": "690b032bf089b0ad31b912a3",
+                    "data": {
+                        "businessOperatingName": "Adrienne Hinton",
+                        "applicationId": "28",
+                        "applicationStatus": "Reviewed"
+                    }
+                },
+                "bpmnData": {
+                    "variables": {
+                        "formUrl": {"value": "http://.../submission/690ded51944a118ff360502f"},
+                        "applicationId": {"value": 28},
+                        "webFormUrl": {"value": "http://.../submission/690ded51944a118ff360502f"},
+                        "action": {"value": "Reviewed"}
+                    }
+                },
+                "applicationData": {
+                    "applicationId": 28,
+                    "applicationStatus": "Reviewed",
+                    "formUrl": "http://.../submission/690ded51944a118ff360502f",
+                    "submittedBy": "John Doe",
+                    "privateNotes": "blah blah"
+                }
+            }
+        """
         data = request.get_json()
         if not data:
             return {"message": "Invalid input"}, HTTPStatus.BAD_REQUEST

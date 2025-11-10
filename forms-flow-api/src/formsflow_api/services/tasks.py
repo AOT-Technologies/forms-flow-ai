@@ -109,7 +109,7 @@ class TaskService:
     def complete_task(
         self, task_id, request_data, **kwargs
     ):  # pylint:disable=too-many-locals
-        """Complete the task and capture task completion details."""
+        """Complete a Camunda task and persist audit/application updates."""
         data = TaskCompletionSchema().load(request_data)
         user: UserContext = kwargs["user"]
         token = user.bearer_token
@@ -141,6 +141,8 @@ class TaskService:
 
         try:
             # Complete task in workflow
+            # Fetch data from request_data and modify formUrl and webFormUrl values
+            # Since schema returns camel_case, data directly fetched from request_data
             variables = request_data["bpmnData"]["variables"]
             variables["formUrl"]["value"] = form_url
             web_form_url = variables["webFormUrl"]["value"]

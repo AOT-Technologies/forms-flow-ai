@@ -27,7 +27,7 @@ ecdsa==0.19.1
 flask-jwt-oidc==0.7.0
 flask-marshmallow==1.3.0
 flask-restx==1.3.0
-formsflow_api_utils @ git+https://github.com/aot-technologies/forms-flow-ai.git@develop#subdirectory=forms-flow-api-utils
+formsflow_api_utils @ git+https://github.com/auslin-aot/forms-flow-ai.git@feature/fwf-5571-backend-changes-approval-outside-form#subdirectory=forms-flow-api-utils
 googleapis-common-protos==1.69.2
 grpcio==1.71.0
 gunicorn==23.0.0

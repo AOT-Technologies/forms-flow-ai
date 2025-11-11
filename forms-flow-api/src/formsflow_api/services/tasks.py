@@ -91,8 +91,8 @@ class TaskService:
     def update_application(self, application_id: int, data: dict, user: UserContext):
         """Update application details."""
         application = Application.find_by_id(application_id=application_id)
-        if application is None and user.tenant_key is not None:
-            raise BusinessException(BusinessErrorCode.PERMISSION_DENIED)
+        if application is None:
+            raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
         # This can be used later if workflow completion fails and we need to rollback
         application_backup_data = {
             "application_status": application.application_status,

@@ -3,7 +3,12 @@
 import json
 from unittest.mock import patch
 
-from formsflow_api_utils.utils import CREATE_SUBMISSIONS, get_token
+from formsflow_api_utils.utils import (
+    CREATE_SUBMISSIONS,
+    MANAGE_TASKS,
+    get_token,
+)
+
 from tests.utilities.base_test import (
     get_application_create_payload,
     task_outcome_config_payload,
@@ -128,30 +133,30 @@ class TestOutcomeResource:
         assert response.json["message"] == "Task outcome configuration not found for the given task Id"
 
 
-class TaskCompletionTestResource:
+class TestTaskCompletionResource:
     """Test suite for the task completion endpoint."""
 
     def task_completion_payload(self, application_id, form_id):
         """Returns a valid payload for task completion."""
         return {
             "formData": {
-                "formId": {form_id},
+                "formId": form_id,
                 "data": {
                     "businessOperatingName": "Adrienne Hinton",
-                    "applicationId": {application_id},
+                    "applicationId": application_id,
                     "applicationStatus": "Reviewed",
                 }
             },
             "bpmnData": {
                 "variables": {
                     "formUrl": {"value": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f"},
-                    "applicationId": {"value": {application_id}},
+                    "applicationId": {"value": application_id},
                     "webFormUrl": {"value": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f"},
                     "action": {"value": "Reviewed"}
                 }
             },
             "applicationData": {
-                "applicationId": {application_id},
+                "applicationId": application_id,
                 "applicationStatus": "Reviewed",
                 "formUrl": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f",
                 "submittedBy": "John Doe",
@@ -174,7 +179,7 @@ class TaskCompletionTestResource:
         )
         assert rv.status_code == 201
         application_id = rv.json.get("id")
-        token = get_token(jwt)
+        token = get_token(jwt, role=MANAGE_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -193,8 +198,8 @@ class TaskCompletionTestResource:
         assert response.json["message"] == "Task completed successfully"
 
     def test_task_complete_api_invalid_request(self, app, client, session, jwt):
-        """Assert that completing a task returns correct response."""
-        token = get_token(jwt)
+        """Assert that completing a task returns error response."""
+        token = get_token(jwt, role=MANAGE_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -216,3 +221,18 @@ class TaskCompletionTestResource:
             json=payload
         )
         assert response.status_code == 400
+
+    def test_task_complete_api_unauthorized_request(self, app, client, session, jwt):
+        """Assert that completing a task returns unauthorized response."""
+        token = get_token(jwt)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        task_id = "f30c90f8-be30-11f0-88b5-f2154b5a3afb"
+        response = client.post(
+            f"tasks/{task_id}/complete",
+            headers=headers,
+            json=self.task_completion_payload(application_id=1, form_id="690b032bf089b0ad31b912a3")
+        )
+        assert response.status_code == 401

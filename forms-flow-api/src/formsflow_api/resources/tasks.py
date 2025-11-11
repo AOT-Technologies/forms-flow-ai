@@ -5,6 +5,7 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
+    MANAGE_TASKS,
     auth,
     cors_preflight,
     profiletime,
@@ -217,7 +218,7 @@ class TaskCompletionResource(Resource):
     """Resource to complete task and capture task completion details."""
 
     @staticmethod
-    @auth.require
+    @auth.has_one_of_roles([MANAGE_TASKS])
     @profiletime
     @API.expect(task_completion_request_model)
     @API.doc(

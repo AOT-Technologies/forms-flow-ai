@@ -38,7 +38,9 @@ class ApplicationHistoryService:
     def get_application_history(application_id, **kwargs):
         """Get application by id."""
         user: UserContext = kwargs["user"]
-        notes_permission = "reviewer_view_history" in user.roles
+        notes_permission = (
+            "reviewer_view_history" in user.roles if user.roles else False
+        )
         application_history = ApplicationHistory.get_application_history(
             application_id, notes_permission
         )

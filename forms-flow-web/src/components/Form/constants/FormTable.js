@@ -156,7 +156,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
       const createdForm = createResponse.data;
 
       // Redirect to edit page of duplicated form
-      dispatch(push(`${redirectUrl}forms/${createdForm._id}/edit`));
+      dispatch(push(`${redirectUrl}formflow/${createdForm._id}/edit`));
 
     } catch (err) {
       console.error("Error duplicating form:", err);
@@ -317,7 +317,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
 
 const viewOrEditForm = (formId, path) => {
   dispatch(resetFormProcessData());
-  dispatch(push(`${redirectUrl}forms/${formId}/${path}`));
+  dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
 };
 
 const handlePageChange = (page) => {

@@ -46,25 +46,25 @@ export default React.memo(() => {
   return (
     // <div data-testid="Form-index">
       <Switch>
-        <Route exact path={`${BASE_ROUTE}forms`} component={List} />
+        <Route exact path={`${BASE_ROUTE}formflow`} component={List} />
         <GenericRoute
           exact
-          path={`${BASE_ROUTE}forms/build`}
+          path={`${BASE_ROUTE}formflow/build`}
           component={CreateFormPage}
           roles={['create_designs']}
         />
         <GenericRoute
-          path={`${BASE_ROUTE}forms/create`}
+          path={`${BASE_ROUTE}formflow/create`}
           component={EditForm}
           roles={['create_designs', 'view_designs']}
         />
         <GenericRoute
-          path={`${BASE_ROUTE}forms/:formId?/edit`}
+          path={`${BASE_ROUTE}formflow/:formId?/edit`}
           component={EditForm}
           roles={['create_designs', 'view_designs']}
         />
         <GenericRoute
-          path={`${BASE_ROUTE}forms/:formId?/view-edit`}
+          path={`${BASE_ROUTE}formflow/:formId?/view-edit`}
           component={FormPreview}
         />
       </Switch>

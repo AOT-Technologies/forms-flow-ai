@@ -668,7 +668,7 @@ const EditComponent = () => {
       if(promptNewVersion) setPromptNewVersion(false);
       /* ------------------------- if the form id changed ------------------------- */
       const formId = responseData.mapper?.formId;
-        dispatch(push(`${redirectUrl}forms/${formId}/edit?tab=form&subtab=builder`));
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&subtab=builder`));
       setActiveTab({
         primary: 'form', 
         secondary: null,   
@@ -909,7 +909,7 @@ useEffect(() => {
         })
       );
     } else {
-      const newUrl = `${redirectUrl}forms/${formId}/edit?${queryParams.toString()}`;
+      const newUrl = `${redirectUrl}formflow/${formId}/edit?${queryParams.toString()}`;
       dispatch(push(newUrl));
     }
   };
@@ -931,7 +931,7 @@ useEffect(() => {
         })
       );
     } else {
-      const newUrl = `${redirectUrl}forms/${formId}/edit`;
+      const newUrl = `${redirectUrl}formflow/${formId}/edit`;
       dispatch(
         push({
           pathname: newUrl,
@@ -1488,7 +1488,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       }
     }
     
-    dispatch(push(`${redirectUrl}forms/${formId}/edit?tab=form&sub=builder`));
+    dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
   } catch (err) {
     const error = err.response?.data || err.message;
     toast.error(error?.message || t("Failed to create form and workflow"));
@@ -1576,7 +1576,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   };
 
   const handlePreview = () => {
-    const newTabUrl = `${redirectUrl}forms/${form._id}/view-edit`;
+    const newTabUrl = `${redirectUrl}formflow/${form._id}/view-edit`;
     window.open(newTabUrl, "_blank");
   };
 
@@ -1674,7 +1674,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       .then((res) => {
         const form = res.data;
         dispatch(setFormSuccessData("form", form));
-        dispatch(push(`${redirectUrl}forms/${form._id}/edit`));
+        dispatch(push(`${redirectUrl}formflow/${form._id}/edit`));
       })
       .catch((err) => {
         let error;
@@ -1924,7 +1924,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       const res = await formCreate(newFormData);
       const response = res.data;
       dispatch(setFormSuccessData("form", response));
-      dispatch(push(`${redirectUrl}forms/${response._id}/edit`));
+      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
       setPromptNewVersion(false);
     } catch (err) {
       const error = err.response?.data || err.message;
@@ -2091,7 +2091,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       setIsDeletionLoading(true);
       dispatch(deleteForm("form", formId,() => {
         // Callback after form deletion;
-        dispatch(push(`${redirectUrl}forms`));
+        dispatch(push(`${redirectUrl}formflow`));
       }));
     }
 

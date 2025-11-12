@@ -13,7 +13,7 @@ import {
   fetchRevertingProcessData,
 } from "../../../apiManager/services/processServices";
 import Loading from "../../../containers/Loading";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { MULTITENANCY_ENABLED, getRoute } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import {
   createNewProcess,
@@ -1097,16 +1097,29 @@ const ProcessCreateEdit = ({ type }) => {
 
             <BreadCrumbs
               items={[
-                { label: t("Build"), href: `/${Process.route}` },
                 { 
-                  label: isCreate ? t("Create New Flow") : t("Edit Flow"), 
-                  href: location?.pathname || "" 
+                  id: isBPMN ? "subflows" : "decision-tables",
+                  label: isBPMN ? t("Subflows") : t("Decision Tables"), 
+                  href: getRoute(tenantKey)[isBPMN ? "SUBFLOW" : "DECISIONTABLE"]
+                },
+                { 
+                  id: "create-new",
+                  label: isBPMN ? t("Create a New Subflow") : t("Create a New Decision Table")
+                },
+                { 
+                  id: "edit",
+                  label: t("Edit")
                 },
               ]}
               variant="minimized"
               underlined={true}
               dataTestId={`${diagramType.toLowerCase()}-breadcrumb`}
               ariaLabel={t(`${diagramType} Breadcrumb`)}
+              onBreadcrumbClick={(item) => {
+                if (item?.id === "subflows" || item?.id === "decision-tables") {
+                  dispatch(push(getRoute(tenantKey)[isBPMN ? "SUBFLOW" : "DECISIONTABLE"]));
+                }
+              }}
             />
           <div className="toast-section">
               <Alert

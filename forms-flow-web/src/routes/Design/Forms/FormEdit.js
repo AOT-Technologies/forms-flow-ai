@@ -87,6 +87,7 @@ import { convertToNormalForm, convertToWizardForm } from "../../../helper/conver
 import { SystemVariables } from '../../../constants/variables';
 import EditorActions from "./EditActions";
 import { StyleServices } from "@formsflow/service";
+import { getRoute } from "../../../constants/constants";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -667,7 +668,7 @@ const EditComponent = () => {
       if(promptNewVersion) setPromptNewVersion(false);
       /* ------------------------- if the form id changed ------------------------- */
       const formId = responseData.mapper?.formId;
-        dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&subtab=builder`));
+        dispatch(push(`${redirectUrl}forms/${formId}/edit?tab=form&subtab=builder`));
       setActiveTab({
         primary: 'form', 
         secondary: null,   
@@ -908,7 +909,7 @@ useEffect(() => {
         })
       );
     } else {
-      const newUrl = `${redirectUrl}formflow/${formId}/edit?${queryParams.toString()}`;
+      const newUrl = `${redirectUrl}forms/${formId}/edit?${queryParams.toString()}`;
       dispatch(push(newUrl));
     }
   };
@@ -930,7 +931,7 @@ useEffect(() => {
         })
       );
     } else {
-      const newUrl = `${redirectUrl}formflow/${formId}/edit`;
+      const newUrl = `${redirectUrl}forms/${formId}/edit`;
       dispatch(
         push({
           pathname: newUrl,
@@ -1487,7 +1488,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       }
     }
     
-    dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
+    dispatch(push(`${redirectUrl}forms/${formId}/edit?tab=form&sub=builder`));
   } catch (err) {
     const error = err.response?.data || err.message;
     toast.error(error?.message || t("Failed to create form and workflow"));
@@ -1575,7 +1576,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   };
 
   const handlePreview = () => {
-    const newTabUrl = `${redirectUrl}formflow/${form._id}/view-edit`;
+    const newTabUrl = `${redirectUrl}forms/${form._id}/view-edit`;
     window.open(newTabUrl, "_blank");
   };
 
@@ -1673,7 +1674,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       .then((res) => {
         const form = res.data;
         dispatch(setFormSuccessData("form", form));
-        dispatch(push(`${redirectUrl}formflow/${form._id}/edit`));
+        dispatch(push(`${redirectUrl}forms/${form._id}/edit`));
       })
       .catch((err) => {
         let error;
@@ -1923,7 +1924,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       const res = await formCreate(newFormData);
       const response = res.data;
       dispatch(setFormSuccessData("form", response));
-      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
+      dispatch(push(`${redirectUrl}forms/${response._id}/edit`));
       setPromptNewVersion(false);
     } catch (err) {
       const error = err.response?.data || err.message;
@@ -2090,7 +2091,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       setIsDeletionLoading(true);
       dispatch(deleteForm("form", formId,() => {
         // Callback after form deletion;
-        dispatch(push(`${redirectUrl}formflow`));
+        dispatch(push(`${redirectUrl}forms`));
       }));
     }
 
@@ -2615,13 +2616,19 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
               <div className="section-seperation-left d-flex flex-column gap-0">
                 <BreadCrumbs
                   items={[
-                    { label: t("Build"), href: "/formflow" },
-                    { label: t("Create New Form"), href: location.pathname },
+                    { id: "forms", label: t("Forms"), href: getRoute(tenantKey).FORMFLOW },
+                    { id: "create-new-form", label: t("Create New Form") },
+                    { id: "edit", label: t("Edit") },
                   ]}
                   variant="minimized"
                   underlined={true}
                   dataTestId="buildForm-breadcrumb"
                   ariaLabel={t("Build Form Breadcrumb")}
+                  onBreadcrumbClick={(item) => {
+                    if (item?.id === "forms") {
+                      dispatch(push(getRoute(tenantKey).FORMFLOW));
+                    }
+                  }}
                 />
                 <p className="form-title">
                   {formData?.title || t("Untitled Form")}

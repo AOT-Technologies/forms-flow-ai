@@ -162,7 +162,7 @@ const enableWorkflowChange = async () => {
       };
       processMigrate(migrationData)
         .then(() => {
-          dispatch(push(`${redirectUrl}formflow`));
+          dispatch(push(`${redirectUrl}forms`));
         })
         .catch((err) => {
           setIsMigrationLoading(false); // this is not added in finally as this props value is used for overriding navigation blocker during routing

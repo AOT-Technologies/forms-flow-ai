@@ -216,7 +216,7 @@ const MAIN_ROUTE = {
   DRAFT: "draft",
   FORM: "form",
   FORM_ENTRIES: "form/:formId/entries",
-  FORMFLOW: "formflow",
+  FORMFLOW: "forms",
   TASK_OLD: "task-old",
   TASK: "task",
   APPLICATION: "application",
@@ -227,7 +227,7 @@ const MAIN_ROUTE = {
   ANALYZESUBMISSIONS: "submissions",
   ADMIN: "admin",
   NOTFOUND: "404",
-  FORM_CREATE: "formflow/create"
+  FORM_CREATE: "forms/create"
 };
 
 const getBaseRoute = (tenantId) => {

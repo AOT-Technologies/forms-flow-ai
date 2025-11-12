@@ -24,6 +24,7 @@ import {
   Alert,
   AlertVariant,
   CustomProgressBar,
+  useProgressBar,
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -122,24 +123,25 @@ const tabConfig = {
         },
       }
     },
-    flow: {
-      label: "Flow",
-      query: "?tab=flow",
-      secondary: {
-        layout: {
-          label: "Layout",
-          query: "?tab=flow&sub=layout"
-        },
-        history: {
-          label: "History",
-          query: "?tab=flow&sub=history"
-        },
-        variables : {
-          label: "Variables",
-          query: "?tab=flow&sub=variables"
-        },
-      }
-    },
+    //Commented out for the the time being.
+    // flow: {
+    //   label: "Flow",
+    //   query: "?tab=flow",
+    //   secondary: {
+    //     layout: {
+    //       label: "Layout",
+    //       query: "?tab=flow&sub=layout"
+    //     },
+    //     history: {
+    //       label: "History",
+    //       query: "?tab=flow&sub=history"
+    //     },
+    //     variables : {
+    //       label: "Variables",
+    //       query: "?tab=flow&sub=variables"
+    //     },
+    //   }
+    // },
     bpmn: {
       label: "BPMN",
       query: "?tab=bpmn",
@@ -300,9 +302,17 @@ const EditComponent = () => {
   const [initialIsAnonymous, setInitialIsAnonymous] = useState(null);
   const [settingsChanged, setSettingsChanged] = useState(false);
   const formBuilderInitializedRef = useRef(false);
+  const [systemAltVariables, setSystemAltVariables] = useState(() => {
+    const initial = {};
+    for (const v of SystemVariables) {
+      initial[v.key] = v.altVariable || '';
+    }
+    return initial;
+  });
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
   const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false); // Flag to prevent blocker during save navigation
+  const isNavigatingAfterSaveRef = useRef(false); 
   const setSelectedOption = (option, roles = []) =>
     roles.length ? "specifiedRoles" : option;
   const multiSelectOptionKey = "role";
@@ -657,10 +667,7 @@ const EditComponent = () => {
       if(promptNewVersion) setPromptNewVersion(false);
       /* ------------------------- if the form id changed ------------------------- */
       const formId = responseData.mapper?.formId;
-      if(formId && formData._id != formId){
-        dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
-        return;
-      }
+        dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&subtab=builder`));
       setActiveTab({
         primary: 'form', 
         secondary: null,   
@@ -756,7 +763,14 @@ const EditComponent = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [showPublishAlert, setShowPublishAlert] = useState(false);
   const [publishAlertMessage, setPublishAlertMessage] = useState("");
-  const [publishProgress, setPublishProgress] = useState(0);
+  
+  // Use progress bar hook for publish/unpublish progress
+  const { progress: publishProgress, start, complete, reset } = useProgressBar({
+    increment: 10,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+  });
 
   const applicationCount = useSelector(
     (state) => state.process?.applicationCount
@@ -791,8 +805,19 @@ const EditComponent = () => {
   useEffect(() => {
     if (!isCreateRoute && isNavigatingAfterSave) {
       setIsNavigatingAfterSave(false);
+      isNavigatingAfterSaveRef.current = false;
     }
   }, [isCreateRoute, isNavigatingAfterSave]);
+
+  // Helper function to reset and reinitialize FormBuilder when switching to form/builder tab
+  const resetFormBuilderInitialization = (primaryTab, secondaryTab) => {
+    if (primaryTab === 'form' && (secondaryTab === 'builder' || secondaryTab === null)) {
+      formBuilderInitializedRef.current = false;
+      setTimeout(() => {
+        formBuilderInitializedRef.current = true;
+      }, 200);
+    }
+  };
 
   // Parse URL parameters for tab state
 useEffect(() => {
@@ -805,10 +830,12 @@ useEffect(() => {
     subsub = 'system';
   }
 
-  // Set default secondary tab for form to 'builder'
   let secondaryTab = sub;
   if (tab === 'form' && !sub) {
     secondaryTab = 'builder';
+  }
+  if (tab === 'bpmn' && !sub) {
+    secondaryTab = 'editor';
   }
 
   setActiveTab({
@@ -818,12 +845,7 @@ useEffect(() => {
   });
 
   // Set FormBuilder initialization flag when component first loads on form/builder tab
-  if (tab === 'form' && (secondaryTab === 'builder' || secondaryTab === null)) {
-    formBuilderInitializedRef.current = false;
-    setTimeout(() => {
-      formBuilderInitializedRef.current = true;
-    }, 200);
-  }
+  resetFormBuilderInitialization(tab, secondaryTab);
 
   // Legacy support for view parameter
   const view = queryParams.get("view");
@@ -869,13 +891,7 @@ useEffect(() => {
     setActiveTab(newTab);
 
     // Set FormBuilder initialization flag when switching to form/builder tab
-    if (primary === 'form' && (secondary === 'builder' || secondary === null)) {
-      formBuilderInitializedRef.current = false;
-      // Clear the flag after a short delay to allow FormBuilder to initialize
-      setTimeout(() => {
-        formBuilderInitializedRef.current = true;
-      }, 200);
-    }
+    resetFormBuilderInitialization(primary, secondary);
   
     // Update URL with new tab parameters
     const queryParams = new URLSearchParams();
@@ -970,6 +986,11 @@ const handleSaveLayout = () => {
             });
             dispatchFormAction({ type: "type", value: data.type });
             dispatchFormAction({ type: "display", value: data.display });
+
+            // Switch to form builder tab after successful revert
+            handleTabClick("form", "builder");
+            // Mark form as changed so user can save
+            setFormChangeState({ initial: true, changed: true });
           }
         })
         .catch(() => {
@@ -998,6 +1019,11 @@ const handleSaveLayout = () => {
             });
             dispatchFormAction({ type: "type", value: data.type });
             dispatchFormAction({ type: "display", value: data.display });
+
+            // Switch to form builder tab after successful revert
+            handleTabClick('form', 'builder');
+            // Mark form as changed so user can save
+            setFormChangeState({ initial: true, changed: true });
           }
         })
         .catch((err) => {
@@ -1141,9 +1167,19 @@ const handleSaveLayout = () => {
   };
 
   useEffect(() => {
+    // On create route, require form title to be updated (not empty and not the default "Untitled Form")
+    if (isCreateRoute) {
+      const trimmedTitle = formDetails?.title?.trim();
+      const defaultTitle = t("Untitled Form");
+      const isTitleMissing = !trimmedTitle || trimmedTitle === defaultTitle;
+      setSaveDisabled(isTitleMissing);
+      return;
+    }
+    // On edit route, use existing logic
     const shouldDisable = !(isFormSettingsChanged || workflowIsChanged || formChangeState?.changed);
     setSaveDisabled(shouldDisable);
-  }, [isFormSettingsChanged, workflowIsChanged, formChangeState.changed]);
+  }, [isFormSettingsChanged, workflowIsChanged, formChangeState.changed, 
+    isCreateRoute, formDetails?.title, t]);
 
   const saveFormData = async ({ showToast = true }) => {
     try {
@@ -1171,7 +1207,7 @@ const handleSaveLayout = () => {
       newFormData.description = formDetails.description || ""; 
       newFormData.display = formDetails.display;
       newFormData.componentChanged = true;
-      newFormData.newVersion = true;
+      newFormData.newVersion = false;
       newFormData.anonymous = isAnonymous;
       newFormData.parentFormId = previousData.parentFormId;
       
@@ -1428,10 +1464,12 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       dispatch(setFormAuthorizationDetails(data.authorizations));
     }
 
-    // Reset form change state and workflow change state
+    // Reset all change states to prevent unsaved changes modal on redirect
     setFormChangeState({ initial: false, changed: false });
     setWorkflowIsChanged(false);
-    //Need to add check of 
+    setSettingsChanged(false);
+    setIsFormSettingsChanged(false);
+    isNavigatingAfterSaveRef.current = true;
     setIsNavigatingAfterSave(true);
 
     // Navigate to edit page with the new form ID
@@ -1443,18 +1481,19 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       try {
         await publish(data.mapper.id);
         setIsPublished(true);
-        toast.success(t("Form published successfully"));
       } catch (publishError) {
         console.error("Error publishing after save:", publishError);
         toast.error(t("Form created but failed to publish"));
       }
     }
     
-    dispatch(push(`${redirectUrl}formflow/${formId}/edit`));
+    dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
   } catch (err) {
     const error = err.response?.data || err.message;
     toast.error(error?.message || t("Failed to create form and workflow"));
     dispatch(setFormFailureErrorData("form", error));
+    isNavigatingAfterSaveRef.current = false;
+    setIsNavigatingAfterSave(false);
   } finally {
     setFormSubmitted(false);
   }
@@ -1515,6 +1554,14 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Update the process data with reverted data
       dispatch(setProcessData(response.data));
       setWorkflowIsChanged(true);
+      
+      // Switch to appropriate tab based on current context
+      if (activeTab.primary === 'flow') {
+        handleTabClick('flow', 'layout');
+      } else if (activeTab.primary === 'bpmn') {
+        handleTabClick('bpmn', 'editor');
+      }
+      
       toast.success(t("Process reverted successfully"));
     } catch (error) {
       console.error("Error reverting BPMN history:", error);
@@ -1674,23 +1721,15 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Show alert with progress bar
       setPublishAlertMessage(`${action} ${formTitle}`);
       setShowPublishAlert(true);
-      setPublishProgress(0);
+      reset();
       
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setPublishProgress((prev) => {
-          if (prev >= 90) {
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 150);
+      // Start progress simulation
+      start();
 
       await actionFunction(processListData.id);
       
       // Complete progress
-      clearInterval(progressInterval);
-      setPublishProgress(100);
+      complete();
       
       if (isPublished) {
         await fetchProcessDetails(processListData);
@@ -1706,16 +1745,16 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       const successMessage = wasPublished ? `${t("Unpublished")} ${formId}` : `${t("Published")} ${formId}`;
       setPublishAlertMessage(successMessage);
       
-      // Auto-hide alert after 5 seconds
+      // Auto-hide alert after 3 seconds
       setTimeout(() => {
         setShowPublishAlert(false);
-        setPublishProgress(0);
+        reset();
       }, 3000);
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
       setShowPublishAlert(false);
-      setPublishProgress(0);
+      reset();
     } finally {
       // setIsPublishLoading(false);
     }
@@ -1731,31 +1770,22 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       // Show alert with progress bar
       setPublishAlertMessage(`Unpublishing ${formId}`);
       setShowPublishAlert(true);
-      setPublishProgress(0);
+      reset();
       
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setPublishProgress((prev) => {
-          if (prev >= 90) {
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 150);
+      // Start progress simulation
+      start();
       
       await unPublish(processListData.id); // Unpublish the process
       
       // Complete progress
-      clearInterval(progressInterval);
-      setPublishProgress(100);
+      complete();
       
       // Update message to success
       setPublishAlertMessage(`${t("Unpublished")} ${formTitle}`);
       
-      // Auto-hide alert after 5 seconds
       setTimeout(() => {
         setShowPublishAlert(false);
-        setPublishProgress(0);
+        reset();
       }, 3000);
       // Fetch mapper data
       dispatch(
@@ -2238,7 +2268,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
               revertBtnText={t("Revert")}
               allHistory={formHistory}
               categoryType={CategoryType.FORM}
-              revertBtnAction={revertFormBtnAction}
+              revertBtnAction={(formId) => revertFormBtnAction(formId)}
               historyCount={formHistoryData.totalCount}
               disableAllRevertButton={isPublished}
               loading={formHistoryLoading}
@@ -2333,7 +2363,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                 id: idx + 1,
                 type: variable.labelOfComponent,
                 variable: variable.key,
-                altVariable: variable.altVariable,
+                altVariable: systemAltVariables[variable.key],
                 selected: (
                   <Switch
                     type="primary"
@@ -2360,13 +2390,11 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                   sortable: false,
                   renderCell: (params) => (
                     <CustomTextInput
-                      value={params.row.altVariable}
+                      value={systemAltVariables[params.row.variable]}
                       datatestid={`alt-variable-input-${params.row.variable}`}
                       aria-label="System variable alternative field"
                       placeholder=""
-                      setValue={(newVal) => {
-                        params.row.altVariable = newVal;
-                      }}
+                      setValue={handleAltVariableInputChange(params)}
                       style={{ color: StyleServices.getCSSVariable('--ff-gray-dark') }}
                     />
                   ),
@@ -2468,6 +2496,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     }
   };
 
+  const handleAltVariableInputChange = (params) => {
+    return (newVal) => {
+      params.row.altVariable = newVal;
+      setSystemAltVariables(prev => ({ ...prev, [params.row.variable]: newVal }));
+    };
+  };
+
   // Render secondary controls based on active primary tab
   const renderSecondaryControls = () => {
     const currentTab = tabConfig.primary[activeTab.primary];
@@ -2552,7 +2587,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           (formChangeState.changed || workflowIsChanged || settingsChanged) &&
           !isMigrationLoading &&
           !isDeletionLoading &&
-          !isNavigatingAfterSave
+          !isNavigatingAfterSave &&
+          !isNavigatingAfterSaveRef.current
         }
         message={t("Discarding changes is permanent and cannot be undone.")}
       />
@@ -2615,7 +2651,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                       ariaLabel={t("Save Form Layout")}
                     />
                     <V8CustomButton
-                      disabled={false}
+                      disabled={isCreateRoute && (!formDetails?.title || formDetails.title.trim() === "" || formDetails.title.trim() === t("Untitled Form"))}
                       label={t(publishText)}
                       onClick={handlePublishClick}
                       dataTestId="handle-publish-testid"
@@ -2636,7 +2672,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                       {Object.entries(tabConfig.primary).map(
                         ([key, config]) => {
                           // Determine default secondary tab for this primary tab
-                          const defaultSecondary = key === 'form' ? 'builder' : null;
+                          const defaultSecondary = key === 'form' ? 'builder' : key === 'bpmn' ? 'editor' : null;
                           const primaryDisabled = isCreateRoute && key === 'actions';
                           
                           // Check if this primary tab should be highlighted

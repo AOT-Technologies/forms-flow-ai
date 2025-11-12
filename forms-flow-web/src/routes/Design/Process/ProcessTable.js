@@ -1,14 +1,31 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { CustomSearch, V8CustomButton, BuildModal } from "@formsflow/components";
-import { WrappedTable } from "@formsflow/components";
+import {
+  CustomSearch,
+  V8CustomButton,
+  V8CustomDropdownButton,
+  BuildModal,
+  Alert,
+  AlertVariant,
+  CustomProgressBar,
+  useProgressBar,
+  WrappedTable
+} from "@formsflow/components";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { fetchAllProcesses, getProcessDetails } from "../../../apiManager/services/processServices";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { push } from "connected-react-router";
 import ImportProcess from "../../../components/Modals/ImportProcess";
-import { setBpmnSearchText, setDmnSearchText, setIsPublicDiagram, setBpmSort, setDmnSort } from "../../../actions/processActions";
-import { fetchAllProcesses } from "../../../apiManager/services/processServices";
+import {
+  setBpmnSearchText,
+  setDmnSearchText,
+  setIsPublicDiagram,
+  setBpmSort,
+  setDmnSort,
+  setProcessDiagramXML,
+  setDescisionDiagramXML
+} from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
 import { HelperServices } from "@formsflow/service";
 import {
@@ -65,6 +82,16 @@ const ProcessTable = React.memo(() => {
   const [searchLoading, setSearchLoading] = useState(false);
   const [pageNo, setPageNo] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [isDuplicating, setIsDuplicating] = useState(false);
+  
+  // Use progress bar hook for duplicate progress
+  const { progress: duplicateProgress, start, complete, reset } = useProgressBar({
+    increment: 5,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+    initialProgress: 1,
+  });
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
@@ -148,6 +175,47 @@ const ProcessTable = React.memo(() => {
     );
   }, [dispatch, redirectUrl, viewType]);
 
+  const handleDuplicate = useCallback(async (row) => {
+    try {
+      setIsDuplicating(true);
+      reset();
+      
+      // Start progress simulation
+      start();
+      
+      // Fetch process details to get the processData
+      const response = await getProcessDetails({
+        processKey: row.processKey,
+        tenant_key: tenantKey
+      });
+      
+      // Set the diagram XML to Redux based on process type
+      if (isBPMN) {
+        dispatch(setProcessDiagramXML(response.data.processData));
+      } else {
+        dispatch(setDescisionDiagramXML(response.data.processData));
+      }
+      
+      // Complete progress
+      complete();
+      
+      // Wait a bit before redirecting to show completion
+      setTimeout(() => {
+        // Navigate to create route only after progress reaches 100
+        dispatch(push(`${redirectUrl}${viewType}/create`));
+      }, 500);
+    } catch (error) {
+      console.error("Error duplicating process:", error);
+      // Complete progress on error
+      complete();
+      // Wait a bit before hiding the alert to show completion/error
+      setTimeout(() => {
+        setIsDuplicating(false);
+        reset();
+      }, 3000);
+    }
+  }, [isBPMN, tenantKey, redirectUrl, viewType, dispatch, reset, start, complete]);
+
   // Column definitions
   const columns = useMemo(() => [
     {
@@ -200,17 +268,31 @@ const ProcessTable = React.memo(() => {
       renderCell: (params) => {
         if (createDesigns || manageAdvancedWorkFlows) {
           return (
-            <V8CustomButton
+            <V8CustomDropdownButton
               label={t("Edit")}
               variant="secondary"
-              onClick={() => gotoEdit(params.row)}
+              menuPosition="right"
+              dropdownItems={[
+                {
+                  label: t(`Duplicate ${ProcessContents.processType}`),
+                  onClick: () => handleDuplicate(params.row),
+                },
+              ]}
+              onLabelClick={() => gotoEdit(params.row)}
             />
           );
         }
         return null;
       },
     },
-  ], [t, createDesigns, manageAdvancedWorkFlows, gotoEdit]);
+  ], [
+    t,
+    createDesigns,
+    manageAdvancedWorkFlows,
+    gotoEdit,
+    ProcessContents.processType,
+    handleDuplicate
+  ]);
 
   // Rows mapping
   const rows = useMemo(() => (
@@ -290,7 +372,14 @@ const ProcessTable = React.memo(() => {
 
   return (
     <>
-      <div className="toast-section">{/* <p>Toast message</p> */}</div>
+      <div className="toast-section">
+        <Alert
+          message={t(`Duplicating the ${ProcessContents.processType}`)}
+          variant={AlertVariant.FOCUS}
+          isShowing={isDuplicating}
+          rightContent={<CustomProgressBar progress={duplicateProgress} />}
+        />
+      </div>
       <div className="header-section-1">
         <div className="section-seperation-left">
           <h4> Build</h4>
@@ -299,7 +388,7 @@ const ProcessTable = React.memo(() => {
           {(createDesigns || manageAdvancedWorkFlows) && (
             <V8CustomButton
               variant="primary"
-              label={t(`New ${ProcessContents.processType}`)}
+              label={t(`Create new ${ProcessContents.processType}`)}
               onClick={handleCreateProcess}
               dataTestid={`create-${ProcessContents.processType}-button`}
               ariaLabel={` Create ${ProcessContents.processType}`}
@@ -321,19 +410,20 @@ const ProcessTable = React.memo(() => {
           />
         </div>
       </div>
-      <WrappedTable
-        columns={columns}
-        rows={rows}
-        rowCount={totalCount}
-        loading={searchLoading}
-        sortModel={sortModel}
-        onSortModelChange={handleSortModelChange}
-        paginationModel={paginationModel}
-        onPaginationModelChange={onPaginationModelChange}
-        getRowId={(row) => row.id}
-        onRefresh={fetchProcesses}
-      />
-
+      <div className="body-section">
+        <WrappedTable
+          columns={columns}
+          rows={rows}
+          rowCount={totalCount}
+          loading={searchLoading}
+          sortModel={sortModel}
+          onSortModelChange={handleSortModelChange}
+          paginationModel={paginationModel}
+          onPaginationModelChange={onPaginationModelChange}
+          getRowId={(row) => row.id}
+          onRefresh={fetchProcesses}
+        />
+      </div>
       <BuildModal
         show={showBuildModal}
         onClose={handleBuildModal}

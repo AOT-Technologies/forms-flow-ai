@@ -30,6 +30,9 @@
         & .small-title {
           font-size: 16px;
         }
+        & .form-title {
+          color: $white !important;
+        }
       }
 
       & .box-title {
@@ -219,12 +222,4 @@
   align-items: center;
   justify-content: center;
 }
-
-
-
-
-
-
-
-
 

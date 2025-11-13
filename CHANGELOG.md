@@ -14,6 +14,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * `/form-flow-builder` - Create form design, workflow, authorizations, and mapper details.
    * `/form-flow-builder/<mapper-id>` - Update existing configurations.
 
+**forms-flow-bpm**
+
+* Fixed security vulnerabilities
+
 
 ## 7.3.0 - 2025-10-14
 

@@ -2122,7 +2122,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       description="Upload a new form definition to import."
       handleImport={handleImport}
       fileItems={fileItems}
-      fileType={UploadActionType}
+      fileType=".json / .bpmn"
       primaryButtonText={primaryButtonText}
       headerText="Import Configuration"
       processVersion={null}
@@ -2841,7 +2841,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           fileItems={fileItems}
           headerText={t("Import File")}
           primaryButtonText={primaryButtonText}
-          fileType=".json, .bpmn"
+          fileType=".json / .bpmn"
         />
       )}
 

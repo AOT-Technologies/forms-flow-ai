@@ -6,7 +6,6 @@ from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
-from formsflow_api.models.application import Application
 from formsflow_api.models.tasks import TaskOutcomeConfiguration
 from formsflow_api.schemas.tasks import (
     TaskCompletionSchema,
@@ -14,6 +13,7 @@ from formsflow_api.schemas.tasks import (
 )
 from formsflow_api.services.external import BPMService
 
+from .application import ApplicationService
 from .application_history import ApplicationHistoryService
 
 task_outcome_schema = TaskOutcomeConfigurationSchema()
@@ -77,7 +77,7 @@ class TaskService:
             return response
         raise BusinessException(BusinessErrorCode.TASK_OUTCOME_NOT_FOUND)
 
-    def form_submission(self, form_id: str, data: dict):
+    def create_form_submission(self, form_id: str, data: dict):
         """Create form submission in formio."""
         current_app.logger.debug("Formio new submission started...")
         submission_data = {"data": data["form_data"].get("data")}
@@ -87,23 +87,6 @@ class TaskService:
         )
         current_app.logger.debug("Formio new submission completed...")
         return formio_response
-
-    def update_application(self, application_id: int, data: dict, user: UserContext):
-        """Update application details."""
-        application = Application.find_by_id(application_id=application_id)
-        if application is None:
-            raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
-        # This can be used later if workflow completion fails and we need to rollback
-        application_backup_data = {
-            "application_status": application.application_status,
-            "submission_id": application.submission_id,
-            "latest_form_id": application.latest_form_id,
-        }
-        data["modified_by"] = user.user_name
-        application.update(data)
-        application.commit()
-        current_app.logger.debug("Application details updated...")
-        return application, application_backup_data
 
     @user_context
     def complete_task(
@@ -116,7 +99,7 @@ class TaskService:
 
         form_id = data["form_data"].get("form_id")
         # Create form submission in fomrio
-        formio_response = self.form_submission(form_id, data)
+        formio_response = self.create_form_submission(form_id, data)
         submission_id = formio_response.get("_id")
         form_url = self.formio.base_url + f"/form/{form_id}/submission/{submission_id}"
 
@@ -135,8 +118,10 @@ class TaskService:
             "submission_id": submission_id,
             "latest_form_id": form_id,
         }
-        application, application_backup_data = self.update_application(
-            application_id, application_update_data, user
+        application, application_backup_data = (
+            ApplicationService.update_application_info(
+                application_id, application_update_data, user
+            )
         )
 
         try:

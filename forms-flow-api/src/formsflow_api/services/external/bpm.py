@@ -120,7 +120,7 @@ class BPMService(BaseBPMService):
     @classmethod
     def complete_task(cls, task_id, payload, token):
         """Complete task."""
-        url = f"{cls._get_url_(BPMEndpointType.COMPLETE_TASK).replace('{task_id}', task_id)}"
+        url = cls._get_url_(BPMEndpointType.COMPLETE_TASK).replace("{task_id}", task_id)
         return cls.post_request(url, token, payload=payload)
 
     @classmethod

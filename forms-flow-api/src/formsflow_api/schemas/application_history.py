@@ -1,6 +1,6 @@
 """This manages application Response Schema."""
 
-from marshmallow import EXCLUDE, fields
+from marshmallow import EXCLUDE, fields, post_dump
 
 from .base_schema import AuditDateTimeSchema
 
@@ -22,3 +22,13 @@ class ApplicationHistorySchema(AuditDateTimeSchema):
     submission_id = fields.Str(data_key="submissionId", dump_only=True)
     color = fields.Str(allow_none=True)
     percentage = fields.Float(allow_none=True)
+    private_notes = fields.Str(data_key="privateNotes", allow_none=True)
+
+    @post_dump
+    def remove_none_fields(
+        self, data, many, **kwargs
+    ):  # pylint:disable=unused-argument
+        """Exclude 'privateNotes' if it's None."""
+        if data.get("privateNotes") is None:
+            data.pop("privateNotes", None)
+        return data

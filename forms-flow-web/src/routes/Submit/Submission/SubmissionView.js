@@ -9,7 +9,7 @@ import {
   BreadCrumbs,
   BreadcrumbVariant,
   RefreshIcon,
-  ReusableTable
+  WrappedTable,
 } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
@@ -40,10 +40,29 @@ import { HelperServices, StyleServices } from "@formsflow/service";
 
 const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
   const { t } = useTranslation();
+  const pageSizeOptions = [5, 10, 25, 50];
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
+  const handlePaginationModelChange = (newModel) => {
+    if (
+      newModel.page === paginationModel.page &&
+      newModel.pageSize === paginationModel.pageSize
+    ) {
+      return;
+    }
+    setPaginationModel(newModel);
+  };
+
+  useEffect(() => {
+    const total = historyData?.length || 0;
+    const totalPages = Math.max(1, Math.ceil(total / paginationModel.pageSize));
+    if (paginationModel.page > totalPages - 1) {
+      setPaginationModel((m) => ({ ...m, page: Math.max(0, totalPages - 1) }));
+    }
+  }, [historyData, paginationModel.pageSize]);
 
   const columns = [
     {
-      field: "Completed",
+      field: "Completed2",
       headerName: t("Completed"),
       flex: 1.5,
       sortable: false,
@@ -97,14 +116,18 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
   const rows = historyData || [];
 
   return (
-    <ReusableTable
+    <WrappedTable
       rows={rows}
       columns={columns}
       loading={loading}
-      getRowId={(row) => row.submissionId || `${row.formId}-${row.created}`}
+      getRowId={(row) => `${row.submissionId}-${row.created}`}
+      rowCount={rows.length}
       noRowsLabel={t("No history found")}
       paginationMode="client"
       sortingMode="client"
+      pageSizeOptions={pageSizeOptions}
+      paginationModel={paginationModel}
+      onPaginationModelChange={handlePaginationModelChange}
     />
   );
 };
@@ -188,8 +211,14 @@ const ViewApplication = React.memo(() => {
     );
 
     return () => {
-      dispatch(setApplicationDetailLoader(true));
+      dispatch(setApplicationDetailLoader(false));
       dispatch(setApplicationDetailStatusCode(""));
+      // Ensure history loader does not persist across navigation
+      dispatch(setUpdateHistoryLoader(false));
+      // Reset local UI state to avoid lingering elements
+      setShowHistoryGrid(false);
+      setShowHistoryModal(false);
+      setDiagramXML("");
     };
   }, [applicationId, dispatch]);
 
@@ -204,25 +233,28 @@ const ViewApplication = React.memo(() => {
     }
   }, [applicationId, isHistoryListLoading, dispatch]);
 
-    useEffect(async() => {
-    const processKey = applicationDetail?.processKey;
-    const processInstanceId = applicationDetail?.processInstanceId;
-    if ( processKey && processInstanceId && analyze_process_view) {
-      try{
-        setIsDiagramLoading(true);
-        dispatch(getProcessActivities(processInstanceId));
-        const res = await getProcessDetails({processKey,tenant_key: tenantKey});
-        setDiagramXML(res?.data?.processData || "");
-       
+  useEffect(() => {
+    let isActive = true;
+    const run = async () => {
+      const processKey = applicationDetail?.processKey;
+      const processInstanceId = applicationDetail?.processInstanceId;
+      if (processKey && processInstanceId && analyze_process_view) {
+        try {
+          setIsDiagramLoading(true);
+          dispatch(getProcessActivities(processInstanceId));
+          const res = await getProcessDetails({ processKey, tenant_key: tenantKey });
+          if (!isActive) return;
+          setDiagramXML(res?.data?.processData || "");
+        } catch (error) {
+          console.error("Error fetching process details:", error);
+        } finally {
+          if (isActive) setIsDiagramLoading(false);
         }
-      catch (error) {
-        console.error("Error fetching process details:", error);
-      }finally{
-         setIsDiagramLoading(false);
       }
-      
-    }
-  }, [applicationDetail, tenantKey, analyze_process_view]);
+    };
+    run();
+    return () => { isActive = false; };
+  }, [applicationDetail, tenantKey, analyze_process_view, dispatch]);
   if (isApplicationDetailLoading) {
     return <Loading />;
   }
@@ -310,6 +342,7 @@ const ViewApplication = React.memo(() => {
       <div className="body-section">
         {showHistoryGrid ? (
           <HistoryDataGrid
+            key={`${applicationId}-${showHistoryGrid}`}
             historyData={appHistory}
             onRefresh={handleHistoryRefresh}
             iconColor={iconColor}

@@ -1,15 +1,16 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CustomSearch,
   V8CustomButton,
   V8CustomDropdownButton,
   BuildModal,
+  RefreshIcon,
+  ReusableTable,
   Alert,
   AlertVariant,
   CustomProgressBar,
-  useProgressBar,
-  WrappedTable
+  useProgressBar
 } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -27,7 +28,7 @@ import {
   setDescisionDiagramXML
 } from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
-import { HelperServices } from "@formsflow/service";
+import { HelperServices, StyleServices } from "@formsflow/service";
 import {
   navigateToSubflowBuild,
   navigateToDecisionTableBuild,
@@ -61,27 +62,39 @@ const ProcessTable = React.memo(() => {
     };
 
   // States and selectors
+  const processList = useSelector((state) =>
+    isBPMN ? state.process.processList : state.process.dmnProcessList
+  );
   const searchTextDMN = useSelector((state) => state.process.dmnSearchText);
   const searchTextBPMN = useSelector((state) => state.process.bpmnSearchText);
+  const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
+  const totalCount = useSelector((state) =>
+    isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
+  );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const sortConfig = useSelector((state) =>
     isBPMN ? state.process.bpmsort : state.process.dmnSort
   );
-  const processList = useSelector((state) =>
-    isBPMN ? state.process.processList : state.process.dmnProcessList
-  );
-  const totalCount = useSelector((state) =>
-    isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
-  );
-  
+
+  const [bpmnState, setBpmnState] = useState({
+    activePage: 1,
+    limit: 10,
+    sortConfig: sortConfig,
+  });
+
+  const [dmnState, setDmnState] = useState({
+    activePage: 1,
+    limit: 10,
+    sortConfig: sortConfig,
+  });
   const [searchDMN, setSearchDMN] = useState(searchTextDMN || "");
   const [searchBPMN, setSearchBPMN] = useState(searchTextBPMN || "");
   const search = isBPMN ? searchBPMN : searchDMN;
+
   const [showBuildModal, setShowBuildModal] = useState(false);
   const [importProcess, setImportProcess] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [pageNo, setPageNo] = useState(1);
-  const [limit, setLimit] = useState(10);
   const [isDuplicating, setIsDuplicating] = useState(false);
   
   // Use progress bar hook for duplicate progress
@@ -93,7 +106,31 @@ const ProcessTable = React.memo(() => {
     initialProgress: 1,
   });
 
+  const currentState = isBPMN ? bpmnState : dmnState;
+  const setCurrentState = isBPMN ? setBpmnState : setDmnState;
+
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+  const fetchProcesses = () => {
+    setIsLoading(true);
+    dispatch(
+      fetchAllProcesses(
+        {
+          pageNo: currentState.activePage,
+          tenant_key: tenantKey,
+          processType: ProcessContents.processType,
+          limit: currentState.limit,
+          searchKey: search,
+          sortBy: sortConfig.activeKey,
+          sortOrder: sortConfig[sortConfig.activeKey].sortOrder,
+        },
+        () => {
+          setIsLoading(false);
+          setSearchLoading(false);
+        }
+      )
+    );
+  };
 
 
   // const handleSortApply = (selectedSortOption, selectedSortOrder) => {
@@ -110,9 +147,14 @@ const ProcessTable = React.memo(() => {
   // };
 
 
-  // const handleRefresh = () => {};
+  const handleRefresh = () => {
+    fetchProcesses();
+  };
 
-  // fetching handled by WrappedTable
+  //fetching bpmn or dmn
+  useEffect(() => {
+    fetchProcesses();
+  }, [dispatch, currentState, tenantKey, searchTextBPMN, searchTextDMN, isBPMN, sortConfig]);
 
   //Update api call when search field is empty
   useEffect(() => {
@@ -121,7 +163,32 @@ const ProcessTable = React.memo(() => {
     }
   }, [search, dispatch, isBPMN]);
 
-  // const handleSort = () => {};
+  const handleSort = (model) => {
+    // DataGrid passes an array sort model; pick the first entry
+    const next = Array.isArray(model) ? model[0] : model;
+    if (!next || !next.field) {
+      return;
+    }
+    const key = next.field;
+    const requestedOrder = next.sort || "asc";
+
+    const newSortConfig = {
+      activeKey: key,
+      [key]: { sortOrder: requestedOrder },
+    };
+    // Reset all other sort keys to default (ascending)
+    Object.keys(sortConfig).forEach((sortKey) => {
+      if (sortKey !== key && sortKey !== "activeKey") {
+        newSortConfig[sortKey] = { sortOrder: "asc" };
+      }
+    });
+
+    if (isBPMN) {
+      dispatch(setBpmSort(newSortConfig));
+    } else {
+      dispatch(setDmnSort(newSortConfig));
+    }
+  };
   const handleSearch = () => {
     setSearchLoading(true);
     if (isBPMN) {
@@ -129,42 +196,26 @@ const ProcessTable = React.memo(() => {
     } else {
       dispatch(setDmnSearchText(searchDMN));
     }
-    // WrappedTable will handle resetting pagination
+    handlePageChange(1);
   };
 
 
-  // Data fetching
-  const fetchProcesses = useCallback(() => {
-    setSearchLoading(true);
-    dispatch(
-      fetchAllProcesses(
-        {
-          pageNo,
-          tenant_key: tenantKey,
-          processType: ProcessContents.processType,
-          limit,
-          searchKey: search,
-          sortBy: sortConfig.activeKey,
-          sortOrder: sortConfig[sortConfig.activeKey].sortOrder,
-        },
-        () => setSearchLoading(false)
-      )
-    );
-  }, [
-    dispatch,
-    pageNo,
-    limit,
-    sortConfig,
-    search,
-    tenantKey,
-    ProcessContents.processType,
-  ]);
+  const handlePageChange = (page) => {
+    setCurrentState((prevState) => ({
+      ...prevState,
+      activePage: page,
+    }));
+  };
 
-  useEffect(() => {
-    fetchProcesses();
-  }, [fetchProcesses]);
+  const onLimitChange = (newLimit) => {
+    setCurrentState((prevState) => ({
+      ...prevState,
+      limit: newLimit,
+      activePage: 1,
+    }));
+  };
 
-  const gotoEdit = useCallback((data) => {
+  const gotoEdit = (data) => {
     if (MULTITENANCY_ENABLED) {
       dispatch(setIsPublicDiagram(!!data.tenantId));
     }
@@ -173,9 +224,9 @@ const ProcessTable = React.memo(() => {
         `${redirectUrl}${viewType}/edit/${data.processKey}`
       )
     );
-  }, [dispatch, redirectUrl, viewType]);
+  };
 
-  const handleDuplicate = useCallback(async (row) => {
+  const handleDuplicate = async (row) => {
     try {
       setIsDuplicating(true);
       reset();
@@ -214,128 +265,7 @@ const ProcessTable = React.memo(() => {
         reset();
       }, 3000);
     }
-  }, [isBPMN, tenantKey, redirectUrl, viewType, dispatch, reset, start, complete]);
-
-  // Column definitions
-  const columns = useMemo(() => [
-    {
-      field: "name",
-      headerName: t("Name"),
-      flex: 1,
-      sortable: true,
-      renderCell: (p) => <span title={p.value}>{p.value}</span>,
-    },
-    {
-      field: "processKey",
-      headerName: t("ID"),
-      flex: 1,
-      sortable: true,
-      renderCell: (p) => <span title={p.value}>{p.value}</span>,
-    },
-    {
-      field: "modified",
-      headerName: t("Last Edited"),
-      flex: 1,
-      sortable: true,
-      renderCell: (p) => (
-        <span title={HelperServices.getLocaldate(p.row.modified)}>
-          {HelperServices.getLocaldate(p.row.modified)}
-        </span>
-      ),
-    },
-    {
-      field: "status",
-      headerName: t("Status"),
-      flex: 1,
-      sortable: true,
-      renderCell: (p) => (
-        <span className="d-flex align-items-center">
-          {p.row.status === "Published" ? (
-            <span className="status-live"></span>
-          ) : (
-            <span className="status-draft"></span>
-          )}
-          {p.row.status === "Published" ? t("Live") : t("Draft")}
-        </span>
-      ),
-    },
-    {
-      field: "actions",
-      align: "right",
-      flex: 1,
-      sortable: false,
-      cellClassName: "last-column",
-      renderCell: (params) => {
-        if (createDesigns || manageAdvancedWorkFlows) {
-          return (
-            <V8CustomDropdownButton
-              label={t("Edit")}
-              variant="secondary"
-              menuPosition="right"
-              dropdownItems={[
-                {
-                  label: t(`Duplicate ${ProcessContents.processType}`),
-                  onClick: () => handleDuplicate(params.row),
-                },
-              ]}
-              onLabelClick={() => gotoEdit(params.row)}
-            />
-          );
-        }
-        return null;
-      },
-    },
-  ], [
-    t,
-    createDesigns,
-    manageAdvancedWorkFlows,
-    gotoEdit,
-    ProcessContents.processType,
-    handleDuplicate
-  ]);
-
-  // Rows mapping
-  const rows = useMemo(() => (
-    (processList || []).map((p) => ({ id: p.id || p.processKey, ...p }))
-  ), [processList]);
-
-  // Sort model
-  const sortModel = useMemo(() => [{
-    field: sortConfig.activeKey,
-    sort: sortConfig[sortConfig.activeKey].sortOrder,
-  }], [sortConfig]);
-
-  // Sort handler
-  const handleSortModelChange = useCallback((modelArray) => {
-    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
-    if (!model?.field) return;
-    const next = {
-      activeKey: model.field,
-      [model.field]: { sortOrder: model.sort || "asc" },
-    };
-    if (isBPMN) {
-      dispatch(setBpmSort(next));
-    } else {
-      dispatch(setDmnSort(next));
-    }
-  }, [dispatch, isBPMN]);
-
-  // Pagination model
-  const paginationModel = useMemo(() => (
-    { page: pageNo - 1, pageSize: limit }
-  ), [pageNo, limit]);
-
-  // Pagination handler
-  const onPaginationModelChange = useCallback(({ page, pageSize }) => {
-    const nextPage = typeof page === "number" ? page + 1 : pageNo;
-    const nextLimit = typeof pageSize === "number" ? pageSize : limit;
-    if (nextLimit !== limit) {
-      setLimit(nextLimit);
-      setPageNo(1);
-    } else if (nextPage !== pageNo) {
-      setPageNo(nextPage);
-    }
-  }, [pageNo, limit]);
+  };
 
   const handleCreateProcess = () => {
     if (isBPMN) {
@@ -370,6 +300,113 @@ const ProcessTable = React.memo(() => {
     },
   ];
 
+  const columns = [
+    {
+      field: "name",
+      headerName: t("Name"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "processKey",
+      headerName: t("ID"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "modified",
+      headerName: t("Last Edited"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: params => {
+        const dateValue = HelperServices.getLocaldate(params.row.modified);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
+    },
+    {
+      field: "status",
+      headerName: t("Status"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: params => {
+        const statusText = params.row.status === "Published" ? t("Published") : t("Unpublished");
+        return (
+          <span className="d-flex align-items-center">
+            {params.row.status === "Published" ?
+              <span className="status-live"></span> :
+              <span className="status-draft"></span>}
+            <span title={statusText}>
+              {statusText}
+            </span>
+          </span>
+        );
+      },
+    },
+    {
+      field: "actions",
+      renderHeader: () => (
+        <V8CustomButton
+          // label="new button"
+          variant="secondary"
+          icon={<RefreshIcon color={iconColor} />}
+          iconOnly
+          onClick={handleRefresh}
+        />
+      ),
+      flex: 1,
+      sortable: false,
+      cellClassName: "last-column",
+      renderCell: params => (
+        (createDesigns || manageAdvancedWorkFlows) && (
+          <V8CustomDropdownButton
+          label={t("Edit")}
+          variant="secondary"
+          menuPosition="right"
+          dropdownItems={[
+            {
+              label: t(`Duplicate ${ProcessContents.processType}`),
+              onClick: () => handleDuplicate(params.row),
+            },
+          ]}
+          onLabelClick= {() => gotoEdit(params.row)}
+        />
+        )
+      )
+    },
+  ];
+  const paginationModel = React.useMemo(
+    () => ({ page: currentState.activePage - 1, pageSize: currentState.limit }),
+    [currentState.activePage, currentState.limit]
+  );
+  const onPaginationModelChange = ({ page, pageSize }) => {
+    if (currentState.limit !== pageSize) {
+      onLimitChange(pageSize);
+    } else if (currentState.activePage - 1 !== page) {
+      handlePageChange(page + 1);
+    }
+  };
   return (
     <>
       <div className="toast-section">
@@ -411,18 +448,23 @@ const ProcessTable = React.memo(() => {
         </div>
       </div>
       <div className="body-section">
-        <WrappedTable
-          columns={columns}
-          rows={rows}
-          rowCount={totalCount}
-          loading={searchLoading}
-          sortModel={sortModel}
-          onSortModelChange={handleSortModelChange}
-          paginationModel={paginationModel}
-          onPaginationModelChange={onPaginationModelChange}
-          getRowId={(row) => row.id}
-          onRefresh={fetchProcesses}
-        />
+      <ReusableTable
+        columns={columns}
+        rows={processList}
+        rowCount={totalCount}
+        loading={searchLoading || isLoading}
+        sortModel={[
+          {
+            field: sortConfig.activeKey,
+            sort: sortConfig[sortConfig.activeKey].sortOrder,
+          },
+        ]}
+        onSortModelChange={handleSort}
+        paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationModelChange}
+        getRowId={(row) => row.id}
+        sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}
+      />
       </div>
       <BuildModal
         show={showBuildModal}

@@ -9,8 +9,7 @@ import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
 import { HelperServices, StyleServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { V8CustomButton, RefreshIcon, V8CustomDropdownButton, PromptModal } from "@formsflow/components";
-import { WrappedTable } from "@formsflow/components";
+import { V8CustomButton, RefreshIcon, V8CustomDropdownButton, PromptModal, ReusableTable } from "@formsflow/components";
 import { deleteForm } from "@aot-technologies/formio-react";
 import { formCreate, unPublish } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
@@ -385,7 +384,7 @@ const handlePageChange = (page) => {
 
   return (
    <>
-    <WrappedTable
+    <ReusableTable
 
       columns={columns}
       rows={rows}

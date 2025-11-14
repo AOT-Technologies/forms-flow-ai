@@ -2213,7 +2213,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           );
         }
     }
-    if (activeTab.primary === 'flow' && activeTab.secondary === 'history') {
+    if ((activeTab.primary === 'flow' || activeTab.primary === 'bpmn') && activeTab.secondary === 'history') {
       if (processData?.parentProcessKey) {
         setFlowHistoryLoading(true);
         fetchBpmnHistory(
@@ -2313,22 +2313,22 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         );
       
       case 'flow':
-        if (activeTab.secondary === 'history' && processData?.parentProcessKey) {
-          return (
-            <HistoryPage
-              revertBtnText={t("Revert")}
-              allHistory={bpmnHistoryData.processHistory}
-              categoryType={CategoryType.WORKFLOW}
-              revertBtnAction={(processId) => revertBpmnHistory(processId)}
-              historyCount={bpmnHistoryData.totalCount}
-              disableAllRevertButton={isPublished}
-              refreshBtnAction={handleBpmnHistory}
-              paginationModel={paginationModel}
-              handlePaginationModelChange={handlePaginationModelChange}
-              loading={flowHistoryLoading}
-            />
-          );
-        }
+        // if (activeTab.secondary === 'history' && processData?.parentProcessKey) {
+        //   return (
+        //     <HistoryPage
+        //       revertBtnText={t("Revert")}
+        //       allHistory={bpmnHistoryData.processHistory}
+        //       categoryType={CategoryType.WORKFLOW}
+        //       revertBtnAction={(processId) => revertBpmnHistory(processId)}
+        //       historyCount={bpmnHistoryData.totalCount}
+        //       disableAllRevertButton={isPublished}
+        //       refreshBtnAction={handleBpmnHistory}
+        //       paginationModel={paginationModel}
+        //       handlePaginationModelChange={handlePaginationModelChange}
+        //       loading={flowHistoryLoading}
+        //     />
+        //   );
+        // }
           return (
             <FlowEdit
               ref={flowRef}
@@ -2442,6 +2442,22 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
               break;
           }
         }
+        if (activeTab.secondary === 'history' && processData?.parentProcessKey) {
+          return (
+            <HistoryPage
+              revertBtnText={t("Revert")}
+              allHistory={bpmnHistoryData.processHistory}
+              categoryType={CategoryType.WORKFLOW}
+              revertBtnAction={(processId) => revertBpmnHistory(processId)}
+              historyCount={bpmnHistoryData.totalCount}
+              disableAllRevertButton={isPublished}
+              refreshBtnAction={handleBpmnHistory}
+              paginationModel={paginationModel}
+              handlePaginationModelChange={handlePaginationModelChange}
+              loading={flowHistoryLoading}
+            />
+          );
+        }
 
         return (
           <>
@@ -2533,6 +2549,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                     handleBpmnHistory();
                     // handleTabClick('flow', 'history');
                   } else if (activeTab.primary === 'bpmn') {
+                    handleBpmnHistory();
                     handleTabClick('bpmn', 'history');
                   }
                 } else if (key === 'preview') {
@@ -2772,8 +2789,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
             </div>
 
             {/* BPMN History Section - Show when on BPMN history tab */}
-            {(activeTab.primary === 'bpmn' && activeTab.secondary === 'history') && (
-              <div className="body-section">
+            {/* {(activeTab.primary === 'bpmn' && activeTab.secondary === 'history') && (
+              <div className="body-section"> */}
                 {/* <HistoryPage
                   title={t("BPMN History")}
                   loadMoreBtnText={t("Load More")}
@@ -2786,7 +2803,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                   historyCount={bpmnHistoryData.totalCount}
                   disableAllRevertButton={isPublished}
                 /> */}
-                <HistoryPage
+                {/* <HistoryPage
                   revertBtnText={t("Revert")}
                   allHistory={bpmnHistoryData.processHistory}
                   categoryType={CategoryType.WORKFLOW}
@@ -2799,7 +2816,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                   loading={flowHistoryLoading}
                 />
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </LoadingOverlay>

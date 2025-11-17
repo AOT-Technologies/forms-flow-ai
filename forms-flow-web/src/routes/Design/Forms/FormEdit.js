@@ -1197,6 +1197,24 @@ const handleSaveLayout = () => {
     t,
     hasSavedFormVariablesChanged,
   ]);
+
+  // saving the form variables to the state
+  useEffect(() => {
+    const updatedLabels = {};
+    // Add taskVariables to updatedLabels
+    formProcessList?.taskVariables?.forEach(({ key, label, type }) => {
+      updatedLabels[key] = {
+        key,
+        altVariable: label, // Use label from taskVariables as altVariable
+        labelOfComponent: label, // Set the same label for labelOfComponent
+        type: type,
+      };
+    });
+    setSavedFormVariables(updatedLabels);
+    // Store initial state for change detection
+    initialSavedFormVariablesRef.current = structuredClone(updatedLabels);
+  }, [formProcessList]);
+
   const saveFormData = async ({ showToast = true }) => {
     try {
       const isFormChanged = true; // Hard code the value to always make backend call on Save Layout
@@ -1354,7 +1372,7 @@ const handleSaveLayout = () => {
       setPromptNewVersion(false);
       setFormChangeState(prev => ({ ...prev, changed: false }));
       // Update initial savedFormVariables reference after successful save
-      initialSavedFormVariablesRef.current = JSON.parse(JSON.stringify(savedFormVariables));
+      initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
@@ -1496,7 +1514,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     setFormChangeState({ initial: false, changed: false });
     setWorkflowIsChanged(false);
     // Update initial savedFormVariables reference after successful save
-    initialSavedFormVariablesRef.current = JSON.parse(JSON.stringify(savedFormVariables));
+    initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
     setSettingsChanged(false);
     setIsFormSettingsChanged(false);
     isNavigatingAfterSaveRef.current = true;
@@ -2256,23 +2274,6 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       }
     }
   };
-
-  // saving the form variables to the state
-  useEffect(() => {
-    const updatedLabels = {};
-    // Add taskVariables to updatedLabels
-    formProcessList?.taskVariables?.forEach(({ key, label, type }) => {
-      updatedLabels[key] = {
-        key,
-        altVariable: label, // Use label from taskVariables as altVariable
-        labelOfComponent: label, // Set the same label for labelOfComponent
-        type: type,
-      };
-    });
-    setSavedFormVariables(updatedLabels);
-    // Store initial state for change detection
-    initialSavedFormVariablesRef.current = JSON.parse(JSON.stringify(updatedLabels));
-  }, [formProcessList]);
 
   // Render tab content based on active tab
   const renderTabContent = () => {

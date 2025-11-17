@@ -291,7 +291,7 @@ const EditComponent = () => {
   const [formTitle, setFormTitle] = useState("");
   const [importError, setImportError] = useState("");
   const [importLoader, setImportLoader] = useState(false);
-  const defaultPrimaryBtnText = t("Confirm And Replace");
+  const defaultPrimaryBtnText = t("Replace existing form");
   const [primaryButtonText, setPrimaryButtonText] = useState(defaultPrimaryBtnText);
   const { createDesigns,viewDesigns } = userRoles();
   const [formChangeState, setFormChangeState] = useState({ initial: false, changed: false });
@@ -1988,8 +1988,9 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
          return {
            title: t("Discard Changes?"),
            message:
-             t("Discarding changes is permanent and cannot be undone.?"),
-             secondaryBtnAction : () => {
+             t("Discarding changes is permanent and cannot be undone."),
+             primaryBtnText: t("Discard Changes"),
+             primaryBtnAction : () => {
              // Only discard changes from the currently active tab
              if (activeTab.primary === 'form' && activeTab.secondary === 'settings' && settingsChanged) {
                discardSettingsChanges();
@@ -2001,9 +2002,10 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
              }
              closeModal();
            },
-           primaryBtnAction: closeModal,
-           secondaryBtnText: t("Discard Changes"),
-           primaryBtnText: t("cancel"),
+           secondaryBtnText: t("Cancel"),
+           secondaryBtnAction: closeModal,
+           className: "discard-changes-modal",
+           type: "info",
          };
       case "unpublishBeforeSaving":
         return {
@@ -2880,7 +2882,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           secondaryBtnAction={modalContent.secondaryBtnAction}
           primaryBtnText={modalContent.primaryBtnText}
           secondaryBtnText={modalContent.secondaryBtnText}
-          type="warning"
+          type={modalContent.type || "warning"}
+          className={modalContent.className || ""}
         />
       )}
 

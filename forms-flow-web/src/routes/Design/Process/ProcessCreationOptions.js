@@ -229,7 +229,7 @@ const ProcessCreationOptions = () => {
    */
   const handleBreadcrumbClick = useCallback(
     (item) => {
-      if (item?.id === "build") {
+      if (item?.id === "subflows" || item?.id === "decision-tables") {
         // Navigate back to the appropriate process listing page
         const processRoute = isSubflow
           ? getRoute(tenantKey).SUBFLOW
@@ -291,8 +291,15 @@ const ProcessCreationOptions = () => {
 
   // Breadcrumb configuration
   const breadcrumbItems = [
-    { id: "build", label: t("Build") },
-    { id: `${processConfig.dataTestIdPrefix}-title`, label: processConfig.breadcrumbLabel },
+    { 
+      id: isSubflow ? "subflows" : "decision-tables", 
+      label: isSubflow ? t("Subflows") : t("Decision Tables"),
+      href: getRoute(tenantKey)[isSubflow ? "SUBFLOW" : "DECISIONTABLE"]
+    },
+    { 
+      id: "create-new", 
+      label: isSubflow ? t("Create a New Subflow") : t("Create a New Decision Table")
+    },
   ];
 
   return (

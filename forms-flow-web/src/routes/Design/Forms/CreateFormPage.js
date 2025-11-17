@@ -13,6 +13,7 @@ import {
   navigateToDesignFormsListing,
   navigateToDesignFormCreate,
 } from "../../../helper/routerHelper";
+import { getRoute } from "../../../constants/constants";
 import { formImport } from "../../../apiManager/services/FormServices";
 import { MAX_FILE_SIZE } from "../../../constants/constants";
 
@@ -178,7 +179,7 @@ const CreateFormPage = () => {
    * @param {Object} item - The breadcrumb item clicked
    */
   const handleBreadcrumbClick = useCallback((item) => {
-    if (item?.id === "build") {
+    if (item?.id === "forms") {
       navigateToDesignFormsListing(dispatch, tenantKey);
     }
   }, [dispatch, tenantKey]);
@@ -197,8 +198,9 @@ const CreateFormPage = () => {
 
   // Breadcrumb configuration
   const breadcrumbItems = [
-    { id: "build", label: t("Build") },
-    { id: "form-title", label: t("Create a New Form") },
+    { id: "forms", label: t("Forms"), href: getRoute(tenantKey).FORMFLOW },
+    { id: "create-new-form", label: t("Create New Form") },
+    { id: "edit", label: t("Edit") },
   ];
 
   return (

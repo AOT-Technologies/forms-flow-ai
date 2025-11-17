@@ -87,6 +87,7 @@ import { convertToNormalForm, convertToWizardForm } from "../../../helper/conver
 import { SystemVariables } from '../../../constants/variables';
 import EditorActions from "./EditActions";
 import { StyleServices } from "@formsflow/service";
+import { getRoute } from "../../../constants/constants";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -2615,13 +2616,19 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
               <div className="section-seperation-left d-flex flex-column gap-0">
                 <BreadCrumbs
                   items={[
-                    { label: t("Build"), href: "/formflow" },
-                    { label: t("Create New Form"), href: location.pathname },
+                    { id: "forms", label: t("Forms"), href: getRoute(tenantKey).FORMFLOW },
+                    { id: "create-new-form", label: t("Create New Form") },
+                    { id: "edit", label: t("Edit") },
                   ]}
                   variant="minimized"
                   underlined={true}
                   dataTestId="buildForm-breadcrumb"
                   ariaLabel={t("Build Form Breadcrumb")}
+                  onBreadcrumbClick={(item) => {
+                    if (item?.id === "forms") {
+                      dispatch(push(getRoute(tenantKey).FORMFLOW));
+                    }
+                  }}
                 />
                 <p className="form-title">
                   {formData?.title || t("Untitled Form")}

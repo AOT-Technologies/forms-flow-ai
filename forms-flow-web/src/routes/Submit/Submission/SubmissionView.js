@@ -94,7 +94,11 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
     },
   ];
 
-  const rows = historyData || [];
+  const rows = Array.isArray(historyData) ? historyData : [];
+  const [historyPaginationModel, setHistoryPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
 
   return (
     <ReusableTable
@@ -105,6 +109,9 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
       noRowsLabel={t("No history found")}
       paginationMode="client"
       sortingMode="client"
+      pageSizeOptions={[5, 10, 25, 50]}
+      paginationModel={historyPaginationModel}
+      onPaginationModelChange={setHistoryPaginationModel}
     />
   );
 };

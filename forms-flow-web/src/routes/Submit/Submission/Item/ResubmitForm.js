@@ -227,26 +227,26 @@ const Resubmit = React.memo(() => {
               </div>
           </div>
         )}
-      <Errors errors={errors} />
-      <LoadingOverlay
+        <Errors errors={errors} />
+        <LoadingOverlay
           active={isFormSubmissionLoading}
           spinner
           text={<Translation>{(t) => t("Loading...")}</Translation>}
           className="col-12"
         >
         <div className={`wizard-tab ${scrollableOverview}`}>
-        <Form
-          form={form}
-          submission={isFormSubmissionLoading ? updatedSubmissionData : submissionState}
-          url={submissionState?.url}
-          onSubmit={handleFormSubmit}
-          options={{
-            i18n: RESOURCE_BUNDLES_DATA,
-            language: lang,
-            buttonSettings: { showCancel: false },
-          }}
-          onCustomEvent={() => {}}
-        />
+          <Form
+            form={form}
+            submission={isFormSubmissionLoading ? updatedSubmissionData : submissionState}
+            url={submissionState?.url}
+            onSubmit={handleFormSubmit}
+            options={{
+              i18n: RESOURCE_BUNDLES_DATA,
+              language: lang,
+              buttonSettings: { showCancel: false },
+            }}
+            onCustomEvent={() => {}}
+          />
         </div>   
       </LoadingOverlay>
     </div>

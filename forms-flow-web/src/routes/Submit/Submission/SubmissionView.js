@@ -94,7 +94,7 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
     },
   ];
 
-  const rows = historyData || [];
+  const rows = Array.isArray(historyData) ? historyData : [];
   const [historyPaginationModel, setHistoryPaginationModel] = useState({
     page: 0,
     pageSize: 10,

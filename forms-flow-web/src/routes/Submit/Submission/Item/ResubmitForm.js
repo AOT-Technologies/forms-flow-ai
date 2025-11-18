@@ -13,9 +13,8 @@ import {
     selectError,
     Errors
 } from "@aot-technologies/formio-react";
-import { useTranslation } from "react-i18next";
 // UI Components and Helpers
-import { Translation } from "react-i18next";
+import { Translation, useTranslation } from "react-i18next";
 import Loading from "../../../../containers/Loading";
 import SubmissionError from "../../../../containers/SubmissionError";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -216,7 +215,9 @@ const Resubmit = React.memo(() => {
                     underline
                     onBreadcrumbClick={handleBreadcrumbClick} 
                   /> 
-                  <h4>{applicationDetail?.id}</h4>
+                  {applicationDetail?.id ? (
+                    <h4>{applicationDetail.id}</h4>
+                  ) : null}
                   <SubmissionError
                     modalOpen={submissionError.modalOpen}
                     message={submissionError.message}

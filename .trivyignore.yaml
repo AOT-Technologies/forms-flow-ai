@@ -1,0 +1,8 @@
+vulnerabilities:
+  - id: CVE-2023-45853
+    statement: "Not considered a vulnerability by upstream Debian"
+
+secrets:
+  - id: private-key
+    paths:
+      - /venv/lib/python3.13/site-packages/seleniumwire/ca.key

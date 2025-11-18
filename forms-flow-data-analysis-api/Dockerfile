@@ -1,4 +1,4 @@
-FROM python:3.11.7-slim-bullseye
+FROM python:3.11.7-slim-bookworm
 
 # set label for image
 LABEL Name="formsflow"
@@ -22,7 +22,12 @@ RUN python3 -m venv /venv \
 
 ADD . /forms-flow-data-analysis-api/app
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir . \
+      && pip uninstall -y ecdsa \
+      && apt-get remove -y \
+      libsqlite3-0 git \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/*
 
 # Set HF_HOME to a writable location
 ENV HF_HOME=/tmp/huggingface

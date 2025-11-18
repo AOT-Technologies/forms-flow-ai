@@ -17,4 +17,4 @@ markupsafe
 PyJWT
 redis
 lxml
-git+https://github.com/auslin-aot/forms-flow-ai.git@feature/fwf-5571-backend-changes-approval-outside-form#subdirectory=forms-flow-api-utils
+git+https://github.com/aot-technologies/forms-flow-ai.git@develop#subdirectory=forms-flow-api-utils

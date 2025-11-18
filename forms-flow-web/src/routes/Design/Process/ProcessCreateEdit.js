@@ -13,7 +13,7 @@ import {
   fetchRevertingProcessData,
 } from "../../../apiManager/services/processServices";
 import Loading from "../../../containers/Loading";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { MULTITENANCY_ENABLED, getRoute } from "../../../constants/constants";
 import { useTranslation } from "react-i18next";
 import {
   createNewProcess,
@@ -25,11 +25,14 @@ import {
   V8CustomButton,
   FormStatusIcon,
   FileUploadArea,
-  BreadCrumbs
+  BreadCrumbs,
+  Alert,
+  AlertVariant,
+  CustomProgressBar,
+  useProgressBar,
 } from "@formsflow/components";
 import ProcessActionsTab from "./ProcessActionsTab";
 import ExportDiagram from "../../../components/Modals/ExportDiagrams";
-import { toast } from "react-toastify";
 import {
   createXMLFromModeler,
   validateProcess,
@@ -56,7 +59,6 @@ const EXPORT = "EXPORT";
 const UPLOAD_PROGRESS_INCREMENT = 5;
 const UPLOAD_PROGRESS_INTERVAL = 300;
 const INITIAL_UPLOAD_PROGRESS = 10;
-const COMPLETE_PROGRESS = 100;
 
 const CategoryType = { FORM: "FORM", WORKFLOW: "WORKFLOW" };
 const ProcessCreateEdit = ({ type }) => {
@@ -85,7 +87,6 @@ const ProcessCreateEdit = ({ type }) => {
   const dispatch = useDispatch();
   const bpmnRef = useRef();
   const dmnRef = useRef();
-  const uploadTimerRef = useRef(null);
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   
@@ -120,8 +121,41 @@ const ProcessCreateEdit = ({ type }) => {
   const [isReverted, setIsReverted] = useState(false);
   const [isWorkflowChanged, setIsWorkflowChanged] = useState(false);
   const [importLoader, setImportLoader] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [processHistoryLoading, setProcessHistoryLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showImportAlert, setShowImportAlert] = useState(false);
+  const [importAlertMessage, setImportAlertMessage] = useState("");
+  
+  // Use progress bar hook for upload progress
+  const {
+    progress: uploadProgress,
+    start: startUpload,
+    stop: stopUpload,
+    complete: completeUpload,
+    reset: resetUpload,
+  } = useProgressBar({
+    increment: UPLOAD_PROGRESS_INCREMENT,
+    interval: UPLOAD_PROGRESS_INTERVAL,
+    useCap: false,
+    initialProgress: INITIAL_UPLOAD_PROGRESS,
+  });
+  
+  // Use progress bar hook for import progress
+  const {
+    progress: importProgress,
+    start: startImport,
+    complete: completeImport,
+    reset: resetImport,
+  } = useProgressBar({
+    increment: 10,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+  });
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState("");
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorAlertMessage, setErrorAlertMessage] = useState("");
   const isDataFetched = useRef();
    const [activeTab, setActiveTab] = useState({
       primary: 'layout',
@@ -148,38 +182,87 @@ const ProcessCreateEdit = ({ type }) => {
     // }
   }
 };
+  // Parse URL parameters for tab state
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const tab = queryParams.get("tab") || "layout";
+    const sub = queryParams.get("sub");
+    
+    setActiveTab({
+      primary: tab,
+      secondary: sub || null,
+      tertiary: null
+    });
+    
+    // Show editor when switching to layout tab
+    if (tab === "layout") {
+      setShowEditor(true);
+    } else if (tab === "actions") {
+      setShowEditor(false);
+    }
+  }, [location.search, location.pathname]);
+
   // Update history list whenever History tab becomes active
   useEffect(() => {
     if (activeTab.primary === "layout" && activeTab.secondary === "history") {
-      handleProcessHistory();
+      // Only fetch history if processData is loaded and has parentProcessKey
+      // This handles both tab switching and page refresh scenarios
+      if (processData?.parentProcessKey) {
+        handleProcessHistory();
+      }
     }
-  }, [activeTab.primary, activeTab.secondary, paginationModel.pageSize]);
+  }, [
+    activeTab.primary,
+    activeTab.secondary,
+    paginationModel.pageSize,
+    processData?.parentProcessKey,
+  ]);
 
   const handleTabClick = (primary, secondary = null, tertiary = null) => {
     setActiveTab({ primary, secondary, tertiary });
+    
+    // Show editor when switching to layout tab
+    if (primary === 'layout') {
+      setShowEditor(true);
+    } else if (primary === 'actions') {
+      setShowEditor(false);
+    }
+    
+    // Update URL with new tab parameters
+    const queryParams = new URLSearchParams();
+    queryParams.set("tab", primary);
+    if (secondary) queryParams.set("sub", secondary);
+    if (tertiary) queryParams.set("subsub", tertiary);
+    
+    if (isCreate || !processKey) {
+      // On create route (no processKey yet), preserve current pathname and only change search
+      dispatch(
+        push({
+          pathname: location.pathname,
+          search: `?${queryParams.toString()}`,
+        })
+      );
+    } else {
+      // On edit route, update URL with tab parameters
+      const newUrl = `${redirectUrl}${Process.route}/edit/${processKey}?${queryParams.toString()}`;
+      dispatch(push(newUrl));
+    }
   };
     /**
    * Manages simulated upload progress while awaiting server response
    */
     useEffect(() => {
       if (importLoader) {
-        // clearUploadTimer();
-  
-        uploadTimerRef.current = setInterval(() => {
-          setUploadProgress((prevProgress) => {
-            const nextProgress = prevProgress + UPLOAD_PROGRESS_INCREMENT;
-            return Math.min(nextProgress, COMPLETE_PROGRESS);
-          });
-        }, UPLOAD_PROGRESS_INTERVAL);
-      } 
-      // else {
-      //   clearUploadTimer();
-      // }
-  
-      // return () => {
-      //   clearUploadTimer();
-      // };
-    }, [importLoader]);
+        resetUpload();
+        startUpload();
+      } else {
+        stopUpload();
+      }
+      
+      return () => {
+        stopUpload();
+      };
+    }, [importLoader, startUpload, stopUpload, resetUpload]);
 
   const renderSecondaryControls = () => {
       const currentTab = tabConfig.primary[activeTab.primary];
@@ -252,7 +335,15 @@ const ProcessCreateEdit = ({ type }) => {
     // isError: historiesError,
   } = useMutation(
     ({ parentProcessKey, page, limit }) =>
-      getProcessHistory({ parentProcessKey, page, limit }) // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
+      getProcessHistory({ parentProcessKey, page, limit }), // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
+    {
+      onSuccess: () => {
+        setProcessHistoryLoading(false);
+      },
+      onError: () => {
+        setProcessHistoryLoading(false);
+      },
+    }
   );
 
   /* --------- fetch a perticular history when click the revert button -------- */
@@ -265,6 +356,10 @@ const ProcessCreateEdit = ({ type }) => {
     onSuccess: () => {
       setIsReverted(true);
       enableWorkflowChange();
+      // Redirect to layout tab after successful revert
+      if (processKey) {
+        handleTabClick('layout', null, null);
+      }
     },
   });
 
@@ -311,8 +406,9 @@ const ProcessCreateEdit = ({ type }) => {
     isCreateMode = isCreate,
   }) => {
     try {
-      const modeler = getModeler(isBPMN);
-      const xml = await createXMLFromModeler(modeler);
+      // Use getProcessXML() instead of directly getting from modeler
+      // This handles cases when on history tab where modeler might not be available
+      const xml = await getProcessXML();
 
       const isValid = validateXml(xml, isBPMN);
       if (!isValid) return;
@@ -345,6 +441,30 @@ const ProcessCreateEdit = ({ type }) => {
       : dmnRef.current?.getDmnModeler();
   };
 
+  // Helper function to get XML safely - tries modeler first, falls back to saved data
+  const getProcessXML = async () => {
+    const modeler = getModeler(isBPMN);
+    
+    // If modeler is available, get XML from it (includes any unsaved changes)
+    if (modeler) {
+      try {
+        return await createXMLFromModeler(modeler);
+      } catch (error) {
+        console.error("Error getting XML from modeler:", error);
+        // Fall through to use saved data
+      }
+    }
+    
+    // Fallback to saved process data (e.g., when on History tab)
+    const savedXml = getProcessDataXML();
+    if (savedXml) {
+      return savedXml;
+    }
+    
+    // If no saved data and no modeler, throw error
+    throw new Error(t("Unable to get process XML. Please ensure the process is saved or the editor is available."));
+  };
+
   const validateXml = (xml, isBPMN) => {
     return isBPMN
       ? validateProcess(xml, lintErrors, t)
@@ -357,13 +477,28 @@ const ProcessCreateEdit = ({ type }) => {
     return await comparisonFunc(processData?.processData, xml);
   };
 
-  const handleAlreadyUpToDate = (isPublished) => {
-    if (!isPublished) {
-      toast.success(t(`${Process.name} is already up to date`));
+  const handleAlreadyUpToDate = (isPublishing) => {
+    // Only show alert if not publishing (when publishing, we allow it to proceed)
+    if (!isPublishing) {
+      const message = t(`${Process.name} is already up to date`);
+      setSuccessAlertMessage(message);
+      setShowSuccessAlert(true);
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 3000);
+      return; // Return undefined to block save when not publishing
     }
+    // When publishing, return processData so publish can proceed
+    return processData;
   };
 
   const handleProcessHistory = () => {
+    // Only fetch if parentProcessKey exists
+    if (!processData?.parentProcessKey) {
+      setProcessHistoryLoading(false);
+      return;
+    }
+    setProcessHistoryLoading(true);
     fetchAllHistories({
       parentProcessKey: processData.parentProcessKey,
       page: 1,
@@ -373,6 +508,11 @@ const ProcessCreateEdit = ({ type }) => {
 
   const handlePaginationModelChange = (model) => {
     setPaginationModel(model);
+    // Only fetch if parentProcessKey exists
+    if (!processData?.parentProcessKey) {
+      return;
+    }
+    setProcessHistoryLoading(true);
     fetchAllHistories({
       parentProcessKey: processData.parentProcessKey,
       page: (model?.page || 0) + 1,
@@ -381,6 +521,10 @@ const ProcessCreateEdit = ({ type }) => {
   };
 
   const loadMoreBtnAction = () => {
+    // Only fetch if parentProcessKey exists
+    if (!processData?.parentProcessKey) {
+      return;
+    }
     fetchAllHistories({ parentProcessKey: processData.parentProcessKey });
   };
 
@@ -399,20 +543,24 @@ const ProcessCreateEdit = ({ type }) => {
       });
   };
 
-  const handleSaveSuccess = (response, isCreate, isPublished) => {
-    const processType = Process.type; // Uses Process.type directly
+  const handleSaveSuccess = (response, isCreate, isPublishing) => {
+    const processType = Process.type;
     const actionMessage = isCreate ? t("created") : t("updated");
     const processName = response.data?.name || response.data?.processKey;
 
-    if (!isPublished) {
-      toast.success(
-        t(
-          `${processType} ${processName} has been ${actionMessage} successfully`
-        )
+    if (!isPublishing) {
+      const message = t(
+        `${processType} ${processName} has been ${actionMessage} successfully`
       );
+      setSuccessAlertMessage(message);
+      setShowSuccessAlert(true);
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 3000);
     }
 
-    if (isCreate) {
+    // Only redirect if creating and NOT publishing (when publishing, we'll handle redirect after publish)
+    if (isCreate && !isPublishing) {
       const editPath = Process.route; // Uses Process.route for the edit path
       dispatch(
         push(`${redirectUrl}${editPath}/edit/${response.data.processKey}`)
@@ -430,8 +578,7 @@ const ProcessCreateEdit = ({ type }) => {
 
   const confirmPublishOrUnPublish = async () => {
     try {
-      const modeler = getModeler(isBPMN);
-      const xml = await createXMLFromModeler(modeler);
+      const xml = await getProcessXML();
 
       const isValid = validateXml(xml, isBPMN);
       if (!isPublished && !isValid) return;
@@ -451,17 +598,46 @@ const ProcessCreateEdit = ({ type }) => {
 
       await performAction(actionFunction, xml, response);
 
-      toast.success(
-        t(`${isPublished ? "Unpublished" : "Published"} successfully`)
-      );
+      // Show success message with process name
+      const processName = response?.name || response?.processKey || processData?.name || processData?.processKey || "";
+      const message = isPublished 
+        ? t(`${Process.type} ${processName} has been unpublished successfully`)
+        : isCreate 
+          ? t(`${Process.type} ${processName} has been created and published successfully`)
+          : t(`${Process.type} ${processName} has been published successfully`);
+      
+      setSuccessAlertMessage(message);
+      setShowSuccessAlert(true);
+      setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 3000);
 
       if (!isPublished) {
-        redirectToFlow();
+        // If creating and publishing, redirect to edit page; otherwise redirect to list
+        if (isCreate) {
+          const editPath = Process.route;
+          setTimeout(() => {
+            dispatch(
+              push(`${redirectUrl}${editPath}/edit/${response.processKey}`)
+            );
+          }, 3000); // Redirect after alert is shown
+        } else {
+          // Delay redirect to allow alert to be shown first
+          setTimeout(() => {
+            redirectToFlow();
+          }, 3000); // Redirect after alert is shown
+        }
       }
 
       setIsPublished(!isPublished);
     } catch (error) {
-      handlePublishError(isPublished, type);
+      console.error("Error during publish/unpublish:", error);
+      const errorMsg = t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${Process.type}. Please try again.`);
+      setErrorAlertMessage(errorMsg);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, 5000);
     } finally {
       setIsPublishLoading(false);
     }
@@ -495,12 +671,7 @@ const ProcessCreateEdit = ({ type }) => {
     dispatch(push(`${redirectUrl}${Process.route}`));
   };
 
-  const handlePublishError = (isPublished, type) => {
-    toast.error(
-      t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${type}`)
-    );
-  };
-
+ 
   const closeModal = () => {
     setModalType("");
     handleToggleConfirmModal();
@@ -529,7 +700,7 @@ const ProcessCreateEdit = ({ type }) => {
   const handleImport = async (file) => {
     setImportLoader(true);
     setImportError(null);
-    setUploadProgress(INITIAL_UPLOAD_PROGRESS);
+    resetUpload();
     setSelectedFile(file); // Set file first so error state can be displayed
     
     try {
@@ -539,7 +710,7 @@ const ProcessCreateEdit = ({ type }) => {
           t(`The file format is invalid. Please import a ${Process.extension} file.`)
         );
         setImportLoader(false);
-        setUploadProgress(0);
+        resetUpload();
         return;
       }
 
@@ -550,7 +721,7 @@ const ProcessCreateEdit = ({ type }) => {
       if (!fileContent || fileContent.trim() === '') {
         setImportError(t('The file is empty. Please import a valid file.'));
         setImportLoader(false);
-        setUploadProgress(0);
+        resetUpload();
         return;
       }
 
@@ -560,24 +731,23 @@ const ProcessCreateEdit = ({ type }) => {
           t(`The file content is invalid. Please import a valid ${Process.type} file.`)
         );
         setImportLoader(false);
-        setUploadProgress(0);
+        resetUpload();
         return;
       }
       
-      setUploadProgress(COMPLETE_PROGRESS);
+      completeUpload();
       // Import to editor
       const ref = isBPMN ? bpmnRef : dmnRef;
       if (ref.current) {
         ref.current?.handleImport(fileContent);
         enableWorkflowChange();
-        // toast.success(t(`${Process.type} imported successfully`));
       }
     } catch (error) {
       console.error('Import failed:', error);
       setImportError(
         t(error.message || 'An error occurred during import. Please try again.')
       );
-      setUploadProgress(0);
+      resetUpload();
     } finally {
       setImportLoader(false);
     }
@@ -616,10 +786,10 @@ const ProcessCreateEdit = ({ type }) => {
   const resetUploadState = useCallback(() => {
     setImportLoader(false);
     setImportError(null);
-    setUploadProgress(0);
+    resetUpload();
     setSelectedFile(null);
 
-  }, []);
+  }, [resetUpload]);
   const handleFileInputChange = useCallback(
     (eventOrFile) => {
       // Handle both event object and direct file
@@ -637,6 +807,15 @@ const ProcessCreateEdit = ({ type }) => {
       if (!xml) return;
       const processId = processData.id;
       const fileType = Process.extension;
+      
+      // Show import progress alert
+      setImportAlertMessage(t(`Importing ${Process.type}...`));
+      setShowImportAlert(true);
+      resetImport();
+      
+      // Start progress simulation
+      startImport();
+      
       if (processId) {
         // Update an existing process
         const response = await updateProcess({
@@ -644,8 +823,24 @@ const ProcessCreateEdit = ({ type }) => {
           data: xml,
           type: fileType === ".bpmn" ? "bpmn" : "dmn",
         });
+        
+        // Complete progress
+        completeImport();
+        
         dispatch(setProcessData(response?.data));
         handleImportData(xml);
+        
+        // Show success message
+        const successMessage = t(`${Process.type} imported successfully`);
+        setImportAlertMessage(successMessage);
+        
+        // Auto-hide alert after 3 seconds
+        setTimeout(() => {
+          setShowImportAlert(false);
+          resetImport();
+        }, 3000);
+        
+        // Redirect to layout page
         dispatch(
           push(
             `${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`
@@ -657,7 +852,21 @@ const ProcessCreateEdit = ({ type }) => {
           data: xml,
           type: fileType === ".bpmn" ? "bpmn" : "dmn",
         });
+        
+        // Complete progress
+        completeImport();
+        
         if (response) {
+          // Show success message
+          const successMessage = t(`${Process.type} imported successfully`);
+          setImportAlertMessage(successMessage);
+          
+          // Auto-hide alert after 3 seconds
+          setTimeout(() => {
+            setShowImportAlert(false);
+            resetImport();
+          }, 3000);
+          
           dispatch(
             push(
               `${redirectUrl}${Process.route}/edit/${response.data.processKey}?tab=layout`
@@ -668,9 +877,13 @@ const ProcessCreateEdit = ({ type }) => {
       resetUploadState();
     } catch (error) {
       console.error("Error during import:", error);
-      setImportError(
-        error?.response?.data?.message || "An error occurred during import."
-      );
+      const errorMessage = error?.response?.data?.message || t("An error occurred during import.");
+      setImportError(errorMessage);
+      
+      // Hide alert on error
+      setShowImportAlert(false);
+      resetImport();
+      // Error message shown via importError state in FileUploadArea
     }
   };
 
@@ -698,6 +911,7 @@ const ProcessCreateEdit = ({ type }) => {
         ariaLabel={t(
           `Drag and drop a ${Process.extension} file or click to browse for ${Process.type}`
         )}
+        disabled={isPublished}
       />
     );
   };
@@ -707,8 +921,7 @@ const ProcessCreateEdit = ({ type }) => {
   // };
 
   const editorActions = () => {
-    setShowEditor(false);
-    setActiveTab({ primary: 'actions', secondary: null, tertiary: null });
+    handleTabClick('actions', null, null);
   };
 
   const handleDuplicateProcess = () => {
@@ -884,18 +1097,48 @@ const ProcessCreateEdit = ({ type }) => {
 
             <BreadCrumbs
               items={[
-                { label: t("Build"), href: `/${Process.route}` },
                 { 
-                  label: isCreate ? t("Create New Flow") : t("Edit Flow"), 
-                  href: location?.pathname || "" 
+                  id: isBPMN ? "subflows" : "decision-tables",
+                  label: isBPMN ? t("Subflows") : t("Decision Tables"), 
+                  href: getRoute(tenantKey)[isBPMN ? "SUBFLOW" : "DECISIONTABLE"]
+                },
+                { 
+                  id: "create-new",
+                  label: isBPMN ? t("Create a New Subflow") : t("Create a New Decision Table")
+                },
+                { 
+                  id: "edit",
+                  label: t("Edit")
                 },
               ]}
               variant="minimized"
               underlined={true}
               dataTestId={`${diagramType.toLowerCase()}-breadcrumb`}
               ariaLabel={t(`${diagramType} Breadcrumb`)}
+              onBreadcrumbClick={(item) => {
+                if (item?.id === "subflows" || item?.id === "decision-tables") {
+                  dispatch(push(getRoute(tenantKey)[isBPMN ? "SUBFLOW" : "DECISIONTABLE"]));
+                }
+              }}
             />
-
+          <div className="toast-section">
+              <Alert
+                message={importAlertMessage}
+                variant={AlertVariant.FOCUS}
+                isShowing={showImportAlert}
+                rightContent={<CustomProgressBar progress={importProgress} />}
+              />
+              <Alert
+                message={successAlertMessage}
+                variant={AlertVariant.SUCCESS}
+                isShowing={showSuccessAlert}
+              />
+              <Alert
+                message={errorAlertMessage}
+                variant={AlertVariant.ERROR}
+                isShowing={showErrorAlert}
+              />
+            </div>
             <div className="header-section-1">
               <div className="section-seperation-left">
                  <p className="form-title">
@@ -942,10 +1185,7 @@ const ProcessCreateEdit = ({ type }) => {
                 <div className="section-seperation-left">
                     <V8CustomButton
                         label={t("Layout")}
-                        onClick={() => {
-                          setShowEditor(true);
-                          setActiveTab({ primary: 'layout', secondary: null, tertiary: null });
-                        }}
+                        onClick={() => handleTabClick('layout', null, null)}
                         selected={activeTab.primary === 'layout'}
                         dataTestId="designer-layout-testid"
                         ariaLabel={t("Designer Layout Button")}
@@ -974,7 +1214,7 @@ const ProcessCreateEdit = ({ type }) => {
                   />
                 </div>
              </div> }   
-        <div className="body-section bpmn-dmn-edit-layout">
+        <div className="body-section processedit-layout">
           {/* {renderTabContent()} */}
 
       
@@ -997,6 +1237,8 @@ const ProcessCreateEdit = ({ type }) => {
             revertBtnAction={fetchHistoryData}
             historyCount={historiesData?.totalCount || 0}
             currentVersionId={processData.id}
+            refreshBtnAction={handleProcessHistory}
+            loading={processHistoryLoading}
             disableAllRevertButton={isPublished}
             paginationModel={paginationModel}
             handlePaginationModelChange={handlePaginationModelChange}

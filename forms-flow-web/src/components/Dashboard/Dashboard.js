@@ -26,7 +26,7 @@ import {
 } from "../../actions/metricsActions";
 import LoadingOverlay from "@ronchalant/react-loading-overlay";
 import { Dropdown, FormControl } from "react-bootstrap";
-import { CustomSearch, CloseIcon } from "@formsflow/components"; 
+import { CustomSearch, CloseIcon, BreadCrumbs } from "@formsflow/components"; 
 
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
@@ -189,6 +189,20 @@ const Dashboard = React.memo(() => {
   }
   return (
     <>
+      <div className="header-section-1">
+        <div className="section-seperation-left">
+          <BreadCrumbs
+            items={[
+              { id: "analyze", label: t("Analyze") },
+              { id: "metrics", label: t("Metrics") }
+            ]}
+            variant="minimized"
+            underlined={true}
+            dataTestId="analyze-metrics-breadcrumb"
+            ariaLabel={t("Analyze Metrics Breadcrumb")}
+          />
+        </div>
+      </div>
       <div className="d-flex flex-wrap justify-content-between col-md-12">
             <div className="custom-input-group col-12 col-md-4 px-0">
               <CustomSearch

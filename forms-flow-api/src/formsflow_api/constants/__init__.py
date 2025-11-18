@@ -222,6 +222,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Request must contain at least one of: formData, mapper, authorizations, process",
         HTTPStatus.BAD_REQUEST,
     )
+    WORKFLOW_TASK_COMPLETION_FAILED = (
+        "Task completion failed in the workflow engine",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

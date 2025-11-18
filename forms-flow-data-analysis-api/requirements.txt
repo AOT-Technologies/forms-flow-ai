@@ -24,7 +24,6 @@ cffi==1.17.1
 charset-normalizer==3.4.1
 click==8.1.8
 cryptography==44.0.2
-ecdsa==0.19.1
 filelock==3.18.0
 flake8-import-order==0.18.2
 flask-jwt-oidc==0.8.0
@@ -76,7 +75,7 @@ pycparser==2.22
 pyflakes==3.2.0
 pyparsing==3.2.1
 python-dotenv==1.0.1
-python-jose==3.4.0
+python-jose[cryptography]==3.4.0
 pytz==2025.1
 redis==5.2.1
 referencing==0.36.2

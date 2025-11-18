@@ -14,6 +14,7 @@ import LoadingOverlay from "react-loading-overlay-ts";
 import Loading from "../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
 import { BASE_ROUTE } from "../../constants/constants";
+import { BreadCrumbs } from "@formsflow/components";
 import { runCleanup } from "../../actions/insightActions";
 
 const Insights = React.memo((props) => {
@@ -70,7 +71,20 @@ const Insights = React.memo((props) => {
 
   return (
     <>
-
+      <div className="header-section-1">
+        <div className="section-seperation-left">
+          <BreadCrumbs
+            items={[
+              { id: "analyze", label: t("Analyze") },
+              { id: "dashboards", label: t("Dashboards") }
+            ]}
+            variant="minimized"
+            underlined={true}
+            dataTestId="analyze-dashboards-breadcrumb"
+            ariaLabel={t("Analyze Dashboards Breadcrumb")}
+          />
+        </div>
+      </div>
       <div className="mb-2">
         <div className="d-flex align-items-center flex-md-row flex-colum justify-content-between mt-3"
           data-testid="Insight"

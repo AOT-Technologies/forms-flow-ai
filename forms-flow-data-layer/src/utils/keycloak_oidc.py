@@ -53,7 +53,7 @@ class KeycloakOIDC:
         if public_keys is None:
             public_keys = await self.__fetch_keys()
             self.cache.set("public_keys", public_keys)
-        signing_keys= await self.__get__signing_keys(public_keys)
+        signing_keys = await self.__get__signing_keys(public_keys)
         return signing_keys
 
     async def verify_token(self, token: str) -> Dict[str, Any]:
@@ -68,7 +68,7 @@ class KeycloakOIDC:
                 public_keys = await self.__fetch_keys()
                 self.cache.set("public_keys", public_keys)
                 kid = headers.get("kid")
-                public_keys= await self.__get__signing_keys(public_keys)
+                public_keys = await self.__get__signing_keys(public_keys)
                 if not kid or kid not in public_keys:
                     raise JWTError("Public key not found for 'kid'")
             public_key = public_keys[kid]

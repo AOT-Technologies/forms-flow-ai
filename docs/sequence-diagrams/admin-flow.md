@@ -96,7 +96,7 @@ sequenceDiagram
     Note over web,web-api: "PUT /user/:user-id/permission/groups/:group-id"
     activate web-api
     web-api ->> keycloak-api: Add user to a group
-    Note over web-api, keycloak-api: "GET /users/:user-id/groups/:group_id"
+    Note over web-api, keycloak-api: "PUT /users/:user-id/groups/:group_id"
     activate keycloak-api
     keycloak-api ->> keycloak-db:
     keycloak-db -->> keycloak-api:

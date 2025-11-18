@@ -122,7 +122,7 @@ sequenceDiagram
         bpm-api -->> web-api:
     
         
-        web-api ->> web:
+        web-api -->> web: Task completion result
         deactivate web
   end
     

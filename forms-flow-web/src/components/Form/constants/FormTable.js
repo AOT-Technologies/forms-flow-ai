@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, batch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import { setBPMFormLimit, setBPMFormListPage, setBpmFormSort, setFormDeleteStatus } from "../../../actions/formActions";
@@ -17,7 +17,15 @@ import _cloneDeep from "lodash/cloneDeep";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 
-function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
+function FormTable({
+  isDuplicating,
+  setIsDuplicating,
+  setDuplicateProgress,
+  externalSortModel,
+  externalOnSortModelChange,
+  externalPaginationModel,
+  externalOnPaginationModelChange,
+}) {
   const dispatch = useDispatch();
   const tenantKey = useSelector(state => state.tenants?.tenantId);
   const bpmForms = useSelector(state => state.bpmForms);
@@ -321,20 +329,22 @@ const viewOrEditForm = (formId, path) => {
 };
 
 const handlePageChange = (page) => {
+    console.log("[FormTable] handlePageChange ->", { page });
     dispatch(setBPMFormListPage(page));
   };
 
 
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    console.log("[FormTable] handleSortChange ->", model);
     if (!model || !model.field || !model.sort) {
       const resetSort = Object.keys(formsort).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
         return acc;
       }, {});
+      // Only reset sort; do not force page = 1 here to avoid page flip duplicates
       dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
-        dispatch(setBPMFormListPage(1));
-        return;
+      return;
     }
 
     const mappedKey = gridFieldToSortKey[model.field] || model.field;
@@ -360,14 +370,22 @@ const handlePageChange = (page) => {
 
 
   const handleLimitChange = (limitVal) => {
-    dispatch(setBPMFormLimit(limitVal));
-    dispatch(setBPMFormListPage(1));
+    console.log("[FormTable] handleLimitChange ->", { limitVal });
+    // Batch dispatches to keep updates atomic
+    batch(() => {
+      dispatch(setBPMFormLimit(limitVal));
+      dispatch(setBPMFormListPage(1));
+    });
   };
 
   // DataGrid's onPaginationModelChange - handles both page and pageSize changes
   const onPaginationModelChange = ({ page, pageSize }) => {
-    if (limit !== pageSize) handleLimitChange(pageSize);
-    else if ((pageNo - 1) !== page) handlePageChange(page + 1);
+    console.log("[FormTable] onPaginationModelChange ->", { page, pageSize, currentPage: pageNo, currentLimit: limit });
+    if (limit !== pageSize) {
+      handleLimitChange(pageSize);
+    } else {
+      handlePageChange(page + 1);
+    }
   };
 
   const rows = React.useMemo(() => {
@@ -377,10 +395,11 @@ const handlePageChange = (page) => {
     })).filter(r => r.id);
   }, [formData]);
 
-  const paginationModel = React.useMemo(
+  const internalPaginationModel = React.useMemo(
     () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
+  const paginationModel = externalPaginationModel || internalPaginationModel;
 
   return (
    <>
@@ -390,10 +409,10 @@ const handlePageChange = (page) => {
       rows={rows}
       rowCount={totalForms}
       loading={searchFormLoading || isApplicationCountLoading}
-      sortModel={[{ field: activeField, sort: activeOrder }]}
-      onSortModelChange={handleSortChange}
+      sortModel={externalSortModel || [{ field: activeField, sort: activeOrder }]}
+      onSortModelChange={externalOnSortModelChange || handleSortChange}
       paginationModel={paginationModel}
-      onPaginationModelChange={onPaginationModelChange}
+      onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
       getRowId={(row) => row.id}
     />
     <PromptModal

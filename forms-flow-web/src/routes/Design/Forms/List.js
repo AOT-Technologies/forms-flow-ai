@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import { connect, useSelector, useDispatch } from "react-redux";
+import { connect, useSelector, useDispatch, batch } from "react-redux";
 import { toast } from "react-toastify";
 import {
   selectRoot,
@@ -12,6 +12,11 @@ import {
   setFormDeleteStatus,
   setBpmFormSearch,
   setBPMFormListPage,
+  setBPMFormLimit,
+  setBpmFormSort,
+  setClientFormLimit,
+  setClientFormListPage,
+  setClientFormListSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -53,8 +58,11 @@ const List = React.memo((props) => {
     }
   }, [search]);
   const handleSearch = () => {
-    dispatch(setBpmFormSearch(search));
-    dispatch(setBPMFormListPage(1));
+    // Batch dispatches to prevent duplicate API calls
+    batch(() => {
+      dispatch(setBpmFormSearch(search));
+      dispatch(setBPMFormListPage(1));
+    });
   };
   // const handleClearSearch = () => {
   //   setSearch("");
@@ -69,35 +77,169 @@ const List = React.memo((props) => {
   const pageNo = useSelector((state) => state.bpmForms.formListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const formSort = useSelector((state) => state.bpmForms.sort);
+  // Submitter pagination/sort
+  const submitPageNo = useSelector((state) => state.bpmForms.submitListPage);
+  const submitLimit = useSelector((state) => state.bpmForms.submitFormLimit);
+  const submitFormSort = useSelector((state) => state.bpmForms.submitFormSort);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
+  
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
+  // Fetch Forms Function - only fetch when parameters actually change
   useEffect(() => {
-    dispatch(setBPMFormListLoading(true));
-  }, []);
+    if (!(createDesigns || viewDesigns)) {
+      return;
+    }
+    const activeKey = formSort?.activeKey || "formName";
+    const sortOrder = formSort?.[activeKey]?.sortOrder || "asc";
+    console.log("[List] fetch forms ->", {
+      pageNo,
+      limit,
+      sort: { activeKey, sortOrder },
+      searchText,
+    });
+    const filters = { pageNo, limit, formSort, formName: searchText };
+    batch(() => {
+      dispatch(setBPMFormListLoading(true));
+      dispatch(setFormSearchLoading(true));
+      dispatch(fetchBPMFormList({ ...filters }));
+    });
+  }, [dispatch, pageNo, limit, formSort, searchText, createDesigns, viewDesigns]);
 
-  const fetchForms = () => {
-    let filters = {pageNo, limit, formSort, formName:searchText};
-    dispatch(setFormSearchLoading(true));
-    dispatch(fetchBPMFormList({...filters}));
+  // Designer mapping for sort field names
+  const designerGridFieldToSortKey = {
+    title: "formName",
+    modified: "modified",
+    anonymous: "visibility",
+    status: "status",
   };
+  const designerSortKeyToGridField = {
+    formName: "title",
+    modified: "modified",
+    visibility: "anonymous",
+    status: "status",
+  };
+  const designerActiveKey = formSort?.activeKey || "formName";
+  const designerActiveField = designerSortKeyToGridField[designerActiveKey] || designerActiveKey;
+  const designerActiveOrder = formSort?.[designerActiveKey]?.sortOrder || "asc";
+  const designerSortModel = useMemo(
+    () => [{ field: designerActiveField, sort: designerActiveOrder }],
+    [designerActiveField, designerActiveOrder]
+  );
+  const designerPaginationModel = useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
   useEffect(() => {
-    fetchForms();
-  }, [dispatch, createDesigns, pageNo, limit, formSort, searchText]);
+    console.log("[List] designer models ->", { designerPaginationModel, designerSortModel });
+  }, [designerPaginationModel, designerSortModel]);
+  const onDesignerPaginationModelChange = ({ page, pageSize }) => {
+    console.log("[List] onDesignerPaginationModelChange ->", { page, pageSize, currentPage: pageNo, currentLimit: limit });
+    batch(() => {
+      if (pageSize !== limit) {
+        dispatch(setBPMFormLimit(pageSize));
+        dispatch(setBPMFormListPage(1));
+      } else {
+        dispatch(setBPMFormListPage(page + 1));
+      }
+    });
+  };
+  const handleDesignerSortModelChange = (modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    console.log("[List] handleDesignerSortModelChange ->", model);
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(formSort || {}).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
+      return;
+    }
+    const mappedKey = designerGridFieldToSortKey[model.field] || model.field;
+    const updatedSort = Object.keys(formSort || {}).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? model.sort : "asc" };
+      return acc;
+    }, {});
+    dispatch(setBpmFormSort({ ...updatedSort, activeKey: mappedKey }));
+  };
 
+  // Submitter mapping and models
+  const submitGridFieldToSortKey = {
+    title: "formName",
+    submissionsCount: "submissionCount",
+    latestSubmission: "latestSubmission",
+  };
+  const submitSortKeyToGridField = {
+    formName: "title",
+    submissionCount: "submissionsCount",
+    latestSubmission: "latestSubmission",
+  };
+  const submitActiveKey = submitFormSort?.activeKey || "formName";
+  const submitActiveField = submitSortKeyToGridField[submitActiveKey] || submitActiveKey;
+  const submitActiveOrder = submitFormSort?.[submitActiveKey]?.sortOrder || "asc";
+  const submitSortModel = useMemo(
+    () => [{ field: submitActiveField, sort: submitActiveOrder }],
+    [submitActiveField, submitActiveOrder]
+  );
+  const submitPaginationModel = useMemo(
+    () => ({ page: submitPageNo - 1, pageSize: submitLimit }),
+    [submitPageNo, submitLimit]
+  );
+  useEffect(() => {
+    console.log("[List] submit models ->", { submitPaginationModel, submitSortModel });
+  }, [submitPaginationModel, submitSortModel]);
+  const onSubmitPaginationModelChange = ({ page, pageSize }) => {
+    console.log("[List] onSubmitPaginationModelChange ->", { page, pageSize, currentPage: submitPageNo, currentLimit: submitLimit });
+    batch(() => {
+      if (pageSize !== submitLimit) {
+        dispatch(setClientFormLimit(pageSize));
+        dispatch(setClientFormListPage(1));
+      } else {
+        dispatch(setClientFormListPage(page + 1));
+      }
+    });
+  };
+  const handleSubmitSortModelChange = (modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    console.log("[List] handleSubmitSortModelChange ->", model);
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(submitFormSort || {}).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
+      return;
+    }
+    const mappedKey = submitGridFieldToSortKey[model.field] || model.field;
+    const updatedSort = Object.keys(submitFormSort || {}).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? model.sort : "asc" };
+      return acc;
+    }, {});
+    dispatch(setClientFormListSort({ ...updatedSort, activeKey: mappedKey }));
+  };
   const renderTable = () => {
     if (createDesigns || viewDesigns) {
       return <FormTable 
                isDuplicating={isDuplicating} 
                setIsDuplicating={setIsDuplicating}
-               setDuplicateProgress={setDuplicateProgress}/>;
+               setDuplicateProgress={setDuplicateProgress}
+               externalSortModel={designerSortModel}
+               externalOnSortModelChange={handleDesignerSortModelChange}
+               externalPaginationModel={designerPaginationModel}
+               externalOnPaginationModelChange={onDesignerPaginationModelChange}
+              />;
     }
     if (createSubmissions) {
-      return <ClientTable />;
+      return <ClientTable
+        externalSortModel={submitSortModel}
+        externalOnSortModelChange={handleSubmitSortModelChange}
+        externalPaginationModel={submitPaginationModel}
+        externalOnPaginationModelChange={onSubmitPaginationModelChange}
+      />;
     }
     return null;
   };

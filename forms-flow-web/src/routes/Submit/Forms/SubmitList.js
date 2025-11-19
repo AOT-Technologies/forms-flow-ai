@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState, useCallback } from "react";
+import { useSelector, useDispatch, batch } from "react-redux";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
@@ -54,8 +54,8 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   // Local States
   const [search, setSearch] = useState(searchText || "");
 
-  // Fetch Forms Function
-  const fetchForms = () => {
+  // Fetch Forms Function - memoized to prevent unnecessary re-renders
+  const fetchForms = useCallback(() => {
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({
       pageNo,
@@ -65,7 +65,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
       showForOnlyCreateSubmissionUsers: true,
       includeSubmissionsCount: true
     }));
-  };
+  }, [dispatch, pageNo, limit, formSort, searchText]);
 
 
   // Effects
@@ -79,8 +79,11 @@ const SubmitList = React.memo(({ getFormsInit }) => {
     }
   }, [search]);
   const handleSearch = () => {
-    dispatch(setClientFormSearch(search));
-    dispatch(setClientFormListPage(1));
+    // Batch dispatches to prevent duplicate API calls
+    batch(() => {
+      dispatch(setClientFormSearch(search));
+      dispatch(setClientFormListPage(1));
+    });
   };
   const handleClearSearch = () => {
     setSearch("");
@@ -101,7 +104,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
 
   useEffect(() => {
     fetchForms();
-  }, [getFormsInit, pageNo, limit, formSort, searchText]);
+  }, [fetchForms, getFormsInit]);
 
     const breadcrumbItems = [
     { id: "submit", label: "Submit" },

@@ -342,7 +342,7 @@ const handlePageChange = (page) => {
       }, {});
       // Only reset sort; do not force page = 1 here to avoid page flip duplicates
       dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
-      return;
+        return;
     }
 
     const mappedKey = gridFieldToSortKey[model.field] || model.field;
@@ -370,8 +370,8 @@ const handlePageChange = (page) => {
   const handleLimitChange = (limitVal) => {
     // Batch dispatches to keep updates atomic
     batch(() => {
-      dispatch(setBPMFormLimit(limitVal));
-      dispatch(setBPMFormListPage(1));
+    dispatch(setBPMFormLimit(limitVal));
+    dispatch(setBPMFormListPage(1));
     });
   };
 

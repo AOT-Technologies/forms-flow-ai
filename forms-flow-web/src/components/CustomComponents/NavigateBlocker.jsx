@@ -4,11 +4,12 @@ import { PromptModal } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 
-const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
+const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage, onSave }) => {
   const history = useHistory();
   const { t } = useTranslation();
   const [showPrompt, setShowPrompt] = useState(false);
   const [nextLocation, setNextLocation] = useState({ onOk: false });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (isBlock) {
@@ -43,6 +44,23 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
   const handleToggleShow = () => setShowPrompt(!showPrompt);
   const resetPath = () =>
     window.history.replaceState({}, "", nextLocation.currentPath);
+
+  const handleSave = async () => {
+    if (onSave) {
+      setIsSaving(true);
+      try {
+        await onSave(); // Call the save function passed as prop
+        handleToggleShow();
+        setNextLocation((prev) => ({ ...prev, onOk: true })); // Allow navigation after save
+      } catch (error) {
+        console.error("Save failed:", error);
+        setIsSaving(false);
+      }
+    } else {
+      // If no save handler provided, just close modal and stay
+      handleConfirm(false);
+    }
+  };
 
   const handleConfirm = (confirm) => {
     handleToggleShow();
@@ -93,15 +111,16 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
           primaryBtnText={t("Save")}
           primaryBtndataTestid="save-action-button"
           primaryBtnariaLabel={t("Save Changes")}
-          primaryBtnAction={() => {
-            handleConfirm(false);
-          }}
+          primaryBtnAction={handleSave}
+          primaryBtnLoading={isSaving}
           secondaryBtnText={t("Discard Changes")}
           secondoryBtndataTestid="discard-action-button"
           secondoryBtnariaLabel={t("Discard Changes")}
           secondaryBtnAction={() => {
             handleConfirm(true);
           }}
+          buttonLoading={isSaving}
+          secondaryBtnDisable={isSaving}
         />
       )}
     </>
@@ -112,6 +131,7 @@ NavigateBlocker.propTypes = {
   isBlock: PropTypes.bool.isRequired,
   message: PropTypes.string,
   secondaryMessage: PropTypes.string,
+  onSave: PropTypes.func,
 };
 
 export default NavigateBlocker;

@@ -52,16 +52,6 @@ const List = React.memo((props) => {
   
   const isDesignerMode = createDesigns || viewDesigns;
   const isSubmitterMode = !isDesignerMode && createSubmissions;
-  
-  /* eslint-disable no-console */
-  console.log("[List] render", { 
-    isDesignerMode, 
-    isSubmitterMode, 
-    createDesigns, 
-    viewDesigns, 
-    createSubmissions 
-  });
-  /* eslint-enable no-console */
 
   useEffect(() => {
     if (isDesignerMode) {
@@ -120,22 +110,10 @@ const List = React.memo((props) => {
 
   // Fetch Designer Forms
   useEffect(() => {
-    /* eslint-disable no-console */
-    console.log("[List][DESIGNER_FETCH] useEffect triggered", { 
-      isDesignerMode, 
-      pageNo, 
-      limit, 
-      searchText,
-      formSort 
-    });
-    /* eslint-enable no-console */
     if (!isDesignerMode) {
       return;
     }
     const filters = { pageNo, limit, formSort, formName: searchText };
-    /* eslint-disable no-console */
-    console.log("[List][DESIGNER_FETCH] dispatching fetchBPMFormList", filters);
-    /* eslint-enable no-console */
     batch(() => {
       dispatch(setBPMFormListLoading(true));
       dispatch(setFormSearchLoading(true));
@@ -145,15 +123,6 @@ const List = React.memo((props) => {
 
   // Fetch Submitter Forms
   useEffect(() => {
-    /* eslint-disable no-console */
-    console.log("[List][SUBMITTER_FETCH] useEffect triggered", { 
-      isSubmitterMode, 
-      submitPageNo, 
-      submitLimit, 
-      clientSearchText,
-      submitFormSort 
-    });
-    /* eslint-enable no-console */
     if (!isSubmitterMode) {
       return;
     }
@@ -165,9 +134,6 @@ const List = React.memo((props) => {
       showForOnlyCreateSubmissionUsers: true,
       includeSubmissionsCount: true
     };
-    /* eslint-disable no-console */
-    console.log("[List][SUBMITTER_FETCH] dispatching fetchBPMFormList", filters);
-    /* eslint-enable no-console */
     batch(() => {
       dispatch(setBPMFormListLoading(true));
       dispatch(setFormSearchLoading(true));
@@ -200,35 +166,18 @@ const List = React.memo((props) => {
     [pageNo, limit]
   );
   const onDesignerPaginationModelChange = useCallback(({ page, pageSize }) => {
-    /* eslint-disable no-console */
-    console.log("[List][DESIGNER_PAGINATION] called", { 
-      page, 
-      pageSize, 
-      currentPage: pageNo, 
-      currentLimit: limit 
-    });
-    /* eslint-enable no-console */
     batch(() => {
       if (pageSize !== limit) {
-        /* eslint-disable no-console */
-        console.log("[List][DESIGNER_PAGINATION] limit changed, resetting to page 1");
-        /* eslint-enable no-console */
         dispatch(setBPMFormLimit(pageSize));
         dispatch(setBPMFormListPage(1));
       } else {
-        /* eslint-disable no-console */
-        console.log("[List][DESIGNER_PAGINATION] page changed to", page + 1);
-        /* eslint-enable no-console */
         dispatch(setBPMFormListPage(page + 1));
       }
     });
-  }, [dispatch, limit, pageNo]);
+  }, [dispatch, limit]);
   
   const handleDesignerSortModelChange = useCallback((modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
-    /* eslint-disable no-console */
-    console.log("[List][DESIGNER_SORT] called", { model });
-    /* eslint-enable no-console */
     if (!model?.field || !model?.sort) {
       const resetSort = Object.keys(formSort || {}).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
@@ -260,59 +209,26 @@ const List = React.memo((props) => {
   const submitActiveField = submitSortKeyToGridField[submitActiveKey] || submitActiveKey;
   const submitActiveOrder = submitFormSort?.[submitActiveKey]?.sortOrder || "asc";
   const submitSortModel = useMemo(
-    () => {
-      const model = [{ field: submitActiveField, sort: submitActiveOrder }];
-      /* eslint-disable no-console */
-      console.log("[List][SUBMITTER_SORT_MODEL] memoized", model);
-      /* eslint-enable no-console */
-      return model;
-    },
+    () => [{ field: submitActiveField, sort: submitActiveOrder }],
     [submitActiveField, submitActiveOrder]
   );
   const submitPaginationModel = useMemo(
-    () => {
-      const model = { page: submitPageNo - 1, pageSize: submitLimit };
-      /* eslint-disable no-console */
-      console.log("[List][SUBMITTER_PAGINATION_MODEL] memoized", { 
-        model, 
-        submitPageNo, 
-        submitLimit 
-      });
-      /* eslint-enable no-console */
-      return model;
-    },
+    () => ({ page: submitPageNo - 1, pageSize: submitLimit }),
     [submitPageNo, submitLimit]
   );
   const onSubmitPaginationModelChange = useCallback(({ page, pageSize }) => {
-    /* eslint-disable no-console */
-    console.log("[List][SUBMITTER_PAGINATION] called", { 
-      page, 
-      pageSize, 
-      currentPage: submitPageNo, 
-      currentLimit: submitLimit 
-    });
-    /* eslint-enable no-console */
     batch(() => {
       if (pageSize !== submitLimit) {
-        /* eslint-disable no-console */
-        console.log("[List][SUBMITTER_PAGINATION] limit changed, resetting to page 1");
-        /* eslint-enable no-console */
         dispatch(setClientFormLimit(pageSize));
         dispatch(setClientFormListPage(1));
       } else {
-        /* eslint-disable no-console */
-        console.log("[List][SUBMITTER_PAGINATION] page changed to", page + 1);
-        /* eslint-enable no-console */
         dispatch(setClientFormListPage(page + 1));
       }
     });
-  }, [dispatch, submitLimit, submitPageNo]);
+  }, [dispatch, submitLimit]);
   
   const handleSubmitSortModelChange = useCallback((modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
-    /* eslint-disable no-console */
-    console.log("[List][SUBMITTER_SORT] called", { model });
-    /* eslint-enable no-console */
     if (!model?.field || !model?.sort) {
       const resetSort = Object.keys(submitFormSort || {}).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };

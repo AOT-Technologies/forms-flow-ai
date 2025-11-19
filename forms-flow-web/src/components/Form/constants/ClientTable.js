@@ -63,12 +63,6 @@ function ClientTable({
   };
 
   const handleSortChange = (modelArray) => {
-    /* eslint-disable no-console */
-    console.log("[ClientTable][INTERNAL_SORT] called", { 
-      modelArray, 
-      hasExternal: !!externalOnSortModelChange 
-    });
-    /* eslint-enable no-console */
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
 
     // No sort provided – only reset if not already at default
@@ -92,48 +86,24 @@ function ClientTable({
   };
 
   const onPaginationModelChange = ({ page, pageSize }) => {
-    /* eslint-disable no-console */
-    console.log("[ClientTable][INTERNAL_PAGINATION] called", { 
-      page, 
-      pageSize, 
-      currentPage: pageNo,
-      currentLimit: limit,
-      hasExternal: !!externalOnPaginationModelChange 
-    });
-    /* eslint-enable no-console */
     const requestedPage = typeof page === "number" ? page + 1 : pageNo;
     const requestedLimit = typeof pageSize === "number" ? pageSize : limit;
     // Batch multiple dispatches to keep Redux updates atomic
     batch(() => {
       if (requestedLimit !== limit) {
-        /* eslint-disable no-console */
-        console.log("[ClientTable][INTERNAL_PAGINATION] limit changed, resetting to page 1");
-        /* eslint-enable no-console */
         dispatch(setClientFormLimit(requestedLimit));
         dispatch(setClientFormListPage(1));
       } else {
-        /* eslint-disable no-console */
-        console.log("[ClientTable][INTERNAL_PAGINATION] page changed to", requestedPage);
-        /* eslint-enable no-console */
         dispatch(setClientFormListPage(requestedPage));
       }
     });
   };
 
   const handleRefresh = () => {
-    /* eslint-disable no-console */
-    console.log("[ClientTable][REFRESH] called", { hasExternal: !!externalOnRefresh });
-    /* eslint-enable no-console */
     if (externalOnRefresh) {
-      /* eslint-disable no-console */
-      console.log("[ClientTable][REFRESH] using external handler");
-      /* eslint-enable no-console */
       externalOnRefresh();
       return;
     }
-    /* eslint-disable no-console */
-    console.log("[ClientTable][REFRESH] using internal handler");
-    /* eslint-enable no-console */
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({
       pageNo,
@@ -229,19 +199,8 @@ function ClientTable({
   }, [formData]);
 
   const internalPaginationModel = React.useMemo(
-    () => {
-      const model = { page: pageNo - 1, pageSize: limit };
-      /* eslint-disable no-console */
-      console.log("[ClientTable][PAGINATION_MODEL] memoized", { 
-        model, 
-        pageNo, 
-        limit,
-        usingExternal: !!externalPaginationModel 
-      });
-      /* eslint-enable no-console */
-      return model;
-    },
-    [pageNo, limit, externalPaginationModel]
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
   );
   const paginationModel = externalPaginationModel || internalPaginationModel;
 
@@ -249,17 +208,8 @@ function ClientTable({
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = formsort?.[activeKey]?.sortOrder || "asc";
   const internalSortModel = React.useMemo(
-    () => {
-      const model = [{ field: activeField, sort: activeOrder }];
-      /* eslint-disable no-console */
-      console.log("[ClientTable][SORT_MODEL] memoized", { 
-        model,
-        usingExternal: !!externalSortModel 
-      });
-      /* eslint-enable no-console */
-      return model;
-    },
-    [activeField, activeOrder, externalSortModel]
+    () => [{ field: activeField, sort: activeOrder }],
+    [activeField, activeOrder]
   );
   const sortModel = externalSortModel || internalSortModel;
 

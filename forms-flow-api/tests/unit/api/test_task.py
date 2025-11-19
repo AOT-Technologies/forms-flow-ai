@@ -142,9 +142,12 @@ class TestTaskCompletionResource:
             "formData": {
                 "formId": form_id,
                 "data": {
-                    "businessOperatingName": "Adrienne Hinton",
-                    "applicationId": application_id,
-                    "applicationStatus": "Reviewed",
+                    "data": {
+                        "businessOperatingName": "Adrienne Hinton",
+                        "applicationId": application_id,
+                        "applicationStatus": "Reviewed",
+                    },
+                    "owner": "test@gmail.com",
                 }
             },
             "bpmnData": {

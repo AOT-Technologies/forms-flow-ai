@@ -115,34 +115,9 @@ const ProcessTable = React.memo(() => {
 
   //fetching bpmn or dmn
   useEffect(() => {
-    /* eslint-disable no-console */
-    console.log("[ProcessTable][USE_EFFECT] triggered", {
-      pageNo,
-      limit,
-      tenantKey,
-      reduxSearch,
-      sortBy,
-      sortOrder,
-      isBPMN,
-    });
-    /* eslint-enable no-console */
     if (MULTITENANCY_ENABLED && !tenantKey) {
-      /* eslint-disable no-console */
-      console.log("[ProcessTable][USE_EFFECT] skipped - no tenantKey");
-      /* eslint-enable no-console */
       return;
     }
-    /* eslint-disable no-console */
-    console.log("[ProcessTable][FETCH] dispatching", {
-      pageNo,
-      limit,
-      tenant_key: tenantKey,
-      processType: ProcessContents.processType,
-      searchKey: reduxSearch,
-      sortBy,
-      sortOrder,
-    });
-    /* eslint-enable no-console */
     dispatch(
       fetchAllProcesses(
         {
@@ -196,10 +171,6 @@ const ProcessTable = React.memo(() => {
     const key = next.field;
     const requestedOrder = next.sort || "asc";
 
-    /* eslint-disable no-console */
-    console.log("[ProcessTable][HANDLE_SORT] called", { key, requestedOrder });
-    /* eslint-enable no-console */
-
     const newSortConfig = {
       activeKey: key,
       [key]: { sortOrder: requestedOrder },
@@ -218,9 +189,6 @@ const ProcessTable = React.memo(() => {
     }
   }, [dispatch, isBPMN, sortConfig]);
   const handleSearch = () => {
-    /* eslint-disable no-console */
-    console.log("[ProcessTable][HANDLE_SEARCH] called", { searchBPMN, searchDMN, isBPMN });
-    /* eslint-enable no-console */
     setSearchLoading(true);
     batch(() => {
       if (isBPMN) {
@@ -234,9 +202,6 @@ const ProcessTable = React.memo(() => {
   };
 
   const handlePageChange = useCallback((page) => {
-    /* eslint-disable no-console */
-    console.log("[ProcessTable][HANDLE_PAGE_CHANGE] called", { page, isBPMN });
-    /* eslint-enable no-console */
     if (isBPMN) {
       dispatch(setBpmnPage(page));
     } else {
@@ -245,9 +210,6 @@ const ProcessTable = React.memo(() => {
   }, [dispatch, isBPMN]);
 
   const handleLimitChange = useCallback((limitVal) => {
-    /* eslint-disable no-console */
-    console.log("[ProcessTable][HANDLE_LIMIT_CHANGE] called", { limitVal, isBPMN });
-    /* eslint-enable no-console */
     batch(() => {
       if (isBPMN) {
         dispatch(setBpmnLimit(limitVal));
@@ -441,41 +403,22 @@ const ProcessTable = React.memo(() => {
     },
   ];
   const paginationModel = useMemo(
-    () => {
-      const model = { page: pageNo - 1, pageSize: limit };
-      /* eslint-disable no-console */
-      console.log("[ProcessTable][PAGINATION_MODEL] memoized", model, { pageNo, limit });
-      /* eslint-enable no-console */
-      return model;
-    },
+    () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
 
   const sortModel = useMemo(
-    () => {
-      const model = [
-        {
-          field: sortConfig.activeKey,
-          sort: sortConfig[sortConfig.activeKey]?.sortOrder || "asc",
-        },
-      ];
-      /* eslint-disable no-console */
-      console.log("[ProcessTable][SORT_MODEL] memoized", model);
-      /* eslint-enable no-console */
-      return model;
-    },
+    () => [
+      {
+        field: sortConfig.activeKey,
+        sort: sortConfig[sortConfig.activeKey]?.sortOrder || "asc",
+      },
+    ],
     [sortConfig]
   );
 
   const onPaginationModelChange = useCallback(({ page, pageSize }) => {
     const requestedPage = (typeof page === "number" ? page : 0) + 1;
-    /* eslint-disable no-console */
-    console.log("[ProcessTable][ON_PAGINATION_MODEL_CHANGE] called", {
-      page,
-      pageSize,
-      requestedPage,
-    });
-    /* eslint-enable no-console */
     
     if (limit !== pageSize) {
       handleLimitChange(pageSize);

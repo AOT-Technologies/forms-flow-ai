@@ -329,14 +329,12 @@ const viewOrEditForm = (formId, path) => {
 };
 
 const handlePageChange = (page) => {
-    console.log("[FormTable] handlePageChange ->", { page });
     dispatch(setBPMFormListPage(page));
   };
 
 
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
-    console.log("[FormTable] handleSortChange ->", model);
     if (!model || !model.field || !model.sort) {
       const resetSort = Object.keys(formsort).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
@@ -370,7 +368,6 @@ const handlePageChange = (page) => {
 
 
   const handleLimitChange = (limitVal) => {
-    console.log("[FormTable] handleLimitChange ->", { limitVal });
     // Batch dispatches to keep updates atomic
     batch(() => {
       dispatch(setBPMFormLimit(limitVal));
@@ -380,7 +377,6 @@ const handlePageChange = (page) => {
 
   // DataGrid's onPaginationModelChange - handles both page and pageSize changes
   const onPaginationModelChange = ({ page, pageSize }) => {
-    console.log("[FormTable] onPaginationModelChange ->", { page, pageSize, currentPage: pageNo, currentLimit: limit });
     if (limit !== pageSize) {
       handleLimitChange(pageSize);
     } else {

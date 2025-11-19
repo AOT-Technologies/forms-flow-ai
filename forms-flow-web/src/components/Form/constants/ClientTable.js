@@ -63,7 +63,6 @@ function ClientTable({
 
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
-    console.log("[ClientTable] handleSortChange ->", model);
 
     // No sort provided – only reset if not already at default
     if (!model?.field || !model?.sort) {
@@ -88,14 +87,6 @@ function ClientTable({
   const onPaginationModelChange = ({ page, pageSize }) => {
     const requestedPage = typeof page === "number" ? page + 1 : pageNo;
     const requestedLimit = typeof pageSize === "number" ? pageSize : limit;
-    console.log("[ClientTable] onPaginationModelChange ->", {
-      page,
-      pageSize,
-      requestedPage,
-      requestedLimit,
-      currentPage: pageNo,
-      currentLimit: limit,
-    });
     // Batch multiple dispatches to keep Redux updates atomic
     batch(() => {
       if (requestedLimit !== limit) {

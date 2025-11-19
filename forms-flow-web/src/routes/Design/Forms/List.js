@@ -94,14 +94,6 @@ const List = React.memo((props) => {
     if (!(createDesigns || viewDesigns)) {
       return;
     }
-    const activeKey = formSort?.activeKey || "formName";
-    const sortOrder = formSort?.[activeKey]?.sortOrder || "asc";
-    console.log("[List] fetch forms ->", {
-      pageNo,
-      limit,
-      sort: { activeKey, sortOrder },
-      searchText,
-    });
     const filters = { pageNo, limit, formSort, formName: searchText };
     batch(() => {
       dispatch(setBPMFormListLoading(true));
@@ -134,9 +126,6 @@ const List = React.memo((props) => {
     () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
-  useEffect(() => {
-    console.log("[List] designer models ->", { designerPaginationModel, designerSortModel });
-  }, [designerPaginationModel, designerSortModel]);
   const onDesignerPaginationModelChange = ({ page, pageSize }) => {
     console.log("[List] onDesignerPaginationModelChange ->", { page, pageSize, currentPage: pageNo, currentLimit: limit });
     batch(() => {
@@ -189,9 +178,6 @@ const List = React.memo((props) => {
     () => ({ page: submitPageNo - 1, pageSize: submitLimit }),
     [submitPageNo, submitLimit]
   );
-  useEffect(() => {
-    console.log("[List] submit models ->", { submitPaginationModel, submitSortModel });
-  }, [submitPaginationModel, submitSortModel]);
   const onSubmitPaginationModelChange = ({ page, pageSize }) => {
     console.log("[List] onSubmitPaginationModelChange ->", { page, pageSize, currentPage: submitPageNo, currentLimit: submitLimit });
     batch(() => {

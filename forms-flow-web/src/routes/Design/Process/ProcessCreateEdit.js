@@ -1087,7 +1087,7 @@ const ProcessCreateEdit = ({ type }) => {
         secondaryBtnAction={modalContent.secondaryBtnAction}
         primaryBtnText={modalContent.primaryBtnText}
         secondaryBtnText={modalContent.secondaryBtnText}
-        type="warning"
+        type="danger"
         size={modalType === "unpublish" ? "lg" : "md"}
         primaryBtndataTestid="confirm-primary-button"
         secondoryBtndataTestid="confirm-secondary-button"
@@ -1272,7 +1272,7 @@ const ProcessCreateEdit = ({ type }) => {
           primaryBtnAction={handleCloseErrorModal}
           primaryBtnText={t("Dismiss")}
           size="lg"
-          type="error"
+          type="danger"
           primaryBtndataTestid="error-dismiss-button"
           primaryBtnariaLabel={t("Dismiss")}
         />

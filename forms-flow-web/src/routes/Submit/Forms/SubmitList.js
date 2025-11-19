@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, batch } from "react-redux";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
   setClientFormListPage,
+  setClientFormLimit,
+  setClientFormListSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -16,24 +18,6 @@ import { CustomSearch ,
   BreadCrumbs,
 } from "@formsflow/components";
 import PropTypes from "prop-types";
-
-// Extracted Search Component
-const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
-  const { t } = useTranslation();
-  return (
-      <CustomSearch
-        search={search}
-        setSearch={setSearch}
-        handleSearch={handleSearch}
-        handleClearSearch={handleClearSearch}
-        placeholder={t("Search Form Name and Description")}
-        searchLoading={searchLoading}
-        title={t("Search Form Name and Description")}
-        dataTestId="form-search-input"
-        width="462px"
-      />
-  );
-};
 
 const SubmitList = React.memo(({ getFormsInit }) => {
   const { t } = useTranslation();
@@ -77,21 +61,93 @@ const SubmitList = React.memo(({ getFormsInit }) => {
     if (!search?.trim()) {
       dispatch(setClientFormSearch(""));
     }
-  }, [search]);
-  const handleSearch = () => {
+  }, [search, dispatch]);
+  
+  const handleSearch = useCallback(() => {
     // Batch dispatches to prevent duplicate API calls
     batch(() => {
       dispatch(setClientFormSearch(search));
       dispatch(setClientFormListPage(1));
     });
-  };
-  const handleClearSearch = () => {
+  }, [dispatch, search]);
+  const handleClearSearch = useCallback(() => {
     setSearch("");
     dispatch(setClientFormSearch(""));
+  }, [dispatch]);
+
+  // Submitter mapping for sort field names
+  const submitGridFieldToSortKey = {
+    title: "formName",
+    submissionsCount: "submissionCount",
+    latestSubmission: "latestSubmission",
+  };
+  const submitSortKeyToGridField = {
+    formName: "title",
+    submissionCount: "submissionsCount",
+    latestSubmission: "latestSubmission",
   };
 
+  // Memoized sort and pagination models
+  const submitActiveKey = formSort?.activeKey || "formName";
+  const submitActiveField = submitSortKeyToGridField[submitActiveKey] || submitActiveKey;
+  const submitActiveOrder = formSort?.[submitActiveKey]?.sortOrder || "asc";
+  
+  const submitSortModel = useMemo(
+    () => [{ field: submitActiveField, sort: submitActiveOrder }],
+    [submitActiveField, submitActiveOrder]
+  );
+  
+  const submitPaginationModel = useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
 
+  // Pagination handler
+  const onSubmitPaginationModelChange = useCallback(({ page, pageSize }) => {
+    batch(() => {
+      if (pageSize !== limit) {
+        dispatch(setClientFormLimit(pageSize));
+        dispatch(setClientFormListPage(1));
+      } else {
+        dispatch(setClientFormListPage(page + 1));
+      }
+    });
+  }, [dispatch, limit]);
 
+  // Sort handler
+  const handleSubmitSortModelChange = useCallback((modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(formSort || {}).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
+      return;
+    }
+    const mappedKey = submitGridFieldToSortKey[model.field] || model.field;
+    const updatedSort = Object.keys(formSort || {}).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? model.sort : "asc" };
+      return acc;
+    }, {});
+    dispatch(setClientFormListSort({ ...updatedSort, activeKey: mappedKey }));
+  }, [dispatch, formSort, submitGridFieldToSortKey]);
+
+  // Refresh handler
+  const handleSubmitRefresh = useCallback(() => {
+    batch(() => {
+      dispatch(setBPMFormListLoading(true));
+      dispatch(setFormSearchLoading(true));
+      dispatch(fetchBPMFormList({
+        pageNo,
+        limit,
+        formSort,
+        formName: searchText,
+        showForOnlyCreateSubmissionUsers: true,
+        includeSubmissionsCount: true
+      }));
+    });
+  }, [dispatch, pageNo, limit, formSort, searchText]);
 
 
   useEffect(() => {
@@ -136,19 +192,17 @@ const SubmitList = React.memo(({ getFormsInit }) => {
           </div>
        </div>
       <div className="body-section">
-          <ClientTable />
+          <ClientTable
+            externalSortModel={submitSortModel}
+            externalOnSortModelChange={handleSubmitSortModelChange}
+            externalPaginationModel={submitPaginationModel}
+            externalOnPaginationModelChange={onSubmitPaginationModelChange}
+            externalOnRefresh={handleSubmitRefresh}
+          />
       </div>
     </>
   );
 });
-
-SearchBar.propTypes = {
-  search: PropTypes.string.isRequired,
-  setSearch: PropTypes.func.isRequired,
-  handleSearch: PropTypes.func.isRequired,
-  handleClearSearch: PropTypes.func.isRequired,
-  searchLoading: PropTypes.bool.isRequired,
-};
 
 SubmitList.propTypes = {
   getFormsInit: PropTypes.bool,

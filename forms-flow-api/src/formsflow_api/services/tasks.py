@@ -80,7 +80,7 @@ class TaskService:
     def create_form_submission(self, form_id: str, data: dict):
         """Create form submission in formio."""
         current_app.logger.debug("Formio new submission started...")
-        submission_data = {"data": data["form_data"].get("data")}
+        submission_data = data["form_data"].get("data")
         form_io_token = self.formio.get_formio_access_token()
         formio_response = self.formio.create_submission(
             form_id, submission_data, form_io_token

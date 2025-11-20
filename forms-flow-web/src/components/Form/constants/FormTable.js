@@ -7,9 +7,9 @@ import { resetFormProcessData, unPublishForm, getApplicationCount, getProcessDet
 import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
-import { HelperServices, StyleServices } from "@formsflow/service";
+import { HelperServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { V8CustomButton, RefreshIcon, V8CustomDropdownButton, PromptModal, ReusableTable } from "@formsflow/components";
+import { V8CustomButton, V8CustomDropdownButton, PromptModal, ReusableTable } from "@formsflow/components";
 import { deleteForm } from "@aot-technologies/formio-react";
 import { formCreate, unPublish } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
@@ -46,7 +46,6 @@ function FormTable({
   const { createDesigns, viewDesigns } = userRoles();
   const { t } = useTranslation();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
@@ -281,8 +280,7 @@ function FormTable({
         <V8CustomButton
           // label="new button"
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={handleRefresh}
         />
       ),

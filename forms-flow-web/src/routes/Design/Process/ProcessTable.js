@@ -5,7 +5,6 @@ import {
   V8CustomButton,
   V8CustomDropdownButton,
   BuildModal,
-  RefreshIcon,
   ReusableTable,
   Alert,
   AlertVariant,
@@ -32,7 +31,7 @@ import {
   setDmnLimit
 } from "../../../actions/processActions";
 import userRoles from "../../../constants/permissions";
-import { HelperServices, StyleServices } from "@formsflow/service";
+import { HelperServices } from "@formsflow/service";
 import {
   navigateToSubflowBuild,
   navigateToDecisionTableBuild,
@@ -71,7 +70,6 @@ const ProcessTable = React.memo(() => {
   );
   const searchTextDMN = useSelector((state) => state.process.dmnSearchText);
   const searchTextBPMN = useSelector((state) => state.process.bpmnSearchText);
-  const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
   const totalCount = useSelector((state) =>
     isBPMN ? state.process.totalBpmnCount : state.process.totalDmnCount
   );
@@ -376,8 +374,7 @@ const ProcessTable = React.memo(() => {
         <V8CustomButton
           // label="new button"
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={handleRefresh}
         />
       ),

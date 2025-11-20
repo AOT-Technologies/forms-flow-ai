@@ -5,11 +5,10 @@ import {
   setClientFormListPage,
   setClientFormListSort
 } from "../../../actions/formActions";
-import { HelperServices, StyleServices } from "@formsflow/service";
+import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
 import {
   V8CustomButton,
-  RefreshIcon,
   ReusableTable
 } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
@@ -38,7 +37,6 @@ function ClientTable({
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
-  const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
   const gridFieldToSortKey = {
     title: "formName",
@@ -172,8 +170,7 @@ function ClientTable({
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={handleRefresh}
         />
       ),

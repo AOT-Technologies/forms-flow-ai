@@ -8,16 +8,15 @@ import {
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
 import { useTranslation } from "react-i18next";
-import { PromptModal, V8CustomButton, RefreshIcon, ReusableTable } from "@formsflow/components";
+import { PromptModal, V8CustomButton, ReusableTable } from "@formsflow/components";
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
-import { HelperServices, StyleServices } from "@formsflow/service";
+import { HelperServices } from "@formsflow/service";
 
 const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
-    const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const {
@@ -226,8 +225,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={handleRefresh}
         />
       ),

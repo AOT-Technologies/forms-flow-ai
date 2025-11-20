@@ -474,7 +474,7 @@ const ProcessTable = React.memo(() => {
         paginationModel={paginationModel}
         onPaginationModelChange={onPaginationModelChange}
         getRowId={(row) => row.id}
-        sx={{ height: { sm: 400, md: 510, lg: 510 }, width: "100%" }}
+        autoHeight={true}
       />
       </div>
       <BuildModal

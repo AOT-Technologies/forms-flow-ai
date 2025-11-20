@@ -223,6 +223,7 @@ function ClientTable({
         onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
         getRowId={(row) => row.id}
         noRowsLabel={t("No Forms have been found.")}
+        autoHeight={true}
       />
       {showSubmissions && <SubmissionDrafts />}
     </>

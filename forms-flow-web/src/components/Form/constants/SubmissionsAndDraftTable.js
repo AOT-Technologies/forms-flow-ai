@@ -297,6 +297,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         onPaginationModelChange={onPaginationModelChange}
         getRowId={(row) => row.id}
         noRowsLabel={t("No Entries have been found.")}
+        autoHeight={true}
         dataGridProps={{
           sx: {
             "& .MuiDataGrid-columnHeader--sortable": {

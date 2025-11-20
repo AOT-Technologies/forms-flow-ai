@@ -398,7 +398,6 @@ const handlePageChange = (page) => {
   return (
    <>
     <ReusableTable
-
       columns={columns}
       rows={rows}
       rowCount={totalForms}
@@ -408,6 +407,7 @@ const handlePageChange = (page) => {
       paginationModel={paginationModel}
       onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
       getRowId={(row) => row.id}
+      autoHeight={true}
     />
     <PromptModal
         show={showDeleteModal}

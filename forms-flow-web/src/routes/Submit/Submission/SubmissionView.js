@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -38,10 +38,10 @@ import {
 import { navigateToSubmitFormsListing, navigateToFormEntries } from "../../../helper/routerHelper";
 import { HelperServices, StyleServices } from "@formsflow/service";
 
-const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
+const HistoryDataGrid = React.memo(({ historyData, onRefresh, iconColor, loading }) => {
   const { t } = useTranslation();
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       field: "Completed",
       headerName: t("Completed"),
@@ -92,13 +92,9 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
           />
         )
     },
-  ];
+  ], [t, iconColor, onRefresh]);
 
   const rows = Array.isArray(historyData) ? historyData : [];
-  const [historyPaginationModel, setHistoryPaginationModel] = useState({
-    page: 0,
-    pageSize: 10,
-  });
 
   return (
     <ReusableTable
@@ -109,12 +105,10 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
       noRowsLabel={t("No history found")}
       paginationMode="client"
       sortingMode="client"
-      pageSizeOptions={[5, 10, 25, 50]}
-      paginationModel={historyPaginationModel}
-      onPaginationModelChange={setHistoryPaginationModel}
+      hideFooter
     />
   );
-};
+});
 
 HistoryDataGrid.propTypes = {
   historyData: PropTypes.array,
@@ -166,10 +160,10 @@ const ViewApplication = React.memo(() => {
     )
   );
 
-  const handleHistoryRefresh = () => {
+  const handleHistoryRefresh = useCallback(() => {
     dispatch(setUpdateHistoryLoader(true));
     dispatch(fetchApplicationAuditHistoryList(applicationId));
-  };
+  }, [dispatch, applicationId]);
 
   useEffect(() => {
     dispatch(setUpdateHistoryLoader(true));

@@ -1,5 +1,7 @@
 """This exposes tasks service."""
 
+import re
+
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services.external import FormioService
@@ -77,16 +79,42 @@ class TaskService:
             return response
         raise BusinessException(BusinessErrorCode.TASK_OUTCOME_NOT_FOUND)
 
-    def create_form_submission(self, form_id: str, data: dict):
-        """Create form submission in formio."""
+    def create_form_submission(
+        self, form_id: str, submission_id: str, application_status: str
+    ):
+        """Fetch submssion data and create new submission in formio."""
         current_app.logger.debug("Formio new submission started...")
-        submission_data = data["form_data"].get("data")
         form_io_token = self.formio.get_formio_access_token()
+        formio_get_payload = {"form_id": form_id, "sub_id": submission_id}
+        submission_data = self.formio.get_submission(formio_get_payload, form_io_token)
+        # Update appication status in submission data with new status from request
+        if (
+            submission_data
+            and submission_data.get("data")
+            and "applicationStatus" in submission_data["data"]
+        ):
+            submission_data["data"]["applicationStatus"] = application_status
         formio_response = self.formio.create_submission(
             form_id, submission_data, form_io_token
         )
         current_app.logger.debug("Formio new submission completed...")
         return formio_response
+
+    def validate_form_url_and_extract_form_id(self, form_url):
+        """Validate form URL and extract form ID."""
+        # Search for the pattern in the URL
+        current_app.logger.debug("Validationg form URL and extracting form ID")
+        validate_form_url = re.search(
+            r"/form/([A-Fa-f0-9]{24})/submission/([A-Fa-f0-9]{24})$", form_url
+        )
+        if not validate_form_url:
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_URL)
+        form_id = validate_form_url.group(1)
+        submission_id = validate_form_url.group(2)
+        current_app.logger.debug(
+            f"Extracted form Id: {form_id} Submission Id: {submission_id}"
+        )
+        return form_id, submission_id
 
     @user_context
     def complete_task(
@@ -97,9 +125,14 @@ class TaskService:
         user: UserContext = kwargs["user"]
         token = user.bearer_token
 
-        form_id = data["form_data"].get("form_id")
-        # Create form submission in fomrio
-        formio_response = self.create_form_submission(form_id, data)
+        # Extract form URL and validate
+        form_url = data["application_data"]["form_url"]
+        form_id, submission_id = self.validate_form_url_and_extract_form_id(form_url)
+        application_status = data["application_data"]["application_status"]
+        # Fetch form submission data and create new form submission in formio
+        formio_response = self.create_form_submission(
+            form_id, submission_id, application_status
+        )
         submission_id = formio_response.get("_id")
         form_url = self.formio.base_url + f"/form/{form_id}/submission/{submission_id}"
 

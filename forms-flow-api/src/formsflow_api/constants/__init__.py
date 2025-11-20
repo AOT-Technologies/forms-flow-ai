@@ -226,6 +226,7 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "Task completion failed in the workflow engine",
         HTTPStatus.BAD_REQUEST,
     )
+    INVALID_FORM_URL = "Invalid form URL format", HTTPStatus.BAD_REQUEST
 
     def __new__(cls, message, status_code):
         """Constructor."""

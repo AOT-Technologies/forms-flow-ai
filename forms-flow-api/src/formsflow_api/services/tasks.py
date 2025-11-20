@@ -90,8 +90,8 @@ class TaskService:
         # Update appication status in submission data with new status from request
         if (
             submission_data
-            and submission_data.get("data")
-            and "applicationStatus" in submission_data["data"]
+            and (data := submission_data.get("data"))
+            and "applicationStatus" in data
         ):
             submission_data["data"]["applicationStatus"] = application_status
         formio_response = self.formio.create_submission(

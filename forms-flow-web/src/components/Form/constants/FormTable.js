@@ -42,7 +42,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
-  const [deleteMessage, setDeleteMessage] = React.useState("");
+  const [deleteMessage, setDeleteMessage] = React.useState({"title": "", "message": ""});
   const [disableDelete, setDisableDelete] = React.useState(false);
   const [isAppCountLoading, setIsAppCountLoading] = React.useState(false);
 
@@ -170,15 +170,15 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
   React.useEffect(() => {
     if (selectedRow) {
       if (isAppCountLoading) {
-        setDeleteMessage(t("Preparing for delete..."));
+        setDeleteMessage({"title": `Delete ${selectedRow.title}?`, "message": t("Preparing for delete...")});
         setDisableDelete(true);
       } else if (applicationCount > 0) {
-        setDeleteMessage(
-          t(`This form has ${applicationCount} submission(s). You can’t delete it.`)
-        );
+        setDeleteMessage({"title": t(`Delete ${selectedRow.title}?`),
+          "message": t(`This form has ${applicationCount} submission(s). You can’t delete it.`)});
         setDisableDelete(true);
       } else {
-        setDeleteMessage(t("Are you sure you want to delete this form?"));
+        setDeleteMessage({"title": t(`Delete ${selectedRow.title}?`),
+          "message": t("This form, its flows and any related tasks will be deleted and it will no longer be available to form submitters. This action cannot be undone.")});
         setDisableDelete(false);
       }
     }
@@ -399,9 +399,9 @@ const handlePageChange = (page) => {
     <PromptModal
         show={showDeleteModal}
         onClose={handleCloseDelete}
-        title={t("Delete Item")}
-        message={deleteMessage}
-        type="warning"
+        title={deleteMessage.title}
+        message={deleteMessage.message}
+        type="danger"
         primaryBtnText={t("Delete")}
         primaryBtnAction={handleDelete}
         primaryBtnDisable={disableDelete}

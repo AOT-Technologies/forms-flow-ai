@@ -2878,8 +2878,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           secondaryBtnAction={modalContent.secondaryBtnAction}
           primaryBtnText={modalContent.primaryBtnText}
           secondaryBtnText={modalContent.secondaryBtnText}
-          type={modalContent.type || "warning"}
-          className={modalContent.className || ""}
+          type="danger"
         />
       )}
 
@@ -2890,7 +2889,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         onClose={handleCloseDelete}
         title="Delete Item"
         message="Are you sure you want to delete this item?"
-        type="warning"
+        type="danger"
         primaryBtnText="Delete"
         primaryBtnAction={handleDelete}
         secondaryBtnText="Cancel"

@@ -354,7 +354,7 @@ const enableWorkflowChange = async () => {
             primaryBtnText={t("Yes, Discard All Unsaved Changes")}
             secondaryBtnText={t("No, Keep The Changes")}
             secondaryBtnAction={handleDiscardModal}
-            type="warning"
+            type="danger"
             size="md"
             primaryBtndataTestid="discard-confirm-button"
             secondoryBtndataTestid="discard-cancel-button"

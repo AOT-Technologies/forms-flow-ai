@@ -308,7 +308,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
       <PromptModal
         show={showDeleteModal}
         onClose={handleCloseActionModal}
-        type="warning"
+        type="danger"
         title={t("Delete This Draft? ")}
         message={t("Deleting a draft is permanent and cannot be undone.")}
         primaryBtnText={t("Delete draft")}

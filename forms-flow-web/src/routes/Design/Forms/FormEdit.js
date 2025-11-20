@@ -76,7 +76,8 @@ import {
   generateUniqueId,
   convertMultiSelectOptionToValue,
   removeTenantKeywithSlash,
-  convertSelectedValueToMultiSelectOption
+  convertSelectedValueToMultiSelectOption,
+  compareRolesState
 } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
@@ -418,7 +419,7 @@ const EditComponent = () => {
   // Update roles state when formAuthorization changes (for existing forms)
   useEffect(() => {
     if (!isCreateRoute && formAuthorization) {
-      setRolesState({
+      const newRolesState = {
         DESIGN: {
           selectedRoles: convertSelectedValueToMultiSelectOption(
             formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
@@ -442,22 +443,41 @@ const EditComponent = () => {
           ),
           selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
         }
-      });
+      };
+      setRolesState(newRolesState);
+      
+      // Update initial state if it's already set (happens after save when data is refreshed)
+      if (initialRolesState) {
+        setInitialRolesState(_cloneDeep(newRolesState));
+      }
     }
   }, [formAuthorization, isCreateRoute]);
 
   // Update form details when processListData changes (for existing forms)
   useEffect(() => {
     if (!isCreateRoute && processListData) {
-      setFormDetails({
+      const newFormDetails = {
         title: processListData.formName,
         path: path,
         description: processListData.description,
         display: display,
-      });
-      setIsAnonymous(processListData.anonymous || false);
+      };
+      const newIsAnonymous = processListData.anonymous || false;
+      
+      setFormDetails(newFormDetails);
+      setIsAnonymous(newIsAnonymous);
+      
+      // Update initial states if already set (happens after save when data is refreshed)
+      if (initialFormDetails) {
+        setInitialFormDetails(_cloneDeep(newFormDetails));
+      }
+      if (initialIsAnonymous !== null) {
+        setInitialIsAnonymous(newIsAnonymous);
+      }
     }
   }, [processListData, path, display, isCreateRoute]);
+
+  
 
   // Initialize initial state for formDetails, rolesState, and isAnonymous
   useEffect(() => {
@@ -479,7 +499,11 @@ const EditComponent = () => {
       initialIsAnonymous !== null
     ) {
       const formDetailsChanged = !_.isEqual(formDetails, initialFormDetails);
-      const rolesStateChanged = !_.isEqual(rolesState, initialRolesState);
+      const rolesStateChanged = !compareRolesState(
+        rolesState,
+        initialRolesState,
+        multiSelectOptionKey
+      );
       const isAnonymousChanged = isAnonymous !== initialIsAnonymous;
       setSettingsChanged(
         formDetailsChanged || rolesStateChanged || isAnonymousChanged
@@ -946,6 +970,26 @@ const handleSaveLayout = () => {
   saveFormData({ showToast: false });
 };
 
+// Handler for save action from NavigateBlocker
+const handleSaveFromBlocker = async () => {
+  try {
+    // Set flag to allow navigation after save
+    setIsNavigatingAfterSave(true);
+    isNavigatingAfterSaveRef.current = true;
+    
+    if (isCreateRoute) {
+      await saveFormWithWorkflow();
+    } else {
+      await saveFormData({ showToast: true });
+    }
+  } catch (error) {
+    // Reset flag if save fails
+    setIsNavigatingAfterSave(false);
+    isNavigatingAfterSaveRef.current = false;
+    throw error; // Re-throw to let NavigateBlocker handle the error
+  }
+};
+
   const handleCloseSelectedAction = () => {
     setSelectedAction(null);
     setPendingAction(null); // Clear pending action when closing modals
@@ -1148,6 +1192,7 @@ const handleSaveLayout = () => {
       setSettingsChanged(false);
       setInitialFormDetails(_cloneDeep(formDetails));
       setInitialRolesState(_cloneDeep(rolesState));
+      setInitialIsAnonymous(isAnonymous);
     } catch (error) {
       console.error(error);
     } finally {
@@ -2578,7 +2623,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     }
     return null;
   };
-
+  
   return (
     <div className="form-create-edit-layout">
       <NavigateBlocker
@@ -2590,6 +2635,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           !isNavigatingAfterSaveRef.current
         }
         message={t("Discarding changes is permanent and cannot be undone.")}
+        onSave={handleSaveFromBlocker}
       />
 
       <LoadingOverlay

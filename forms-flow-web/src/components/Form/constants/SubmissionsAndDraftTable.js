@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useState, useEffect, useCallback, useMemo} from "react";
+import { useDispatch, useSelector, batch } from "react-redux";
 import { selectRoot } from "@aot-technologies/formio-react";
 import { CLIENT_EDIT_STATUS } from "../../../constants/applicationConstants";
 import {
@@ -62,15 +62,17 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         navigateToResubmit(dispatch, tenantKey, row.formId, row.submissionId);
     };
 
-  const handleSortChange = (modelArray) => {
+  const handleSortChange = useCallback((modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
     if (!model?.field || !model?.sort) {
       const resetSort = Object.keys(applicationSort).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
         return acc;
       }, {});
-      dispatch(setFormSubmissionSort({ ...resetSort, activeKey: "id" }));
-      dispatch(setApplicationListActivePage(1));
+      batch(() => {
+        dispatch(setFormSubmissionSort({ ...resetSort, activeKey: "id" }));
+        dispatch(setApplicationListActivePage(1));
+      });
       return;
     }
 
@@ -82,11 +84,11 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
       return acc;
     }, {});
 
-        dispatch(setFormSubmissionSort({
-            ...updatedSort,
-            activeKey: mappedKey,
-        }));
-    };
+    dispatch(setFormSubmissionSort({
+      ...updatedSort,
+      activeKey: mappedKey,
+    }));
+  }, [dispatch, applicationSort]);
 
     const continueDraft = (row) => {
         navigateToDraftEdit(dispatch, tenantKey, row.formId, row.id);
@@ -124,18 +126,20 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         navigateToViewSubmission(dispatch, tenantKey, item.formId, item.id);
     };
 
-  const onPaginationModelChange = ({ page, pageSize }) => {
+  const onPaginationModelChange = useCallback(({ page, pageSize }) => {
     if (limit !== pageSize) {
-      dispatch(setCountPerpage(pageSize));
-      dispatch(setApplicationListActivePage(1));
+      batch(() => {
+        dispatch(setCountPerpage(pageSize));
+        dispatch(setApplicationListActivePage(1));
+      });
     } else if (pageNo !== page + 1) {
       dispatch(setApplicationListActivePage(page + 1));
     }
-  };
+  }, [dispatch, limit, pageNo]);
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     fetchSubmissionsAndDrafts();
-  };
+  }, [fetchSubmissionsAndDrafts]);
 
   const columns = [
     { 
@@ -275,9 +279,12 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     [pageNo, limit]
   );
 
-  const activeKey = applicationSort?.activeKey || "id";
-  const activeField = sortKeyToGridField[activeKey] || activeKey;
-  const activeOrder = applicationSort?.[activeKey]?.sortOrder || "asc";
+  const sortModel = useMemo(() => {
+    const activeKey = applicationSort?.activeKey || "id";
+    const activeField = sortKeyToGridField[activeKey] || activeKey;
+    const activeOrder = applicationSort?.[activeKey]?.sortOrder || "asc";
+    return [{ field: activeField, sort: activeOrder }];
+  }, [applicationSort]);
 
   return (
     <>
@@ -286,7 +293,7 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         rows={rows}
         rowCount={totalForms}
         loading={isApplicationLoading || searchFormLoading}
-        sortModel={[{ field: activeField, sort: activeOrder }]}
+        sortModel={sortModel}
         onSortModelChange={handleSortChange}
         paginationModel={paginationModel}
         onPaginationModelChange={onPaginationModelChange}

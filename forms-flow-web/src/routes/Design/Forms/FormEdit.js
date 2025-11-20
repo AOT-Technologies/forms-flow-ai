@@ -2554,7 +2554,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       <div className="secondary-controls d-flex gap-2">
         {Object.entries(currentTab.secondary).map(([key, config]) => {
           // Disable history, preview, and variables buttons on create route
-          const isDisabled = config.disabled || (isCreateRoute && (key === 'history' || key === 'preview' || key === 'variables')) || (isCreateRoute && (activeTab.primary === "actions")) || (!saveDisabled && key === 'preview');
+          const isDisabled = config.disabled || (isCreateRoute && (key === 'history' || key === 'preview' || key === 'variables')) || (isCreateRoute && (activeTab.primary === "actions"));
           return (
             <V8CustomButton
               key={key}
@@ -2675,7 +2675,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                   }}
                 />
                 <p className="form-title">
-                  {formData?.title || t("Untitled Form")}
+                  {formData?.title || formDetails?.title || processListData?.formName || t("Untitled Form")}
                 </p>
               </div>
               <div className="section-seperation-right">

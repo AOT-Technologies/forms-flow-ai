@@ -320,7 +320,6 @@ const enableWorkflowChange = async () => {
   const columns = [
     { field: 'type', headerName: 'Type', flex: 1.5, sortable: false },
     { field: 'variable', headerName: 'Variable', width: 130, sortable: false },
-    { field: 'altVariable', headerName: 'Alternative Field', width: 130, sortable: false },
     {
       field: "selected",
       headerName: "Selected",

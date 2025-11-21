@@ -45,6 +45,8 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
   const [deleteMessage, setDeleteMessage] = React.useState({"title": "", "message": ""});
   const [disableDelete, setDisableDelete] = React.useState(false);
   const [isAppCountLoading, setIsAppCountLoading] = React.useState(false);
+  const [showUnpublishModal, setShowUnpublishModal] = React.useState(false);
+  const [selectedUnpublishRow, setSelectedUnpublishRow] = React.useState(null);
 
   // Mapping between DataGrid field names and reducer sort keys
   const gridFieldToSortKey = {
@@ -97,6 +99,20 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
   const handleCloseDelete = () => {
     setShowDeleteModal(false);
     setSelectedRow(null);
+  };
+
+  // 🔹 Unpublish flow
+  const handleUnpublish = async () => {
+    if (!selectedUnpublishRow) return;
+    await unPublish(selectedUnpublishRow.mapperId).then(() => {
+      dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
+    });
+    handleCloseUnpublish();
+  };
+
+  const handleCloseUnpublish = () => {
+    setShowUnpublishModal(false);
+    setSelectedUnpublishRow(null);
   };
 
   // 🔹 Duplicate flow
@@ -289,11 +305,10 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
           },
           {
             label: params.row.status === "active" ? t("Unpublish") : t("Delete"),
-            onClick: async () => {
+            onClick: () => {
               if (params.row.status === "active") {
-                await unPublish(params.row.mapperId).then(() => {
-                  dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
-                });
+                setSelectedUnpublishRow(params.row);
+                setShowUnpublishModal(true);
               } else {
                 deleteAction(params.row);
               }
@@ -407,6 +422,21 @@ const handlePageChange = (page) => {
         primaryBtnDisable={disableDelete}
         secondaryBtnText={t("Cancel")}
         secondaryBtnAction={handleCloseDelete}
+     />
+    <PromptModal
+        show={showUnpublishModal}
+        onClose={handleCloseUnpublish}
+        title={selectedUnpublishRow ? t(`Unpublish ${selectedUnpublishRow.title}?`) : t("Unpublish Form?")}
+        message={t(
+          `This form will be unpublished, making it no longer available to form submitters.
+All existing submissions and related tasks will remain intact. 
+You can republish it later if needed. This action does not delete the form or its data.`
+        )}
+        type="danger"
+        primaryBtnText={t("Unpublish Form")}
+        primaryBtnAction={handleUnpublish}
+        secondaryBtnText={t("Cancel")}
+        secondaryBtnAction={handleCloseUnpublish}
      />
     </>
   );

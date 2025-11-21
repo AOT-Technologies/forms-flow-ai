@@ -235,6 +235,8 @@ const enableWorkflowChange = async () => {
         });
         dispatch(setProcessData(response.data));
         disableWorkflowChange();
+        // Update the current BPMN XML baseline to the saved XML
+        setCurrentBpmnXml(xml);
         isReverted && setIsReverted(!isReverted); //if it already reverted the need to make it false
         showToast && toast.success(t("Process updated successfully"));
       } catch (error) {

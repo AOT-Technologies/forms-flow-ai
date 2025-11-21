@@ -399,19 +399,6 @@ const EditComponent = () => {
     return processListData.anonymous || false;
   };
 
-  const [isFormSettingsChanged, setIsFormSettingsChanged] = useState(false);
-  const prevFormDetailsRef = useRef(null);
-
-  useEffect(() => {
-    if (prevFormDetailsRef.current === null) {
-      prevFormDetailsRef.current = formDetails;
-      return;
-    }
-    const isChanged = !_.isEqual(prevFormDetailsRef.current, formDetails);
-    setIsFormSettingsChanged(isChanged);
-    prevFormDetailsRef.current = formDetails;
-  }, [formDetails]);
-
   const [isAnonymous, setIsAnonymous] = useState(getInitialAnonymousState());
 
   // Update roles state when formAuthorization changes (for existing forms)
@@ -1102,6 +1089,17 @@ const handleSaveFromBlocker = async () => {
     }
   }, [processListData.processKey, isCreateRoute]);
 
+  // Reset isPublished state when navigating to create route or when formId changes
+  useEffect(() => {
+    if (isCreateRoute) {
+      // On create route, form is always unpublished
+      setIsPublished(false);
+    } else if (processListData?.status) {
+      // On edit route, use the actual status from processListData
+      setIsPublished(processListData.status === "active");
+    }
+  }, [isCreateRoute, formId, processListData?.status]);
+
   const validateFormNameOnBlur = ({ title, ...rest }) => {
     if (!title || title.trim() === "") {
       setNameError("This field is required");
@@ -1180,17 +1178,37 @@ const handleSaveFromBlocker = async () => {
 
     try {
       await dispatch(saveFormProcessMapperPut({ mapper, authorizations }));
-      const updateFormResponse = {};
-      // await formUpdate(form._id, newFormData);
+      
+      // Update the local form state immediately with the new settings
+      // This ensures the UI reflects the saved changes right away
+      const updatedFormData = {
+        ...form,
+        title: formDetails.title,
+        display: formDetails.display,
+        path: formDetails.path,
+        submissionAccess: submissionAccess,
+        access: formAccess,
+      };
+      
+      // Update components if display type changed
+      if(formDetails.display !== form.display){
+        updatedFormData.components = formDetails.display == "form" ?
+          convertToNormalForm(formData.components) : convertToWizardForm(formData.components);
+      }
 
+      // Update both the local form state and Redux store
       dispatchFormAction({
         type: "formChange",
-        value: { ...updateFormResponse.data, components: form.components },
+        value: updatedFormData,
       });
-      dispatch(setFormSuccessData("form", updateFormResponse.data));
+      dispatch(setFormSuccessData("form", updatedFormData));
       
       // Reset settings changed state after successful save
       setSettingsChanged(false);
+      
+      // Update initial states with the saved values to ensure UI reflects the saved data
+      // The saved values in formDetails, rolesState, and isAnonymous are what was just saved
+      // Redux store is also updated by saveFormProcessMapperPut, and useEffects will sync when data changes
       setInitialFormDetails(_cloneDeep(formDetails));
       setInitialRolesState(_cloneDeep(rolesState));
       setInitialIsAnonymous(isAnonymous);
@@ -1228,14 +1246,14 @@ const handleSaveFromBlocker = async () => {
     // On edit route, use existing logic - also check for savedFormVariables changes
     const hasVariablesChanged = hasSavedFormVariablesChanged();
     const shouldDisable = !(
-      isFormSettingsChanged ||
+      settingsChanged ||
       workflowIsChanged ||
       formChangeState?.changed ||
       hasVariablesChanged
     );
     setSaveDisabled(shouldDisable);
   }, [
-    isFormSettingsChanged,
+    settingsChanged,
     workflowIsChanged,
     formChangeState.changed,
     isCreateRoute,
@@ -1411,6 +1429,9 @@ const handleSaveFromBlocker = async () => {
     }
     if (data.process) {
       dispatch(setProcessData(data.process));
+      // Reset workflow change state and update cached BPMN XML
+      setWorkflowIsChanged(false);
+      setCurrentBpmnXml(data.process.processData);
     }
     if (data.authorizations) {
       dispatch(setFormAuthorizationDetails(data.authorizations));
@@ -1419,6 +1440,11 @@ const handleSaveFromBlocker = async () => {
       setFormChangeState(prev => ({ ...prev, changed: false }));
       // Update initial savedFormVariables reference after successful save
       initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
+      // Reset settings changed state after successful save
+      setSettingsChanged(false);
+      setInitialFormDetails(_cloneDeep(formDetails));
+      setInitialRolesState(_cloneDeep(rolesState));
+      setInitialIsAnonymous(isAnonymous);
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
@@ -1562,7 +1588,6 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     // Update initial savedFormVariables reference after successful save
     initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
     setSettingsChanged(false);
-    setIsFormSettingsChanged(false);
     isNavigatingAfterSaveRef.current = true;
     setIsNavigatingAfterSave(true);
 
@@ -1735,6 +1760,12 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     }
   };
 
+  const discardVariablesChanges = () => {
+    // Reset savedFormVariables to initial state
+    setSavedFormVariables(structuredClone(initialSavedFormVariablesRef.current));
+    setShowConfirmModal(false);
+  };
+
 
   const handlePublishAsNewVersion = ({ description, title }) => {
     setFormSubmitted(true);
@@ -1797,9 +1828,11 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   };
 
   const formChange = (newForm) => {
-    // Always capture form changes for now to fix the save button issue
-    // TODO: Re-implement proper initialization logic later
-    captureFormChanges();
+    // Only capture form changes after the FormBuilder has been fully initialized
+    // This prevents the initial mount/render from incorrectly marking the form as changed
+    if (formBuilderInitializedRef.current) {
+      captureFormChanges();
+    }
     dispatchFormAction({ type: "formChange", value: newForm });
   };
 
@@ -2072,19 +2105,22 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
            title: t("Discard Changes?"),
            message:
              t("Discarding changes is permanent and cannot be undone."),
-             primaryBtnText: t("Discard Changes"),
-             primaryBtnAction : () => {
-             // Only discard changes from the currently active tab
-             if (activeTab.primary === 'form' && activeTab.secondary === 'settings' && settingsChanged) {
-               discardSettingsChanges();
-             } else if (activeTab.primary === 'form' && formChangeState.changed) {
-               discardChanges();
-             } else if (activeTab.primary === 'bpmn' && workflowIsChanged) {
-               // Handle workflow discard similar to FlowEdit.js
-               handleWorkflowDiscard();
-             }
-             closeModal();
-           },
+            primaryBtnText: t("Discard Changes"),
+           primaryBtnAction : () => {
+           // Only discard changes from the currently active tab
+           if (activeTab.primary === 'form' && activeTab.secondary === 'settings') {
+             discardSettingsChanges();
+           } else if (activeTab.primary === 'form' && (activeTab.secondary === 'builder' || activeTab.secondary === null)) {
+             discardChanges();
+           } else if (activeTab.primary === 'bpmn' && activeTab.secondary === 'variables') {
+             // Handle variables discard
+             discardVariablesChanges();
+           } else if (activeTab.primary === 'bpmn' && activeTab.secondary !== 'variables') {
+             // Handle workflow discard similar to FlowEdit.js
+             handleWorkflowDiscard();
+           }
+           closeModal();
+         },
            secondaryBtnText: t("Cancel"),
            secondaryBtnAction: closeModal,
            className: "discard-changes-modal",
@@ -2258,7 +2294,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     }
 
     // If publishing, check if there are unsaved changes
-    const hasUnsavedChanges = formChangeState.changed || workflowIsChanged || isFormSettingsChanged;
+    const hasUnsavedChanges = formChangeState.changed || workflowIsChanged || settingsChanged;
     
     // If there are unsaved changes, save first before publishing
     if (hasUnsavedChanges) {
@@ -2771,9 +2807,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                       disabled={
                         activeTab.primary === 'form' && activeTab.secondary === 'settings'
                           ? !settingsChanged
-                          : activeTab.primary === 'form'
+                          : activeTab.primary === 'form' && (activeTab.secondary === 'builder' || activeTab.secondary === null)
                           ? !formChangeState.changed
-                          : !workflowIsChanged
+                          : activeTab.primary === 'bpmn' && activeTab.secondary === 'variables'
+                          ? !hasSavedFormVariablesChanged()
+                          : activeTab.primary === 'bpmn' && activeTab.secondary !== 'variables'
+                          ? !workflowIsChanged
+                          : true
                       }
                       dataTestId="discard-button-testid"
                       ariaLabel={t("Discard Changes Button")}

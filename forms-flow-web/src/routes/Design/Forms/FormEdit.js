@@ -68,7 +68,6 @@ import _ from "lodash";
 import SettingsTab from "./SettingsTab.js";
 import FlowEdit from "./FlowEdit.js";
 import ExportModal from "../../../components/Modals/ExportModal.js";
-import NewVersionModal from "../../../components/Modals/NewVersionModal";
 import { currentFormReducer } from "../../../modules/formReducer.js";
 import { toast } from "react-toastify";
 import userRoles from "../../../constants/permissions.js";
@@ -288,7 +287,6 @@ const EditComponent = () => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const [nameError, setNameError] = useState("");
-  const [newVersionModal, setNewVersionModal] = useState(false);
   /* ------------------------------ fowvariables ------------------------------ */
   const flowRef = useRef(null);
   /* ------------------------- file import ------------------------- */
@@ -758,7 +756,6 @@ const EditComponent = () => {
   };
 
   /* ------------------------- form history variables ------------------------- */
-  const [isNewVersionLoading, setIsNewVersionLoading] = useState(false);
   const [restoreFormDataLoading, setRestoreFormDataLoading] = useState(false);
 
   const {
@@ -965,6 +962,10 @@ const handleSaveLayout = () => {
   if (isCreateRoute) {
     // For create route, use the new combined API
     saveFormWithWorkflow();
+    return;
+  }
+  if(promptNewVersion){
+    handleVersioning();
     return;
   }
   saveFormData({ showToast: false });
@@ -1977,13 +1978,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   };
 
 
-  const closeNewVersionModal = () => {
-    setNewVersionModal(false);
-  };
-
   const saveAsNewVersion = async () => {
     try {
-      setIsNewVersionLoading(true);
       const newFormData = manipulatingFormData(
         form,
         MULTITENANCY_ENABLED,
@@ -2022,8 +2018,6 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
     } finally {
-      setIsNewVersionLoading(false);
-      setNewVersionModal(false);
       setFormSubmitted(false);
     }
   };
@@ -2040,21 +2034,18 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     setShowConfirmModal(false);
   };
 
-  const handleShowVersionModal = () => {
-    setNewVersionModal(true);
-    setShowConfirmModal(false);
-  };
+
 
   const getModalContent = () => {
     switch (modalType) {
       case "save":
         return {
-          title: t("Save Your Changes"),
-          message: t("Saving as an incremental version will affect previous submissions. Saving as a new full version will not affect previous submissions."),
-          primaryBtnAction: saveFormData,
-          secondaryBtnAction: handleShowVersionModal,
-          primaryBtnText: `${t("Save as Version")} ${version.minor}`,
-          secondaryBtnText: `${t("Save as Version")} ${version.major}`,
+          title: t("Save a new version"),
+          message: t("You have made changes to a previously published form. Choose how this version should be saved to manage your submission history."),
+          primaryBtnAction: saveAsNewVersion,
+          secondaryBtnAction: saveFormData,
+          primaryBtnText: `${t("Create a new version")} (${version.major})`,
+          secondaryBtnText: `${t("Update current version")} (${version.minor})`, 
         };
       case "publish":
         return {
@@ -2901,16 +2892,6 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         onClose={handleCloseSelectedAction}
         mapperId={processListData.id}
         formTitle={form.title}
-      />
-
-      <NewVersionModal
-        show={newVersionModal}
-        newVersion={version.major}
-        title={t("Create a New Full Version")}
-        createNewVersion={saveAsNewVersion}
-        onClose={closeNewVersionModal}
-        isNewVersionLoading={isNewVersionLoading}
-        size="md"
       />
 
       {showConfirmModal && (

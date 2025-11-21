@@ -105,7 +105,7 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
       rows={rows}
       columns={columns}
       loading={loading}
-      getRowId={(row) => row.submissionId || `${row.formId}-${row.created}`}
+      getRowId={(row) => `${row.formId}-${row.created}`}
       noRowsLabel={t("No history found")}
       paginationMode="client"
       sortingMode="client"

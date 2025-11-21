@@ -103,22 +103,11 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
 
   // 🔹 Unpublish flow
   const handleUnpublish = async () => {
-    if (!selectedUnpublishRow || isUnpublishing) return;
-    setIsUnpublishing(true);
-    setUnpublishError("");
-    try {
-      await unPublish(selectedUnpublishRow.mapperId);
+    if (!selectedUnpublishRow) return;
+    await unPublish(selectedUnpublishRow.mapperId).then(() => {
       dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
-      handleCloseUnpublish();
-    } catch (error) {
-      setUnpublishError(
-        error?.response?.data?.message ||
-        error?.message ||
-        t("An error occurred while trying to unpublish this form.")
-      );
-    } finally {
-      setIsUnpublishing(false);
-    }
+    });
+    handleCloseUnpublish();
   };
 
   const handleCloseUnpublish = () => {

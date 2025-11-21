@@ -28,22 +28,6 @@ class TaskOutcomeConfigurationSchema(AuditDateTimeSchema):
     created_by = fields.Str(data_key="createdBy", dump_only=True)
 
 
-class FormDataSchema(Schema):
-    """Schema for formData section."""
-
-    class Meta:  # pylint: disable=too-few-public-methods
-        """Exclude unknown fields in the deserialized output."""
-
-        unknown = EXCLUDE
-
-    form_id = fields.String(
-        data_key="formId",
-        required=True,
-        allow_none=False,
-    )
-    data = fields.Dict(required=True, allow_none=False)
-
-
 class VariableValueSchema(Schema):
     """Schema for variable value objects."""
 
@@ -136,7 +120,6 @@ class TaskCompletionSchema(Schema):
 
         unknown = EXCLUDE
 
-    form_data = fields.Nested(FormDataSchema(), data_key="formData", required=True)
     bpmn_data = fields.Nested(BpmnDataSchema(), data_key="bpmnData", required=True)
     application_data = fields.Nested(
         ApplicationDataSchema(), data_key="applicationData", required=True

@@ -78,14 +78,6 @@ bpmn_data_model = API.model(
     },
 )
 
-form_data_model = API.model(
-    "TaskCompletionFormData",
-    {
-        "formId": fields.String(required=True, description="Form.io form ID"),
-        "data": fields.Raw(required=True, description="Form submission data"),
-    },
-)
-
 application_data_model = API.model(
     "TaskCompletionApplicationData",
     {
@@ -106,9 +98,6 @@ application_data_model = API.model(
 task_completion_request_model = API.model(
     "TaskCompletionRequest",
     {
-        "formData": fields.Nested(
-            form_data_model, required=True, description="Form.io submission info"
-        ),
         "bpmnData": fields.Nested(
             bpmn_data_model, required=True, description="Camunda completion variables"
         ),
@@ -239,14 +228,6 @@ class TaskCompletionResource(Resource):
 
         Request JSON:
             {
-                "formData": {
-                    "formId": "690b032bf089b0ad31b912a3",
-                    "data": {
-                        "businessOperatingName": "Adrienne Hinton",
-                        "applicationId": "28",
-                        "applicationStatus": "Reviewed"
-                    }
-                },
                 "bpmnData": {
                     "variables": {
                         "formUrl": {"value": "http://.../submission/690ded51944a118ff360502f"},

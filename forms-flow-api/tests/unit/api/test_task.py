@@ -136,17 +136,9 @@ class TestOutcomeResource:
 class TestTaskCompletionResource:
     """Test suite for the task completion endpoint."""
 
-    def task_completion_payload(self, application_id, form_id):
+    def task_completion_payload(self, application_id):
         """Returns a valid payload for task completion."""
         return {
-            "formData": {
-                "formId": form_id,
-                "data": {
-                    "businessOperatingName": "Adrienne Hinton",
-                    "applicationId": application_id,
-                    "applicationStatus": "Reviewed",
-                }
-            },
             "bpmnData": {
                 "variables": {
                     "formUrl": {"value": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f"},
@@ -191,7 +183,7 @@ class TestTaskCompletionResource:
             response = client.post(
                 f"tasks/{task_id}/complete",
                 headers=headers,
-                json=self.task_completion_payload(application_id=application_id, form_id=form_id)
+                json=self.task_completion_payload(application_id=application_id)
             )
 
         assert response.status_code == 200
@@ -205,14 +197,14 @@ class TestTaskCompletionResource:
             "content-type": "application/json",
         }
         task_id = "f30c90f8-be30-11f0-88b5-f2154b5a3afb"
+        # Payload missing bpmnData
         payload = {
-            "formData": {
-                "formId": "690b032bf089b0ad31b912a3",
-                "data": {
-                    "businessOperatingName": "Adrienne Hinton",
-                    "applicationId": 1,
-                    "applicationStatus": "Reviewed",
-                }
+            "applicationData": {
+                "applicationId": 1,
+                "applicationStatus": "Reviewed",
+                "formUrl": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f",
+                "submittedBy": "John Doe",
+                "privateNotes": "Test private notes"
             }
         }
         response = client.post(
@@ -233,6 +225,6 @@ class TestTaskCompletionResource:
         response = client.post(
             f"tasks/{task_id}/complete",
             headers=headers,
-            json=self.task_completion_payload(application_id=1, form_id="690b032bf089b0ad31b912a3")
+            json=self.task_completion_payload(application_id=1)
         )
         assert response.status_code == 401

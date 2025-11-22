@@ -2368,16 +2368,18 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         // Check if settings sub-tab is active
         if (activeTab.secondary === 'settings') {
           return (
-            <SettingsTab
-              handleConfirm={handleConfirmSettings}
-              isCreateRoute={isCreateRoute}
-              rolesState={rolesState}
-              formDetails={formDetails}
-              isAnonymous={isAnonymous}
-              setIsAnonymous={setIsAnonymous}
-              setFormDetails={setFormDetails}
+            <div className="custom-scroll">
+              <SettingsTab
+                handleConfirm={handleConfirmSettings}
+                isCreateRoute={isCreateRoute}
+                rolesState={rolesState}
+                formDetails={formDetails}
+                isAnonymous={isAnonymous}
+                setIsAnonymous={setIsAnonymous}
+                setFormDetails={setFormDetails}
               setRolesState={setRolesState}
             />
+            </div>
           );
         }
         // This should never be reached since we always set a default secondary tab
@@ -2523,12 +2525,14 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       }
       case 'actions':
         return (
-          <EditorActions 
-          renderUpload={renderFileUpload}
-          renderDeleteForm={renderDeleteForm}
-          mapperId={processListData.id} 
-          formTitle={form.title}
-          />
+          <div className="custom-scroll">
+            <EditorActions 
+            renderUpload={renderFileUpload}
+            renderDeleteForm={renderDeleteForm}
+            mapperId={processListData.id} 
+            formTitle={form.title}
+            />
+          </div>
         ) ;
       default:
         return null;
@@ -2614,6 +2618,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     }
     return null;
   };
+
+  // Determine if custom scroll should be applied to body section
+  // Exclude scroll from history tabs and BPMN layout/editor tab
+  const isHistoryTab = (activeTab.primary === 'form' && activeTab.secondary === 'history') ||
+                       (activeTab.primary === 'bpmn' && activeTab.secondary === 'history');
+  const isBpmnLayoutTab = activeTab.primary === 'bpmn' && activeTab.secondary === 'editor';
+  const shouldShowCustomScroll = !isHistoryTab && !isBpmnLayoutTab;
   
   return (
     <div className="form-create-edit-layout">
@@ -2809,7 +2820,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
             )}
 
             {/* Body Section - Main content */}
-            <div className="body-section formedit-layout" >
+            <div className={`body-section formedit-layout ${shouldShowCustomScroll ? 'custom-scroll' : ''}`}>
               {renderTabContent()}
             </div>
 

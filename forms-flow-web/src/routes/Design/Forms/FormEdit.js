@@ -278,6 +278,17 @@ const EditComponent = () => {
     }
     return roleName;
   };
+
+  // Helper function to extract authorization data handling both uppercase and lowercase keys
+  const getAuthorizationData = (authorization) => {
+    if (!authorization) return { designerAuth: null, formAuth: null, applicationAuth: null };
+    
+    return {
+      designerAuth: authorization.DESIGNER || authorization.designer,
+      formAuth: authorization.FORM || authorization.form,
+      applicationAuth: authorization.APPLICATION || authorization.application,
+    };
+  };
   /* ------------------ handling form layout and flow layouts ----------------- */
   const [currentLayout, setCurrentLayout] = useState(FORM_LAYOUT);
   const isFormLayout = currentLayout === FORM_LAYOUT;
@@ -336,10 +347,7 @@ const EditComponent = () => {
     }
 
     // For existing forms, use authorization data
-    // Handle both uppercase and lowercase keys from API response
-    const designerAuth = formAuthorization.DESIGNER || formAuthorization.designer;
-    const formAuth = formAuthorization.FORM || formAuthorization.form;
-    const applicationAuth = formAuthorization.APPLICATION || formAuthorization.application;
+    const { designerAuth, formAuth, applicationAuth } = getAuthorizationData(formAuthorization);
     
     return {
       DESIGN: {
@@ -423,10 +431,7 @@ const EditComponent = () => {
   // Update roles state when formAuthorization changes (for existing forms)
   useEffect(() => {
     if (!isCreateRoute && formAuthorization && Object.keys(formAuthorization).length > 0) {
-      // Handle both uppercase and lowercase keys from API response
-      const designerAuth = formAuthorization.DESIGNER || formAuthorization.designer;
-      const formAuth = formAuthorization.FORM || formAuthorization.form;
-      const applicationAuth = formAuthorization.APPLICATION || formAuthorization.application;
+      const { designerAuth, formAuth, applicationAuth } = getAuthorizationData(formAuthorization);
       
       // Only update if we have at least one valid authorization section
       // This prevents resetting rolesState when authorization data is temporarily empty

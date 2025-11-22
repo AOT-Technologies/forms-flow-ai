@@ -215,3 +215,30 @@ export const setDmnSort = (data) => (dispatch) => {
     payload: data,
     });
 };
+export const setBpmnPage = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPMN_PAGE,
+    payload: data,
+  });
+};
+
+export const setDmnPage = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DMN_PAGE,
+    payload: data,
+  });
+};
+
+export const setBpmnLimit = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.BPMN_LIMIT,
+    payload: data,
+  });
+};
+
+export const setDmnLimit = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DMN_LIMIT,
+    payload: data,
+  });
+};

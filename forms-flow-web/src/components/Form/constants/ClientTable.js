@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, batch } from "react-redux";
 import {
   setClientFormLimit,
   setClientFormListPage,
   setClientFormListSort
 } from "../../../actions/formActions";
-import { HelperServices, StyleServices } from "@formsflow/service";
+import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
 import {
   V8CustomButton,
-  RefreshIcon,
   ReusableTable
 } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
@@ -18,7 +17,13 @@ import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import { setFormSearchLoading } from "../../../actions/checkListActions";
 
 
-function ClientTable() {
+function ClientTable({
+  externalSortModel,
+  externalOnSortModelChange,
+  externalPaginationModel,
+  externalOnPaginationModelChange,
+  externalOnRefresh,
+}) {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -32,10 +37,6 @@ function ClientTable() {
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
-  const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
-
-  // Track the most recent page requested to ignore older pagination events emitted by the grid
-  const lastRequestedPageRef = React.useRef(null);
 
   const gridFieldToSortKey = {
     title: "formName",
@@ -64,33 +65,18 @@ function ClientTable() {
 
     // No sort provided – only reset if not already at default
     if (!model?.field || !model?.sort) {
-      const isAlreadyDefault =
-        (formsort?.activeKey || "formName") === "formName" &&
-        (formsort?.formName?.sortOrder || "asc") === "asc";
-      if (!isAlreadyDefault) {
-        const resetSort = Object.keys(formsort).reduce((acc, key) => {
-          acc[key] = { sortOrder: "asc" };
-          return acc;
-        }, {});
-        dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
-      }
+      const resetSort = Object.keys(formsort).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
       return;
     }
 
-    // Guard: do nothing if incoming sort equals current sort
-    const incomingField = model.field;
-    const incomingOrder = model.sort;
-    const currentActiveKey = formsort?.activeKey || "formName";
-    const currentField = sortKeyToGridField[currentActiveKey] || currentActiveKey;
-    const currentOrder = formsort?.[currentActiveKey]?.sortOrder || "asc";
-    if (incomingField === currentField && incomingOrder === currentOrder) {
-      return;
-    }
-
-    const mappedKey = gridFieldToSortKey[incomingField] || incomingField;
+    const mappedKey = gridFieldToSortKey[model.field] || model.field;
     const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
       acc[columnKey] = {
-        sortOrder: columnKey === mappedKey ? incomingOrder : "asc",
+        sortOrder: columnKey === mappedKey ? model.sort : "asc",
       };
       return acc;
     }, {});
@@ -98,28 +84,24 @@ function ClientTable() {
   };
 
   const onPaginationModelChange = ({ page, pageSize }) => {
-    if (typeof page === "number" && pageNo - 1 !== page) {
-      const requestedPage = page + 1;
-      const lastRequestedPage = lastRequestedPageRef.current;
-
-      if (lastRequestedPage && requestedPage < lastRequestedPage) {
-        return;
+    const requestedPage = typeof page === "number" ? page + 1 : pageNo;
+    const requestedLimit = typeof pageSize === "number" ? pageSize : limit;
+    // Batch multiple dispatches to keep Redux updates atomic
+    batch(() => {
+      if (requestedLimit !== limit) {
+        dispatch(setClientFormLimit(requestedLimit));
+        dispatch(setClientFormListPage(1));
+      } else {
+        dispatch(setClientFormListPage(requestedPage));
       }
-
-      lastRequestedPageRef.current = requestedPage;
-      dispatch(setClientFormListPage(requestedPage));
-      return;
-    }
-
-    const isValidPageSize = typeof pageSize === "number" && pageSize > 0;
-    if (isValidPageSize && limit !== pageSize) {
-      lastRequestedPageRef.current = 1;
-      dispatch(setClientFormLimit(pageSize));
-      dispatch(setClientFormListPage(1));
-    }
+    });
   };
 
-    const handleRefresh = () => {
+  const handleRefresh = () => {
+    if (externalOnRefresh) {
+      externalOnRefresh();
+      return;
+    }
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({
       pageNo,
@@ -188,8 +170,7 @@ function ClientTable() {
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={handleRefresh}
         />
       ),
@@ -214,14 +195,20 @@ function ClientTable() {
     }));
   }, [formData]);
 
-  const paginationModel = React.useMemo(
+  const internalPaginationModel = React.useMemo(
     () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
+  const paginationModel = externalPaginationModel || internalPaginationModel;
 
   const activeKey = formsort?.activeKey || "formName";
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = formsort?.[activeKey]?.sortOrder || "asc";
+  const internalSortModel = React.useMemo(
+    () => [{ field: activeField, sort: activeOrder }],
+    [activeField, activeOrder]
+  );
+  const sortModel = externalSortModel || internalSortModel;
 
   return (
     <>
@@ -230,12 +217,13 @@ function ClientTable() {
         rows={rows}
         rowCount={totalForms}
         loading={searchFormLoading}
-        sortModel={[{ field: activeField, sort: activeOrder }]}
-        onSortModelChange={handleSortChange}
+        sortModel={sortModel}
+        onSortModelChange={externalOnSortModelChange || handleSortChange}
         paginationModel={paginationModel}
-        onPaginationModelChange={onPaginationModelChange}
+        onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
         getRowId={(row) => row.id}
         noRowsLabel={t("No Forms have been found.")}
+        autoHeight={true}
       />
       {showSubmissions && <SubmissionDrafts />}
     </>

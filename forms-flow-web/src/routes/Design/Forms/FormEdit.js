@@ -795,7 +795,9 @@ const EditComponent = () => {
   );
   const [version, setVersion] = useState({ major: 1, minor: 0 });
   const [isPublished, setIsPublished] = useState(
-    processListData?.status == "active"
+    // For create routes, always start as unpublished
+    // For edit routes, check processListData status
+    isCreateRoute ? false : (processListData?.status == "active")
   );
   const  publishText = isPublished ? "Unpublish" : "Publish";
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -1238,11 +1240,21 @@ const handleSaveFromBlocker = async () => {
 
   useEffect(() => {
     // On create route, require form title to be updated (not empty and not the default "Untitled Form")
+    // AND at least one change must be made (settings, workflow, form, or variables)
     if (isCreateRoute) {
       const trimmedTitle = formDetails?.title?.trim();
       const defaultTitle = t("Untitled Form");
       const isTitleMissing = !trimmedTitle || trimmedTitle === defaultTitle;
-      setSaveDisabled(isTitleMissing);
+      
+      // Check if any changes have been made
+      const hasVariablesChanged = hasSavedFormVariablesChanged();
+      const hasAnyChanges = isFormSettingsChanged ||
+        settingsChanged ||
+        workflowIsChanged ||
+        formChangeState?.changed ||
+        hasVariablesChanged;
+      // Disable save if title is missing OR no changes have been made
+      setSaveDisabled(isTitleMissing || !hasAnyChanges);
       return;
     }
     // On edit route, use existing logic - also check for savedFormVariables changes
@@ -1264,6 +1276,7 @@ const handleSaveFromBlocker = async () => {
     formDetails?.title,
     t,
     hasSavedFormVariablesChanged,
+    savedFormVariables,
   ]);
 
   // saving the form variables to the state
@@ -1727,17 +1740,21 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   const discardSettingsChanges = () => {
     // Reset formDetails to initial state
     if (initialFormDetails) {
-      setFormDetails(_cloneDeep(initialFormDetails));
+      const resetFormDetails = _cloneDeep(initialFormDetails);
+      setFormDetails(resetFormDetails);
+      // Also reset the ref so isFormSettingsChanged useEffect detects no change
+      prevFormDetailsRef.current = resetFormDetails;
     }
     // Reset rolesState to initial state
     if (initialRolesState) {
       setRolesState(_cloneDeep(initialRolesState));
     }
     // Reset anonymous state to initial value
-    if (!initialIsAnonymous) {
+    if (initialIsAnonymous !== null) {
       setIsAnonymous(initialIsAnonymous);
     }
     setSettingsChanged(false);
+    setIsFormSettingsChanged(false);
     setShowConfirmModal(false);
   };
 
@@ -1755,6 +1772,14 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       setWorkflowIsChanged(false);
       
     }
+  };
+
+  const discardVariablesChanges = () => {
+    // Reset savedFormVariables to initial state
+    if (initialSavedFormVariablesRef.current) {
+      setSavedFormVariables(structuredClone(initialSavedFormVariablesRef.current));
+    }
+    setShowConfirmModal(false);
   };
 
 
@@ -1821,7 +1846,9 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   const formChange = (newForm) => {
     // Always capture form changes for now to fix the save button issue
     // TODO: Re-implement proper initialization logic later
-    captureFormChanges();
+    if (formBuilderInitializedRef.current) {
+      captureFormChanges();
+    }
     dispatchFormAction({ type: "formChange", value: newForm });
   };
 
@@ -2119,10 +2146,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
              primaryBtnText: t("Discard Changes"),
              primaryBtnAction : () => {
              // Only discard changes from the currently active tab
+             const hasVariablesChanged = hasSavedFormVariablesChanged();
              if (activeTab.primary === 'form' && activeTab.secondary === 'settings' && settingsChanged) {
                discardSettingsChanges();
              } else if (activeTab.primary === 'form' && formChangeState.changed) {
                discardChanges();
+             } else if (activeTab.primary === 'bpmn' && activeTab.secondary === 'variables' && hasVariablesChanged) {
+               discardVariablesChanges();
              } else if (activeTab.primary === 'bpmn' && workflowIsChanged) {
                // Handle workflow discard similar to FlowEdit.js
                handleWorkflowDiscard();
@@ -2671,6 +2701,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   const shouldShowCustomScroll = !isHistoryTab && !isBpmnLayoutTab;
   
 
+  
+
   return (
     <div className="form-create-edit-layout">
       <NavigateBlocker
@@ -2829,6 +2861,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                           ? !settingsChanged
                           : activeTab.primary === 'form'
                           ? !formChangeState.changed
+                          : activeTab.primary === 'bpmn' && activeTab.secondary === 'variables'
+                          ? !hasSavedFormVariablesChanged()
                           : !workflowIsChanged
                       }
                       dataTestId="discard-button-testid"

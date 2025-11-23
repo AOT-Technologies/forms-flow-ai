@@ -278,6 +278,17 @@ const EditComponent = () => {
     }
     return roleName;
   };
+
+  // Helper function to extract authorization data handling both uppercase and lowercase keys
+  const getAuthorizationData = (authorization) => {
+    if (!authorization) return { designerAuth: null, formAuth: null, applicationAuth: null };
+    
+    return {
+      designerAuth: authorization.DESIGNER || authorization.designer,
+      formAuth: authorization.FORM || authorization.form,
+      applicationAuth: authorization.APPLICATION || authorization.application,
+    };
+  };
   /* ------------------ handling form layout and flow layouts ----------------- */
   const [currentLayout, setCurrentLayout] = useState(FORM_LAYOUT);
   const isFormLayout = currentLayout === FORM_LAYOUT;
@@ -307,6 +318,7 @@ const EditComponent = () => {
   const formBuilderInitializedRef = useRef(false);
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
+  const [isSavingNewVersion, setIsSavingNewVersion] = useState(false); // Loader state for saving new version
   const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false); // Flag to prevent blocker during save navigation
   const isNavigatingAfterSaveRef = useRef(false); 
   const setSelectedOption = (option, roles = []) =>
@@ -335,29 +347,31 @@ const EditComponent = () => {
     }
 
     // For existing forms, use authorization data
+    const { designerAuth, formAuth, applicationAuth } = getAuthorizationData(formAuthorization);
+    
     return {
       DESIGN: {
         selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          designerAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
           multiSelectOptionKey
         ),
-        selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
+        selectedOption: setSelectedOption("onlyYou", designerAuth?.roles),
       },
       FORM: {
         roleInput: "",
         selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          formAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
           multiSelectOptionKey
         ),
-        selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
+        selectedOption: setSelectedOption("registeredUsers", formAuth?.roles),
       },
       APPLICATION: {
         roleInput: "",
         selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          applicationAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
           multiSelectOptionKey
         ),
-        selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
+        selectedOption: setSelectedOption("submitter", applicationAuth?.roles),
         /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
          we assume that the submitter is true. */
       }
@@ -416,37 +430,43 @@ const EditComponent = () => {
 
   // Update roles state when formAuthorization changes (for existing forms)
   useEffect(() => {
-    if (!isCreateRoute && formAuthorization) {
-      const newRolesState = {
-        DESIGN: {
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
-        },
-        FORM: {
-          roleInput: "",
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
-        },
-        APPLICATION: {
-          roleInput: "",
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
-        }
-      };
-      setRolesState(newRolesState);
+    if (!isCreateRoute && formAuthorization && Object.keys(formAuthorization).length > 0) {
+      const { designerAuth, formAuth, applicationAuth } = getAuthorizationData(formAuthorization);
       
-      // Update initial state if it's already set (happens after save when data is refreshed)
-      if (initialRolesState) {
-        setInitialRolesState(_cloneDeep(newRolesState));
+      // Only update if we have at least one valid authorization section
+      // This prevents resetting rolesState when authorization data is temporarily empty
+      if (designerAuth || formAuth || applicationAuth) {
+        const newRolesState = {
+          DESIGN: {
+            selectedRoles: convertSelectedValueToMultiSelectOption(
+              designerAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+              multiSelectOptionKey
+            ),
+            selectedOption: setSelectedOption("onlyYou", designerAuth?.roles),
+          },
+          FORM: {
+            roleInput: "",
+            selectedRoles: convertSelectedValueToMultiSelectOption(
+              formAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+              multiSelectOptionKey
+            ),
+            selectedOption: setSelectedOption("registeredUsers", formAuth?.roles),
+          },
+          APPLICATION: {
+            roleInput: "",
+            selectedRoles: convertSelectedValueToMultiSelectOption(
+              applicationAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+              multiSelectOptionKey
+            ),
+            selectedOption: setSelectedOption("submitter", applicationAuth?.roles),
+          }
+        };
+        setRolesState(newRolesState);
+        
+        // Update initial state if it's already set (happens after save when data is refreshed)
+        if (initialRolesState) {
+          setInitialRolesState(_cloneDeep(newRolesState));
+        }
       }
     }
   }, [formAuthorization, isCreateRoute]);
@@ -1229,6 +1249,7 @@ const handleSaveFromBlocker = async () => {
     const hasVariablesChanged = hasSavedFormVariablesChanged();
     const shouldDisable = !(
       isFormSettingsChanged ||
+      settingsChanged ||
       workflowIsChanged ||
       formChangeState?.changed ||
       hasVariablesChanged
@@ -1236,6 +1257,7 @@ const handleSaveFromBlocker = async () => {
     setSaveDisabled(shouldDisable);
   }, [
     isFormSettingsChanged,
+    settingsChanged,
     workflowIsChanged,
     formChangeState.changed,
     isCreateRoute,
@@ -1980,6 +2002,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
 
   const saveAsNewVersion = async () => {
     try {
+      setIsSavingNewVersion(true);
       const newFormData = manipulatingFormData(
         form,
         MULTITENANCY_ENABLED,
@@ -2012,12 +2035,29 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       const res = await formCreate(newFormData);
       const response = res.data;
       dispatch(setFormSuccessData("form", response));
-      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
+      
+      // Reset all change states to prevent NavigateBlocker from blocking navigation
+      setFormChangeState({ initial: false, changed: false });
+      setWorkflowIsChanged(false);
+      setSettingsChanged(false);
+      setIsFormSettingsChanged(false);
+      // Update initial savedFormVariables reference after successful save
+      initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
+      
+      // Set navigation flags to prevent NavigateBlocker from blocking
+      isNavigatingAfterSaveRef.current = true;
+      setIsNavigatingAfterSave(true);
+      
       setPromptNewVersion(false);
+      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
+      // Reset navigation flags if save fails
+      isNavigatingAfterSaveRef.current = false;
+      setIsNavigatingAfterSave(false);
     } finally {
+      setIsSavingNewVersion(false);
       setFormSubmitted(false);
     }
   };
@@ -2046,6 +2086,10 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           secondaryBtnAction: saveFormData,
           primaryBtnText: `${t("Create a new version")} (${version.major})`,
           secondaryBtnText: `${t("Update current version")} (${version.minor})`, 
+          buttonLoading : isSavingNewVersion,
+          secondaryBtnLoading : formSubmitted, 
+          primaryBtnDisable: formSubmitted,
+          secondaryBtnDisable: isSavingNewVersion,
         };
       case "publish":
         return {
@@ -2626,6 +2670,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   const isBpmnLayoutTab = activeTab.primary === 'bpmn' && activeTab.secondary === 'editor';
   const shouldShowCustomScroll = !isHistoryTab && !isBpmnLayoutTab;
   
+
   return (
     <div className="form-create-edit-layout">
       <NavigateBlocker
@@ -2917,6 +2962,10 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           primaryBtnText={modalContent.primaryBtnText}
           secondaryBtnText={modalContent.secondaryBtnText}
           type="danger"
+          buttonLoading={modalContent.buttonLoading}
+          secondaryBtnLoading={modalContent.secondaryBtnLoading}
+          primaryBtnDisable={modalContent.primaryBtnDisable}
+          secondaryBtnDisable={modalContent.secondaryBtnDisable}
         />
       )}
 

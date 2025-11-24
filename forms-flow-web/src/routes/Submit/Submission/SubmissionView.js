@@ -8,7 +8,6 @@ import {
   V8CustomButton,
   BreadCrumbs,
   BreadcrumbVariant,
-  RefreshIcon,
   ReusableTable,
   Alert,
   AlertVariant,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,7 +9,11 @@ import {
   BreadCrumbs,
   BreadcrumbVariant,
   RefreshIcon,
-  ReusableTable
+  ReusableTable,
+  Alert,
+  AlertVariant,
+  CustomProgressBar,
+  useProgressBar,
 } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
@@ -43,8 +47,8 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
 
   const columns = [
     {
-      field: "Completed",
-      headerName: t("Completed"),
+      field: "submittedBy",
+      headerName: t("Submitted by"),
       flex: 1.5,
       sortable: false,
       renderCell: (params) => (
@@ -165,6 +169,26 @@ const ViewApplication = React.memo(() => {
       []
     )
   );
+  const [showExportAlert, setShowExportAlert] = useState(false);
+
+  const { progress: publishProgress, start, complete, reset } = useProgressBar({
+    increment: 10,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+  });
+
+  // Callbacks for DownloadPDFButton - must be before early returns
+  const handlePreDownload = useCallback(() => {
+    setShowExportAlert(true);
+    reset();
+    start();
+  }, [reset, start]);
+
+  const handlePostDownload = useCallback(() => {
+    complete();
+    setShowExportAlert(false);
+  }, [complete]);
 
   const handleHistoryRefresh = () => {
     dispatch(setUpdateHistoryLoader(true));
@@ -211,25 +235,25 @@ const ViewApplication = React.memo(() => {
     }
   }, [applicationId, isHistoryListLoading, dispatch]);
 
-    useEffect(async() => {
+  useEffect(() => {
     const processKey = applicationDetail?.processKey;
     const processInstanceId = applicationDetail?.processInstanceId;
-    if ( processKey && processInstanceId && analyze_process_view) {
-      try{
-        setIsDiagramLoading(true);
-        dispatch(getProcessActivities(processInstanceId));
-        const res = await getProcessDetails({processKey,tenant_key: tenantKey});
-        setDiagramXML(res?.data?.processData || "");
-       
+    if (processKey && processInstanceId && analyze_process_view) {
+      const fetchProcessDetails = async () => {
+        try {
+          setIsDiagramLoading(true);
+          dispatch(getProcessActivities(processInstanceId));
+          const res = await getProcessDetails({ processKey, tenant_key: tenantKey });
+          setDiagramXML(res?.data?.processData || "");
+        } catch (error) {
+          console.error("Error fetching process details:", error);
+        } finally {
+          setIsDiagramLoading(false);
         }
-      catch (error) {
-        console.error("Error fetching process details:", error);
-      }finally{
-         setIsDiagramLoading(false);
-      }
-      
+      };
+      fetchProcessDetails();
     }
-  }, [applicationDetail, tenantKey, analyze_process_view]);
+  }, [applicationDetail, tenantKey, analyze_process_view, dispatch]);
   if (isApplicationDetailLoading) {
     return <Loading />;
   }
@@ -268,10 +292,18 @@ const ViewApplication = React.memo(() => {
       handleBack();
     }
   };
-
+  
   return (
     <div>
       {/* Header Section */}
+      <div className="toast-section">
+          <Alert
+            message="Exporting PDF"
+            variant={AlertVariant.DEFAULT}
+            isShowing={showExportAlert}
+            rightContent={<CustomProgressBar progress={publishProgress} color="default"/>}
+          />
+        </div>
 
          <div className="header-section-1">
             <div className="section-seperation-left d-block">
@@ -309,6 +341,8 @@ const ViewApplication = React.memo(() => {
               form_id={form._id}
               submission_id={submission._id}
               title={form.title}
+              onPreDownload={handlePreDownload}
+              onPostDownload={handlePostDownload}
             />
           )}
         </div>

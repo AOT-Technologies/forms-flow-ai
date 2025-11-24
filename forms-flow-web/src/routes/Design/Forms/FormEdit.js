@@ -1547,25 +1547,29 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   }
   };
 
-  const fetchFormHistory = (parentFormId, page, limit) => {
+  const fetchFormHistory = (parentFormId) => {
     setFormHistoryLoading(true);
-    parentFormId = parentFormId && typeof parentFormId === 'string' ? parentFormId : processListData?.parentFormId;
-    page = page ? page : paginationModel.page + 1;
-    limit = limit ? limit : paginationModel.pageSize;
-    getFormHistory(parentFormId,page, limit)
+    const resolvedParentId =
+      parentFormId && typeof parentFormId === "string"
+        ? parentFormId
+        : processListData?.parentFormId;
+
+    getFormHistory(resolvedParentId)
       .then((res) => {
         dispatch(setFormHistories(res.data));
-        setFormHistoryLoading(false);
       })
       .catch(() => {
         setFormHistories([]);
+      })
+      .finally(() => {
+        setFormHistoryLoading(false);
       });
   };
 
   const handleFormHistory = () => {
     dispatch(setFormHistories({ formHistory: [], totalCount: 0 }));
     if (processListData?.parentFormId) {
-      fetchFormHistory(processListData?.parentFormId, 1, paginationModel.pageSize);
+      fetchFormHistory(processListData?.parentFormId);
     }
   };
 
@@ -2256,11 +2260,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     setPaginationModel(newPaginationModel);
     if (activeTab.primary === 'form' && activeTab.secondary === 'history') {
       if (processListData?.parentFormId) {
-          fetchFormHistory(
-            processListData.parentFormId,
-            newPaginationModel.page + 1,
-            newPaginationModel.pageSize
-          );
+        fetchFormHistory(processListData.parentFormId);
         }
     }
     if ((activeTab.primary === 'flow' || activeTab.primary === 'bpmn') && activeTab.secondary === 'history') {

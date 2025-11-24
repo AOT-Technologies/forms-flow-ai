@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, batch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { push } from "connected-react-router";
 import { setBPMFormLimit, setBPMFormListPage, setBpmFormSort, setFormDeleteStatus } from "../../../actions/formActions";
@@ -7,9 +7,9 @@ import { resetFormProcessData, unPublishForm, getApplicationCount, getProcessDet
 import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
-import { HelperServices, StyleServices } from "@formsflow/service";
+import { HelperServices } from "@formsflow/service";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
-import { V8CustomButton, RefreshIcon, V8CustomDropdownButton, PromptModal, ReusableTable } from "@formsflow/components";
+import { V8CustomButton, V8CustomDropdownButton, PromptModal, ReusableTable } from "@formsflow/components";
 import { deleteForm } from "@aot-technologies/formio-react";
 import { formCreate, unPublish } from "../../../apiManager/services/FormServices";
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
@@ -17,7 +17,15 @@ import _cloneDeep from "lodash/cloneDeep";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 
-function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
+function FormTable({
+  isDuplicating,
+  setIsDuplicating,
+  setDuplicateProgress,
+  externalSortModel,
+  externalOnSortModelChange,
+  externalPaginationModel,
+  externalOnPaginationModelChange,
+}) {
   const dispatch = useDispatch();
   const tenantKey = useSelector(state => state.tenants?.tenantId);
   const bpmForms = useSelector(state => state.bpmForms);
@@ -38,13 +46,14 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
   const { createDesigns, viewDesigns } = userRoles();
   const { t } = useTranslation();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const iconColor = StyleServices.getCSSVariable('--ff-gray-medium-dark');
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [deleteMessage, setDeleteMessage] = React.useState({"title": "", "message": ""});
   const [disableDelete, setDisableDelete] = React.useState(false);
   const [isAppCountLoading, setIsAppCountLoading] = React.useState(false);
+  const [showUnpublishModal, setShowUnpublishModal] = React.useState(false);
+  const [selectedUnpublishRow, setSelectedUnpublishRow] = React.useState(null);
 
   // Mapping between DataGrid field names and reducer sort keys
   const gridFieldToSortKey = {
@@ -97,6 +106,20 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
   const handleCloseDelete = () => {
     setShowDeleteModal(false);
     setSelectedRow(null);
+  };
+
+  // 🔹 Unpublish flow
+  const handleUnpublish = async () => {
+    if (!selectedUnpublishRow) return;
+    await unPublish(selectedUnpublishRow.mapperId).then(() => {
+      dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
+    });
+    handleCloseUnpublish();
+  };
+
+  const handleCloseUnpublish = () => {
+    setShowUnpublishModal(false);
+    setSelectedUnpublishRow(null);
   };
 
   // 🔹 Duplicate flow
@@ -273,8 +296,7 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
         <V8CustomButton
           // label="new button"
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={handleRefresh}
         />
       ),
@@ -289,11 +311,10 @@ function FormTable({ isDuplicating, setIsDuplicating, setDuplicateProgress }) {
           },
           {
             label: params.row.status === "active" ? t("Unpublish") : t("Delete"),
-            onClick: async () => {
+            onClick: () => {
               if (params.row.status === "active") {
-                await unPublish(params.row.mapperId).then(() => {
-                  dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
-                });
+                setSelectedUnpublishRow(params.row);
+                setShowUnpublishModal(true);
               } else {
                 deleteAction(params.row);
               }
@@ -332,8 +353,8 @@ const handlePageChange = (page) => {
         acc[key] = { sortOrder: "asc" };
         return acc;
       }, {});
+      // Only reset sort; do not force page = 1 here to avoid page flip duplicates
       dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
-        dispatch(setBPMFormListPage(1));
         return;
     }
 
@@ -360,14 +381,20 @@ const handlePageChange = (page) => {
 
 
   const handleLimitChange = (limitVal) => {
+    // Batch dispatches to keep updates atomic
+    batch(() => {
     dispatch(setBPMFormLimit(limitVal));
     dispatch(setBPMFormListPage(1));
+    });
   };
 
   // DataGrid's onPaginationModelChange - handles both page and pageSize changes
   const onPaginationModelChange = ({ page, pageSize }) => {
-    if (limit !== pageSize) handleLimitChange(pageSize);
-    else if ((pageNo - 1) !== page) handlePageChange(page + 1);
+    if (limit !== pageSize) {
+      handleLimitChange(pageSize);
+    } else {
+      handlePageChange(page + 1);
+    }
   };
 
   const rows = React.useMemo(() => {
@@ -377,24 +404,25 @@ const handlePageChange = (page) => {
     })).filter(r => r.id);
   }, [formData]);
 
-  const paginationModel = React.useMemo(
+  const internalPaginationModel = React.useMemo(
     () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
+  const paginationModel = externalPaginationModel || internalPaginationModel;
 
   return (
    <>
     <ReusableTable
-
       columns={columns}
       rows={rows}
       rowCount={totalForms}
       loading={searchFormLoading || isApplicationCountLoading}
-      sortModel={[{ field: activeField, sort: activeOrder }]}
-      onSortModelChange={handleSortChange}
+      sortModel={externalSortModel || [{ field: activeField, sort: activeOrder }]}
+      onSortModelChange={externalOnSortModelChange || handleSortChange}
       paginationModel={paginationModel}
-      onPaginationModelChange={onPaginationModelChange}
+      onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
       getRowId={(row) => row.id}
+      autoHeight={true}
     />
     <PromptModal
         show={showDeleteModal}
@@ -407,6 +435,21 @@ const handlePageChange = (page) => {
         primaryBtnDisable={disableDelete}
         secondaryBtnText={t("Cancel")}
         secondaryBtnAction={handleCloseDelete}
+     />
+    <PromptModal
+        show={showUnpublishModal}
+        onClose={handleCloseUnpublish}
+        title={selectedUnpublishRow ? t(`Unpublish ${selectedUnpublishRow.title}?`) : t("Unpublish Form?")}
+        message={t(
+          `This form will be unpublished, making it no longer available to form submitters.
+All existing submissions and related tasks will remain intact. 
+You can republish it later if needed. This action does not delete the form or its data.`
+        )}
+        type="danger"
+        primaryBtnText={t("Unpublish Form")}
+        primaryBtnAction={handleUnpublish}
+        secondaryBtnText={t("Cancel")}
+        secondaryBtnAction={handleCloseUnpublish}
      />
     </>
   );

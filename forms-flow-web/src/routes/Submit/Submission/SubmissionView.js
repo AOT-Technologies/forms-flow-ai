@@ -40,12 +40,12 @@ import {
   getProcessDetails,
 } from "../../../apiManager/services/processServices";
 import { navigateToSubmitFormsListing, navigateToFormEntries } from "../../../helper/routerHelper";
-import { HelperServices, StyleServices } from "@formsflow/service";
+import { HelperServices } from "@formsflow/service";
 
-const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
+const HistoryDataGrid = React.memo(({ historyData, onRefresh, loading }) => {
   const { t } = useTranslation();
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       field: "submittedBy",
       headerName: t("Submitted by"),
@@ -90,40 +90,32 @@ const HistoryDataGrid = ({ historyData, onRefresh, iconColor, loading }) => {
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={onRefresh}
           />
         )
     },
-  ];
+  ], [t, onRefresh]);
 
   const rows = Array.isArray(historyData) ? historyData : [];
-  const [historyPaginationModel, setHistoryPaginationModel] = useState({
-    page: 0,
-    pageSize: 10,
-  });
 
   return (
     <ReusableTable
       rows={rows}
       columns={columns}
       loading={loading}
-      getRowId={(row) => row.submissionId || `${row.formId}-${row.created}`}
+      getRowId={(row) => `${row.formId}-${row.created}`}
       noRowsLabel={t("No history found")}
       paginationMode="client"
       sortingMode="client"
-      pageSizeOptions={[5, 10, 25, 50]}
-      paginationModel={historyPaginationModel}
-      onPaginationModelChange={setHistoryPaginationModel}
+      hideFooter
     />
   );
-};
+});
 
 HistoryDataGrid.propTypes = {
   historyData: PropTypes.array,
   onRefresh: PropTypes.func,
-  iconColor: PropTypes.string,
   loading: PropTypes.bool,
 };
 
@@ -155,7 +147,6 @@ const ViewApplication = React.memo(() => {
   const parentFormId = useSelector(
       (state) => state.form.form?.parentFormId
   );
-  const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [showHistoryModal, setShowHistoryModal] = useState(false);
@@ -190,10 +181,10 @@ const ViewApplication = React.memo(() => {
     setShowExportAlert(false);
   }, [complete]);
 
-  const handleHistoryRefresh = () => {
+  const handleHistoryRefresh = useCallback(() => {
     dispatch(setUpdateHistoryLoader(true));
     dispatch(fetchApplicationAuditHistoryList(applicationId));
-  };
+  }, [dispatch, applicationId]);
 
   useEffect(() => {
     dispatch(setUpdateHistoryLoader(true));
@@ -353,7 +344,6 @@ const ViewApplication = React.memo(() => {
           <HistoryDataGrid
             historyData={appHistory}
             onRefresh={handleHistoryRefresh}
-            iconColor={iconColor}
             loading={isHistoryListLoading}
           />
         ) : (

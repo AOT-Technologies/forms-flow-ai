@@ -278,6 +278,17 @@ const EditComponent = () => {
     }
     return roleName;
   };
+
+  // Helper function to extract authorization data handling both uppercase and lowercase keys
+  const getAuthorizationData = (authorization) => {
+    if (!authorization) return { designerAuth: null, formAuth: null, applicationAuth: null };
+    
+    return {
+      designerAuth: authorization.DESIGNER || authorization.designer,
+      formAuth: authorization.FORM || authorization.form,
+      applicationAuth: authorization.APPLICATION || authorization.application,
+    };
+  };
   /* ------------------ handling form layout and flow layouts ----------------- */
   const [currentLayout, setCurrentLayout] = useState(FORM_LAYOUT);
   const isFormLayout = currentLayout === FORM_LAYOUT;
@@ -307,6 +318,7 @@ const EditComponent = () => {
   const formBuilderInitializedRef = useRef(false);
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
+  const [isSavingNewVersion, setIsSavingNewVersion] = useState(false); // Loader state for saving new version
   const [isNavigatingAfterSave, setIsNavigatingAfterSave] = useState(false); // Flag to prevent blocker during save navigation
   const isNavigatingAfterSaveRef = useRef(false); 
   const setSelectedOption = (option, roles = []) =>
@@ -335,29 +347,31 @@ const EditComponent = () => {
     }
 
     // For existing forms, use authorization data
+    const { designerAuth, formAuth, applicationAuth } = getAuthorizationData(formAuthorization);
+    
     return {
       DESIGN: {
         selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          designerAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
           multiSelectOptionKey
         ),
-        selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
+        selectedOption: setSelectedOption("onlyYou", designerAuth?.roles),
       },
       FORM: {
         roleInput: "",
         selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          formAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
           multiSelectOptionKey
         ),
-        selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
+        selectedOption: setSelectedOption("registeredUsers", formAuth?.roles),
       },
       APPLICATION: {
         roleInput: "",
         selectedRoles: convertSelectedValueToMultiSelectOption(
-          formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+          applicationAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
           multiSelectOptionKey
         ),
-        selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
+        selectedOption: setSelectedOption("submitter", applicationAuth?.roles),
         /* The 'submitter' key is stored in 'resourceDetails'. If the roles array is not empty
          we assume that the submitter is true. */
       }
@@ -416,37 +430,43 @@ const EditComponent = () => {
 
   // Update roles state when formAuthorization changes (for existing forms)
   useEffect(() => {
-    if (!isCreateRoute && formAuthorization) {
-      const newRolesState = {
-        DESIGN: {
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.DESIGNER?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("onlyYou", formAuthorization.DESIGNER?.roles),
-        },
-        FORM: {
-          roleInput: "",
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.FORM?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("registeredUsers", formAuthorization.FORM?.roles),
-        },
-        APPLICATION: {
-          roleInput: "",
-          selectedRoles: convertSelectedValueToMultiSelectOption(
-            formAuthorization.APPLICATION?.roles?.map(role => convertRoleToDisplayName(role)) || [],
-            multiSelectOptionKey
-          ),
-          selectedOption: setSelectedOption("submitter", formAuthorization.APPLICATION?.roles),
-        }
-      };
-      setRolesState(newRolesState);
+    if (!isCreateRoute && formAuthorization && Object.keys(formAuthorization).length > 0) {
+      const { designerAuth, formAuth, applicationAuth } = getAuthorizationData(formAuthorization);
       
-      // Update initial state if it's already set (happens after save when data is refreshed)
-      if (initialRolesState) {
-        setInitialRolesState(_cloneDeep(newRolesState));
+      // Only update if we have at least one valid authorization section
+      // This prevents resetting rolesState when authorization data is temporarily empty
+      if (designerAuth || formAuth || applicationAuth) {
+        const newRolesState = {
+          DESIGN: {
+            selectedRoles: convertSelectedValueToMultiSelectOption(
+              designerAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+              multiSelectOptionKey
+            ),
+            selectedOption: setSelectedOption("onlyYou", designerAuth?.roles),
+          },
+          FORM: {
+            roleInput: "",
+            selectedRoles: convertSelectedValueToMultiSelectOption(
+              formAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+              multiSelectOptionKey
+            ),
+            selectedOption: setSelectedOption("registeredUsers", formAuth?.roles),
+          },
+          APPLICATION: {
+            roleInput: "",
+            selectedRoles: convertSelectedValueToMultiSelectOption(
+              applicationAuth?.roles?.map(role => convertRoleToDisplayName(role)) || [],
+              multiSelectOptionKey
+            ),
+            selectedOption: setSelectedOption("submitter", applicationAuth?.roles),
+          }
+        };
+        setRolesState(newRolesState);
+        
+        // Update initial state if it's already set (happens after save when data is refreshed)
+        if (initialRolesState) {
+          setInitialRolesState(_cloneDeep(newRolesState));
+        }
       }
     }
   }, [formAuthorization, isCreateRoute]);
@@ -775,7 +795,9 @@ const EditComponent = () => {
   );
   const [version, setVersion] = useState({ major: 1, minor: 0 });
   const [isPublished, setIsPublished] = useState(
-    processListData?.status == "active"
+    // For create routes, always start as unpublished
+    // For edit routes, check processListData status
+    isCreateRoute ? false : (processListData?.status == "active")
   );
   const  publishText = isPublished ? "Unpublish" : "Publish";
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -1218,17 +1240,28 @@ const handleSaveFromBlocker = async () => {
 
   useEffect(() => {
     // On create route, require form title to be updated (not empty and not the default "Untitled Form")
+    // AND at least one change must be made (settings, workflow, form, or variables)
     if (isCreateRoute) {
       const trimmedTitle = formDetails?.title?.trim();
       const defaultTitle = t("Untitled Form");
       const isTitleMissing = !trimmedTitle || trimmedTitle === defaultTitle;
-      setSaveDisabled(isTitleMissing);
+      
+      // Check if any changes have been made
+      const hasVariablesChanged = hasSavedFormVariablesChanged();
+      const hasAnyChanges = isFormSettingsChanged ||
+        settingsChanged ||
+        workflowIsChanged ||
+        formChangeState?.changed ||
+        hasVariablesChanged;
+      // Disable save if title is missing OR no changes have been made
+      setSaveDisabled(isTitleMissing || !hasAnyChanges);
       return;
     }
     // On edit route, use existing logic - also check for savedFormVariables changes
     const hasVariablesChanged = hasSavedFormVariablesChanged();
     const shouldDisable = !(
       isFormSettingsChanged ||
+      settingsChanged ||
       workflowIsChanged ||
       formChangeState?.changed ||
       hasVariablesChanged
@@ -1236,12 +1269,14 @@ const handleSaveFromBlocker = async () => {
     setSaveDisabled(shouldDisable);
   }, [
     isFormSettingsChanged,
+    settingsChanged,
     workflowIsChanged,
     formChangeState.changed,
     isCreateRoute,
     formDetails?.title,
     t,
     hasSavedFormVariablesChanged,
+    savedFormVariables,
   ]);
 
   // saving the form variables to the state
@@ -1705,17 +1740,21 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   const discardSettingsChanges = () => {
     // Reset formDetails to initial state
     if (initialFormDetails) {
-      setFormDetails(_cloneDeep(initialFormDetails));
+      const resetFormDetails = _cloneDeep(initialFormDetails);
+      setFormDetails(resetFormDetails);
+      // Also reset the ref so isFormSettingsChanged useEffect detects no change
+      prevFormDetailsRef.current = resetFormDetails;
     }
     // Reset rolesState to initial state
     if (initialRolesState) {
       setRolesState(_cloneDeep(initialRolesState));
     }
     // Reset anonymous state to initial value
-    if (!initialIsAnonymous) {
+    if (initialIsAnonymous !== null) {
       setIsAnonymous(initialIsAnonymous);
     }
     setSettingsChanged(false);
+    setIsFormSettingsChanged(false);
     setShowConfirmModal(false);
   };
 
@@ -1733,6 +1772,14 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       setWorkflowIsChanged(false);
       
     }
+  };
+
+  const discardVariablesChanges = () => {
+    // Reset savedFormVariables to initial state
+    if (initialSavedFormVariablesRef.current) {
+      setSavedFormVariables(structuredClone(initialSavedFormVariablesRef.current));
+    }
+    setShowConfirmModal(false);
   };
 
 
@@ -1799,7 +1846,9 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   const formChange = (newForm) => {
     // Always capture form changes for now to fix the save button issue
     // TODO: Re-implement proper initialization logic later
-    captureFormChanges();
+    if (formBuilderInitializedRef.current) {
+      captureFormChanges();
+    }
     dispatchFormAction({ type: "formChange", value: newForm });
   };
 
@@ -1980,6 +2029,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
 
   const saveAsNewVersion = async () => {
     try {
+      setIsSavingNewVersion(true);
       const newFormData = manipulatingFormData(
         form,
         MULTITENANCY_ENABLED,
@@ -2012,12 +2062,29 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       const res = await formCreate(newFormData);
       const response = res.data;
       dispatch(setFormSuccessData("form", response));
-      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
+      
+      // Reset all change states to prevent NavigateBlocker from blocking navigation
+      setFormChangeState({ initial: false, changed: false });
+      setWorkflowIsChanged(false);
+      setSettingsChanged(false);
+      setIsFormSettingsChanged(false);
+      // Update initial savedFormVariables reference after successful save
+      initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
+      
+      // Set navigation flags to prevent NavigateBlocker from blocking
+      isNavigatingAfterSaveRef.current = true;
+      setIsNavigatingAfterSave(true);
+      
       setPromptNewVersion(false);
+      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
+      // Reset navigation flags if save fails
+      isNavigatingAfterSaveRef.current = false;
+      setIsNavigatingAfterSave(false);
     } finally {
+      setIsSavingNewVersion(false);
       setFormSubmitted(false);
     }
   };
@@ -2046,6 +2113,10 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           secondaryBtnAction: saveFormData,
           primaryBtnText: `${t("Create a new version")} (${version.major})`,
           secondaryBtnText: `${t("Update current version")} (${version.minor})`, 
+          buttonLoading : isSavingNewVersion,
+          secondaryBtnLoading : formSubmitted, 
+          primaryBtnDisable: formSubmitted,
+          secondaryBtnDisable: isSavingNewVersion,
         };
       case "publish":
         return {
@@ -2075,10 +2146,13 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
              primaryBtnText: t("Discard Changes"),
              primaryBtnAction : () => {
              // Only discard changes from the currently active tab
+             const hasVariablesChanged = hasSavedFormVariablesChanged();
              if (activeTab.primary === 'form' && activeTab.secondary === 'settings' && settingsChanged) {
                discardSettingsChanges();
              } else if (activeTab.primary === 'form' && formChangeState.changed) {
                discardChanges();
+             } else if (activeTab.primary === 'bpmn' && activeTab.secondary === 'variables' && hasVariablesChanged) {
+               discardVariablesChanges();
              } else if (activeTab.primary === 'bpmn' && workflowIsChanged) {
                // Handle workflow discard similar to FlowEdit.js
                handleWorkflowDiscard();
@@ -2368,16 +2442,18 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         // Check if settings sub-tab is active
         if (activeTab.secondary === 'settings') {
           return (
-            <SettingsTab
-              handleConfirm={handleConfirmSettings}
-              isCreateRoute={isCreateRoute}
-              rolesState={rolesState}
-              formDetails={formDetails}
-              isAnonymous={isAnonymous}
-              setIsAnonymous={setIsAnonymous}
-              setFormDetails={setFormDetails}
+            <div className="custom-scroll">
+              <SettingsTab
+                handleConfirm={handleConfirmSettings}
+                isCreateRoute={isCreateRoute}
+                rolesState={rolesState}
+                formDetails={formDetails}
+                isAnonymous={isAnonymous}
+                setIsAnonymous={setIsAnonymous}
+                setFormDetails={setFormDetails}
               setRolesState={setRolesState}
             />
+            </div>
           );
         }
         // This should never be reached since we always set a default secondary tab
@@ -2523,12 +2599,14 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       }
       case 'actions':
         return (
-          <EditorActions 
-          renderUpload={renderFileUpload}
-          renderDeleteForm={renderDeleteForm}
-          mapperId={processListData.id} 
-          formTitle={form.title}
-          />
+          <div className="custom-scroll">
+            <EditorActions 
+            renderUpload={renderFileUpload}
+            renderDeleteForm={renderDeleteForm}
+            mapperId={processListData.id} 
+            formTitle={form.title}
+            />
+          </div>
         ) ;
       default:
         return null;
@@ -2614,7 +2692,17 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     }
     return null;
   };
+
+  // Determine if custom scroll should be applied to body section
+  // Exclude scroll from history tabs and BPMN layout/editor tab
+  const isHistoryTab = (activeTab.primary === 'form' && activeTab.secondary === 'history') ||
+                       (activeTab.primary === 'bpmn' && activeTab.secondary === 'history');
+  const isBpmnLayoutTab = activeTab.primary === 'bpmn' && activeTab.secondary === 'editor';
+  const shouldShowCustomScroll = !isHistoryTab && !isBpmnLayoutTab;
   
+
+  
+
   return (
     <div className="form-create-edit-layout">
       <NavigateBlocker
@@ -2773,6 +2861,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                           ? !settingsChanged
                           : activeTab.primary === 'form'
                           ? !formChangeState.changed
+                          : activeTab.primary === 'bpmn' && activeTab.secondary === 'variables'
+                          ? !hasSavedFormVariablesChanged()
                           : !workflowIsChanged
                       }
                       dataTestId="discard-button-testid"
@@ -2809,7 +2899,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
             )}
 
             {/* Body Section - Main content */}
-            <div className="body-section formedit-layout" >
+            <div className={`body-section formedit-layout ${shouldShowCustomScroll ? 'custom-scroll' : ''}`}>
               {renderTabContent()}
             </div>
 
@@ -2906,6 +2996,10 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
           primaryBtnText={modalContent.primaryBtnText}
           secondaryBtnText={modalContent.secondaryBtnText}
           type="danger"
+          buttonLoading={modalContent.buttonLoading}
+          secondaryBtnLoading={modalContent.secondaryBtnLoading}
+          primaryBtnDisable={modalContent.primaryBtnDisable}
+          secondaryBtnDisable={modalContent.secondaryBtnDisable}
         />
       )}
 

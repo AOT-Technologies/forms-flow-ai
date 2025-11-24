@@ -137,7 +137,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         cls, filter_id, roles, user, tenant
     ) -> Filter:
         """Find active filter by id."""
-        query = cls._auth_query(roles, user, tenant)
+        query = cls._auth_query(roles, user, tenant, filter_empty_tenant_key=True)
         return query.filter(
             and_(
                 Filter.id == filter_id, Filter.status == str(FilterStatus.ACTIVE.value)
@@ -152,7 +152,7 @@ class Filter(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if not filter_ids:
             return []
 
-        query = cls._auth_query(roles, user, tenant)
+        query = cls._auth_query(roles, user, tenant, filter_empty_tenant_key=True)
 
         query = query.filter(
             and_(

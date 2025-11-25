@@ -3008,8 +3008,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         <PromptModal
         show={showDeleteModal}
         onClose={handleCloseDelete}
-        title="Delete Item"
-        message="Are you sure you want to delete this item?"
+        title={t("Delete this form?")}
+        message={t("Deleting a form is permanent and cannot be undone.")}
         type="danger"
         primaryBtnText="Delete"
         primaryBtnAction={handleDelete}

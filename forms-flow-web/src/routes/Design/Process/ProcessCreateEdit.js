@@ -1175,7 +1175,7 @@ const ProcessCreateEdit = ({ type }) => {
                     label={t(publishText)}
                     aria-label={`${t(publishText)} ${t("Button")}`}
                     data-testid={isPublished ? "handle-unpublish-testid" : "handle-publish-testid"}
-                    disabled={isPublishLoading}
+                    disabled={isPublishLoading || (isCreate && (savingFlow || !isWorkflowChanged))}
                   />
                   </>
               </div>

@@ -1679,12 +1679,12 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     }
     setBpmnHistoryData({ processHistory: [], totalCount: 0 });
     setFlowHistoryLoading(true);
-    fetchBpmnHistory(parentKey, paginationModel.page + 1, paginationModel.pageSize);
+    fetchBpmnHistory(parentKey);
   };
   
-  const fetchBpmnHistory = async (parentProcessKey, page, limit) => {
+  const fetchBpmnHistory = async (parentProcessKey) => {
     try {
-      const response = await getProcessHistory({ parentProcessKey, page, limit });
+      const response = await getProcessHistory({ parentProcessKey });
       // setBpmnHistoryData(response.data);
       // setFlowHistoryLoading(false);
       const data = response?.data || { processHistory: [], totalCount: 0 };
@@ -2393,11 +2393,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     if ((activeTab.primary === 'flow' || activeTab.primary === 'bpmn') && activeTab.secondary === 'history') {
       if (processData?.parentProcessKey) {
         setFlowHistoryLoading(true);
-        fetchBpmnHistory(
-          processData.parentProcessKey,
-          newPaginationModel.page + 1,
-          newPaginationModel.pageSize
-        );
+        fetchBpmnHistory(processData.parentProcessKey);
       }
     }
   };

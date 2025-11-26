@@ -135,6 +135,7 @@ const ProcessTable = React.memo(() => {
   }, [dispatch, pageNo, limit, tenantKey, reduxSearch, sortBy, sortOrder, isBPMN]);
 
   const handleRefresh = () => {
+    setSearchLoading(true);
     dispatch(
       fetchAllProcesses(
         {
@@ -186,8 +187,10 @@ const ProcessTable = React.memo(() => {
       dispatch(setDmnSort(newSortConfig));
     }
   }, [dispatch, isBPMN, sortConfig]);
-  const handleSearch = () => {
+  
+  const handleSearch = useCallback(() => {
     setSearchLoading(true);
+    const searchValue = isBPMN ? searchBPMN : searchDMN;
     batch(() => {
       if (isBPMN) {
         dispatch(setBpmnSearchText(searchBPMN));
@@ -197,7 +200,24 @@ const ProcessTable = React.memo(() => {
         dispatch(setDmnPage(1));
       }
     });
-  };
+    dispatch(
+      fetchAllProcesses(
+        {
+          pageNo: 1,
+          tenant_key: tenantKey,
+          processType: ProcessContents.processType,
+          limit,
+          searchKey: searchValue,
+          sortBy,
+          sortOrder,
+        },
+        () => {
+          setSearchLoading(false);
+        }
+      )
+    );
+  }, [dispatch, isBPMN, searchBPMN, searchDMN, tenantKey, limit,
+    sortBy, sortOrder, ProcessContents.processType]);
 
   const handlePageChange = useCallback((page) => {
     if (isBPMN) {
@@ -464,18 +484,18 @@ const ProcessTable = React.memo(() => {
         </div>
       </div>
       <div className="body-section">
-      <ReusableTable
-        columns={columns}
-        rows={processList}
-        rowCount={totalCount}
-        loading={searchLoading || isProcessLoading}
-        sortModel={sortModel}
-        onSortModelChange={handleSort}
-        paginationModel={paginationModel}
-        onPaginationModelChange={onPaginationModelChange}
-        getRowId={(row) => row.id}
-        autoHeight={true}
-      />
+        <ReusableTable
+          columns={columns}
+          rows={processList}
+          rowCount={totalCount}
+          loading={searchLoading || isProcessLoading}
+          sortModel={sortModel}
+          onSortModelChange={handleSort}
+          paginationModel={paginationModel}
+          onPaginationModelChange={onPaginationModelChange}
+          getRowId={(row) => row.id}
+          autoHeight={true}
+        />
       </div>
       <BuildModal
         show={showBuildModal}

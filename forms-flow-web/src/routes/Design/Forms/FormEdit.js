@@ -39,7 +39,6 @@ import {
   formUpdate,
   formFlowUpdate,
   validateFormName,
-  formCreate,
   formImport,
   publish,
   unPublish,
@@ -1787,7 +1786,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   };
 
 
-  const handlePublishAsNewVersion = ({ description, title }) => {
+  const handlePublishAsNewVersion = async ({ description, title }) => {
     setFormSubmitted(true);
     const newFormData = manipulatingFormData(
       _.cloneDeep(form),
@@ -1806,33 +1805,112 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     delete newFormData.parentFormId;
     newFormData.newVersion = true;
     newFormData.description = description;
+    newFormData.display = formDetails.display;
+    newFormData.anonymous = isAnonymous;
+    if (isAnonymous) {
+      newFormData.access = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", true);
+      newFormData.submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", true);
+    } else {
+      newFormData.access = formAccessRoles;
+      newFormData.submissionAccess = submissionAccessRoles;
+    }
     delete newFormData._id;
 
-    //Process details for duplicate .
-    if (selectedAction == ACTION_OPERATIONS.DUPLICATE) {
-      newFormData.processData = processData?.processData;
-      newFormData.processType = processData?.processType;
-    }
+    const duplicateWorkflow =
+      selectedAction === ACTION_OPERATIONS.DUPLICATE
+        ? {
+            processData: processData?.processData,
+            processType: processData?.processType,
+          }
+        : null;
 
-    formCreate(newFormData)
-      .then((res) => {
-        const form = res.data;
-        dispatch(setFormSuccessData("form", form));
-        dispatch(push(`${redirectUrl}formflow/${form._id}/edit`));
-      })
-      .catch((err) => {
-        let error;
-        if (err.response?.data) {
-          error = err.response.data;
-          setNameError(error?.errors?.name?.message);
-        } else {
-          error = err.message;
-          setNameError(error?.errors?.name?.message);
+    try {
+      const parentFormId = processListData?.parentFormId || null;
+      const taskVariables = Object.values(savedFormVariables).map((variable) => ({
+        key: variable.key,
+        label: variable.altVariable || variable.labelOfComponent || "",
+        type: variable.type || "hidden",
+      }));
+
+      const filterAuthorizationData = (authorizationData) => {
+        if (authorizationData.selectedOption === "submitter") {
+          return { roles: [], userName: null, resourceDetails: { submitter: true } };
         }
-      })
-      .finally(() => {
-        setFormSubmitted(false);
-      });
+        if (authorizationData.selectedOption === "specifiedRoles") {
+          return {
+            roles: convertMultiSelectOptionToValue(authorizationData.selectedRoles, "role"),
+            userName: "",
+          };
+        }
+        return { roles: [], userName: preferred_username };
+      };
+
+      const authorizations = {
+        application: {
+          resourceId: parentFormId,
+          resourceDetails: { submitter: false },
+          ...filterAuthorizationData(rolesState.APPLICATION),
+        },
+        designer: {
+          resourceId: parentFormId,
+          resourceDetails: {},
+          ...filterAuthorizationData(rolesState.DESIGN),
+        },
+        form: {
+          resourceId: parentFormId,
+          resourceDetails: {},
+          roles:
+            rolesState.FORM.selectedOption === "specifiedRoles"
+              ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
+              : [],
+        },
+      };
+
+      const payload = {
+        formData: newFormData,
+        authorizations,
+        mapper: {
+          formName: title,
+          description,
+          anonymous: isAnonymous,
+          parentFormId,
+          formType: processListData?.formType || form?.type,
+          taskVariables,
+        },
+      };
+
+      if (duplicateWorkflow?.processData) {
+        payload.processData = duplicateWorkflow.processData;
+        payload.processType = duplicateWorkflow.processType || "BPMN";
+      }
+
+      const { data } = await createFormWithWorkflow(payload);
+      const createdForm = data?.formData || data;
+
+      if (data?.mapper) {
+        dispatch(setFormPreviosData(data.mapper));
+        dispatch(setFormProcessesData(data.mapper));
+      }
+      if (data?.process) {
+        dispatch(setProcessData(data.process));
+      }
+      if (data?.authorizations) {
+        dispatch(setFormAuthorizationDetails(data.authorizations));
+      }
+
+      if (createdForm) {
+        dispatch(setFormSuccessData("form", createdForm));
+        const newFormId = createdForm?._id;
+        if (newFormId) {
+          dispatch(push(`${redirectUrl}formflow/${newFormId}/edit`));
+        }
+      }
+    } catch (err) {
+      const error = err.response?.data || err.message;
+      setNameError(error?.errors?.name?.message);
+    } finally {
+      setFormSubmitted(false);
+    }
   };
 
   const captureFormChanges = () => {
@@ -2058,14 +2136,127 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       newFormData.componentChanged = true;
       newFormData.newVersion = true;
       newFormData.parentFormId = processListData.parentFormId;
-      newFormData.title = processListData.formName;
+      newFormData.title = formDetails?.title || processListData.formName;
+      newFormData.description = formDetails?.description || processListData.description || "";
+      newFormData.display = formDetails?.display || form?.display;
+      newFormData.anonymous = isAnonymous;
+      if (isAnonymous) {
+        newFormData.access = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", true);
+        newFormData.submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", true);
+      } else {
+        newFormData.access = formAccessRoles;
+        newFormData.submissionAccess = submissionAccessRoles;
+      }
 
       delete newFormData.machineName;
       delete newFormData._id;
 
-      const res = await formCreate(newFormData);
-      const response = res.data;
-      dispatch(setFormSuccessData("form", response));
+      const parentFormId = processListData?.parentFormId || null;
+      const taskVariables = Object.values(savedFormVariables).map((variable) => ({
+        key: variable.key,
+        label: variable.altVariable || variable.labelOfComponent || "",
+        type: variable.type || "hidden",
+      }));
+
+      const filterAuthorizationData = (authorizationData) => {
+        if (authorizationData.selectedOption === "submitter") {
+          return { roles: [], userName: null, resourceDetails: { submitter: true } };
+        }
+        if (authorizationData.selectedOption === "specifiedRoles") {
+          return {
+            roles: convertMultiSelectOptionToValue(authorizationData.selectedRoles, "role"),
+            userName: "",
+          };
+        }
+        return { roles: [], userName: preferred_username };
+      };
+
+      const authorizations = {
+        application: {
+          resourceId: parentFormId,
+          resourceDetails: { submitter: false },
+          ...filterAuthorizationData(rolesState.APPLICATION),
+        },
+        designer: {
+          resourceId: parentFormId,
+          resourceDetails: {},
+          ...filterAuthorizationData(rolesState.DESIGN),
+        },
+        form: {
+          resourceId: parentFormId,
+          resourceDetails: {},
+          roles:
+            rolesState.FORM.selectedOption === "specifiedRoles"
+              ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
+              : [],
+        },
+      };
+
+      let includeWorkflow = false;
+      let workflowProcessData = null;
+      let workflowProcessType = null;
+      const bpmnModeler = flowRef.current?.getBpmnModeler();
+
+      if (bpmnModeler || currentBpmnXml || workflowIsChanged) {
+        includeWorkflow = true;
+        workflowProcessType = "BPMN";
+        if (bpmnModeler) {
+          try {
+            const { createXMLFromModeler } = await import("../../../helper/processHelper.js");
+            workflowProcessData = await createXMLFromModeler(bpmnModeler);
+            if (!workflowProcessData) {
+              throw new Error("Failed to extract workflow data from modeler");
+            }
+          } catch (xmlError) {
+            console.error("Error extracting workflow XML:", xmlError);
+            toast.error(t("Failed to extract workflow data. Please check your workflow design."));
+            setIsSavingNewVersion(false);
+            setFormSubmitted(false);
+            return;
+          }
+        } else if (currentBpmnXml) {
+          workflowProcessData = currentBpmnXml;
+        }
+      } else if (processData?.processData) {
+        includeWorkflow = true;
+        workflowProcessData = processData.processData;
+        workflowProcessType = processData.processType || "BPMN";
+      }
+
+      const payload = {
+        formData: newFormData,
+        authorizations,
+        mapper: {
+          formName: formDetails?.title || processListData.formName,
+          description: formDetails?.description || processListData.description || "",
+          anonymous: isAnonymous,
+          parentFormId,
+          formType: processListData?.formType || form?.type,
+          taskVariables,
+        },
+      };
+
+      if (includeWorkflow && workflowProcessData) {
+        payload.processData = workflowProcessData;
+        payload.processType = workflowProcessType || "BPMN";
+      }
+
+      const { data } = await createFormWithWorkflow(payload);
+      const response = data?.formData || data;
+
+      if (data?.mapper) {
+        dispatch(setFormPreviosData(data.mapper));
+        dispatch(setFormProcessesData(data.mapper));
+      }
+      if (data?.process) {
+        dispatch(setProcessData(data.process));
+      }
+      if (data?.authorizations) {
+        dispatch(setFormAuthorizationDetails(data.authorizations));
+      }
+      if (response) {
+        dispatch(setFormSuccessData("form", response));
+      }
       
       // Reset all change states to prevent NavigateBlocker from blocking navigation
       setFormChangeState({ initial: false, changed: false });
@@ -2080,7 +2271,9 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       setIsNavigatingAfterSave(true);
       
       setPromptNewVersion(false);
-      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
+      if (response?._id) {
+        dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
+      }
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));

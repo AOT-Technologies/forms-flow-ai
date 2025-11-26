@@ -51,6 +51,8 @@ const BaseRouting = React.memo(
       publish("ES_ROUTE", location);
     }, [location]);
 
+    const isPublicRoute = location.pathname.includes("/public");
+
     if (
       MULTITENANCY_ENABLED &&
       !location.pathname.startsWith("/tenant/") &&
@@ -59,7 +61,9 @@ const BaseRouting = React.memo(
       return <LandingPage />;
     }
     return (
-      <div className="page-layout">
+      <div
+        className={`page-layout${isPublicRoute ? " d-block" : ""}`}
+      >
         
           <ToastContainer
           position="bottom-right"

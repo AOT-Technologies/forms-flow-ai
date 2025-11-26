@@ -156,14 +156,14 @@ const tabConfig = {
           label: "Variables",
           query: "?tab=bpmn&sub=variables",
           tertiary: {
+            form: {
+              label: "Form",
+              query: "?tab=bpmn&sub=variables&subsub=form"
+            },
             system: {
               label: "System",
               query: "?tab=bpmn&sub=variables&subsub=system"
             },
-            form: {
-              label: "Form",
-              query: "?tab=bpmn&sub=variables&subsub=form"
-            }
           }
         }
       }
@@ -867,7 +867,7 @@ useEffect(() => {
   let subsub = queryParams.get("subsub");
 
   if (tab === 'bpmn' && sub === 'variables' && subsub === null) {
-    subsub = 'system';
+    subsub = 'form';
   }
 
   let secondaryTab = sub;
@@ -911,7 +911,7 @@ useEffect(() => {
   const handleTabClick = async (primary, secondary = null, tertiary = null) => {
     // Allow BPMN tab on create route
     if (primary === 'bpmn' && secondary === 'variables' && tertiary === null) {
-      tertiary = 'system';
+      tertiary = 'form';
     }
   
     // CAPTURE CURRENT BPMN XML BEFORE SWITCHING AWAY FROM BPMN TAB

@@ -615,6 +615,22 @@ const EditComponent = () => {
     },
   });
 
+  const handleCancelUpload = () => {
+      setImportError("");
+      setImportLoader(false);
+      setFormTitle("");
+      setFileItems({
+        workflow: {
+          majorVersion: null,
+          minorVersion: null,
+        },
+        form: {
+          majorVersion: null,
+          minorVersion: null,
+        },
+      });
+      setPrimaryButtonText(defaultPrimaryBtnText);
+  };
 
   const handleImport = async (
     fileContent,
@@ -2280,7 +2296,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       <FileUploadPanel
       onClose={handleCloseSelectedAction}
        uploadActionType={UploadActionType}
-      importError={null}
+      importError={importError}
       importLoader={importLoader}
       formName={formTitle}
       description="Upload a new form definition to import."
@@ -2290,6 +2306,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       primaryButtonText={primaryButtonText}
       headerText="Import Configuration"
       processVersion={null}
+      cancelUpload={handleCancelUpload}
     />
     );
   };

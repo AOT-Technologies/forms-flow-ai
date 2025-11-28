@@ -721,8 +721,9 @@ const EditComponent = () => {
       // while import and save need to false this variable to avoid the confirmation modal
       if(promptNewVersion) setPromptNewVersion(false);
       /* ------------------------- if the form id changed ------------------------- */
-      const formId = responseData.mapper?.formId;
-        dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&subtab=builder`));
+      // Use responseData.mapper?.formId if available, otherwise use processListData.formId (previous formId)
+      const formId = responseData.mapper?.formId || processListData?.formId;
+      dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&subtab=builder`));
       setActiveTab({
         primary: 'form', 
         secondary: null,   
@@ -780,6 +781,10 @@ const EditComponent = () => {
     /* ---------- if workflow changed then need to updated process dat ---------- */
     if (process) {
       dispatch(setProcessData(process));
+      setCurrentBpmnXml(null);
+      if (flowRef.current && process.processData) {
+        flowRef.current?.handleImport(process.processData);
+      }
     }
     handleCloseSelectedAction();
   };

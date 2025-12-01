@@ -567,11 +567,8 @@ export const deleteFormProcessMapper = (mapperId, ...rest) => {
   };
 };
 
-export const getProcessHistory = ({parentProcessKey, page = null, limit = null}) => {
-  let url = `${API.GET_PROCESSES_DETAILS}/${parentProcessKey}/versions`;
-  if (page && limit) {
-    url += `?pageNo=${page}&limit=${limit}`;
-  }
+export const getProcessHistory = ({parentProcessKey}) => {
+  const url = `${API.GET_PROCESSES_DETAILS}/${parentProcessKey}/versions`;
   return RequestService.httpGETRequest(url);
 };
 

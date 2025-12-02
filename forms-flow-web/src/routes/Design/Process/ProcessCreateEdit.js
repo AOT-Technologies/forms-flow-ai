@@ -162,7 +162,6 @@ const ProcessCreateEdit = ({ type }) => {
       secondary: null,
       tertiary: null
     });
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
 
   const tabConfig = {
   primary: {
@@ -214,7 +213,6 @@ const ProcessCreateEdit = ({ type }) => {
   }, [
     activeTab.primary,
     activeTab.secondary,
-    paginationModel.pageSize,
     processData?.parentProcessKey,
   ]);
 
@@ -334,8 +332,8 @@ const ProcessCreateEdit = ({ type }) => {
     // isLoading: historiesLoading,
     // isError: historiesError,
   } = useMutation(
-    ({ parentProcessKey, page, limit }) =>
-      getProcessHistory({ parentProcessKey, page, limit }), // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
+    ({ parentProcessKey }) =>
+      getProcessHistory({ parentProcessKey }), // this is api calling function and mutate function accepting some parameter and passing to the apicalling function
     {
       onSuccess: () => {
         setProcessHistoryLoading(false);
@@ -501,22 +499,6 @@ const ProcessCreateEdit = ({ type }) => {
     setProcessHistoryLoading(true);
     fetchAllHistories({
       parentProcessKey: processData.parentProcessKey,
-      page: 1,
-      limit: paginationModel.pageSize,
-    });
-  };
-
-  const handlePaginationModelChange = (model) => {
-    setPaginationModel(model);
-    // Only fetch if parentProcessKey exists
-    if (!processData?.parentProcessKey) {
-      return;
-    }
-    setProcessHistoryLoading(true);
-    fetchAllHistories({
-      parentProcessKey: processData.parentProcessKey,
-      page: (model?.page || 0) + 1,
-      limit: model?.pageSize || paginationModel.pageSize,
     });
   };
 
@@ -1240,8 +1222,6 @@ const ProcessCreateEdit = ({ type }) => {
             refreshBtnAction={handleProcessHistory}
             loading={processHistoryLoading}
             disableAllRevertButton={isPublished}
-            paginationModel={paginationModel}
-            handlePaginationModelChange={handlePaginationModelChange}
           />
         ) : (
           showEditor && (

@@ -23,6 +23,11 @@ const UPLOAD_PROGRESS_INTERVAL = 300;
 const INITIAL_UPLOAD_PROGRESS = 10;
 const COMPLETE_PROGRESS = 100;
 
+const UploadActionType = {
+  IMPORT: "import",
+  VALIDATE: "validate",
+};
+
 const CreateFormPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -32,6 +37,8 @@ const CreateFormPage = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadError, setUploadError] = useState("");
+  const [isValidationSuccessful, setIsValidationSuccessful] = useState(false);
+  const [validatedFile, setValidatedFile] = useState(null);
 
   // Refs
   const fileInputRef = useRef(null);
@@ -53,6 +60,8 @@ const CreateFormPage = () => {
     reset();
     setUploadError("");
     setSelectedFile(null);
+    setIsValidationSuccessful(false);
+    setValidatedFile(null);
   }, [reset]);
 
   /**
@@ -90,11 +99,90 @@ const CreateFormPage = () => {
   //   console.log("AI form creation requested");
   // }, []);
 
+  // Helper function to validate the action type
+  const isValidUploadActionType = useCallback((actionType) => {
+    if (!["validate", "import"].includes(actionType)) {
+      console.error("Invalid UploadActionType provided");
+      setIsUploading(false);
+      return false;
+    }
+    return true;
+  }, []);
+
+  // Helper function to prepare data for the API request
+  const prepareImportData = useCallback((actionType) => {
+    const data = {
+      importType: "new",
+      action: actionType,
+    };
+
+    // Set uploading state for both validate and import actions
+    if (actionType === "validate" || actionType === "import") {
+      setIsUploading(true);
+    }
+
+    return data;
+  }, []);
+
+  // Helper function to handle the API response
+  const handleImportResponse = useCallback(async (res, file, action) => {
+    setIsUploading(false);
+    const { data: responseData } = res;
+
+    if (!responseData) return;
+
+    /* -------------------------- if action is validate ------------------------- */
+    if (action === "validate") {
+      // Validation successful - store file and mark validation as successful
+      setValidatedFile(file);
+      setIsValidationSuccessful(true);
+      // Complete progress to show validation success
+      complete();
+      return;
+    } else {
+      /* ------------------------- if action is import ------------------------- */
+      const formId = responseData.mapper?.formId;
+
+      if (!formId) {
+        throw new Error("Form ID not received from server");
+      }
+
+      // Complete upload progress
+      complete();
+      
+      // Wait for progress bar to show 100% before navigating (allows UI to update)
+      setTimeout(() => {
+        navigateToDesignFormEdit(dispatch, tenantKey, formId);
+      }, 600);
+    }
+  }, [complete, dispatch, tenantKey]);
+
+  // Helper function to handle errors
+  const handleImportError = useCallback((err) => {
+    setIsUploading(false);
+    setIsValidationSuccessful(false);
+    setValidatedFile(null);
+    const errorMessage = err?.response?.data?.message || 
+                        err?.message || 
+                        t("Failed to import form");
+    setUploadError(errorMessage);
+
+    // Complete progress after error so UI doesn't flash Done/Cancel
+    complete();
+
+    // Wait for progress bar to show 100% before finalizing state
+    setTimeout(() => {
+      setIsUploading(false);
+    }, 500);
+  }, [complete, t]);
+
   /**
    * Handles file upload and form import
    * @param {File} file - The file to upload
+   * @param {string} uploadActionType - The action type (import or validate)
    */
-  const handleFileUpload = useCallback(async (file) => {
+  const handleFileUpload = useCallback(async (file, 
+    uploadActionType = UploadActionType.VALIDATE) => {
     if (!file) {
       return;
     }
@@ -106,48 +194,35 @@ const CreateFormPage = () => {
       return;
     }
 
+    if (!isValidUploadActionType(uploadActionType)) return;
+
     // Initialize upload state
     setSelectedFile(file);
     setUploadError("");
     reset();
-    setIsUploading(true);
+
+    const data = prepareImportData(uploadActionType);
 
     try {
-      const importData = { 
-        importType: "new", 
-        action: "import" 
-      };
-      const response = await formImport(file, JSON.stringify(importData));
-      const formId = response?.data?.mapper?.formId;
-
-      if (!formId) {
-        throw new Error("Form ID not received from server");
-      }
-
-      // Complete upload progress
-      complete();
-      
-      // Wait for progress bar to show 100% before navigating (allows UI to update)
-      setTimeout(() => {
-        setIsUploading(false);
-        navigateToDesignFormEdit(dispatch, tenantKey, formId);
-      }, 500);
-    } catch (error) {
-      // Set error first to avoid briefly rendering the completed state
-      const errorMessage = error?.response?.data?.message || 
-                          error?.message || 
-                          t("Failed to import form");
-      setUploadError(errorMessage);
-
-      // Complete progress after error so UI doesn't flash Done/Cancel
-      complete();
-
-      // Wait for progress bar to show 100% before finalizing state
-      setTimeout(() => {
-        setIsUploading(false);
-      }, 500);
+      const res = await formImport(file, JSON.stringify(data));
+      await handleImportResponse(res, file, data.action);
+    } catch (err) {
+      handleImportError(err);
     }
-  }, [validateFile, reset, complete, dispatch, tenantKey, t]);
+  }, [validateFile, isValidUploadActionType, prepareImportData, 
+    handleImportResponse, handleImportError, reset]);
+
+  /**
+   * Handles the Done button click after validation succeeds
+   * This will trigger the import action
+   */
+  const handleDoneClick = useCallback(() => {
+    if (isValidationSuccessful && validatedFile) {
+      // Reset validation state before starting import
+      setIsValidationSuccessful(false);
+      handleFileUpload(validatedFile, UploadActionType.IMPORT);
+    }
+  }, [isValidationSuccessful, validatedFile, handleFileUpload]);
 
   /**
    * Manages simulated upload progress while awaiting server response
@@ -275,11 +350,12 @@ const CreateFormPage = () => {
               onFileSelect={handleFileUpload}
               onCancel={resetUploadState}
               onRetry={resetUploadState}
-              onDone={resetUploadState}
+              onDone={isValidationSuccessful ? handleDoneClick : resetUploadState}
               file={selectedFile}
               progress={(() => {
                 if (isUploading) return uploadProgress;
-                if (selectedFile) return COMPLETE_PROGRESS;
+                if (isValidationSuccessful && selectedFile) return COMPLETE_PROGRESS;
+                if (uploadError && selectedFile) return COMPLETE_PROGRESS;
                 return 0;
               })()}
               error={uploadError}
@@ -287,6 +363,7 @@ const CreateFormPage = () => {
               dataTestId="form-upload-area"
               className="grid-item"
               maxFileSizeMB={MAX_FILE_SIZE / (1024 * 1024)}
+              primaryButtonText={t("Done")}
             />
           </div>
 

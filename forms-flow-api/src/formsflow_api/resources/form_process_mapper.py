@@ -299,6 +299,7 @@ combined_form_workflow_request_model = API.model(
         "processData": fields.String(),
         "authorizations": fields.Nested(authorization_list_model),
         "processType": fields.String(),
+        "processId": fields.String(),
         "taskVariables": fields.List(fields.Nested(task_variables_model)),
     },
 )

@@ -523,9 +523,19 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             mapper = FormProcessMapper.get_latest_by_parent_form_id(parent_form_id)
             process_name = mapper.process_name
             process_key = mapper.process_key
-            anonymous = mapper.is_anonymous
-            description = mapper.description
-            task_variable = json.loads(mapper.task_variable)
+            anonymous = (
+                data.get("anonymous") if "anonymous" in data else mapper.is_anonymous
+            )
+            description = (
+                mapper.description
+                if not data.get("description")
+                else data.get("description")
+            )
+            task_variable = (
+                json.loads(mapper.task_variable)
+                if not data.get("taskVariables")
+                else data.get("taskVariables")
+            )
             is_migrated = mapper.is_migrated
         else:
             # if new form, form name is kept as process_name & process key
@@ -561,10 +571,14 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
                 "componentChanged": True,
             }
         )
+        authorization_data = FormProcessMapperService.create_authorization_for_form(
+            parent_form_id, is_designer, user, data.get("authorizations")
+        )
+        process_data = data.get("processData")
+        process_type = data.get("processType")
+        process_id = data.get("processId")
+        process_data_response = None
         if is_new_form:
-            authorization_data = FormProcessMapperService.create_authorization_for_form(
-                parent_form_id, is_designer, user, data.get("authorizations")
-            )
             # validate process key already exists, if exists append mapper id to process_key.
             updated_process_name = (
                 FormProcessMapperService.validate_process_and_update_mapper(
@@ -574,24 +588,32 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             process_name = (
                 updated_process_name if updated_process_name else process_name
             )
-            process_data = data.get("processData")
-            process_type = data.get("processType")
             process_data_response = FormProcessMapperService.create_process(
                 process_data, process_type, process_name
             )
-            if combine_save:
-                mapper_response = FormProcessMapperSchema().dump(mapper)
-
-                process_response = ProcessDataSchema().dump(process_data_response)
-
-                if task_variables := mapper_response.get("taskVariables"):
-                    mapper_response["taskVariables"] = json.loads(task_variables)
-                response = {
-                    "formData": response,
-                    "authorizations": authorization_data,
-                    "mapper": mapper_response,
-                    "process": process_response,
-                }
+        if combine_save:
+            mapper_response = FormProcessMapperSchema().dump(mapper)
+            if task_variables := mapper_response.get("taskVariables"):
+                mapper_response["taskVariables"] = json.loads(task_variables)
+            response = {
+                "formData": response,
+                "mapper": mapper_response,
+            }
+            # decide process response (update existing or use newly created)
+            # For a new version, the payload contains the processId if the process was updated.
+            process_response = (
+                ProcessService.update_process(process_id, process_data, process_type)
+                if process_id
+                else (
+                    ProcessDataSchema().dump(process_data_response)
+                    if process_data_response is not None
+                    else None
+                )
+            )
+            if is_new_form or data.get("authorizations"):
+                response["authorizations"] = authorization_data
+            if process_response:
+                response["process"] = process_response
         return response
 
     def _remove_tenant_key(self, form_json, tenant_key):
@@ -1173,6 +1195,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             raise BusinessException(BusinessErrorCode.FORM_PAYLOAD_MISSING)
         process_data = request_data.get("processData")
         process_type = request_data.get("processType")
+        process_id = request_data.get("processId")
         authorizations = request_data.get("authorizations")
         task_variables = request_data.get("taskVariables")
 
@@ -1183,6 +1206,7 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         if process_data and process_type:
             data["processData"] = process_data
             data["processType"] = process_type
+            data["processId"] = process_id
 
         if authorizations:
             data["authorizations"] = authorizations
@@ -1214,6 +1238,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
 
         # If task variables are present, update filter variables and serialize them
         if "taskVariables" in mapper_data:
+            if mapper_data.get("formId") is None:
+                raise BusinessException(BusinessErrorCode.FORM_ID_NOT_FOUND)
             FilterService.update_filter_variables(
                 task_variable, mapper_data.get("formId")
             )

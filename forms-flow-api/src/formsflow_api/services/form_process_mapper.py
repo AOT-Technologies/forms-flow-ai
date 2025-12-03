@@ -556,10 +556,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             mapper = FormProcessMapper.get_latest_by_parent_form_id(parent_form_id)
             process_name = mapper.process_name
             process_key = mapper.process_key
-            anonymous = (
-                data.get("anonymous") if "anonymous" in data else mapper.is_anonymous
-            )
-            description = data.get("description") or mapper.description
+            anonymous = data.get("anonymous", mapper.is_anonymous)
+            description = data.get("description", mapper.description)
             task_variable = task_variables_input or json.loads(mapper.task_variable)
             is_migrated = mapper.is_migrated
         else:

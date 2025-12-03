@@ -203,7 +203,7 @@ const Resubmit = React.memo(() => {
   if (loading || isSubActive || !submissionData) return <Loading />;
 
   return (
-      <div className="userform-wrapper">
+      <div>
       {/* Header Section */}
 
         {isAuthenticated && (

@@ -493,6 +493,42 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         return process_response
 
     @staticmethod
+    def _build_combined_response(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        form_response,
+        mapper,
+        process_id,
+        process_data,
+        process_type,
+        process_data_response,
+        is_new_form,
+        authorization_data,
+        request_data,
+    ):
+        """Build combined form/mapper/process response when combine_save=True."""
+        mapper_response = FormProcessMapperSchema().dump(mapper)
+        if task_variables := mapper_response.get("taskVariables"):
+            mapper_response["taskVariables"] = json.loads(task_variables)
+        response = {
+            "formData": form_response,
+            "mapper": mapper_response,
+        }
+        # decide process response (update existing or use newly created)
+        # For a new version, the payload contains the processId if the process was updated.
+        process_response = None
+        if process_id:
+            process_response = ProcessService.update_process(
+                process_id, process_data, process_type
+            )
+        elif process_data_response is not None:
+            process_response = ProcessDataSchema().dump(process_data_response)
+        # if new form or authorizations are provided, add to response
+        if is_new_form or request_data.get("authorizations"):
+            response["authorizations"] = authorization_data
+        if process_response:
+            response["process"] = process_response
+        return response
+
+    @staticmethod
     @user_context
     def create_form(
         data, is_designer, combine_save=False, **kwargs
@@ -510,11 +546,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
         process_key = None
         anonymous = False if not data.get("anonymous") else data.get("anonymous")
         description = data.get("description", "")
-        task_variable = (
-            [*default_task_variables]
-            if not data.get("taskVariables")
-            else data.get("taskVariables")
-        )
+        task_variables_input = data.get("taskVariables")
+        task_variable = task_variables_input or [*default_task_variables]
         is_migrated = True
         current_app.logger.info(f"Creating new form {is_new_form}")
         # If creating new version for a existing form, fetch process key, name from mapper
@@ -526,16 +559,8 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             anonymous = (
                 data.get("anonymous") if "anonymous" in data else mapper.is_anonymous
             )
-            description = (
-                mapper.description
-                if not data.get("description")
-                else data.get("description")
-            )
-            task_variable = (
-                json.loads(mapper.task_variable)
-                if not data.get("taskVariables")
-                else data.get("taskVariables")
-            )
+            description = data.get("description") or mapper.description
+            task_variable = task_variables_input or json.loads(mapper.task_variable)
             is_migrated = mapper.is_migrated
         else:
             # if new form, form name is kept as process_name & process key
@@ -591,29 +616,20 @@ class FormProcessMapperService:  # pylint: disable=too-many-public-methods
             process_data_response = FormProcessMapperService.create_process(
                 process_data, process_type, process_name
             )
+        # Build combined response if combine_save is True
         if combine_save:
-            mapper_response = FormProcessMapperSchema().dump(mapper)
-            if task_variables := mapper_response.get("taskVariables"):
-                mapper_response["taskVariables"] = json.loads(task_variables)
-            response = {
-                "formData": response,
-                "mapper": mapper_response,
-            }
-            # decide process response (update existing or use newly created)
-            # For a new version, the payload contains the processId if the process was updated.
-            process_response = (
-                ProcessService.update_process(process_id, process_data, process_type)
-                if process_id
-                else (
-                    ProcessDataSchema().dump(process_data_response)
-                    if process_data_response is not None
-                    else None
-                )
+            response = FormProcessMapperService._build_combined_response(
+                response,
+                mapper,
+                process_id,
+                process_data,
+                process_type,
+                process_data_response,
+                is_new_form,
+                authorization_data,
+                data,
             )
-            if is_new_form or data.get("authorizations"):
-                response["authorizations"] = authorization_data
-            if process_response:
-                response["process"] = process_response
+
         return response
 
     def _remove_tenant_key(self, form_json, tenant_key):

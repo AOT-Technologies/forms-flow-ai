@@ -2308,6 +2308,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     dispatch(
       setFormDeleteStatus({ modalOpen: false, formId: "", formName: "" })
     );
+    setIsDeletionLoading(false);
   };
 
 

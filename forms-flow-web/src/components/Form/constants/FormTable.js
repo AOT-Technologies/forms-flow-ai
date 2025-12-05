@@ -103,6 +103,7 @@ function FormTable({
       toast.success(t("Form deleted successfully"));
     }
     handleCloseDelete();
+    setIsDeletionLoading(false);
   };
 
   const handleCloseDelete = () => {

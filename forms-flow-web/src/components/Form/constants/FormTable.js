@@ -52,6 +52,7 @@ function FormTable({
   const [deleteMessage, setDeleteMessage] = React.useState({"title": "", "message": ""});
   const [disableDelete, setDisableDelete] = React.useState(false);
   const [isAppCountLoading, setIsAppCountLoading] = React.useState(false);
+  const [isDeletionLoading, setIsDeletionLoading] = React.useState(false);
   const [showUnpublishModal, setShowUnpublishModal] = React.useState(false);
   const [selectedUnpublishRow, setSelectedUnpublishRow] = React.useState(null);
 
@@ -84,6 +85,7 @@ function FormTable({
   };
 
   const handleDelete = () => {
+    setIsDeletionLoading(true);
     if (!selectedRow) return;
     const formId = selectedRow._id;
     const mapperId = selectedRow.mapperId;
@@ -435,6 +437,8 @@ const handlePageChange = (page) => {
         primaryBtnDisable={disableDelete}
         secondaryBtnText={t("Cancel")}
         secondaryBtnAction={handleCloseDelete}
+        buttonLoading={isDeletionLoading}
+        secondaryBtnDisable={isDeletionLoading}
      />
     <PromptModal
         show={showUnpublishModal}

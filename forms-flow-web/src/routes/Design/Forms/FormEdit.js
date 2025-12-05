@@ -472,6 +472,7 @@ const EditComponent = () => {
   }, [formAuthorization, isCreateRoute]);
 
   // Update form details when processListData changes (for existing forms)
+  // Avoid overwriting unsaved local changes (e.g., title/description typed in Settings)
   useEffect(() => {
     if (!isCreateRoute && processListData) {
       const newFormDetails = {
@@ -481,11 +482,18 @@ const EditComponent = () => {
         display: display,
       };
       const newIsAnonymous = processListData.anonymous || false;
-      
-      setFormDetails(newFormDetails);
-      setIsAnonymous(newIsAnonymous);
-      
-      // Update initial states if already set (happens after save when data is refreshed)
+
+      const hasLocalSettingsChanges = settingsChanged || isFormSettingsChanged;
+
+      // Only sync Redux → local state when there are no unsaved local changes.
+      // This prevents losing edits when mapper data is refreshed (e.g., after unpublish).
+      if (!hasLocalSettingsChanges) {
+        setFormDetails(newFormDetails);
+        setIsAnonymous(newIsAnonymous);
+      }
+
+      // Always keep initial snapshots in sync once they exist,
+      // so future change detection works against the latest saved data.
       if (initialFormDetails) {
         setInitialFormDetails(_cloneDeep(newFormDetails));
       }
@@ -493,7 +501,14 @@ const EditComponent = () => {
         setInitialIsAnonymous(newIsAnonymous);
       }
     }
-  }, [processListData, path, display, isCreateRoute]);
+  }, [
+    processListData,
+    path,
+    display,
+    isCreateRoute,
+    settingsChanged,
+    isFormSettingsChanged,
+  ]);
 
   
 
@@ -2917,7 +2932,9 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
             )}
 
             {/* Body Section - Main content */}
-            <div className={`body-section formedit-layout ${shouldShowCustomScroll ? 'custom-scroll' : ''}`}>
+            <div
+              className={`body-section formedit-layout ${shouldShowCustomScroll ? "custom-scroll" : ""} ${isPublished ? "published-form-layout" : ""}`}
+            >
               {renderTabContent()}
             </div>
 
@@ -3029,10 +3046,12 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         title={t("Delete this form?")}
         message={t("Deleting a form is permanent and cannot be undone.")}
         type="danger"
-        primaryBtnText="Delete"
+        primaryBtnText="Delete Form"
         primaryBtnAction={handleDelete}
+        buttonLoading={isDeletionLoading}
         secondaryBtnText="Cancel"
         secondaryBtnAction={handleCloseDelete}
+        secondaryBtnDisable={isDeletionLoading}
       />  
 
     </div>

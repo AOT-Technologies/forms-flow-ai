@@ -2777,7 +2777,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                     { id: "edit", label: t("Edit") },
                   ]}
                   variant="minimized"
-                  underlined={true}
+                  underlined={false}
                   dataTestId="buildForm-breadcrumb"
                   ariaLabel={t("Build Form Breadcrumb")}
                   onBreadcrumbClick={(item) => {

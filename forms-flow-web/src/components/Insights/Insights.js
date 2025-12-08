@@ -71,30 +71,22 @@ const Insights = React.memo((props) => {
 
   return (
     <>
-      <div className="header-section-1">
-        <div className="section-seperation-left">
-          <BreadCrumbs
-            items={[
-              { id: "analyze", label: t("Analyze") },
-              { id: "dashboards", label: t("Dashboards") }
-            ]}
-            variant="minimized"
-            underlined={true}
-            dataTestId="analyze-dashboards-breadcrumb"
-            ariaLabel={t("Analyze Dashboards Breadcrumb")}
-          />
-        </div>
-      </div>
       <div className="mb-2">
         <div className="d-flex align-items-center flex-md-row flex-colum justify-content-between mt-3"
           data-testid="Insight"
           role="main"
         >
-          <h3 className="insight-title" data-testid="Dashboard">
-            <i className="fa fa-bars me-2" />{" "}
-            <Translation>{(t) => t("Dashboard")}</Translation>
-          </h3>
-
+          <BreadCrumbs
+            items={[
+              { id: "analyze", label: t("Analyze") },
+              { id: "dashboards", label: t("Dashboards") }
+            ]}
+            variant="default"
+            underlined={false}
+            dataTestId="analyze-dashboards-breadcrumb"
+            ariaLabel={t("Analyze Dashboards Breadcrumb")}
+          />
+          
           <div className="col-6 col-md-3 mb-2">
             {options.length > 0 && (
               <Select

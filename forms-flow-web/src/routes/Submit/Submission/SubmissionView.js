@@ -300,7 +300,7 @@ const ViewApplication = React.memo(() => {
                 <BreadCrumbs 
                   items={breadcrumbItems}
                   variant={BreadcrumbVariant.MINIMIZED}
-                  underline
+                  underline={false}
                   onBreadcrumbClick={handleBreadcrumbClick} 
                 /> 
                 <h4>{applicationId}</h4>

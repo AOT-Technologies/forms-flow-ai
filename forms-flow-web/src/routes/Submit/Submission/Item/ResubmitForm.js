@@ -212,7 +212,7 @@ const Resubmit = React.memo(() => {
                   <BreadCrumbs 
                     items={breadcrumbItems}
                     variant={BreadcrumbVariant.MINIMIZED}
-                    underline
+                    underline={false}
                     onBreadcrumbClick={handleBreadcrumbClick} 
                   /> 
                   {applicationDetail?.id ? (

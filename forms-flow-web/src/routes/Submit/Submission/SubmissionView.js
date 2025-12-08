@@ -337,7 +337,7 @@ const ViewApplication = React.memo(() => {
           )}
         </div>
       </div>
-
+      <div className="submission-history-container">
       <div className="body-section">
         {showHistoryGrid ? (
           <HistoryDataGrid
@@ -349,6 +349,8 @@ const ViewApplication = React.memo(() => {
           <View page="application-detail" />
         )}
       </div>
+      </div>
+      
       {(analyze_submissions_view_history && !isFromFormEntries) ?  
       <SubmissionHistoryWithViewButton
         show={showHistoryModal}

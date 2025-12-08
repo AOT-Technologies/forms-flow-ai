@@ -312,7 +312,7 @@ const List = React.memo((props) => {
                           { id: "forms", label: t("Forms"), href: getRoute(tenantKey).FORMFLOW },
                         ]}
                         variant="default"
-                        underlined={false}
+                        underline={false}
                         dataTestId="listForm-breadcrumb"
                         ariaLabel={t("Form list Breadcrumb")}
                       />

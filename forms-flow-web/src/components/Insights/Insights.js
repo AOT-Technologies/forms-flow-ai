@@ -82,7 +82,7 @@ const Insights = React.memo((props) => {
               { id: "dashboards", label: t("Dashboards") }
             ]}
             variant="default"
-            underlined={false}
+            underline={false}
             dataTestId="analyze-dashboards-breadcrumb"
             ariaLabel={t("Analyze Dashboards Breadcrumb")}
           />

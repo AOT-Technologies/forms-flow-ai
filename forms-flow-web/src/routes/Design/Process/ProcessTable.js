@@ -461,7 +461,7 @@ const ProcessTable = React.memo(() => {
               { id:  isBPMN ? "subflow" : "decision-table", label:  isBPMN ? t("Subflows") : t("Decision Tables")},
             ]}
             variant="default"
-            underlined={false}
+            underline={false}
             dataTestId="listForm-breadcrumb"
             ariaLabel={ isBPMN ? t("Subflows list Breadcrumb") : t("Decision Tables list Breadcrumb")}
           />

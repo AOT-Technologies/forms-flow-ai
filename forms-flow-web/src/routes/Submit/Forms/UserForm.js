@@ -304,7 +304,8 @@ const View = React.memo((props) => {
 
   const breadcrumbItems = [
     { id:"submit", label: t("Submit")},
-    { id:"form-title", label: form.title}
+    { id: "form-title", label: form.title },
+    { id: "draft-id", label: draftSubmission?.isDraft ? draftId : "" },
   ];
 
   const handleBreadcrumbClick = (item) => {
@@ -347,7 +348,7 @@ const View = React.memo((props) => {
                 <BreadCrumbs 
                   items={breadcrumbItems}
                   variant={BreadcrumbVariant.MINIMIZED}
-                  underline 
+                  underline ={false}
                   onBreadcrumbClick={handleBreadcrumbClick}
                 /> 
                 <h4>{draftSubmission?.isDraft ? draftId : t("New Submission")}</h4>

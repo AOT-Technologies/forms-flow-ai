@@ -196,8 +196,8 @@ const Dashboard = React.memo(() => {
               { id: "analyze", label: t("Analyze") },
               { id: "metrics", label: t("Metrics") }
             ]}
-            variant="minimized"
-            underlined={true}
+            variant="default"
+            underline={false}
             dataTestId="analyze-metrics-breadcrumb"
             ariaLabel={t("Analyze Metrics Breadcrumb")}
           />

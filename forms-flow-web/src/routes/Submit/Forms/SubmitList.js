@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import ClientTable from "../../../components/Form/constants/ClientTable";
 import { CustomSearch ,   
   BreadCrumbs,
+  BreadcrumbVariant,
 } from "@formsflow/components";
 import PropTypes from "prop-types";
 
@@ -172,6 +173,8 @@ const SubmitList = React.memo(({ getFormsInit }) => {
           <div className="section-seperation-left">
             <BreadCrumbs 
               items={breadcrumbItems} 
+              variant={BreadcrumbVariant.Default}
+              underline={false}
             /> 
           </div>
       </div>

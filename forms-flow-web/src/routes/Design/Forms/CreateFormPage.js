@@ -275,7 +275,6 @@ const CreateFormPage = () => {
   const breadcrumbItems = [
     { id: "forms", label: t("Forms"), href: getRoute(tenantKey).FORMFLOW },
     { id: "create-new-form", label: t("Create New Form") },
-    { id: "edit", label: t("Edit") },
   ];
 
   return (

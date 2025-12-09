@@ -1094,7 +1094,7 @@ const ProcessCreateEdit = ({ type }) => {
                 },
               ]}
               variant="minimized"
-              underlined={true}
+              underline={true}
               dataTestId={`${diagramType.toLowerCase()}-breadcrumb`}
               ariaLabel={t(`${diagramType} Breadcrumb`)}
               onBreadcrumbClick={(item) => {

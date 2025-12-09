@@ -1549,58 +1549,48 @@ const handleSaveFromBlocker = async () => {
     return formData;
   };
 
+  // Helper: Try to extract XML from modeler or fallback to currentBpmnXml
+  const tryExtractProcessData = async () => {
+    const bpmnModeler = flowRef.current?.getBpmnModeler();
+    if (bpmnModeler) {
+      try {
+        const { createXMLFromModeler } = await import("../../../helper/processHelper.js");
+        return await createXMLFromModeler(bpmnModeler);
+      } catch (xmlError) {
+        console.error("Error extracting workflow XML:", xmlError);
+        return null;
+      }
+    }
+    return currentBpmnXml || null;
+  };
+
   // Helper: Extract workflow/process data
   const extractWorkflowData = async () => {
     const bpmnModeler = flowRef.current?.getBpmnModeler();
     const hasWorkflowInteraction = bpmnModeler || currentBpmnXml || workflowIsChanged;
 
+    // No workflow data needed for create route without interaction
+    if (!hasWorkflowInteraction && !promptNewVersion) {
+      return { processData: null, processType: null, includeWorkflow: false, failed: false };
+    }
+
     let extractedProcessData = null;
-    let extractionFailed = false;
 
     // Case 1: User has interacted with workflow - extraction is required
     if (hasWorkflowInteraction) {
-      if (bpmnModeler) {
-        try {
-          const { createXMLFromModeler } = await import("../../../helper/processHelper.js");
-          extractedProcessData = await createXMLFromModeler(bpmnModeler);
-          
-          if (!extractedProcessData) {
-            throw new Error("Failed to extract workflow data from modeler");
-          }
-        } catch (xmlError) {
-          console.error("Error extracting workflow XML:", xmlError);
-          toast.error(t("Failed to extract workflow data. Please check your workflow design."));
-          extractionFailed = true;
-        }
-      } else if (currentBpmnXml) {
-        extractedProcessData = currentBpmnXml;
-      }
+      extractedProcessData = await tryExtractProcessData();
 
-      // If workflow interaction required but extraction failed, signal to stop
-      if (extractionFailed) {
+      // If modeler exists but extraction failed, this is a critical error
+      if (bpmnModeler && !extractedProcessData) {
+        toast.error(t("Failed to extract workflow data. Please check your workflow design."));
         return { processData: null, processType: null, includeWorkflow: true, failed: true };
       }
     }
 
     // Case 2: promptNewVersion - try to get processData even if no workflow interaction (optional)
     if (promptNewVersion && !extractedProcessData) {
-      const bpmnModelerForVersion = flowRef.current?.getBpmnModeler();
-      if (bpmnModelerForVersion) {
-        try {
-          const { createXMLFromModeler } = await import("../../../helper/processHelper.js");
-          extractedProcessData = await createXMLFromModeler(bpmnModelerForVersion);
-        } catch (xmlError) {
-          console.error("Error extracting workflow XML for new version:", xmlError);
-          // Don't fail - this is optional for new version
-        }
-      } else if (currentBpmnXml) {
-        extractedProcessData = currentBpmnXml;
-      }
-    }
-
-    // No workflow data needed for create route without interaction
-    if (!hasWorkflowInteraction && !promptNewVersion) {
-      return { processData: null, processType: null, includeWorkflow: false, failed: false };
+      extractedProcessData = await tryExtractProcessData();
+      // Don't fail - this is optional for new version
     }
 
     return {

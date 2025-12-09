@@ -39,7 +39,6 @@ import {
   formUpdate,
   formFlowUpdate,
   validateFormName,
-  formCreate,
   formImport,
   publish,
   unPublish,
@@ -1274,6 +1273,18 @@ const handleSaveFromBlocker = async () => {
     return current !== initial;
   }, [savedFormVariables]);
 
+  // Helper function to check if authorizations have changed
+  const hasAuthorizationsChanged = useCallback(() => {
+    if (!initialRolesState) {
+      return false;
+    }
+    return !compareRolesState(
+      rolesState,
+      initialRolesState,
+      multiSelectOptionKey
+    );
+  }, [rolesState, initialRolesState]);
+
   useEffect(() => {
     // On create route, require form title to be updated (not empty and not the default "Untitled Form")
     // AND at least one change must be made (settings, workflow, form, or variables)
@@ -1497,12 +1508,10 @@ const handleSaveFromBlocker = async () => {
       setFormSubmitted(false);
     }
   };
-  /* ------------------------ Save form with workflow for create route ------------------------ */
-const saveFormWithWorkflow = async (publishAfterSave = false) => {
-  try {
-    setFormSubmitted(true);
+  /* ------------------------ Save form with workflow helpers ------------------------ */
 
-    // Prepare form data
+  // Helper: Prepare form data for saving
+  const prepareFormDataForSave = () => {
     const formData = manipulatingFormData(
       form,
       MULTITENANCY_ENABLED,
@@ -1510,158 +1519,237 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       formAccessRoles,
       submissionAccessRoles
     );
+
     // Add required fields from settings
-    formData.title = formDetails.title;
-    formData.name = formDetails.path;
-    formData.path = formDetails.path;
-    formData.description = formDetails.description || "";
-    formData.display = formDetails.display;
-    formData.componentChanged = true;
-    formData.newVersion = true;
-    formData.anonymous = isAnonymous;
-    
-    // Update form access and submission access based on isAnonymous
-    if (isAnonymous) {
-      formData.access = addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", true);
-      formData.submissionAccess = addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", true);
-    } else {
-      // Keep the default access roles from manipulatingFormData
-      formData.access = formAccessRoles;
-      formData.submissionAccess = submissionAccessRoles;
+    Object.assign(formData, {
+      title: formDetails.title,
+      name: formDetails.path,
+      path: formDetails.path,
+      description: formDetails.description || "",
+      display: formDetails.display,
+      componentChanged: true,
+      newVersion: true,
+      anonymous: isAnonymous,
+    });
+
+    // Remove identifiers for new version
+    if (promptNewVersion) {
+      delete formData.machineName;
+      delete formData._id;
     }
 
-    // Get workflow data from FlowEdit component only if user has interacted with BPMN
-    let processData = null;
-    let processType = null;
-    let includeWorkflow = false;
+    // Set access based on anonymous status
+    formData.access = isAnonymous
+      ? addAndRemoveAnonymouseId(_cloneDeep(formAccessRoles), "read_all", true)
+      : formAccessRoles;
+    formData.submissionAccess = isAnonymous
+      ? addAndRemoveAnonymouseId(_cloneDeep(submissionAccessRoles), "create_own", true)
+      : submissionAccessRoles;
 
-    // Check if user has visited/modified the BPMN tab
+    return formData;
+  };
+
+  // Helper: Extract workflow/process data
+  const extractWorkflowData = async () => {
     const bpmnModeler = flowRef.current?.getBpmnModeler();
-    if (bpmnModeler || currentBpmnXml || workflowIsChanged) {
-      // User has interacted with workflow, so include it
-      includeWorkflow = true;
-      processType = "BPMN";
+    const hasWorkflowInteraction = bpmnModeler || currentBpmnXml || workflowIsChanged;
 
-      // Extract BPMN XML from the modeler
+    let extractedProcessData = null;
+    let extractionFailed = false;
+
+    // Case 1: User has interacted with workflow - extraction is required
+    if (hasWorkflowInteraction) {
       if (bpmnModeler) {
         try {
           const { createXMLFromModeler } = await import("../../../helper/processHelper.js");
-          processData = await createXMLFromModeler(bpmnModeler);
+          extractedProcessData = await createXMLFromModeler(bpmnModeler);
           
-          if (!processData) {
-            // If no processData extracted, throw error
+          if (!extractedProcessData) {
             throw new Error("Failed to extract workflow data from modeler");
           }
         } catch (xmlError) {
           console.error("Error extracting workflow XML:", xmlError);
           toast.error(t("Failed to extract workflow data. Please check your workflow design."));
-          setFormSubmitted(false);
-          return; // Stop the save process
+          extractionFailed = true;
         }
       } else if (currentBpmnXml) {
-        // Use cached BPMN XML if modeler isn't currently mounted
-        processData = currentBpmnXml;
+        extractedProcessData = currentBpmnXml;
+      }
+
+      // If workflow interaction required but extraction failed, signal to stop
+      if (extractionFailed) {
+        return { processData: null, processType: null, includeWorkflow: true, failed: true };
       }
     }
 
-    // Prepare authorizations
-    const filterAuthorizationData = (authorizationData) => {
-      if(authorizationData.selectedOption === "submitter"){
-        return {roles: [], userName: null, resourceDetails:{submitter:true}};
+    // Case 2: promptNewVersion - try to get processData even if no workflow interaction (optional)
+    if (promptNewVersion && !extractedProcessData) {
+      const bpmnModelerForVersion = flowRef.current?.getBpmnModeler();
+      if (bpmnModelerForVersion) {
+        try {
+          const { createXMLFromModeler } = await import("../../../helper/processHelper.js");
+          extractedProcessData = await createXMLFromModeler(bpmnModelerForVersion);
+        } catch (xmlError) {
+          console.error("Error extracting workflow XML for new version:", xmlError);
+          // Don't fail - this is optional for new version
+        }
+      } else if (currentBpmnXml) {
+        extractedProcessData = currentBpmnXml;
       }
-      if (authorizationData.selectedOption === "specifiedRoles") {
-        return { roles: convertMultiSelectOptionToValue(authorizationData.selectedRoles, "role"), userName: "" };
+    }
+
+    // No workflow data needed for create route without interaction
+    if (!hasWorkflowInteraction && !promptNewVersion) {
+      return { processData: null, processType: null, includeWorkflow: false, failed: false };
+    }
+
+    return {
+      processData: extractedProcessData,
+      processType: extractedProcessData ? "BPMN" : null,
+      includeWorkflow: hasWorkflowInteraction,
+      failed: false,
+    };
+  };
+
+  // Helper: Build authorizations object (uses filterAuthorizationData defined above)
+  const buildAuthorizations = () => ({
+    application: {
+      resourceId: null,
+      resourceDetails: { submitter: false },
+      ...filterAuthorizationData(rolesState.APPLICATION),
+    },
+    designer: {
+      resourceId: null,
+      resourceDetails: {},
+      ...filterAuthorizationData(rolesState.DESIGN),
+    },
+    form: {
+      resourceId: null,
+      resourceDetails: {},
+      roles: rolesState.FORM.selectedOption === "specifiedRoles"
+        ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
+        : [],
+    },
+  });
+
+  // Helper: Build task variables array
+  const buildTaskVariables = () => 
+    Object.values(savedFormVariables).map((variable) => ({
+      key: variable.key,
+      label: variable.altVariable || variable.labelOfComponent || '',
+      type: variable.type || 'hidden',
+    }));
+
+  // Helper: Build payload based on context
+  const buildPayload = (formData, workflowInfo, authorizations) => {
+    const payload = { formData };
+
+    if (promptNewVersion) {
+      // New version: include only changed data
+      if (workflowInfo.processData) {
+        payload.processData = workflowInfo.processData;
+        payload.processType = workflowInfo.processType || "BPMN";
+        payload.processId = processId;
       }
-      return { roles: [], userName: preferred_username };
-    };
 
-    const authorizations = {
-      application: {
-        resourceId: null,
-        resourceDetails:{submitter:false},
-        ...filterAuthorizationData(rolesState.APPLICATION),
-      },
-      designer: {
-        resourceId: null,
-        resourceDetails: {},
-        ...filterAuthorizationData(rolesState.DESIGN),
-      },
-      form: {
-        resourceId: null,
-        resourceDetails: {},
-        roles:
-          rolesState.FORM.selectedOption === "specifiedRoles"
-            ? convertMultiSelectOptionToValue(rolesState.FORM.selectedRoles, "role")
-            : [],
-      },
-    };
+      if (hasAuthorizationsChanged()) {
+        payload.authorizations = authorizations;
+      }
 
-    // Prepare the payload - only include workflow data if user has interacted with BPMN
-    const payload = {
-      formData,
-      authorizations
-    };
-
-    // Only include processData and processType if workflow was created/modified
-    if (includeWorkflow) {
-      payload.processData = processData;
-      payload.processType = processType;
+      if (hasSavedFormVariablesChanged()) {
+        payload.taskVariable = buildTaskVariables();
+      }
+    } else {
+      // Create route: include authorizations and workflow if modified
+      payload.authorizations = authorizations;
+      
+      if (workflowInfo.includeWorkflow) {
+        payload.processData = workflowInfo.processData;
+        payload.processType = workflowInfo.processType;
+      }
     }
-          
-    // Call the new combined API
-    const response = await createFormWithWorkflow(payload);
-    const { data } = response;
 
-    // Update Redux store with response data
-    if (data.formData) {
-      dispatch(setFormSuccessData("form", data.formData));
-    }
+    return payload;
+  };
+
+  // Helper: Update Redux store with response data
+  const updateStoreWithResponse = (data) => {
+    if (data.formData) dispatch(setFormSuccessData("form", data.formData));
     if (data.mapper) {
       dispatch(setFormPreviosData(data.mapper));
       dispatch(setFormProcessesData(data.mapper));
     }
-    if (data.process) {
-      dispatch(setProcessData(data.process));
-    }
-    if (data.authorizations) {
-      dispatch(setFormAuthorizationDetails(data.authorizations));
-    }
+    if (data.process) dispatch(setProcessData(data.process));
+    if (data.authorizations) dispatch(setFormAuthorizationDetails(data.authorizations));
+  };
 
-    // Reset all change states to prevent unsaved changes modal on redirect
+  // Helper: Reset change states after successful save
+  const resetChangeStates = () => {
     setFormChangeState({ initial: false, changed: false });
     setWorkflowIsChanged(false);
-    // Update initial savedFormVariables reference after successful save
     initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
     setSettingsChanged(false);
     setIsFormSettingsChanged(false);
     isNavigatingAfterSaveRef.current = true;
     setIsNavigatingAfterSave(true);
 
-    // Navigate to edit page with the new form ID
-    const formId = data.formData._id;
-    toast.success(t("Form and workflow created successfully"));
-    
-    // If publishAfterSave is true, publish the form after creation
-    if (publishAfterSave && data.mapper?.id) {
-      try {
-        await publish(data.mapper.id);
-        setIsPublished(true);
-      } catch (publishError) {
-        console.error("Error publishing after save:", publishError);
-        toast.error(t("Form created but failed to publish"));
-      }
+    if (!promptNewVersion) {
+      setPromptNewVersion(false);
+      setIsSavingNewVersion(false);
     }
-    
-    dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
-  } catch (err) {
-    const error = err.response?.data || err.message;
-    toast.error(error?.message || t("Failed to create form and workflow"));
-    dispatch(setFormFailureErrorData("form", error));
-    isNavigatingAfterSaveRef.current = false;
-    setIsNavigatingAfterSave(false);
-  } finally {
-    setFormSubmitted(false);
-  }
+  };
+
+  /* ------------------------ Save form with workflow ------------------------ */
+  const saveFormWithWorkflow = async (publishAfterSave = false) => {
+    try {
+      setFormSubmitted(true);
+
+      // Prepare all data
+      const formData = prepareFormDataForSave();
+      const workflowInfo = await extractWorkflowData();
+
+      // Stop if workflow extraction failed (required for workflow interaction case)
+      if (workflowInfo.failed) {
+        setFormSubmitted(false);
+        return;
+      }
+
+      const authorizations = buildAuthorizations();
+      const payload = buildPayload(formData, workflowInfo, authorizations);
+
+      // Call API
+      const { data } = await createFormWithWorkflow(payload);
+
+      // Update store and reset states
+      updateStoreWithResponse(data);
+      resetChangeStates();
+
+      // Show success message
+      toast.success(t("Form and workflow created successfully"));
+
+      // Publish if requested
+      if (publishAfterSave && data.mapper?.id) {
+        try {
+          await publish(data.mapper.id);
+          setIsPublished(true);
+        } catch (publishError) {
+          console.error("Error publishing after save:", publishError);
+          toast.error(t("Form created but failed to publish"));
+        }
+      }
+
+      // Navigate to edit page
+      dispatch(push(`${redirectUrl}formflow/${data.formData._id}/edit?tab=form&sub=builder`));
+    } catch (err) {
+      console.error("Error saving form with workflow:", err);
+      const error = err.response?.data || err.message;
+      toast.error(error?.message || t("Failed to create form and workflow"));
+      dispatch(setFormFailureErrorData("form", error));
+      isNavigatingAfterSaveRef.current = false;
+      setIsNavigatingAfterSave(false);
+    } finally {
+      setFormSubmitted(false);
+    }
   };
 
   const fetchFormHistory = (parentFormId) => {
@@ -1850,25 +1938,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       newFormData.processType = processData?.processType;
     }
 
-    formCreate(newFormData)
-      .then((res) => {
-        const form = res.data;
-        dispatch(setFormSuccessData("form", form));
-        dispatch(push(`${redirectUrl}formflow/${form._id}/edit`));
-      })
-      .catch((err) => {
-        let error;
-        if (err.response?.data) {
-          error = err.response.data;
-          setNameError(error?.errors?.name?.message);
-        } else {
-          error = err.message;
-          setNameError(error?.errors?.name?.message);
-        }
-      })
-      .finally(() => {
-        setFormSubmitted(false);
-      });
+    saveFormWithWorkflow(false);
   };
 
   const captureFormChanges = () => {
@@ -2070,14 +2140,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   const saveAsNewVersion = async () => {
     try {
       setIsSavingNewVersion(true);
-      const newFormData = manipulatingFormData(
-        form,
-        MULTITENANCY_ENABLED,
-        tenantKey,
-        formAccessRoles,
-        submissionAccessRoles
-      );
-      //TBD: need to only update path and name so no need to send whole data
+      
+      // Archive the old form by renaming its path and name
       const oldFormData = manipulatingFormData(
         formData,
         MULTITENANCY_ENABLED,
@@ -2091,41 +2155,15 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
       oldFormData.name += newPathAndName;
       await formUpdate(oldFormData._id, oldFormData);
 
-      newFormData.componentChanged = true;
-      newFormData.newVersion = true;
-      newFormData.parentFormId = processListData.parentFormId;
-      newFormData.title = processListData.formName;
-
-      delete newFormData.machineName;
-      delete newFormData._id;
-
-      const res = await formCreate(newFormData);
-      const response = res.data;
-      dispatch(setFormSuccessData("form", response));
-      
-      // Reset all change states to prevent NavigateBlocker from blocking navigation
-      setFormChangeState({ initial: false, changed: false });
-      setWorkflowIsChanged(false);
-      setSettingsChanged(false);
-      setIsFormSettingsChanged(false);
-      // Update initial savedFormVariables reference after successful save
-      initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
-      
-      // Set navigation flags to prevent NavigateBlocker from blocking
-      isNavigatingAfterSaveRef.current = true;
-      setIsNavigatingAfterSave(true);
-      
-      setPromptNewVersion(false);
-      dispatch(push(`${redirectUrl}formflow/${response._id}/edit`));
+      // Create new version using saveFormWithWorkflow
+      await saveFormWithWorkflow(false);
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
-      // Reset navigation flags if save fails
       isNavigatingAfterSaveRef.current = false;
       setIsNavigatingAfterSave(false);
     } finally {
       setIsSavingNewVersion(false);
-      setFormSubmitted(false);
     }
   };
 
@@ -2149,7 +2187,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         return {
           title: t("Save a new version"),
           message: t("You have made changes to a previously published form. Choose how this version should be saved to manage your submission history."),
-          primaryBtnAction: saveAsNewVersion,
+          primaryBtnAction: () => saveAsNewVersion(),
           secondaryBtnAction: saveFormData,
           primaryBtnText: `${t("Create a new version")} (${version.major})`,
           secondaryBtnText: `${t("Update current version")} (${version.minor})`, 

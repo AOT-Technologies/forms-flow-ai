@@ -203,7 +203,7 @@ const Resubmit = React.memo(() => {
   if (loading || isSubActive || !submissionData) return <Loading />;
 
   return (
-      <div>
+      <div className="overflow-scroll">
       {/* Header Section */}
 
         {isAuthenticated && (

@@ -2934,7 +2934,8 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
 
             {/* Body Section - Main content */}
             <div
-              className={`body-section formedit-layout ${shouldShowCustomScroll ? "custom-scroll" : ""} ${isPublished ? "published-form-layout" : ""}`}
+            //add class if tab is variables 
+              className={`body-section formedit-layout  ${activeTab.secondary === "variables" ? "variables-tab" : ""} ${shouldShowCustomScroll ? "custom-scroll" : ""} ${isPublished ? "published-form-layout" : ""}`}
             >
               {renderTabContent()}
             </div>

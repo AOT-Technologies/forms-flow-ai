@@ -9,12 +9,14 @@ export const formCreate = (formData) => {
 
 export const publish = (mapperId) => {
   const publishUrl = replaceUrl(API.PUBLISH, "<mapper_id>", mapperId);
-  return RequestService.httpPOSTRequest(publishUrl);
+  // Send an explicit empty JSON body so backend receives application/json
+  return RequestService.httpPOSTRequest(publishUrl, {});
 };
 
 export const unPublish = (mapperId) => {
   const unPublishUrl = replaceUrl(API.UN_PUBLISH, "<mapper_id>", mapperId);
-  return RequestService.httpPOSTRequest(unPublishUrl);
+  // Send an explicit empty JSON body so backend receives application/json
+  return RequestService.httpPOSTRequest(unPublishUrl, {});
 };
 
 export const formImport = (importData, data) => {

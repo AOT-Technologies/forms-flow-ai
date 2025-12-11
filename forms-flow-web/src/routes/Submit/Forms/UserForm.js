@@ -303,10 +303,17 @@ const View = React.memo((props) => {
   };
 
   const breadcrumbItems = [
-    { id:"submit", label: t("Submit")},
-    { id: "form-title", label: form.title },
-    { id: "draft-id", label: draftSubmission?.isDraft ? draftId : "" },
+    { id: "submit", label: t("Submit") },
+    { id: "form-title", label: form.title }
   ];
+  
+  if (draftSubmission?.isDraft) {
+    breadcrumbItems.push(
+      { id: "drafts", label: t("Drafts") },
+      { id: "edit", label: t("Edit") }
+    );
+  }
+  
 
   const handleBreadcrumbClick = (item) => {
   if (item.id === "submit") {
@@ -314,7 +321,10 @@ const View = React.memo((props) => {
   }else if (item.id === "form-title") {
       handleBack();
   }
-  };
+  else if (item.id === "drafts") {
+    handleBack();    
+  }
+};
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (

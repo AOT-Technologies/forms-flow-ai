@@ -1,7 +1,7 @@
 import React, { useReducer, useState, useEffect, useRef,useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
-// import { Card } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
 import {
   Errors,
   FormBuilder,
@@ -23,6 +23,9 @@ import {
   AlertVariant,
   CustomProgressBar,
   useProgressBar,
+  CustomTextInput,
+  CloseIcon,
+  EditPencilIcon
 } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -76,7 +79,8 @@ import {
   convertMultiSelectOptionToValue,
   removeTenantKeywithSlash,
   convertSelectedValueToMultiSelectOption,
-  compareRolesState
+  compareRolesState,
+  addTenantkey,
 } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
@@ -298,6 +302,7 @@ const EditComponent = () => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const [nameError, setNameError] = useState("");
+  const [showNameFormModal, setShowNameFormModal] = useState(false);
   /* ------------------------------ fowvariables ------------------------------ */
   const flowRef = useRef(null);
   /* ------------------------- file import ------------------------- */
@@ -415,6 +420,33 @@ const EditComponent = () => {
 
   const [isFormSettingsChanged, setIsFormSettingsChanged] = useState(false);
   const prevFormDetailsRef = useRef(null);
+
+  // Keep title–path behavior consistent with SettingsTab for create route
+  const updateFormTitleAndPath = (rawTitle) => {
+    const sanitizedValue = rawTitle?.replace(/[^a-zA-Z0-9\s\-_()]/g, "") || "";
+
+    setFormDetails((prev) => {
+      // For edit route, only update title
+      if (!isCreateRoute) {
+        return {
+          ...prev,
+          title: sanitizedValue,
+        };
+      }
+
+      // For create route, auto-generate path from title as in SettingsTab
+      let generatedPath = _.camelCase(sanitizedValue).toLowerCase();
+      if (MULTITENANCY_ENABLED && tenantKey) {
+        generatedPath = addTenantkey(generatedPath, tenantKey);
+      }
+
+      return {
+        ...prev,
+        title: sanitizedValue,
+        path: generatedPath,
+      };
+    });
+  };
 
   useEffect(() => {
     if (prevFormDetailsRef.current === null) {
@@ -629,6 +661,8 @@ const EditComponent = () => {
       minorVersion: null,
     },
   });
+  const titleInputRef = useRef(null);
+
 
   const handleCancelUpload = () => {
       setImportError("");
@@ -1029,6 +1063,25 @@ const handleSaveLayout = () => {
   saveFormData({ showToast: false });
 };
 
+const isFormTitleMissing = () => {
+  const trimmedTitle = formDetails?.title?.trim();
+  const defaultTitle = t("Untitled Form");
+  return !trimmedTitle || trimmedTitle === defaultTitle;
+};
+
+const handleSaveButtonClick = () => {
+  if (isFormTitleMissing()) {
+    setShowNameFormModal(true);
+    return;
+  }
+
+  if (isPublished) {
+    handleUnpublishAndSaveChanges();
+  } else {
+    handleSaveLayout();
+  }
+};
+
 // Handler for save action from NavigateBlocker
 const handleSaveFromBlocker = async () => {
   try {
@@ -1278,9 +1331,7 @@ const handleSaveFromBlocker = async () => {
     // On create route, require form title to be updated (not empty and not the default "Untitled Form")
     // AND at least one change must be made (settings, workflow, form, or variables)
     if (isCreateRoute) {
-      const trimmedTitle = formDetails?.title?.trim();
-      const defaultTitle = t("Untitled Form");
-      const isTitleMissing = !trimmedTitle || trimmedTitle === defaultTitle;
+  
       
       // Check if any changes have been made
       const hasVariablesChanged = hasSavedFormVariablesChanged();
@@ -1289,8 +1340,9 @@ const handleSaveFromBlocker = async () => {
         workflowIsChanged ||
         formChangeState?.changed ||
         hasVariablesChanged;
-      // Disable save if title is missing OR no changes have been made
-      setSaveDisabled(isTitleMissing || !hasAnyChanges);
+    // For create route, allow Save even if title is missing; naming will be enforced via modal.
+    // Disable Save only when there are no changes.
+    setSaveDisabled(!hasAnyChanges);
       return;
     }
     // On edit route, use existing logic - also check for savedFormVariables changes
@@ -1486,10 +1538,14 @@ const handleSaveFromBlocker = async () => {
     if (data.authorizations) {
       dispatch(setFormAuthorizationDetails(data.authorizations));
     }
-      setPromptNewVersion(false);
-      setFormChangeState(prev => ({ ...prev, changed: false }));
-      // Update initial savedFormVariables reference after successful save
-      initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
+    setPromptNewVersion(false);
+    // After successful save, reset all change flags so Save button can disable
+    setFormChangeState(prev => ({ ...prev, changed: false }));
+    setWorkflowIsChanged(false);
+    setSettingsChanged(false);
+    setIsFormSettingsChanged(false);
+    // Update initial savedFormVariables reference after successful save
+    initialSavedFormVariablesRef.current = structuredClone(savedFormVariables);
     } catch (err) {
       const error = err.response?.data || err.message;
       dispatch(setFormFailureErrorData("form", error));
@@ -1891,6 +1947,9 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     }
     dispatchFormAction({ type: "formChange", value: newForm });
   };
+ const saveBtnDisabled = isPublished || saveDisabled;
+ const publishBtnDisabled =  isCreateRoute && (!formDetails?.title || formDetails.title.trim() === "" || formDetails.title.trim() === t("Untitled Form"));
+                     
 
 
   const confirmPublishOrUnPublish = async () => {
@@ -2787,9 +2846,33 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                     }
                   }}
                 />
-                <p className="form-title">
-                  {formData?.title || formDetails?.title || processListData?.formName || t("Untitled Form")}
-                </p>
+                <div className="d-flex align-items-center">
+                  <div className="form-title-edit">
+                    <CustomTextInput
+                      ref={titleInputRef}
+                      value={
+                        formDetails?.title ||
+                        formData?.title ||
+                        processListData?.formName ||
+                        ""
+                      }
+                      setValue={updateFormTitleAndPath}
+                      placeholder={t("Untitled Form")}
+                      ariaLabel={t("Form Name")}
+                      dataTestId="header-form-title-input"
+                      maxLength={200}
+                    />
+                  </div>
+                  <div
+                    className="form-edit-pencil-icon cursor-pointer"
+                    onClick={() => {
+                      titleInputRef.current?.focus();
+                    }}
+                  >
+                    <EditPencilIcon />
+                  </div>
+
+                </div>
               </div>
               <div className="section-seperation-right">
                 <div
@@ -2804,23 +2887,21 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                 {createDesigns && (
                   <>
                     <V8CustomButton
-                      disabled={isPublished || saveDisabled}
+                      disabled={saveBtnDisabled}
                       label={t("Save")}
-                      onClick={
-                        isPublished
-                          ? handleUnpublishAndSaveChanges
-                          : handleSaveLayout
-                      }
+                      onClick={handleSaveButtonClick}
                       dataTestId="save-form-layout"
                       ariaLabel={t("Save Form Layout")}
+                      variant={!saveBtnDisabled && "primary"}
                     />
                     <V8CustomButton
-                      disabled={isCreateRoute && (!formDetails?.title || formDetails.title.trim() === "" || formDetails.title.trim() === t("Untitled Form"))}
+                      disabled={publishBtnDisabled}
                       label={t(publishText)}
                       onClick={handlePublishClick}
                       dataTestId="handle-publish-testid"
                       ariaLabel={`${t(publishText)} ${t("Button")}`}
-                      darkPrimary
+                      // darkPrimary
+                      variant={!publishBtnDisabled && saveBtnDisabled ? "primary" : "secondary"}
                     />
                   </>
                 )}
@@ -3055,6 +3136,74 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         secondaryBtnAction={handleCloseDelete}
         secondaryBtnDisable={isDeletionLoading}
       />  
+
+      <Modal
+        size="lg"
+        show={showNameFormModal}
+        onHide={() => {
+          setShowNameFormModal(false);
+        }}
+        data-testid="name-form-modal"
+        className="name-form-modal"
+      >
+       <Modal.Header className="d-flex justify-content-between align-items-center">
+  <Modal.Title className="m-0">
+    <p className="m-0">{t("Name form")}</p>
+  </Modal.Title>
+
+  <div
+    className="icon-close d-flex align-items-center"
+    onClick={() => setShowNameFormModal(false)}
+  >
+    <CloseIcon data-testid="name-form-modal-close-icon" />
+  </div>
+</Modal.Header>
+
+        <Modal.Body>
+          <div className="form-name-container">
+            <p className="mb-1">{t("Form name*")}</p>
+            <CustomTextInput
+              value={formDetails?.title || ""}
+              setValue={updateFormTitleAndPath}
+              ariaLabel={t("Form Name")}
+              dataTestId="name-form-modal-input"
+              maxLength={200}
+              required
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="d-flex justify-content-end gap-2 w-100">
+            <V8CustomButton
+              label={t("Cancel")}
+              ariaLabel={t("Cancel")}
+              dataTestId="name-form-modal-cancel"
+              secondary
+              onClick={() => {
+                setShowNameFormModal(false);
+              }}
+            />
+            <V8CustomButton
+              label={t("Save")}
+              ariaLabel={t("Save")}
+              dataTestId="name-form-modal-save"
+              disabled={!formDetails?.title?.trim()}
+              onClick={() => {
+                const trimmedTitle = formDetails?.title?.trim();
+                if (!trimmedTitle) {
+                  return;
+                }
+                setShowNameFormModal(false);
+                if (isPublished) {
+                  handleUnpublishAndSaveChanges();
+                } else {
+                  handleSaveLayout();
+                }
+              }}
+            />
+          </div>
+        </Modal.Footer>
+      </Modal>
 
     </div>
   );

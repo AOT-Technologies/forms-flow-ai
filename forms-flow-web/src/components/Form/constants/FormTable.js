@@ -92,6 +92,7 @@ function FormTable({
     if (!applicationCount || applicationCount === 0) {
       dispatch(
         deleteForm("form", formId, () => {
+          setIsDeletionLoading(false);
           dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
         })
       );
@@ -101,9 +102,11 @@ function FormTable({
       }
       dispatch(setFormDeleteStatus({ modalOpen: false, formId: "", formName: "" }));
       toast.success(t("Form deleted successfully"));
+      handleCloseDelete();
+    } else {
+      setIsDeletionLoading(false);
+      handleCloseDelete();
     }
-    handleCloseDelete();
-    setIsDeletionLoading(false);
   };
 
   const handleCloseDelete = () => {

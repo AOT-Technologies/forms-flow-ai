@@ -2288,8 +2288,9 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
   const handleDelete = () => {
     if (!applicationCount) {
       setIsDeletionLoading(true);
-      dispatch(deleteForm("form", formId,() => {
+      dispatch(deleteForm("form", formId, () => {
         // Callback after form deletion;
+        setIsDeletionLoading(false);
         dispatch(push(`${redirectUrl}formflow`));
       }));
     }
@@ -2308,7 +2309,6 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     dispatch(
       setFormDeleteStatus({ modalOpen: false, formId: "", formName: "" })
     );
-    setIsDeletionLoading(false);
   };
 
 

@@ -3,10 +3,10 @@ import utils from "@aot-technologies/formiojs/lib/utils";
 // Factory function to create a hidden component with dynamic properties
 const createHiddenComponent = ({label, key, persistent, 
   customDefaultValue = null, 
-  calculateValue = null}) => ({
+  calculateValue = null, customClass = null }) => ({
   label,
   addons: [],
-  customClass: "",
+  customClass: customClass ?? "",
   modalEdit: false,
   defaultValue: "",
   persistent: persistent,
@@ -103,37 +103,42 @@ export const addHiddenApplicationComponent = (form) => {
 
   // Define configuration for all additional components
   const hiddenComponents = [
-    { label: "Submission Id", key: "applicationId", persistent: true},
-    { label: "Submission Status", key: "applicationStatus", persistent:true },
+    { label: "Submission Id", key: "applicationId", persistent: true, customClass: "formio-component-hidden-default" },
+    { label: "Submission Status", key: "applicationStatus", persistent:true, customClass: "formio-component-hidden-default" },
     { 
       label: "Current User", 
       persistent: true,
       key: "currentUser", 
-      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && JSON.parse(localStorage.getItem('UserDetails'));  value = localdata?.preferred_username || '';" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && JSON.parse(localStorage.getItem('UserDetails'));  value = localdata?.preferred_username || '';",
+      customClass: "formio-component-hidden-default" 
     },
     { 
       label: "Submitter Email", 
       persistent: true,
       key: "submitterEmail", 
-      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.email || '';" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') && JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.email || '';",
+      customClass: "formio-component-hidden-default" 
     },
     { 
       label: "Submitter First Name", 
       persistent: true,
       key: "submitterFirstName", 
-      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.given_name || '';" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.given_name || '';",
+      customClass: "formio-component-hidden-default" 
     },
     { 
       label: "Submitter Last Name", 
       persistent: true,
       key: "submitterLastName", 
-      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.family_name || '';" 
+      customDefaultValue: "const localdata = localStorage.getItem('UserDetails') &&  JSON.parse(localStorage.getItem('UserDetails')); value= localdata?.family_name || '';",
+      customClass: "formio-component-hidden-default" 
     },
     { 
       label: "Current User Roles", 
       persistent: true,
       key: "currentUserRoles", 
-      calculateValue: "const localdata = localStorage.getItem('UserDetails') && (JSON.parse(localStorage.getItem('UserDetails'))) || []; value = localdata?.groups?.map(group => group.replace(new RegExp('^/+|/+$', 'g'), '')) || [];" 
+      calculateValue: "const localdata = localStorage.getItem('UserDetails') && (JSON.parse(localStorage.getItem('UserDetails'))) || []; value = localdata?.groups?.map(group => group.replace(new RegExp('^/+|/+$', 'g'), '')) || [];",
+      customClass: "formio-component-hidden-default" 
     },
     // { 
     //   label: "All Available Roles", 
@@ -160,13 +165,26 @@ export const addHiddenApplicationComponent = (form) => {
 
 
   // Loop through and add each additional component
-  additionalComponents.forEach(({ label, key, customDefaultValue, calculateValue, ...rest }) => {
+  additionalComponents.forEach(
+    ({
+      label,
+      key,
+      customDefaultValue,
+      calculateValue,
+      customClass,
+      ...rest
+    }) => {
     const componentConfig = key === "submit" 
       ? { key, label, ...rest } 
-      : createHiddenComponent({label, key, customDefaultValue, 
-        calculateValue, persistent:rest.persistent });
+      : createHiddenComponent({
+          label,
+          key,
+          customDefaultValue,
+          calculateValue,
+          persistent: rest.persistent,
+          customClass
+        });
     addHiddenComponent(components, componentConfig, form);
   });
-
   return form;
 };

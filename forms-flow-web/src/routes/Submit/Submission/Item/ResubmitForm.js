@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Card } from "react-bootstrap";
 
 // Formio and related utilities
 import {
@@ -14,14 +13,13 @@ import {
     selectError,
     Errors
 } from "@aot-technologies/formio-react";
-
 // UI Components and Helpers
-import { useTranslation, Translation } from "react-i18next";
+import { Translation, useTranslation } from "react-i18next";
 import Loading from "../../../../containers/Loading";
 import SubmissionError from "../../../../containers/SubmissionError";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { toast } from "react-toastify";
-import { BackToPrevIcon } from "@formsflow/components";
+import { BreadCrumbs,BreadcrumbVariant } from "@formsflow/components";
 
 // Actions
 import {
@@ -50,9 +48,8 @@ import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
 } from "../../../../constants/constants";
-import { navigateToFormEntries } from "../../../../helper/routerHelper";
+import { navigateToFormEntries, navigateToSubmitFormsListing } from "../../../../helper/routerHelper";
 import { RESOURCE_BUNDLES_DATA } from "../../../../resourceBundles/i18n";
-import { textTruncate } from "../../../../helper/helper";
 
 const Resubmit = React.memo(() => {
   const { t } = useTranslation();
@@ -82,7 +79,6 @@ const Resubmit = React.memo(() => {
     useSelector((state) => selectError("submission", state))
   ];
 
-  const isPublic = !isAuthenticated;
   const applicationDetailRef = useRef(applicationDetail);
 
   useEffect(() => {
@@ -185,65 +181,74 @@ const Resubmit = React.memo(() => {
     }
   };
 
+  const breadcrumbItems = [
+    { id: "submit", label: t("Submit") },
+    { id: "form-title", label: form?.title },
+  ];
+
+  const handleBreadcrumbClick = (item) => {
+    if (item.id === "submit") {
+      navigateToSubmitFormsListing(dispatch, tenantKey);
+    } else if (item.id === "form-title") {
+      handleBack();
+    }
+  };
+
+
   let scrollableOverview = "user-form-container";
   if (form?.display === "wizard") {
     scrollableOverview =  "user-form-container-with-wizard";
   }
 
-  const renderHeader = () => (
-    <Card className="nav-bar user-form-header">
-      <Card.Body>
-        <SubmissionError
-          modalOpen={submissionError.modalOpen}
-          message={submissionError.message}
-          onConfirm={() =>
-            dispatch(setFormSubmissionError({ modalOpen: false, message: "" }))
-          }
-        />
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="icon-title-container">
-            {!isPublic && (
-              <BackToPrevIcon
-                title={t("Back to Form List")}
-                data-testid="back-to-form-list"
-                onClick={handleBack}
-              />
-            )}
-            <div className="user-form-header-text">
-              {textTruncate(100, 97, form?.title)}
-            </div>
-          </div>
-        </div>
-      </Card.Body>
-    </Card>
-  );
-
-    if (loading || isSubActive || !submissionData) return <Loading />;
+  if (loading || isSubActive || !submissionData) return <Loading />;
 
   return (
-    <div className="userform-wrapper">
-      {renderHeader()}
-      <Errors errors={errors} />
-      <LoadingOverlay
-        active={isFormSubmissionLoading}
-        spinner
-        text={<Translation>{(t) => t("Loading...")}</Translation>}
-        className="col-12"
-      >
+      <div className="overflow-scroll">
+      {/* Header Section */}
+
+        {isAuthenticated && (
+          <div className="header-section-1">
+              <div className="section-seperation-left d-block">
+                  <BreadCrumbs 
+                    items={breadcrumbItems}
+                    variant={BreadcrumbVariant.MINIMIZED}
+                    underline={false}
+                    onBreadcrumbClick={handleBreadcrumbClick} 
+                  /> 
+                  {applicationDetail?.id ? (
+                    <h4>{applicationDetail.id}</h4>
+                  ) : null}
+                  <SubmissionError
+                    modalOpen={submissionError.modalOpen}
+                    message={submissionError.message}
+                    onConfirm={() =>
+                      dispatch(setFormSubmissionError({ modalOpen: false, message: "" }))
+                    }
+                  />
+              </div>
+          </div>
+        )}
+        <Errors errors={errors} />
+        <LoadingOverlay
+          active={isFormSubmissionLoading}
+          spinner
+          text={<Translation>{(t) => t("Loading...")}</Translation>}
+          className="col-12"
+        >
         <div className={`wizard-tab ${scrollableOverview}`}>
-            <Form
-              form={form}
-              submission={isFormSubmissionLoading ? updatedSubmissionData : submissionState}
-              url={submissionState?.url}
-              onSubmit={handleFormSubmit}
-              options={{
-                i18n: RESOURCE_BUNDLES_DATA,
-                language: lang,
-                buttonSettings: { showCancel: false },
-              }}
-              onCustomEvent={() => {}}
-            />
-        </div>
+          <Form
+            form={form}
+            submission={isFormSubmissionLoading ? updatedSubmissionData : submissionState}
+            url={submissionState?.url}
+            onSubmit={handleFormSubmit}
+            options={{
+              i18n: RESOURCE_BUNDLES_DATA,
+              language: lang,
+              buttonSettings: { showCancel: false },
+            }}
+            onCustomEvent={() => {}}
+          />
+        </div>   
       </LoadingOverlay>
     </div>
   );

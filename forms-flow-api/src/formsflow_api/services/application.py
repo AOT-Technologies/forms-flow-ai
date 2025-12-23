@@ -616,3 +616,21 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         ):
             return mapper.form_name, mapper.form_id
         return None, None
+
+    @staticmethod
+    def update_application_info(application_id: int, data: dict, user: UserContext):
+        """Update application details."""
+        application = Application.find_by_id(application_id=application_id)
+        if application is None:
+            raise BusinessException(BusinessErrorCode.APPLICATION_ID_NOT_FOUND)
+        # This can be used later if workflow completion fails and we need to rollback
+        application_backup_data = {
+            "application_status": application.application_status,
+            "submission_id": application.submission_id,
+            "latest_form_id": application.latest_form_id,
+        }
+        data["modified_by"] = user.user_name
+        application.update(data)
+        application.commit()
+        current_app.logger.debug("Application details updated...")
+        return application, application_backup_data

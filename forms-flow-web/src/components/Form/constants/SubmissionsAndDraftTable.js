@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback} from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useState, useEffect, useCallback, useMemo} from "react";
+import { useDispatch, useSelector, batch } from "react-redux";
 import { selectRoot } from "@aot-technologies/formio-react";
 import { CLIENT_EDIT_STATUS } from "../../../constants/applicationConstants";
 import {
@@ -8,14 +8,12 @@ import {
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
 import { useTranslation } from "react-i18next";
-import { PromptModal, V8CustomButton, NewSortDownIcon, RefreshIcon } from "@formsflow/components";
+import { PromptModal, V8CustomButton, ReusableTable } from "@formsflow/components";
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
-import { HelperServices, StyleServices } from "@formsflow/service";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
+import { HelperServices } from "@formsflow/service";
 
 const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -38,7 +36,6 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteDraftId, setDeleteDraftId] = useState('');
     const [isDeletionLoading, setIsDeletionLoading] = useState(false);
-    const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
   const gridFieldToSortKey = {
     id: "id",
@@ -64,15 +61,17 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         navigateToResubmit(dispatch, tenantKey, row.formId, row.submissionId);
     };
 
-  const handleSortChange = (modelArray) => {
+  const handleSortChange = useCallback((modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
     if (!model?.field || !model?.sort) {
       const resetSort = Object.keys(applicationSort).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
         return acc;
       }, {});
-      dispatch(setFormSubmissionSort({ ...resetSort, activeKey: "id" }));
-      dispatch(setApplicationListActivePage(1));
+      batch(() => {
+        dispatch(setFormSubmissionSort({ ...resetSort, activeKey: "id" }));
+        dispatch(setApplicationListActivePage(1));
+      });
       return;
     }
 
@@ -84,11 +83,11 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
       return acc;
     }, {});
 
-        dispatch(setFormSubmissionSort({
-            ...updatedSort,
-            activeKey: mappedKey,
-        }));
-    };
+    dispatch(setFormSubmissionSort({
+      ...updatedSort,
+      activeKey: mappedKey,
+    }));
+  }, [dispatch, applicationSort]);
 
     const continueDraft = (row) => {
         navigateToDraftEdit(dispatch, tenantKey, row.formId, row.id);
@@ -126,57 +125,95 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         navigateToViewSubmission(dispatch, tenantKey, item.formId, item.id);
     };
 
-  const onPaginationModelChange = ({ page, pageSize }) => {
+  const onPaginationModelChange = useCallback(({ page, pageSize }) => {
     if (limit !== pageSize) {
-      dispatch(setCountPerpage(pageSize));
-      dispatch(setApplicationListActivePage(1));
+      batch(() => {
+        dispatch(setCountPerpage(pageSize));
+        dispatch(setApplicationListActivePage(1));
+      });
     } else if (pageNo !== page + 1) {
       dispatch(setApplicationListActivePage(page + 1));
     }
-  };
+  }, [dispatch, limit, pageNo]);
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     fetchSubmissionsAndDrafts();
-  };
+  }, [fetchSubmissionsAndDrafts]);
 
   const columns = [
-    { field: "id", headerName: t("Submission ID"), flex: 1, sortable: true },
+    { 
+      field: "id", 
+      headerName: t("Submission ID"), 
+      flex: 1, 
+      sortable: true,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
+    },
     {
       field: "created",
       headerName: t("Submitted On"),
       flex: 1,
       sortable: true,
-      renderCell: (params) => HelperServices.getLocaldate(params.value),
+      renderCell: (params) => {
+        const dateValue = HelperServices.getLocaldate(params.value);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "modified",
       headerName: t("Last Modified On"),
       flex: 1,
       sortable: true,
-      renderCell: (params) => HelperServices.getLocaldate(params.value),
+      renderCell: (params) => {
+        const dateValue = HelperServices.getLocaldate(params.value);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "isDraft",
       headerName: t("Type"),
       flex: 1,
       sortable: true,
-      renderCell: (params) => (
-        <span className="d-flex align-items-center">
-          {params.value ? (
-            <span className="status-draft"></span>
-          ) : (
-            <span className="status-live"></span>
-          )}
-          {params.value ? t("Draft") : t("Submission")}
-        </span>
-      ),
+      renderCell: (params) => {
+        const typeText = params.value ? t("Draft") : t("Submission");
+        return (
+          <span className="d-flex align-items-center">
+            {params.value ? (
+              <span className="status-draft"></span>
+            ) : (
+              <span className="status-live"></span>
+            )}
+            <span title={typeText}>
+              {typeText}
+            </span>
+          </span>
+        );
+      },
     },
     {
       field: "applicationStatus",
       headerName: t("Status"),
       flex: 0.8,
       sortable: true,
-      renderCell: (params) => (params.row.isDraft ? "" : params.value),
+      renderCell: (params) => {
+        const statusValue = params.row.isDraft ? "" : params.value;
+        return (
+          <span title={statusValue}>
+            {statusValue}
+          </span>
+        );
+      },
     },
     {
       field: "actions",
@@ -184,11 +221,11 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
       flex: 1.5,
       sortable: false,
       align: "right",
+      cellClassName: "last-column",
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={handleRefresh}
         />
       ),
@@ -240,42 +277,29 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     [pageNo, limit]
   );
 
-  const activeKey = applicationSort?.activeKey || "id";
-  const activeField = sortKeyToGridField[activeKey] || activeKey;
-  const activeOrder = applicationSort?.[activeKey]?.sortOrder || "asc";
-
-    const renderDescIcon = useCallback(() => (
-      <div>
-        <NewSortDownIcon color={iconColor} />
-      </div>
-    ), [iconColor]);
-  
-    const renderAscIcon = useCallback(() => (
-      <div style={{ transform: "rotate(180deg)" }}>
-        <NewSortDownIcon color={iconColor} />
-      </div>
-    ), [iconColor]);
+  const sortModel = useMemo(() => {
+    const activeKey = applicationSort?.activeKey || "id";
+    const activeField = sortKeyToGridField[activeKey] || activeKey;
+    const activeOrder = applicationSort?.[activeKey]?.sortOrder || "asc";
+    return [{ field: activeField, sort: activeOrder }];
+  }, [applicationSort]);
 
   return (
     <>
-      <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          rowCount={totalForms}
-          loading={isApplicationLoading || searchFormLoading}
-          paginationMode="server"
-          sortingMode="server"
-          disableColumnMenu
-          sortModel={[{ field: activeField, sort: activeOrder }]}
-          onSortModelChange={handleSortChange}
-          paginationModel={paginationModel}
-          onPaginationModelChange={onPaginationModelChange}
-          pageSizeOptions={[10, 25, 50, 100]}
-          rowHeight={55}
-          disableRowSelectionOnClick
-          getRowId={(row) => row.id}
-          sx={{
+      <ReusableTable
+        columns={columns}
+        rows={rows}
+        rowCount={totalForms}
+        loading={isApplicationLoading || searchFormLoading}
+        sortModel={sortModel}
+        onSortModelChange={handleSortChange}
+        paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationModelChange}
+        getRowId={(row) => row.id}
+        noRowsLabel={t("No Entries have been found.")}
+        autoHeight={true}
+        dataGridProps={{
+          sx: {
             "& .MuiDataGrid-columnHeader--sortable": {
               "& .MuiDataGrid-iconButtonContainer": {
                 visibility: "visible",
@@ -284,34 +308,21 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
                 opacity: 0.3,
               },
             },
-          }}
-          slots={{
-            columnSortedDescendingIcon: renderDescIcon,
-            columnSortedAscendingIcon: renderAscIcon,
-          }}
-          slotProps={{
-            loadingOverlay: {
-              variant: "skeleton",
-              noRowsVariant: "skeleton",
-            },
-          }}
-          localeText={{
-            noRowsLabel: t("No Entries have been found."),
-          }}
-        />
-      </Paper>
+          },
+        }}
+      />
       <PromptModal
         show={showDeleteModal}
         onClose={handleCloseActionModal}
-        type="warning"
-        title={t("Are You Sure You Want to Delete This Draft? ")}
-        message={t("This action cannot be undone.")}
-        primaryBtnText={t("No, Keep This Draft")}
-        primaryBtnAction={handleCloseActionModal}
+        type="danger"
+        title={t("Delete This Draft? ")}
+        message={t("Deleting a draft is permanent and cannot be undone.")}
+        primaryBtnText={t("Delete draft")}
+        primaryBtnAction={confirmDraftDelete}
         primaryBtnDisable={isDeletionLoading}
         buttonLoading={isDeletionLoading}
-        secondaryBtnText={t("Yes, Delete this Draft")}
-        secondaryBtnAction={confirmDraftDelete}
+        secondaryBtnText={t("Cancel")}
+        secondaryBtnAction={handleCloseActionModal}
         primaryBtndataTestid="no-delete-button"
         primaryBtnariaLabel="No, Keep This Draft"
         secondoryBtnariaLabel="Yes, Delete this Draft"

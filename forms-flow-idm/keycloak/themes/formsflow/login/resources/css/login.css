@@ -6,9 +6,7 @@
   }
   
   .login-pf body {
-      background: url(../img/img2.png) no-repeat;
-      /* background-position: center; */
-      background-size:  50rem 40rem;
+      background: #ffffff;
   }
   
   textarea.pf-c-form-control {
@@ -383,9 +381,7 @@
   @media (max-width: 767px) {
   
       .login-pf body {
-         background: none;
-         /* background-size: cover; */
-         background-size:  50rem 40rem;
+         background: #ffffff;
       }
   
       #kc-header {
@@ -513,11 +509,9 @@
   
   .card-pf {
       padding: 5rem !important;
-      margin: 0 10rem 0 auto;
+      margin: 0 auto;
       box-shadow: var(--pf-global--BoxShadow--lg);
-      /* padding: 0 20px; */
       max-width: 500px;
-      /* float: right; */
   }
   
   /*phone*/
@@ -634,9 +628,14 @@
   }
   /* End Recovery codes */
   .login-pf-page{
-   display: flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    background: #ffffff;
+  }
+  
+  body {
+    background: #ffffff !important;
   }
   

@@ -7,6 +7,7 @@ import {
   EditPencilIcon,
   BreadCrumbs,
   FileUploadArea,
+  useProgressBar,
 } from "@formsflow/components";
 import {
   navigateToSubflowCreate,
@@ -23,7 +24,6 @@ import { MAX_FILE_SIZE } from "../../../constants/constants";
 const UPLOAD_PROGRESS_INCREMENT = 5;
 const UPLOAD_PROGRESS_INTERVAL = 300;
 const INITIAL_UPLOAD_PROGRESS = 10;
-const COMPLETE_PROGRESS = 100;
 
 const ProcessCreationOptions = () => {
   const location = useLocation();
@@ -38,14 +38,20 @@ const ProcessCreationOptions = () => {
 
   // State management
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
   // Refs
   const fileInputRef = useRef(null);
-  const uploadTimerRef = useRef(null);
   const uploadAreaRef = useRef(null);
+  
+  // Use progress bar hook for upload progress
+  const { progress: uploadProgress, start, stop, complete, reset } = useProgressBar({
+    increment: UPLOAD_PROGRESS_INCREMENT,
+    interval: UPLOAD_PROGRESS_INTERVAL,
+    useCap: false,
+    initialProgress: INITIAL_UPLOAD_PROGRESS,
+  });
 
   // Determine process type and configuration
   const isSubflow = type === "subflow";
@@ -54,7 +60,7 @@ const ProcessCreationOptions = () => {
         name: "Subflow",
         nameKey: "subflow",
         breadcrumbLabel: t("Create a New Sub flow"),
-        createText: t("Create asub flow from scratch"),
+        createText: t("Create a Subflow from scratch"),
         uploadText: t("Upload an existing sub flow"),
         fileExtension: ".bpmn",
         fileType: "text/bpmn",
@@ -78,20 +84,10 @@ const ProcessCreationOptions = () => {
    */
   const resetUploadState = useCallback(() => {
     setIsUploading(false);
-    setUploadProgress(0);
+    reset();
     setUploadError("");
     setSelectedFile(null);
-  }, []);
-
-  /**
-   * Clears the upload timer if it exists
-   */
-  const clearUploadTimer = useCallback(() => {
-    if (uploadTimerRef.current) {
-      clearInterval(uploadTimerRef.current);
-      uploadTimerRef.current = null;
-    }
-  }, []);
+  }, [reset]);
 
   /**
    * Validates the uploaded file
@@ -145,7 +141,7 @@ const ProcessCreationOptions = () => {
       // Initialize upload state
       setSelectedFile(file);
       setUploadError("");
-      setUploadProgress(INITIAL_UPLOAD_PROGRESS);
+      reset();
       setIsUploading(true);
 
       try {
@@ -165,23 +161,23 @@ const ProcessCreationOptions = () => {
           throw new Error("Process key not received from server");
         }
 
-        // Complete upload progress and navigate
-        setUploadProgress(COMPLETE_PROGRESS);
-        clearUploadTimer();
+        // Complete upload progress
+        complete();
 
-        // Navigate to the appropriate edit page
-        if (isSubflow) {
-          navigateToSubflowEdit(dispatch, tenantKey, response.data.processKey);
-        } else {
-          navigateToDecisionTableEdit(dispatch, tenantKey, response.data.processKey);
-        }
+        // Wait for progress bar to show 100% before navigating (allows UI to update)
+        setTimeout(() => {
+          // Navigate to the appropriate edit page
+          if (isSubflow) {
+            navigateToSubflowEdit(dispatch, tenantKey, response.data.processKey);
+          } else {
+            navigateToDecisionTableEdit(dispatch, tenantKey, response.data.processKey);
+          }
 
-        // Set loading to false after navigation
-        setIsUploading(false);
+          // Set loading to false after navigation
+          setIsUploading(false);
+        }, 500);
       } catch (error) {
-        // Set progress to 100% even on error
-        setUploadProgress(COMPLETE_PROGRESS);
-        clearUploadTimer();
+        // Set error first to avoid briefly rendering the completed state
         const errorMessage =
           error?.response?.data?.message ||
           error?.message ||
@@ -189,10 +185,17 @@ const ProcessCreationOptions = () => {
             type: processConfig.name.toLowerCase(),
           });
         setUploadError(errorMessage);
-        setIsUploading(false);
+
+        // Complete progress after error so UI doesn't flash Done/Cancel
+        complete();
+
+        // Wait for progress bar to show 100% before finalizing state
+        setTimeout(() => {
+          setIsUploading(false);
+        }, 500);
       }
     },
-    [validateFile, clearUploadTimer, dispatch, isSubflow, processConfig.name, t]
+    [validateFile, reset, complete, dispatch, isSubflow, processConfig.name, t]
   );
 
   /**
@@ -200,22 +203,16 @@ const ProcessCreationOptions = () => {
    */
   useEffect(() => {
     if (isUploading) {
-      clearUploadTimer();
-
-      uploadTimerRef.current = setInterval(() => {
-        setUploadProgress((prevProgress) => {
-          const nextProgress = prevProgress + UPLOAD_PROGRESS_INCREMENT;
-          return Math.min(nextProgress, COMPLETE_PROGRESS);
-        });
-      }, UPLOAD_PROGRESS_INTERVAL);
+      reset();
+      start();
     } else {
-      clearUploadTimer();
+      stop();
     }
 
     return () => {
-      clearUploadTimer();
+      stop();
     };
-  }, [isUploading, clearUploadTimer]);
+  }, [isUploading, start, stop, reset]);
 
   /**
    * Manages focus on the upload area when an error occurs
@@ -232,7 +229,7 @@ const ProcessCreationOptions = () => {
    */
   const handleBreadcrumbClick = useCallback(
     (item) => {
-      if (item?.id === "build") {
+      if (item?.id === "subflows" || item?.id === "decision-tables") {
         // Navigate back to the appropriate process listing page
         const processRoute = isSubflow
           ? getRoute(tenantKey).SUBFLOW
@@ -294,8 +291,15 @@ const ProcessCreationOptions = () => {
 
   // Breadcrumb configuration
   const breadcrumbItems = [
-    { id: "build", label: t("Build") },
-    { id: `${processConfig.dataTestIdPrefix}-title`, label: processConfig.breadcrumbLabel },
+    { 
+      id: isSubflow ? "subflows" : "decision-tables", 
+      label: isSubflow ? t("Subflows") : t("Decision Tables"),
+      href: getRoute(tenantKey)[isSubflow ? "SUBFLOW" : "DECISIONTABLE"]
+    },
+    { 
+      id: "create-new", 
+      label: isSubflow ? t("Create a New Subflow") : t("Create a New Decision Table")
+    },
   ];
 
   return (

@@ -20,6 +20,7 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     submission_id = db.Column(db.String(100), nullable=False)
     color = db.Column(db.String(50), nullable=True)
     percentage = db.Column(db.Double, nullable=True)
+    private_notes = db.Column(db.Text, nullable=True)
 
     @classmethod
     def create_from_dict(cls, application_audit_info: dict) -> ApplicationHistory:
@@ -36,13 +37,41 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
             application_audit.submission_id = application_audit_info["submission_id"]
             application_audit.color = application_audit_info.get("color")
             application_audit.percentage = application_audit_info.get("percentage")
+            application_audit.private_notes = application_audit_info.get(
+                "private_notes"
+            )
             application_audit.save()
             return application_audit
         return None
 
     @classmethod
-    def get_application_history(cls, application_id: int):
+    def get_application_history(
+        cls, application_id: int, notes_permission: bool = False
+    ):
         """Fetch application history."""
+        if not notes_permission:
+            return (
+                cls.query.filter(cls.application_id == application_id)
+                .order_by(cls.created)
+                .group_by(
+                    cls.id,
+                    cls.application_status,
+                    cls.form_id,
+                    cls.submission_id,
+                    cls.created,
+                    cls.submitted_by,
+                )
+                .with_entities(
+                    cls.id,
+                    cls.application_status,
+                    cls.form_id,
+                    cls.submission_id,
+                    cls.created,
+                    cls.submitted_by,
+                    cls.color,
+                    cls.percentage,
+                )
+            )
         return (
             cls.query.filter(cls.application_id == application_id)
             .order_by(cls.created)

@@ -153,7 +153,11 @@ const FormSettings = forwardRef((props, ref) => {
 
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    const sanitizedValue = value.replace(/[#+]/g, "");
+    // For title field, allow only letters, numbers, spaces, hyphens, underscores, and parentheses
+    // For path field, remove special characters as before
+    const sanitizedValue = name === "title" 
+      ? value.replace(/[^a-zA-Z0-9\s\-_()]/g, "")
+      : value.replace(/[#+]/g, "");
     setErrors((prev) => ({ ...prev, [name]: "" }));
     blurStatus.current[name] = false;  
     let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;

@@ -18,14 +18,13 @@ COPY forms-flow-bpm-utils/src ./forms-flow-bpm-utils/src/
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml install -P camunda
 
 
-FROM openjdk:21-ea-jdk
+FROM eclipse-temurin:21-jdk-jammy
 
 # set label for image
 LABEL Name="formsflow"
 
-ENV JAVA_VERSION=21-ea+14
-ENV JAVA_HOME=/opt/java/openjdk-21\
-    PATH="/opt/java/openjdk-21/bin:$PATH"
+ENV JAVA_HOME=/opt/java/openjdk\
+    PATH="/opt/java/openjdk/bin:$PATH"
 
 EXPOSE 8080
 # OpenShift has /app in the image, but it's missing when doing local development - Create it when missing
@@ -38,7 +37,7 @@ RUN chmod a+rwx -R /app
 RUN keytool -import -trustcacerts \
     -alias sslcom-cert \
     -file /app/sslcom.cer \
-    -keystore  /usr/java/openjdk-21/lib/security/cacerts \
+    -keystore  /opt/java/openjdk/lib/security/cacerts \
     -storepass changeit \
     -noprompt
 WORKDIR /app

@@ -1,7 +1,6 @@
 import React, {
   useEffect,
-  useState,
-  useRef
+  useState
 } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -18,10 +17,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getUserRoles } from "../../../apiManager/services/authorizationService";
 import _camelCase from "lodash/camelCase";
-import {
-  validateFormName,
-  validatePathName,
-} from "../../../apiManager/services/FormServices";
+// import {
+//   validateFormName,
+//   validatePathName,
+// } from "../../../apiManager/services/FormServices";
 import PropTypes from "prop-types";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 
@@ -46,27 +45,27 @@ const SettingsTab = (
   const dispatch = useDispatch();
 
   /* ---------------------------- redux store data ---------------------------- */
-  const { parentFormId, formId } = useSelector(
-    (state) => state.process.formProcessList
-  );
+  // const { parentFormId, formId } = useSelector(
+  //   (state) => state.process.formProcessList
+  // );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
 
   /* --------------------------- useState Variables --------------------------- */
   const [userRoles, setUserRoles] = useState([]);
-  const blurStatus = useRef({ title: false, path: false });
+  // const blurStatus = useRef({ title: false, path: false });
   // const [copied, setCopied] = useState(false);
   // const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false);
   // const [isValidating, setIsValidating] = useState(false);
  
-  const [validationState, setValidationState] = useState({
-    name: false,
-    path: false,
-  });
-  
-  const [errors, setErrors] = useState({
-    title: "",
-    path: "",
-  });
+  // const [validationState, setValidationState] = useState({
+  //   name: false,
+  //   path: false,
+  // });
+  // 
+  // const [errors, setErrors] = useState({
+  //   title: "",
+  //   path: "",
+  // });
 
   const publicUrlPath = `${window.location.origin}/public/form/`;
   const multiSelectOptionKey = "role";
@@ -75,47 +74,51 @@ const SettingsTab = (
   /* ------------------------- authorization variables ------------------------ */
 
 
-  /* ------------------------- validating form name and path ------------------------ */
-  const validateField = async (field, value) => {
-    if (!value?.trim()) {
-      const errorMessage = `${
-        field.charAt(0).toUpperCase() + field.slice(1)
-      } is required.`;
-      setErrors((prev) => ({ ...prev, [field]: errorMessage }));
-      return false;
-    }
-
-    setValidationState((prev) => ({ ...prev, [field]: true }));
-    let errorMessage = "";
-
-    try {
-      const response =
-        field === "title"
-          ? await validateFormName(value, parentFormId)
-          : await validatePathName(value, formId);
-
-      const data = response?.data;
-      if (data?.code === "FORM_EXISTS") {
-        errorMessage = data.message;
-      }
-    } catch (error) {
-      errorMessage =
-        error.response?.data?.message ||
-        `An error occurred while validating the ${field}.`;
-      console.error(`Error validating ${field}:`, errorMessage);
-    }
-
-    setErrors((prev) => ({ ...prev, [field]: errorMessage }));
-    setValidationState((prev) => ({ ...prev, [field]: false }));
-    return !errorMessage; // Return true if no error
-  };  
+  // /* ------------------------- validating form name and path ------------------------ */
+  // const validateField = async (field, value) => {
+  //   if (!value?.trim()) {
+  //     const errorMessage = `${
+  //       field.charAt(0).toUpperCase() + field.slice(1)
+  //     } is required.`;
+  //     setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+  //     return false;
+  //   }
+  //
+  //   setValidationState((prev) => ({ ...prev, [field]: true }));
+  //   let errorMessage = "";
+  //
+  //   try {
+  //     const response =
+  //       field === "title"
+  //         ? await validateFormName(value, parentFormId)
+  //         : await validatePathName(value, formId);
+  //
+  //     const data = response?.data;
+  //     if (data?.code === "FORM_EXISTS") {
+  //       errorMessage = data.message;
+  //     }
+  //   } catch (error) {
+  //     errorMessage =
+  //       error.response?.data?.message ||
+  //       `An error occurred while validating the ${field}.`;
+  //     console.error(`Error validating ${field}:`, errorMessage);
+  //   }
+  //
+  //   setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+  //   setValidationState((prev) => ({ ...prev, [field]: false }));
+  //   return !errorMessage; // Return true if no error
+  // };  
 
   /* ---------------------- handling form details change ---------------------- */
   const handleFormDetailsChange = (e) => {
     const { name, value, type } = e.target;
-    const sanitizedValue = value?.replace(/[#+]/g, "");
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-    blurStatus.current[name] = false;  
+    // For title field, allow only letters, numbers, spaces, hyphens, underscores, and parentheses
+    // For path field, remove special characters as before
+    const sanitizedValue = name === "title" 
+      ? value?.replace(/[^a-zA-Z0-9\s\-_()]/g, "")
+      : value?.replace(/[#+]/g, "");
+    // setErrors((prev) => ({ ...prev, [name]: "" }));
+    // blurStatus.current[name] = false;  
     let updatedValue = name === "path" ? _camelCase(sanitizedValue).toLowerCase() : sanitizedValue;
 
     // For path field, add tenant key if multi-tenancy is enabled
@@ -141,9 +144,9 @@ const SettingsTab = (
     setFormDetails((prev) => ({ ...prev, [name]: updatedValue }));
   };
 
-  const handleBlur = (field, sanitizedValue) => {
-    validateField(field, sanitizedValue);
-  };
+  // const handleBlur = (field, sanitizedValue) => {
+  //   validateField(field, sanitizedValue);
+  // };
 
   /* ---------------------------- Fetch user roles ---------------------------- */
   useEffect(() => {
@@ -247,8 +250,6 @@ const SettingsTab = (
   const handleRoleSelectForApplication = (roles) =>
     handleRoleStateChange(APPLICATION, "selectedRoles", roles);
 
- console.log(errors, validationState,"errors and validation state");
-
 
   return (
     <>
@@ -270,8 +271,9 @@ const SettingsTab = (
                   target: { name: "title", value: val, type: "text" },
                 })
               }
-              onBlur={() => handleBlur('title', formDetails.title)}
+              // onBlur={() => handleBlur('title', formDetails.title)}
               maxLength={200}
+              placeholder={t("Add form name")}
             />
           </div>
           <div className="description-container">
@@ -288,6 +290,7 @@ const SettingsTab = (
               minRows={3}
               id="form-description"
               dataTestId="form-description"
+              placeholder={t("Add description")}
             />
           </div>
             
@@ -303,6 +306,7 @@ const SettingsTab = (
                 variant="secondary"
                 size="small"
                 dataTestId="form-edit-wizard-display"
+                optionClassName="form-edit-checkbox"
                 />
             </div>
           {/* <label
@@ -332,7 +336,7 @@ const SettingsTab = (
             value={rolesState?.DESIGN?.selectedOption}
             options={[
               {
-                label: t("Only owner"),
+                label: t("Only you"),
                 value: "onlyYou",
               },
               {
@@ -410,6 +414,7 @@ const SettingsTab = (
                   variant="secondary"
                   size="small"
                   dataTestId="form-edit-allow-anonymous"
+                  optionClassName="form-edit-checkbox"
                 />
             </div>
           </div>
@@ -465,9 +470,11 @@ const SettingsTab = (
             ? addTenantkey(currentValue, tenantKey)
             : currentValue;
           setFormDetails(prev => ({ ...prev, path: updatedPath }));
-          handleBlur("path", updatedPath);
+          // handleBlur("path", updatedPath);
         }}
-        saveButtonText={t("Save URL")}
+          saveButtonText={t("Save URL")}
+          showInfoSection={true}
+          infoText={t("Changing this link will make the previous link inaccessible.")}
       />
     </div>
     </>

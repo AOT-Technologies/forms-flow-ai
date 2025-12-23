@@ -23,7 +23,6 @@ cffi==1.17.1
 charset-normalizer==3.4.1
 click==8.1.8
 cryptography==44.0.2
-ecdsa==0.19.1
 flask-jwt-oidc==0.7.0
 flask-marshmallow==1.3.0
 flask-restx==1.3.0
@@ -67,7 +66,7 @@ pyasn1==0.4.8
 pycparser==2.22
 pyparsing==3.2.3
 python-dotenv==1.1.0
-python-jose==3.4.0
+python-jose[cryptography]==3.4.0
 pytz==2025.2
 redis==5.2.1
 referencing==0.36.2

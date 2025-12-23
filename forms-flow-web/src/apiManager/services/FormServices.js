@@ -9,12 +9,14 @@ export const formCreate = (formData) => {
 
 export const publish = (mapperId) => {
   const publishUrl = replaceUrl(API.PUBLISH, "<mapper_id>", mapperId);
-  return RequestService.httpPOSTRequest(publishUrl);
+  // Send an explicit empty JSON body so backend receives application/json
+  return RequestService.httpPOSTRequest(publishUrl, {});
 };
 
 export const unPublish = (mapperId) => {
   const unPublishUrl = replaceUrl(API.UN_PUBLISH, "<mapper_id>", mapperId);
-  return RequestService.httpPOSTRequest(unPublishUrl);
+  // Send an explicit empty JSON body so backend receives application/json
+  return RequestService.httpPOSTRequest(unPublishUrl, {});
 };
 
 export const formImport = (importData, data) => {
@@ -23,6 +25,11 @@ export const formImport = (importData, data) => {
 
 export const formUpdate = (form_id,formData) => {
   return RequestService.httpPUTRequest(`${API.FORM_DESIGN}/${form_id}`, formData);
+};
+
+export const formFlowUpdate = (data, mapperId) => {
+  const formFlowUpdateUrl = replaceUrl(API.FORM_FLOW_UPDATE, "<mapper_id>", mapperId);
+  return RequestService.httpPUTRequest(formFlowUpdateUrl, data);
 };
 
 export const processMigrate = (migrationData) => {

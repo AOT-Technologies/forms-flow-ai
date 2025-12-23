@@ -64,7 +64,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.12.11]
+        python-version: [3.12.12]
     
     env:
       JWT_OIDC_JWKS_URI: "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/certs"

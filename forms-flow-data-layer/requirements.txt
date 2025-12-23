@@ -8,7 +8,6 @@ charset-normalizer==3.4.1
 click==8.1.8
 colorama==0.4.6
 dnspython==2.7.0
-ecdsa==0.19.1
 email_validator==2.2.0
 fastapi==0.116.1
 fastapi-cli==0.0.7
@@ -35,7 +34,7 @@ Pygments==2.19.1
 pymongo==4.11.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
-python-jose==3.4.0
+python-jose[cryptography]==3.4.0
 python-multipart==0.0.20
 PyYAML==6.0.2
 redis==5.2.1

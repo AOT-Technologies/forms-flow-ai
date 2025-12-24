@@ -288,7 +288,7 @@ const CreateFormPage = () => {
         </div>
       </div>
 
-      <div className="body-section">
+      <div className="body-section pb-0">
         <div className="form-create-cards">
           {/* Create Something New Section */}
           <div

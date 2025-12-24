@@ -9,7 +9,7 @@ click==8.1.8
 colorama==0.4.6
 dnspython==2.7.0
 email_validator==2.2.0
-fastapi==0.116.1
+fastapi==0.127.0
 fastapi-cli==0.0.7
 graphql-core==3.2.6
 greenlet==3.1.1

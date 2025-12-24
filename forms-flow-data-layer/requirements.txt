@@ -8,7 +8,6 @@ charset-normalizer==3.4.1
 click==8.1.8
 colorama==0.4.6
 dnspython==2.7.0
-ecdsa==0.19.1
 email_validator==2.2.0
 fastapi==0.116.1
 fastapi-cli==0.0.7
@@ -35,7 +34,7 @@ Pygments==2.19.1
 pymongo==4.11.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
-python-jose==3.4.0
+python-jose[cryptography]==3.4.0
 python-multipart==0.0.20
 PyYAML==6.0.2
 redis==5.2.1
@@ -47,12 +46,12 @@ shellingham==1.5.4
 six==1.17.0
 sniffio==1.3.1
 SQLAlchemy==2.0.39
-starlette==0.47.2
+starlette==0.49.1
 strawberry-graphql==0.262.5
 toml==0.10.2
 typer==0.15.2
 typing_extensions==4.12.2
-urllib3==2.5.0
+urllib3==2.6.0
 uvicorn==0.34.0
 watchfiles==1.0.4
 websockets==15.0.1

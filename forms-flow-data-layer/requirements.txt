@@ -51,7 +51,7 @@ strawberry-graphql==0.262.5
 toml==0.10.2
 typer==0.15.2
 typing_extensions==4.12.2
-urllib3==2.5.0
+urllib3==2.6.0
 uvicorn==0.34.0
 watchfiles==1.0.4
 websockets==15.0.1

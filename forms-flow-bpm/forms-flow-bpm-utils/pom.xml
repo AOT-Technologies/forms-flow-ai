@@ -8,11 +8,11 @@
     <parent>
         <groupId>formsflow.ai</groupId>
         <artifactId>forms-flow-bpm</artifactId>
-        <version>8.0.0-alpha</version>
+        <version>8.1.0-alpha</version>
     </parent>
 
     <artifactId>forms-flow-bpm-utils</artifactId>
-    <version>8.0.0-alpha</version>
+    <version>8.1.0-alpha</version>
 
     <name>formsflow BPM Extension Utils</name>
     <description>formsflow BPM Extension</description>

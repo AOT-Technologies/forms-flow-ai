@@ -90,6 +90,7 @@ import { SystemVariables } from '../../../constants/variables';
 import EditorActions from "./EditActions";
 import { getRoute } from "../../../constants/constants";
 import useFormBuilderAutoScroll from "./useFormBuilderAutoScroll";
+import { navigateToDesignFormBuild } from "../../../helper/routerHelper";
 
 // constant values
 const ACTION_OPERATIONS = {
@@ -2846,7 +2847,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                 <BreadCrumbs
                   items={[
                     { id: "forms", label: t("Forms"), href: getRoute(tenantKey).FORMFLOW },
-                    { id: "create-new-form", label: t("Create New Form") },
+                    { id: "create-new-form", label: t("Create New Form")},
                     { id: "edit", label: t("Edit") },
                   ]}
                   variant="minimized"
@@ -2855,7 +2856,9 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
                   ariaLabel={t("Build Form Breadcrumb")}
                   onBreadcrumbClick={(item) => {
                     if (item?.id === "forms") {
-                      dispatch(push(getRoute(tenantKey).FORMFLOW));
+                      dispatch(push(item?.href));
+                    } else if (item?.id === "create-new-form") {
+                      navigateToDesignFormBuild(dispatch, tenantKey);
                     }
                   }}
                 />

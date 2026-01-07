@@ -1,4 +1,4 @@
-FROM python:3.13.2-slim-bullseye
+FROM python:3.13.9-slim-bookworm
 
 LABEL project="formsflow-data-layer"
 
@@ -26,7 +26,8 @@ COPY src/ ./src
 COPY main.py .
 
 # Security: Add non-root user
-RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /formsflow-data-layer
+RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /formsflow-data-layer \
+      && pip uninstall -y ecdsa
 USER appuser
 
 EXPOSE 8000

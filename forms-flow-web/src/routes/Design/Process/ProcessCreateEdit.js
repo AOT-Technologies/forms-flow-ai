@@ -52,6 +52,10 @@ import LoadingOverlay from "react-loading-overlay-ts";
 // import ImportProcess from "../../../components/Modals/ImportProcess";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker.jsx";
 import FileService from "../../../services/FileService";
+import {
+  navigateToSubflowBuild,
+  navigateToDecisionTableBuild,
+} from "../../../helper/routerHelper";
 
 
 const EXPORT = "EXPORT";
@@ -1100,6 +1104,12 @@ const ProcessCreateEdit = ({ type }) => {
               onBreadcrumbClick={(item) => {
                 if (item?.id === "subflows" || item?.id === "decision-tables") {
                   dispatch(push(getRoute(tenantKey)[isBPMN ? "SUBFLOW" : "DECISIONTABLE"]));
+                } else if (item?.id === "create-new") {
+                  if (isBPMN) {
+                    navigateToSubflowBuild(dispatch, tenantKey);
+                  } else {
+                    navigateToDecisionTableBuild(dispatch, tenantKey);
+                  }
                 }
               }}
             />

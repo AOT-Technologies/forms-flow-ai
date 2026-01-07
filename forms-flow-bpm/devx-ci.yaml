@@ -1,0 +1,63 @@
+# DevX CI Configuration for Forms Flow BPM Component
+# Location: forms-flow-bpm/devx-ci.yaml
+
+project:
+  language: maven
+  version: "17"
+  working_directory: "./forms-flow-bpm"
+
+build:
+  run_tests: true
+  test_script: "mvn test -B -P camunda"  # Add -P camunda profile
+  build_script: "-B clean package -DskipTests -P camunda"  # Add -P camunda profile
+  artifact_path: "forms-flow-bpm-camunda/target/forms-flow-bpm.jar"  # Specific JAR location
+
+docker:
+  enabled: true
+  working_directory: "./forms-flow-bpm"
+  dockerfile: "Dockerfile"
+  image_name: "formsflow-bpm"
+  image_tag: ""  # Defaults to git commit SHA
+  registry_type: ecr
+  platforms: "linux/amd64"
+
+security:
+  # SAST: Using SonarCloud (Free for public repos!)
+  sast:
+    enabled: true
+    tool: sonarqube  # Uses SonarCloud when host is sonarcloud.io
+    scan_path: "."
+    
+    # SonarCloud Configuration (FREE for public repos)
+    sonar_host_url: "https://sonarcloud.io"
+    sonar_organization: "aot-technologies"  # ← Your SonarCloud organization
+    sonar_project_key: "AOT-Technologies_forms-flow-ai"  # ← Format: org_repo_component
+
+    # Quality Gate Settings
+    fail_on_quality_gate: false  # Start with false for testing
+    
+    # Coverage (optional - Maven/JaCoCo will auto-generate)
+    coverage_report_path: "target/site/jacoco/jacoco.xml"
+
+  
+  iac:
+    enabled: false
+  
+  trivy:
+    enabled: true
+    severity: CRITICAL
+    fail_on_vuln: false
+    ignore_unfixed: true
+    scanners: vuln,secret,misconfig
+  
+  sbom:
+    enabled: true
+    format: cyclonedx-json
+  
+  sbom_scan:
+    enabled: true
+    severity: medium
+
+aws:
+  region: ca-central-1
+  role_to_assume: arn:aws:iam::653405621825:role/GitHubActionsRole-test

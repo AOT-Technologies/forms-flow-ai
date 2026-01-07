@@ -1,0 +1,34 @@
+name: Forms Flow BPM CI
+
+on:
+  # Manual trigger - Works on any branch
+  workflow_dispatch:
+  
+  # Auto-trigger only on test branch
+  push:
+    branches:
+      - devops/reusable-workflow-test  # ← Only your test branch
+    paths:
+      - "forms-flow-bpm/**"
+      - ".github/workflows/bpm-ci.yaml"
+  
+  # PR trigger only to test branch (optional - for testing PR workflow)
+  pull_request:
+    branches:
+      - devops/reusable-workflow-test  # ← Only PRs targeting test branch
+    paths:
+      - "forms-flow-bpm/**"
+      - ".github/workflows/bpm-ci.yaml"
+
+# Prevent multiple runs on same commit
+concurrency:
+  group: bpm-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true  # Always cancel old runs during testing
+
+jobs:
+  bpm-ci:
+    name: BPM Component CI/CD
+    uses: AOT-Technologies/devx-reusable-workflows/.github/workflows/ci-orchestrator.yaml@v1
+    with:
+      config_path: forms-flow-bpm/devx-ci.yaml
+    secrets: inherit

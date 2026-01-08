@@ -194,7 +194,7 @@ const SubmitList = React.memo(({ getFormsInit }) => {
                 />
           </div>
        </div>
-      <div className="body-section">
+      <div className="body-section custom-scroll">
           <ClientTable
             externalSortModel={submitSortModel}
             externalOnSortModelChange={handleSubmitSortModelChange}

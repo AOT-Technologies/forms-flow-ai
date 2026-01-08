@@ -28,7 +28,7 @@ concurrency:
 jobs:
   bpm-ci:
     name: BPM Component CI/CD
-        uses: AOT-Technologies/devx-reusable-workflows/.github/workflows/ci-orchestrator.yaml@main
+    uses: AOT-Technologies/devx-reusable-workflows/.github/workflows/ci-orchestrator.yaml@main
     with:
       config_path: forms-flow-bpm/devx-ci.yaml
     secrets: inherit

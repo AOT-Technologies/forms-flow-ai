@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import {
-  Errors,
+  // Errors,
   FormBuilder,
   deleteForm,
   Form,
@@ -58,6 +58,7 @@ import {
   setFormDeleteStatus,
   setFormHistories,
   setFormAuthorizationDetails,
+  clearFormError,
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPut,
@@ -1070,7 +1071,10 @@ const isFormTitleMissing = () => {
   return !trimmedTitle || trimmedTitle === defaultTitle;
 };
 
-const handleSaveButtonClick = () => {
+  const handleSaveButtonClick = () => {
+  // Reset any previous errors when save is clicked
+  dispatch(clearFormError("form"));
+  
   if (isFormTitleMissing()) {
     setShowNameFormModal(true);
     return;
@@ -1387,6 +1391,9 @@ const handleSaveFromBlocker = async () => {
 
   const saveFormData = async ({ showToast = true }) => {
     try {
+      // Reset any previous errors at the start of save
+      dispatch(clearFormError("form"));
+      
       const isFormChanged = true; // Hard code the value to always make backend call on Save Layout
       if (!isFormChanged && !promptNewVersion) {
         showToast && toast.success(t("Form updated successfully"));
@@ -1557,6 +1564,9 @@ const handleSaveFromBlocker = async () => {
   /* ------------------------ Save form with workflow for create route ------------------------ */
 const saveFormWithWorkflow = async (publishAfterSave = false) => {
   try {
+    // Reset any previous errors at the start of save
+    dispatch(clearFormError("form"));
+    
     setFormSubmitted(true);
 
     // Prepare form data
@@ -1712,6 +1722,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
   } catch (err) {
     const error = err.response?.data || err.message;
+    console.log("error1", error);
     toast.error(error?.message || t("Failed to create form and workflow"));
     dispatch(setFormFailureErrorData("form", error));
     isNavigatingAfterSaveRef.current = false;
@@ -2816,7 +2827,14 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         spinner
         text={t("Loading...")}
       >
-        <Errors errors={errors} />
+        {/* <Errors errors={errors} /> */}
+        <Alert
+          message={errors?.message}
+          variant={AlertVariant.WARNING}
+          isShowing={true && !!errors?.message}
+          autoClose={true}
+          displayTime={3000}
+        />
 
         <div className="">
           <div className="">

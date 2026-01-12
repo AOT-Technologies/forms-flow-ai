@@ -485,9 +485,6 @@ const ProcessCreateEdit = ({ type }) => {
       const message = t(`${Process.name} is already up to date`);
       setSuccessAlertMessage(message);
       setShowSuccessAlert(true);
-      setTimeout(() => {
-        setShowSuccessAlert(false);
-      }, 3000);
       return; // Return undefined to block save when not publishing
     }
     // When publishing, return processData so publish can proceed
@@ -621,9 +618,9 @@ const ProcessCreateEdit = ({ type }) => {
       const errorMsg = t(`Failed to ${isPublished ? "unpublish" : "publish"} the ${Process.type}. Please try again.`);
       setErrorAlertMessage(errorMsg);
       setShowErrorAlert(true);
-      setTimeout(() => {
-        setShowErrorAlert(false);
-      }, 5000);
+      // setTimeout(() => {
+      //   setShowErrorAlert(false);
+      // }, 5000);
     } finally {
       setIsPublishLoading(false);
     }
@@ -1124,11 +1121,15 @@ const ProcessCreateEdit = ({ type }) => {
                 message={successAlertMessage}
                 variant={AlertVariant.SUCCESS}
                 isShowing={showSuccessAlert}
+                autoClose={true}
+                displayTime={3000}
               />
               <Alert
                 message={errorAlertMessage}
                 variant={AlertVariant.ERROR}
                 isShowing={showErrorAlert}
+                autoClose={true}
+                displayTime={5000}
               />
             </div>
             <div className="header-section-1">

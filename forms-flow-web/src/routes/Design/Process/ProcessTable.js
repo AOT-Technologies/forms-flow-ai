@@ -492,7 +492,7 @@ const ProcessTable = React.memo(() => {
           />
         </div>
       </div>
-      <div className="body-section">
+      <div className="body-section custom-scroll">
         <ReusableTable
           columns={columns}
           rows={processList}

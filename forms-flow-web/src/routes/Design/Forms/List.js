@@ -344,7 +344,7 @@ const List = React.memo((props) => {
                     </div>
                  </div>
 
-                 <div className="body-section">
+                 <div className="body-section custom-scroll"> 
                     {renderTable()}
                  </div>
 

@@ -3,12 +3,15 @@ FROM python:3.11.7-slim-bookworm
 # set label for image
 LABEL Name="formsflow"
 
+# Copy API utils into working directory
+COPY forms-flow-api-utils /forms-flow-data-analysis-api/forms-flow-api-utils
+
 WORKDIR /forms-flow-data-analysis-api/app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends git \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
-COPY requirements.txt .
+COPY /forms-flow-data-analysis-api/requirements.txt .
 ENV PATH=/venv/bin:$PATH
 # ARG MODEL_ID=Seethal/sentiment_analysis_generic_dataset
 ARG MODEL_ID=distilbert-base-uncased-finetuned-sst-2-english
@@ -20,14 +23,15 @@ RUN python3 -m venv /venv \
        -r requirements.txt \
     && rm -rf ~/.cache/pip
 
-ADD . /forms-flow-data-analysis-api/app
-
+COPY forms-flow-data-analysis-api/ .
 RUN pip install --no-cache-dir . \
       && pip uninstall -y ecdsa \
       && apt-get remove -y \
       libsqlite3-0 git \
       && apt-get clean \
-      && rm -rf /var/lib/apt/lists/*
+      && rm -rf /var/lib/apt/lists/* \
+      forms-flow-api/forms-flow-api-utils/* \
+      /forms-flow-api/forms-flow-api-utils/*
 
 # Set HF_HOME to a writable location
 ENV HF_HOME=/tmp/huggingface

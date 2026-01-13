@@ -1722,7 +1722,6 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
     dispatch(push(`${redirectUrl}formflow/${formId}/edit?tab=form&sub=builder`));
   } catch (err) {
     const error = err.response?.data || err.message;
-    console.log("error1", error);
     toast.error(error?.message || t("Failed to create form and workflow"));
     dispatch(setFormFailureErrorData("form", error));
     isNavigatingAfterSaveRef.current = false;
@@ -2831,7 +2830,7 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         <Alert
           message={errors?.message}
           variant={AlertVariant.WARNING}
-          isShowing={true && !!errors?.message}
+          isShowing={!!errors?.message}
           autoClose={true}
           displayTime={3000}
         />

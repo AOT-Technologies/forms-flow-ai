@@ -158,7 +158,7 @@ class KeycloakClientService(KeycloakGroupService):
         try:
             # Use update_request with empty data (Keycloak expects empty body for this endpoint)
             # The update_request method handles PUT requests and returns success message for 204
-            response = self.client.update_request(url_path=url_path, data={})
+            self.client.update_request(url_path=url_path, data={})
             current_app.logger.debug(
                 f"Reset password email triggered successfully for user {user_id}"
             )

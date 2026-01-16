@@ -19,6 +19,8 @@ from formsflow_api_utils.utils import (
     profiletime,
 )
 
+from formsflow_api_utils.exceptions import BusinessException
+
 from formsflow_api.schemas import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
@@ -28,7 +30,6 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory
-from formsflow_api_utils.exceptions import BusinessException
 # from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 API = Namespace(
@@ -397,14 +398,10 @@ class ResetPassword(Resource):
                 raise BusinessException("WEB_BASE_URL not configured in application settings")
 
             # Call Keycloak service
-            response = (
-                KeycloakFactory
-                .get_instance()
-                .reset_password_email(
-                    user_id=user_id,
-                    client_id=client_id,
-                    redirect_uri=redirect_uri
-                )
+            KeycloakFactory.get_instance().reset_password_email(
+                user_id=user_id,
+                client_id=client_id,
+                redirect_uri=redirect_uri
             )
 
             return {
@@ -416,7 +413,7 @@ class ResetPassword(Resource):
                 "message": str(e)
             }, HTTPStatus.BAD_REQUEST
 
-        except Exception as e:
+        except Exception:  # pylint: disable=broad-exception-caught
             current_app.logger.error("Reset password failed", exc_info=True)
             return {
                 "message": "Failed to send reset password email"

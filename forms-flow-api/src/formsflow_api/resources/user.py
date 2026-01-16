@@ -368,6 +368,7 @@ class TenantAddUser(Resource):
         response = KeycloakFactory.get_instance().add_user_to_tenant(data)
         return response
 
+
 @cors_preflight("PUT, OPTIONS")
 @API.route(
     "/<string:user_id>/reset-password",

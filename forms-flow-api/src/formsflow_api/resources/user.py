@@ -28,6 +28,8 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory
+from formsflow_api_utils.exceptions import BusinessException
+# from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 API = Namespace(
     "User",
@@ -364,3 +366,58 @@ class TenantAddUser(Resource):
         data = TenantUserAddSchema().load(json_payload)
         response = KeycloakFactory.get_instance().add_user_to_tenant(data)
         return response
+
+@cors_preflight("PUT, OPTIONS")
+@API.route(
+    "/<string:user_id>/reset-password",
+    methods=["PUT", "OPTIONS"],
+)
+class ResetPassword(Resource):
+    """Resource to trigger reset password email using Keycloak."""
+
+    @staticmethod
+    @auth.require
+    # @auth.has_one_of_roles([MANAGE_USERS])  # Uncomment if role-based access is needed
+    @profiletime
+    @API.response(200, "OK:- Password reset email sent successfully.")
+    @API.response(400, "BAD_REQUEST:- Invalid request.")
+    @API.response(401, "UNAUTHORIZED:- Authorization header missing or invalid.")
+    @API.response(500, "INTERNAL_SERVER_ERROR:- Keycloak error.")
+    def put(user_id):
+        """Trigger reset password email for a user."""
+        try:
+            # Get client_id from token (azp)
+            client_id = g.token_info.get("azp")
+            if not client_id:
+                raise BusinessException("client_id not found in token")
+
+            # Redirect URI fallback
+            redirect_uri = current_app.config.get("WEB_BASE_URL")
+            if not redirect_uri:
+                raise BusinessException("WEB_BASE_URL not configured in application settings")
+
+            # Call Keycloak service
+            response = (
+                KeycloakFactory
+                .get_instance()
+                .reset_password_email(
+                    user_id=user_id,
+                    client_id=client_id,
+                    redirect_uri=redirect_uri
+                )
+            )
+
+            return {
+                "message": "Password reset email sent successfully"
+            }, HTTPStatus.OK
+
+        except BusinessException as e:
+            return {
+                "message": str(e)
+            }, HTTPStatus.BAD_REQUEST
+
+        except Exception as e:
+            current_app.logger.error("Reset password failed", exc_info=True)
+            return {
+                "message": "Failed to send reset password email"
+            }, HTTPStatus.INTERNAL_SERVER_ERROR

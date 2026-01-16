@@ -100,6 +100,11 @@ class KeycloakAdmin(ABC):
         """Add user in a tenant."""
         raise NotImplementedError("Method not implemented")
 
+    @abstractmethod
+    def reset_password_email(self, user_id: str, client_id: str, redirect_uri: str):
+        """Trigger reset password email for a user."""
+        raise NotImplementedError("Method not implemented")
+
     @classmethod
     def get_user_id_from_response(
         cls, response: Dict[str, Any], user_name_attribute: str

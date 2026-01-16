@@ -2,6 +2,7 @@
 
 from http import HTTPStatus
 from typing import Dict, List
+from urllib.parse import quote
 
 import requests
 from flask import current_app
@@ -421,6 +422,54 @@ class KeycloakGroupService(KeycloakAdmin):
         return {
             "message": "The requested operation is not supported."
         }, HTTPStatus.BAD_REQUEST
+
+    def reset_password_email(self, user_id: str, client_id: str, redirect_uri: str):
+        """Trigger reset password email for a user via Keycloak Admin API.
+
+        Args:
+            user_id: The Keycloak user ID
+            client_id: The client ID from the token (azp claim)
+            redirect_uri: The redirect URI for the password reset link
+
+        Returns:
+            bool: True if the email was sent successfully
+
+        Raises:
+            BusinessException: If the request fails
+        """
+        current_app.logger.debug(
+            f"Triggering reset password email for user {user_id} with client {client_id}"
+        )
+
+        # Validate redirect_uri
+        if not redirect_uri:
+            raise BusinessException("redirect_uri cannot be empty or None")
+
+        # URL encode the redirect_uri to handle special characters
+        encoded_redirect_uri = quote(redirect_uri, safe="")
+
+        # Build the URL path with query parameters
+        url_path = (
+            f"users/{user_id}/reset-password-email"
+            f"?client_id={client_id}&redirect_uri={encoded_redirect_uri}"
+        )
+
+        try:
+            # Use update_request with empty data (Keycloak expects empty body for this endpoint)
+            # The update_request method handles PUT requests and returns success message for 204
+            response = self.client.update_request(url_path=url_path, data={})
+            current_app.logger.debug(
+                f"Reset password email triggered successfully for user {user_id}"
+            )
+            return True
+        except Exception as err:
+            current_app.logger.error(
+                f"Failed to trigger reset password email for user {user_id}: {err}",
+                exc_info=True,
+            )
+            raise BusinessException(
+                BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
+            ) from err
 
     def create_group_permission_mapping(self, group_id, permissions, client_id):
         """Set permission mapping to group."""

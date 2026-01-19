@@ -320,7 +320,6 @@ const enableWorkflowChange = async () => {
   const columns = [
     { field: 'type', headerName: 'Type', flex: 1.5, sortable: false },
     { field: 'variable', headerName: 'Variable', width: 130, sortable: false },
-    { field: 'altVariable', headerName: 'Alternative Field', width: 130, sortable: false },
     {
       field: "selected",
       headerName: "Selected",
@@ -354,7 +353,7 @@ const enableWorkflowChange = async () => {
             primaryBtnText={t("Yes, Discard All Unsaved Changes")}
             secondaryBtnText={t("No, Keep The Changes")}
             secondaryBtnAction={handleDiscardModal}
-            type="warning"
+            type="danger"
             size="md"
             primaryBtndataTestid="discard-confirm-button"
             secondoryBtndataTestid="discard-cancel-button"
@@ -390,7 +389,7 @@ const enableWorkflowChange = async () => {
               spinner
               text={t("Loading...")}
             >
-              <div className="flow-builder">
+              <div className={`flow-builder ${isPublished ? 'published-builder' : 'unpublished-builder'}`}>
                 {!createDesigns ? (
                   <BPMNViewer bpmnXml={processData?.processData || defaultBpmnXml} />
                 ) : (

@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
-import { connect, useSelector, useDispatch } from "react-redux";
-import CreateFormModal from "../../../components/Modals/CreateFormModal.js";
+import { connect, useSelector, useDispatch, batch } from "react-redux";
 import { toast } from "react-toastify";
-import { addTenantkey } from "../../../helper/helper";
 import {
   selectRoot,
   deleteForm,
 } from "@aot-technologies/formio-react";
 import Loading from "../../../containers/Loading";
-import { MULTITENANCY_ENABLED, MAX_FILE_SIZE } from "../../../constants/constants";
 import {
   setBPMFormListLoading,
   setFormDeleteStatus,
   setBpmFormSearch,
   setBPMFormListPage,
+  setBPMFormLimit,
   setBpmFormSort,
-  setFormSuccessData
+  setClientFormLimit,
+  setClientFormListPage,
+  setClientFormListSort,
+  setClientFormSearch,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
 import {
@@ -28,124 +29,67 @@ import { unPublishForm } from "../../../apiManager/services/processServices";
 import FormTable from "./../../../components/Form/constants/FormTable.js";
 import ClientTable from "./../../../components/Form/constants/ClientTable";
 import _ from "lodash";
-import _camelCase from "lodash/camelCase";
-import {
-  formCreate,
-  formImport,
-  validateFormName,
-} from "../../../apiManager/services/FormServices";
 import userRoles from "../../../constants/permissions.js";
-import FileService from "../../../services/FileService";
 import {
-  FormBuilderModal,
-  ImportModal,
   CustomSearch,
-  CustomButton,
-  useSuccessCountdown,
-  V8CustomButton
+  V8CustomButton,
+  Alert,
+  AlertVariant,
+  CustomProgressBar,
+  BreadCrumbs
 } from "@formsflow/components";
-import { HelperServices } from '@formsflow/service';
-import { useMutation } from "react-query";
-import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
-import { navigateToDesignFormEdit, navigateToDesignFormBuild } from "../../../helper/routerHelper.js";
-import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
+import { navigateToDesignFormBuild } from "../../../helper/routerHelper.js";
+import { getRoute } from "../../../constants/constants";
 
 const List = React.memo((props) => {
   const { createDesigns, createSubmissions, viewDesigns } = userRoles();
   const { t } = useTranslation();
   const searchText = useSelector((state) => state.bpmForms.searchText);
+  const clientSearchText = useSelector((state) => state.bpmForms.clientFormSearch);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const [search, setSearch] = useState(searchText || "");
-  const [showBuildForm, setShowBuildForm] = useState(false);
-  const [importFormModal, setImportFormModal] = useState(false);
-  const [importError, setImportError] = useState("");
-  const [importLoader, setImportLoader] = useState(false);
-  const [showSortModal, setShowSortModal] = useState(false);
-  const { successState, startSuccessCountdown } = useSuccessCountdown();
-
-
-  const handleFilterIconClick = () => {
-    setShowSortModal(true); // Open the SortModal
-  };
-
-  const handleSortModalClose = () => {
-    setShowSortModal(false); // Close the SortModal
-  };
-
-  const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-    
-    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
-    dispatch(
-      setBpmFormSort({
-        ...resetSortOrders,
-        activeKey: selectedSortOption,
-        [selectedSortOption]: { sortOrder: selectedSortOrder },
-      })
-    );
-    setShowSortModal(false);
-  };
-
-  const ActionType = {
-    BUILD: "BUILD",
-    IMPORT: "IMPORT",
-  };
-
-  const UploadActionType = {
-    IMPORT: "import",
-    VALIDATE: "validate",
-  };
-
-  const [nameError, setNameError] = useState("");
+  const [isDuplicating, setIsDuplicating] = useState(false);
+  const [duplicateProgress, setDuplicateProgress] = useState(0);
   const dispatch = useDispatch();
-  const submissionAccess = useSelector(
-    (state) => state.user?.submissionAccess || []
-  );
-
-  const [formSubmitted, setFormSubmitted] = useState(false);
-
-  /* --------- validate form title exist or not --------- */
-  const {
-    mutate: validateFormTitle, // this function will trigger the API call
-    isLoading: validationLoading,
-    // isError: error,
-  } = useMutation(({ title }) => validateFormName(title), {
-    onSuccess: ({ data }, { createButtonClicked, ...variables }) => {
-      if (data && data.code === "FORM_EXISTS") {
-        setNameError(data.message); // Set exact error message
-      } else {
-        setNameError("");
-        // if the modal clicked createButton, need to call handleBuild
-        if (createButtonClicked) {
-          handleBuild(variables);
-        }
-      }
-    },
-    onError: (error) => {
-      const errorMessage =
-        error?.response?.data?.message ||
-        "An error occurred while validating the form name.";
-      setNameError(errorMessage); // Set the error message from the server
-    },
-  });
+  
+  const isDesignerMode = createDesigns || viewDesigns;
+  const isSubmitterMode = !isDesignerMode && createSubmissions;
 
   useEffect(() => {
-    setSearch(searchText);
-  }, [searchText]);
+    if (isDesignerMode) {
+      setSearch(searchText);
+    } else if (isSubmitterMode) {
+      setSearch(clientSearchText);
+    }
+  }, [searchText, clientSearchText, isDesignerMode, isSubmitterMode]);
 
   useEffect(() => {
     if (!search?.trim()) {
-      dispatch(setBpmFormSearch(""));
+      if (isDesignerMode) {
+        dispatch(setBpmFormSearch(""));
+      } else if (isSubmitterMode) {
+        dispatch(setClientFormSearch(""));
+      }
     }
-  }, [search]);
-  const handleSearch = () => {
-    dispatch(setBpmFormSearch(search));
-    dispatch(setBPMFormListPage(1));
-  };
+  }, [search, dispatch, isDesignerMode, isSubmitterMode]);
+  
+  const handleSearch = useCallback(() => {
+    // Batch dispatches to prevent duplicate API calls
+    batch(() => {
+      if (isDesignerMode) {
+        dispatch(setBpmFormSearch(search));
+        dispatch(setBPMFormListPage(1));
+      } else if (isSubmitterMode) {
+        dispatch(setClientFormSearch(search));
+        dispatch(setClientFormListPage(1));
+      }
+    });
+  }, [dispatch, search, isDesignerMode, isSubmitterMode]);
   // const handleClearSearch = () => {
   //   setSearch("");
   //   dispatch(setBpmFormSearch(""));
   // };
-  const { forms, getFormsInit } = props;
+  const { forms } = props;
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const designerFormLoading = useSelector(
     (state) => state.formCheckList.designerFormLoading
@@ -154,201 +98,190 @@ const List = React.memo((props) => {
   const pageNo = useSelector((state) => state.bpmForms.formListPage);
   const limit = useSelector((state) => state.bpmForms.limit);
   const formSort = useSelector((state) => state.bpmForms.sort);
-  const formAccess = useSelector((state) => state.user?.formAccess || []);
+  // Submitter pagination/sort
+  const submitPageNo = useSelector((state) => state.bpmForms.submitListPage);
+  const submitLimit = useSelector((state) => state.bpmForms.submitFormLimit);
+  const submitFormSort = useSelector((state) => state.bpmForms.submitFormSort);
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
-  const [newFormModal, setNewFormModal] = useState(false);
-  const [description, setDescription] = useState("");
-  const [formTitle, setFormTitle] = useState("");
-  const  optionSortBy = [
-    { value: "formName", label: t("Form Name") },
-    { value: "visibility", label: t("Visibility") },
-    { value: "status", label: t("Status") },
-    { value: "modified", label: t("Last Edited") },
-  ];
+  
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
+  // Fetch Designer Forms
   useEffect(() => {
-    dispatch(setBPMFormListLoading(true));
-  }, []);
-
-  const fetchForms = () => {
-    let filters = {pageNo, limit, formSort, formName:searchText};
-    dispatch(setFormSearchLoading(true));
-    dispatch(fetchBPMFormList({...filters}));
-  };
-  const onClose = () => {
-    setNewFormModal(false);
-  };
-  const onCloseimportModal = () => {
-    setImportError("");
-    setImportFormModal(false);
-  };
-  const onCloseBuildModal = () => {
-    setShowBuildForm(false);
-    setNameError("");
-    setFormSubmitted(false);
-  };
-  const handleAction = (actionType) => {
-    switch (actionType) {
-      case ActionType.BUILD:
-        setShowBuildForm(true);
-        break;
-      case ActionType.IMPORT:
-        setImportFormModal(true);
-        break;
-    }
-    onClose();
-  };
-
-  const handleImport = async (fileContent, actionType) => {
-
-    if (fileContent.size > MAX_FILE_SIZE) {
-      setImportError(
-        `File size exceeds the ${
-          MAX_FILE_SIZE / (1024 * 1024)
-        }MB limit. Please upload a smaller file.`
-      );
+    if (!isDesignerMode) {
       return;
     }
+    const filters = { pageNo, limit, formSort, formName: searchText };
+    batch(() => {
+      dispatch(setBPMFormListLoading(true));
+      dispatch(setFormSearchLoading(true));
+      dispatch(fetchBPMFormList({ ...filters }));
+    });
+  }, [dispatch, pageNo, limit, formSort, searchText, isDesignerMode]);
 
-    let data;
-    if (
-      [UploadActionType.VALIDATE, UploadActionType.IMPORT].includes(actionType)
-    ) {
-      data = { importType: "new", action: actionType };
-    } else {
-      console.error("Invalid UploadActionType provided");
-      return;
-    }
-
-    if (actionType === UploadActionType.IMPORT) {
-      setImportLoader(true);
-      setFormSubmitted(true);
-    }
-
-    try {
-      const dataString = JSON.stringify(data);
-      const res = await formImport(fileContent, dataString);
-      const { data: responseData } = res;
-      const formId = responseData.mapper?.formId;
-
-      setImportLoader(false);
-      setFormSubmitted(false);
-
-      if (actionType === UploadActionType.VALIDATE) {
-        const formExtracted = await FileService.extractFileDetails(fileContent);
-
-        if (Array.isArray(formExtracted?.forms)) {
-          setFormTitle(formExtracted?.forms[0]?.formTitle || "");
-          setDescription(
-            formExtracted?.forms[0]?.formDescription || ""
-          );
-        }
-      } else if (formId) {
-        navigateToDesignFormEdit(dispatch, tenantKey, formId);
-      }
-    } catch (err) {
-      setImportLoader(false);
-      setFormSubmitted(false);
-      setImportError(err?.response?.data?.message);
-    }
-  };
-
+  // Fetch Submitter Forms
   useEffect(() => {
-    fetchForms();
-  }, [
-    getFormsInit,
-    dispatch,
-    createDesigns,
-    pageNo,
-    limit,
-    formSort,
-    searchText,
-  ]);
-
-  const validateForm = ({ title }) => {
-    if (!title || title.trim() === "") {
-      return "This field is required";
-    }
-    return null;
-  };
-
-  const validateFormNameOnBlur = ({ title, ...rest }) => {
-    //the reset variable contain title, description, display  also sign for clicked in create button
-    const error = validateForm({ title });
-
-    if (error) {
-      setNameError(error);
+    if (!isSubmitterMode) {
       return;
     }
-    validateFormTitle({ title, ...rest });
-  };
-
-  const handleBuild = ({ description, display, title }) => {
-    setFormSubmitted(true);
-    const error = validateForm({ title });
-    if (error) {
-      setNameError(error);
-      return;
-    }
-    const name = _camelCase(title);
-    const newForm = {
-      display,
-      tags: ["common"],
-      submissionAccess: submissionAccess,
-      componentChanged: true,
-      newVersion: true,
-      components: [],
-      access: formAccess,
-      title,
-      name,
-      description,
-      path: name.toLowerCase(),
+    const filters = {
+      pageNo: submitPageNo,
+      limit: submitLimit,
+      formSort: submitFormSort,
+      formName: clientSearchText,
+      showForOnlyCreateSubmissionUsers: true,
+      includeSubmissionsCount: true
     };
-    newForm.components = addHiddenApplicationComponent(newForm).components;
+    batch(() => {
+      dispatch(setBPMFormListLoading(true));
+      dispatch(setFormSearchLoading(true));
+      dispatch(fetchBPMFormList({ ...filters }));
+    });
+  }, [dispatch, submitPageNo, submitLimit, submitFormSort, clientSearchText, isSubmitterMode]);
 
-    if (MULTITENANCY_ENABLED && tenantKey) {
-      newForm.tenantKey = tenantKey;
-      newForm.path = addTenantkey(newForm.path, tenantKey);
-      newForm.name = addTenantkey(newForm.name, tenantKey);
+  // Designer mapping for sort field names
+  const designerGridFieldToSortKey = {
+    title: "formName",
+    modified: "modified",
+    anonymous: "visibility",
+    status: "status",
+  };
+  const designerSortKeyToGridField = {
+    formName: "title",
+    modified: "modified",
+    visibility: "anonymous",
+    status: "status",
+  };
+  const designerActiveKey = formSort?.activeKey || "formName";
+  const designerActiveField = designerSortKeyToGridField[designerActiveKey] || designerActiveKey;
+  const designerActiveOrder = formSort?.[designerActiveKey]?.sortOrder || "asc";
+  const designerSortModel = useMemo(
+    () => [{ field: designerActiveField, sort: designerActiveOrder }],
+    [designerActiveField, designerActiveOrder]
+  );
+  const designerPaginationModel = useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
+  const onDesignerPaginationModelChange = useCallback(({ page, pageSize }) => {
+    batch(() => {
+      if (pageSize !== limit) {
+        dispatch(setBPMFormLimit(pageSize));
+        dispatch(setBPMFormListPage(1));
+      } else {
+        dispatch(setBPMFormListPage(page + 1));
+      }
+    });
+  }, [dispatch, limit]);
+  
+  const handleDesignerSortModelChange = useCallback((modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(formSort || {}).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
+      return;
     }
-    formCreate(newForm)
-      .then((res) => {
-        const form = res.data;
-        dispatch(setFormSuccessData("form", form));
-        startSuccessCountdown(() => {
-          navigateToDesignFormEdit(dispatch, tenantKey, form._id);
-        },2);
-      })
-      .catch((err) => {
-        let error;
-        if (err.response?.data) {
-          error = err.response.data;
-          console.log(error);
-          setNameError(error?.errors?.name?.message);
-        } else {
-          error = err.message;
-          setNameError(error?.errors?.name?.message);
-        }
-      })
-      .finally(() => {
-        setFormSubmitted(false);
-      });
-  };
+    const mappedKey = designerGridFieldToSortKey[model.field] || model.field;
+    const updatedSort = Object.keys(formSort || {}).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? model.sort : "asc" };
+      return acc;
+    }, {});
+    dispatch(setBpmFormSort({ ...updatedSort, activeKey: mappedKey }));
+  }, [dispatch, formSort, designerGridFieldToSortKey]);
 
-  const handleRefresh = () => {
-  fetchForms();
+  // Submitter mapping and models
+  const submitGridFieldToSortKey = {
+    title: "formName",
+    submissionsCount: "submissionCount",
+    latestSubmission: "latestSubmission",
   };
+  const submitSortKeyToGridField = {
+    formName: "title",
+    submissionCount: "submissionsCount",
+    latestSubmission: "latestSubmission",
+  };
+  const submitActiveKey = submitFormSort?.activeKey || "formName";
+  const submitActiveField = submitSortKeyToGridField[submitActiveKey] || submitActiveKey;
+  const submitActiveOrder = submitFormSort?.[submitActiveKey]?.sortOrder || "asc";
+  const submitSortModel = useMemo(
+    () => [{ field: submitActiveField, sort: submitActiveOrder }],
+    [submitActiveField, submitActiveOrder]
+  );
+  const submitPaginationModel = useMemo(
+    () => ({ page: submitPageNo - 1, pageSize: submitLimit }),
+    [submitPageNo, submitLimit]
+  );
+  const onSubmitPaginationModelChange = useCallback(({ page, pageSize }) => {
+    batch(() => {
+      if (pageSize !== submitLimit) {
+        dispatch(setClientFormLimit(pageSize));
+        dispatch(setClientFormListPage(1));
+      } else {
+        dispatch(setClientFormListPage(page + 1));
+      }
+    });
+  }, [dispatch, submitLimit]);
+  
+  const handleSubmitSortModelChange = useCallback((modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(submitFormSort || {}).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
+      return;
+    }
+    const mappedKey = submitGridFieldToSortKey[model.field] || model.field;
+    const updatedSort = Object.keys(submitFormSort || {}).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? model.sort : "asc" };
+      return acc;
+    }, {});
+    dispatch(setClientFormListSort({ ...updatedSort, activeKey: mappedKey }));
+  }, [dispatch, submitFormSort, submitGridFieldToSortKey]);
+
+  const handleSubmitRefresh = useCallback(() => {
+    const filters = {
+      pageNo: submitPageNo,
+      limit: submitLimit,
+      formSort: submitFormSort,
+      formName: clientSearchText,
+      showForOnlyCreateSubmissionUsers: true,
+      includeSubmissionsCount: true
+    };
+    batch(() => {
+      dispatch(setBPMFormListLoading(true));
+      dispatch(setFormSearchLoading(true));
+      dispatch(fetchBPMFormList({ ...filters }));
+    });
+  }, [dispatch, submitPageNo, submitLimit, submitFormSort, clientSearchText]);
   const renderTable = () => {
     if (createDesigns || viewDesigns) {
-      return <FormTable />;
+      return <FormTable 
+               isDuplicating={isDuplicating} 
+               setIsDuplicating={setIsDuplicating}
+               setDuplicateProgress={setDuplicateProgress}
+               externalSortModel={designerSortModel}
+               externalOnSortModelChange={handleDesignerSortModelChange}
+               externalPaginationModel={designerPaginationModel}
+               externalOnPaginationModelChange={onDesignerPaginationModelChange}
+              />;
     }
     if (createSubmissions) {
-      return <ClientTable />;
+      return <ClientTable
+        externalSortModel={submitSortModel}
+        externalOnSortModelChange={handleSubmitSortModelChange}
+        externalPaginationModel={submitPaginationModel}
+        externalOnPaginationModelChange={onSubmitPaginationModelChange}
+        externalOnRefresh={handleSubmitRefresh}
+      />;
     }
     return null;
   };
@@ -364,12 +297,25 @@ const List = React.memo((props) => {
       ) : (
         <>
                 <div className="toast-section">
-                  {/* <p>Toast message</p> */}
-                </div>  
+                        <Alert
+                          message={t("Duplicating the form")}
+                          variant={AlertVariant.FOCUS}
+                          isShowing={isDuplicating}
+                          rightContent={<CustomProgressBar progress={duplicateProgress} />}
+                        />
+                </div> 
                 
                 <div className="header-section-1">
                     <div className="section-seperation-left">
-                        <h4> Build</h4>  
+                      <BreadCrumbs
+                        items={[
+                          { id: "forms", label: t("Forms"), href: getRoute(tenantKey).FORMFLOW },
+                        ]}
+                        variant="default"
+                        underline={false}
+                        dataTestId="listForm-breadcrumb"
+                        ariaLabel={t("Form list Breadcrumb")}
+                      />
                     </div>
                     <div className="section-seperation-right">
                         <V8CustomButton
@@ -393,90 +339,15 @@ const List = React.memo((props) => {
                                   searchLoading={searchFormLoading}
                                   title={t("Search Form Name and Description")}
                                   dataTestId="form-search-input"
-                                  width="22rem"
+                                  width="462px"
                                 />
                     </div>
                  </div>
 
-                 <div className="body-section">
+                 <div className="body-section custom-scroll"> 
                     {renderTable()}
                  </div>
 
-
-        
-          {(
-              <div className="table-bar">
-                <div className="filters">
-                </div>
-                {/* hiding for the time being. */}
-                <div className="actions" style={{display:"none"}}>
-                  <FilterSortActions
-                    showSortModal={showSortModal}
-                    handleFilterIconClick={handleFilterIconClick}
-                    handleRefresh={handleRefresh}
-                    handleSortModalClose={handleSortModalClose}
-                    handleSortApply={handleSortApply}
-                    optionSortBy={optionSortBy}
-                    defaultSortOption={formSort.activeKey}
-                    defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}
-                    filterDataTestId="form-list-filter"
-                    filterAriaLabel="Filter the form list"
-                    refreshDataTestId="form-list-refresh"
-                    refreshAriaLabel="Refresh the form list"
-                  /> 
-
-                  {createDesigns && (
-                    <CustomButton
-                      label={t("New Form & Flow")}
-                      onClick={() => setNewFormModal(true)}
-                      dataTestId="create-form-button"
-                      ariaLabel="Create Form"
-                      action
-                    />
-                  )}
-                  <CreateFormModal
-                    newFormModal={newFormModal}
-                    actionType={ActionType}
-                    onClose={onClose}
-                    onAction={handleAction}
-                  />
-                  <FormBuilderModal
-                    modalHeader={t("Build New Form")}
-                    nameLabel={t("Form Name")}
-                    descriptionLabel={t("Form Description")}
-                    showBuildForm={showBuildForm}
-                    isSaveBtnLoading={formSubmitted}
-                    isFormNameValidating={validationLoading}
-                    onClose={onCloseBuildModal}
-                    onAction={handleAction}
-                    primaryBtnAction={handleBuild}
-                    setNameError={setNameError}
-                    nameValidationOnBlur={validateFormNameOnBlur}
-                    nameError={nameError}
-                    buildForm={true}
-                    showSuccess={successState?.showSuccess} // ✅ Pass success state
-                    successCountdown={successState?.countdown} // ✅ Pass countdown
-                  />
-                  {importFormModal && (
-                    <ImportModal
-                      importLoader={importLoader}
-                      importError={importError}
-                      showModal={importFormModal}
-                      uploadActionType={UploadActionType}
-                      formName={formTitle}
-                      formSubmitted={formSubmitted}
-                      description={description}
-                      onClose={onCloseimportModal}
-                      handleImport={handleImport}
-                      headerText={t("Import New Form")}
-                      primaryButtonText={t("Confirm and Edit Form")}
-                      fileType=".json"
-                    />
-                  )}
-                </div>
-              </div>
-          )}
-         {/* {renderTable()} */}
         </>
       )}
     </>
@@ -484,7 +355,6 @@ const List = React.memo((props) => {
 });
 List.propTypes = {
   forms: PropTypes.object,
-  getFormsInit: PropTypes.bool,
 };
 const mapStateToProps = (state) => {
   return {

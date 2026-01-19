@@ -6,7 +6,7 @@
 
 	<groupId>formsflow.ai</groupId>
 	<artifactId>forms-flow-bpm</artifactId>
-	<version>8.0.0-alpha</version>
+	<version>8.1.0-alpha</version>
 	<packaging>pom</packaging>
 
 	<name>formsflow BPM Extension</name>
@@ -200,7 +200,7 @@
 				<dependency>
 					<groupId>com.microsoft.sqlserver</groupId>
 					<artifactId>mssql-jdbc</artifactId>
-					<version>7.4.1.jre11</version>
+					<version>10.2.4.jre11</version>
 				</dependency>
 
 				<!-- Required to use Spin dataformat support -->
@@ -311,13 +311,13 @@
 				<dependency>
 					<groupId>org.graalvm.js</groupId>
 					<artifactId>js-scriptengine</artifactId>
-					<version>23.0.0</version>
+					<version>23.0.10</version>
 				</dependency>
 
 				<dependency>
 					<groupId>org.graalvm.js</groupId>
 					<artifactId>js</artifactId>
-					<version>23.0.0</version>
+					<version>23.0.10</version>
 				</dependency>
 
 				<dependency>
@@ -360,7 +360,7 @@
 				<dependency>
 					<groupId>org.apache.tomcat.embed</groupId>
 					<artifactId>tomcat-embed-core</artifactId>
-					<version>10.1.44</version>
+					<version>10.1.45</version>
 				</dependency>
 				<dependency>
 					<groupId>org.springframework</groupId>

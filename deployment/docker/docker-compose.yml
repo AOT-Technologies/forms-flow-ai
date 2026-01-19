@@ -56,7 +56,7 @@ services:
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
     volumes:
-      - postgres_camunda:/var/lib/postgresql/data
+      - postgres_camunda:/var/lib/postgresql
     ports:
       - '5432:5432'
     restart: always
@@ -116,12 +116,14 @@ services:
       - MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+      - BPM_CLIENT_CONN_TIMEOUT=${BPM_CLIENT_CONN_TIMEOUT:-5000}
       - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL:-}
       - REDIS_ENABLED=${REDIS_ENABLED:-false}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
       - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
+      - FORMSFLOW_DOC_API_URL=${FORMSFLOW_DOC_API_URL}
       - VAULT_ENABLED=${VAULT_ENABLED:-false}
       - VAULT_URL=${VAULT_URL}
       - VAULT_TOKEN=${VAULT_TOKEN}
@@ -147,13 +149,13 @@ services:
       context: ./../../forms-flow-web-root-config/
       dockerfile: Dockerfile
       args:
-        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v8.0.0-alpha/forms-flow-web.gz.js}
-        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v8.0.0-alpha/forms-flow-nav.gz.js}
-        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v8.0.0-alpha/forms-flow-service.gz.js}
-        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v8.0.0-alpha/forms-flow-components.gz.js}
-        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v8.0.0-alpha/forms-flow-admin.gz.js}
-        - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v8.0.0-alpha/forms-flow-review.gz.js}
-        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v8.0.0-alpha/forms-flow-submissions.gz.js}
+        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v8.1.0-alpha/forms-flow-web.gz.js}
+        - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v8.1.0-alpha/forms-flow-nav.gz.js}
+        - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v8.1.0-alpha/forms-flow-service.gz.js}
+        - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v8.1.0-alpha/forms-flow-components.gz.js}
+        - MF_FORMSFLOW_ADMIN_URL=${MF_FORMSFLOW_ADMIN_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-admin@v8.1.0-alpha/forms-flow-admin.gz.js}
+        - MF_FORMSFLOW_REVIEW_URL=${MF_FORMSFLOW_REVIEW_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-review@v8.1.0-alpha/forms-flow-review.gz.js}
+        - MF_FORMSFLOW_SUBMISSIONS_URL=${MF_FORMSFLOW_SUBMISSIONS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-submissions@v8.1.0-alpha/forms-flow-submissions.gz.js}
         - NODE_ENV=${NODE_ENV:-production}
     entrypoint: /bin/sh -c "/usr/share/nginx/html/config/env.sh && nginx -g 'daemon off;'"
     environment:
@@ -261,7 +263,6 @@ services:
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
       FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
@@ -304,7 +305,6 @@ services:
     volumes:
       - ./:/app:rw
     environment:
-      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
       JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
       JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}${KEYCLOAK_URL_HTTP_RELATIVE_PATH:-/auth}/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
@@ -321,8 +321,6 @@ services:
       CHROME_DRIVER_PATH: ${CHROME_DRIVER_PATH}
       CUSTOM_SUBMISSION_URL: ${CUSTOM_SUBMISSION_URL}
       CUSTOM_SUBMISSION_ENABLED: ${CUSTOM_SUBMISSION_ENABLED}
-      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
-      FORMIO_JWT_EXPIRE: ${FORMIO_JWT_EXPIRE:-240}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
       KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       API_LOG_ROTATION_WHEN: ${API_LOG_ROTATION_WHEN:-d}

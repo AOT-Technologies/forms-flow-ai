@@ -18,7 +18,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version |  
    | ---       | -----   |
-   |  Python   |  3.13.2 |
+   |  Python   |  3.13.9 |
    |  Flask    |  3.1.1  |
    |  Postgres |  11.0   |
 
@@ -80,3 +80,12 @@ In the following document, we’ll describe the details of dependencies of vario
    | Formio | 4.21.4 |
    | Webpack| 5.94.0|
    <br>
+
+## 8. forms-flow-data-layer
+
+   REST API to formsflow.ai integration components
+
+   | Component | Version |  
+   | ---       | -----   |
+   |  Python   |  3.13.9 |
+   |  Fast API |  0.116.1|

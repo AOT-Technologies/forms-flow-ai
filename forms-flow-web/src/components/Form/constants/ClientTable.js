@@ -1,25 +1,29 @@
-import React, { useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
+import React, { useState } from "react";
+import { useDispatch, useSelector, batch } from "react-redux";
 import {
   setClientFormLimit,
   setClientFormListPage,
   setClientFormListSort
 } from "../../../actions/formActions";
-import { HelperServices, StyleServices } from "@formsflow/service";
+import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
 import {
   V8CustomButton,
-  NewSortDownIcon,
-  RefreshIcon
+  ReusableTable
 } from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices"; 
-import { setFormSearchLoading } from "../../../actions/checkListActions";  
+import { setFormSearchLoading } from "../../../actions/checkListActions";
 
-function ClientTable() {
+
+function ClientTable({
+  externalSortModel,
+  externalOnSortModelChange,
+  externalPaginationModel,
+  externalOnPaginationModelChange,
+  externalOnRefresh,
+}) {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -33,7 +37,6 @@ function ClientTable() {
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
-  const iconColor = StyleServices.getCSSVariable("--ff-gray-medium-dark");
 
   const gridFieldToSortKey = {
     title: "formName",
@@ -59,22 +62,21 @@ function ClientTable() {
 
   const handleSortChange = (modelArray) => {
     const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+
+    // No sort provided – only reset if not already at default
     if (!model?.field || !model?.sort) {
       const resetSort = Object.keys(formsort).reduce((acc, key) => {
         acc[key] = { sortOrder: "asc" };
         return acc;
       }, {});
       dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
-      dispatch(setClientFormListPage(1));
       return;
     }
 
     const mappedKey = gridFieldToSortKey[model.field] || model.field;
-    const order = model.sort;
-
     const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
       acc[columnKey] = {
-        sortOrder: columnKey === mappedKey ? order : "asc",
+        sortOrder: columnKey === mappedKey ? model.sort : "asc",
       };
       return acc;
     }, {});
@@ -82,15 +84,24 @@ function ClientTable() {
   };
 
   const onPaginationModelChange = ({ page, pageSize }) => {
-    if (limit !== pageSize) {
-      dispatch(setClientFormLimit(pageSize));
-      dispatch(setClientFormListPage(1));
-    } else if (pageNo - 1 !== page) {
-      dispatch(setClientFormListPage(page + 1));
-    }
+    const requestedPage = typeof page === "number" ? page + 1 : pageNo;
+    const requestedLimit = typeof pageSize === "number" ? pageSize : limit;
+    // Batch multiple dispatches to keep Redux updates atomic
+    batch(() => {
+      if (requestedLimit !== limit) {
+        dispatch(setClientFormLimit(requestedLimit));
+        dispatch(setClientFormListPage(1));
+      } else {
+        dispatch(setClientFormListPage(requestedPage));
+      }
+    });
   };
 
-    const handleRefresh = () => {
+  const handleRefresh = () => {
+    if (externalOnRefresh) {
+      externalOnRefresh();
+      return;
+    }
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({
       pageNo,
@@ -108,31 +119,50 @@ function ClientTable() {
       headerName: t("Form Name"),
       flex: 1,
       sortable: true,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "description",
       headerName: t("Description"),
       flex: 1,
       sortable: false,
-      renderCell: (params) => (
-        <span title={stripHtml(params.row.description)}>
-          {stripHtml(params.row.description)}
-        </span>
-      ),
+      renderCell: (params) => {
+        const description = stripHtml(params.row.description);
+        return (
+          <span title={description}>
+            {description}
+          </span>
+        );
+      },
     },
     {
       field: "submissionsCount",
       headerName: t("Submissions"),
       flex: 1,
       sortable: true,
+      renderCell: (params) => (
+        <span>
+          {params.value}
+        </span>
+      ),
     },
     {
       field: "latestSubmission",
       headerName: t("Latest Submission"),
       flex: 1,
       sortable: true,
-      renderCell: (params) =>
-        HelperServices?.getLocaldate(params.row.latestSubmission),
+      renderCell: (params) => {
+        const dateValue = HelperServices?.getLocaldate(params.row.latestSubmission);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
       field: "actions",
@@ -140,8 +170,7 @@ function ClientTable() {
       renderHeader: () => (
         <V8CustomButton
           variant="secondary"
-          icon={<RefreshIcon color={iconColor} />}
-          iconOnly
+          label={t("Refresh")}
           onClick={handleRefresh}
         />
       ),
@@ -166,63 +195,36 @@ function ClientTable() {
     }));
   }, [formData]);
 
-  const paginationModel = React.useMemo(
+  const internalPaginationModel = React.useMemo(
     () => ({ page: pageNo - 1, pageSize: limit }),
     [pageNo, limit]
   );
+  const paginationModel = externalPaginationModel || internalPaginationModel;
 
   const activeKey = formsort?.activeKey || "formName";
   const activeField = sortKeyToGridField[activeKey] || activeKey;
   const activeOrder = formsort?.[activeKey]?.sortOrder || "asc";
-
-  const renderDescIcon = useCallback(() => (
-    <div>
-      <NewSortDownIcon color={iconColor} />
-    </div>
-  ), [iconColor]);
-
-  const renderAscIcon = useCallback(() => (
-    <div style={{ transform: "rotate(180deg)" }}>
-      <NewSortDownIcon color={iconColor} />
-    </div>
-  ), [iconColor]);
-
+  const internalSortModel = React.useMemo(
+    () => [{ field: activeField, sort: activeOrder }],
+    [activeField, activeOrder]
+  );
+  const sortModel = externalSortModel || internalSortModel;
 
   return (
     <>
-      <Paper sx={{ height: { sm: 400, md: 510, lg: 665 }, width: "100%" }}>
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          rowCount={totalForms}
-          loading={searchFormLoading}
-          paginationMode="server"
-          sortingMode="server"
-          disableColumnMenu
-          sortModel={[{ field: activeField, sort: activeOrder }]}
-          onSortModelChange={handleSortChange}
-          paginationModel={paginationModel}
-          onPaginationModelChange={onPaginationModelChange}
-          pageSizeOptions={[10, 25, 50, 100]}
-          rowHeight={55}
-          disableRowSelectionOnClick
-          getRowId={(row) => row.id}
-          slots={{
-            columnSortedDescendingIcon: renderDescIcon,
-            columnSortedAscendingIcon: renderAscIcon,
-          }}
-          slotProps={{
-            loadingOverlay: {
-
-              variant: "skeleton",
-              noRowsVariant: "skeleton",
-            },
-          }}
-          localeText={{
-            noRowsLabel: t("No Forms have been found."),
-          }}
-        />
-      </Paper>
+      <ReusableTable
+        columns={columns}
+        rows={rows}
+        rowCount={totalForms}
+        loading={searchFormLoading}
+        sortModel={sortModel}
+        onSortModelChange={externalOnSortModelChange || handleSortChange}
+        paginationModel={paginationModel}
+        onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
+        getRowId={(row) => row.id}
+        noRowsLabel={t("No Forms have been found.")}
+        autoHeight={true}
+      />
       {showSubmissions && <SubmissionDrafts />}
     </>
   );

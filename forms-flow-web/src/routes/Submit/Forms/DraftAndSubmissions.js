@@ -11,7 +11,7 @@ import {
   setApplicationLoading
 } from "../../../actions/applicationActions";
 import { navigateToNewSubmission, navigateToSubmitFormsListing } from "../../../helper/routerHelper";
-import { CustomSearch, BreadCrumbs, V8CustomButton } from "@formsflow/components";
+import { CustomSearch, BreadCrumbs, V8CustomButton, BreadcrumbVariant } from "@formsflow/components";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
 import { useParams } from "react-router-dom";
 
@@ -30,7 +30,7 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
         searchLoading={searchLoading}
         title={t("Search Form Name and Description")}
         dataTestId="form-search-input"
-        width="22rem"
+        width="462px"
       />
     </div>
   );
@@ -126,6 +126,8 @@ const DraftsAndSubmissions = () => {
             <BreadCrumbs 
               items={breadcrumbItems} 
               onBreadcrumbClick={handleBreadcrumbClick}
+              variant={BreadcrumbVariant.Default}
+              underline={false}
             /> 
           </div>
           <div className="section-seperation-right">
@@ -149,7 +151,7 @@ const DraftsAndSubmissions = () => {
                         searchLoading={searchFormLoading}
                         title={t("Search")}
                         dataTestId="form-search-input"
-                        width="22rem"
+                        width="462px"
                       />
                 </div>
              </div>

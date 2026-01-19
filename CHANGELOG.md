@@ -17,13 +17,14 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
    * `/tasks/<task-id>/complete` – This endpoint creates a new submission, records an audit entry, updates the application status, and completes the task in the workflow engine.
 * Added an Alembic script to introduce the new `private_notes` column in the applicationaudit table.
 
-*Upgrade notes:*
-
-* Keycloak Version upgraded to 26.4.1
 
 **forms-flow-bpm**
 
 * Fixed security vulnerabilities
+
+*Upgrade notes:*
+
+* Keycloak Version upgraded to 26.4.1
 
 ## 7.3.0 - 2025-10-14
 

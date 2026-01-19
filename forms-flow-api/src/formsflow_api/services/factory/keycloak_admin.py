@@ -141,6 +141,8 @@ class KeycloakAdmin(ABC):
         try:
             # Use update_request with empty data (Keycloak expects empty body for this endpoint)
             # The update_request method handles PUT requests and returns success message for 204
+            # pylint: disable=no-member
+            # self.client is initialized by all subclasses in their __init__ methods
             self.client.update_request(url_path=url_path, data={})
             current_app.logger.debug(
                 f"Reset password email triggered successfully for user {user_id}"

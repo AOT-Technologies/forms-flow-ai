@@ -30,7 +30,6 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import KeycloakAdminAPIService, UserService
 from formsflow_api.services.factory import KeycloakFactory
-# from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 API = Namespace(
     "User",

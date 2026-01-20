@@ -217,7 +217,6 @@ const MAIN_ROUTE = {
   FORM: "form",
   FORM_ENTRIES: "form/:formId/entries",
   FORMFLOW: "formflow",
-  TASK_OLD: "task-old",
   TASK: "task",
   APPLICATION: "application",
   SUBFLOW: "subflow",

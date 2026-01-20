@@ -81,7 +81,7 @@ import {
   removeTenantKeywithSlash,
   convertSelectedValueToMultiSelectOption,
   compareRolesState,
-  addTenantkey,
+  addTenantkey
 } from "../../../helper/helper.js";
 import { useMutation } from "react-query";
 import NavigateBlocker from "../../../components/CustomComponents/NavigateBlocker";
@@ -90,6 +90,7 @@ import { convertToNormalForm, convertToWizardForm } from "../../../helper/conver
 import { SystemVariables } from '../../../constants/variables';
 import EditorActions from "./EditActions";
 import { getRoute } from "../../../constants/constants";
+import useFormBuilderAutoScroll from "./useFormBuilderAutoScroll";
 import { navigateToDesignFormBuild } from "../../../helper/routerHelper";
 
 // constant values
@@ -323,6 +324,7 @@ const EditComponent = () => {
   const [initialIsAnonymous, setInitialIsAnonymous] = useState(null);
   const [settingsChanged, setSettingsChanged] = useState(false);
   const formBuilderInitializedRef = useRef(false);
+  const formBuilderContainerRef = useRef(null);
   const [migration, setMigration] = useState(false);
   const [loadingVersioning, setLoadingVersioning] = useState(false); // Loader state for versioning
   const [isSavingNewVersion, setIsSavingNewVersion] = useState(false); // Loader state for saving new version
@@ -930,6 +932,14 @@ const EditComponent = () => {
       }, 200);
     }
   };
+
+  // Auto-scroll listener for form builder container during drag events
+  const isAutoScrollEnabled = 
+    createDesigns && 
+    activeTab.primary === 'form' && 
+    activeTab.secondary === 'builder';
+  
+  useFormBuilderAutoScroll(formBuilderContainerRef, isAutoScrollEnabled);
 
   // Parse URL parameters for tab state
 useEffect(() => {
@@ -2496,7 +2506,10 @@ const saveFormWithWorkflow = async (publishAfterSave = false) => {
         // Check if builder sub-tab is active
         if (activeTab.secondary === 'builder') {
           return (
-            <div className={`form-builder custom-scroll ${isPublished ? 'published-builder' : 'unpublished-builder'}`}>
+            <div 
+              ref={formBuilderContainerRef}
+              className={`form-builder custom-scroll ${isPublished ? 'published-builder' : 'unpublished-builder'}`}
+            >
               {!createDesigns ? (
                 <div className="px-4 pt-4 form-preview">
                   <Form

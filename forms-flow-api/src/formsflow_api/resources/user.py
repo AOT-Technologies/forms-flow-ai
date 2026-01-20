@@ -428,6 +428,7 @@ login_details_response_model = API.model(
             description="Type of login: 'internal' for local IDP, 'external' for federated IDP"
         ),
         "identityProvider": fields.String(
+            required=False,
             description="Identity provider name (e.g., google, microsoft). Only present for external users."
         ),
     },

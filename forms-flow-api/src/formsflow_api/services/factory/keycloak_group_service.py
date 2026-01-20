@@ -461,27 +461,3 @@ class KeycloakGroupService(KeycloakAdmin):  # pylint: disable=too-many-public-me
         # Add permissions
         self.create_group_permission_mapping(group_id, permissions, client_id)
 
-    def get_user_federated_identity(self, user_id: str):
-        """Get federated identity providers linked to a user.
-
-        Calls Keycloak Admin API to fetch federated identity details.
-        Returns login method information (internal IDP vs external IDP).
-
-        Sample output for internal user:
-        {"loginType": "internal"}
-
-        Sample output for external user:
-        {"loginType": "external", "identityProvider": "google"}
-        """
-        current_app.logger.debug(f"Fetching federated identity for user: {user_id}")
-        federated_identities = self.client.get_user_federated_identity(user_id)
-
-        if federated_identities:
-            # External user - return login type and first identity provider name
-            return {
-                "loginType": "external",
-                "identityProvider": federated_identities[0].get("identityProvider"),
-            }
-
-        # Internal user - return only login type
-        return {"loginType": "internal"}

@@ -31,7 +31,7 @@ class KeycloakAdminAPIService:
             current_app.logger.error(
                 "Missing BPM configuration. Required: BPM_TOKEN_API, BPM_CLIENT_ID, BPM_CLIENT_SECRET"
             )
-            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL)
+            raise BusinessException(BusinessErrorCode.BPM_CONFIG_MISSING)
 
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         payload = {

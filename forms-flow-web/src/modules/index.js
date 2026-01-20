@@ -10,7 +10,6 @@ import metrics from "./metricsReducer";
 import process from "./processReducer";
 import applications from "./applicationsReducer";
 import menu from "./menuReducer";
-import bpmTasks from "./bpmTaskReducer";
 import bpmForms from "./bpmFormReducer";
 import formCheckList from "./formCheckListReducer";
 import dashboardReducer from "./dashboardReducer";
@@ -30,7 +29,6 @@ const createRootReducer = (history) =>
     formDelete,
     customSubmission:customSubmissionReducer,
     applications,
-    bpmTasks,
     bpmForms,
     formRestore,
     errors:ErrorHandling,

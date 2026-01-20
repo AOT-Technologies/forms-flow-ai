@@ -25,6 +25,14 @@ class KeycloakAdminAPIService:
         bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
         bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
         bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
+
+        # Validate required configuration
+        if not all([bpm_token_api, bpm_client_id, bpm_client_secret]):
+            current_app.logger.error(
+                "Missing BPM configuration. Required: BPM_TOKEN_API, BPM_CLIENT_ID, BPM_CLIENT_SECRET"
+            )
+            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL)
+
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         payload = {
             "client_id": bpm_client_id,
@@ -32,11 +40,21 @@ class KeycloakAdminAPIService:
             "grant_type": bpm_grant_type,
         }
 
-        response = requests.post(
-            bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
-        )
-        data = json.loads(response.text)
-        assert data["access_token"] is not None
+        try:
+            response = requests.post(
+                bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
+            )
+            response.raise_for_status()
+            data = json.loads(response.text)
+            if not data.get("access_token"):
+                current_app.logger.error(
+                    f"Failed to obtain access token from Keycloak. Response: {data}"
+                )
+                raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL)
+        except requests.exceptions.RequestException as err:
+            current_app.logger.error(f"Failed to connect to Keycloak token endpoint: {err}")
+            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL) from err
+
         self.session.headers.update(
             {
                 "Authorization": "Bearer " + data["access_token"],
@@ -57,14 +75,27 @@ class KeycloakAdminAPIService:
         """
         current_app.logger.debug("Establishing new connection to keycloak...")
         url = f"{self.base_url}/{url_path}"
-        response = self.session.request("GET", url)
-        current_app.logger.debug(f"keycloak Admin API get request URL: {url}")
-        current_app.logger.debug(f"Keycloak response: {response.json()}")
-        response.raise_for_status()
+        try:
+            response = self.session.request("GET", url)
+            current_app.logger.debug(f"keycloak Admin API get request URL: {url}")
+            current_app.logger.debug(f"Keycloak response status: {response.status_code}")
 
-        if response.ok:
-            return response.json()
-        return None
+            if response.status_code == 401:
+                current_app.logger.error(
+                    f"Keycloak Admin API returned 401 Unauthorized for {url}. "
+                    "Check if the BPM service account has proper realm-management roles "
+                    "(e.g., view-identity-providers, manage-users)."
+                )
+                raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL)
+
+            response.raise_for_status()
+
+            if response.ok:
+                return response.json()
+            return None
+        except requests.exceptions.HTTPError as err:
+            current_app.logger.error(f"Keycloak Admin API request failed: {err}")
+            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL) from err
 
     def get_paginated_request(self, url_path, first, max_results):
         """Method to fetch GET paginated request of Keycloak Admin APIs.
@@ -222,3 +253,13 @@ class KeycloakAdminAPIService:
         if search:
             url += f"?search={search}"
         return self.get_request(url_path=url)
+
+    @profiletime
+    def get_user_federated_identity(self, user_id: str):
+        """Return federated identity providers linked to the user.
+
+        This calls GET /admin/realms/{realm}/users/{userId}/federated-identity
+        to determine if a user logs in via internal IDP or external IDP
+        (e.g., Google, Microsoft, etc.).
+        """
+        return self.get_request(url_path=f"users/{user_id}/federated-identity")

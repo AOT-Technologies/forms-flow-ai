@@ -157,6 +157,14 @@ class KeycloakAdmin(ABC):
                 BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
             ) from err
 
+    @abstractmethod
+    def get_user_federated_identity(self, user_id: str):
+        """Get federated identity providers linked to a user.
+
+        Returns login method details (internal IDP vs external IDP like Google, Microsoft).
+        """
+        raise NotImplementedError("Method not implemented")
+
     @classmethod
     def get_user_id_from_response(
         cls, response: Dict[str, Any], user_name_attribute: str

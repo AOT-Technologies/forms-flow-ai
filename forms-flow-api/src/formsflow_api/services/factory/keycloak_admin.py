@@ -203,4 +203,3 @@ class KeycloakAdmin(ABC):
             value = response.get(DEFAULT_USER_CLAIM)
 
         return str(value) if value else None
-

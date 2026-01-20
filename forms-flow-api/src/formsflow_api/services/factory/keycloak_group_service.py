@@ -460,4 +460,3 @@ class KeycloakGroupService(KeycloakAdmin):  # pylint: disable=too-many-public-me
         )
         # Add permissions
         self.create_group_permission_mapping(group_id, permissions, client_id)
-

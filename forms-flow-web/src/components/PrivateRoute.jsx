@@ -37,7 +37,6 @@ import {
 
 import SubmitFormRoutes from "./../routes/Submit/Forms";
 import DesignFormRoutes from "./../routes/Design/Forms";
-import ServiceFlow from "./ServiceFlow";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
@@ -395,10 +394,7 @@ const PrivateRoute = React.memo((props) => {
               />
             )}
 
-            {ENABLE_TASKS_MODULE && (
-              <ReviewerRoute path={ROUTE_TO.TASK_OLD} component={ServiceFlow} />
-            )}
-           <Route exact path={ROUTE_TO.TASK} />
+            <Route exact path={ROUTE_TO.TASK} />
             <Route exact path={ROUTE_TO.ADMIN} />
             {/* * This route is used to redirect the user to the correct base route
              * based on their roles. If the user has no roles, they will be redirected

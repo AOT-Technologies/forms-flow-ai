@@ -1,224 +1,472 @@
-import React, {  useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { push } from "connected-react-router";
-import {
-  setBPMFormLimit,
-  setBPMFormListPage,
-
-  setBpmFormSort,
-} from "../../../actions/formActions";
-import {
-  MULTITENANCY_ENABLED,
-} from "../../../constants/constants";
+import * as React from "react";
+import { useSelector, useDispatch, batch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import {
-  resetFormProcessData
-} from "../../../apiManager/services/processServices";
-import { HelperServices } from "@formsflow/service";
-import { CustomButton,TableFooter ,NoDataFound, TableSkeleton } from "@formsflow/components";
+import { push } from "connected-react-router";
+import { setBPMFormLimit, setBPMFormListPage, setBpmFormSort, setFormDeleteStatus } from "../../../actions/formActions";
+import { resetFormProcessData, unPublishForm, getApplicationCount, getProcessDetails } from "../../../apiManager/services/processServices";
+import { fetchBPMFormList, fetchFormById } from "../../../apiManager/services/bpmFormServices";
+import { setFormSearchLoading } from "../../../actions/checkListActions";
 import userRoles from "../../../constants/permissions";
-import SortableHeader from '../../CustomComponents/SortableHeader';
+import { HelperServices } from "@formsflow/service";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { V8CustomButton, V8CustomDropdownButton, PromptModal, ReusableTable } from "@formsflow/components";
+import { deleteForm } from "@aot-technologies/formio-react";
+import { formCreate, unPublish } from "../../../apiManager/services/FormServices";
+import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
+import _cloneDeep from "lodash/cloneDeep";
+import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
-function FormTable() {
-  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+function FormTable({
+  isDuplicating,
+  setIsDuplicating,
+  setDuplicateProgress,
+  externalSortModel,
+  externalOnSortModelChange,
+  externalPaginationModel,
+  externalOnPaginationModelChange,
+}) {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
-  const bpmForms = useSelector((state) => state.bpmForms);
-  const formData = (() => bpmForms.forms)() || [];
-  const pageNo = useSelector((state) => state.bpmForms.formListPage);
-  const limit = useSelector((state) => state.bpmForms.limit);
-  const totalForms = useSelector((state) => state.bpmForms.totalForms);
-  const formsort = useSelector((state) => state.bpmForms.sort);
-  const searchFormLoading = useSelector(
-    (state) => state.formCheckList.searchFormLoading
-  );
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const isApplicationCountLoading = useSelector((state) => state.process.isApplicationCountLoading);
-  const { createDesigns, viewDesigns } = userRoles();
-  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const bpmForms = useSelector(state => state.bpmForms);
+  const formData = bpmForms.forms || [];
+  const pageNo = useSelector(state => state.bpmForms.formListPage);
+  const limit = useSelector(state => state.bpmForms.limit);
+  const totalForms = useSelector(state => state.bpmForms.totalForms);
+  const formsort = useSelector(state => state.bpmForms.sort);
+  const searchFormLoading = useSelector(state => state.formCheckList.searchFormLoading);
+  const isApplicationCountLoading = useSelector(state => state.process.isApplicationCountLoading);
+  const searchText = useSelector(state => state.bpmForms.searchText);
+  const applicationCount = useSelector((state) => state.process?.applicationCount);
 
-  const pageOptions = [
+  // Get form access data from Redux store
+  const formAccess = useSelector((state) => state.user?.formAccess || []);
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
+
+  const { createDesigns, viewDesigns } = userRoles();
+  const { t } = useTranslation();
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [deleteMessage, setDeleteMessage] = React.useState({"title": "", "message": ""});
+  const [disableDelete, setDisableDelete] = React.useState(false);
+  const [isAppCountLoading, setIsAppCountLoading] = React.useState(false);
+  const [isDeletionLoading, setIsDeletionLoading] = React.useState(false);
+  const [showUnpublishModal, setShowUnpublishModal] = React.useState(false);
+  const [selectedUnpublishRow, setSelectedUnpublishRow] = React.useState(null);
+
+  // Mapping between DataGrid field names and reducer sort keys
+  const gridFieldToSortKey = {
+    title: "formName",
+    modified: "modified",
+    anonymous: "visibility",
+    status: "status",
+  };
+
+  const sortKeyToGridField = {
+    formName: "title",
+    modified: "modified",
+    visibility: "anonymous",
+    status: "status",
+  };
+
+  // 🔹 Delete flow
+  const deleteAction = (row) => {
+    setSelectedRow(row);
+    setShowDeleteModal(true);
+    setIsAppCountLoading(true); // start loading state
+
+    dispatch(
+      getApplicationCount(row.mapperId, () => {
+        setIsAppCountLoading(false); // stop loading once response arrives
+      })
+    );
+  };
+
+  const handleDelete = () => {
+    setIsDeletionLoading(true);
+    if (!selectedRow) return;
+    const formId = selectedRow._id;
+    const mapperId = selectedRow.mapperId;
+    if (!applicationCount || applicationCount === 0) {
+      dispatch(
+        deleteForm("form", formId, () => {
+          setIsDeletionLoading(false);
+          dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
+        })
+      );
+
+      if (mapperId) {
+        dispatch(unPublishForm(mapperId));
+      }
+      dispatch(setFormDeleteStatus({ modalOpen: false, formId: "", formName: "" }));
+      toast.success(t("Form deleted successfully"));
+      handleCloseDelete();
+    } else {
+      setIsDeletionLoading(false);
+      handleCloseDelete();
+    }
+  };
+
+  const handleCloseDelete = () => {
+    setShowDeleteModal(false);
+    setSelectedRow(null);
+  };
+
+  // 🔹 Unpublish flow
+  const handleUnpublish = async () => {
+    if (!selectedUnpublishRow) return;
+    await unPublish(selectedUnpublishRow.mapperId).then(() => {
+      dispatch(fetchBPMFormList({ pageNo, limit, formSort: formsort }));
+    });
+    handleCloseUnpublish();
+  };
+
+  const handleCloseUnpublish = () => {
+    setShowUnpublishModal(false);
+    setSelectedUnpublishRow(null);
+  };
+
+  // 🔹 Duplicate flow
+  const handleDuplicate = async (row) => {
+    try {
+      setIsDuplicating(true);
+      setDuplicateProgress(0);
+      // Fetch the full form data
+      setDuplicateProgress(20);
+      const formResponse = await fetchFormById(row._id);
+
+      setDuplicateProgress(40);
+      const diagramResponse = await getProcessDetails({
+            processKey: row.processKey,
+            tenantKey,
+            mapperId: row.mapperId
+          });
+
+      setDuplicateProgress(60);
+      const originalForm = formResponse.data;
+
+      // Create duplicated form data
+      const duplicatedForm = _cloneDeep(originalForm);
+
+      // Modify title, name, and path
+      duplicatedForm.title = `${originalForm.title}-copy`;
+      duplicatedForm.name = `${originalForm.name}-copy`;
+      duplicatedForm.path = `${originalForm.path}-copy`;
+
+      duplicatedForm.processData = diagramResponse.data.processData;
+      duplicatedForm.processType = diagramResponse.data.processType;
+
+      // Remove _id and other fields that should not be copied
+      delete duplicatedForm._id;
+      delete duplicatedForm.machineName;
+      delete duplicatedForm.parentFormId;
+
+      // Set as new version
+      duplicatedForm.componentChanged = true;
+      duplicatedForm.newVersion = true;
+
+      setDuplicateProgress(80);
+      // Manipulate form data with proper formatting
+      const newFormData = manipulatingFormData(
+        duplicatedForm,
+        MULTITENANCY_ENABLED,
+        tenantKey,
+        formAccess,
+        submissionAccess
+      );
+
+      setDuplicateProgress(90);
+      // Create the duplicated form
+      const createResponse = await formCreate(newFormData);
+
+      setDuplicateProgress(100);
+      const createdForm = createResponse.data;
+
+      // Redirect to edit page of duplicated form
+      dispatch(push(`${redirectUrl}formflow/${createdForm._id}/edit`));
+
+    } catch (err) {
+      console.error("Error duplicating form:", err);
+      // const errorMessage = err.response?.data?.message || err.message || "Failed to duplicate form";
+    } finally {
+      setIsDuplicating(false);
+    }
+  };
+
+  // Watch for application count updates
+  React.useEffect(() => {
+    if (selectedRow) {
+      if (isAppCountLoading) {
+        setDeleteMessage({"title": `Delete ${selectedRow.title}?`, "message": t("Preparing for delete...")});
+        setDisableDelete(true);
+      } else if (applicationCount > 0) {
+        setDeleteMessage({"title": t(`Delete ${selectedRow.title}?`),
+          "message": t(`This form has ${applicationCount} submission(s). You can’t delete it.`)});
+        setDisableDelete(true);
+      } else {
+        setDeleteMessage({"title": t(`Delete ${selectedRow.title}?`),
+          "message": t("This form, its flows and any related tasks will be deleted and it will no longer be available to form submitters. This action cannot be undone.")});
+        setDisableDelete(false);
+      }
+    }
+  }, [applicationCount, selectedRow, isAppCountLoading, t]);
+  // Prepare DataGrid columns
+  const columns = [
     {
-      text: "10",
-      value: 10,
+      field: "title",
+      headerName: t("Name"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
     },
     {
-      text: "25",
-      value: 25,
+      field: "description",
+      headerName: t("Description"),
+      flex: 1,
+      sortable: false,
+      width: 180,
+      height: 55,
+      renderCell: params => {
+        const description = params.row.description ? (new DOMParser().parseFromString(params.row.description, 'text/html').body.textContent) : "";
+        return (
+          <span title={description}>
+            {description}
+          </span>
+        );
+      }
     },
     {
-      text: "50",
-      value: 50,
+      field: "modified",
+      headerName: t("Last Edited"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: params => {
+        const dateValue = HelperServices.getLocaldate(params.row.modified);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
     },
     {
-      text: "100",
-      value: 100,
+      field: "anonymous",
+      headerName: t("Visibility"),
+      flex: 1,
+      sortable: true,
+      renderCell: params => {
+        const visibility = params.value ? t("Public") : t("Private");
+        return (
+          <span title={visibility}>
+            {visibility}
+          </span>
+        );
+      },
+      width: 180,
+      height: 55,
     },
     {
-      text: "All",
-      value: totalForms,
+      field: "status",
+      headerName: t("Status"),
+      flex: 1,
+      sortable: true,
+      width: 180,
+      height: 55,
+      renderCell: params => {
+        const statusText = params.value === "active" ? t("Published") : t("Unpublished");
+        return (
+          <span className="d-flex align-items-center">
+            {params.value === "active" ?
+              <span className="status-live"></span> :
+              <span className="status-draft"></span>}
+            <span title={statusText}>
+              {statusText}
+            </span>
+          </span>
+        );
+      },
+    },
+    {
+      field: "actions",
+      renderHeader: () => (
+        <V8CustomButton
+          // label="new button"
+          variant="secondary"
+          label={t("Refresh")}
+          onClick={handleRefresh}
+        />
+      ),
+      flex: 1,
+      sortable: false,
+      cellClassName: "last-column",
+      renderCell: (params) => {
+        const dropdownItems = [
+          {
+            label: t("Duplicate form"),
+            onClick: () => handleDuplicate(params.row),
+          },
+          {
+            label: params.row.status === "active" ? t("Unpublish") : t("Delete"),
+            onClick: () => {
+              if (params.row.status === "active") {
+                setSelectedUnpublishRow(params.row);
+                setShowUnpublishModal(true);
+              } else {
+                deleteAction(params.row);
+              }
+            },
+            className: params.row.status === "active" ? "" : "delete-dropdown-item",
+          },
+        ];
+        return (createDesigns || viewDesigns) && (
+          <V8CustomDropdownButton
+          label={t("Edit")}
+          variant="secondary"
+          menuPosition="right"
+          dropdownItems={dropdownItems}
+          disabled={isDuplicating}
+          onLabelClick= {() => viewOrEditForm(params.row._id, "edit")}
+        />
+        );
+      }
     },
   ];
 
+const viewOrEditForm = (formId, path) => {
+  dispatch(resetFormProcessData());
+  dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
+};
 
-  const handleSort = (key) => {
-    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
-  
-    // Reset all other columns to default (ascending) except the active one
-    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
-      acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
-      return acc;
-    }, {});
-  
-    dispatch(setBpmFormSort({
-      ...updatedSort,
-      activeKey: key,
-    }));
-  };
-  
-
-  const viewOrEditForm = (formId, path) => {
-    dispatch(resetFormProcessData());
-    dispatch(push(`${redirectUrl}formflow/${formId}/${path}`));
-  };
-
-  const handlePageChange = (page) => {
+const handlePageChange = (page) => {
     dispatch(setBPMFormListPage(page));
   };
 
-  const onSizePerPageChange = (limit) => {
-    dispatch(setBPMFormLimit(limit));
+
+  const handleSortChange = (modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    if (!model || !model.field || !model.sort) {
+      const resetSort = Object.keys(formsort).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      // Only reset sort; do not force page = 1 here to avoid page flip duplicates
+      dispatch(setBpmFormSort({ ...resetSort, activeKey: "formName" }));
+        return;
+    }
+
+    const mappedKey = gridFieldToSortKey[model.field] || model.field;
+    const order = model.sort;
+
+    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? order : "asc" };
+      return acc;
+    }, {});
+    dispatch(setBpmFormSort({ ...updatedSort, activeKey: mappedKey }));
+  };
+
+
+  const handleRefresh = () => {
+    let filters = {pageNo, limit, formSort: formsort, formName: searchText};
+    dispatch(setFormSearchLoading(true));
+    dispatch(fetchBPMFormList({...filters}));
+  };
+
+  const activeKey = bpmForms.sort?.activeKey || "formName";
+  const activeField = sortKeyToGridField[activeKey] || activeKey;
+  const activeOrder = bpmForms.sort?.[activeKey]?.sortOrder || "asc";
+
+
+  const handleLimitChange = (limitVal) => {
+    // Batch dispatches to keep updates atomic
+    batch(() => {
+    dispatch(setBPMFormLimit(limitVal));
     dispatch(setBPMFormListPage(1));
+    });
   };
 
-  const stripHtml = (html) => {
-    let doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || "";
+  // DataGrid's onPaginationModelChange - handles both page and pageSize changes
+  const onPaginationModelChange = ({ page, pageSize }) => {
+    if (limit !== pageSize) {
+      handleLimitChange(pageSize);
+    } else {
+      handlePageChange(page + 1);
+    }
   };
 
-  const toggleRow = (index) => {
-    setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
-  };
+  const rows = React.useMemo(() => {
+    return (formData || []).map((f) => ({
+      ...f,
+      id: f._id || f.path || f.name,
+    })).filter(r => r.id);
+  }, [formData]);
 
-  if (searchFormLoading || isApplicationCountLoading) {
-    return <TableSkeleton columns={5} rows={10} pagination={7} />;
-  }
+  const internalPaginationModel = React.useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
+  const paginationModel = externalPaginationModel || internalPaginationModel;
 
   return (
-    <div className="custom-table-wrapper-outter">
-      <div className="custom-table-wrapper-inner">
-        <table className="table custom-tables">
-          <thead className="table-header">
-            <tr>
-              
-              <SortableHeader
-                columnKey="formName"
-                title="Name"
-                currentSort={formsort}
-                handleSort={handleSort}
-                className="w-20"
-              />
-              
-              <th className="w-30" scope="col">{t("Description")}</th>
-              
-              <SortableHeader
-              columnKey="modified"
-              title="Last Edited"
-              currentSort={formsort}
-              handleSort={handleSort}
-              className="w-13"
-              />
-              
-              
-              <SortableHeader
-                columnKey="visibility"
-                title="Visibility"
-                currentSort={formsort}
-                handleSort={handleSort}
-                className="w-13"/>
-              
-              
-                <SortableHeader
-                columnKey="status"
-                title="Status"
-                currentSort={formsort}
-                handleSort={handleSort}
-                className="w-12"/>
-              
-              <th className="text-end" aria-label="Search Forms by form title"></th>
-            </tr>
-          </thead>
-
-          {formData?.length ? (
-            <>
-              <tbody>
-                {formData?.map((e, index) => {
-                  const isExpanded = expandedRowIndex === index;
-
-                  return (
-                    <tr key={index}>
-                      <td className="w-20">
-                        <div className="d-flex">
-                          <span className="text-container">{e.title}</span>
-                        </div>
-                      </td>
-                      <td className="w-30 cursor-pointer">
-                        <span className={isExpanded ? "text-container-expand" : "text-container"}
-                          onClick={() => toggleRow(index)}
-                          data-testid="description-cell"
-                          >
-                          {stripHtml(e.description ? e.description : "")}
-                        </span>
-                      </td>
-                      <td className="w-13">{HelperServices?.getLocaldate(e.modified)}</td>
-                      <td className="w-13">{e.anonymous ? t("Public") : t("Private")}</td>
-                      <td className="w-12">
-                        <span data-testid={`form-status-${e._id}`} className="d-flex align-items-center">
-                          {e.status === "active" ? (
-                              <span className="status-live"></span>
-                          ) : (
-                            <span className="status-draft"></span>
-                          )}
-                          {e.status === "active" ? t("Live") : t("Draft")}
-                        </span>
-                      </td>
-                      <td className="text-end">
-                      {(createDesigns || viewDesigns) && (
-                        <CustomButton
-                          label={createDesigns ? "Edit" : "View"}
-                          onClick={() => viewOrEditForm(e._id, 'edit')}
-                          dataTestId={`form-${createDesigns ? 'edit' : 'view'}-button-${e._id}`}
-                          ariaLabel={`${createDesigns ? "Edit" : "View"} Form Button`}
-                          actionTable
-                        /> )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </>
-          ) : !searchFormLoading ? (
-            <tbody className="table-empty">
-              <NoDataFound message={t('No forms have been found. Create a new form by clicking the "New Form & Flow" button in the top right.')}/>
-            </tbody>
-          ) : null}
-        </table>
-      </div>
-
-      {formData.length ? (
-        <TableFooter
-          limit={limit}
-          activePage={pageNo}
-          totalCount={totalForms}
-          handlePageChange={handlePageChange}
-          onLimitChange={onSizePerPageChange}
-          pageOptions={pageOptions}
-        />
-      ) : (
-        <></>
-      )}
-    </div>
+   <>
+    <ReusableTable
+      columns={columns}
+      rows={rows}
+      rowCount={totalForms}
+      loading={searchFormLoading || isApplicationCountLoading}
+      sortModel={externalSortModel || [{ field: activeField, sort: activeOrder }]}
+      onSortModelChange={externalOnSortModelChange || handleSortChange}
+      paginationModel={paginationModel}
+      onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
+      getRowId={(row) => row.id}
+      autoHeight={true}
+    />
+    <PromptModal
+        show={showDeleteModal}
+        onClose={handleCloseDelete}
+        title={deleteMessage.title}
+        message={deleteMessage.message}
+        type="danger"
+        primaryBtnText={t("Delete")}
+        primaryBtnAction={handleDelete}
+        primaryBtnDisable={disableDelete}
+        secondaryBtnText={t("Cancel")}
+        secondaryBtnAction={handleCloseDelete}
+        buttonLoading={isDeletionLoading}
+        secondaryBtnDisable={isDeletionLoading}
+     />
+    <PromptModal
+        show={showUnpublishModal}
+        onClose={handleCloseUnpublish}
+        title={selectedUnpublishRow ? t(`Unpublish ${selectedUnpublishRow.title}?`) : t("Unpublish Form?")}
+        message={t(
+          `This form will be unpublished, making it no longer available to form submitters.
+All existing submissions and related tasks will remain intact. 
+You can republish it later if needed. This action does not delete the form or its data.`
+        )}
+        type="danger"
+        primaryBtnText={t("Unpublish Form")}
+        primaryBtnAction={handleUnpublish}
+        secondaryBtnText={t("Cancel")}
+        secondaryBtnAction={handleCloseUnpublish}
+     />
+    </>
   );
 }
+
+FormTable.propTypes = {
+  isDuplicating: PropTypes.bool.isRequired,
+  setIsDuplicating: PropTypes.func.isRequired,
+  setDuplicateProgress: PropTypes.func.isRequired,
+};
 
 export default FormTable;

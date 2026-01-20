@@ -1,14 +1,18 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import startCase from "lodash/startCase";
-// import { Card } from "react-bootstrap";
 import {
-  CustomButton,
-  BackToPrevIcon,
   FormSubmissionHistoryModal,
   SubmissionHistoryWithViewButton,
   DownloadPDFButton,
+  V8CustomButton,
+  BreadCrumbs,
+  BreadcrumbVariant,
+  ReusableTable,
+  Alert,
+  AlertVariant,
+  CustomProgressBar,
+  useProgressBar,
 } from "@formsflow/components";
 import { getApplicationById } from "../../../apiManager/services/applicationServices";
 import Loading from "../../../containers/Loading";
@@ -20,13 +24,13 @@ import View from "../../../routes/Submit/Submission/Item/View";
 import { getForm, getSubmission } from "@aot-technologies/formio-react";
 import NotFound from "../../../components/NotFound";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
-import { HelperServices } from "@formsflow/service";
 import { setUpdateHistoryLoader } from "../../../actions/taskApplicationHistoryActions";
 import { fetchApplicationAuditHistoryList } from "../../../apiManager/services/applicationAuditServices";
 import userRoles from "../../../constants/permissions";
@@ -34,6 +38,87 @@ import {
   getProcessActivities,
   getProcessDetails,
 } from "../../../apiManager/services/processServices";
+import { navigateToSubmitFormsListing, navigateToFormEntries } from "../../../helper/routerHelper";
+import { HelperServices } from "@formsflow/service";
+
+const HistoryDataGrid = React.memo(({ historyData, onRefresh, loading }) => {
+  const { t } = useTranslation();
+
+  const columns = useMemo(() => [
+    {
+      field: "submittedBy",
+      headerName: t("Submitted by"),
+      flex: 1.5,
+      sortable: false,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "created",
+      headerName: t("Created"),
+      flex: 1.5,
+      sortable: false,
+      renderCell: (params) => {
+        const dateValue = HelperServices.getLocaldate(params.value);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
+    },
+    {
+      field: "applicationStatus",
+      headerName: t("Status"),
+      flex: 1,
+      sortable: false,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "actions",
+      align: "right",
+      sortable: false,
+      cellClassName: "last-column",
+      renderHeader: () => (
+        <V8CustomButton
+          variant="secondary"
+          label={t("Refresh")}
+          onClick={onRefresh}
+          />
+        )
+    },
+  ], [t, onRefresh]);
+
+  const rows = Array.isArray(historyData) ? historyData : [];
+
+  return (
+    <ReusableTable
+      rows={rows}
+      columns={columns}
+      loading={loading}
+      getRowId={(row) => `${row.formId}-${row.created}`}
+      noRowsLabel={t("No history found")}
+      paginationMode="client"
+      sortingMode="client"
+      hideFooter
+    />
+  );
+});
+
+HistoryDataGrid.propTypes = {
+  historyData: PropTypes.array,
+  onRefresh: PropTypes.func,
+  loading: PropTypes.bool,
+};
+
+
 const ViewApplication = React.memo(() => {
   const { t } = useTranslation();
   const { applicationId } = useParams();
@@ -58,9 +143,13 @@ const ViewApplication = React.memo(() => {
   const [isDiagramLoading, setIsDiagramLoading] = useState(false);
   const [diagramXML, setDiagramXML] = useState("");
   const markers = useSelector((state) => state.process.processActivityList);
+  const parentFormId = useSelector(
+      (state) => state.form.form?.parentFormId
+  );
 
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showHistoryGrid, setShowHistoryGrid] = useState(false);
   const { appHistory, isHistoryListLoading } = useSelector(
     useMemo(
       () => (state) => ({
@@ -70,6 +159,31 @@ const ViewApplication = React.memo(() => {
       []
     )
   );
+  const [showExportAlert, setShowExportAlert] = useState(false);
+
+  const { progress: publishProgress, start, complete, reset } = useProgressBar({
+    increment: 10,
+    interval: 150,
+    useCap: true,
+    capProgress: 90,
+  });
+
+  // Callbacks for DownloadPDFButton - must be before early returns
+  const handlePreDownload = useCallback(() => {
+    setShowExportAlert(true);
+    reset();
+    start();
+  }, [reset, start]);
+
+  const handlePostDownload = useCallback(() => {
+    complete();
+    setShowExportAlert(false);
+  }, [complete]);
+
+  const handleHistoryRefresh = useCallback(() => {
+    dispatch(setUpdateHistoryLoader(true));
+    dispatch(fetchApplicationAuditHistoryList(applicationId));
+  }, [dispatch, applicationId]);
 
   useEffect(() => {
     dispatch(setUpdateHistoryLoader(true));
@@ -111,25 +225,25 @@ const ViewApplication = React.memo(() => {
     }
   }, [applicationId, isHistoryListLoading, dispatch]);
 
-    useEffect(async() => {
+  useEffect(() => {
     const processKey = applicationDetail?.processKey;
     const processInstanceId = applicationDetail?.processInstanceId;
-    if ( processKey && processInstanceId && analyze_process_view) {
-      try{
-        setIsDiagramLoading(true);
-        dispatch(getProcessActivities(processInstanceId));
-        const res = await getProcessDetails({processKey,tenant_key: tenantKey});
-        setDiagramXML(res?.data?.processData || "");
-       
+    if (processKey && processInstanceId && analyze_process_view) {
+      const fetchProcessDetails = async () => {
+        try {
+          setIsDiagramLoading(true);
+          dispatch(getProcessActivities(processInstanceId));
+          const res = await getProcessDetails({ processKey, tenant_key: tenantKey });
+          setDiagramXML(res?.data?.processData || "");
+        } catch (error) {
+          console.error("Error fetching process details:", error);
+        } finally {
+          setIsDiagramLoading(false);
         }
-      catch (error) {
-        console.error("Error fetching process details:", error);
-      }finally{
-         setIsDiagramLoading(false);
-      }
-      
+      };
+      fetchProcessDetails();
     }
-  }, [applicationDetail, tenantKey, analyze_process_view]);
+  }, [applicationDetail, tenantKey, analyze_process_view, dispatch]);
   if (isApplicationDetailLoading) {
     return <Loading />;
   }
@@ -146,61 +260,97 @@ const ViewApplication = React.memo(() => {
     );
   }
 
-  const backToSubmissionList = () => {
-    history.goBack();
+    // will be updated once application/draft listing page is ready
+  const handleBack = () => {
+    navigateToFormEntries(dispatch, tenantKey, parentFormId || applicationDetail.formId);
+
   };
 
+  const redirectBackToForm = () => {
+    navigateToSubmitFormsListing(dispatch, tenantKey);
+  };
+
+  const breadcrumbItems = [
+    { id: "submit", label: t("Submit") },
+    { id: "form-title", label: form.title },
+  ];
+
+  const handleBreadcrumbClick = (item) => {
+    if (item.id === "submit") {
+      redirectBackToForm();
+    } else if (item.id === "form-title") {
+      handleBack();
+    }
+  };
+  
   return (
     <div>
       {/* Header Section */}
-
-      <div className="nav-bar">
-        <div className="icon-back" onClick={backToSubmissionList}>
-          <BackToPrevIcon />
-        </div>
-
-        <div className="description">
-          <p className="text-main">
-            {startCase(applicationDetail.applicationName)}
-          </p>
-
-          <p className="status" data-testid={`form-status-${form._id}`}>
-            <span className="status-live"></span>
-
-            {t("Submitted on:")}&nbsp;
-
-            <span className="date" data-testid="submissions-date">
-              {HelperServices?.getLocalDateAndTime(applicationDetail.created)}
-            </span>
-
-            {/* <span data-testid="submissions-date">{HelperServices?.getLocalDateAndTime(applicationDetail.created)}</span> */}
-          </p>
-        </div>
-
-        <div className="buttons">
-          {(viewSubmissionHistory || 
-              analyze_submissions_view_history) && (
-          <CustomButton
-            label={t("History")}
-            dataTestId="handle-submission-history-testid"
-            ariaLabel={t("Submission History Button")}
-            onClick={() => setShowHistoryModal(true)}
-            dark
+      <div className="toast-section">
+          <Alert
+            message="Exporting PDF"
+            variant={AlertVariant.DEFAULT}
+            isShowing={showExportAlert}
+            rightContent={<CustomProgressBar progress={publishProgress} color="default"/>}
           />
-          )}
+        </div>
 
-          {(form?._id && submission?._id) && <DownloadPDFButton
-            form_id={form._id}
-            submission_id={submission._id}
-            title={form.title}
-          />}
+         <div className="header-section-1">
+            <div className="section-seperation-left d-block">
+                <BreadCrumbs 
+                  items={breadcrumbItems}
+                  variant={BreadcrumbVariant.MINIMIZED}
+                  underline={false}
+                  onBreadcrumbClick={handleBreadcrumbClick} 
+                /> 
+                <h4>{applicationId}</h4>
+            </div>
+        </div>
+
+      <div className="header-section-2">
+        <div className="section-seperation-left">
+          {((isFromFormEntries && viewSubmissionHistory) ||
+            (!isFromFormEntries && analyze_submissions_view_history)) && (
+            <>
+              <V8CustomButton
+                variant="secondary"
+                label={t("Form")}
+                selected={!showHistoryGrid}
+                onClick={() => setShowHistoryGrid(false)}
+              />
+              <V8CustomButton
+                variant="secondary"
+                label={t("History")}
+                selected={showHistoryGrid}
+                onClick={() => setShowHistoryGrid(true)}
+              />
+            </>
+          )}
+          {(form?._id && submission?._id) && (
+            <DownloadPDFButton
+              form_id={form._id}
+              submission_id={submission._id}
+              title={form.title}
+              onPreDownload={handlePreDownload}
+              onPostDownload={handlePostDownload}
+            />
+          )}
         </div>
       </div>
+      <div className="submission-history-container">
+      <div className="body-section">
+        {showHistoryGrid ? (
+          <HistoryDataGrid
+            historyData={appHistory}
+            onRefresh={handleHistoryRefresh}
+            loading={isHistoryListLoading}
+          />
+        ) : (
+          <View page="application-detail" />
+        )}
+      </div>
+      </div>
       
-      
-
-      {/* View Application Details */}
-      <View page="application-detail" />
       {(analyze_submissions_view_history && !isFromFormEntries) ?  
       <SubmissionHistoryWithViewButton
         show={showHistoryModal}

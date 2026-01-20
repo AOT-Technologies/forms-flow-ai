@@ -1,5 +1,5 @@
-import React, {useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useState, useEffect, useCallback, useMemo} from "react";
+import { useDispatch, useSelector, batch } from "react-redux";
 import { selectRoot } from "@aot-technologies/formio-react";
 import { CLIENT_EDIT_STATUS } from "../../../constants/applicationConstants";
 import {
@@ -8,8 +8,7 @@ import {
     setFormSubmissionSort,
 } from "../../../actions/applicationActions";
 import { useTranslation } from "react-i18next";
-import { CustomButton, TableFooter, NoDataFound, ConfirmModal, TableSkeleton } from "@formsflow/components";
-import SortableHeader from '../../CustomComponents/SortableHeader';
+import { PromptModal, V8CustomButton, ReusableTable } from "@formsflow/components";
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
 import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit } from "../../../helper/routerHelper";
@@ -38,13 +37,21 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const [deleteDraftId, setDeleteDraftId] = useState('');
     const [isDeletionLoading, setIsDeletionLoading] = useState(false);
 
-    const pageOptions = [
-        { text: "10", value: 10 },
-        { text: "25", value: 25 },
-        { text: "50", value: 50 },
-        { text: "100", value: 100 },
-        { text: "All", value: totalForms },
-    ];
+  const gridFieldToSortKey = {
+    id: "id",
+    created: "created",
+    modified: "modified",
+    isDraft: "type",
+    applicationStatus: "applicationStatus",
+  };
+
+  const sortKeyToGridField = {
+    id: "id",
+    created: "created",
+    modified: "modified",
+    type: "isDraft",
+    applicationStatus: "applicationStatus",
+  };
 
     useEffect(() => {
         setCanEdit(userRoles?.includes("create_submissions"));
@@ -54,18 +61,33 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         navigateToResubmit(dispatch, tenantKey, row.formId, row.submissionId);
     };
 
-    const handleSort = (key) => {
-        const newSortOrder = applicationSort[key].sortOrder === "asc" ? "desc" : "asc";
-        const updatedSort = Object.keys(applicationSort).reduce((acc, columnKey) => {
-            acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
-            return acc;
-        }, {});
+  const handleSortChange = useCallback((modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(applicationSort).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      batch(() => {
+        dispatch(setFormSubmissionSort({ ...resetSort, activeKey: "id" }));
+        dispatch(setApplicationListActivePage(1));
+      });
+      return;
+    }
 
-        dispatch(setFormSubmissionSort({
-            ...updatedSort,
-            activeKey: key,
-        }));
-    };
+    const mappedKey = gridFieldToSortKey[model.field] || model.field;
+    const order = model.sort;
+
+    const updatedSort = Object.keys(applicationSort).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? order : "asc" };
+      return acc;
+    }, {});
+
+    dispatch(setFormSubmissionSort({
+      ...updatedSort,
+      activeKey: mappedKey,
+    }));
+  }, [dispatch, applicationSort]);
 
     const continueDraft = (row) => {
         navigateToDraftEdit(dispatch, tenantKey, row.formId, row.id);
@@ -103,190 +125,215 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         navigateToViewSubmission(dispatch, tenantKey, item.formId, item.id);
     };
 
-    const handlePageChange = (page) => {
-        dispatch(setApplicationListActivePage(page));
-    };
-
-    const onSizePerPageChange = (limit) => {
-        dispatch(setCountPerpage(limit));
+  const onPaginationModelChange = useCallback(({ page, pageSize }) => {
+    if (limit !== pageSize) {
+      batch(() => {
+        dispatch(setCountPerpage(pageSize));
         dispatch(setApplicationListActivePage(1));
-    };
+      });
+    } else if (pageNo !== page + 1) {
+      dispatch(setApplicationListActivePage(page + 1));
+    }
+  }, [dispatch, limit, pageNo]);
 
+  const handleRefresh = useCallback(() => {
+    fetchSubmissionsAndDrafts();
+  }, [fetchSubmissionsAndDrafts]);
 
-
-
-// **Extracted ternary logic into an independent variable**
-const noDataMessage = !searchFormLoading ? (
-    <NoDataFound
-        message={t('No Submissions or Draft have been found. Create a new submission by clicking the "New Submission " button in the top right.')}
-    />
-) : null;
-
-//The buttons are seperated for better readability.
-const getActionButtons = (item) => {
-  if (item.isDraft) {
-    return (
-      <div className="d-flex justify-content-end gap-2">
-        <CustomButton
+  const columns = [
+    { 
+      field: "id", 
+      headerName: t("Submission ID"), 
+      flex: 1, 
+      sortable: true,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "created",
+      headerName: t("Submitted On"),
+      flex: 1,
+      sortable: true,
+      renderCell: (params) => {
+        const dateValue = HelperServices.getLocaldate(params.value);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
+    },
+    {
+      field: "modified",
+      headerName: t("Last Modified On"),
+      flex: 1,
+      sortable: true,
+      renderCell: (params) => {
+        const dateValue = HelperServices.getLocaldate(params.value);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
+    },
+    {
+      field: "isDraft",
+      headerName: t("Type"),
+      flex: 1,
+      sortable: true,
+      renderCell: (params) => {
+        const typeText = params.value ? t("Draft") : t("Submission");
+        return (
+          <span className="d-flex align-items-center">
+            {params.value ? (
+              <span className="status-draft"></span>
+            ) : (
+              <span className="status-live"></span>
+            )}
+            <span title={typeText}>
+              {typeText}
+            </span>
+          </span>
+        );
+      },
+    },
+    {
+      field: "applicationStatus",
+      headerName: t("Status"),
+      flex: 0.8,
+      sortable: true,
+      renderCell: (params) => {
+        const statusValue = params.row.isDraft ? "" : params.value;
+        return (
+          <span title={statusValue}>
+            {statusValue}
+          </span>
+        );
+      },
+    },
+    {
+      field: "actions",
+      headerName: t("Action"),
+      flex: 1.5,
+      sortable: false,
+      align: "right",
+      cellClassName: "last-column",
+      renderHeader: () => (
+        <V8CustomButton
           variant="secondary"
-          size="table"
-          label={t("Delete")}
-          onClick={() => deleteDraft(item)}
-          data-testid={`delete-draft-button-${item.id}`}
-          aria-label={t("Delete Draft")}
-          actionTable
+          label={t("Refresh")}
+          onClick={handleRefresh}
         />
-        <CustomButton
-          variant="secondary"
-          size="table"
-          label={t("Continue")}
-          onClick={() => continueDraft(item)}
-          data-testid={`continue-draft-button-${item.id}`}
-          aria-label={t("Continue Draft edit")}
-          actionTable
-        />
-      </div>
-    );
-  } else if (CLIENT_EDIT_STATUS.includes(item.applicationStatus) && canEdit) {
-    return (
-      <CustomButton
-        variant="secondary"
-        size="table"
-        label={t("Resubmit")}
-        onClick={() => continueResubmit(item)}
-        data-testid={`resubmit-submission-button-${item?.id}`}
-        actionTable
+      ),
+      renderCell: (params) => {
+        const item = params.row;
+        if (item.isDraft) {
+          return (
+            <div>
+              <V8CustomButton
+                variant="warning"
+                label={t("Delete")}
+                onClick={() => deleteDraft(item)}
+                className="me-2"
+              />
+                
+              <V8CustomButton
+                variant="secondary"
+                label={t("Continue")}
+                onClick={() => continueDraft(item)}
+              />
+            </div>
+          );
+        } else if (CLIENT_EDIT_STATUS.includes(item.applicationStatus) && canEdit) {
+          return (
+            <V8CustomButton
+              variant="secondary"
+              label={t("Resubmit")}
+              onClick={() => continueResubmit(item)}
+            />
+
+
+          );
+        } else {
+          return (
+            <V8CustomButton
+              variant="secondary"
+              label={t("View")}
+              onClick={() => viewSubmission(item)}
+            />
+          );
+        }
+      },
+    },
+  ];
+
+  const rows = draftAndSubmissionsList?.applications || [];
+  const paginationModel = React.useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
+
+  const sortModel = useMemo(() => {
+    const activeKey = applicationSort?.activeKey || "id";
+    const activeField = sortKeyToGridField[activeKey] || activeKey;
+    const activeOrder = applicationSort?.[activeKey]?.sortOrder || "asc";
+    return [{ field: activeField, sort: activeOrder }];
+  }, [applicationSort]);
+
+  return (
+    <>
+      <ReusableTable
+        columns={columns}
+        rows={rows}
+        rowCount={totalForms}
+        loading={isApplicationLoading || searchFormLoading}
+        sortModel={sortModel}
+        onSortModelChange={handleSortChange}
+        paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationModelChange}
+        getRowId={(row) => row.id}
+        noRowsLabel={t("No Entries have been found.")}
+        autoHeight={true}
+        dataGridProps={{
+          sx: {
+            "& .MuiDataGrid-columnHeader--sortable": {
+              "& .MuiDataGrid-iconButtonContainer": {
+                visibility: "visible",
+              },
+              "&:not(.MuiDataGrid-columnHeader--sorted) .MuiDataGrid-sortIcon": {
+                opacity: 0.3,
+              },
+            },
+          },
+        }}
       />
-    );
-  } else {
-    return (
-      <CustomButton
-        variant="secondary"
-        size="table"
-        label={t("View")}
-        onClick={() => viewSubmission(item)}
-        data-testid={`view-submission-button-${item?.id}`}
-        actionTable
-      />
-    );
-  }
-};
-
-
-if (isApplicationLoading) {
-  return <TableSkeleton columns={5} rows={10} pagination={7} />;
-}
-
-return (
-  <div className="custom-table-wrapper-outter">
-    <div className="custom-table-wrapper-inner">
-        <table className="table custom-tables">
-            <thead className="table-header">
-                <tr>
-                      <SortableHeader
-                          columnKey="id"
-                          title="Submission ID"
-                          currentSort={applicationSort}
-                          handleSort={handleSort}
-                          className="w-20"
-                      />
-                      <SortableHeader
-                          columnKey="created"
-                          title="Submitted On"
-                          currentSort={applicationSort}
-                          handleSort={handleSort}
-                          className="w-20"
-                      />
-                      <SortableHeader
-                          columnKey="modified"
-                          title="Last Modified On"
-                          currentSort={applicationSort}
-                          handleSort={handleSort}
-                          className="w-20"
-                      />
-                      <SortableHeader
-                          columnKey="type"
-                          title="Type"
-                          currentSort={applicationSort}
-                          handleSort={handleSort}
-                          className="w-12"
-                      />
-                      <SortableHeader
-                          columnKey="applicationStatus"
-                          title="Status"
-                          currentSort={applicationSort}
-                          handleSort={handleSort}
-                          className="w-12"
-                      />
-                    <th className="text-end" colSpan="4"></th>
-                </tr>
-            </thead>
-
-            {draftAndSubmissionsList?.applications?.length ? (
-                <>
-                  <tbody>
-                    {draftAndSubmissionsList?.applications?.map((item) => (
-                      <tr key={item.id}>
-                        <td className="w-20">
-                          <div className="d-flex">
-                            <span className="text-container">{item.id}</span>
-                          </div>
-                        </td>
-                        <td className="w-20">{HelperServices.getLocalDateAndTime(item.created)}</td>
-                        <td className="w-20">{HelperServices.getLocalDateAndTime(item.modified)}</td>
-                        <td className="w-12">
-                          <span className="d-flex align-items-center">
-                            {item.isDraft ? <span className="status-draft"></span> : <span className="status-live"></span>}
-                            {item.isDraft ? t("Draft") : t("Submission")}
-                          </span>
-                        </td>
-                        <td className="w-12">{item.isDraft ? "" : item.applicationStatus}</td>
-
-                        <td className="text-end">
-                          {getActionButtons(item)}
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-                </>
-            ) : noDataMessage}
-        </table>
-        
-        <ConfirmModal
+      <PromptModal
         show={showDeleteModal}
-        primaryBtnAction={handleCloseActionModal}
         onClose={handleCloseActionModal}
-        title={t("Are You Sure You Want to Delete This Draft?")}
-        message={t("This action cannot be undone.")}
-        secondaryBtnAction={confirmDraftDelete}
-        primaryBtnText={t("No, Keep This Draft")}
-        secondaryBtnText={t("Yes, Delete this Draft")}
-        secondoryBtndataTestid="yes-delete-button"
+        type="danger"
+        title={t("Delete This Draft? ")}
+        message={t("Deleting a draft is permanent and cannot be undone.")}
+        primaryBtnText={t("Delete draft")}
+        primaryBtnAction={confirmDraftDelete}
+        primaryBtnDisable={isDeletionLoading}
+        buttonLoading={isDeletionLoading}
+        secondaryBtnText={t("Cancel")}
+        secondaryBtnAction={handleCloseActionModal}
         primaryBtndataTestid="no-delete-button"
         primaryBtnariaLabel="No, Keep This Draft"
         secondoryBtnariaLabel="Yes, Delete this Draft"
-        secondaryBtnDisable={isDeletionLoading}
-        secondaryBtnLoading={isDeletionLoading}
-    />
-    </div>
-    
-    {draftAndSubmissionsList?.applications?.length ? (
-      <TableFooter
-        limit={limit}
-        activePage={pageNo}
-        totalCount={totalForms}
-        handlePageChange={handlePageChange}
-        onLimitChange={onSizePerPageChange}
-        pageOptions={pageOptions} />
-    ) : (
-      <></>
-    )}
-  </div>
-);
+        secondoryBtndataTestid="confirm-delete-draft"
+      />
+    </>
+  );
 };
 
 SubmissionsAndDraftTable.propTypes = {
-    fetchSubmissionsAndDrafts: PropTypes.func.isRequired,
+  fetchSubmissionsAndDrafts: PropTypes.func.isRequired,
 };
 
 export default SubmissionsAndDraftTable;

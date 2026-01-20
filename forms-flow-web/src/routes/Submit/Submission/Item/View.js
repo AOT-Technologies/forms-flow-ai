@@ -8,6 +8,7 @@ import {
   selectError,
 } from "@aot-technologies/formio-react";
 import { push } from "connected-react-router";
+import { useLocation } from "react-router-dom";
 import Loading from "../../../../containers/Loading";
 import { setFormSubmissionLoading } from "../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -21,6 +22,7 @@ import { updateCustomSubmission } from "../../../../apiManager/services/FormServ
 import PropTypes from "prop-types";
 const View = React.memo((props) => {
   const { t } = useTranslation();
+  const location = useLocation();
   const { 
     onSubmit,
     options,
@@ -34,6 +36,11 @@ const View = React.memo((props) => {
   const customSubmission = useSelector(
     (state) => state.customSubmission?.submission || {}
   );
+
+  // Check if the route has from=formEntries query parameter
+  const queryParams = new URLSearchParams(location.search);
+  const fromParam = queryParams.get('from');
+  const shouldShowFormTitle = fromParam !== 'formEntries';
 
   const updatedSubmission = useMemo(()=>{
     if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
@@ -54,13 +61,16 @@ const View = React.memo((props) => {
  
 
   return (
-    <div className={`${scrollableOverview} bg-white ps-3 pe-3 m-0 form-border`}>
+    <div className={`${scrollableOverview} bg-white m-0 form-border`}>
       <LoadingOverlay
         active={isFormSubmissionLoading}
         spinner
         text={t("Loading...")}
         className="col-12"
-      >
+      ><div>
+        {shouldShowFormTitle && (
+          <div className="preview-header-text mb-4">{form?.title}</div>
+        )}
         <div className="sub-container wizard-tab">
           <Form
             form={form}
@@ -74,6 +84,7 @@ const View = React.memo((props) => {
               buttonSettings: { showCancel: false },
             }}
           />
+        </div>
         </div>
       </LoadingOverlay>
     </div>

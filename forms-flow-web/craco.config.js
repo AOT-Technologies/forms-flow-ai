@@ -26,6 +26,10 @@ module.exports = {
           buffer: require.resolve("buffer/"),
           net: false,  // Unfortunately, net can't be polyfilled easily in the browser.
         },
+        alias: {
+          "react/jsx-runtime": "react/jsx-runtime.js",
+          "react/jsx-dev-runtime": "react/jsx-dev-runtime.js",
+        }
       },
     },
   },

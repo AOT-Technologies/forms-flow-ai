@@ -39,6 +39,7 @@ const modelerConfig = {
 
 const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, ref) => {
   const [bpmnModeler, setBpmnModeler] = useState(null);
+  const [hasImported, setHasImported] = useState(false);
 
   const initializeModeler = useCallback(() => {
     setBpmnModeler(new BpmnModeler(modelerConfig));
@@ -49,15 +50,19 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
   }, [initializeModeler]);
 
   useEffect(() => {
-    if (bpmnModeler) {
+    if (bpmnModeler && !hasImported && bpmnXml) {
       handleImport(bpmnXml);
+      setHasImported(true);
+    }
+    
+    if (bpmnModeler) {
       bpmnModeler.on('element.changed', onChange);
       return () => {
-        // Cleanup event listener when component unmounts or bpmn changes
+        // Cleanup event listener when component unmounts
         bpmnModeler.off("element.changed", onChange);
       };
     }
-  }, [bpmnXml, bpmnModeler]);
+  }, [bpmnModeler, onChange]);
 
   const handleImport = (bpmnXml) => {
     if (bpmnXml && bpmnModeler) {
@@ -66,6 +71,8 @@ const BpmnEditor = forwardRef(({ bpmnXml, setLintErrors, onChange = ()=>{} }, re
         .then(({ warnings }) => {
           if (warnings.length) console.log("Warnings", warnings);
           bpmnModeler.on("linting.completed", (event) => setLintErrors(event.issues || []));
+          // Set hasImported to true after successful import
+          setHasImported(true);
         })
         .catch((err) => handleError(err, "BPMN Import Error: "));
     }

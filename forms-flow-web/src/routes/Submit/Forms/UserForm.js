@@ -29,10 +29,9 @@ import {
   setMaintainBPMFormPagination,
   setFormSubmitted,
 } from "../../../actions/formActions";
-import SubmissionError from "../../../containers/SubmissionError";
 import { publicApplicationStatus } from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay-ts";
-import { CUSTOM_EVENT_TYPE } from "../../../components/ServiceFlow/constants/customEventTypes";
+import { CUSTOM_EVENT_TYPE } from "../../../constants/customEventTypes";
 import { toast } from "react-toastify";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
@@ -58,13 +57,12 @@ import {
   getFormProcesses,
 } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
-import { renderPage, textTruncate } from "../../../helper/helper";
+import { renderPage } from "../../../helper/helper";
 import PropTypes from "prop-types";
 // import { Card } from "react-bootstrap";
-import { BackToPrevIcon } from "@formsflow/components";
-import { navigateToFormEntries } from "../../../helper/routerHelper";
+import { BreadCrumbs, BreadcrumbVariant } from "@formsflow/components";
+import { navigateToFormEntries, navigateToSubmitFormsListing } from "../../../helper/routerHelper";
 import { cloneDeep } from "lodash";
-import { HelperServices } from "@formsflow/service";
 import { useParams } from "react-router-dom";
 
 const View = React.memo((props) => {
@@ -90,8 +88,6 @@ const View = React.memo((props) => {
   } = useSelector((state) => state.formDelete) || {};
 
   const draftSubmissionId = draftSubmission?.applicationId || draftId;
-  //modified date
-  const draftModified = useSelector((state) => state.draft.draftModified?.modified);
 
   // Holds the latest data saved by the server
   const { formStatusLoading, processLoadError } =
@@ -138,10 +134,6 @@ const View = React.memo((props) => {
   */
   const draftCreateMethod = isAuthenticated ? draftCreate : publicDraftCreate;
   const draftUpdateMethod = isAuthenticated ? draftUpdate : publicDraftUpdate;
-  let scrollableOverview = "user-form-container";
-  if (form?.display === "wizard") {
-    scrollableOverview =  "user-form-container-with-wizard";
-  }
 
   const getPublicForm = useCallback(
     (form_id, isObjectId, formObj) => {
@@ -306,67 +298,33 @@ const View = React.memo((props) => {
 
   };
 
-  const renderModifiedDate = () => {
-    if (draftModified && !isPublic) {
-      return (
-        <>
-          <span className="status-draft"></span> {t("Last modified on:")}{" "}
-          {HelperServices.getLocalDateAndTime(draftModified)}
-        </>
-      );
-    } else {
-      return (
-        <>
-          <span className="status-new"></span> {t("New Submission")}
-        </>
-      );
-    }
+  const redirectBackToForm = () => {
+    navigateToSubmitFormsListing(dispatch, tenantKey);
   };
 
-  const renderHeader = () => (
-    <div className="nav-bar">
-        <SubmissionError
-          modalOpen={props.submissionError.modalOpen}
-          message={props.submissionError.message}
-          onConfirm={props.onConfirm}
-        ></SubmissionError>
-        
-        { !isPublic && 
-        <div className="icon-back" onClick={handleBack}>
-          <BackToPrevIcon data-testid="back-to-form-list" ariaLabel="Back to Form List" />
-        </div>
-        }
+  const breadcrumbItems = [
+    { id: "submit", label: t("Submit") },
+    { id: "form-title", label: form.title }
+  ];
+  
+  if (draftSubmission?.isDraft) {
+    breadcrumbItems.push(
+      { id: "drafts", label: t("Drafts") },
+      { id: "edit", label: t("Edit") }
+    );
+  }
+  
 
-        <div className="description">
-          <p className="text-main">
-            {textTruncate(100, 97, form.title)}
-          </p>
-
-          <p className="status" data-testid={`form-status-${form._id}`}>
-            {renderModifiedDate()}
-          </p>
-        </div>
-
-        {/* <div className="d-flex justify-content-between align-items-center">
-          <div className="icon-title-container">
-            {!isPublic && <BackToPrevIcon
-              title={t("Back to Form List")}
-              data-testid="back-to-form-list"
-              onClick={handleBack}
-            />}
-            <div className="user-form-header-text">
-              {textTruncate(100, 97, form.title)}
-            </div>
-          </div>
-
-          <div className="d-flex align-items-center">
-            <span className="form-modified-date me-3">
-              {renderModifiedDate()}
-            </span>
-          </div>
-        </div> */}
-    </div>
-  );
+  const handleBreadcrumbClick = (item) => {
+  if (item.id === "submit") {
+      redirectBackToForm();
+  }else if (item.id === "form-title") {
+      handleBack();
+  }
+  else if (item.id === "drafts") {
+    handleBack();    
+  }
+};
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
@@ -394,8 +352,19 @@ const View = React.memo((props) => {
   }
 
   return (
-    <div className="userform-wrapper">
-      {renderHeader()}
+    <>
+        <div className="header-section-1">
+            <div className="section-seperation-left d-block">
+                <BreadCrumbs 
+                  items={breadcrumbItems}
+                  variant={BreadcrumbVariant.MINIMIZED}
+                  underline ={false}
+                  onBreadcrumbClick={handleBreadcrumbClick}
+                /> 
+                <h4>{draftSubmission?.isDraft ? draftId : t("New Submission")}</h4>
+            </div>
+        </div>
+
       <Errors errors={errors} />
       <LoadingOverlay
         active={isFormSubmissionLoading}
@@ -403,7 +372,7 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className={`wizard-tab ${scrollableOverview}`}>
+        <div className="body-section px-1">
           {(isPublic || formStatus === "active") ? (
             <Form
               form={form}
@@ -433,7 +402,7 @@ const View = React.memo((props) => {
           )}
         </div>
       </LoadingOverlay>
-    </div>
+      </>
   );
 });
 

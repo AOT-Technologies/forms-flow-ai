@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
     volumes:
-      - ./postgres/camunda:/var/lib/postgresql/data
+      - postgres_camunda:/var/lib/postgresql
     ports:
       - '5432:5432'
     restart: unless-stopped
@@ -75,6 +75,19 @@ services:
       - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
       - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
       - FORMSFLOW_DOC_API_URL=${FORMSFLOW_DOC_API_URL}
+      - VAULT_ENABLED=${VAULT_ENABLED:-false}
+      - VAULT_URL=${VAULT_URL}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - VAULT_PATH=${VAULT_PATH}
+      - VAULT_SECRET=${VAULT_SECRET}
+      - SHARED_REALM=${SHARED_REALM:-false}
+      - CSS_API_BASE_URL=${CSS_API_BASE_URL:-}
+      - CSS_API_CLIENT_ID=${CSS_API_CLIENT_ID:-}
+      - CSS_API_SECRET=${CSS_API_SECRET:-}
+      - CSS_API_LOGIN_URL=${CSS_API_LOGIN_URL:-}
+      - CSS_ENV=${CSS_ENV:-}
+      - CSS_INTEGRATION_ID=${CSS_INTEGRATION_ID:-}
+      - USER_NAME_DISPLAY_CLAIM=${USER_NAME_DISPLAY_CLAIM:-}
 
     networks:
       - forms-flow-bpm-network
@@ -86,3 +99,4 @@ networks:
 
 volumes:
   postgres:
+  postgres_camunda:

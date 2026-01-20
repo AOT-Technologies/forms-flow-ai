@@ -21,6 +21,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
+    user: "1001:1001"
     links:
       - forms-flow-data-analysis-db
     ports:

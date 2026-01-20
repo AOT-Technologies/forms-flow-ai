@@ -90,7 +90,9 @@ const API = {
   EXPORT_FORM: `${WEB_BASE_URL}/form/<form_id>/export`,
   GET_PROCESS_XML: `${WEB_BASE_URL}/process/key/<process_key>`,
   PUBLISH_PROCESS: `${WEB_BASE_URL}/process/<process_id>/publish`,
-  UN_PUBLISH_PROCESS: `${WEB_BASE_URL}/process/<process_id>/unpublish`
+  UN_PUBLISH_PROCESS: `${WEB_BASE_URL}/process/<process_id>/unpublish`,
+  FORM_FLOW_BUILDER: `${WEB_BASE_URL}/form/form-flow-builder`,
+  FORM_FLOW_UPDATE: `${WEB_BASE_URL}/form/form-flow-builder/<mapper_id>`
 };
 
 export default API;

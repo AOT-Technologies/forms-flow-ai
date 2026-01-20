@@ -3,6 +3,7 @@ version: "3.7"
 
 volumes:
   postgres:
+  postgres_keycloak:
   keycloak_custom_data:
   
 networks:
@@ -15,7 +16,7 @@ services:
     restart: always
     container_name: keycloak_db
     volumes:
-      - ./postgres/keycloak:/var/lib/postgresql/data
+      - postgres_keycloak:/var/lib/postgresql
     environment:
       POSTGRES_DB: ${KEYCLOAK_JDBC_DB:-keycloak}
       POSTGRES_USER: ${KEYCLOAK_JDBC_USER:-admin}

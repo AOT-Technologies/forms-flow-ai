@@ -65,16 +65,6 @@ sequenceDiagram
     forms-api -->> web: 
     deactivate web
 
-    activate web
-    web ->> forms-api: Get form submission
-    Note over web,forms-api: "GET /form/:form-id/submission/:submission-id"
-    activate forms-api
-    forms-api ->> forms-db: Get form submission data
-    forms-db -->> forms-api: 
-    deactivate forms-api
-    forms-api -->> web: 
-    deactivate web
-
     Reviewer ->> web: Claim a task
     activate web
     web ->> bpm-api: Claim
@@ -86,26 +76,55 @@ sequenceDiagram
     bpm-api -->> web: 
     deactivate web
 
-    Reviewer ->> web: Complete task
-    activate web
-    web ->> forms-api: Update form
-    Note over web,forms-api: "PUT /form/:id/submission/:id"
-    activate forms-api
-    forms-api ->> forms-db: Update submission data
-    forms-db -->> forms-api: 
-    deactivate forms-api
-    forms-api -->> web: 
-
-    web ->> bpm-api: Submit task
-    Note over web,bpm-api: "POST /task/:id/submit-form"
-    activate bpm-api
-    bpm-api ->> bpm-db: Update task
-    bpm-db -->> bpm-api: 
-    Note over bpm-api: "Listeners executed as per configuration"
-    deactivate bpm-api
-    bpm-api -->> web: 
-    deactivate web
-
+    alt Normal task completion
+        Reviewer ->> web: Complete task
+        activate web
+        web ->> forms-api: Update form
+        Note over web,forms-api: "PUT /form/:id/submission/:id"
+        activate forms-api
+        forms-api ->> forms-db: Update submission data
+        forms-db -->> forms-api: 
+        deactivate forms-api
+        forms-api -->> web: 
+    
+        web ->> bpm-api: Submit task
+        Note over web,bpm-api: "POST /task/:id/submit-form"
+        activate bpm-api
+        bpm-api ->> bpm-db: Update task
+        bpm-db -->> bpm-api: 
+        Note over bpm-api: "Listeners executed as per configuration"
+        deactivate bpm-api
+        bpm-api -->> web: 
+        deactivate web
+    else Approval outside the form 
+        Reviewer ->> web: Complete task
+        activate web
+        web ->> web-api: POST approval status and complete task
+        Note over web,web-api: "POST tasks/:task-id/complete"
+        web-api ->> forms-api: Create form submission
+        Note over web-api,forms-api: "POST /form/:id/submission"
+        activate forms-api
+        forms-api ->> forms-db: Create submission
+        forms-db -->> forms-api: 
+        deactivate forms-api
+        forms-api -->> web-api: 
+    
+        web-api ->> web-api-db: Create application audit entry and update application
+        web-api-db -->> web-api:
+    
+        web-api ->> bpm-api: Submit task
+        Note over web-api,bpm-api: "POST /task/:id/submit-form"
+        activate bpm-api
+        bpm-api ->> bpm-db: Update task
+        bpm-db -->> bpm-api: 
+        Note over bpm-api: "Listeners executed as per configuration"
+        deactivate bpm-api
+        bpm-api -->> web-api:
+    
+        
+        web-api -->> web: Task completion result
+        deactivate web
+  end
     
 
 ```

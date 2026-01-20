@@ -13,10 +13,10 @@ const PublicRoute = ({publish}) => {
   },[]);
 
   return (
-    <div className="container py-2 min-hightcontainer">
-      <Route exact path="/public/form/:formId" render={(props) => <UserForm {...props} publish={publish}  />} />
-      <Route path="/public/form/:formId/:notavailable" component={NotFound} />
-    </div>
+      <>
+        <Route exact path="/public/form/:formId" render={(props) => <UserForm {...props} publish={publish}  />} />
+        <Route path="/public/form/:formId/:notavailable" component={NotFound} />
+      </>
   );
 };
 

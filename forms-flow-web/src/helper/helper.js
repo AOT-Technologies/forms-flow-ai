@@ -30,6 +30,18 @@ const removeTenantKey = (value, tenantkey) => {
   }
 };
 
+const removeTenantKeywithSlash = (value, tenantkey, multitenancyEnabled) => {
+  // Match optional leading slash, then tenantkey (case-insensitive), then hyphen
+  const regex = new RegExp(`^/?${tenantkey}-`, 'i');
+
+  if (multitenancyEnabled && regex.test(value)) {
+    return value.replace(regex, '');
+  } 
+  else{
+    return value;
+  }
+};
+
 const textTruncate = (wordLength, targetLength, text) => {
   return text?.length > wordLength
     ? text.substring(0, targetLength) + "..."
@@ -91,6 +103,31 @@ const addTenantkeyAsSuffix = (value, tenantkey) => {
     return `${value.toLowerCase()}${tenantkey}-`;
   }
 };
+// Helper function to compare roles state without considering unique IDs
+const compareRolesState = (roles1, roles2, key = null) => {
+  if (!roles1 || !roles2) return false;
+  
+  // Compare each section (DESIGN, FORM, APPLICATION)
+  const sections = ['DESIGN', 'FORM', 'APPLICATION'];
+  return sections.every(section => {
+    const section1 = roles1[section];
+    const section2 = roles2[section];
+    
+    if (!section1 || !section2) return false;
+    
+    // Compare selectedOption
+    if (section1.selectedOption !== section2.selectedOption) return false;
+    
+    // Compare roleInput (if exists)
+    if (section1.roleInput !== section2.roleInput) return false;
+    
+    // Compare selectedRoles by extracting only the role values (ignoring IDs)
+    const roles1Values = (section1.selectedRoles || []).map(r => r[key]).sort();
+    const roles2Values = (section2.selectedRoles || []).map(r => r[key]).sort();
+    
+    return _.isEqual(roles1Values, roles2Values);
+  });
+};
 
 /* ----------------- convert data from and into multiselect ----------------- */
 const convertMultiSelectOptionToValue = (selectedValues = [], key = null) => 
@@ -103,11 +140,13 @@ export { generateUniqueId,
   replaceUrl, 
   addTenantkey, 
   removeTenantKey, 
+  removeTenantKeywithSlash,
   textTruncate, 
   renderPage, 
   filterSelectOptionByLabel, 
   isFormComponentsChanged,
   addTenantkeyAsSuffix, 
   convertMultiSelectOptionToValue,
-  convertSelectedValueToMultiSelectOption
+  convertSelectedValueToMultiSelectOption,
+  compareRolesState
 };

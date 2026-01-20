@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.13.2-slim-bullseye
+FROM python:3.13.9-slim-bookworm
 
 # set label for image
 LABEL Name="formsflow"
@@ -26,7 +26,7 @@ RUN mkdir -p /opt/chromedriver && \
 # Install Google Chrome
 RUN wget --no-verbose -O /tmp/chrome.deb https://formsflow-documentsapi.aot-technologies.com/google-chrome-stable_116.0.5845.140-1_amd64.deb &&\
     apt-get update  && \
-    apt install -y /tmp/chrome.deb &&\
+    apt-get -f install -y /tmp/chrome.deb &&\
     rm /tmp/chrome.deb
 
 
@@ -42,7 +42,12 @@ RUN : \
     && pip install -r requirements.txt 
 
 ADD . /forms-flow-documents/app
-RUN pip install -e .
+RUN pip install -e . && \
+    pip uninstall ecdsa -y && \
+    apt-get remove -y \
+    git unzip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 5006
 RUN chmod u+x ./entrypoint

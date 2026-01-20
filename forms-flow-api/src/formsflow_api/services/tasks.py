@@ -1,18 +1,32 @@
 """This exposes tasks service."""
 
+import re
+
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.services.external import FormioService
 from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.models.tasks import TaskOutcomeConfiguration
-from formsflow_api.schemas.tasks import TaskOutcomeConfigurationSchema
+from formsflow_api.schemas.tasks import (
+    TaskCompletionSchema,
+    TaskOutcomeConfigurationSchema,
+)
+from formsflow_api.services.external import BPMService
+
+from .application import ApplicationService
+from .application_history import ApplicationHistoryService
 
 task_outcome_schema = TaskOutcomeConfigurationSchema()
 
 
 class TaskService:
     """This class manages task service."""
+
+    def __init__(self) -> None:
+        """Initialize."""
+        self.formio = FormioService()
 
     @user_context
     def create_task_outcome_configuration(
@@ -64,3 +78,111 @@ class TaskService:
             response = task_outcome_schema.dump(task_outcome)
             return response
         raise BusinessException(BusinessErrorCode.TASK_OUTCOME_NOT_FOUND)
+
+    def create_form_submission(
+        self, form_id: str, submission_id: str, application_status: str
+    ):
+        """Fetch submssion data and create new submission in formio."""
+        current_app.logger.debug("Formio new submission started...")
+        form_io_token = self.formio.get_formio_access_token()
+        formio_get_payload = {"form_id": form_id, "sub_id": submission_id}
+        submission_data = self.formio.get_submission(formio_get_payload, form_io_token)
+        # Update appication status in submission data with new status from request
+        if (
+            submission_data
+            and (data := submission_data.get("data"))
+            and "applicationStatus" in data
+        ):
+            submission_data["data"]["applicationStatus"] = application_status
+        formio_response = self.formio.create_submission(
+            form_id, submission_data, form_io_token
+        )
+        current_app.logger.debug("Formio new submission completed...")
+        return formio_response
+
+    def validate_form_url_and_extract_form_id(self, form_url):
+        """Validate form URL and extract form ID."""
+        # Search for the pattern in the URL
+        current_app.logger.debug("Validationg form URL and extracting form ID")
+        validate_form_url = re.search(
+            r"/form/([A-Fa-f0-9]{24})/submission/([A-Fa-f0-9]{24})$", form_url
+        )
+        if not validate_form_url:
+            raise BusinessException(BusinessErrorCode.INVALID_FORM_URL)
+        form_id = validate_form_url.group(1)
+        submission_id = validate_form_url.group(2)
+        current_app.logger.debug(
+            f"Extracted form Id: {form_id} Submission Id: {submission_id}"
+        )
+        return form_id, submission_id
+
+    @user_context
+    def complete_task(
+        self, task_id, request_data, **kwargs
+    ):  # pylint:disable=too-many-locals
+        """Complete a Camunda task and persist audit/application updates."""
+        data = TaskCompletionSchema().load(request_data)
+        user: UserContext = kwargs["user"]
+        token = user.bearer_token
+
+        # Extract form URL and validate
+        form_url = data["application_data"]["form_url"]
+        form_id, submission_id = self.validate_form_url_and_extract_form_id(form_url)
+        application_status = data["application_data"]["application_status"]
+        # Fetch form submission data and create new form submission in formio
+        formio_response = self.create_form_submission(
+            form_id, submission_id, application_status
+        )
+        submission_id = formio_response.get("_id")
+        form_url = self.formio.base_url + f"/form/{form_id}/submission/{submission_id}"
+
+        # Update task completion details in application audit table
+        application_id = data["application_data"].get("application_id")
+        data["application_data"]["form_url"] = form_url
+
+        application_audit_entry = ApplicationHistoryService.create_application_history(
+            data["application_data"], application_id
+        )
+        current_app.logger.debug("Application audit captured...")
+
+        # Update application status, form_id and submission_id in application table
+        application_update_data = {
+            "application_status": data["application_data"].get("application_status"),
+            "submission_id": submission_id,
+            "latest_form_id": form_id,
+        }
+        application, application_backup_data = (
+            ApplicationService.update_application_info(
+                application_id, application_update_data, user
+            )
+        )
+
+        try:
+            # Complete task in workflow
+            # Fetch data from request_data and modify formUrl and webFormUrl values
+            # Since schema returns camel_case, data directly fetched from request_data
+            variables = request_data["bpmnData"]["variables"]
+            variables["formUrl"]["value"] = form_url
+            web_form_url = variables["webFormUrl"]["value"]
+            variables["webFormUrl"][
+                "value"
+            ] = f"{web_form_url.rsplit('/', 1)[0]}/{submission_id}"
+            BPMService.complete_task(task_id, request_data["bpmnData"], token)
+            current_app.logger.debug("Workflow task completed...")
+        except Exception as exception:
+            # If workflow task completion fails, rollback the application update and audit entry
+            current_app.logger.error(
+                f"Error completing workflow task: {str(exception)}. Initiating rollback..."
+            )
+            # Rollback application details
+            application.update(application_backup_data)
+            application.commit()
+            current_app.logger.debug("Application details rolled back...")
+            # Rollback application audit entry
+            application_audit_entry.delete()
+            current_app.logger.debug("Application audit entry rolled back...")
+            raise BusinessException(
+                BusinessErrorCode.WORKFLOW_TASK_COMPLETION_FAILED
+            ) from exception
+
+        return {"message": "Task completed successfully"}

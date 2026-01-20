@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProcessCreateEdit from "./ProcessCreateEdit";
 import ProcessTable from './ProcessTable';
+import ProcessCreationOptions from './ProcessCreationOptions';
 import { BASE_ROUTE } from "../../../constants/constants";
 import Loading from "../../../containers/Loading";
 import AccessDenied from "../../../components/AccessDenied";
@@ -45,6 +46,16 @@ const Processes = () => {
     <>
       <Switch>
         <Route exact path={`${BASE_ROUTE}:viewType`} component={ProcessTable} />
+        <DesignerProcessRoute
+          exact
+          path={`${BASE_ROUTE}subflow/build`}
+          component={ProcessCreationOptions}
+        />
+        <DesignerProcessRoute
+          exact
+          path={`${BASE_ROUTE}decision-table/build`}
+          component={ProcessCreationOptions}
+        />
         <DesignerProcessRoute
           exact
           path={`${BASE_ROUTE}subflow/:step/:processKey?`}

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { ConfirmModal, CustomInfo } from "@formsflow/components";
+import { PromptModal } from "@formsflow/components";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 
-const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
+const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage, onSave }) => {
   const history = useHistory();
   const { t } = useTranslation();
   const [showPrompt, setShowPrompt] = useState(false);
   const [nextLocation, setNextLocation] = useState({ onOk: false });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (isBlock) {
@@ -44,6 +45,23 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
   const resetPath = () =>
     window.history.replaceState({}, "", nextLocation.currentPath);
 
+  const handleSave = async () => {
+    if (onSave) {
+      setIsSaving(true);
+      try {
+        await onSave(); // Call the save function passed as prop
+        handleToggleShow();
+        setNextLocation((prev) => ({ ...prev, onOk: true })); // Allow navigation after save
+      } catch (error) {
+        console.error("Save failed:", error);
+        setIsSaving(false);
+      }
+    } else {
+      // If no save handler provided, just close modal and stay
+      handleConfirm(false);
+    }
+  };
+
   const handleConfirm = (confirm) => {
     handleToggleShow();
     setNextLocation((prev) => ({ ...prev, onOk: confirm }));
@@ -55,28 +73,54 @@ const NavigateBlocker = React.memo(({ isBlock, message, secondaryMessage }) => {
   return (
     <>
       {showPrompt && (
-        <ConfirmModal
+        // <ConfirmModal
+        //   show={showPrompt}
+        //   primaryBtnAction={() => {
+        //     handleConfirm(false);
+        //   }}
+        //   onClose={() => {
+        //     handleToggleShow();
+        //     resetPath();
+        //   }}
+        //   title={t("You Have Unsaved Changes")}
+        //   titleDataTestId="unsaved-changes-title"
+        //   message={<CustomInfo heading={t("Note")} content={message} dataTestId="unsaved-changes-info"/>}
+        //   messageSecondary={t(secondaryMessage)}
+        //   secondaryBtnAction={() => {
+        //     handleConfirm(true);
+        //   }}
+        //   primaryBtnText={t("Stay in the Editor")}
+        //   secondaryBtnText={t("Discard Changes and Leave the Page")}
+        //   secondoryBtndataTestid="discard-action-button"
+        //   primaryBtndataTestid="stay-in-editor-button"
+        //   primaryBtnariaLabel={t("Stay in the Editor")}
+        //   secondoryBtnariaLabel={t("Discard Changes and Leave the Page")}
+        // />
+
+        <PromptModal
+          type="info"
           show={showPrompt}
-          primaryBtnAction={() => {
-            handleConfirm(false);
-          }}
           onClose={() => {
             handleToggleShow();
             resetPath();
           }}
           title={t("You Have Unsaved Changes")}
           titleDataTestId="unsaved-changes-title"
-          message={<CustomInfo heading={t("Note")} content={message} dataTestId="unsaved-changes-info"/>}
+          message={t(message)}
           messageSecondary={t(secondaryMessage)}
+          primaryBtnText={t("Save")}
+          primaryBtndataTestid="save-action-button"
+          primaryBtnariaLabel={t("Save Changes")}
+          primaryBtnAction={handleSave}
+          primaryBtnLoading={isSaving}
+          secondaryBtnText={t("Discard Changes")}
+          secondoryBtndataTestid="discard-action-button"
+          secondoryBtnariaLabel={t("Discard Changes")}
           secondaryBtnAction={() => {
             handleConfirm(true);
           }}
-          primaryBtnText={t("Stay in the Editor")}
-          secondaryBtnText={t("Discard Changes and Leave the Page")}
-          secondoryBtndataTestid="discard-action-button"
-          primaryBtndataTestid="stay-in-editor-button"
-          primaryBtnariaLabel={t("Stay in the Editor")}
-          secondoryBtnariaLabel={t("Discard Changes and Leave the Page")}
+          buttonLoading={isSaving}
+          secondaryBtnDisable={isSaving}
         />
       )}
     </>
@@ -87,6 +131,7 @@ NavigateBlocker.propTypes = {
   isBlock: PropTypes.bool.isRequired,
   message: PropTypes.string,
   secondaryMessage: PropTypes.string,
+  onSave: PropTypes.func,
 };
 
 export default NavigateBlocker;

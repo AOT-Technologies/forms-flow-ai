@@ -1,6 +1,5 @@
-// Import statements
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, batch } from "react-redux";
 import {
   setClientFormLimit,
   setClientFormListPage,
@@ -8,66 +7,52 @@ import {
 } from "../../../actions/formActions";
 import { HelperServices } from "@formsflow/service";
 import { useTranslation } from "react-i18next";
-import { TableFooter, CustomButton, NoDataFound, TableSkeleton } from "@formsflow/components";
-import SortableHeader from '../../CustomComponents/SortableHeader';
+import {
+  V8CustomButton,
+  ReusableTable
+} from "@formsflow/components";
 import { navigateToFormEntries } from "../../../helper/routerHelper";
 import SubmissionDrafts from "../../../routes/Submit/Forms/DraftAndSubmissions";
+import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices"; 
+import { setFormSearchLoading } from "../../../actions/checkListActions";
 
 
-function ClientTable() {
-  // Redux hooks and state management
+function ClientTable({
+  externalSortModel,
+  externalOnSortModelChange,
+  externalPaginationModel,
+  externalOnPaginationModelChange,
+  externalOnRefresh,
+}) {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const bpmForms = useSelector((state) => state.bpmForms);
   const searchFormLoading = useSelector((state) => state.formCheckList.searchFormLoading);
+  const searchText = useSelector((state) => state.bpmForms.clientFormSearch); 
   const [showSubmissions, setShowSubmissions] = useState(false);
-  // Local state
-  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
 
-  // Derived state from Redux
   const formData = bpmForms?.forms || [];
   const pageNo = useSelector((state) => state.bpmForms.submitListPage);
   const limit = useSelector((state) => state.bpmForms.submitFormLimit);
   const totalForms = useSelector((state) => state.bpmForms.totalForms);
   const formsort = useSelector((state) => state.bpmForms.submitFormSort);
 
+  const gridFieldToSortKey = {
+    title: "formName",
+    submissionsCount: "submissionCount",
+    latestSubmission: "latestSubmission",
+  };
 
-  // Constants
-  const pageOptions = [
-    { text: "10", value: 10 },
-    { text: "25", value: 25 },
-    { text: "50", value: 50 },
-    { text: "100", value: 100 },
-    { text: "All", value: totalForms },
-  ];
+  const sortKeyToGridField = {
+    formName: "title",
+    submissionCount: "submissionsCount",
+    latestSubmission: "latestSubmission",
+  };
 
-  // Utility functions
   const stripHtml = (html) => {
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
-  };
-
-  const handleKeyPress = (e, index) => {
-    if (e.key === "Enter" || e.key === " ") {
-      toggleRow(index);
-    }
-  };
-
-  // Event handlers
-  const handleSort = (key) => {
-    const newSortOrder = formsort[key].sortOrder === "asc" ? "desc" : "asc";
-
-    // Reset all other columns to default (ascending) except the active one
-    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
-      acc[columnKey] = { sortOrder: columnKey === key ? newSortOrder : "asc" };
-      return acc;
-    }, {});
-
-    dispatch(setClientFormListSort({
-      ...updatedSort,
-      activeKey: key,
-    }));
   };
 
   const showFormEntries = (parentFormId) => {
@@ -75,149 +60,173 @@ function ClientTable() {
     navigateToFormEntries(dispatch, tenantKey, parentFormId);
   };
 
+  const handleSortChange = (modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
 
-  const handlePageChange = (page) => {
-    dispatch(setClientFormListPage(page));
+    // No sort provided – only reset if not already at default
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(formsort).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
+      return;
+    }
+
+    const mappedKey = gridFieldToSortKey[model.field] || model.field;
+    const updatedSort = Object.keys(formsort).reduce((acc, columnKey) => {
+      acc[columnKey] = {
+        sortOrder: columnKey === mappedKey ? model.sort : "asc",
+      };
+      return acc;
+    }, {});
+    dispatch(setClientFormListSort({ ...updatedSort, activeKey: mappedKey }));
   };
 
-  const onSizePerPageChange = (newLimit) => {
-    dispatch(setClientFormLimit(newLimit));
-    dispatch(setClientFormListPage(1));
+  const onPaginationModelChange = ({ page, pageSize }) => {
+    const requestedPage = typeof page === "number" ? page + 1 : pageNo;
+    const requestedLimit = typeof pageSize === "number" ? pageSize : limit;
+    // Batch multiple dispatches to keep Redux updates atomic
+    batch(() => {
+      if (requestedLimit !== limit) {
+        dispatch(setClientFormLimit(requestedLimit));
+        dispatch(setClientFormListPage(1));
+      } else {
+        dispatch(setClientFormListPage(requestedPage));
+      }
+    });
   };
 
-  const toggleRow = (index) => {
-    setExpandedRowIndex(prevIndex => prevIndex === index ? null : index);
+  const handleRefresh = () => {
+    if (externalOnRefresh) {
+      externalOnRefresh();
+      return;
+    }
+    dispatch(setFormSearchLoading(true));
+    dispatch(fetchBPMFormList({
+      pageNo,
+      limit,
+      formSort: formsort,
+      formName: searchText,
+      showForOnlyCreateSubmissionUsers: true,
+      includeSubmissionsCount: true
+    }));
   };
 
-  // UI Components
-  const noDataFound = () => {
-    return (
-      <tbody className="table-empty">
-        <NoDataFound message={t('No forms have been found.')}/>
-      </tbody>
-    );
-  };
+  const columns = [
+    {
+      field: "title",
+      headerName: t("Form Name"),
+      flex: 1,
+      sortable: true,
+      renderCell: (params) => (
+        <span title={params.value}>
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "description",
+      headerName: t("Description"),
+      flex: 1,
+      sortable: false,
+      renderCell: (params) => {
+        const description = stripHtml(params.row.description);
+        return (
+          <span title={description}>
+            {description}
+          </span>
+        );
+      },
+    },
+    {
+      field: "submissionsCount",
+      headerName: t("Submissions"),
+      flex: 1,
+      sortable: true,
+      renderCell: (params) => (
+        <span>
+          {params.value}
+        </span>
+      ),
+    },
+    {
+      field: "latestSubmission",
+      headerName: t("Latest Submission"),
+      flex: 1,
+      sortable: true,
+      renderCell: (params) => {
+        const dateValue = HelperServices?.getLocaldate(params.row.latestSubmission);
+        return (
+          <span title={dateValue}>
+            {dateValue}
+          </span>
+        );
+      },
+    },
+    {
+      field: "actions",
+      align: "right",
+      renderHeader: () => (
+        <V8CustomButton
+          variant="secondary"
+          label={t("Refresh")}
+          onClick={handleRefresh}
+        />
+      ),
+      flex: 1,
+      sortable: false,
+      cellClassName: "last-column",
+      renderCell: params => (
+        <V8CustomButton
+          label="Select"
+          variant="secondary"
+          onClick={() => showFormEntries(params.row.parentFormId)}
+        />
+      )
+    },
+  ];
 
-  //Skeleton Loading
-  if (searchFormLoading) {
-    return <TableSkeleton columns={5} rows={10} pagination={7} />;
-  }
+  const rows = React.useMemo(() => {
+    return (formData || []).map((f) => ({
+      ...f,
+      id: f._id,
+      title: f.title,
+    }));
+  }, [formData]);
+
+  const internalPaginationModel = React.useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
+  const paginationModel = externalPaginationModel || internalPaginationModel;
+
+  const activeKey = formsort?.activeKey || "formName";
+  const activeField = sortKeyToGridField[activeKey] || activeKey;
+  const activeOrder = formsort?.[activeKey]?.sortOrder || "asc";
+  const internalSortModel = React.useMemo(
+    () => [{ field: activeField, sort: activeOrder }],
+    [activeField, activeOrder]
+  );
+  const sortModel = externalSortModel || internalSortModel;
 
   return (
-      <>
-        <div className="custom-table-wrapper-outter">
-          <div className="custom-table-wrapper-inner">
-            <table className="table custom-tables" data-testid="client-table">
-              <thead className="table-header">
-                <tr>
-                    <SortableHeader
-                      columnKey="formName"
-                      title="Form Name"
-                      currentSort={formsort}
-                      handleSort={handleSort}
-                      className="w-30"
-                    />
-                  <th className="w-30" scope="col" data-testid="description-header">
-                    {t("Description")}
-                  </th>
-
-                    <SortableHeader
-                      columnKey="submissionCount"
-                      title="Submissions"
-                      currentSort={formsort}
-                      handleSort={handleSort}
-                      className="w-13" />
-
-                  
-                    <SortableHeader
-                      columnKey="latestSubmission"
-                      title={t("Latest Submission")}
-                      currentSort={formsort}
-                      handleSort={handleSort}
-                      className="w-15" />
-                  
-                  <th className="w-12" aria-label="Select a Form"></th>
-                </tr>
-              </thead>
-              {formData?.length ? (
-                <>
-                <tbody>
-                    {formData.map((e, index) => {
-                      const isExpanded = expandedRowIndex === index;
-                      return (
-                        <React.Fragment key={index}>
-                          <tr>
-                            <td className="w-30">
-                              <span
-                                data-testid={`form-title-${e._id}`}
-                                className="text-container"
-                              >
-                                {e.title}
-                              </span>
-                            </td>
-                            <td className="w-30">
-                              <span
-                                data-testid="description-cell"
-                                className={` cursor-pointer ${isExpanded ? "text-container-expand" : "text-container"}`}
-                                role="button"
-                                tabIndex="0"
-                                aria-expanded={isExpanded} // Adds accessibility
-                                onClick={() => toggleRow(index)}
-                                onKeyDown={(e) => handleKeyPress(e, index)}
-                              >
-                                {stripHtml(e.description ? e.description : "")}
-                              </span>
-                            </td>
-                            <td
-                              data-testid={`Submissions-count-${e._id}`} className="w-13">
-                              {e.submissionsCount}
-                            </td>
-                            <td
-                              data-testid={`latest-submission-${e._id}`} className="w-15">
-                              {HelperServices?.getLocaldate(e.latestSubmission)}
-                            </td>
-
-                            <td className=" w-12 ">
-                              <div className="d-flex justify-content-end">
-                                <CustomButton
-                                    variant="secondary"
-                                    size="table"
-                                    label={t("Select")}
-                                    onClick={() => showFormEntries(e.parentFormId)}
-                                    dataTestId={`form-submit-button-${e.parentFormId}`}
-                                    aria-label={t("Select a form")}
-                                    actionTable
-                                />
-                              </div>
-                            </td>
-                          </tr>
-
-                        </React.Fragment>
-                      );
-                    })}
-                </tbody>
-                </>
-              ) : !searchFormLoading ? (
-                noDataFound()
-              ) : null}
-            </table>
-          </div>
-
-          {formData.length ? (
-            <TableFooter
-              limit={limit}
-              activePage={pageNo}
-              totalCount={totalForms}
-              handlePageChange={handlePageChange}
-              onLimitChange={onSizePerPageChange}
-              pageOptions={pageOptions}
-            />
-          ) : (
-            <></>
-          )}
-        </div>
-        {showSubmissions && <SubmissionDrafts />}
-      </>
+    <>
+      <ReusableTable
+        columns={columns}
+        rows={rows}
+        rowCount={totalForms}
+        loading={searchFormLoading}
+        sortModel={sortModel}
+        onSortModelChange={externalOnSortModelChange || handleSortChange}
+        paginationModel={paginationModel}
+        onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
+        getRowId={(row) => row.id}
+        noRowsLabel={t("No Forms have been found.")}
+        autoHeight={true}
+      />
+      {showSubmissions && <SubmissionDrafts />}
+    </>
   );
 }
 

@@ -1,5 +1,7 @@
 """API endpoints for managing form resource."""
 
+# pylint: disable=too-many-lines
+
 import json
 from http import HTTPStatus
 
@@ -290,6 +292,47 @@ export_response_model = API.model(
     },
 )
 
+combined_form_workflow_request_model = API.model(
+    "CombinedFormRequestWorkflow",
+    {
+        "formData": fields.Nested(form_create_model),
+        "processData": fields.String(),
+        "authorizations": fields.Nested(authorization_list_model),
+        "processType": fields.String(),
+        "processId": fields.String(),
+        "taskVariables": fields.List(fields.Nested(task_variables_model)),
+    },
+)
+
+process_response_model = API.model(
+    "ProcessResponse",
+    {
+        "id": fields.String(),
+        "processKey": fields.String(),
+        "parentProcessKey": fields.String(),
+        "processType": fields.String(),
+        "processData": fields.String(),
+        "name": fields.String(),
+        "created": fields.String(),
+        "modified": fields.String(),
+        "createdBy": fields.String(),
+        "modifiedBy": fields.String(),
+        "status": fields.String(),
+        "tenant": fields.String(),
+        "isSubflow": fields.Boolean(),
+    },
+)
+
+combined_form_workflow_response_model = API.model(
+    "CombinedFormResponseWorkflow",
+    {
+        "formData": fields.Nested(form_create_response_model),
+        "process": fields.Nested(process_response_model),
+        "authorizations": fields.Nested(authorization_list_model),
+        "mapper": fields.Nested(mapper_create_response_model),
+    },
+)
+
 
 @cors_preflight("GET,OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
@@ -570,6 +613,7 @@ class FormResourceByFormId(Resource):
             CREATE_FILTERS,
             VIEW_FILTERS,
             MANAGE_ALL_FILTERS,
+            ANALYZE_SUBMISSIONS_VIEW,
         ]
     )
     @profiletime
@@ -957,3 +1001,73 @@ class FormDataResource(Resource):
             form_service.get_form_data(form_id, auth_type, is_designer),
             HTTPStatus.OK,
         )
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/form-flow-builder", methods=["POST", "OPTIONS"])
+class FormFlowBuilderResource(Resource):
+    """Resource for form worklow creation."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.doc(body=combined_form_workflow_request_model)
+    @API.response(
+        201,
+        "CREATED:- Successful request.",
+        model=combined_form_workflow_response_model,
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def post():
+        """Creates a new form along with its associated workflow, authorization rules, and history tracking."""
+        data = request.get_json()
+        response = FormProcessMapperService.create_form_with_process(
+            data, bool(auth.has_role([CREATE_DESIGNS]))
+        )
+        return response, HTTPStatus.CREATED
+
+
+@cors_preflight("PUT,OPTIONS")
+@API.route("/form-flow-builder/<int:mapper_id>", methods=["PUT", "OPTIONS"])
+class FormFlowBuilderUpdateResource(Resource):
+    """Resource for form, worklow and settings update."""
+
+    @staticmethod
+    @auth.has_one_of_roles([CREATE_DESIGNS])
+    @profiletime
+    @API.doc(body=combined_form_workflow_response_model)
+    @API.response(
+        200,
+        "CREATED:- Successful request.",
+        model=combined_form_workflow_response_model,
+    )
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- Authorization will not help.",
+    )
+    def put(mapper_id: int):
+        """Single API to update form design, form history, flow, authorizations and mapper details."""
+        data = request.get_json()
+        response = FormProcessMapperService().update_form_process(
+            data, mapper_id, bool(auth.has_role([CREATE_DESIGNS]))
+        )
+        return response, HTTPStatus.OK

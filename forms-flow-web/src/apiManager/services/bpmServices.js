@@ -40,6 +40,7 @@ export const getTaskSubmitFormReq = (formUrl, applicationId, actionType, webForm
 export const formatForms = (forms) => {
   return forms.map((form) => {
     return {
+      mapperId:form.id,
       _id: form.formId,
       title: form.formName,
       processKey: form.processKey,

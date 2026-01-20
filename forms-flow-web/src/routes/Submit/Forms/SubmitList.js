@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { useSelector, useDispatch, batch } from "react-redux";
 import {
   setBPMFormListLoading,
   setClientFormSearch,
   setClientFormListPage,
+  setClientFormLimit,
   setClientFormListSort,
 } from "../../../actions/formActions";
 import { fetchBPMFormList } from "../../../apiManager/services/bpmFormServices";
@@ -13,29 +14,11 @@ import {
 } from "../../../actions/checkListActions";
 import { useTranslation } from "react-i18next";
 import ClientTable from "../../../components/Form/constants/ClientTable";
-import { CustomSearch } from "@formsflow/components";
-// import { navigateToSubmitFormsApplication } from "../../../helper/routerHelper";
+import { CustomSearch ,   
+  BreadCrumbs,
+  BreadcrumbVariant,
+} from "@formsflow/components";
 import PropTypes from "prop-types";
-import FilterSortActions from "../../../components/CustomComponents/FilterSortActions.js";
-import { HelperServices } from '@formsflow/service';
-
-// Extracted Search Component
-const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchLoading }) => {
-  const { t } = useTranslation();
-  return (
-   
-      <CustomSearch
-        search={search}
-        setSearch={setSearch}
-        handleSearch={handleSearch}
-        handleClearSearch={handleClearSearch}
-        placeholder={t("Search Form Name and Description")}
-        searchLoading={searchLoading}
-        title={t("Search Form Name and Description")}
-        dataTestId="form-search-input"
-      />
-  );
-};
 
 const SubmitList = React.memo(({ getFormsInit }) => {
   const { t } = useTranslation();
@@ -55,17 +38,9 @@ const SubmitList = React.memo(({ getFormsInit }) => {
   );
   // Local States
   const [search, setSearch] = useState(searchText || "");
-  const [showSortModal, setShowSortModal] = useState(false);
 
-  // Sorting Options
-  const optionSortBy = [
-    { value: "formName", label: t("Form Name") },
-    { value: "submissionCount", label: t("Submissions") },
-    { value: "latestSubmission", label: t("Latest Submission") },
-  ];
-
-  // Fetch Forms Function
-  const fetchForms = () => {
+  // Fetch Forms Function - memoized to prevent unnecessary re-renders
+  const fetchForms = useCallback(() => {
     dispatch(setFormSearchLoading(true));
     dispatch(fetchBPMFormList({
       pageNo,
@@ -75,22 +50,8 @@ const SubmitList = React.memo(({ getFormsInit }) => {
       showForOnlyCreateSubmissionUsers: true,
       includeSubmissionsCount: true
     }));
-  };
+  }, [dispatch, pageNo, limit, formSort, searchText]);
 
-
-  // Handle Sorting
-  const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
-    dispatch(setClientFormListSort({
-      ...resetSortOrders,
-      activeKey: selectedSortOption,
-      [selectedSortOption]: { sortOrder: selectedSortOrder },
-    }));
-    setShowSortModal(false);
-  };
-
-  // Navigation Handler (Refactored)
-  // const navigateTo = (routeFunction) => routeFunction(dispatch, tenantId);
 
   // Effects
   useEffect(() => {
@@ -101,18 +62,93 @@ const SubmitList = React.memo(({ getFormsInit }) => {
     if (!search?.trim()) {
       dispatch(setClientFormSearch(""));
     }
-  }, [search]);
-  const handleSearch = () => {
-    dispatch(setClientFormSearch(search));
-    dispatch(setClientFormListPage(1));
-  };
-  const handleClearSearch = () => {
+  }, [search, dispatch]);
+  
+  const handleSearch = useCallback(() => {
+    // Batch dispatches to prevent duplicate API calls
+    batch(() => {
+      dispatch(setClientFormSearch(search));
+      dispatch(setClientFormListPage(1));
+    });
+  }, [dispatch, search]);
+  const handleClearSearch = useCallback(() => {
     setSearch("");
     dispatch(setClientFormSearch(""));
+  }, [dispatch]);
+
+  // Submitter mapping for sort field names
+  const submitGridFieldToSortKey = {
+    title: "formName",
+    submissionsCount: "submissionCount",
+    latestSubmission: "latestSubmission",
+  };
+  const submitSortKeyToGridField = {
+    formName: "title",
+    submissionCount: "submissionsCount",
+    latestSubmission: "latestSubmission",
   };
 
+  // Memoized sort and pagination models
+  const submitActiveKey = formSort?.activeKey || "formName";
+  const submitActiveField = submitSortKeyToGridField[submitActiveKey] || submitActiveKey;
+  const submitActiveOrder = formSort?.[submitActiveKey]?.sortOrder || "asc";
+  
+  const submitSortModel = useMemo(
+    () => [{ field: submitActiveField, sort: submitActiveOrder }],
+    [submitActiveField, submitActiveOrder]
+  );
+  
+  const submitPaginationModel = useMemo(
+    () => ({ page: pageNo - 1, pageSize: limit }),
+    [pageNo, limit]
+  );
 
+  // Pagination handler
+  const onSubmitPaginationModelChange = useCallback(({ page, pageSize }) => {
+    batch(() => {
+      if (pageSize !== limit) {
+        dispatch(setClientFormLimit(pageSize));
+        dispatch(setClientFormListPage(1));
+      } else {
+        dispatch(setClientFormListPage(page + 1));
+      }
+    });
+  }, [dispatch, limit]);
 
+  // Sort handler
+  const handleSubmitSortModelChange = useCallback((modelArray) => {
+    const model = Array.isArray(modelArray) ? modelArray[0] : modelArray;
+    if (!model?.field || !model?.sort) {
+      const resetSort = Object.keys(formSort || {}).reduce((acc, key) => {
+        acc[key] = { sortOrder: "asc" };
+        return acc;
+      }, {});
+      dispatch(setClientFormListSort({ ...resetSort, activeKey: "formName" }));
+      return;
+    }
+    const mappedKey = submitGridFieldToSortKey[model.field] || model.field;
+    const updatedSort = Object.keys(formSort || {}).reduce((acc, columnKey) => {
+      acc[columnKey] = { sortOrder: columnKey === mappedKey ? model.sort : "asc" };
+      return acc;
+    }, {});
+    dispatch(setClientFormListSort({ ...updatedSort, activeKey: mappedKey }));
+  }, [dispatch, formSort, submitGridFieldToSortKey]);
+
+  // Refresh handler
+  const handleSubmitRefresh = useCallback(() => {
+    batch(() => {
+      dispatch(setBPMFormListLoading(true));
+      dispatch(setFormSearchLoading(true));
+      dispatch(fetchBPMFormList({
+        pageNo,
+        limit,
+        formSort,
+        formName: searchText,
+        showForOnlyCreateSubmissionUsers: true,
+        includeSubmissionsCount: true
+      }));
+    });
+  }, [dispatch, pageNo, limit, formSort, searchText]);
 
 
   useEffect(() => {
@@ -125,49 +161,51 @@ const SubmitList = React.memo(({ getFormsInit }) => {
 
   useEffect(() => {
     fetchForms();
-  }, [getFormsInit, pageNo, limit, formSort, searchText]);
+  }, [fetchForms, getFormsInit]);
+
+    const breadcrumbItems = [
+    { id: "submit", label: "Submit" },
+  ];
 
   return (
     <>
-      <div className="table-bar">
-        <div className="filters">
-          <SearchBar
-            search={search}
-            setSearch={setSearch}
-            handleSearch={handleSearch}
-            handleClearSearch={handleClearSearch}
-            searchLoading={searchFormLoading}
-          />
-        </div>
-        <div className="actions">
-          <FilterSortActions
-            showSortModal={showSortModal}
-            handleFilterIconClick={() => setShowSortModal(true)}
-            handleRefresh={fetchForms}
-            handleSortModalClose={() => setShowSortModal(false)}
-            handleSortApply={handleSortApply}
-            optionSortBy={optionSortBy}
-            defaultSortOption={formSort.activeKey}
-            defaultSortOrder={formSort[formSort.activeKey]?.sortOrder || "asc"}
-            filterDataTestId="form-list-filter"
-            filterAriaLabel="Filter the form list"
-            refreshDataTestId="form-list-refresh"
-            refreshAriaLabel="Refresh the form list"
-          />
-        </div>
+      <div className="header-section-1">
+          <div className="section-seperation-left">
+            <BreadCrumbs 
+              items={breadcrumbItems} 
+              variant={BreadcrumbVariant.Default}
+              underline={false}
+            /> 
+          </div>
       </div>
-      <ClientTable />
+
+      <div className="header-section-2">
+          <div className="section-seperation-left">
+                <CustomSearch
+                  search={search}
+                  setSearch={setSearch}
+                  handleSearch={handleSearch}
+                  handleClearSearch={handleClearSearch}
+                  placeholder={t("Search")}
+                  searchLoading={searchFormLoading}
+                  title={t("Search")}
+                  dataTestId="form-search-input"
+                  width="462px"
+                />
+          </div>
+       </div>
+      <div className="body-section custom-scroll">
+          <ClientTable
+            externalSortModel={submitSortModel}
+            externalOnSortModelChange={handleSubmitSortModelChange}
+            externalPaginationModel={submitPaginationModel}
+            externalOnPaginationModelChange={onSubmitPaginationModelChange}
+            externalOnRefresh={handleSubmitRefresh}
+          />
+      </div>
     </>
   );
 });
-
-SearchBar.propTypes = {
-  search: PropTypes.string.isRequired,
-  setSearch: PropTypes.func.isRequired,
-  handleSearch: PropTypes.func.isRequired,
-  handleClearSearch: PropTypes.func.isRequired,
-  searchLoading: PropTypes.bool.isRequired,
-};
 
 SubmitList.propTypes = {
   getFormsInit: PropTypes.bool,

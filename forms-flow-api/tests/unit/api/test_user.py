@@ -156,4 +156,3 @@ class TestUserLoginDetails:
             # Most test users will be internal
             if response_data["loginType"] == "internal":
                 assert "identityProvider" not in response_data
-                

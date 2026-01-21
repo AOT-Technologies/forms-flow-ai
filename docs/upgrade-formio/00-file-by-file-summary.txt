@@ -1,0 +1,90 @@
+ react/.babelrc => /dev/null                        |    3 -
+ react/.eslintrc => /dev/null                       |   19 -
+ /dev/null => aot/.eslintrc.json                    |   45 +
+ {react => aot}/.git/HEAD                           |    2 +-
+ {react => aot}/.git/config                         |    2 +-
+ {react => aot}/.git/index                          |  Bin 6527 -> 6346 bytes
+ {react => aot}/.git/logs/HEAD                      |    3 +-
+ {react => aot}/.git/logs/refs/heads/master         |    2 +-
+ {react => aot}/.git/logs/refs/remotes/origin/HEAD  |    2 +-
+ ...ck-27833ad5eef57f82bc72533a2cb477dc0a2c2652.idx |  Bin 0 -> 245176 bytes
+ ...k-27833ad5eef57f82bc72533a2cb477dc0a2c2652.pack |  Bin 14487583 -> 12688181 bytes
+ ...ck-27833ad5eef57f82bc72533a2cb477dc0a2c2652.rev |  Bin 0 -> 34924 bytes
+ .../dev/null                                       |  Bin 321000 -> 0 bytes
+ .../dev/null                                       |  Bin 45756 -> 0 bytes
+ {react => aot}/.git/packed-refs                    |  752 +-
+ {react => aot}/.git/refs/heads/master              |    2 +-
+ .../.github/ISSUE_TEMPLATE/bug_report.md           |   40 +
+ .../.github/ISSUE_TEMPLATE/feature_request.md      |   19 +
+ /dev/null => aot/.github/pull_request_template.md  |   35 +
+ /dev/null => aot/.prettierrc                       |    5 +
+ /dev/null => aot/00-file-by-file-summary.txt       |    0
+ /dev/null => aot/01-adds-mods-deletes.txt          |    0
+ /dev/null => aot/02-full-patch.diff                |    0
+ {react => aot}/Changelog.md                        |  419 +-
+ {react => aot}/README.md                           | 1183 ++-
+ {react => aot}/circle.yml                          |    4 +-
+ /dev/null => aot/fixJSDOMEnvironment.ts            |   12 +
+ /dev/null => aot/jest.config.js                    |   17 +
+ react/karma.conf.js => /dev/null                   |   66 -
+ {react => aot}/package.json                        |  157 +-
+ react/react-formio.d.ts => /dev/null               |    1 -
+ {react => aot}/src/components/Errors.jsx           |  126 +-
+ react/src/components/Form.jsx => /dev/null         |  187 -
+ /dev/null => aot/src/components/Form.tsx           |  361 +
+ react/src/components/FormBuilder.jsx => /dev/null  |  113 -
+ /dev/null => aot/src/components/FormBuilder.tsx    |  224 +
+ react/src/components/FormEdit.jsx => /dev/null     |  177 -
+ /dev/null => aot/src/components/FormEdit.tsx       |  286 +
+ react/src/components/FormGrid.jsx => /dev/null     |  250 -
+ /dev/null => aot/src/components/FormGrid.tsx       |  163 +
+ react/src/components/Grid.jsx => /dev/null         |  255 -
+ react/src/components/Pagination.jsx => /dev/null   |  141 -
+ {react => aot}/src/components/ReactComponent.jsx   |  379 +-
+ {react => aot}/src/components/Report.jsx           |  226 +-
+ .../src/components/SubmissionGrid.jsx => /dev/null |  227 -
+ /dev/null => aot/src/components/SubmissionGrid.tsx |  223 +
+ .../src/components/__tests__/Form.test.tsx         |   41 +
+ react/src/components/index.js => /dev/null         |   10 -
+ /dev/null => aot/src/components/index.ts           |    8 +
+ react/src/constants.js => aot/src/constants.ts     |    2 +-
+ /dev/null => aot/src/contexts/FormioContext.tsx    |   90 +
+ .../src/hooks/__tests__/usePagination.test.ts      |   26 +
+ /dev/null => aot/src/hooks/useFormioContext.ts     |   13 +
+ /dev/null => aot/src/hooks/usePagination.tsx       |   81 +
+ /dev/null => aot/src/hooks/useTraceUpdate.ts       |   17 +
+ react/src/index.js => /dev/null                    |   19 -
+ /dev/null => aot/src/index.ts                      |   17 +
+ {react => aot}/src/modules/auth/actions.js         |  162 +-
+ {react => aot}/src/modules/auth/reducers.js        |  163 +-
+ {react => aot}/src/modules/auth/selectors.js       |    1 -
+ {react => aot}/src/modules/form/actions.js         |  144 +-
+ {react => aot}/src/modules/form/reducers.js        |  110 +-
+ {react => aot}/src/modules/form/selectors.js       |    2 +-
+ {react => aot}/src/modules/forms/actions.js        |  112 +-
+ {react => aot}/src/modules/forms/reducers.js       |  134 +-
+ {react => aot}/src/modules/forms/selectors.js      |    2 +-
+ {react => aot}/src/modules/submission/actions.js   |  163 +-
+ {react => aot}/src/modules/submission/reducers.js  |  118 +-
+ {react => aot}/src/modules/submission/selectors.js |    5 +-
+ {react => aot}/src/modules/submissions/actions.js  |  116 +-
+ {react => aot}/src/modules/submissions/reducers.js |  138 +-
+ .../src/modules/submissions/selectors.js           |    5 +-
+ {react => aot}/src/types.js                        |   40 +-
+ {react => aot}/src/utils.js                        |   69 +-
+ react/test/.eslintrc => /dev/null                  |   10 -
+ react/test/changes.spec.js => /dev/null            |  515 --
+ react/test/enzyme.js => /dev/null                  |    6 -
+ react/test/fixtures/columns.json => /dev/null      |   80 -
+ react/test/fixtures/formWithInput.js => /dev/null  |   11 -
+ react/test/fixtures/index.js => /dev/null          |    5 -
+ react/test/fixtures/layout.json => /dev/null       |   73 -
+ react/test/fixtures/textField.json => /dev/null    |   30 -
+ react/test/fixtures/visible.json => /dev/null      |   57 -
+ react/test/index.js => /dev/null                   |    2 -
+ react/test/utils.js => /dev/null                   |   87 -
+ react/test/validation.spec.js => /dev/null         |  130 -
+ {react => aot}/tsconfig.json                       |   39 +-
+ {react => aot}/webpack.test.config.js              |   34 +-
+ {react => aot}/yarn.lock                           | 7993 ++++++++------------
+ 89 files changed, 7491 insertions(+), 9517 deletions(-)

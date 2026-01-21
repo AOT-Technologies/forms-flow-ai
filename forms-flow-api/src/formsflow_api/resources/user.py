@@ -21,6 +21,7 @@ from formsflow_api_utils.utils import (
 
 from formsflow_api_utils.exceptions import BusinessException
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.schemas import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
@@ -390,12 +391,12 @@ class ResetPassword(Resource):
             # Get client_id from token (azp)
             client_id = g.token_info.get("azp")
             if not client_id:
-                raise BusinessException("client_id not found in token")
+                raise BusinessException(BusinessErrorCode.CLIENT_ID_NOT_FOUND)
 
             # Redirect URI fallback
             redirect_uri = current_app.config.get("WEB_BASE_URL")
             if not redirect_uri:
-                raise BusinessException("WEB_BASE_URL not configured in application settings")
+                raise BusinessException(BusinessErrorCode.WEB_BASE_URL_NOT_CONFIGURED)
 
             # Call Keycloak service
             KeycloakFactory.get_instance().reset_password_email(

@@ -228,7 +228,7 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     )
     INVALID_FORM_URL = "Invalid form URL format", HTTPStatus.BAD_REQUEST
     CLIENT_ID_NOT_FOUND = (
-        "client_id not found in token",
+        "Client_id not found in token",
         HTTPStatus.BAD_REQUEST,
     )
     WEB_BASE_URL_NOT_CONFIGURED = (

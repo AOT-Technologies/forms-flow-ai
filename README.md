@@ -11,7 +11,7 @@
 
 ## formsflow.ai: Enterprise-Grade Automation without the Lock-in
 
-**formsflow.ai** is the open-source alternative to restrictive low-code platforms. We provide a unified stack that combines the world's most trusted engines for forms, workflow, and security into a single, seamless developer experience.
+[**formsflow.ai**](https://formsflow.ai/) is the open-source alternative to restrictive low-code platforms. We provide a unified stack that combines the world's most trusted engines for forms, workflow, and security into a single, seamless developer experience.
 
 ### The Power of "Best-of-Breed" Integration
 

@@ -227,6 +227,14 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     INVALID_FORM_URL = "Invalid form URL format", HTTPStatus.BAD_REQUEST
+    CLIENT_ID_NOT_FOUND = (
+        "client_id not found in token",
+        HTTPStatus.BAD_REQUEST,
+    )
+    REDIRECT_URI_NOT_FOUND = (
+        "redirect_uri not found in request",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

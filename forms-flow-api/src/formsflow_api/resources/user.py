@@ -21,6 +21,7 @@ from formsflow_api_utils.utils import (
 
 from formsflow_api_utils.exceptions import BusinessException
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.schemas import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
@@ -380,6 +381,16 @@ class ResetPassword(Resource):
     @auth.require
     # @auth.has_one_of_roles([MANAGE_USERS])  # Uncomment if role-based access is needed
     @profiletime
+    @API.doc(
+        params={
+            "redirect_uri": {
+                "in": "query",
+                "description": "The redirect URI for the password reset link",
+                "required": True,
+                "type": "string",
+            }
+        }
+    )
     @API.response(200, "OK:- Password reset email sent successfully.")
     @API.response(400, "BAD_REQUEST:- Invalid request.")
     @API.response(401, "UNAUTHORIZED:- Authorization header missing or invalid.")
@@ -390,12 +401,12 @@ class ResetPassword(Resource):
             # Get client_id from token (azp)
             client_id = g.token_info.get("azp")
             if not client_id:
-                raise BusinessException("client_id not found in token")
+                raise BusinessException(BusinessErrorCode.CLIENT_ID_NOT_FOUND)
 
-            # Redirect URI fallback
-            redirect_uri = current_app.config.get("WEB_BASE_URL")
+            # Get redirect_uri from query parameters
+            redirect_uri = request.args.get("redirect_uri")
             if not redirect_uri:
-                raise BusinessException("WEB_BASE_URL not configured in application settings")
+                raise BusinessException(BusinessErrorCode.REDIRECT_URI_NOT_FOUND)
 
             # Call Keycloak service
             KeycloakFactory.get_instance().reset_password_email(

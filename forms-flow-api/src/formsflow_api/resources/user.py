@@ -381,6 +381,16 @@ class ResetPassword(Resource):
     @auth.require
     # @auth.has_one_of_roles([MANAGE_USERS])  # Uncomment if role-based access is needed
     @profiletime
+    @API.doc(
+        params={
+            "redirect_uri": {
+                "in": "query",
+                "description": "The redirect URI for the password reset link",
+                "required": True,
+                "type": "string",
+            }
+        }
+    )
     @API.response(200, "OK:- Password reset email sent successfully.")
     @API.response(400, "BAD_REQUEST:- Invalid request.")
     @API.response(401, "UNAUTHORIZED:- Authorization header missing or invalid.")
@@ -393,10 +403,10 @@ class ResetPassword(Resource):
             if not client_id:
                 raise BusinessException(BusinessErrorCode.CLIENT_ID_NOT_FOUND)
 
-            # Redirect URI fallback
-            redirect_uri = current_app.config.get("WEB_BASE_URL")
+            # Get redirect_uri from query parameters
+            redirect_uri = request.args.get("redirect_uri")
             if not redirect_uri:
-                raise BusinessException(BusinessErrorCode.WEB_BASE_URL_NOT_CONFIGURED)
+                raise BusinessException(BusinessErrorCode.REDIRECT_URI_NOT_FOUND)
 
             # Call Keycloak service
             KeycloakFactory.get_instance().reset_password_email(

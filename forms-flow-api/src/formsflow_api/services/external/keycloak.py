@@ -3,6 +3,7 @@
 import json
 
 import requests
+from urllib.parse import quote
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
@@ -263,3 +264,55 @@ class KeycloakAdminAPIService:
         (e.g., Google, Microsoft, etc.).
         """
         return self.get_request(url_path=f"users/{user_id}/federated-identity")
+
+    @profiletime
+    def get_realm_info(self):
+        """Return realm information including settings like editUsernameAllowed.
+
+        This calls GET /admin/realms/{realm} to get the realm configuration.
+        """
+        # The base_url already includes /admin/realms/{realm}
+        # So we just need to call get_request with empty path
+        url = f"{self.base_url}"
+        try:
+            response = self.session.request("GET", url)
+            current_app.logger.debug(f"keycloak Admin API get realm info URL: {url}")
+            current_app.logger.debug(f"Keycloak response status: {response.status_code}")
+            response.raise_for_status()
+            if response.ok:
+                return response.json()
+            return None
+        except requests.exceptions.HTTPError as err:
+            current_app.logger.error(f"Keycloak Admin API get realm info failed: {err}")
+            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL) from err
+
+    @profiletime
+    def get_user_by_username(self, username: str):
+        """Check if a username already exists in the realm.
+
+        This calls GET /admin/realms/{realm}/users?exact=true&username={username}
+        Returns list of users with exact username match.
+        """
+        encoded_username = quote(username, safe="")
+        url_path = f"users?exact=true&username={encoded_username}"
+        return self.get_request(url_path=url_path)
+
+    @profiletime
+    def get_user_by_email(self, email: str):
+        """Check if an email already exists in the realm.
+
+        This calls GET /admin/realms/{realm}/users?exact=true&email={email}
+        Returns list of users with exact email match.
+        """
+        encoded_email = quote(email, safe="")
+        url_path = f"users?exact=true&email={encoded_email}"
+        return self.get_request(url_path=url_path)
+
+    @profiletime
+    def get_user_by_id(self, user_id: str):
+        """Get user by ID.
+
+        This calls GET /admin/realms/{realm}/users/{userId}
+        Returns the user representation.
+        """
+        return self.get_request(url_path=f"users/{user_id}")

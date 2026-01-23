@@ -26,6 +26,7 @@ from formsflow_api.schemas import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
+    UserProfileUpdateSchema,
     UserSchema,
     UsersListSchema,
 )
@@ -445,6 +446,42 @@ login_details_response_model = API.model(
     },
 )
 
+# Model for profile attributes
+profile_attributes_model = API.model(
+    "ProfileAttributes",
+    {
+        "locale": fields.List(
+            fields.String(),
+            description="User locale preferences",
+            required=False,
+        ),
+    },
+)
+
+# Request/Response model for user profile update
+user_profile_model = API.model(
+    "UserProfile",
+    {
+        "firstName": fields.String(
+            required=False, description="User's first name"
+        ),
+        "lastName": fields.String(
+            required=False, description="User's last name"
+        ),
+        "username": fields.String(
+            required=False, description="User's username"
+        ),
+        "email": fields.String(
+            required=False, description="User's email address"
+        ),
+        "attributes": fields.Nested(
+            profile_attributes_model,
+            required=False,
+            description="User attributes like locale",
+        ),
+    },
+)
+
 
 @cors_preflight("GET, OPTIONS")
 @API.route(
@@ -490,3 +527,128 @@ class UserLoginDetails(Resource):
         kc_admin = KeycloakFactory.get_instance()
         response = kc_admin.get_user_federated_identity(user_id)
         return response, HTTPStatus.OK
+
+
+@cors_preflight("PUT, OPTIONS")
+@API.route(
+    "/<string:user_id>/profile",
+    methods=["PUT", "OPTIONS"],
+)
+class UserProfile(Resource):
+    """Resource to update user profile in Keycloak."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    @API.doc(
+        params={
+            "user_id": {
+                "in": "path",
+                "description": "The Keycloak user ID.",
+                "required": True,
+            }
+        },
+        body=user_profile_model,
+    )
+    @API.response(200, "OK:- Profile updated successfully.", model=user_profile_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request data.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        403,
+        "FORBIDDEN:- You can only update your own profile.",
+    )
+    @API.response(
+        409,
+        "CONFLICT:- Username or email already exists.",
+    )
+    def put(user_id):
+        """Update user profile details.
+
+        Updates user profile information in Keycloak. All fields are optional -
+        only fields with changed values need to be sent.
+
+        Validations:
+        - User can only update their own profile (user_id must match logged-in user)
+        - If username is included, realm must allow username editing and username must be unique
+        - If email is included, format is validated and email must be unique
+        - firstName, lastName cannot be empty strings if provided
+
+        Sample Request:
+        {
+            "firstName": "John",
+            "lastName": "Doe",
+            "username": "johndoe",
+            "email": "john.doe@example.com",
+            "attributes": {
+                "locale": ["en"]
+            }
+        }
+        """
+        try:
+            # Get logged-in user's Keycloak ID from token (sub claim)
+            logged_in_user_id = g.token_info.get("sub")
+            if not logged_in_user_id:
+                current_app.logger.error("User ID (sub) not found in token")
+                return {
+                    "message": "User ID not found in token"
+                }, HTTPStatus.BAD_REQUEST
+
+            # Parse and validate request data
+            json_payload = request.get_json()
+            if json_payload is None:
+                return {
+                    "message": "Request body is required"
+                }, HTTPStatus.BAD_REQUEST
+
+            # Validate using schema
+            data = UserProfileUpdateSchema().load(json_payload)
+
+            # Convert schema field names to Keycloak field names
+            keycloak_data = {}
+            if "first_name" in data and data["first_name"] is not None:
+                keycloak_data["firstName"] = data["first_name"]
+            if "last_name" in data and data["last_name"] is not None:
+                keycloak_data["lastName"] = data["last_name"]
+            if "username" in data and data["username"] is not None:
+                keycloak_data["username"] = data["username"]
+            if "email" in data and data["email"] is not None:
+                keycloak_data["email"] = data["email"]
+            if "attributes" in data and data["attributes"] is not None:
+                keycloak_data["attributes"] = data["attributes"]
+
+            # Call Keycloak service to update profile
+            kc_admin = KeycloakFactory.get_instance()
+            response = kc_admin.update_user_profile(
+                user_id=user_id,
+                logged_in_user_id=logged_in_user_id,
+                data=keycloak_data,
+            )
+
+            # Update locale in local user table if attributes contain locale
+            if keycloak_data.get("attributes", {}).get("locale"):
+                locale_value = keycloak_data["attributes"]["locale"]
+                if isinstance(locale_value, list) and locale_value:
+                    UserService.update_user_data({"locale": locale_value[0]})
+
+            return response, HTTPStatus.OK
+
+        except BusinessException as err:
+            current_app.logger.error(f"Business exception: {err}")
+            return {
+                "message": err.message,
+                "code": err.error_code,
+            }, err.status_code
+
+        except Exception as err:  # pylint: disable=broad-exception-caught
+            current_app.logger.error(
+                f"Failed to update user profile: {err}", exc_info=True
+            )
+            return {
+                "message": "Failed to update user profile"
+            }, HTTPStatus.INTERNAL_SERVER_ERROR

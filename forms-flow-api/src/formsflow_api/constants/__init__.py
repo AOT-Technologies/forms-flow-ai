@@ -239,6 +239,30 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         "redirect_uri not found in request",
         HTTPStatus.BAD_REQUEST,
     )
+    USER_ID_MISMATCH = (
+        "You can only update your own profile",
+        HTTPStatus.FORBIDDEN,
+    )
+    USERNAME_NOT_EDITABLE = (
+        "Username editing is not allowed for this realm",
+        HTTPStatus.BAD_REQUEST,
+    )
+    USERNAME_ALREADY_EXISTS = (
+        "This username is already taken",
+        HTTPStatus.CONFLICT,
+    )
+    EMAIL_ALREADY_EXISTS = (
+        "Email already exists",
+        HTTPStatus.CONFLICT,
+    )
+    INVALID_EMAIL_FORMAT = (
+        "Invalid email format",
+        HTTPStatus.BAD_REQUEST,
+    )
+    EMPTY_FIELD_VALUE = (
+        "Field value cannot be empty",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

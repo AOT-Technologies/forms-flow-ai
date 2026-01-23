@@ -1,9 +1,10 @@
 """This exposes the Keycloak Admin APIs."""
 
 import json
+import time
+from urllib.parse import quote
 
 import requests
-from urllib.parse import quote
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
@@ -22,6 +23,9 @@ class KeycloakAdminAPIService:
     def __init__(self):
         """Initializing the service."""
         self.session = requests.Session()
+        self._realm_info_cache = None
+        self._realm_info_cache_time = 0
+        self._realm_info_cache_ttl = 300
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
         bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
         bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
@@ -266,11 +270,17 @@ class KeycloakAdminAPIService:
         return self.get_request(url_path=f"users/{user_id}/federated-identity")
 
     @profiletime
-    def get_realm_info(self):
+    def get_realm_info(self, force_refresh: bool = False):
         """Return realm information including settings like editUsernameAllowed.
 
         This calls GET /admin/realms/{realm} to get the realm configuration.
         """
+        if (
+            not force_refresh
+            and self._realm_info_cache
+            and (time.time() - self._realm_info_cache_time) < self._realm_info_cache_ttl
+        ):
+            return self._realm_info_cache
         # The base_url already includes /admin/realms/{realm}
         # So we just need to call get_request with empty path
         url = f"{self.base_url}"
@@ -280,7 +290,10 @@ class KeycloakAdminAPIService:
             current_app.logger.debug(f"Keycloak response status: {response.status_code}")
             response.raise_for_status()
             if response.ok:
-                return response.json()
+                realm_info = response.json()
+                self._realm_info_cache = realm_info
+                self._realm_info_cache_time = time.time()
+                return realm_info
             return None
         except requests.exceptions.HTTPError as err:
             current_app.logger.error(f"Keycloak Admin API get realm info failed: {err}")

@@ -184,7 +184,82 @@ class KeycloakAdmin(ABC):
         # Internal user - return only login type
         return {"loginType": "internal"}
 
-    def update_user_profile(  # pylint: disable=too-many-branches
+    def _ensure_self_update(self, user_id: str, logged_in_user_id: str):
+        """Ensure user can only update their own profile."""
+        if user_id != logged_in_user_id:
+            current_app.logger.warning(
+                f"User ID mismatch: path user_id={user_id}, "
+                f"logged_in_user_id={logged_in_user_id}"
+            )
+            raise BusinessException(BusinessErrorCode.USER_ID_MISMATCH)
+
+    def _get_current_user(self, user_id: str) -> Dict:
+        """Get current user data from Keycloak."""
+        current_user = self.client.get_user_by_id(user_id)
+        if not current_user:
+            raise BusinessException(BusinessErrorCode.USER_NOT_FOUND)
+        return current_user
+
+    def _validate_username_update(self, user_id: str, data: Dict, current_user: Dict):
+        """Validate username editability and uniqueness."""
+        new_username = data.get("username")
+        if not new_username:
+            return
+        if new_username == current_user.get("username"):
+            return
+        realm_info = self.client.get_realm_info()
+        if not realm_info.get("editUsernameAllowed", False):
+            current_app.logger.warning("Username editing is not allowed")
+            raise BusinessException(BusinessErrorCode.USERNAME_NOT_EDITABLE)
+        existing_users = self.client.get_user_by_username(new_username)
+        if existing_users:
+            other_users = [u for u in existing_users if u.get("id") != user_id]
+            if other_users:
+                current_app.logger.warning(
+                    f"Username {new_username} is already taken"
+                )
+                raise BusinessException(BusinessErrorCode.USERNAME_ALREADY_EXISTS)
+
+    def _validate_email_update(self, user_id: str, data: Dict, current_user: Dict):
+        """Validate email uniqueness when changed."""
+        new_email = data.get("email")
+        if not new_email:
+            return
+        if new_email == current_user.get("email"):
+            return
+        existing_users = self.client.get_user_by_email(new_email)
+        if existing_users:
+            other_users = [u for u in existing_users if u.get("id") != user_id]
+            if other_users:
+                current_app.logger.warning(f"Email {new_email} is already taken")
+                raise BusinessException(BusinessErrorCode.EMAIL_ALREADY_EXISTS)
+
+    @staticmethod
+    def _build_update_payload(user_id: str, data: Dict, current_user: Dict) -> Dict:
+        """Build payload for Keycloak update."""
+        update_payload = {
+            "id": user_id,
+            "username": current_user.get("username"),
+            "email": current_user.get("email"),
+            "firstName": current_user.get("firstName"),
+            "lastName": current_user.get("lastName"),
+            "attributes": current_user.get("attributes", {}),
+        }
+        field_map = {
+            "firstName": "firstName",
+            "lastName": "lastName",
+            "username": "username",
+            "email": "email",
+        }
+        for key, payload_key in field_map.items():
+            if data.get(key):
+                update_payload[payload_key] = data[key]
+        if data.get("attributes"):
+            for key, value in data["attributes"].items():
+                update_payload["attributes"][key] = value
+        return update_payload
+
+    def update_user_profile(
         self, user_id: str, logged_in_user_id: str, data: Dict
     ) -> Dict:
         """Update user profile in Keycloak.
@@ -202,84 +277,15 @@ class KeycloakAdmin(ABC):
         """
         current_app.logger.debug(f"Updating user profile for user {user_id}")
 
-        # Validation 1: Verify userId matches the logged-in user's ID
-        if user_id != logged_in_user_id:
-            current_app.logger.warning(
-                f"User ID mismatch: path user_id={user_id}, "
-                f"logged_in_user_id={logged_in_user_id}"
-            )
-            raise BusinessException(BusinessErrorCode.USER_ID_MISMATCH)
+        self._ensure_self_update(user_id, logged_in_user_id)
 
         # pylint: disable=no-member
         # self.client is initialized by all subclasses in their __init__ methods
 
-        # Get current user data from Keycloak
-        current_user = self.client.get_user_by_id(user_id)
-        if not current_user:
-            raise BusinessException(BusinessErrorCode.USER_NOT_FOUND)
-
-        # Validation 2: If username is included, check realm settings and uniqueness
-        if "username" in data and data["username"]:
-            new_username = data["username"]
-            current_username = current_user.get("username")
-
-            # Only validate if username is actually changing
-            if new_username != current_username:
-                # Check if username editing is allowed
-                realm_info = self.client.get_realm_info()
-                if not realm_info.get("editUsernameAllowed", False):
-                    current_app.logger.warning("Username editing is not allowed")
-                    raise BusinessException(BusinessErrorCode.USERNAME_NOT_EDITABLE)
-
-                # Check if username is already taken
-                existing_users = self.client.get_user_by_username(new_username)
-                if existing_users:
-                    # Filter out the current user
-                    other_users = [u for u in existing_users if u.get("id") != user_id]
-                    if other_users:
-                        current_app.logger.warning(
-                            f"Username {new_username} is already taken"
-                        )
-                        raise BusinessException(BusinessErrorCode.USERNAME_ALREADY_EXISTS)
-
-        # Validation 3: If email is included, check uniqueness
-        if "email" in data and data["email"]:
-            new_email = data["email"]
-            current_email = current_user.get("email")
-
-            # Only validate if email is actually changing
-            if new_email != current_email:
-                existing_users = self.client.get_user_by_email(new_email)
-                if existing_users:
-                    # Filter out the current user
-                    other_users = [u for u in existing_users if u.get("id") != user_id]
-                    if other_users:
-                        current_app.logger.warning(f"Email {new_email} is already taken")
-                        raise BusinessException(BusinessErrorCode.EMAIL_ALREADY_EXISTS)
-
-        # Build the update payload - merge with existing user data
-        update_payload = {
-            "id": user_id,
-            "username": current_user.get("username"),
-            "email": current_user.get("email"),
-            "firstName": current_user.get("firstName"),
-            "lastName": current_user.get("lastName"),
-            "attributes": current_user.get("attributes", {}),
-        }
-
-        # Apply updates from the request data
-        if "firstName" in data and data["firstName"]:
-            update_payload["firstName"] = data["firstName"]
-        if "lastName" in data and data["lastName"]:
-            update_payload["lastName"] = data["lastName"]
-        if "username" in data and data["username"]:
-            update_payload["username"] = data["username"]
-        if "email" in data and data["email"]:
-            update_payload["email"] = data["email"]
-        if "attributes" in data and data["attributes"]:
-            # Merge attributes
-            for key, value in data["attributes"].items():
-                update_payload["attributes"][key] = value
+        current_user = self._get_current_user(user_id)
+        self._validate_username_update(user_id, data, current_user)
+        self._validate_email_update(user_id, data, current_user)
+        update_payload = self._build_update_payload(user_id, data, current_user)
 
         try:
             # Call Keycloak PUT API to update user

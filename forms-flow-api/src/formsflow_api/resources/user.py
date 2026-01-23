@@ -4,6 +4,7 @@ from http import HTTPStatus
 
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource, fields
+from marshmallow import ValidationError
 from formsflow_api_utils.utils import (
     ANALYZE_SUBMISSIONS_VIEW,
     CREATE_DESIGNS,
@@ -538,6 +539,45 @@ class UserProfile(Resource):
     """Resource to update user profile in Keycloak."""
 
     @staticmethod
+    def _get_logged_in_user_id():
+        """Return logged-in user's Keycloak ID or error response."""
+        logged_in_user_id = g.token_info.get("sub")
+        if not logged_in_user_id:
+            current_app.logger.error("User ID (sub) not found in token")
+            return None, (
+                {"message": "User ID not found in token"},
+                HTTPStatus.BAD_REQUEST,
+            )
+        return logged_in_user_id, None
+
+    @staticmethod
+    def _build_keycloak_payload(data):
+        """Convert schema fields to Keycloak payload."""
+        field_map = {
+            "first_name": "firstName",
+            "last_name": "lastName",
+            "username": "username",
+            "email": "email",
+            "attributes": "attributes",
+        }
+        keycloak_data = {}
+        for schema_key, kc_key in field_map.items():
+            value = data.get(schema_key)
+            if value is not None:
+                keycloak_data[kc_key] = value
+        return keycloak_data
+
+    @staticmethod
+    def _update_local_locale(keycloak_data):
+        """Update locale in local user table if provided."""
+        locale_value = keycloak_data.get("attributes", {}).get("locale")
+        if isinstance(locale_value, list) and locale_value:
+            UserService.update_user_data(
+                {"locale": locale_value[0]},
+                user_name=g.token_info.get("preferred_username"),
+            )
+
+    @staticmethod
     @auth.require
     @profiletime
     @API.doc(
@@ -591,13 +631,9 @@ class UserProfile(Resource):
         }
         """
         try:
-            # Get logged-in user's Keycloak ID from token (sub claim)
-            logged_in_user_id = g.token_info.get("sub")
-            if not logged_in_user_id:
-                current_app.logger.error("User ID (sub) not found in token")
-                return {
-                    "message": "User ID not found in token"
-                }, HTTPStatus.BAD_REQUEST
+            logged_in_user_id, error_response = UserProfile._get_logged_in_user_id()
+            if error_response:
+                return error_response
 
             # Parse and validate request data
             json_payload = request.get_json()
@@ -609,18 +645,7 @@ class UserProfile(Resource):
             # Validate using schema
             data = UserProfileUpdateSchema().load(json_payload)
 
-            # Convert schema field names to Keycloak field names
-            keycloak_data = {}
-            if "first_name" in data and data["first_name"] is not None:
-                keycloak_data["firstName"] = data["first_name"]
-            if "last_name" in data and data["last_name"] is not None:
-                keycloak_data["lastName"] = data["last_name"]
-            if "username" in data and data["username"] is not None:
-                keycloak_data["username"] = data["username"]
-            if "email" in data and data["email"] is not None:
-                keycloak_data["email"] = data["email"]
-            if "attributes" in data and data["attributes"] is not None:
-                keycloak_data["attributes"] = data["attributes"]
+            keycloak_data = UserProfile._build_keycloak_payload(data)
 
             # Call Keycloak service to update profile
             kc_admin = KeycloakFactory.get_instance()
@@ -630,20 +655,24 @@ class UserProfile(Resource):
                 data=keycloak_data,
             )
 
-            # Update locale in local user table if attributes contain locale
-            if keycloak_data.get("attributes", {}).get("locale"):
-                locale_value = keycloak_data["attributes"]["locale"]
-                if isinstance(locale_value, list) and locale_value:
-                    UserService.update_user_data({"locale": locale_value[0]})
+            UserProfile._update_local_locale(keycloak_data)
 
             return response, HTTPStatus.OK
 
         except BusinessException as err:
             current_app.logger.error(f"Business exception: {err}")
+            message = (
+                err.details[0]["message"]
+                if hasattr(err, "details") and err.details
+                else err.message
+            )
+            return {"message": message}, err.status_code
+        except ValidationError as err:
+            current_app.logger.error(f"Validation error: {err}")
             return {
-                "message": err.message,
-                "code": err.error_code,
-            }, err.status_code
+                "message": "Invalid request data",
+                "details": err.messages,
+            }, HTTPStatus.BAD_REQUEST
 
         except Exception as err:  # pylint: disable=broad-exception-caught
             current_app.logger.error(

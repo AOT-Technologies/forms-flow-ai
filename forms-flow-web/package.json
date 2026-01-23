@@ -83,7 +83,7 @@
     "json5": "^2.2.3",
     "jsonwebtoken": "9.0.0",
     "keycloak-js": "^10.0.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "moment": "^2.29.4",
     "npm-force-resolutions": "^0.0.10",
     "querystring": "^0.2.1",

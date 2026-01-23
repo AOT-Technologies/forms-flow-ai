@@ -15,6 +15,7 @@ DEFAULT_USER_CLAIM = "username"  # Default fallback claim
 
 class KeycloakAdmin(ABC):
     """Keycloak Admin abstract interface."""
+    client: Any = None
 
     @abstractmethod
     def get_analytics_groups(self, page_no: int, limit: int):

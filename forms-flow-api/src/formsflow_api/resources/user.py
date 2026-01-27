@@ -22,7 +22,7 @@ from formsflow_api_utils.utils import (
 
 from formsflow_api_utils.exceptions import BusinessException
 
-from formsflow_api.constants import BusinessErrorCode
+from formsflow_api.constants import BusinessErrorCode, INVALID_REQUEST_DATA_MESSAGE
 from formsflow_api.schemas import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
@@ -309,7 +309,7 @@ class UserPermission(Resource):
             current_app.logger.error(f"Failed to add {user_id} to group {group_id}")
             return {
                 "type": "Bad request error",
-                "message": "Invalid request data",
+                "message": INVALID_REQUEST_DATA_MESSAGE,
             }, HTTPStatus.BAD_REQUEST
         return None, HTTPStatus.NO_CONTENT
 
@@ -337,7 +337,7 @@ class UserPermission(Resource):
             )
             return {
                 "type": "Bad request error",
-                "message": "Invalid request data",
+                "message": INVALID_REQUEST_DATA_MESSAGE,
             }, HTTPStatus.BAD_REQUEST
         return None, HTTPStatus.NO_CONTENT
 
@@ -551,24 +551,7 @@ class UserProfile(Resource):
         return logged_in_user_id, None
 
     @staticmethod
-    def _build_keycloak_payload(data):
-        """Convert schema fields to Keycloak payload."""
-        field_map = {
-            "first_name": "firstName",
-            "last_name": "lastName",
-            "username": "username",
-            "email": "email",
-            "attributes": "attributes",
-        }
-        keycloak_data = {}
-        for schema_key, kc_key in field_map.items():
-            value = data.get(schema_key)
-            if value is not None:
-                keycloak_data[kc_key] = value
-        return keycloak_data
-
-    @staticmethod
-    def _update_local_locale(keycloak_data):
+    def _update_user_locale(keycloak_data):
         """Update locale in local user table if provided."""
         locale_value = keycloak_data.get("attributes", {}).get("locale")
         if isinstance(locale_value, list) and locale_value:
@@ -643,9 +626,10 @@ class UserProfile(Resource):
                 }, HTTPStatus.BAD_REQUEST
 
             # Validate using schema
-            data = UserProfileUpdateSchema().load(json_payload)
-
-            keycloak_data = UserProfile._build_keycloak_payload(data)
+            schema = UserProfileUpdateSchema()
+            data = schema.load(json_payload)
+            # Use dump() to convert Python field names back to Keycloak JSON keys
+            keycloak_data = schema.dump(data)
 
             # Call Keycloak service to update profile
             kc_admin = KeycloakFactory.get_instance()
@@ -655,7 +639,7 @@ class UserProfile(Resource):
                 data=keycloak_data,
             )
 
-            UserProfile._update_local_locale(keycloak_data)
+            UserProfile._update_user_locale(keycloak_data)
 
             return response, HTTPStatus.OK
 
@@ -670,7 +654,7 @@ class UserProfile(Resource):
         except ValidationError as err:
             current_app.logger.error(f"Validation error: {err}")
             return {
-                "message": "Invalid request data",
+                "message": INVALID_REQUEST_DATA_MESSAGE,
                 "details": err.messages,
             }, HTTPStatus.BAD_REQUEST
 

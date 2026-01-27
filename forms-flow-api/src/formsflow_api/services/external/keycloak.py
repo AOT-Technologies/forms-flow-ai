@@ -1,13 +1,13 @@
 """This exposes the Keycloak Admin APIs."""
 
 import json
-import time
 from urllib.parse import quote
 
 import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
+    Cache,
     HTTP_TIMEOUT,
     UserContext,
     profiletime,
@@ -23,9 +23,6 @@ class KeycloakAdminAPIService:
     def __init__(self):
         """Initializing the service."""
         self.session = requests.Session()
-        self._realm_info_cache = None
-        self._realm_info_cache_time = 0
-        self._realm_info_cache_ttl = 300
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
         bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
         bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
@@ -274,13 +271,19 @@ class KeycloakAdminAPIService:
         """Return realm information including settings like editUsernameAllowed.
 
         This calls GET /admin/realms/{realm} to get the realm configuration.
+        Uses Redis cache to store realm info for 5 minutes.
         """
-        if (
-            not force_refresh
-            and self._realm_info_cache
-            and (time.time() - self._realm_info_cache_time) < self._realm_info_cache_ttl
-        ):
-            return self._realm_info_cache
+        # Build cache key using realm name from base_url
+        realm_name = current_app.config.get("KEYCLOAK_URL_REALM", "default")
+        cache_key = f"keycloak_realm_info_{realm_name}"
+
+        # Check Redis cache first
+        if not force_refresh:
+            cached_realm_info = Cache.get(cache_key)
+            if cached_realm_info:
+                current_app.logger.debug("Returning realm info from Redis cache")
+                return cached_realm_info
+
         # The base_url already includes /admin/realms/{realm}
         # So we just need to call get_request with empty path
         url = f"{self.base_url}"
@@ -291,8 +294,9 @@ class KeycloakAdminAPIService:
             response.raise_for_status()
             if response.ok:
                 realm_info = response.json()
-                self._realm_info_cache = realm_info
-                self._realm_info_cache_time = time.time()
+                # Cache for 5 minutes (300 seconds)
+                Cache.set(cache_key, realm_info, timeout=300)
+                current_app.logger.debug("Realm info cached in Redis")
                 return realm_info
             return None
         except requests.exceptions.HTTPError as err:

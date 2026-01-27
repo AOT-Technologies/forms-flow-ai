@@ -8,6 +8,9 @@ from http import HTTPStatus
 
 from formsflow_api_utils.exceptions import ErrorCodeMixin
 
+# Error messages
+INVALID_REQUEST_DATA_MESSAGE = "Invalid request data"
+
 # Static task filter variables.
 # These variables are used in the migration & tenant based task filter configuration.
 

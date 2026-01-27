@@ -2,7 +2,7 @@
 
 import re
 
-from marshmallow import EXCLUDE, Schema, fields, validates, ValidationError
+from marshmallow import EXCLUDE, Schema, ValidationError, fields, validates
 
 
 class UserlocaleReqSchema(Schema):

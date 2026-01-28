@@ -18,7 +18,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-documents
+    working-directory: .
 
 jobs:
   setup-job:
@@ -44,15 +44,15 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          pip install -r requirements/dev.txt
+          pip install -r forms-flow-documents/requirements/dev.txt
       - name: Pylint
         id: pylint
         run: |
-          pylint --rcfile=setup.cfg  src/formsflow_documents
+          pylint --rcfile=forms-flow-documents/setup.cfg  forms-flow-documents/src/formsflow_documents
       - name: Flake8
         id: flake8
         run: |
-          flake8 src/formsflow_documents tests
+          flake8 forms-flow-documents/src/formsflow_documents forms-flow-documents/tests
   
   Test:
     needs: setup-job
@@ -108,17 +108,19 @@ jobs:
           docker-compose --version
       - name: Check for docker-compose.yml
         run: |
-          if [ ! -f tests/docker/docker-compose.yml ]; then
+          if [ ! -f forms-flow-documents/tests/docker/docker-compose.yml ]; then
             echo "docker-compose.yml not found!"
             exit 1
           fi
       - name: Install dependencies
         run: |
           make build
+        working-directory: ./forms-flow-documents/
       - name: Test
         id: test
         run: |
           make test
+        working-directory: ./forms-flow-documents/
   Build:
     if: always()
     runs-on: ubuntu-24.04
@@ -131,4 +133,4 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Build
         run: |
-          docker build . -t forms-flow-documents
+          docker build . -t forms-flow-documents -f ./forms-flow-documents/Dockerfile

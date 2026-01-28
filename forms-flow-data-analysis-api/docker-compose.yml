@@ -18,8 +18,8 @@ services:
 
   forms-flow-data-analysis-api:
     build:
-      context: ./
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: forms-flow-data-analysis-api/Dockerfile
     restart: unless-stopped
     user: "1001:1001"
     links:

@@ -11,7 +11,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-documents
+    working-directory: .
 
 
 jobs:
@@ -22,8 +22,8 @@ jobs:
       matrix:
         include:
           - image: formsflow/forms-flow-documents-api
-            context: forms-flow-documents
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: forms-flow-documents/Dockerfile
             name: forms-flow-documents
     permissions:
       contents: read
@@ -86,7 +86,8 @@ jobs:
         if: ${{ github.ref != 'refs/heads/master' }}
         uses: docker/build-push-action@v4
         with:
-          context: forms-flow-documents
+          context: .
+          file: forms-flow-documents/Dockerfile
           push: true
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
@@ -95,7 +96,8 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/build-push-action@v4
         with:
-          context: forms-flow-documents
+          context: .
+          file: forms-flow-documents/Dockerfile
           push: true
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-documents-api:latest
@@ -103,7 +105,7 @@ jobs:
       - name: Build and push Docker image - arm64
         uses: docker/build-push-action@v4
         with:
-          context: forms-flow-documents
+          context: .
           file: forms-flow-documents/Dockerfile-ARM64
           push: true
           platforms: linux/arm64/v8

@@ -7,7 +7,6 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from werkzeug.datastructures import ImmutableMultiDict
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     ANALYZE_SUBMISSIONS_VIEW,
@@ -1012,7 +1011,19 @@ class FormFlowBuilderResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
-    @API.doc(body=combined_form_workflow_request_model)
+    @API.doc(
+        body=combined_form_workflow_request_model,
+        params={
+            "title": {
+                "in": "query",
+                "description": "Form title to be validated",
+            },
+            "path": {
+                "in": "query",
+                "description": "Form path to be validated",
+            },
+        },
+    )
     @API.response(
         201,
         "CREATED:- Successful request.",
@@ -1032,31 +1043,15 @@ class FormFlowBuilderResource(Resource):
     )
     def post():
         """Creates a new form along with its associated workflow, authorization rules, and history tracking."""
-        data = request.get_json()
-        form_data = data.get("formData", {}) if data else {}
+        # Get query parameters for validation
+        title = request.args.get("title")
+        path = request.args.get("path")
 
-        # Get title and path from formData payload
-        title = form_data.get("title")
-        path = form_data.get("path")
-
-        # Validate title and path if provided in payload
+        # Validate title and path if provided
         if title is not None or path is not None:
-            # Create a mock request object with title/path in args for validation
-            class MockRequest:  # pylint: disable=too-few-public-methods
-                """Mock request object for form validation."""
+            FormProcessMapperService.validate_form_name_path_title(request)
 
-                def __init__(self, _original_request, title_val, path_val):
-                    # Create args dict with title and path if provided
-                    args_dict = {}
-                    if title_val is not None:
-                        args_dict["title"] = title_val
-                    if path_val is not None:
-                        args_dict["path"] = path_val
-                    self.args = ImmutableMultiDict(args_dict)
-
-            mock_request = MockRequest(request, title, path)
-            FormProcessMapperService.validate_form_name_path_title(mock_request)
-
+        data = request.get_json()
         response = FormProcessMapperService.create_form_with_process(
             data, bool(auth.has_role([CREATE_DESIGNS]))
         )

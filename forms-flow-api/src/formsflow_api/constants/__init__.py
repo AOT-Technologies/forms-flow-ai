@@ -8,6 +8,9 @@ from http import HTTPStatus
 
 from formsflow_api_utils.exceptions import ErrorCodeMixin
 
+# Error messages
+INVALID_REQUEST_DATA_MESSAGE = "Invalid request data"
+
 # Static task filter variables.
 # These variables are used in the migration & tenant based task filter configuration.
 
@@ -237,6 +240,30 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     )
     REDIRECT_URI_NOT_FOUND = (
         "redirect_uri not found in request",
+        HTTPStatus.BAD_REQUEST,
+    )
+    USER_ID_MISMATCH = (
+        "You can only update your own profile",
+        HTTPStatus.FORBIDDEN,
+    )
+    USERNAME_NOT_EDITABLE = (
+        "Username editing is not allowed for this realm",
+        HTTPStatus.BAD_REQUEST,
+    )
+    USERNAME_ALREADY_EXISTS = (
+        "This username is already taken",
+        HTTPStatus.CONFLICT,
+    )
+    EMAIL_ALREADY_EXISTS = (
+        "Email already exists",
+        HTTPStatus.CONFLICT,
+    )
+    INVALID_EMAIL_FORMAT = (
+        "Invalid email format",
+        HTTPStatus.BAD_REQUEST,
+    )
+    EMPTY_FIELD_VALUE = (
+        "Field value cannot be empty",
         HTTPStatus.BAD_REQUEST,
     )
 

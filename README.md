@@ -7,7 +7,27 @@
 [![Join the chat at https://stackoverflow.com/questions/tagged/formsflow.ai](https://img.shields.io/badge/ask%20-on%20%20stackoverflow-F47F24)](https://stackoverflow.com/questions/tagged/formsflow.ai?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
-[**formsflow.ai**](https://formsflow.ai/) is a Free, Open-Source, Low Code Development Platform for rapidly building powerful business applications. [**formsflow.ai**](https://formsflow.ai/) combines leading Open-Source applications including [form.io](https://form.io) forms, Camunda’s workflow engine, Keycloak’s security, and Redash’s data analytics into a seamless, integrated platform.
+## formsflow.ai: Enterprise-Grade Automation without the Lock-in
+
+[**formsflow.ai**](https://formsflow.ai/) is the open-source alternative to restrictive low-code platforms. We provide a unified stack that combines the world's most trusted engines for forms, workflow, and security into a single, seamless developer experience.
+
+### The Power of "Best-of-Breed" Integration
+
+Unlike "black box" proprietary vendors, formsflow.ai is built on a transparent foundation. We've done the heavy lifting of integrating [Form.io](https://form.io), [Camunda](https://camunda.com/), [Keycloak](https://www.keycloak.org/), and [Redash](https://redash.io/), allowing you to focus on building logic rather than managing infrastructure.
+
+### Why formsflow.ai?
+
+- **Low-Code Speed, Pro-Code Power**: Use intuitive drag-and-drop builders for 90% of your application, while retaining the ability to inject custom code and complex **BPMN 2.0** or **DMN** logic for sophisticated business requirements.
+- **Zero Vendor Lock-in**: Own your data and your destiny. Built entirely on open-source standards, our architecture ensures you aren't tied to a single provider's proprietary roadmap.
+- **Mission-Critical Workflows**: Designed for the high-compliance needs of Government and Enterprise, supporting everything from simple intake forms to multi-departmental digital transformation.
+
+### Choose Your Path
+
+| Community Edition (Open Source) | Enterprise Edition |
+|--------------------------------|-------------------|
+| **Optimized for Personal Projects.** | **Optimized for Scale & Sovereignty.** |
+| Access the core integrated stack to build and deploy apps freely under open-source licenses. | Advanced features for high-volume environments, premium support, and creative licensing models. |
+| Explore the code, contribute, and join a global community of innovators. | Tailored for organizations requiring digital transformation, process auditing, and long-term stability. |
 
 
 ## How It Works ?

@@ -95,3 +95,64 @@ def test_default_filter(app, client, session, jwt):
         content_type="application/json",
     )
     assert response.status_code == 200
+
+
+class TestUserLoginDetails:
+    """Test suite for the user login details API."""
+
+    def test_get_user_login_details_success(self, app, client, session, jwt):
+        """Test successful retrieval of user login details."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # First, get a user ID from the users list
+        users_response = client.get("/user?pageNo=1&limit=1", headers=headers)
+        assert users_response.status_code == 200
+        users_data = users_response.json.get("data", [])
+
+        if users_data:
+            user_id = users_data[0].get("id")
+            # Test the login-details endpoint
+            rv = client.get(f"/user/{user_id}/login-details", headers=headers)
+            assert rv.status_code == 200
+            response_data = rv.json
+            # Verify response structure
+            assert "loginType" in response_data
+            assert response_data["loginType"] in ["internal", "external"]
+            # If external, identityProvider should be present
+            if response_data["loginType"] == "external":
+                assert "identityProvider" in response_data
+
+    def test_get_user_login_details_unauthorized(self, app, client, session):
+        """Test login details endpoint without authorization."""
+        rv = client.get("/user/test-user-id/login-details")
+        assert rv.status_code == 401
+        assert rv.json == {
+            "message": "Invalid Token Error",
+            "code": "INVALID_AUTH_TOKEN",
+            "details": [],
+        }
+
+    def test_get_user_login_details_internal_user(self, app, client, session, jwt):
+        """Test login details for a user with internal (local) authentication."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # Get users list to find a test user
+        users_response = client.get("/user?pageNo=1&limit=5", headers=headers)
+        assert users_response.status_code == 200
+        users_data = users_response.json.get("data", [])
+
+        if users_data:
+            # Test with first available user
+            user_id = users_data[0].get("id")
+            rv = client.get(f"/user/{user_id}/login-details", headers=headers)
+            assert rv.status_code == 200
+            response_data = rv.json
+            # Most test users will be internal
+            if response_data["loginType"] == "internal":
+                assert "identityProvider" not in response_data

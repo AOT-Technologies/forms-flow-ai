@@ -372,7 +372,7 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className="body-section px-1">
+        <div className="body-section px-1 user-form-body-section ">
           {(isPublic || formStatus === "active") ? (
             <Form
               form={form}

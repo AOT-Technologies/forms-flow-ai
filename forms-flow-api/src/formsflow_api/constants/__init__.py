@@ -227,6 +227,18 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
         HTTPStatus.BAD_REQUEST,
     )
     INVALID_FORM_URL = "Invalid form URL format", HTTPStatus.BAD_REQUEST
+    BPM_CONFIG_MISSING = (
+        "Missing BPM configuration. Required: BPM_TOKEN_API, BPM_CLIENT_ID, BPM_CLIENT_SECRET",
+        HTTPStatus.INTERNAL_SERVER_ERROR,
+    )
+    CLIENT_ID_NOT_FOUND = (
+        "client_id not found in token",
+        HTTPStatus.BAD_REQUEST,
+    )
+    REDIRECT_URI_NOT_FOUND = (
+        "redirect_uri not found in request",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

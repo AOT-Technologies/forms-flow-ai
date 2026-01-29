@@ -157,6 +157,33 @@ class KeycloakAdmin(ABC):
                 BusinessErrorCode.KEYCLOAK_REQUEST_FAIL
             ) from err
 
+    def get_user_federated_identity(self, user_id: str):
+        """Get federated identity providers linked to a user.
+
+        Calls Keycloak Admin API to fetch federated identity details.
+        Returns login method information (internal IDP vs external IDP).
+
+        Sample output for internal user:
+        {"loginType": "internal"}
+
+        Sample output for external user:
+        {"loginType": "external", "identityProvider": "google"}
+        """
+        current_app.logger.debug(f"Fetching federated identity for user: {user_id}")
+        # pylint: disable=no-member
+        # self.client is initialized by all subclasses in their __init__ methods
+        federated_identities = self.client.get_user_federated_identity(user_id)
+
+        if federated_identities:
+            # External user - return login type and first identity provider name
+            return {
+                "loginType": "external",
+                "identityProvider": federated_identities[0].get("identityProvider"),
+            }
+
+        # Internal user - return only login type
+        return {"loginType": "internal"}
+
     @classmethod
     def get_user_id_from_response(
         cls, response: Dict[str, Any], user_name_attribute: str

@@ -21,6 +21,7 @@ from formsflow_api_utils.utils import (
 
 from formsflow_api_utils.exceptions import BusinessException
 
+from formsflow_api.constants import BusinessErrorCode
 from formsflow_api.schemas import (
     TenantUserAddSchema,
     UserlocaleReqSchema,
@@ -380,6 +381,16 @@ class ResetPassword(Resource):
     @auth.require
     # @auth.has_one_of_roles([MANAGE_USERS])  # Uncomment if role-based access is needed
     @profiletime
+    @API.doc(
+        params={
+            "redirect_uri": {
+                "in": "query",
+                "description": "The redirect URI for the password reset link",
+                "required": True,
+                "type": "string",
+            }
+        }
+    )
     @API.response(200, "OK:- Password reset email sent successfully.")
     @API.response(400, "BAD_REQUEST:- Invalid request.")
     @API.response(401, "UNAUTHORIZED:- Authorization header missing or invalid.")
@@ -390,12 +401,12 @@ class ResetPassword(Resource):
             # Get client_id from token (azp)
             client_id = g.token_info.get("azp")
             if not client_id:
-                raise BusinessException("client_id not found in token")
+                raise BusinessException(BusinessErrorCode.CLIENT_ID_NOT_FOUND)
 
-            # Redirect URI fallback
-            redirect_uri = current_app.config.get("WEB_BASE_URL")
+            # Get redirect_uri from query parameters
+            redirect_uri = request.args.get("redirect_uri")
             if not redirect_uri:
-                raise BusinessException("WEB_BASE_URL not configured in application settings")
+                raise BusinessException(BusinessErrorCode.REDIRECT_URI_NOT_FOUND)
 
             # Call Keycloak service
             KeycloakFactory.get_instance().reset_password_email(
@@ -418,3 +429,64 @@ class ResetPassword(Resource):
             return {
                 "message": "Failed to send reset password email"
             }, HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+# Response model for login details
+login_details_response_model = API.model(
+    "LoginDetails",
+    {
+        "loginType": fields.String(
+            description="Type of login: 'internal' for local IDP, 'external' for federated IDP"
+        ),
+        "identityProvider": fields.String(
+            required=False,
+            description="Identity provider name (e.g., google, microsoft). Only present for external users."
+        ),
+    },
+)
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route(
+    "/<string:user_id>/login-details",
+    methods=["GET", "OPTIONS"],
+)
+class UserLoginDetails(Resource):
+    """Resource to fetch user login method details from Keycloak."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    @API.doc(
+        params={
+            "user_id": {
+                "in": "path",
+                "description": "The Keycloak user ID.",
+                "required": True,
+            }
+        }
+    )
+    @API.response(200, "OK:- Successful request.", model=login_details_response_model)
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    @API.response(
+        404,
+        "NOT_FOUND:- User not found.",
+    )
+    def get(user_id):
+        """Get user login details.
+
+        Fetches federated identity information for a user to determine
+        if they log in via internal IDP (local) or external IDP (Google, Microsoft, etc.).
+
+        Sample Response for external user:
+        {"loginType": "external", "identityProvider": "google"}
+
+        Sample Response for internal user:
+        {"loginType": "internal"}
+        """
+        kc_admin = KeycloakFactory.get_instance()
+        response = kc_admin.get_user_federated_identity(user_id)
+        return response, HTTPStatus.OK

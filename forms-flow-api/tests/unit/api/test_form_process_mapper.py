@@ -293,13 +293,17 @@ def test_form_flow_builder_creation(app, client, session, jwt, mock_redis_client
         "taskVariables": task_variables
     }
 
-    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
-    assert response.status_code == 201
-    assert response.json.get("formData") is not None
-    assert response.json["formData"].get("title") == form_data.get("title")
-    assert response.json.get("process") is not None
-    assert response.json.get("mapper") is not None
-    assert response.json.get("authorizations") is not None
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[],
+    ):
+        response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+        assert response.status_code == 201
+        assert response.json.get("formData") is not None
+        assert response.json["formData"].get("title") == form_data.get("title")
+        assert response.json.get("process") is not None
+        assert response.json.get("mapper") is not None
+        assert response.json.get("authorizations") is not None
 
 
 def test_form_flow_builder_minimal(app, client, session, jwt, mock_redis_client):
@@ -312,8 +316,12 @@ def test_form_flow_builder_minimal(app, client, session, jwt, mock_redis_client)
         "formData": form_data
     }
 
-    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
-    assert response.status_code == 201
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[],
+    ):
+        response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+        assert response.status_code == 201
     assert response.json.get("formData") is not None
     assert response.json["formData"].get("title") == form_data.get("title")
     assert response.json.get("process") is not None
@@ -1042,13 +1050,17 @@ def test_form_flow_builder_update(app, client, session, jwt, mock_redis_client):
     payload = {
         "formData": form_data
     }
-    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
-    assert response.status_code == 201
-    assert response.json is not None
-    assert response.json.get("formData") is not None
-    form_id = response.json["formData"].get("_id")
-    mapper_id = response.json.get("mapper").get("id")
-    process_id = response.json.get("process").get("id")
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[],
+    ):
+        response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+        assert response.status_code == 201
+        assert response.json is not None
+        assert response.json.get("formData") is not None
+        form_id = response.json["formData"].get("_id")
+        mapper_id = response.json.get("mapper").get("id")
+        process_id = response.json.get("process").get("id")
     ensure_process_data_binary(process_id)
     # Ensure no pending dirty state before the next request (avoid autoflush issues)
     session.commit()
@@ -1173,8 +1185,12 @@ def test_form_flow_builder_post_with_title_path_validation_success(
 
     payload = {"formData": form_data}
 
-    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
-    assert response.status_code == 201
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[],
+    ):
+        response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+        assert response.status_code == 201
 
 
 def test_form_flow_builder_post_with_title_path_validation_failure(
@@ -1212,8 +1228,12 @@ def test_form_flow_builder_post_with_title_only_validation(
 
     payload = {"formData": form_data}
 
-    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
-    assert response.status_code == 201
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[],
+    ):
+        response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+        assert response.status_code == 201
 
 
 def test_form_flow_builder_post_with_path_only_validation(
@@ -1230,8 +1250,12 @@ def test_form_flow_builder_post_with_path_only_validation(
 
     payload = {"formData": form_data}
 
-    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
-    assert response.status_code == 201
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[],
+    ):
+        response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+        assert response.status_code == 201
 
 
 def test_form_flow_builder_post_without_title_path_no_validation(
@@ -1242,8 +1266,12 @@ def test_form_flow_builder_post_without_title_path_no_validation(
 
     payload = {"formData": get_formio_form_request_payload()}
 
-    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
-    assert response.status_code == 201
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[],
+    ):
+        response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+        assert response.status_code == 201
 
 
 def test_form_flow_builder_put_with_query_params_validation_success(
@@ -1262,12 +1290,16 @@ def test_form_flow_builder_put_with_query_params_validation_success(
         }
     }
 
-    response = client.put(
-        f"/form/form-flow-builder/{mapper_id}?title=UpdatedTitle&path=updatedPath",
-        headers=headers,
-        json=payload,
-    )
-    assert response.status_code == 200
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[],
+    ):
+        response = client.put(
+            f"/form/form-flow-builder/{mapper_id}?title=UpdatedTitle&path=updatedPath",
+            headers=headers,
+            json=payload,
+        )
+        assert response.status_code == 200
 
 
 def test_form_flow_builder_put_with_query_params_validation_failure(

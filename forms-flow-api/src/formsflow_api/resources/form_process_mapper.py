@@ -7,6 +7,7 @@ from http import HTTPStatus
 
 from flask import request
 from flask_restx import Namespace, Resource, fields
+from werkzeug.datastructures import ImmutableMultiDict
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
     ANALYZE_SUBMISSIONS_VIEW,
@@ -1033,18 +1034,18 @@ class FormFlowBuilderResource(Resource):
         """Creates a new form along with its associated workflow, authorization rules, and history tracking."""
         data = request.get_json()
         form_data = data.get("formData", {}) if data else {}
-        
+
         # Get title and path from formData payload
         title = form_data.get("title")
         path = form_data.get("path")
-        
+
         # Validate title and path if provided in payload
         if title is not None or path is not None:
-            from werkzeug.datastructures import ImmutableMultiDict
-            
             # Create a mock request object with title/path in args for validation
-            class MockRequest:
-                def __init__(self, original_request, title_val, path_val):
+            class MockRequest:  # pylint: disable=too-few-public-methods
+                """Mock request object for form validation."""
+
+                def __init__(self, _original_request, title_val, path_val):
                     # Create args dict with title and path if provided
                     args_dict = {}
                     if title_val is not None:
@@ -1052,10 +1053,10 @@ class FormFlowBuilderResource(Resource):
                     if path_val is not None:
                         args_dict["path"] = path_val
                     self.args = ImmutableMultiDict(args_dict)
-            
+
             mock_request = MockRequest(request, title, path)
             FormProcessMapperService.validate_form_name_path_title(mock_request)
-        
+
         response = FormProcessMapperService.create_form_with_process(
             data, bool(auth.has_role([CREATE_DESIGNS]))
         )
@@ -1105,11 +1106,11 @@ class FormFlowBuilderUpdateResource(Resource):
         # Get query parameters for validation
         title = request.args.get("title")
         path = request.args.get("path")
-        
+
         # Validate title and path if provided
         if title is not None or path is not None:
             FormProcessMapperService.validate_form_name_path_title(request)
-        
+
         data = request.get_json()
         response = FormProcessMapperService().update_form_process(
             data, mapper_id, bool(auth.has_role([CREATE_DESIGNS]))

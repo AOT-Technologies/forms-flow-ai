@@ -284,12 +284,20 @@ class TestUserProfile:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
+        # Extract user ID from token - test tokens have sub claim
+        # For test tokens created by get_token, the sub is "47b46f22-45ec-4cfb-825b-ed10ba8bed01"
         try:
+            # Decode without verification for test purposes
+            # Note: verify_signature=False is acceptable in test code
             decoded_token = json_web_token.decode(
-                token, options={"verify_signature": False}
+                token,
+                key="",
+                algorithms=["RS256"],
+                options={"verify_signature": False, "verify_aud": False, "verify_exp": False}
             )
             user_id = decoded_token.get("sub", "47b46f22-45ec-4cfb-825b-ed10ba8bed01")
         except Exception:
+            # Fallback to known test user ID from test_utils.py
             user_id = "47b46f22-45ec-4cfb-825b-ed10ba8bed01"
         payload = {
             "firstName": "John",

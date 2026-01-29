@@ -1153,3 +1153,208 @@ def test_form_flow_builder_update_invalid_payload(app, client, session, jwt, moc
 
     response = client.put(f"/form/form-flow-builder/{mapper_id}", headers=headers, json=payload)
     assert response.status_code == 400
+
+# ---------------------------------------------------------------------
+# Test cases for validation changes in form-flow-builder endpoints
+# ---------------------------------------------------------------------
+
+def test_form_flow_builder_post_with_title_path_validation_success(
+    app, client, session, jwt, mock_redis_client
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    form_data.update({
+        "title": "Unique Test Form",
+        "path": "uniqueTestForm",
+        "name": "uniqueTestForm",
+    })
+
+    payload = {"formData": form_data}
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+
+
+def test_form_flow_builder_post_with_title_path_validation_failure(
+    app, client, session, jwt, mock_redis_client
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    form_data.update({
+        "title": "Duplicate Test Form",
+        "path": "duplicateTestForm",
+        "name": "duplicateTestForm",
+    })
+
+    payload = {"formData": form_data}
+
+    # Mock only duplicate search
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[{"_id": "existing123"}],
+    ):
+        response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+        assert response.status_code == 400
+
+
+def test_form_flow_builder_post_with_title_only_validation(
+    app, client, session, jwt, mock_redis_client
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    form_data["title"] = "Title Only Form"
+
+    payload = {"formData": form_data}
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+
+
+def test_form_flow_builder_post_with_path_only_validation(
+    app, client, session, jwt, mock_redis_client
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    form_data.update({
+        "path": "pathOnlyForm",
+        "name": "pathOnlyForm",
+    })
+
+    payload = {"formData": form_data}
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+
+
+def test_form_flow_builder_post_without_title_path_no_validation(
+    app, client, session, jwt, mock_redis_client
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    payload = {"formData": get_formio_form_request_payload()}
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 201
+
+
+def test_form_flow_builder_put_with_query_params_validation_success(
+    app, client, session, jwt, mock_redis_client, create_mapper
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    mapper_id = create_mapper["id"]
+
+    payload = {
+        "mapper": {
+            "formId": create_mapper["formId"],
+            "formName": "Updated Test Form",
+            "formType": "form",
+        }
+    }
+
+    response = client.put(
+        f"/form/form-flow-builder/{mapper_id}?title=UpdatedTitle&path=updatedPath",
+        headers=headers,
+        json=payload,
+    )
+    assert response.status_code == 200
+
+
+def test_form_flow_builder_put_with_query_params_validation_failure(
+    app, client, session, jwt, mock_redis_client, create_mapper
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    mapper_id = create_mapper["id"]
+
+    payload = {
+        "mapper": {
+            "formId": create_mapper["formId"],
+            "formName": "Duplicate Form",
+            "formType": "form",
+        }
+    }
+
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_form_search",
+        return_value=[{"_id": "existing"}],
+    ):
+        response = client.put(
+            f"/form/form-flow-builder/{mapper_id}?title=Dup&path=dup",
+            headers=headers,
+            json=payload,
+        )
+        assert response.status_code == 400
+
+
+def test_form_flow_builder_put_without_query_params_no_validation(
+    app, client, session, jwt, mock_redis_client, create_mapper
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    mapper_id = create_mapper["id"]
+
+    payload = {
+        "mapper": {
+            "formId": create_mapper["formId"],
+            "formName": "Updated Form",
+            "formType": "form",
+        }
+    }
+
+    response = client.put(
+        f"/form/form-flow-builder/{mapper_id}",
+        headers=headers,
+        json=payload,
+    )
+    assert response.status_code == 200
+
+
+def test_form_flow_builder_post_validation_invalid_title_format(
+    app, client, session, jwt, mock_redis_client
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    form_data.update({
+        "title": "1234",
+        "path": "testForm",
+        "name": "testForm",
+    })
+
+    payload = {"formData": form_data}
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 400
+
+
+def test_form_flow_builder_post_validation_invalid_path_format(
+    app, client, session, jwt, mock_redis_client
+):
+    token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+
+    form_data = get_formio_form_request_payload()
+    form_data.update({
+        "title": "Test Form",
+        "path": "test form",
+        "name": "testForm",
+    })
+
+    payload = {"formData": form_data}
+
+    response = client.post("/form/form-flow-builder", headers=headers, json=payload)
+    assert response.status_code == 400

@@ -1170,9 +1170,11 @@ def test_form_flow_builder_update_invalid_payload(app, client, session, jwt, moc
 # Test cases for validation changes in form-flow-builder endpoints
 # ---------------------------------------------------------------------
 
+
 def test_form_flow_builder_post_with_title_path_validation_success(
     app, client, session, jwt, mock_redis_client
 ):
+    """Testing POST /form/form-flow-builder with title and path validation - success case."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1196,6 +1198,7 @@ def test_form_flow_builder_post_with_title_path_validation_success(
 def test_form_flow_builder_post_with_title_path_validation_failure(
     app, client, session, jwt, mock_redis_client
 ):
+    """Testing POST /form/form-flow-builder with title and path validation - failure case (duplicate)."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1220,6 +1223,7 @@ def test_form_flow_builder_post_with_title_path_validation_failure(
 def test_form_flow_builder_post_with_title_only_validation(
     app, client, session, jwt, mock_redis_client
 ):
+    """Testing POST /form/form-flow-builder with only title in formData."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1239,6 +1243,7 @@ def test_form_flow_builder_post_with_title_only_validation(
 def test_form_flow_builder_post_with_path_only_validation(
     app, client, session, jwt, mock_redis_client
 ):
+    """Testing POST /form/form-flow-builder with only path in formData."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1261,6 +1266,7 @@ def test_form_flow_builder_post_with_path_only_validation(
 def test_form_flow_builder_post_without_title_path_no_validation(
     app, client, session, jwt, mock_redis_client
 ):
+    """Testing POST /form/form-flow-builder without title/path - should skip validation."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1277,6 +1283,7 @@ def test_form_flow_builder_post_without_title_path_no_validation(
 def test_form_flow_builder_put_with_query_params_validation_success(
     app, client, session, jwt, mock_redis_client, create_mapper
 ):
+    """Testing PUT /form/form-flow-builder/<mapper_id> with title/path query params - success."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1305,6 +1312,7 @@ def test_form_flow_builder_put_with_query_params_validation_success(
 def test_form_flow_builder_put_with_query_params_validation_failure(
     app, client, session, jwt, mock_redis_client, create_mapper
 ):
+    """Testing PUT /form/form-flow-builder/<mapper_id> with title/path query params - failure."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1333,6 +1341,7 @@ def test_form_flow_builder_put_with_query_params_validation_failure(
 def test_form_flow_builder_put_without_query_params_no_validation(
     app, client, session, jwt, mock_redis_client, create_mapper
 ):
+    """Testing PUT /form/form-flow-builder/<mapper_id> without query params - should skip validation."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1357,6 +1366,7 @@ def test_form_flow_builder_put_without_query_params_no_validation(
 def test_form_flow_builder_post_validation_invalid_title_format(
     app, client, session, jwt, mock_redis_client
 ):
+    """Testing POST /form/form-flow-builder with invalid title format."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -1376,6 +1386,7 @@ def test_form_flow_builder_post_validation_invalid_title_format(
 def test_form_flow_builder_post_validation_invalid_path_format(
     app, client, session, jwt, mock_redis_client
 ):
+    """Testing POST /form/form-flow-builder with invalid path format."""
     token = get_token(jwt, role=CREATE_DESIGNS, username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 

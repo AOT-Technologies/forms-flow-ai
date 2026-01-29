@@ -276,17 +276,21 @@ class TestUserProfile:
         assert rv.status_code == 403
 
     def test_update_profile_valid_payload(self, app, client, session, jwt):
-        """Test profile update with valid payload structure.
-
-        Note: This test validates the request structure. The actual Keycloak
-        integration would need to be mocked for complete testing.
-        """
+        """Test profile update with valid payload and verify successful response."""
+        from jose import jwt as json_web_token
+        
         token = get_token(jwt, username="formsflow-reviewer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        # The profile update with valid structure
+        try:
+            decoded_token = json_web_token.decode(
+                token, options={"verify_signature": False}
+            )
+            user_id = decoded_token.get("sub", "47b46f22-45ec-4cfb-825b-ed10ba8bed01")
+        except Exception:
+            user_id = "47b46f22-45ec-4cfb-825b-ed10ba8bed01"
         payload = {
             "firstName": "John",
             "lastName": "Doe",
@@ -295,12 +299,11 @@ class TestUserProfile:
                 "locale": ["en"]
             }
         }
-        # This will fail with user_id mismatch or Keycloak error in test env
-        # but validates the endpoint accepts the correct payload format
         rv = client.put(
-            "/user/test-user-id/profile",
+            f"/user/{user_id}/profile",
             headers=headers,
             json=payload,
         )
-        # Expect either 403 (user mismatch) or 400 (Keycloak error in test env)
-        assert rv.status_code in [400, 403, 500]
+        assert rv.status_code == 200, f"Expected 200, got {rv.status_code}. Response: {rv.json}"
+        response_data = rv.json
+        assert "firstName" in response_data or "email" in response_data or "attributes" in response_data

@@ -236,31 +236,6 @@ class KeycloakAdmin(ABC):
                 current_app.logger.warning(f"Email {new_email} is already taken")
                 raise BusinessException(BusinessErrorCode.EMAIL_ALREADY_EXISTS)
 
-    @staticmethod
-    def _build_update_payload(user_id: str, data: Dict, current_user: Dict) -> Dict:
-        """Build payload for Keycloak update."""
-        update_payload = {
-            "id": user_id,
-            "username": current_user.get("username"),
-            "email": current_user.get("email"),
-            "firstName": current_user.get("firstName"),
-            "lastName": current_user.get("lastName"),
-            "attributes": current_user.get("attributes", {}),
-        }
-        field_map = {
-            "firstName": "firstName",
-            "lastName": "lastName",
-            "username": "username",
-            "email": "email",
-        }
-        for key, payload_key in field_map.items():
-            if data.get(key):
-                update_payload[payload_key] = data[key]
-        if data.get("attributes"):
-            for key, value in data["attributes"].items():
-                update_payload["attributes"][key] = value
-        return update_payload
-
     def update_user_profile(
         self, user_id: str, logged_in_user_id: str, data: Dict
     ) -> Dict:
@@ -272,7 +247,7 @@ class KeycloakAdmin(ABC):
             data: The profile data to update (firstName, lastName, username, email, attributes)
 
         Returns:
-            Dict: The updated user profile
+            Dict: The full updated user profile from Keycloak
 
         Raises:
             BusinessException: If validation fails or Keycloak request fails
@@ -287,22 +262,22 @@ class KeycloakAdmin(ABC):
         current_user = self._get_current_user(user_id)
         self._validate_username_update(user_id, data, current_user)
         self._validate_email_update(user_id, data, current_user)
-        update_payload = self._build_update_payload(user_id, data, current_user)
 
         try:
-            # Call Keycloak PUT API to update user
-            self.client.update_request(url_path=f"users/{user_id}", data=update_payload)
-            current_app.logger.debug(
-                f"User profile updated successfully for user {user_id}"
-            )
+            # Keycloak API only needs fields with changed values - pass data as-is
+            self.client.update_request(url_path=f"users/{user_id}", data=data)
 
-            # Return the updated profile data
+            # Fetch the updated user data from Keycloak
+            updated_user = self._get_current_user(user_id)
+            # Return only the required fields
             return {
-                "firstName": update_payload.get("firstName"),
-                "lastName": update_payload.get("lastName"),
-                "username": update_payload.get("username"),
-                "email": update_payload.get("email"),
-                "attributes": update_payload.get("attributes"),
+                "id": updated_user.get("id"),
+                "username": updated_user.get("username"),
+                "firstName": updated_user.get("firstName"),
+                "lastName": updated_user.get("lastName"),
+                "email": updated_user.get("email"),
+                "emailVerified": updated_user.get("emailVerified", False),
+                "attributes": updated_user.get("attributes", {}),
             }
         except BusinessException:
             raise

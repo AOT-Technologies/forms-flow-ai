@@ -278,7 +278,7 @@ class TestUserProfile:
     def test_update_profile_valid_payload(self, app, client, session, jwt):
         """Test profile update with valid payload and verify successful response."""
         from jose import jwt as json_web_token
-        
+
         token = get_token(jwt, username="formsflow-reviewer")
         headers = {
             "Authorization": f"Bearer {token}",

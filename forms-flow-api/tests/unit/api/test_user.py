@@ -102,7 +102,7 @@ class TestUserLoginDetails:
 
     def test_get_user_login_details_success(self, app, client, session, jwt):
         """Test successful retrieval of user login details."""
-        token = get_token(jwt, username="formsflow-reviewer")
+        token = get_token(jwt, username="formsflow-reviewer", role=VIEW_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -137,7 +137,7 @@ class TestUserLoginDetails:
 
     def test_get_user_login_details_internal_user(self, app, client, session, jwt):
         """Test login details for a user with internal (local) authentication."""
-        token = get_token(jwt, username="formsflow-reviewer")
+        token = get_token(jwt, username="formsflow-reviewer", role=VIEW_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

@@ -1,0 +1,2 @@
+com.formsflow.idm.tenant.PreTenantCreationAuthenticatorFactory
+com.formsflow.idm.tenant.PostTenantAssignmentAuthenticatorFactory

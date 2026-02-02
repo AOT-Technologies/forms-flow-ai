@@ -9,6 +9,7 @@ package com.formsflow.idm.tenant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.FormAction;
@@ -38,6 +39,7 @@ public class PreTenantCreationFormAction implements FormAction {
     public static final String TENANT_ID_NOTE = "tenantId";
     public static final String DEFAULT_GROUP_ID_NOTE = "defaultGroupId";
     private static final String EMAIL_FIELD = "email";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^@]+@[^@]+\\.[^@]+$");
 
     private final TenantService tenantService = new TenantService();
 
@@ -66,8 +68,24 @@ public class PreTenantCreationFormAction implements FormAction {
             return;
         }
 
+        String emailTrimmed = email.trim();
+
+        if (!EMAIL_PATTERN.matcher(emailTrimmed).matches()) {
+            List<FormMessage> errors = new ArrayList<>();
+            errors.add(new FormMessage(EMAIL_FIELD, "Invalid email format"));
+            context.validationError(formData, errors);
+            return;
+        }
+
+        if (context.getSession().users().getUserByEmail(context.getRealm(), emailTrimmed) != null) {
+            List<FormMessage> errors = new ArrayList<>();
+            errors.add(new FormMessage(EMAIL_FIELD, "Email already registered"));
+            context.validationError(formData, errors);
+            return;
+        }
+
         try {
-            TenantService.TenantCreationResult result = tenantService.createTenant(email.trim());
+            TenantService.TenantCreationResult result = tenantService.createTenant(context.getSession(), emailTrimmed);
             authSession.setAuthNote(TENANT_ID_NOTE, result.getTenantId());
             authSession.setAuthNote(DEFAULT_GROUP_ID_NOTE, result.getDefaultGroupId());
             logger.infof("Tenant created: tenantId=%s, defaultGroupId=%s", result.getTenantId(), result.getDefaultGroupId());

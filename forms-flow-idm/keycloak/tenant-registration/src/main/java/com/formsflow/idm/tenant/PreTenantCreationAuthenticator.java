@@ -32,7 +32,7 @@ public class PreTenantCreationAuthenticator implements Authenticator {
             return;
         }
         try {
-            TenantService.TenantCreationResult result = tenantService.createTenant(null);
+            TenantService.TenantCreationResult result = tenantService.createTenant(context.getSession(), null);
             if (result != null) {
                 authSession.setAuthNote(PreTenantCreationFormAction.TENANT_ID_NOTE, result.getTenantId());
                 authSession.setAuthNote(PreTenantCreationFormAction.DEFAULT_GROUP_ID_NOTE, result.getDefaultGroupId());

@@ -26,7 +26,7 @@ public class PostTenantAssignmentAuthenticatorFactory implements AuthenticatorFa
 
     @Override
     public String getHelpText() {
-        return "Optional for top-level flows. Adds user to Keycloak group (defaultGroupId) and sends account-created email asynchronously. Disables user on failure.";
+        return "Optional for top-level flows. When create_tenant=true: adds user to Keycloak group (defaultGroupId) synchronously (fails flow if group missing), then sends account-created email synchronously with redirect_uri link.";
     }
 
     @Override

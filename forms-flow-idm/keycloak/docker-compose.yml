@@ -45,6 +45,7 @@ services:
       - KEYCLOAK_START_MODE=${KEYCLOAK_START_MODE:-start-dev}
       - KEYCLOAK_HTTP_PATH=${KEYCLOAK_HTTP_PATH:-/auth}
       - FF_ADMIN_API_URL=${FF_ADMIN_API_URL:-http://localhost:5000}
+      - FF_KEYCLOAK_PUBLIC_URL=${FF_KEYCLOAK_PUBLIC_URL}
     ports:
       - "8080:8080"
     depends_on:

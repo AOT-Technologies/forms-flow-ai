@@ -60,7 +60,8 @@ public class RegisterTenantResource implements RealmResourceProvider {
     @Path("")
     public Response registerTenant(
             @QueryParam(Constants.CLIENT_ID) String clientId,
-            @QueryParam(OAuth2Constants.REDIRECT_URI) String redirectUri) {
+            @QueryParam(OAuth2Constants.REDIRECT_URI) String redirectUri,
+            @QueryParam(CREATE_TENANT_PARAM) String createTenant) {
 
         RealmModel realm = session.getContext().getRealm();
 
@@ -89,8 +90,10 @@ public class RegisterTenantResource implements RealmResourceProvider {
             authSession.setAction(AuthenticationSessionModel.Action.AUTHENTICATE.name());
             authSession.setProtocol(client.getProtocol() != null ? client.getProtocol() : "openid-connect");
 
-            // Trigger tenant creation in FormAction when form is submitted
-            authSession.setAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE, "true");
+            // Trigger tenant creation in FormAction only when create_tenant query param is true
+            if (createTenant != null && "true".equalsIgnoreCase(createTenant.trim())) {
+                authSession.setAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE, "true");
+            }
             authSession.setClientNote(AuthorizationEndpointBase.APP_INITIATED_FLOW, LoginActionsService.REGISTRATION_PATH);
             authSession.setClientNote(OIDCLoginProtocol.RESPONSE_TYPE_PARAM, OAuth2Constants.CODE);
 
@@ -105,6 +108,7 @@ public class RegisterTenantResource implements RealmResourceProvider {
                 URI accountUrl = Urls.accountBase(session.getContext().getUri().getBaseUri()).path("/").build(realm.getName());
                 finalRedirectUri = accountUrl.toString();
             }
+            // redirect_uri is used by Keycloak for post-registration redirect after successful signup
             authSession.setRedirectUri(finalRedirectUri);
             authSession.setClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM, finalRedirectUri);
             authSession.setClientNote(OIDCLoginProtocol.ISSUER, Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName()));

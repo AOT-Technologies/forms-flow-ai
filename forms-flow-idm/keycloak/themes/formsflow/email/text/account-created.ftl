@@ -1,6 +1,6 @@
 <#--
     Plain text email template for account-created notification.
-    Attributes: username, firstName, lastName, email, realmName.
+    Attributes: username, firstName, lastName, email, realmName, redirectUri (optional link to app).
 -->
 Welcome ${firstName!"there"}!
 
@@ -12,3 +12,7 @@ Account Details:
 - Realm: ${realmName!""}
 
 Thank you for joining us!
+<#if redirectUri?? && redirectUri?has_content>
+
+Sign in / Open app: ${redirectUri}
+</#if>

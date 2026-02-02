@@ -27,7 +27,7 @@ public class PostTenantAssignmentFormActionFactory implements FormActionFactory,
 
     @Override
     public String getHelpText() {
-        return "Adds user to Keycloak group (defaultGroupId) and sends account-created email. Runs asynchronously. Disables user on failure. Must be placed AFTER 'Registration User Creation' in the flow.";
+        return "When create_tenant=true: adds user to Keycloak group (defaultGroupId) synchronously (registration fails if group missing), then sends account-created email synchronously with redirect_uri link. Must be placed AFTER 'Registration User Creation' in the flow.";
     }
 
     @Override

@@ -1,12 +1,9 @@
 /*
  * Optional authenticator for top-level flows. For registration flow, PostTenantAssignmentFormAction is used.
- * Same logic: read defaultGroupId from auth notes; async add user to group + send email; disable user on failure.
+ * Add-to-group runs synchronously (fail flow on failure); email is sent synchronously in the request thread so Keycloak's EmailTemplateProvider has request context (required for Quarkus).
  */
 
 package com.formsflow.idm.tenant;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -14,7 +11,6 @@ import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.models.GroupModel;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
@@ -26,12 +22,6 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
     private static final Logger logger = Logger.getLogger(PostTenantAssignmentAuthenticator.class);
     public static final String PROVIDER_ID = "post-tenant-assignment-authenticator";
 
-    private static final ExecutorService ASYNC_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
-        Thread t = new Thread(r, "tenant-registration-post-assignment-auth");
-        t.setDaemon(true);
-        return t;
-    });
-
     @Override
     public void authenticate(AuthenticationFlowContext context) {
         UserModel user = context.getUser();
@@ -40,48 +30,49 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
             return;
         }
         AuthenticationSessionModel authSession = context.getAuthenticationSession();
+        String createTenant = authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE);
+        if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
+            context.success();
+            return;
+        }
         String defaultGroupId = authSession.getAuthNote(PreTenantCreationFormAction.DEFAULT_GROUP_ID_NOTE);
         if (defaultGroupId == null || defaultGroupId.isEmpty()) {
             context.success();
             return;
         }
 
-        KeycloakSessionFactory sessionFactory = context.getSession().getKeycloakSessionFactory();
-        String realmId = context.getRealm().getId();
-        String userId = user.getId();
+        RealmModel realm = context.getRealm();
+        GroupModel group = realm.getGroupById(defaultGroupId);
+        if (group == null) {
+            logger.errorf("Group not found: %s; failing flow for user %s", defaultGroupId, user.getUsername());
+            context.failure(AuthenticationFlowError.INTERNAL_ERROR,
+                    context.getSession().getProvider(org.keycloak.forms.login.LoginFormsProvider.class)
+                            .setError("Group not found. Registration cannot be completed.")
+                            .createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
+            return;
+        }
+        try {
+            user.joinGroup(group);
+        } catch (Exception e) {
+            logger.errorf(e, "Add-to-group failed for user %s", user.getUsername());
+            context.failure(AuthenticationFlowError.INTERNAL_ERROR,
+                    context.getSession().getProvider(org.keycloak.forms.login.LoginFormsProvider.class)
+                            .setError("Failed to assign group. Please try again later.")
+                            .createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
+            return;
+        }
 
-        ASYNC_EXECUTOR.submit(() -> {
-            KeycloakSession session = sessionFactory.create();
-            try {
-                RealmModel realm = session.realms().getRealm(realmId);
-                UserModel u = session.users().getUserById(realm, userId);
-                if (u == null) {
-                    logger.errorf("User not found: %s", userId);
-                    return;
-                }
-                GroupModel group = realm.getGroupById(defaultGroupId);
-                if (group == null) {
-                    logger.errorf("Group not found: %s; disabling user %s", defaultGroupId, u.getUsername());
-                    u.setEnabled(false);
-                    return;
-                }
-                u.joinGroup(group);
-                AccountCreatedEmailSender.send(session, realm, u);
-            } catch (Exception e) {
-                logger.errorf(e, "Post-tenant assignment failed for user %s; disabling user", userId);
-                try {
-                    RealmModel r = session.realms().getRealm(realmId);
-                    UserModel u = session.users().getUserById(r, userId);
-                    if (u != null) {
-                        u.setEnabled(false);
-                    }
-                } catch (Exception e2) {
-                    logger.errorf(e2, "Could not disable user %s", userId);
-                }
-            } finally {
-                session.close();
-            }
-        });
+        String tenantId = authSession.getAuthNote(PreTenantCreationFormAction.TENANT_ID_NOTE);
+        if (tenantId != null && !tenantId.isEmpty()) {
+            user.setSingleAttribute("tenantKey", tenantId);
+        }
+
+        String redirectUri = authSession.getRedirectUri();
+        try {
+            AccountCreatedEmailSender.send(context.getSession(), realm, user, redirectUri);
+        } catch (Throwable t) {
+            logger.errorf(t, "Failed to send account-created email to user %s", user.getId());
+        }
         context.success();
     }
 

@@ -1,7 +1,7 @@
 <#--
     HTML email template for account-created notification.
     Used by AccountCreatedEmailSender (PostTenantAssignmentFormAction).
-    Attributes: username, firstName, lastName, email, realmName.
+    Attributes: username, firstName, lastName, email, realmName, redirectUri (optional link to app).
 -->
 <html>
 <head>
@@ -30,6 +30,9 @@
             </ul>
         </div>
         <p>Thank you for joining us!</p>
+        <#if redirectUri?? && redirectUri?has_content>
+        <p><a href="${redirectUri}" style="display: inline-block; background-color: #1f4e79; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin-top: 10px;">Sign in / Open app</a></p>
+        </#if>
     </div>
     <div class="footer">
         <p>This is an automated message. Please do not reply to this email.</p>

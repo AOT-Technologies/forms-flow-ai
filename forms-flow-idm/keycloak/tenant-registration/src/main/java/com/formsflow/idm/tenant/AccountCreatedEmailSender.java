@@ -1,6 +1,6 @@
 /*
  * Sends "account created" email using EmailTemplateProvider and custom FreeMarker template.
- * Used from PostTenantAssignmentFormAction async runnable (session may be from sessionFactory.create()).
+ * Used from PostTenantAssignmentFormAction and PostTenantAssignmentAuthenticator in the request thread (so Keycloak's EmailTemplateProvider has request context for locale/template processing in Quarkus).
  */
 
 package com.formsflow.idm.tenant;
@@ -28,8 +28,10 @@ public class AccountCreatedEmailSender {
 
     /**
      * Sends account-created email. SMTP must be configured at realm level.
+     *
+     * @param redirectUri Optional app redirect URL to include as a link in the email (e.g. from auth session).
      */
-    public static void send(KeycloakSession session, RealmModel realm, UserModel user) {
+    public static void send(KeycloakSession session, RealmModel realm, UserModel user, String redirectUri) {
         if (user == null || user.getEmail() == null) {
             logger.warn("Cannot send account created email: user or email is null");
             return;
@@ -45,7 +47,9 @@ public class AccountCreatedEmailSender {
             attributes.put("lastName", user.getLastName() != null ? user.getLastName() : "");
             attributes.put("email", user.getEmail());
             attributes.put("realmName", realm.getDisplayName() != null ? realm.getDisplayName() : realm.getName());
+            attributes.put("redirectUri", redirectUri != null ? redirectUri : "");
 
+            logger.infof("Sending account-created email to %s", user.getEmail());
             provider.send(SUBJECT_KEY, BODY_TEMPLATE, attributes);
             logger.infof("Sent account-created email to %s", user.getEmail());
         } catch (EmailException e) {

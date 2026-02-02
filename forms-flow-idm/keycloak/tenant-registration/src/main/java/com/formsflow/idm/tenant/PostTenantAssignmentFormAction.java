@@ -1,13 +1,10 @@
 /*
- * FormAction that runs AFTER user is created: add user to Keycloak group (defaultGroupId) and send account-created email.
+ * FormAction that runs AFTER user is created: add user to Keycloak group (defaultGroupId) synchronously, then send account-created email synchronously.
  * Must be placed AFTER "Registration User Creation" in the registration flow.
- * Steps 4 and 5 (add to group, send email) run asynchronously; on failure the user is disabled.
+ * Add-to-group runs synchronously; on failure registration fails (user is disabled). Email is sent in the request thread so Keycloak's EmailTemplateProvider has request context (required for locale/template processing in Quarkus).
  */
 
 package com.formsflow.idm.tenant;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.FormAction;
@@ -16,26 +13,18 @@ import org.keycloak.authentication.ValidationContext;
 import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.GroupModel;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
 /**
  * Execution order: AFTER "Registration User Creation".
- * success(): reads defaultGroupId from auth notes; submits async task to add user to group and send email; returns immediately.
- * Failure handling: if add-to-group or send-email throws in async task, user is disabled.
+ * success(): add user to group synchronously (fail and disable user if group missing); then send account-created email synchronously in the request thread.
  */
 public class PostTenantAssignmentFormAction implements FormAction {
 
     private static final Logger logger = Logger.getLogger(PostTenantAssignmentFormAction.class);
     public static final String PROVIDER_ID = "post-tenant-assignment-form-action";
-
-    private static final ExecutorService ASYNC_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
-        Thread t = new Thread(r, "tenant-registration-post-assignment");
-        t.setDaemon(true);
-        return t;
-    });
 
     @Override
     public void buildPage(FormContext context, LoginFormsProvider form) {
@@ -49,6 +38,10 @@ public class PostTenantAssignmentFormAction implements FormAction {
     @Override
     public void success(FormContext context) {
         AuthenticationSessionModel authSession = context.getAuthenticationSession();
+        String createTenant = authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE);
+        if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
+            return;
+        }
         UserModel user = context.getUser();
         String defaultGroupId = authSession.getAuthNote(PreTenantCreationFormAction.DEFAULT_GROUP_ID_NOTE);
 
@@ -60,42 +53,32 @@ public class PostTenantAssignmentFormAction implements FormAction {
             return;
         }
 
-        KeycloakSessionFactory sessionFactory = context.getSession().getKeycloakSessionFactory();
-        String realmId = context.getSession().getContext().getRealm().getId();
-        String userId = user.getId();
+        RealmModel realm = context.getRealm();
+        GroupModel group = realm.getGroupById(defaultGroupId);
+        if (group == null) {
+            logger.errorf("Group not found: %s; disabling user %s", defaultGroupId, user.getUsername());
+            user.setEnabled(false);
+            return;
+        }
+        try {
+            user.joinGroup(group);
+        } catch (Exception e) {
+            logger.errorf(e, "Add-to-group failed for user %s; disabling user", user.getUsername());
+            user.setEnabled(false);
+            return;
+        }
 
-        ASYNC_EXECUTOR.submit(() -> {
-            KeycloakSession session = sessionFactory.create();
-            try {
-                RealmModel realm = session.realms().getRealm(realmId);
-                UserModel u = session.users().getUserById(realm, userId);
-                if (u == null) {
-                    logger.errorf("User not found: %s", userId);
-                    return;
-                }
-                GroupModel group = realm.getGroupById(defaultGroupId);
-                if (group == null) {
-                    logger.errorf("Group not found: %s; disabling user %s", defaultGroupId, u.getUsername());
-                    u.setEnabled(false);
-                    return;
-                }
-                u.joinGroup(group);
-                AccountCreatedEmailSender.send(session, realm, u);
-            } catch (Exception e) {
-                logger.errorf(e, "Post-tenant assignment failed for user %s; disabling user", userId);
-                try {
-                    RealmModel r = session.realms().getRealm(realmId);
-                    UserModel u = session.users().getUserById(r, userId);
-                    if (u != null) {
-                        u.setEnabled(false);
-                    }
-                } catch (Exception e2) {
-                    logger.errorf(e2, "Could not disable user %s", userId);
-                }
-            } finally {
-                session.close();
-            }
-        });
+        String tenantId = authSession.getAuthNote(PreTenantCreationFormAction.TENANT_ID_NOTE);
+        if (tenantId != null && !tenantId.isEmpty()) {
+            user.setSingleAttribute("tenantKey", tenantId);
+        }
+
+        String redirectUri = authSession.getRedirectUri();
+        try {
+            AccountCreatedEmailSender.send(context.getSession(), realm, user, redirectUri);
+        } catch (Throwable t) {
+            logger.errorf(t, "Failed to send account-created email to user %s", user.getId());
+        }
     }
 
     @Override

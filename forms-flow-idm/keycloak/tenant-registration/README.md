@@ -1,6 +1,6 @@
 # Tenant Registration Keycloak Extension
 
-Keycloak 26.4.1 extension for tenant-aware registration: custom `/register-tenant` URL, create tenant via external API at form submit, add user to Keycloak group (`defaultGroupId`), and send account-created email (synchronously in the request thread).
+Keycloak 26.4.1 extension for tenant-aware registration: custom `/register-tenant` URL, create tenant via external API at form submit, add user to Keycloak group (`defaultGroupId`), substitute `{tenantKey}` in `redirect_uri` before redirect, measure registration flow time, and send account-created email asynchronously in a background thread (so the flow is not blocked on SMTP).
 
 ## Providers overview
 
@@ -55,7 +55,8 @@ Output JAR: `target/tenant-registration-1.0.0.jar`
 
 - **URL**: `{keycloakBaseURL}/auth/realms/{realmName}/register-tenant`
 - **Query params**: `client_id` (required), `redirect_uri` (optional), `create_tenant` (optional; if `true`, tenant creation and assignment run; if omitted or `false`, normal registration without tenant steps).
-- **Behaviour**: When `create_tenant=true`, creates an auth session with that note and runs the registration flow. Form submit triggers PreTenantCreationFormAction (tenant API with email + Bearer token), then user creation, then PostTenantAssignmentFormAction (sync add-to-group, sync account-created email in request thread). When `create_tenant` is not set or false, tenant providers no-op and normal registration works unchanged.
+- **redirect_uri placeholder**: To have the generated tenant key injected into the redirect URL, use the placeholder **`__TENANT_KEY__`** in `redirect_uri` (e.g. `https://app.com/dashboard/__TENANT_KEY__`). This URL-safe form avoids browser blocking; the literal `{tenantKey}` is also supported but can trigger blocks. The client’s valid redirect URIs in Keycloak must allow the pattern (e.g. `https://app.com/dashboard/*`).
+- **Behaviour**: When `create_tenant=true`, creates an auth session with that note and runs the registration flow. Form submit triggers PreTenantCreationFormAction (tenant API with email + Bearer token), then user creation, then PostTenantAssignmentFormAction (sync add-to-group, set `tenantKey`, substitute placeholder in `redirect_uri` if present, compute total registration time, and enqueue an async account-created email). When `create_tenant` is not set or false, tenant providers no-op and normal registration works unchanged.
 
 ## Tenant API Contract
 
@@ -68,12 +69,14 @@ Output JAR: `target/tenant-registration-1.0.0.jar`
 ## Post-registration
 
 - User is added to the Keycloak group identified by `defaultGroupId`.
-- Account-created email is sent synchronously via `EmailTemplateProvider` (template: `account-created.ftl` in the formsflow email theme). Email is sent in the request thread so Keycloak's template provider has request context (required for Quarkus).
+- The generated tenant id is stored on the user as attribute `tenantKey`, and if the original `redirect_uri` contained the placeholder `__TENANT_KEY__` (or `{tenantKey}`), it is replaced with the actual value in the auth session before Keycloak redirects back to the client.
+- When `create_tenant=true`, the extension records a `registration_flow_start_time` at `/register-tenant` and, after successful post-tenant assignment, computes the total flow duration and appends it to the final redirect URL as `registration_duration_ms=<millis>`.
+- Account-created email is rendered quickly in the request thread and sent asynchronously via a background sender using the realm’s SMTP settings, so the browser redirect is not blocked on SMTP.
 - If add-to-group fails, the user is disabled. Email send failure is logged; registration still succeeds.
 
 ## Email Theme
 
-Set the realm's **Email theme** to **formsflow** (or ensure the theme contains `email/html/account-created.ftl` and `email/text/account-created.ftl`). Subject key: `accountCreatedSubject` (in `email/messages/messages_en.properties`).
+Set the realm's **Email theme** to **formsflow** (or ensure the theme contains `email/html/account-created.ftl` and `email/text/account-created.ftl`) for consistency with other formsflow emails. Subject key: `accountCreatedSubject` (in `email/messages/messages_en.properties`).
 
 ## Optional Authenticators
 
@@ -90,7 +93,7 @@ Set the realm's **Email theme** to **formsflow** (or ensure the theme contains `
 2. Add executions in this order:
    - **Pre Tenant Creation** (REQUIRED) — must run **before** the step that creates the user. When `create_tenant=true` is in the auth session, it calls the tenant API (with no email; `name` = `key`) and stores `tenantId` and `defaultGroupId` in auth notes. If the auth note is not set, it succeeds without calling the API.
    - Your existing steps that create or identify the user (e.g. Registration Form, or another mechanism).
-   - **Post Tenant Assignment** (REQUIRED) — must run **after** the user exists. Reads `defaultGroupId` from auth notes; adds the user to that Keycloak group and sends the account-created email (synchronously in the request thread); disables the user on add-to-group failure. If `defaultGroupId` is missing, it succeeds without doing anything.
+   - **Post Tenant Assignment** (REQUIRED) — must run **after** the user exists. Reads `defaultGroupId` from auth notes; adds the user to that Keycloak group, sets `tenantKey`, performs `redirect_uri` `{tenantKey}` substitution and duration calculation, and enqueues an async account-created email. If `defaultGroupId` is missing, it succeeds without doing anything.
 3. Set each execution requirement to **Required** (or Alternative/Disabled as needed).
 4. Bind the flow to the desired client or flow alias (e.g. Browser flow, or a custom flow used by your client).
 

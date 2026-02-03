@@ -15,6 +15,7 @@ import org.keycloak.models.GroupModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
 /**
@@ -78,12 +79,28 @@ public class PostTenantAssignmentFormAction implements FormAction {
         }
 
         String redirectUri = authSession.getRedirectUri();
-        try {
-            AccountCreatedEmailSender.send(context.getSession(), realm, user, redirectUri);
-            logger.infof("PostTenantAssignmentFormAction: account-created email sent for user %s", user.getUsername());
-        } catch (Throwable t) {
-            logger.errorf(t, "Failed to send account-created email to user %s", user.getId());
+        String substitutedRedirectUri = TenantRegistrationUtils.substituteRedirectUriTenantKey(redirectUri, tenantId);
+        if (substitutedRedirectUri != redirectUri) {
+            authSession.setRedirectUri(substitutedRedirectUri);
+            authSession.setClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM, substitutedRedirectUri);
+            redirectUri = substitutedRedirectUri;
         }
+
+        String startTimeNote = authSession.getAuthNote(PreTenantCreationFormAction.REGISTRATION_FLOW_START_TIME_NOTE);
+        if (startTimeNote != null && !startTimeNote.isEmpty()) {
+            try {
+                long startMs = Long.parseLong(startTimeNote);
+                long durationMs = System.currentTimeMillis() - startMs;
+                logger.infof("Registration flow completed in %d ms for user %s", durationMs, user.getUsername());
+                String uriWithDuration = TenantRegistrationUtils.appendQueryParam(redirectUri, TenantRegistrationUtils.getRegistrationDurationMsParamName(), String.valueOf(durationMs));
+                authSession.setRedirectUri(uriWithDuration);
+                authSession.setClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM, uriWithDuration);
+            } catch (NumberFormatException e) {
+                logger.debugf("Invalid registration_flow_start_time note: %s", startTimeNote);
+            }
+        }
+
+        AccountCreatedEmailSender.renderAndSendAsync(context.getSession(), realm, user, authSession.getRedirectUri());
     }
 
     @Override

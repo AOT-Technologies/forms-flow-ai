@@ -40,6 +40,8 @@ public class PreTenantCreationFormAction implements FormAction {
     public static final String CREATE_TENANT_CLIENT_NOTE = "create_tenant";
     public static final String TENANT_ID_NOTE = "tenantId";
     public static final String DEFAULT_GROUP_ID_NOTE = "defaultGroupId";
+    /** Auth note for registration flow start time (millis since epoch); set by RegisterTenantResource when create_tenant=true. */
+    public static final String REGISTRATION_FLOW_START_TIME_NOTE = "registration_flow_start_time";
     private static final String EMAIL_FIELD = "email";
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^@]+@[^@]+\\.[^@]+$");
 

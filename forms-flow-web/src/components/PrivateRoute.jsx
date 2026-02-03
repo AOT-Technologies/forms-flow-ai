@@ -42,6 +42,7 @@ import InsightsPage from "./Insights";
 import Application from "./Application";
 import DesignProcessRoutes from "./../routes/Design/Process";
 import Drafts from "./Draft";
+import Onboarding from "./Onboarding";
 import {
   BPM_API_URL_WITH_VERSION,
   WEB_BASE_URL,
@@ -401,6 +402,7 @@ const PrivateRoute = React.memo((props) => {
              * to the not found page.
              */}
             <Route exact path={ROUTE_TO.ANALYZESUBMISSIONS} />
+            <Route path={ROUTE_TO.ONBOARDING} component={Onboarding} />
             <Route exact path={BASE_ROUTE}>
               {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}
             </Route>

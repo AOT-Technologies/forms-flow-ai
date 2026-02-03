@@ -37,15 +37,18 @@ public class PostTenantAssignmentFormAction implements FormAction {
 
     @Override
     public void success(FormContext context) {
+        logger.info("PostTenantAssignmentFormAction.success() entered");
         AuthenticationSessionModel authSession = context.getAuthenticationSession();
         String createTenant = authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE);
         if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
+            logger.debug("PostTenantAssignmentFormAction: create_tenant not set, skipping");
             return;
         }
         UserModel user = context.getUser();
         String defaultGroupId = authSession.getAuthNote(PreTenantCreationFormAction.DEFAULT_GROUP_ID_NOTE);
 
         if (defaultGroupId == null || defaultGroupId.isEmpty()) {
+            logger.debug("PostTenantAssignmentFormAction: defaultGroupId missing, skipping");
             return;
         }
         if (user == null) {
@@ -60,6 +63,7 @@ public class PostTenantAssignmentFormAction implements FormAction {
             user.setEnabled(false);
             return;
         }
+        logger.infof("PostTenantAssignmentFormAction: adding user %s to group %s", user.getUsername(), defaultGroupId);
         try {
             user.joinGroup(group);
         } catch (Exception e) {
@@ -76,6 +80,7 @@ public class PostTenantAssignmentFormAction implements FormAction {
         String redirectUri = authSession.getRedirectUri();
         try {
             AccountCreatedEmailSender.send(context.getSession(), realm, user, redirectUri);
+            logger.infof("PostTenantAssignmentFormAction: account-created email sent for user %s", user.getUsername());
         } catch (Throwable t) {
             logger.errorf(t, "Failed to send account-created email to user %s", user.getId());
         }

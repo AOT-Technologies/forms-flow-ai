@@ -36,6 +36,8 @@ public class PreTenantCreationFormAction implements FormAction {
     public static final String PROVIDER_ID = "pre-tenant-creation-form-action";
     /** Auth note set by /register-tenant endpoint; value "true" triggers tenant creation. */
     public static final String CREATE_TENANT_REQUIRED_NOTE = "create_tenant";
+    /** Client note key for tenant creation flag (same value as auth note key; used so flag survives IdP redirect). */
+    public static final String CREATE_TENANT_CLIENT_NOTE = "create_tenant";
     public static final String TENANT_ID_NOTE = "tenantId";
     public static final String DEFAULT_GROUP_ID_NOTE = "defaultGroupId";
     private static final String EMAIL_FIELD = "email";
@@ -85,10 +87,11 @@ public class PreTenantCreationFormAction implements FormAction {
         }
 
         try {
+            logger.debug("PreTenantCreationFormAction: calling tenant API with email from form");
             TenantService.TenantCreationResult result = tenantService.createTenant(context.getSession(), emailTrimmed);
             authSession.setAuthNote(TENANT_ID_NOTE, result.getTenantId());
             authSession.setAuthNote(DEFAULT_GROUP_ID_NOTE, result.getDefaultGroupId());
-            logger.infof("Tenant created: tenantId=%s, defaultGroupId=%s", result.getTenantId(), result.getDefaultGroupId());
+            logger.infof("PreTenantCreationFormAction: tenant created, tenantId=%s, defaultGroupId=%s", result.getTenantId(), result.getDefaultGroupId());
             context.success();
         } catch (TenantService.TenantServiceException e) {
             logger.errorf(e, "Tenant creation failed for email: %s", email);

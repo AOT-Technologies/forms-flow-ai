@@ -93,6 +93,8 @@ public class RegisterTenantResource implements RealmResourceProvider {
             // Trigger tenant creation in FormAction only when create_tenant query param is true
             if (createTenant != null && "true".equalsIgnoreCase(createTenant.trim())) {
                 authSession.setAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE, "true");
+                authSession.setClientNote(PreTenantCreationFormAction.CREATE_TENANT_CLIENT_NOTE, "true");
+                logger.infof("Register-tenant: create_tenant=true, set auth note and client note for tenant creation; tabId=%s", authSession.getTabId());
             }
             authSession.setClientNote(AuthorizationEndpointBase.APP_INITIATED_FLOW, LoginActionsService.REGISTRATION_PATH);
             authSession.setClientNote(OIDCLoginProtocol.RESPONSE_TYPE_PARAM, OAuth2Constants.CODE);

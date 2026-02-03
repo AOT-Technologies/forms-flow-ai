@@ -25,17 +25,30 @@ public class PreTenantCreationAuthenticator implements Authenticator {
 
     @Override
     public void authenticate(AuthenticationFlowContext context) {
+        logger.info("PreTenantCreationAuthenticator.authenticate() entered");
         AuthenticationSessionModel authSession = context.getAuthenticationSession();
         String createTenant = authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE);
+        String clientNote = authSession.getClientNote(PreTenantCreationFormAction.CREATE_TENANT_CLIENT_NOTE);
+        logger.debugf("PreTenantCreation: authNote=%s, clientNote=%s", createTenant, clientNote);
         if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
+            createTenant = clientNote;
+        }
+        if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
+            logger.debugf("PreTenantCreation: tenant creation not required (authNote=%s, clientNote=%s), skipping", authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE), clientNote);
             context.success();
             return;
         }
+        if (authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE) == null || !"true".equalsIgnoreCase(authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE))) {
+            logger.debug("PreTenantCreation: auth note missing, using client note (create_tenant=true)");
+            authSession.setAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE, "true");
+        }
+        logger.info("PreTenantCreation: creating tenant (First Broker Login, no email)");
         try {
             TenantService.TenantCreationResult result = tenantService.createTenant(context.getSession(), null);
             if (result != null) {
                 authSession.setAuthNote(PreTenantCreationFormAction.TENANT_ID_NOTE, result.getTenantId());
                 authSession.setAuthNote(PreTenantCreationFormAction.DEFAULT_GROUP_ID_NOTE, result.getDefaultGroupId());
+                logger.infof("PreTenantCreation: tenant created, tenantId=%s, defaultGroupId=%s", result.getTenantId(), result.getDefaultGroupId());
             }
             context.success();
         } catch (TenantService.TenantServiceException e) {

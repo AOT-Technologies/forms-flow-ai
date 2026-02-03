@@ -25,18 +25,28 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
     @Override
     public void authenticate(AuthenticationFlowContext context) {
         UserModel user = context.getUser();
+        logger.infof("PostTenantAssignmentAuthenticator.authenticate() entered, user=%s", user == null ? "null" : user.getUsername());
         if (user == null) {
+            logger.debug("PostTenantAssignment: user is null, skipping");
             context.attempted();
             return;
         }
         AuthenticationSessionModel authSession = context.getAuthenticationSession();
         String createTenant = authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE);
+        String clientNote = authSession.getClientNote(PreTenantCreationFormAction.CREATE_TENANT_CLIENT_NOTE);
         if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
+            createTenant = clientNote;
+        }
+        logger.debugf("PostTenantAssignment: authNote=%s, clientNote=%s", authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE), clientNote);
+        if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
+            logger.debug("PostTenantAssignment: create_tenant not set, skipping");
             context.success();
             return;
         }
         String defaultGroupId = authSession.getAuthNote(PreTenantCreationFormAction.DEFAULT_GROUP_ID_NOTE);
+        logger.debugf("PostTenantAssignment: defaultGroupId=%s", defaultGroupId);
         if (defaultGroupId == null || defaultGroupId.isEmpty()) {
+            logger.debug("PostTenantAssignment: defaultGroupId missing, skipping");
             context.success();
             return;
         }
@@ -51,6 +61,7 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
                             .createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
             return;
         }
+        logger.infof("PostTenantAssignment: adding user %s to group %s", user.getUsername(), defaultGroupId);
         try {
             user.joinGroup(group);
         } catch (Exception e) {
@@ -73,6 +84,7 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
         } catch (Throwable t) {
             logger.errorf(t, "Failed to send account-created email to user %s", user.getId());
         }
+        logger.infof("PostTenantAssignment: completed for user %s (group joined, email sent)", user.getUsername());
         context.success();
     }
 
@@ -82,7 +94,7 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
 
     @Override
     public boolean requiresUser() {
-        return true;
+        return false;
     }
 
     @Override

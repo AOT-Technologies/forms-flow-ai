@@ -2,6 +2,19 @@
 
 Keycloak 26.4.1 extension for tenant-aware registration: custom `/register-tenant` URL, create tenant via external API at form submit, add user to Keycloak group (`defaultGroupId`), and send account-created email (synchronously in the request thread).
 
+## Providers overview
+
+| Provider name (Admin UI)        | Type        | Used in                          | Purpose |
+|---------------------------------|-------------|-----------------------------------|---------|
+| Pre Tenant Creation Form Action | Form Action | Registration Form sub-flow        | Before user creation: calls tenant API with email from form; stores `tenantId` and `defaultGroupId` in auth notes. |
+| Post Tenant Assignment Form Action | Form Action | Registration Form sub-flow     | After user creation: adds user to group, sets `tenantKey`, sends account-created email. |
+| Pre Tenant Creation             | Authenticator | First Broker Login (and other flows) | Before user creation: calls tenant API (no email; `name` = `key`); stores notes. No-op if `create_tenant` not set. |
+| Post Tenant Assignment          | Authenticator | First Broker Login (and other flows) | After user exists: adds user to group, sets `tenantKey`, sends account-created email. No-op if user is null or notes missing. |
+
+For **registration via form** (`/register-tenant`), use the **Form Actions** in the Registration Form sub-flow. For **social / IdP first login**, use the **Authenticators** in the First Broker Login flow (see below).
+
+Provider IDs (for reference): `pre-tenant-creation-form-action`, `post-tenant-assignment-form-action`, `pre-tenant-creation-authenticator`, `post-tenant-assignment-authenticator`.
+
 ## Requirements
 
 - Keycloak 26.4.1 (Quarkus)
@@ -12,20 +25,22 @@ Keycloak 26.4.1 extension for tenant-aware registration: custom `/register-tenan
 
 ## Build
 
+From the `tenant-registration` directory (or the repo root with `-pl keycloak/tenant-registration`):
+
 ```bash
 mvn clean package
 ```
 
-JAR: `target/tenant-registration-1.0.0.jar`
+Output JAR: `target/tenant-registration-1.0.0.jar`
 
-> IMP" Enable user registration in multitenant realm
+> **Important:** Enable user registration in multitenant realm if using registration flows.
 
 ## Installation
 
-1. Copy the JAR to Keycloak's providers directory (e.g. `providers/`).
+1. Copy `tenant-registration-1.0.0.jar` to Keycloak's providers directory (e.g. `providers/`).
 2. For Quarkus Keycloak, run `kc.sh build` then start Keycloak.
 
-With Docker (this repo): the keycloak Dockerfile builds both `idp-selector` and `tenant-registration` and copies JARs into the Keycloak container; ensure `FF_ADMIN_API_URL` is set in the keycloak service environment (see `docker-compose.yml` and `sample.env`).
+**Docker (this repo):** The keycloak Dockerfile builds both `idp-selector` and `tenant-registration` and copies the JARs into the Keycloak image. Set `FF_ADMIN_API_URL` (and optionally `FF_KEYCLOAK_PUBLIC_URL`, `FF_BPM_CLIENT_ID`) in the keycloak service environment (see `docker-compose.yml` and `sample.env`).
 
 ## Flow Configuration
 
@@ -79,6 +94,37 @@ Set the realm's **Email theme** to **formsflow** (or ensure the theme contains `
 3. Set each execution requirement to **Required** (or Alternative/Disabled as needed).
 4. Bind the flow to the desired client or flow alias (e.g. Browser flow, or a custom flow used by your client).
 
+### First Broker Login flow (IdP / social sign-in)
+
+Use this when users sign in for the first time via an identity provider (e.g. Google, GitHub). The flow creates a tenant, creates or links the user from the IdP, then assigns the user to the tenant group and sends the account-created email.
+
+**Prerequisite:** The auth note `create_tenant=true` must be set in the session before or when the user is sent to the IdP (e.g. by your application when redirecting to Keycloak with a query parameter or via a custom endpoint that sets the note). Without it, Pre Tenant Creation and Post Tenant Assignment no-op and first broker login behaves as standard Keycloak.
+
+**Social login from register-tenant:** When users select an IdP (e.g. Google) from the register-tenant page (`/register-tenant?client_id=...&create_tenant=true`), the tenant-creation flag is stored in **both** auth note and client note. The authenticators fall back to the client note if the auth note is missing after the IdP redirect, so tenant creation and assignment run correctly without a separate "social sign-up" URL.
+
+#### Option A (recommended): Keep built-in flow structure
+
+This keeps Keycloak’s default behavior: "Create User If Unique" and "Handle Existing Account" remain **Alternative** inside the **"User creation or linking"** sub-flow. Keycloak only ignores Alternative steps when they are **top-level** siblings of Required steps; inside a sub-flow they run as designed.
+
+1. In Keycloak Admin: **Authentication** → **Flows**.
+2. **Copy** the built-in **First Broker Login** flow (e.g. name it "First Broker Login - Tenant"). Do **not** add "Create User If Unique" as a new top-level step.
+3. In the copy, add **only** these two **top-level** executions:
+   - **Pre Tenant Creation** (Required) — add it and place it **first** (before Review Profile and before the "User creation or linking" sub-flow).
+   - **Post Tenant Assignment** (Required) — add it and place it **after** the "User creation or linking" sub-flow (and after "First Broker Login - Conditional Organization" if present).
+4. Leave the existing **"User creation or linking"** sub-flow **unchanged** (Required; inside it, Create User If Unique and Handle Existing Account stay Alternative).
+5. In **Authentication** → **Bindings**, set **First Broker Login** to your new flow (e.g. "First Broker Login - Tenant").
+
+**Top-level order:**  
+`Pre Tenant Creation` → `Review Profile` → `User creation or linking` (sub-flow) → … → `Post Tenant Assignment`
+
+#### Option B: Flat flow with Create User If Unique required
+
+If you prefer a flat flow without the "User creation or linking" sub-flow:
+
+1. Create or edit a First Broker Login flow with **top-level** executions in this order: **Pre Tenant Creation** (Required) → **Create User If Unique** (Required) → **Post Tenant Assignment** (Required).
+2. Set "Create User If Unique" to **Required**. If it is **Alternative** at the same level as other Required steps, Keycloak may skip it ("REQUIRED and ALTERNATIVE elements at same level" in logs) and the user is never created, so Post Tenant Assignment fails with user=null.
+3. **Caveat:** Making "Create User If Unique" Required can change duplicate-account behavior (e.g. users may see an error instead of being able to link an existing account). Prefer Option A if you want to preserve built-in behavior.
+
 **Note:** The optional authenticators do not have access to form data. Pre Tenant Creation uses `key` and `name` = `key` only (no email). For registration with email-based tenant naming, use the Form Actions in the Registration Form sub-flow instead.
 
 ## Troubleshooting
@@ -89,6 +135,13 @@ Set the realm's **Email theme** to **formsflow** (or ensure the theme contains `
 - **Realm SMTP:** Keycloak → Realm → **Email** must have valid SMTP settings. If SMTP is not configured, send will typically throw and you will see "Failed to send …" in the logs.
 - **Realm Email theme:** Set the realm’s **Email** theme to **formsflow** (Realm → **Themes** → Email theme) so `account-created.ftl` and `accountCreatedSubject` are found.
 - **Delivery:** If logs show "Sent account-created email to …" but the user does not receive the message, check spam/junk and SMTP delivery (bounces, mail server logs).
+
+### Post tenant assignment fails on social login (user=null / IDENTITY_PROVIDER_FIRST_LOGIN_ERROR)
+
+If logs show `PostTenantAssignmentAuthenticator.authenticate() entered, user=null` and `REQUIRED and ALTERNATIVE elements at same level! … idp-create-user-if-unique`, the First Broker Login flow is misconfigured: the step that creates the user was skipped, so Post Tenant Assignment runs with no user.
+
+- **Recommended fix (Option A):** Copy the built-in First Broker Login flow. Add **Pre Tenant Creation** (Required) as the **first** top-level step and **Post Tenant Assignment** (Required) **after** the **"User creation or linking"** sub-flow. Do **not** add "Create User If Unique" as a top-level step—leave the sub-flow unchanged so it runs and creates the user before Post Tenant Assignment. See "First Broker Login flow (IdP / social sign-in)" → Option A above.
+- **Alternative (Option B):** Use a flat flow with **Create User If Unique** set to **Required** and placed before Post Tenant Assignment (order: Pre Tenant Creation → Create User If Unique → Post Tenant Assignment). See Option B above.
 
 ### Tenant API returns 401: "Authorization header is expected" / "authorization_header_missing"
 

@@ -1,0 +1,202 @@
+@import "../../variables.scss";
+
+.onboarding-modal {
+    justify-content: center;
+  .modal-header {
+    padding-top: 3rem !important;
+  }
+  
+  .modal-footer {
+    .step-indicator {
+      color: var(--gray-medium-darker);
+      font-size: var(--font-size-m);
+      font-weight: var(--font-weight-regular);
+    }
+  }
+
+  .modal-body {
+    padding: 3rem;
+    padding-left: 4rem;
+  }
+
+  .onboarding-content {
+    display: flex;
+    gap: 3rem;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .onboarding-left-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacer-100);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .onboarding-right-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    .onboarding-dropdowns{
+        .onboarding-dropdown-item{
+            .selectdropdown-container{
+                width: 100% !important;
+                .dropdown-wrapper{
+                    .custom-selectdropdown--primary{
+                        border: 1px solid var(--gray-x-light) !important;
+                    }
+                    .dropdown-text-placeholder{
+                        color: var(--gray-darkest) !important;
+                    }
+                }
+                .dropdown-arrow,
+                .dropdown-icon,
+                .dropdown-chevron,
+                [class*="chevron"],
+                [class*="arrow"],
+                svg path,
+                svg {
+                    stroke: var(--gray-medium-darker) !important;
+                }
+            }
+        }
+    }
+  }
+
+  .onboarding-title {
+    font-size: 2rem;
+    font-weight: var(--font-weight-semibold);
+    color: $black;
+    line-height: 1.3;
+    margin: 0;
+    word-wrap: break-word;
+  }
+
+  .onboarding-description {
+    p {
+      margin-bottom: var(--spacer-100);
+      word-wrap: break-word;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .onboarding-image-container {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    img, svg {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+
+  .onboarding-additional-info {
+    color: var(--vivid);
+    font-size: var(--font-size-m);
+    margin-top: var(--spacer-100);
+    font-weight: var(--font-weight-regular);
+  }
+
+  .onboarding-dropdowns {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacer-150);
+    width: 100%;
+  }
+
+  .onboarding-dropdown-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacer-050);
+    width: 100%;
+  }
+
+  .onboarding-dropdown-label {
+    color: var(--gray-dark);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-m);
+  }
+
+  .onboarding-right-content {
+    width: 100%;
+  }
+
+  .onboarding-focus-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacer-050);
+    width: 100%;
+  }
+
+  .onboarding-focus-card {
+    display: flex;
+    align-items: center;
+    padding: 0.87rem;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    background-color: $white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+
+    &:hover {
+      border-color: var(--vivid);
+      box-shadow: 0 2px 8px rgba(155, 135, 245, 0.1);
+    }
+
+    &.selected {
+      border-color: var(--vivid);
+      border-width: 2px;
+      background-color: rgba(155, 135, 245, 0.05);
+    }
+  }
+
+  .onboarding-focus-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: var(--vivid);
+  }
+
+  .onboarding-focus-card.selected .onboarding-focus-icon {
+    color: var(--vivid);
+  }
+
+  .onboarding-focus-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacer-25);
+  }
+
+  .onboarding-focus-title {
+    font-size: var(--font-size-m);
+    font-weight: var(--font-weight-semibold);
+    color: var(--gray-darkest);
+    margin: 0;
+  }
+
+  .onboarding-focus-description {
+    font-size: var(--font-size-m);
+    color: var(--gray-darkest);
+    margin: 0;
+    font-weight: var(--font-weight-regular);
+  }
+}

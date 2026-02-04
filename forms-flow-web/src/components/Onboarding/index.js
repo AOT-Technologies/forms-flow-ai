@@ -1,8 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { ApplicationLogo, V8CustomButton, SelectDropdown, OnboardingImage1, OnboardingImage2, OnboardingImage3, OnboardingImage4 } from "@formsflow/components";
+import { useHistory, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  ApplicationLogo,
+  V8CustomButton,
+  SelectDropdown,
+  OnboardingImage1,
+  OnboardingImage2,
+  OnboardingImage3,
+  OnboardingImage4,
+  CreatorIcon,
+  ManagerIcon,
+  NotsureIcon
+} from "@formsflow/components";
 import { INDUSTRY_OPTIONS, ROLE_OPTIONS, ORGANIZATION_SIZE_OPTIONS } from "./onboardingConstants";
+import { getRoute } from "../../constants/constants";
 import "./onboarding.scss";
 
 const onboardingSteps = [
@@ -53,6 +67,12 @@ const onboardingSteps = [
 
 export default React.memo(() => {
   const { t } = useTranslation();
+  const history = useHistory();
+  const { tenantId } = useParams();
+  const tenantIdFromState = useSelector((state) => state.tenants?.tenantId);
+  const currentTenantId = tenantId || tenantIdFromState;
+  const ROUTE_TO = getRoute(currentTenantId);
+  
   const [showModal, setShowModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [industry, setIndustry] = useState("");
@@ -76,10 +96,23 @@ export default React.memo(() => {
         selectedRole
       };
       console.log("Selected onboarding data:", selectedData);
-      
+
       setTimeout(() => {
         setShowModal(false);
         setButtonLoading(false);
+        
+        let redirectPath = "";
+        if (selectedRole === "creator") {
+          redirectPath = `${ROUTE_TO.FORMFLOW}/build`;
+        } else if (selectedRole === "manager") {
+          redirectPath = `${ROUTE_TO.ADMIN}/users`;
+        } else if (selectedRole === "notSure") {
+          redirectPath = ROUTE_TO.FORMFLOW;
+        }
+        
+        if (redirectPath) {
+          history.push(redirectPath);
+        }
       }, 1000);
     } else if (currentStep < onboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1);
@@ -198,9 +231,7 @@ export default React.memo(() => {
                             data-testid="focus-creator-card"
                           >
                             <div className="onboarding-focus-icon">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <circle cx="16" cy="16" r="15.5" stroke="#E5E5E5"/>
-                              </svg>
+                              <CreatorIcon color={selectedRole === "creator" ? "var(--vivid)" : "var(--gray-x-light)"}/>
                             </div>
                             <div className="onboarding-focus-content">
                               <h3 className="onboarding-focus-title">{t("I'm a creator")}</h3>
@@ -213,9 +244,7 @@ export default React.memo(() => {
                             data-testid="focus-manager-card"
                           >
                             <div className="onboarding-focus-icon">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                  <circle cx="16" cy="16" r="15.5" stroke="#E5E5E5"/>
-                                </svg>
+                              <ManagerIcon color={selectedRole === "manager" ? "var(--vivid)" : "var(--gray-x-light)"}/>
                             </div>
                             <div className="onboarding-focus-content">
                               <h3 className="onboarding-focus-title">{t("I'm a manager")}</h3>
@@ -228,9 +257,7 @@ export default React.memo(() => {
                             data-testid="focus-not-sure-card"
                           >
                             <div className="onboarding-focus-icon">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <circle cx="16" cy="16" r="15.5" stroke="#E5E5E5"/>
-                              </svg>
+                              <NotsureIcon color={selectedRole === "notSure" ? "var(--vivid)" : "var(--gray-x-light)"}/>
                             </div>
                             <div className="onboarding-focus-content">
                               <h3 className="onboarding-focus-title">{t("I'm not sure")}</h3>
@@ -280,7 +307,6 @@ export default React.memo(() => {
               onClick={handleNext}
               dataTestId="onboarding-next-button"
               disabled={isNextButtonDisabled}
-              iconWithText={currentStep === 4}
               loading={buttonLoading}
             />
           </div>

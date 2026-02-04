@@ -55,6 +55,15 @@
                         color: var(--gray-darkest) !important;
                     }
                 }
+                .dropdown-arrow,
+                .dropdown-icon,
+                .dropdown-chevron,
+                [class*="chevron"],
+                [class*="arrow"],
+                svg path,
+                svg {
+                    stroke: var(--gray-medium-darker) !important;
+                }
             }
         }
     }

@@ -78,7 +78,7 @@
                 </div>
 
                 <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
-                    <input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doRegister")}"/>
+                    <input id="kc-register-submit" class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doRegister")}"/>
                 </div>
             </div>
 
@@ -102,6 +102,20 @@
                 tenantKey = clientId.split('-forms-flow-web')[0];
                 document.getElementById('user.attributes.tenantKey').value = tenantKey;
             }
+
+            // Disable register button on submit to avoid duplicate submissions during long tenant creation.
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.getElementById('kc-register-form');
+                if (!form) {
+                    return;
+                }
+                form.addEventListener('submit', function () {
+                    var submitButton = document.getElementById('kc-register-submit');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+                });
+            });
         </script>
     <#elseif section == "socialProviders">
         <#if realm.password && social?? && social.providers?has_content>

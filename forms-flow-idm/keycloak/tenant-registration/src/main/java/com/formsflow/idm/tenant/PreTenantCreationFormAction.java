@@ -42,6 +42,12 @@ public class PreTenantCreationFormAction implements FormAction {
     public static final String DEFAULT_GROUP_ID_NOTE = "defaultGroupId";
     /** Auth note for registration flow start time (millis since epoch); set by RegisterTenantResource when create_tenant=true. */
     public static final String REGISTRATION_FLOW_START_TIME_NOTE = "registration_flow_start_time";
+    /** Auth note storing the tab ID for which tenant creation completed (idempotency by session tab). */
+    public static final String REGISTRATION_COMPLETED_TAB_NOTE = "registration_completed_tab";
+    /** Auth note timestamp (millis) marking when tenant creation started for this auth session (used for idempotency). */
+    public static final String REGISTRATION_IN_PROGRESS_NOTE = "registration_in_progress";
+    /** How long a registration is considered in-progress for idempotency checks (ms). */
+    private static final long REGISTRATION_IN_PROGRESS_TIMEOUT_MS = 90_000L;
     private static final String EMAIL_FIELD = "email";
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^@]+@[^@]+\\.[^@]+$");
 
@@ -58,6 +64,15 @@ public class PreTenantCreationFormAction implements FormAction {
 
         String createTenant = authSession.getAuthNote(CREATE_TENANT_REQUIRED_NOTE);
         if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
+            context.success();
+            return;
+        }
+
+        // Idempotency by session tab: if registration already completed for this tab, skip tenant creation.
+        String currentTabId = authSession.getTabId();
+        String completedTabId = authSession.getAuthNote(REGISTRATION_COMPLETED_TAB_NOTE);
+        if (currentTabId != null && currentTabId.equals(completedTabId)) {
+            logger.debugf("PreTenantCreationFormAction: registration already completed for this tab (tabId=%s), skipping tenant creation", currentTabId);
             context.success();
             return;
         }
@@ -89,10 +104,32 @@ public class PreTenantCreationFormAction implements FormAction {
         }
 
         try {
+            // Idempotency / duplicate-submit guard: if tenant creation was started recently for this auth session,
+            // treat a new submit as a duplicate and surface a validation error instead of calling the tenant API again.
+            String inProgressNote = authSession.getAuthNote(REGISTRATION_IN_PROGRESS_NOTE);
+            long now = System.currentTimeMillis();
+            if (inProgressNote != null) {
+                try {
+                    long startedAt = Long.parseLong(inProgressNote);
+                    if (now - startedAt < REGISTRATION_IN_PROGRESS_TIMEOUT_MS) {
+                        logger.debugf("PreTenantCreationFormAction: registration already in progress for this auth session (startedAt=%d), rejecting duplicate submit", startedAt);
+                        List<FormMessage> errors = new ArrayList<>();
+                        errors.add(new FormMessage(null, "Registration is already in progress. Please wait before trying again."));
+                        context.validationError(formData, errors);
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    logger.debugf("PreTenantCreationFormAction: invalid registration_in_progress note: %s", inProgressNote);
+                }
+            }
+
+            authSession.setAuthNote(REGISTRATION_IN_PROGRESS_NOTE, Long.toString(now));
+
             logger.debug("PreTenantCreationFormAction: calling tenant API with email from form");
             TenantService.TenantCreationResult result = tenantService.createTenant(context.getSession(), emailTrimmed);
             authSession.setAuthNote(TENANT_ID_NOTE, result.getTenantId());
             authSession.setAuthNote(DEFAULT_GROUP_ID_NOTE, result.getDefaultGroupId());
+            authSession.setAuthNote(REGISTRATION_COMPLETED_TAB_NOTE, authSession.getTabId());
             logger.infof("PreTenantCreationFormAction: tenant created, tenantId=%s, defaultGroupId=%s", result.getTenantId(), result.getDefaultGroupId());
             context.success();
         } catch (TenantService.TenantServiceException e) {
@@ -100,6 +137,8 @@ public class PreTenantCreationFormAction implements FormAction {
             List<FormMessage> errors = new ArrayList<>();
             errors.add(new FormMessage(null, "Failed to create tenant. Please try again later."));
             context.error("tenant_creation_failed");
+            // Mark in-progress note as stale so a retry is allowed immediately after a failure.
+            authSession.setAuthNote(REGISTRATION_IN_PROGRESS_NOTE, "0");
             context.validationError(formData, errors);
         }
     }

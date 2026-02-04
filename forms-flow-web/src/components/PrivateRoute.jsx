@@ -396,11 +396,7 @@ const PrivateRoute = React.memo((props) => {
             )}
 
             <Route exact path={ROUTE_TO.TASK} />
-            <Route path={`${ROUTE_TO.ADMIN}/*`} render={() => null} />
-            {/* * This route is used to redirect the user to the correct base route
-             * based on their roles. If the user has no roles, they will be redirected
-             * to the not found page.
-             */}
+            <Route path={ROUTE_TO.ADMIN} />
             <Route exact path={ROUTE_TO.ANALYZESUBMISSIONS} />
             <Route path={ROUTE_TO.ONBOARDING} component={Onboarding} />
             <Route exact path={BASE_ROUTE}>

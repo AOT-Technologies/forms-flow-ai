@@ -42,7 +42,7 @@ import InsightsPage from "./Insights";
 import Application from "./Application";
 import DesignProcessRoutes from "./../routes/Design/Process";
 import Drafts from "./Draft";
-import Onboarding from "./Onboarding";
+import Onboarding from "./Onboarding/index";
 import {
   BPM_API_URL_WITH_VERSION,
   WEB_BASE_URL,

@@ -1011,7 +1011,19 @@ class FormFlowBuilderResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
-    @API.doc(body=combined_form_workflow_request_model)
+    @API.doc(
+        body=combined_form_workflow_request_model,
+        params={
+            "title": {
+                "in": "query",
+                "description": "Form title to be validated",
+            },
+            "path": {
+                "in": "query",
+                "description": "Form path to be validated",
+            },
+        },
+    )
     @API.response(
         201,
         "CREATED:- Successful request.",
@@ -1031,6 +1043,14 @@ class FormFlowBuilderResource(Resource):
     )
     def post():
         """Creates a new form along with its associated workflow, authorization rules, and history tracking."""
+        # Get query parameters for validation
+        title = request.args.get("title")
+        path = request.args.get("path")
+
+        # Validate title and path if provided
+        if title is not None or path is not None:
+            FormProcessMapperService.validate_form_name_path_title(request)
+
         data = request.get_json()
         response = FormProcessMapperService.create_form_with_process(
             data, bool(auth.has_role([CREATE_DESIGNS]))
@@ -1046,7 +1066,19 @@ class FormFlowBuilderUpdateResource(Resource):
     @staticmethod
     @auth.has_one_of_roles([CREATE_DESIGNS])
     @profiletime
-    @API.doc(body=combined_form_workflow_response_model)
+    @API.doc(
+        body=combined_form_workflow_response_model,
+        params={
+            "title": {
+                "in": "query",
+                "description": "Form title to be validated",
+            },
+            "path": {
+                "in": "query",
+                "description": "Form path to be validated",
+            },
+        },
+    )
     @API.response(
         200,
         "CREATED:- Successful request.",
@@ -1066,6 +1098,14 @@ class FormFlowBuilderUpdateResource(Resource):
     )
     def put(mapper_id: int):
         """Single API to update form design, form history, flow, authorizations and mapper details."""
+        # Get query parameters for validation
+        title = request.args.get("title")
+        path = request.args.get("path")
+
+        # Validate title and path if provided
+        if title is not None or path is not None:
+            FormProcessMapperService.validate_form_name_path_title(request)
+
         data = request.get_json()
         response = FormProcessMapperService().update_form_process(
             data, mapper_id, bool(auth.has_role([CREATE_DESIGNS]))

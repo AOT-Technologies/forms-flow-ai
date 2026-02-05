@@ -94,8 +94,9 @@ public class PreTenantCreationFormAction implements FormAction {
         }
 
         if (context.getSession().users().getUserByEmail(context.getRealm(), emailTrimmed) != null) {
+            logger.info("Registration attempt with existing email address");
             List<FormMessage> errors = new ArrayList<>();
-            errors.add(new FormMessage(EMAIL_FIELD, "Email already registered"));
+            errors.add(new FormMessage(EMAIL_FIELD, "Unable to complete registration. Please verify your information or contact support."));
             context.validationError(formData, errors);
             return;
         }

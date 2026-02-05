@@ -129,7 +129,7 @@ After a successful tenant registration, the **Post Tenant Assignment** step send
    Set **Realm** → **Realm settings** → **Themes** → **Email theme** to **formsflow** so the realm uses the provided theme. The theme is deployed from `keycloak/themes/formsflow` (e.g. via the Docker setup).
 
 3. **Customizing the template**  
-   Edit the FTL files and/or `messages_en.properties` under `themes/formsflow/email/`, then rebuild and redeploy so the updated theme is available (e.g. rebuild the Keycloak Docker image). The provider currently builds the email body in code to match these templates; changing layout or variables in the FTL may require matching changes in the provider code.
+Edit the FTL files and/or `messages_en.properties` under `themes/formsflow/email/`, then rebuild and redeploy so the updated theme is available (e.g. rebuild the Keycloak Docker image). The provider uses Keycloak’s `EmailTemplateProvider` with the `account-created.ftl` template.
 
 ## Redirect URI placeholder
 

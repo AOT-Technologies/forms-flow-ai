@@ -5,7 +5,7 @@ mkdir -p /opt/keycloak/data/import
 mkdir -p /opt/keycloak/providers
 
 # Copy custom providers (tenant-registration, idp-selector JARs)
-if [ -d /keycloak_custom_data/providers ] && [ "$(ls -A /keycloak_custom_data/providers 2>/dev/null)" ]; then
+if [[ -d /keycloak_custom_data/providers ]] && [[ "$(ls -A /keycloak_custom_data/providers 2>/dev/null)" ]]; then
   cp -rf /keycloak_custom_data/providers/* /opt/keycloak/providers/
 fi
 

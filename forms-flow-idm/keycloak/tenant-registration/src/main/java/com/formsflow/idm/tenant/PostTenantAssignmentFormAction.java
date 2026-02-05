@@ -6,6 +6,8 @@
 
 package com.formsflow.idm.tenant;
 
+import java.util.Objects;
+
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.FormAction;
 import org.keycloak.authentication.FormContext;
@@ -78,7 +80,7 @@ public class PostTenantAssignmentFormAction implements FormAction {
 
         String redirectUri = authSession.getRedirectUri();
         String substitutedRedirectUri = TenantRegistrationUtils.substituteRedirectUriTenantKey(redirectUri, tenantId);
-        if (substitutedRedirectUri != redirectUri) {
+        if (!Objects.equals(substitutedRedirectUri, redirectUri)) {
             authSession.setRedirectUri(substitutedRedirectUri);
             authSession.setClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM, substitutedRedirectUri);
             redirectUri = substitutedRedirectUri;

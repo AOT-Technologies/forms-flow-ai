@@ -141,7 +141,7 @@ public class RegisterTenantResource implements RealmResourceProvider {
             return processor.authenticate();
         } catch (Exception e) {
             logger.errorf(e, "Error initiating register-tenant");
-            return ErrorPage.error(session, null, Response.Status.INTERNAL_SERVER_ERROR, "Error initiating registration: " + e.getMessage());
+            return ErrorPage.error(session, null, Response.Status.INTERNAL_SERVER_ERROR, "Error initiating registration. Please try again later.");
         }
     }
 }

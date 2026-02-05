@@ -29,16 +29,5 @@ public final class TenantRegistrationUtils {
                 .replace(TENANT_KEY_PLACEHOLDER, tenantId);
     }
 
-    /**
-     * Appends a query parameter to the given URI (handles existing query string).
-     */
-    public static String appendQueryParam(String uri, String paramName, String paramValue) {
-        if (uri == null || paramName == null || paramValue == null) {
-            return uri;
-        }
-        String separator = uri.contains("?") ? "&" : "?";
-        return uri + separator + paramName + "=" + paramValue;
-    }
-
 
 }

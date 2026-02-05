@@ -148,10 +148,10 @@
     padding: 0.87rem;
     border: 1px solid #E0E0E0;
     border-radius: 8px;
-    background-color: $white;
     cursor: pointer;
     transition: all 0.2s ease;
     width: 100%;
+    gap: var(--spacer-100);
 
     &:hover {
       border-color: var(--vivid);
@@ -165,18 +165,28 @@
     }
   }
 
-  .onboarding-focus-icon {
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    color: var(--vivid);
+  .onboarding-focus-icon-container {
+    width: 2rem;
+    height: 2rem;
+    .onboarding-focus-icon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1px solid var(--gray-x-light);
+    }
   }
 
   .onboarding-focus-card.selected .onboarding-focus-icon {
-    color: var(--vivid);
+    border-color: var(--vivid);
+  }
+
+  [data-testid="focus-not-sure-card"] .onboarding-focus-icon {
+    svg{
+      margin-left: 0.25rem;
+    }
   }
 
   .onboarding-focus-content {

@@ -16,7 +16,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Welcome to ${realmName!""}!</h1>
+        <h1>Welcome to Formsflow!</h1>
     </div>
     <div class="content">
         <p>Hello ${firstName!"there"},</p>

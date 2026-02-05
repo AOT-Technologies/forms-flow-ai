@@ -26,7 +26,6 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
     @Override
     public void authenticate(AuthenticationFlowContext context) {
         UserModel user = context.getUser();
-        logger.infof("PostTenantAssignmentAuthenticator.authenticate() entered, user=%s", user == null ? "null" : user.getUsername());
         if (user == null) {
             logger.debug("PostTenantAssignment: user is null, skipping");
             context.attempted();
@@ -38,14 +37,12 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
         if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
             createTenant = clientNote;
         }
-        logger.debugf("PostTenantAssignment: authNote=%s, clientNote=%s", authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE), clientNote);
         if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
             logger.debug("PostTenantAssignment: create_tenant not set, skipping");
             context.success();
             return;
         }
         String defaultGroupId = authSession.getAuthNote(PreTenantCreationFormAction.DEFAULT_GROUP_ID_NOTE);
-        logger.debugf("PostTenantAssignment: defaultGroupId=%s", defaultGroupId);
         if (defaultGroupId == null || defaultGroupId.isEmpty()) {
             logger.debug("PostTenantAssignment: defaultGroupId missing, skipping");
             context.success();
@@ -85,20 +82,6 @@ public class PostTenantAssignmentAuthenticator implements Authenticator {
             authSession.setRedirectUri(substitutedRedirectUri);
             authSession.setClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM, substitutedRedirectUri);
             redirectUri = substitutedRedirectUri;
-        }
-
-        String startTimeNote = authSession.getAuthNote(PreTenantCreationFormAction.REGISTRATION_FLOW_START_TIME_NOTE);
-        if (startTimeNote != null && !startTimeNote.isEmpty()) {
-            try {
-                long startMs = Long.parseLong(startTimeNote);
-                long durationMs = System.currentTimeMillis() - startMs;
-                logger.infof("Registration flow completed in %d ms for user %s", durationMs, user.getUsername());
-                String uriWithDuration = TenantRegistrationUtils.appendQueryParam(redirectUri, TenantRegistrationUtils.getRegistrationDurationMsParamName(), String.valueOf(durationMs));
-                authSession.setRedirectUri(uriWithDuration);
-                authSession.setClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM, uriWithDuration);
-            } catch (NumberFormatException e) {
-                logger.debugf("Invalid registration_flow_start_time note: %s", startTimeNote);
-            }
         }
 
         AccountCreatedEmailSender.renderAndSendAsync(context.getSession(), realm, user, authSession.getRedirectUri());

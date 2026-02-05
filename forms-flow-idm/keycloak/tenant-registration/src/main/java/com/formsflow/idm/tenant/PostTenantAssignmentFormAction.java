@@ -38,7 +38,6 @@ public class PostTenantAssignmentFormAction implements FormAction {
 
     @Override
     public void success(FormContext context) {
-        logger.info("PostTenantAssignmentFormAction.success() entered");
         AuthenticationSessionModel authSession = context.getAuthenticationSession();
         String createTenant = authSession.getAuthNote(PreTenantCreationFormAction.CREATE_TENANT_REQUIRED_NOTE);
         if (createTenant == null || !"true".equalsIgnoreCase(createTenant)) {
@@ -64,7 +63,6 @@ public class PostTenantAssignmentFormAction implements FormAction {
             user.setEnabled(false);
             return;
         }
-        logger.infof("PostTenantAssignmentFormAction: adding user %s to group %s", user.getUsername(), defaultGroupId);
         try {
             user.joinGroup(group);
         } catch (Exception e) {
@@ -84,20 +82,6 @@ public class PostTenantAssignmentFormAction implements FormAction {
             authSession.setRedirectUri(substitutedRedirectUri);
             authSession.setClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM, substitutedRedirectUri);
             redirectUri = substitutedRedirectUri;
-        }
-
-        String startTimeNote = authSession.getAuthNote(PreTenantCreationFormAction.REGISTRATION_FLOW_START_TIME_NOTE);
-        if (startTimeNote != null && !startTimeNote.isEmpty()) {
-            try {
-                long startMs = Long.parseLong(startTimeNote);
-                long durationMs = System.currentTimeMillis() - startMs;
-                logger.infof("Registration flow completed in %d ms for user %s", durationMs, user.getUsername());
-                String uriWithDuration = TenantRegistrationUtils.appendQueryParam(redirectUri, TenantRegistrationUtils.getRegistrationDurationMsParamName(), String.valueOf(durationMs));
-                authSession.setRedirectUri(uriWithDuration);
-                authSession.setClientNote(OIDCLoginProtocol.REDIRECT_URI_PARAM, uriWithDuration);
-            } catch (NumberFormatException e) {
-                logger.debugf("Invalid registration_flow_start_time note: %s", startTimeNote);
-            }
         }
 
         AccountCreatedEmailSender.renderAndSendAsync(context.getSession(), realm, user, authSession.getRedirectUri());

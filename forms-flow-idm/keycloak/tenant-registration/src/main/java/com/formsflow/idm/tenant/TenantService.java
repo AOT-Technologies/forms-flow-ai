@@ -39,11 +39,6 @@ public class TenantService {
     private static final String DEFAULT_BPM_CLIENT_ID = "forms-flow-bpm";
     private static final String ENV_KEYCLOAK_PUBLIC_URL = "FF_KEYCLOAK_PUBLIC_URL";
 
-    private static final String[] GENERIC_DOMAINS = {
-        "gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "live.com",
-        "icloud.com", "mail.com", "aol.com", "protonmail.com", "yandex.com"
-    };
-
     /** Never follow redirects so Authorization is not stripped (HttpClient drops it on redirect). */
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
@@ -77,7 +72,6 @@ public class TenantService {
         logger.infof("Calling tenant API: %s (realm=%s)", url, realm != null ? realm.getName() : "null");
 
         String key = randomKey(5);
-        String name = (email != null && !email.isEmpty()) ? nameFromEmail(email, key) : key;
 
         Map<String, Object> details = new HashMap<>();
         details.put("createDefaultUsers", false);
@@ -86,7 +80,7 @@ public class TenantService {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("key", key);
-        payload.put("name", name);
+        payload.put("name", key);
         payload.put("details", details);
         payload.put("trial", true);
 
@@ -100,28 +94,12 @@ public class TenantService {
                     .POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8))
                     .timeout(Duration.ofSeconds(30));
             HttpRequest request = requestBuilder.build();
-            logger.debugf("Sending POST to %s with Authorization header (token length=%d)", url, token.length());
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
                 String body = response.body();
                 int code = response.statusCode();
-                if (code >= 300 && code < 400) {
-                    throw new TenantServiceException("Tenant API returned redirect " + code + ". Set FF_ADMIN_API_URL to the final URL (no redirects) so the Authorization header is sent: " + body);
-                }
-                if (code == 401 && body != null) {
-                    if (body.contains("authorization_header_missing") || body.contains("Authorization header is expected")) {
-                        logger.warnf("Tenant API returned 401 (Authorization header missing or invalid). " +
-                                "Ensure FF_ADMIN_API_URL is reachable from Keycloak and the Admin API accepts tokens from realm '%s' (issuer/hostname must match).",
-                                realm != null ? realm.getName() : "?");
-                    } else if (body.contains("invalid_claims") || body.contains("audience and issuer")) {
-                        logger.warnf("Tenant API returned 401 (invalid_claims: audience/issuer mismatch). " +
-                                "Configure the Admin API to accept tokens from realm '%s'. The token issuer is the Keycloak URL users see (e.g. http://192.168.2.100:8080/auth/realms/%s). " +
-                                "Set the Admin API KEYCLOAK_URL (or equivalent) to that same base URL so issuer validation passes.",
-                                realm != null ? realm.getName() : "?", realm != null ? realm.getName() : "?");
-                    }
-                }
                 throw new TenantServiceException("Tenant API returned " + code + ": " + body);
             }
 
@@ -151,24 +129,6 @@ public class TenantService {
             sb.append(alphanumeric.charAt(r.nextInt(alphanumeric.length())));
         }
         return sb.toString();
-    }
-
-    private static String nameFromEmail(String email, String fallbackKey) {
-        if (email == null || !email.contains("@")) {
-            return fallbackKey;
-        }
-        String domain = email.substring(email.indexOf('@') + 1).toLowerCase().trim();
-        for (String generic : GENERIC_DOMAINS) {
-            if (domain.equals(generic)) {
-                return fallbackKey;
-            }
-        }
-        // Use SLD only (second-level domain), not full domain or TLD
-        String[] parts = domain.split("\\.");
-        if (parts.length >= 2) {
-            return parts[parts.length - 2];
-        }
-        return fallbackKey;
     }
 
     /**

@@ -222,8 +222,10 @@ export default React.memo(() => {
                             onClick={() => setSelectedRole("creator")}
                             data-testid="focus-creator-card"
                           >
-                            <div className="onboarding-focus-icon">
-                              <CreatorIcon color={selectedRole === "creator" ? "var(--vivid)" : "var(--gray-x-light)"}/>
+                            <div className="onboarding-focus-icon-container">
+                              <div className="onboarding-focus-icon">
+                                <CreatorIcon/>
+                              </div>
                             </div>
                             <div className="onboarding-focus-content">
                               <h3 className="onboarding-focus-title">{t("I'm a creator")}</h3>
@@ -235,8 +237,10 @@ export default React.memo(() => {
                             onClick={() => setSelectedRole("manager")}
                             data-testid="focus-manager-card"
                           >
-                            <div className="onboarding-focus-icon">
-                              <ManagerIcon color={selectedRole === "manager" ? "var(--vivid)" : "var(--gray-x-light)"}/>
+                            <div className="onboarding-focus-icon-container">
+                              <div className="onboarding-focus-icon">
+                                <ManagerIcon/>
+                              </div>
                             </div>
                             <div className="onboarding-focus-content">
                               <h3 className="onboarding-focus-title">{t("I'm a manager")}</h3>
@@ -248,8 +252,10 @@ export default React.memo(() => {
                             onClick={() => setSelectedRole("notSure")}
                             data-testid="focus-not-sure-card"
                           >
-                            <div className="onboarding-focus-icon">
-                              <NotsureIcon color={selectedRole === "notSure" ? "var(--vivid)" : "var(--gray-x-light)"}/>
+                            <div className="onboarding-focus-icon-container">
+                              <div className="onboarding-focus-icon">
+                              <NotsureIcon/>
+                              </div>
                             </div>
                             <div className="onboarding-focus-content">
                               <h3 className="onboarding-focus-title">{t("I'm not sure")}</h3>

@@ -228,8 +228,8 @@ services:
   forms-flow-webapi:
     container_name: forms-flow-webapi
     build:
-      context: ./../../forms-flow-api/
-      dockerfile: Dockerfile
+      context: ./../../
+      dockerfile: forms-flow-api/Dockerfile
     restart: always
     depends_on :
       - forms-flow-webapi-db
@@ -297,8 +297,8 @@ services:
   forms-flow-documents-api:
     container_name: forms-flow-documents-api
     build:
-      context: ./../../forms-flow-documents/
-      dockerfile: Dockerfile
+      context: ./../../
+      dockerfile: forms-flow-documents/Dockerfile
     restart: always
     ports:
       - '5006:5006'

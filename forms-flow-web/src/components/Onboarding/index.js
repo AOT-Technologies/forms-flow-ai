@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -27,7 +27,7 @@ const onboardingSteps = [
       "Import existing forms in one step and begin editing immediately",
       "Effortlessly map custom fields and create custom form links"
     ],
-    imageComponent: OnboardingImage1
+    image: <OnboardingImage1 />
   },
   {
     title: "Build any workflow using our simple visual tools",
@@ -36,7 +36,7 @@ const onboardingSteps = [
       "Easily generate approval processes from any form submission",
       "Manage workflows visually or enable powerful DMN or BPMN features"
     ],
-    imageComponent: OnboardingImage2
+    image: <OnboardingImage2 />
   },
   {
     title: "Efficiently turn form  submissions into actions",
@@ -45,14 +45,14 @@ const onboardingSteps = [
       "Reassign, collaborate or escalate form submissions in one click",
       "Guarantee the right people see the right form submissions every time"
     ],
-    imageComponent: OnboardingImage3
+    image: <OnboardingImage3 />
   },
   {
     title: "Unlock the power of simple forms in your organization",
     description: [
       "Tell us a little about yourself and your organization so we can make formsflow work better for you",
     ],
-    imageComponent: OnboardingImage4
+    image: <OnboardingImage4 />
   },
   {
     title: "How do you want to use formsflow?",
@@ -119,16 +119,15 @@ export default React.memo(() => {
     }
   };
 
+  const currentStepData = onboardingSteps[currentStep];
+
   const renderVisualization = () => {
-    const ImageComponent = currentStepData.imageComponent;
     return (
       <div className="welcome-visualization">
-        {ImageComponent && <ImageComponent />}
+        {currentStepData.image}
       </div>
     );
   };
-
-  const currentStepData = onboardingSteps[currentStep];
 
   const isNextButtonDisabled = 
     (currentStep === 3 && (!industry || !role || !organizationSize)) ||
@@ -162,9 +161,9 @@ export default React.memo(() => {
                         <p key={index}>{t(desc)}</p>
                       ))}
                     </div>
-                    {currentStepData.imageComponent && (
+                    {currentStepData.image && (
                       <div className="onboarding-image-container">
-                        {React.createElement(currentStepData.imageComponent)}
+                        {currentStepData.image}
                       </div>
                     )}
                     {currentStepData.additionalInfo && (
@@ -265,7 +264,7 @@ export default React.memo(() => {
               ) : (
                 <>
                   <div className="onboarding-left-panel">
-                    {renderVisualization(currentStep)}
+                    {renderVisualization()}
                   </div>
                   <div className="onboarding-right-panel">
                     <h2 className="onboarding-title">{t(currentStepData.title)}</h2>

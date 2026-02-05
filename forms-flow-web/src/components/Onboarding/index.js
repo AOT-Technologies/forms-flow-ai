@@ -27,7 +27,7 @@ const onboardingSteps = [
       "Import existing forms in one step and begin editing immediately",
       "Effortlessly map custom fields and create custom form links"
     ],
-    image: <OnboardingImage1 />
+    imageComponent: OnboardingImage1
   },
   {
     title: "Build any workflow using our simple visual tools",
@@ -36,7 +36,7 @@ const onboardingSteps = [
       "Easily generate approval processes from any form submission",
       "Manage workflows visually or enable powerful DMN or BPMN features"
     ],
-    image: <OnboardingImage2 />
+    imageComponent: OnboardingImage2
   },
   {
     title: "Efficiently turn form  submissions into actions",
@@ -45,14 +45,14 @@ const onboardingSteps = [
       "Reassign, collaborate or escalate form submissions in one click",
       "Guarantee the right people see the right form submissions every time"
     ],
-    image: <OnboardingImage3 />
+    imageComponent: OnboardingImage3
   },
   {
     title: "Unlock the power of simple forms in your organization",
     description: [
       "Tell us a little about yourself and your organization so we can make formsflow work better for you",
     ],
-    image: <OnboardingImage4 />
+    imageComponent: OnboardingImage4
   },
   {
     title: "How do you want to use formsflow?",
@@ -89,14 +89,6 @@ export default React.memo(() => {
     if (currentStep === 4) {
       setButtonLoading(true);
       
-      const selectedData = {
-        industry,
-        role,
-        organizationSize,
-        selectedRole
-      };
-      console.log("Selected onboarding data:", selectedData);
-
       setTimeout(() => {
         setShowModal(false);
         setButtonLoading(false);
@@ -128,9 +120,10 @@ export default React.memo(() => {
   };
 
   const renderVisualization = () => {
+    const ImageComponent = currentStepData.imageComponent;
     return (
       <div className="welcome-visualization">
-        {currentStepData.image}
+        {ImageComponent && <ImageComponent />}
       </div>
     );
   };
@@ -169,9 +162,9 @@ export default React.memo(() => {
                         <p key={index}>{t(desc)}</p>
                       ))}
                     </div>
-                    {currentStepData.image && (
+                    {currentStepData.imageComponent && (
                       <div className="onboarding-image-container">
-                        {currentStepData.image}
+                        {React.createElement(currentStepData.imageComponent)}
                       </div>
                     )}
                     {currentStepData.additionalInfo && (

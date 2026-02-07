@@ -34,7 +34,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "html-webpack-plugin": "^5.3.2",
     "jest": "^29.7.0",
-    "webpack": "^5.94.0",
+    "webpack": "^5.105.0",
     "webpack-cli": "^5.1.4",
     "webpack-config-single-spa": "^5.0.0",
     "webpack-merge": "^5.8.0",

@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { PromptModal, V8CustomButton, ReusableTable } from "@formsflow/components";
 import { toast } from "react-toastify";
 import { deleteDraftbyId } from "../../../apiManager/services/draftService";
-import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit } from "../../../helper/routerHelper";
+import { navigateToDraftEdit, navigateToViewSubmission, navigateToResubmit, navigateToNewSubmission } from "../../../helper/routerHelper";
 import PropTypes from "prop-types";
 import { HelperServices } from "@formsflow/service";
 
@@ -36,6 +36,9 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteDraftId, setDeleteDraftId] = useState('');
     const [isDeletionLoading, setIsDeletionLoading] = useState(false);
+    const formId = useSelector(
+      (state) => state.applications.draftAndSubmissionsList?.formId
+    );
 
   const gridFieldToSortKey = {
     id: "id",
@@ -296,7 +299,14 @@ const SubmissionsAndDraftTable = ({ fetchSubmissionsAndDrafts }) => {
         paginationModel={paginationModel}
         onPaginationModelChange={onPaginationModelChange}
         getRowId={(row) => row.id}
-        noRowsLabel={t("No Entries have been found.")}
+        emptyStateMessage="No submissions found"
+        emptyStateAction={{
+          label: t("Create new submission"),
+          onClick: () => navigateToNewSubmission(dispatch, tenantKey, formId),
+          variant: "primary",
+          size: "medium",
+          dataTestId: "create-new-submission-button"
+        }}
         autoHeight={true}
         dataGridProps={{
           sx: {

@@ -16,6 +16,7 @@ import { manipulatingFormData } from "../../../apiManager/services/formFormatter
 import _cloneDeep from "lodash/cloneDeep";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
+import { navigateToDesignFormBuild } from "../../../helper/routerHelper.js";
 
 function FormTable({
   isDuplicating,
@@ -429,6 +430,14 @@ const handlePageChange = (page) => {
       onPaginationModelChange={externalOnPaginationModelChange || onPaginationModelChange}
       getRowId={(row) => row.id}
       autoHeight={true}
+      emptyStateMessage="No forms found"
+      emptyStateAction={{
+        label: t("Create new form"),
+        onClick: () => navigateToDesignFormBuild(dispatch, tenantKey),
+        variant: "primary",
+        size: "medium",
+        dataTestId: "clear-filters-button"
+      }}
     />
     <PromptModal
         show={showDeleteModal}

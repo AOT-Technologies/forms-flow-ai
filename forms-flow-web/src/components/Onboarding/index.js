@@ -224,7 +224,7 @@ export default React.memo(() => {
                           >
                             <div className="onboarding-focus-icon-container">
                               <div className="onboarding-focus-icon">
-                                <CreatorIcon/>
+                                <CreatorIcon color={selectedRole === "creator" ? "var(--vivid)" : "var(--gray-x-light)"}/>
                               </div>
                             </div>
                             <div className="onboarding-focus-content">
@@ -239,7 +239,7 @@ export default React.memo(() => {
                           >
                             <div className="onboarding-focus-icon-container">
                               <div className="onboarding-focus-icon">
-                                <ManagerIcon/>
+                                <ManagerIcon color={selectedRole === "manager" ? "var(--vivid)" : "var(--gray-x-light)"}/>
                               </div>
                             </div>
                             <div className="onboarding-focus-content">

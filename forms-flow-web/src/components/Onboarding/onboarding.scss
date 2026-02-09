@@ -168,25 +168,6 @@
   .onboarding-focus-icon-container {
     width: 2rem;
     height: 2rem;
-    .onboarding-focus-icon {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      border: 1px solid var(--gray-x-light);
-    }
-  }
-
-  .onboarding-focus-card.selected .onboarding-focus-icon {
-    border-color: var(--vivid);
-  }
-
-  [data-testid="focus-not-sure-card"] .onboarding-focus-icon {
-    svg{
-      margin-left: 0.25rem;
-    }
   }
 
   .onboarding-focus-content {

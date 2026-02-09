@@ -9,7 +9,7 @@
 	<name>tenant-registration</name>
 	<url>http://maven.apache.org</url>
 	<properties>
-		<keycloak.version>26.4.1</keycloak.version>
+		<keycloak.version>26.5.2</keycloak.version>
 	</properties>
 	<dependencies>
 		<dependency>

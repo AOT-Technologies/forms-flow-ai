@@ -13,7 +13,7 @@ import {
   OnboardingImage4,
   CreatorIcon,
   ManagerIcon,
-  NotsureIcon
+  NotSureIcon
 } from "@formsflow/components";
 import { INDUSTRY_OPTIONS, ROLE_OPTIONS, ORGANIZATION_SIZE_OPTIONS } from "./onboardingConstants";
 import { getRoute } from "../../constants/constants";
@@ -252,10 +252,8 @@ export default React.memo(() => {
                             onClick={() => setSelectedRole("notSure")}
                             data-testid="focus-not-sure-card"
                           >
-                            <div className="onboarding-focus-icon-container">
-                              <div className="onboarding-focus-icon">
-                              <NotsureIcon/>
-                              </div>
+                            <div className="onboarding-focus-icon">
+                              <NotSureIcon color={selectedRole === "notSure" ? "var(--vivid)" : "var(--gray-x-light)"}/>
                             </div>
                             <div className="onboarding-focus-content">
                               <h3 className="onboarding-focus-title">{t("I'm not sure")}</h3>

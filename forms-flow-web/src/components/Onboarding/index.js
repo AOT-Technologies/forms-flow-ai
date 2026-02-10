@@ -106,7 +106,6 @@ export default React.memo(() => {
         ]);
 
         setShowModal(false);
-        setButtonLoading(false);
         
         let redirectPath = "";
         if (selectedRole === "creator") {

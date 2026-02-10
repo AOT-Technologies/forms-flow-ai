@@ -398,7 +398,9 @@ const PrivateRoute = React.memo((props) => {
             <Route exact path={ROUTE_TO.TASK} />
             <Route path={ROUTE_TO.ADMIN} />
             <Route exact path={ROUTE_TO.ANALYZESUBMISSIONS} />
-            <Route path={ROUTE_TO.ONBOARDING} component={Onboarding} />
+            {MULTITENANCY_ENABLED && (
+              <Route path={ROUTE_TO.ONBOARDING} component={Onboarding} />
+            )}
             <Route exact path={BASE_ROUTE}>
               {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}
             </Route>

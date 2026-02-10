@@ -148,10 +148,10 @@
     padding: 0.87rem;
     border: 1px solid #E0E0E0;
     border-radius: 8px;
-    background-color: $white;
     cursor: pointer;
     transition: all 0.2s ease;
     width: 100%;
+    gap: var(--spacer-100);
 
     &:hover {
       border-color: var(--vivid);
@@ -165,18 +165,9 @@
     }
   }
 
-  .onboarding-focus-icon {
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    color: var(--vivid);
-  }
-
-  .onboarding-focus-card.selected .onboarding-focus-icon {
-    color: var(--vivid);
+  .onboarding-focus-icon-container {
+    width: 2rem;
+    height: 2rem;
   }
 
   .onboarding-focus-content {

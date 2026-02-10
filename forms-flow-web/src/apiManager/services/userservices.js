@@ -1,5 +1,5 @@
 import API from "../endpoints/index";
-import { RequestService, fetchAndStoreFormioRoles } from "@formsflow/service";
+import { RequestService, fetchAndStoreFormioRoles, StorageService } from "@formsflow/service";
 import { setAccessForForm, setRoleIds } from "../../actions/roleActions";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { setTenantData } from "../../actions/tenantActions";
@@ -56,5 +56,21 @@ export const updateDefaultFilter = (defaultFilter) => {
   return RequestService.httpPOSTRequest(
     API.UPDATE_DEFAULT_FILTER,
     {defaultFilter}
+  );
+}; 
+
+export const addUserOrgRole = (data)=>{
+  return RequestService.httpPUTRequest(
+    API.USER_ORG_ROLE,
+    data,
+    StorageService.get(StorageService.User.AUTH_TOKEN)
+  );
+}; 
+
+export const addUserOrgDetails = (tenantId,orgDetails)=>{
+  return RequestService.httpPUTRequest(
+    API.USER_ORG_DETAILS.replace("<tenant_id>", tenantId),
+    orgDetails,
+    StorageService.get(StorageService.User.AUTH_TOKEN)
   );
 };

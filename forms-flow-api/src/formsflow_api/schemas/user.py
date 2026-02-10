@@ -72,12 +72,24 @@ class UserSchema(Schema):
 
         unknown = EXCLUDE
 
+    role = fields.Str(data_key="role", allow_none=True)
     default_filter = fields.Int(data_key="defaultFilter", allow_none=True)
     default_submissions_filter = fields.Int(
         data_key="defaultSubmissionsFilter", allow_none=True
     )
     locale = fields.Str(data_key="locale")
     user_name = fields.Str(data_key="userName", dump_only=True)
+
+
+class UserInfoUpdateSchema(Schema):
+    """Schema for updating user info (role, etc.)."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    role = fields.Str(data_key="role", required=True)
 
 
 class UserProfileAttributesSchema(Schema):

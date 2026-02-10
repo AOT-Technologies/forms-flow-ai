@@ -18,6 +18,7 @@ import {
 import { INDUSTRY_OPTIONS, ROLE_OPTIONS, ORGANIZATION_SIZE_OPTIONS } from "./onboardingConstants";
 import { getRoute } from "../../constants/constants";
 import "./onboarding.scss";
+import { addUserOrgRole,addUserOrgDetails } from "../../apiManager/services/userservices";
 
 const onboardingSteps = [
   {
@@ -85,11 +86,25 @@ export default React.memo(() => {
     setShowModal(true);
   }, []);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep === 4) {
       setButtonLoading(true);
-      
-      setTimeout(() => {
+
+      const userInfoPayload = {
+        role: role,
+      };
+
+      const orgDetails = {
+        industry: industry,
+        org_size: organizationSize,
+      };
+
+      try {
+        await Promise.all([
+          addUserOrgRole(userInfoPayload),
+          addUserOrgDetails(currentTenantId, orgDetails),
+        ]);
+
         setShowModal(false);
         setButtonLoading(false);
         
@@ -101,11 +116,15 @@ export default React.memo(() => {
         } else if (selectedRole === "notSure") {
           redirectPath = ROUTE_TO.FORMFLOW;
         }
-        
+
         if (redirectPath) {
           history.push(redirectPath);
         }
-      }, 1000);
+      } catch (error) {
+        console.error("Onboarding save failed", error);
+      } finally {
+        setButtonLoading(false);
+      }
     } else if (currentStep < onboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {

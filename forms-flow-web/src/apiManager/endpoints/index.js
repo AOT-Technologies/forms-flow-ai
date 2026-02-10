@@ -92,7 +92,9 @@ const API = {
   PUBLISH_PROCESS: `${WEB_BASE_URL}/process/<process_id>/publish`,
   UN_PUBLISH_PROCESS: `${WEB_BASE_URL}/process/<process_id>/unpublish`,
   FORM_FLOW_BUILDER: `${WEB_BASE_URL}/form/form-flow-builder`,
-  FORM_FLOW_UPDATE: `${WEB_BASE_URL}/form/form-flow-builder/<mapper_id>`
+  FORM_FLOW_UPDATE: `${WEB_BASE_URL}/form/form-flow-builder/<mapper_id>`,
+  USER_ORG_ROLE: `${WEB_BASE_URL}/user/info`,
+  USER_ORG_DETAILS: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenants/<tenant_id>`,
 };
 
 export default API;

@@ -1,0 +1,69 @@
+name: Deploy to Dev Environment
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: .
+
+jobs:
+  deploy-to-dev:
+    if: github.repository == 'AOT-Technologies/forms-flow-ai'
+    runs-on: ubuntu-latest
+    environment: 'dev'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set version (non-master)
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: |
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+
+      - name: Set version (master)
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: |
+          VER=$(cat VERSION)
+          VER=${VER/-alpha/''}
+          echo "VERSION=$VER" >> $GITHUB_ENV
+
+      - name: Print Version
+        run: echo "Deploying Version: $VERSION"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DEPLOYMENT_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEPLOYMENT_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: latest
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region ca-central-1 \
+            --name ${{ secrets.DEV_EKS_CLUSTER }}
+
+      - name: Patch Deployments with New Image
+        run: |
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi:'"${VERSION}"'"}]}}}}'
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:'"${VERSION}"'"}]}}}}'
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-data-layer -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-data-layer","image":"docker.io/formsflow/forms-flow-data-layer:'"${VERSION}"'"}]}}}}'
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api:'"${VERSION}"'"}]}}}}'
+          kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:'"${VERSION}"'"}]}}}}'
+          kubectl rollout status deployment/forms-flow-api -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }}
+          kubectl rollout status deployment/forms-flow-bpm -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }}
+          kubectl rollout status deployment/forms-flow-data-layer -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }}
+          kubectl rollout status deployment/forms-flow-documents-api -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }}
+          kubectl rollout status deployment/forms-flow-web -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }}

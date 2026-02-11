@@ -1,0 +1,55 @@
+name: Snyk Scan on Push
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  snyk-security-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project-dir: [ "forms-flow-web", "forms-flow-web-root-config" ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Debug:Show folder structure
+        run: ls -R
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ matrix.project-dir }}
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: snyk auth $SNYK_TOKEN
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Snyk Security Scan
+        run: snyk test --severity-threshold=high --json > snyk-report.json
+        working-directory: ${{ matrix.project-dir }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
+      - name: Monitor Project in Snyk
+        run: snyk monitor
+        working-directory: ${{ matrix.project-dir }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Upload Snyk report
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-report-${{ matrix.project-dir }}-${{ github.ref_name }}
+          path: ${{ matrix.project-dir }}/snyk-report.json

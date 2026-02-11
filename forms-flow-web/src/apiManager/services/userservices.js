@@ -61,7 +61,7 @@ export const updateDefaultFilter = (defaultFilter) => {
 
 export const addUserOrgRole = (data)=>{
   return RequestService.httpPUTRequest(
-    API.USER_ORG_ROLE,
+    API.USER_INFO_UPDATE,
     data,
     StorageService.get(StorageService.User.AUTH_TOKEN)
   );

@@ -104,8 +104,6 @@ export default React.memo(() => {
           addUserOrgRole(userInfoPayload),
           addUserOrgDetails(currentTenantId, orgDetails),
         ]);
-
-        setShowModal(false);
         
         let redirectPath = "";
         if (selectedRole === "creator") {
@@ -122,6 +120,7 @@ export default React.memo(() => {
       } catch (error) {
         console.error("Onboarding save failed", error);
       } finally {
+        setShowModal(false);
         setButtonLoading(false);
       }
     } else if (currentStep < onboardingSteps.length - 1) {

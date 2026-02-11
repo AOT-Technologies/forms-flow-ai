@@ -102,7 +102,7 @@ class TestUserLoginDetails:
 
     def test_get_user_login_details_success(self, app, client, session, jwt):
         """Test successful retrieval of user login details."""
-        token = get_token(jwt, username="formsflow-reviewer")
+        token = get_token(jwt, username="formsflow-reviewer", role=VIEW_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -137,7 +137,7 @@ class TestUserLoginDetails:
 
     def test_get_user_login_details_internal_user(self, app, client, session, jwt):
         """Test login details for a user with internal (local) authentication."""
-        token = get_token(jwt, username="formsflow-reviewer")
+        token = get_token(jwt, username="formsflow-reviewer", role=VIEW_TASKS)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -156,3 +156,147 @@ class TestUserLoginDetails:
             # Most test users will be internal
             if response_data["loginType"] == "internal":
                 assert "identityProvider" not in response_data
+
+
+class TestUserProfile:
+    """Test suite for the user profile update API."""
+
+    def test_update_profile_unauthorized(self, app, client, session):
+        """Test profile update endpoint without authorization."""
+        rv = client.put(
+            "/user/test-user-id/profile",
+            json={"firstName": "Test"},
+        )
+        assert rv.status_code == 401
+        assert rv.json == {
+            "message": "Invalid Token Error",
+            "code": "INVALID_AUTH_TOKEN",
+            "details": [],
+        }
+
+    def test_update_profile_empty_body(self, app, client, session, jwt):
+        """Test profile update with no request body."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        rv = client.put(
+            "/user/test-user-id/profile",
+            headers=headers,
+            json=None,
+        )
+        assert rv.status_code == 400
+
+    def test_update_profile_empty_payload(self, app, client, session, jwt):
+        """Test profile update with empty payload (no-op)."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        rv = client.put(
+            "/user/test-user-id/profile",
+            headers=headers,
+            json={},
+        )
+        # Should pass validation but fail on user mismatch
+        assert rv.status_code == 403
+
+    def test_update_profile_invalid_email_format(self, app, client, session, jwt):
+        """Test profile update with invalid email format."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        rv = client.put(
+            "/user/test-user-id/profile",
+            headers=headers,
+            json={"email": "invalid-email"},
+        )
+        assert rv.status_code == 400
+
+    def test_update_profile_empty_first_name(self, app, client, session, jwt):
+        """Test profile update with empty first name."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        rv = client.put(
+            "/user/test-user-id/profile",
+            headers=headers,
+            json={"firstName": "   "},
+        )
+        assert rv.status_code == 400
+
+    def test_update_profile_empty_last_name(self, app, client, session, jwt):
+        """Test profile update with empty last name."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        rv = client.put(
+            "/user/test-user-id/profile",
+            headers=headers,
+            json={"lastName": ""},
+        )
+        assert rv.status_code == 400
+
+    def test_update_profile_empty_username(self, app, client, session, jwt):
+        """Test profile update with empty username."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        rv = client.put(
+            "/user/test-user-id/profile",
+            headers=headers,
+            json={"username": "  "},
+        )
+        assert rv.status_code == 400
+
+    def test_update_profile_user_id_mismatch(self, app, client, session, jwt):
+        """Test profile update when user_id doesn't match logged-in user."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # Use a different user_id than the one in the token
+        rv = client.put(
+            "/user/different-user-id/profile",
+            headers=headers,
+            json={"firstName": "Test"},
+        )
+        # Should return 403 (Forbidden) - can only update own profile
+        assert rv.status_code == 403
+
+    def test_update_profile_valid_payload(self, app, client, session, jwt):
+        """Test profile update with valid payload and verify successful response."""
+        token = get_token(jwt, username="formsflow-reviewer")
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        # Test tokens from get_token always have this sub value (from test_utils.py)
+        user_id = "47b46f22-45ec-4cfb-825b-ed10ba8bed01"
+        payload = {
+            "firstName": "John",
+            "lastName": "Doe",
+            "email": "john.doe@example.com",
+            "attributes": {
+                "locale": ["en"]
+            }
+        }
+        rv = client.put(
+            f"/user/{user_id}/profile",
+            headers=headers,
+            json=payload,
+        )
+        assert rv.status_code == 200, f"Expected 200, got {rv.status_code}. Response: {rv.json}"
+        response_data = rv.json
+        assert "firstName" in response_data or "email" in response_data or "attributes" in response_data

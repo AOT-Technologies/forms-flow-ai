@@ -1,11 +1,13 @@
 """This exposes the Keycloak Admin APIs."""
 
 import json
+from urllib.parse import quote
 
 import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
+    Cache,
     HTTP_TIMEOUT,
     UserContext,
     profiletime,
@@ -263,3 +265,71 @@ class KeycloakAdminAPIService:
         (e.g., Google, Microsoft, etc.).
         """
         return self.get_request(url_path=f"users/{user_id}/federated-identity")
+
+    @profiletime
+    def get_realm_info(self, force_refresh: bool = False):
+        """Return realm information including settings like editUsernameAllowed.
+
+        This calls GET /admin/realms/{realm} to get the realm configuration.
+        Uses Redis cache to store realm info for 5 minutes.
+        """
+        # Build cache key using realm name from base_url
+        realm_name = current_app.config.get("KEYCLOAK_URL_REALM", "default")
+        cache_key = f"keycloak_realm_info_{realm_name}"
+
+        # Check Redis cache first
+        if not force_refresh:
+            cached_realm_info = Cache.get(cache_key)
+            if cached_realm_info:
+                current_app.logger.debug("Returning realm info from Redis cache")
+                return cached_realm_info
+
+        # The base_url already includes /admin/realms/{realm}
+        # So we just need to call get_request with empty path
+        url = f"{self.base_url}"
+        try:
+            response = self.session.request("GET", url)
+            current_app.logger.debug(f"keycloak Admin API get realm info URL: {url}")
+            current_app.logger.debug(f"Keycloak response status: {response.status_code}")
+            response.raise_for_status()
+            if response.ok:
+                realm_info = response.json()
+                # Cache for 5 minutes (300 seconds)
+                Cache.set(cache_key, realm_info, timeout=300)
+                current_app.logger.debug("Realm info cached in Redis")
+                return realm_info
+            return None
+        except requests.exceptions.HTTPError as err:
+            current_app.logger.error(f"Keycloak Admin API get realm info failed: {err}")
+            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL) from err
+
+    @profiletime
+    def get_user_by_username(self, username: str):
+        """Check if a username already exists in the realm.
+
+        This calls GET /admin/realms/{realm}/users?exact=true&username={username}
+        Returns list of users with exact username match.
+        """
+        encoded_username = quote(username, safe="")
+        url_path = f"users?exact=true&username={encoded_username}"
+        return self.get_request(url_path=url_path)
+
+    @profiletime
+    def get_user_by_email(self, email: str):
+        """Check if an email already exists in the realm.
+
+        This calls GET /admin/realms/{realm}/users?exact=true&email={email}
+        Returns list of users with exact email match.
+        """
+        encoded_email = quote(email, safe="")
+        url_path = f"users?exact=true&email={encoded_email}"
+        return self.get_request(url_path=url_path)
+
+    @profiletime
+    def get_user_by_id(self, user_id: str):
+        """Get user by ID.
+
+        This calls GET /admin/realms/{realm}/users/{userId}
+        Returns the user representation.
+        """
+        return self.get_request(url_path=f"users/{user_id}")

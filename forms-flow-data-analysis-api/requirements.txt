@@ -23,7 +23,7 @@ certifi==2025.1.31
 cffi==1.17.1
 charset-normalizer==3.4.1
 click==8.1.8
-cryptography==44.0.2
+cryptography==46.0.5
 filelock==3.20.1
 flake8-import-order==0.18.2
 flask-jwt-oidc==0.8.0

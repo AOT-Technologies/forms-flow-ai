@@ -436,7 +436,7 @@ const handlePageChange = (page) => {
         onClick: () => navigateToDesignFormBuild(dispatch, tenantKey),
         variant: "primary",
         size: "medium",
-        dataTestId: "clear-filters-button"
+        dataTestId: "create-new-form-button"
       }}
     />
     <PromptModal

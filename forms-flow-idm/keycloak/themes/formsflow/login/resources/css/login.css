@@ -514,6 +514,21 @@
       max-width: 500px;
   }
   
+  /* Ensure registration form panel has proper spacing */
+  .kc-register-form-panel form {
+      width: 100%;
+  }
+  
+  /* Make sure card-pf expands for registration layout */
+  .card-pf {
+      overflow: visible;
+  }
+  
+  /* Adjust content wrapper for registration */
+  #kc-content-wrapper {
+      width: 100%;
+  }
+  
   /*phone*/
   @media (max-width: 767px) {
       .login-pf-page .card-pf {
@@ -635,7 +650,456 @@
     background: #ffffff;
   }
   
+  /* Prevent horizontal scroll on registration page */
+  body.registration-page,
+  body.tenant-registration-page {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  body.registration-page .login-pf-page,
+  body.tenant-registration-page .login-pf-page {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Override for tenant/multitenancy - center the two-column block on the page */
+  body.tenant-registration-page .login-pf-page,
+  body.multitenancy-registration-page .login-pf-page:has(.kc-register-container),
+  body.multitenancy-registration-page .login-pf-page {
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
+  
   body {
     background: #ffffff !important;
+  }
+  
+  /* Normal registration - single column form layout */
+  .kc-register-container {
+    display: block;
+    width: 100%;
+  }
+  
+  /* Two-Column Layout when create_tenant=true or multitenancy - centered on page */
+  body.tenant-registration-page .kc-register-container,
+  body.tenant-registration-page .kc-register-container.kc-register-container--tenant,
+  body.multitenancy-registration-page .kc-register-container {
+    display: flex;
+    width: 100%;
+    max-width: 1525px;
+    min-width: 0;
+    margin: 0 auto;
+    min-height: 80vh;
+    justify-content: center;
+    align-items: stretch;
+    padding: 0;
+    gap: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Remove card styling for tenant/multitenancy registration page - plain background */
+  body.tenant-registration-page .card-pf:has(.kc-register-container),
+  body.tenant-registration-page .card-pf.registration-card,
+  body.multitenancy-registration-page .card-pf:has(.kc-register-container),
+  body.multitenancy-registration-page .card-pf.multitenancy-registration-card {
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+  
+  /* Fallback: Target card-pf that contains multitenancy registration container */
+  body.multitenancy-registration-page #kc-content-wrapper .kc-register-container {
+    position: relative;
+  }
+  
+  /* Direct override for card-pf when multitenancy registration container is present */
+  body.multitenancy-registration-page .card-pf .kc-register-container {
+    margin: 0;
+  }
+  
+  /* Ensure plain white background for multitenancy registration page */
+  body.multitenancy-registration-page:has(.kc-register-container),
+  body.multitenancy-registration-page .login-pf-page:has(.kc-register-container),
+  body.multitenancy-registration-page .login-pf:has(.kc-register-container) {
+    background: #ffffff !important;
+  }
+  
+  /* Fallback for browsers without :has() - use JavaScript class */
+  body.multitenancy-registration-page .card-pf.multitenancy-registration-card {
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+  
+  /* Remove any card styling from multitenancy registration container */
+  body.multitenancy-registration-page .kc-register-container {
+    background: transparent;
+  }
+  
+  /* Hide header section for tenant/multitenancy registration page */
+  body.tenant-registration-page .card-pf header,
+  body.multitenancy-registration-page .card-pf:has(.kc-register-container) header,
+  body.multitenancy-registration-page .card-pf.multitenancy-registration-card header {
+    display: none !important;
+  }
+  
+  /* Hide the top header wrapper for tenant/multitenancy registration page */
+  body.tenant-registration-page #kc-header,
+  body.multitenancy-registration-page #kc-header,
+  body.multitenancy-registration-page .login-pf-page:has(.kc-register-container) #kc-header {
+    display: none !important;
+  }
+  
+  /* Hide the page title (Register) for tenant/multitenancy registration page */
+  body.tenant-registration-page #kc-page-title,
+  body.multitenancy-registration-page .card-pf:has(.kc-register-container) #kc-page-title,
+  body.multitenancy-registration-page .card-pf.multitenancy-registration-card #kc-page-title,
+  body.multitenancy-registration-page #kc-page-title {
+    display: none !important;
+  }
+  
+  /* Hide the centered image in header for tenant/multitenancy registration page */
+  body.tenant-registration-page header img,
+  body.multitenancy-registration-page .card-pf:has(.kc-register-container) header img,
+  body.multitenancy-registration-page .card-pf.multitenancy-registration-card header img,
+  body.multitenancy-registration-page header img {
+    display: none !important;
+  }
+  
+  /* Hide the image container div for multitenancy */
+  body.multitenancy-registration-page header div[style*="text-align: center"],
+  body.multitenancy-registration-page .card-pf:has(.kc-register-container) header div[style*="text-align: center"] {
+    display: none !important;
+  }
+  
+  /* Ensure content wrapper doesn't add extra spacing for tenant/multitenancy */
+  body.tenant-registration-page #kc-content-wrapper,
+  body.multitenancy-registration-page #kc-content-wrapper:has(.kc-register-container),
+  body.multitenancy-registration-page #kc-content-wrapper {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure the card-pf container doesn't constrain width for tenant/multitenancy */
+  body.tenant-registration-page .card-pf,
+  body.multitenancy-registration-page .card-pf:has(.kc-register-container),
+  body.multitenancy-registration-page .card-pf.multitenancy-registration-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure plain background for tenant/multitenancy registration page */
+  body.tenant-registration-page,
+  body.tenant-registration-page .login-pf-page,
+  body.multitenancy-registration-page,
+  body.multitenancy-registration-page .login-pf-page {
+    background: #ffffff !important;
+  }
+  
+  /* Ensure login-pf-page doesn't constrain tenant/multitenancy registration container */
+  body.tenant-registration-page .login-pf-page,
+  body.multitenancy-registration-page .login-pf-page:has(.kc-register-container),
+  body.multitenancy-registration-page .login-pf-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure kc-content takes full width for tenant/multitenancy */
+  body.tenant-registration-page #kc-content,
+  body.multitenancy-registration-page #kc-content:has(.kc-register-container),
+  body.multitenancy-registration-page #kc-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  /* Hide marketing panel by default (for normal registration) */
+  .kc-register-marketing-panel {
+    display: none;
+  }
+  
+  /* Explicitly hide tenant content when create_tenant is not in URL */
+  .kc-tenant-content-hidden {
+    display: none !important;
+  }
+  
+  /* Left panel - content centered vertically and horizontally within its half */
+  body.tenant-registration-page .kc-register-marketing-panel:not(.kc-tenant-content-hidden),
+  body.multitenancy-registration-page .kc-register-marketing-panel {
+    flex: 1 1 50%;
+    min-width: 0;
+    max-width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+  
+  body.tenant-registration-page .kc-marketing-content,
+  body.multitenancy-registration-page .kc-marketing-content {
+    max-width: 444px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  /* Hero headline: "Unlock the power of simple forms in your organization" */
+  .kc-register-hero-headline {
+    color: var(--00-on-surface-medium-emphasis, rgba(0, 0, 0, 0.60));
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Figtree, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 40px; /* 111.111% */
+    letter-spacing: 0.25px;
+    margin: 0 0 1em 0;
+  }
+  
+  /* Prevent each line from wrapping */
+  .kc-register-hero-headline .kc-headline-line1,
+  .kc-register-hero-headline .kc-headline-line2 {
+    white-space: nowrap;
+    display: inline-block;
+  }
+  
+  
+  /* Three-Step Process for tenant/multitenancy */
+  body.tenant-registration-page .kc-process-steps,
+  body.multitenancy-registration-page .kc-process-steps {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 97px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  body.tenant-registration-page .kc-step,
+  body.multitenancy-registration-page .kc-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  body.tenant-registration-page .kc-step-icon,
+  body.multitenancy-registration-page .kc-step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50.086px;
+    height: 50.086px;
+  }
+  
+  body.tenant-registration-page .kc-step-icon svg,
+  body.multitenancy-registration-page .kc-step-icon svg {
+    width: 50.086px;
+    height: 50.086px;
+  }
+  
+  .kc-step-text {
+    width: 80px;
+    min-height: 32px;
+    color: #7C7D7F;
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Figtree, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px; /* 106.667% */
+    letter-spacing: 0.25px;
+    white-space: normal;
+    word-wrap: break-word;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Position arrow to align with center of circle icon */
+  body.tenant-registration-page .kc-step-arrow,
+  body.multitenancy-registration-page .kc-step-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    margin-top: calc((50.086px - 8px) / 2);
+  }
+  
+  /* Benefits List for tenant/multitenancy */
+  body.tenant-registration-page .kc-benefits-list,
+  body.multitenancy-registration-page .kc-benefits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+  
+  body.tenant-registration-page .kc-benefit-item,
+  body.multitenancy-registration-page .kc-benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  /* Checked items label (Easy setup, no coding required, etc.) */
+  body.tenant-registration-page .kc-benefit-item__label,
+  body.multitenancy-registration-page .kc-benefit-item__label {
+    color: var(--00-on-surface-medium-emphasis, rgba(0, 0, 0, 0.60));
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Figtree, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 100% */
+    letter-spacing: 0.25px;
+  }
+  
+  body.tenant-registration-page .kc-checkmark-icon,
+  body.multitenancy-registration-page .kc-checkmark-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  
+  /* Normal registration form panel - centered */
+  .kc-register-form-panel {
+    display: block;
+    width: 100%;
+  }
+  
+  /* Normal registration form - standard width */
+  .kc-register-form-panel #kc-register-form {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  /* Right panel - form centered vertically and horizontally within its half */
+  body.tenant-registration-page .kc-register-form-panel,
+  body.multitenancy-registration-page .kc-register-form-panel {
+    flex: 1 1 50%;
+    min-width: 0;
+    max-width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+  
+  /* Multitenancy registration form - fixed width */
+  body.multitenancy-registration-page .kc-register-form-panel #kc-register-form {
+    width: 419px;
+    height: 736px;
+    max-width: 419px;
+    margin: 0;
+  }
+  
+  /* Responsive Design for Multitenancy */
+  @media (max-width: 968px) {
+    body.tenant-registration-page .kc-register-container,
+    body.multitenancy-registration-page .kc-register-container {
+      flex-direction: column;
+      max-width: 100%;
+      min-height: auto;
+      align-items: stretch;
+    }
+    
+    body.tenant-registration-page .kc-register-marketing-panel:not(.kc-tenant-content-hidden),
+    body.multitenancy-registration-page .kc-register-marketing-panel {
+      max-width: 100%;
+      padding: 40px 20px;
+      order: 2;
+      height: auto;
+      justify-content: center;
+    }
+    
+    body.tenant-registration-page .kc-register-form-panel,
+    body.multitenancy-registration-page .kc-register-form-panel {
+      max-width: 100%;
+      padding: 20px;
+      order: 1;
+      height: auto;
+      justify-content: center;
+    }
+    
+    .kc-register-hero-headline {
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    body.tenant-registration-page .kc-process-steps,
+    body.multitenancy-registration-page .kc-process-steps {
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    
+    body.tenant-registration-page .kc-step-arrow,
+    body.multitenancy-registration-page .kc-step-arrow {
+      transform: rotate(90deg);
+      margin: 5px 0;
+    }
+    
+    body.tenant-registration-page .kc-benefits-list,
+    body.multitenancy-registration-page .kc-benefits-list {
+      gap: 24px;
+    }
+    
+    body.tenant-registration-page .kc-benefit-item__label,
+    body.multitenancy-registration-page .kc-benefit-item__label {
+      width: auto;
+      height: auto;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .kc-register-hero-headline {
+      font-size: 20px;
+    }
+    
+    body.tenant-registration-page .kc-step-text,
+    body.multitenancy-registration-page .kc-step-text {
+      font-size: 12px;
+      width: auto;
+      height: auto;
+    }
+    
+    body.tenant-registration-page .kc-benefit-item__label,
+    body.multitenancy-registration-page .kc-benefit-item__label {
+      font-size: 14px;
+      line-height: 14px;
+      width: auto;
+      height: auto;
+    }
+    
+    body.multitenancy-registration-page .kc-register-form-panel #kc-register-form {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+    }
   }
   

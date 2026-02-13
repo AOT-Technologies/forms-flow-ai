@@ -13,7 +13,7 @@ def read_requirements(filename):
     """
     with open(filename, "r") as req:
         requirements = req.readlines()
-    install_requires = [r.strip() for r in requirements if r.find("git+") != 0]
+    install_requires = [r.strip() for r in requirements if r.find("git+") != 0 and r.find('forms-flow-api-utils') == -1]
     return install_requires
 
 

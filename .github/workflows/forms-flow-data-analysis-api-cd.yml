@@ -11,7 +11,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-data-analysis-api
+    working-directory: .
 
 
 jobs:
@@ -22,8 +22,8 @@ jobs:
       matrix:
         include:
           - image: formsflow/forms-flow-data-analysis-api
-            context: forms-flow-data-analysis-api
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: forms-flow-data-analysis-api/Dockerfile
             name: forms-flow-data-analysis-api
     permissions:
       contents: read
@@ -85,7 +85,8 @@ jobs:
         if: ${{ github.ref != 'refs/heads/master' }}
         uses: docker/build-push-action@v4
         with:
-          context: forms-flow-data-analysis-api
+          context: .
+          file: forms-flow-data-analysis-api/Dockerfile
           build-args: MODEL_ID=Seethal/sentiment_analysis_generic_dataset
           push: true
           platforms: linux/amd64,linux/arm64/v8
@@ -95,7 +96,8 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/build-push-action@v4
         with:
-          context: forms-flow-data-analysis-api
+          context: .
+          file: forms-flow-data-analysis-api/Dockerfile
           build-args: MODEL_ID=Seethal/sentiment_analysis_generic_dataset
           push: true
           platforms: linux/amd64,linux/arm64/v8

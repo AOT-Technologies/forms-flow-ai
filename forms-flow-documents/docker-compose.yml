@@ -3,8 +3,8 @@ version: '3.7'
 services:
   forms-flow-documents-api:
     build:
-      context: ./
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: forms-flow-documents/Dockerfile
     restart: unless-stopped
     ports:
       - '5006:5006'

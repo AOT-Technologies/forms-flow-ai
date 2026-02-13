@@ -11,7 +11,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-api
+    working-directory: .
 
 
 jobs:
@@ -22,8 +22,8 @@ jobs:
       matrix:
         include:
           - image: formsflow/forms-flow-webapi
-            context: forms-flow-api
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: forms-flow-api/Dockerfile
             name: forms-flow-api
     permissions:
       contents: read
@@ -90,7 +90,8 @@ jobs:
         if: ${{ github.ref != 'refs/heads/master' }}
         uses: docker/build-push-action@v4
         with:
-          context: forms-flow-api
+          context: .
+          file: forms-flow-api/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}
@@ -99,7 +100,8 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/build-push-action@v4
         with:
-          context: forms-flow-api
+          context: .
+          file: forms-flow-api/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-webapi:latest

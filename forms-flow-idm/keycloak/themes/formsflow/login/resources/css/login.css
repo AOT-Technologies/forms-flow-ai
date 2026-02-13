@@ -660,7 +660,7 @@
   body.registration-page .login-pf-page,
   body.tenant-registration-page .login-pf-page {
     max-width: 100%;
-    overflow-x: hidden;
+    overflow: visible;
   }
   
   /* Override for tenant/multitenancy - center the two-column block on the page */
@@ -694,12 +694,13 @@
     min-height: 80vh;
     justify-content: center;
     align-items: stretch;
-    padding: 0;
+    padding: 20px;
     gap: 0;
     box-sizing: border-box;
+    overflow: visible;
   }
   
-  /* Remove card styling for tenant/multitenancy registration page - plain background */
+  /* Remove card styling for tenant/multitenancy registration page - form panel has its own card styling */
   body.tenant-registration-page .card-pf:has(.kc-register-container),
   body.tenant-registration-page .card-pf.registration-card,
   body.multitenancy-registration-page .card-pf:has(.kc-register-container),
@@ -789,7 +790,7 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow-x: hidden;
+    overflow: visible;
     box-sizing: border-box;
   }
   
@@ -800,11 +801,11 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow-x: hidden;
+    overflow: visible;
     box-sizing: border-box;
   }
   
-  /* Ensure plain background for tenant/multitenancy registration page */
+  /* Ensure plain white background for tenant/multitenancy registration page */
   body.tenant-registration-page,
   body.tenant-registration-page .login-pf-page,
   body.multitenancy-registration-page,
@@ -819,8 +820,9 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    padding: 0;
+    padding: 20px;
     box-sizing: border-box;
+    overflow: visible;
   }
   
   /* Ensure kc-content takes full width for tenant/multitenancy */
@@ -830,7 +832,7 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow-x: hidden;
+    overflow: visible;
     box-sizing: border-box;
   }
   
@@ -997,17 +999,43 @@
   }
   
   /* Right panel - form centered vertically and horizontally within its half */
+  /* Add card-like background and dropshadow like the original registration form */
   body.tenant-registration-page .kc-register-form-panel,
   body.multitenancy-registration-page .kc-register-form-panel {
     flex: 1 1 50%;
     min-width: 0;
-    max-width: 50%;
+    max-width: 34%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 60px 40px;
+    padding: 5rem;
     background: #ffffff;
     box-sizing: border-box;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15), 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    margin: 0 auto;
+    overflow: visible;
+    position: relative;
+  }
+  
+  /* Tenant registration form - same styling as normal registration form */
+  body.tenant-registration-page .kc-register-form-panel #kc-register-form {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    flex-shrink: 0;
+  }
+  
+  /* Ensure social login providers are visible and properly styled for tenant registration */
+  /* Position it right after the form, not at the bottom */
+  body.tenant-registration-page .kc-register-form-panel #kc-social-providers {
+    width: 100%;
+    max-width: 400px;
+    margin: 24px auto 0;
+    padding: 0;
+    flex-shrink: 0;
+    align-self: center;
   }
   
   /* Multitenancy registration form - fixed width */
@@ -1040,10 +1068,14 @@
     body.tenant-registration-page .kc-register-form-panel,
     body.multitenancy-registration-page .kc-register-form-panel {
       max-width: 100%;
-      padding: 20px;
+      padding: 1.5rem;
       order: 1;
       height: auto;
       justify-content: center;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15), 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      overflow: visible;
+      position: relative;
     }
     
     .kc-register-hero-headline {
@@ -1100,6 +1132,13 @@
       width: 100%;
       height: auto;
       max-width: 100%;
+    }
+    
+    /* Ensure social login providers are properly styled on mobile for tenant registration */
+    body.tenant-registration-page .kc-register-form-panel #kc-social-providers {
+      width: 100%;
+      max-width: 100%;
+      margin: 20px auto 0;
     }
   }
   

@@ -27,6 +27,7 @@ from formsflow_api.constants import (
 )
 from formsflow_api.schemas import (
     TenantUserAddSchema,
+    UserInfoUpdateSchema,
     UserlocaleReqSchema,
     UserPermissionUpdateSchema,
     UserProfileUpdateSchema,
@@ -86,6 +87,15 @@ tenant_add_user_model = API.model(
 )
 
 locale_put_model = API.model("Locale", {"locale": fields.String()})
+user_info_update_model = API.model(
+    "UserInfoUpdate",
+    {
+        "role": fields.String(
+            description="User role selected during onboarding/registration",
+            required=True,
+        )
+    },
+)
 default_filter_model = API.model(
     "DefaulFilter",
     {
@@ -153,6 +163,66 @@ class KeycloakUserService(Resource):
         # Capture "locale" changes in user table
         UserService.update_user_data({"locale": dict_data["locale"]})
         return response, HTTPStatus.OK
+
+
+@cors_preflight("PUT, OPTIONS")
+@API.route("/info", methods=["OPTIONS", "PUT"])
+class UserInfo(Resource):
+    """Resource to update additional user info in local user table.
+
+    This endpoint is intended to be called from the onboarding flow, to persist user-selected role (and in future
+    other attributes) into the local `user` table.
+    """
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    @API.doc(body=user_info_update_model)
+    @API.response(200, "OK:- User info updated successfully.", model=default_filter_response_model)
+    @API.response(
+        400,
+        "BAD_REQUEST:- Invalid request.",
+    )
+    @API.response(
+        401,
+        "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+    )
+    def put():
+        """Update user info (currently role) in local user table.
+
+        - Uses logged-in user's username and tenant (via UserContext) as key.
+        - Creates a new row if it does not yet exist.
+        """
+        try:
+            json_payload = request.get_json()
+            if json_payload is None:
+                return {
+                    "message": "Request body is required"
+                }, HTTPStatus.BAD_REQUEST
+
+            data = UserInfoUpdateSchema().load(json_payload)
+
+            # Persist to local user table; username and tenant are derived
+            # from the current token via UserContext in UserService.
+            updated_user = UserService.update_user_data({"role": data["role"]})
+
+            # Reuse UserSchema to shape the response (includes role now)
+            response_body = UserSchema().dump(updated_user)
+            return response_body, HTTPStatus.OK
+
+        except ValidationError as err:
+            current_app.logger.error(f"Validation error in /user/info: {err}")
+            return {
+                "message": INVALID_REQUEST_DATA_MESSAGE,
+                "details": err.messages,
+            }, HTTPStatus.BAD_REQUEST
+        except Exception as err:  # pylint: disable=broad-exception-caught
+            current_app.logger.error(
+                f"Failed to update user info: {err}", exc_info=True
+            )
+            return {
+                "message": "Failed to update user info"
+            }, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @cors_preflight("POST, OPTIONS")

@@ -53,7 +53,7 @@ jobs:
       - name: Flake8
         id: flake8
         run: |
-          flake8 forms-flow-api/src/formsflow_api forms-flow-api/tests
+          flake8 --config=forms-flow-api/setup.cfg forms-flow-api/src/formsflow_api forms-flow-api/tests
 
   Test:
     if: always()

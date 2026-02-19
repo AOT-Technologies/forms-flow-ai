@@ -52,7 +52,7 @@ jobs:
       - name: Flake8
         id: flake8
         run: |
-          flake8 forms-flow-documents/src/formsflow_documents forms-flow-documents/tests
+          flake8 --config=forms-flow-documents/setup.cfg forms-flow-documents/src/formsflow_documents forms-flow-documents/tests
   
   Test:
     needs: setup-job

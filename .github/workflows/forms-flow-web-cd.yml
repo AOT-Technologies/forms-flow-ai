@@ -20,15 +20,15 @@ jobs:
     name: Build and push artifacts to s3
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '18.20.0'
       - run: npm ci
         working-directory: ./forms-flow-web
       - run: npm run build
         working-directory: ./forms-flow-web
-      - uses: aws-actions/configure-aws-credentials@v1
+      - uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -61,7 +61,7 @@ jobs:
     name: Scan the web application
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Check DEV URL
         id: check-dev-url
@@ -88,7 +88,7 @@ jobs:
 
       - name: ZAP Scan
         if: env.URL_STATUS == 'success'
-        uses: zaproxy/action-full-scan@v0.8.0
+        uses: zaproxy/action-full-scan@v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: ${{ env.WEB_TARGET_URL }}
@@ -102,7 +102,7 @@ jobs:
           
       - name: Configure AWS credentials
         if: env.URL_STATUS == 'success'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

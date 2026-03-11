@@ -1,0 +1,137 @@
+version: 2
+
+updates:
+  # ==============================
+  # Frontend (React / Node)
+  # ==============================
+  - package-ecosystem: "npm"
+    directory: "/"
+    target-branch: "dependabot-updates"
+
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+
+    open-pull-requests-limit: 5
+
+    labels:
+      - "dependencies"
+      - "frontend"
+      - "dependabot"
+
+    groups:
+      frontend-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # ==============================
+  # Backend Java (forms-flow-api)
+  # ==============================
+  - package-ecosystem: "maven"
+    directory: "/forms-flow-api"
+    target-branch: "dependabot-updates"
+
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:30"
+
+    labels:
+      - "dependencies"
+      - "backend"
+      - "java"
+
+    groups:
+      backend-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # ==============================
+  # BPM Engine (Camunda service)
+  # ==============================
+  - package-ecosystem: "maven"
+    directory: "/forms-flow-bpm"
+    target-branch: "dependabot-updates"
+
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:45"
+
+    labels:
+      - "dependencies"
+      - "backend"
+      - "bpm"
+
+    groups:
+      bpm-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # ==============================
+  # Python Analytics
+  # ==============================
+  - package-ecosystem: "pip"
+    directory: "/forms-flow-analytics"
+    target-branch: "dependabot-updates"
+
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+
+    labels:
+      - "dependencies"
+      - "python"
+
+    groups:
+      python-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # ==============================
+  # Docker Images
+  # ==============================
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "dependabot-updates"
+
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:15"
+
+    labels:
+      - "dependencies"
+      - "docker"
+
+    groups:
+      docker-base-images:
+        patterns:
+          - "*"
+
+  # ==============================
+  # GitHub Actions
+  # ==============================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "dependabot-updates"
+
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:30"
+
+    labels:
+      - "dependencies"
+      - "ci"
+
+    groups:
+      github-actions:
+        patterns:
+          - "*"

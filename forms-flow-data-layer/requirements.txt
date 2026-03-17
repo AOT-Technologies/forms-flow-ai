@@ -27,7 +27,7 @@ mdurl==0.1.2
 motor==3.7.0
 orjson==3.10.15
 packaging==24.2
-pyasn1==0.4.8
+pyasn1==0.6.3
 pydantic==2.10.6
 pydantic_core==2.27.2
 Pygments==2.19.1

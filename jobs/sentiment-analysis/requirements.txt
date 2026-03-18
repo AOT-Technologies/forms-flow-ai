@@ -45,7 +45,7 @@ mdurl==0.1.2
 mpmath==1.3.0
 murmurhash==1.0.11
 networkx==3.4.2
-nltk==3.9.1
+nltk==3.9.3
 numpy==2.0.2
 packaging==24.2
 preshed==3.0.9

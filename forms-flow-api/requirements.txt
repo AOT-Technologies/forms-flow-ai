@@ -57,7 +57,7 @@ python-jose[cryptography]==3.4.0
 pytz==2025.1
 redis==5.2.1
 referencing==0.36.2
-requests==2.32.4
+requests==2.33.0
 rpds-py==0.23.1
 rsa==4.9
 selenium-wire==5.1.0

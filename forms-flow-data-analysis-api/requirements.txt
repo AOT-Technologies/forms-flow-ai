@@ -80,7 +80,7 @@ pytz==2025.1
 redis==5.2.1
 referencing==0.36.2
 regex==2024.11.6
-requests==2.32.4
+requests==2.33.0
 rpds-py==0.23.1
 rsa==4.9
 safetensors==0.5.3

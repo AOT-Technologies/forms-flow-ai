@@ -61,7 +61,7 @@ python-jose==3.4.0
 pytz==2024.2
 referencing==0.35.1
 regex==2024.11.6
-requests==2.32.4
+requests==2.33.0
 rich==13.9.4
 rpds-py==0.22.3
 rsa==4.9

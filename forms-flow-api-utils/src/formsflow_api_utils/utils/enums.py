@@ -98,6 +98,7 @@ class AIRequestType(Enum):
     """Enumerations for chat bot request type."""
 
     ASSIST = "ASSIST"
+    EDIT = "EDIT"
     HELP = "HELP"
     MODIFY = "MODIFY"
     REGENERATE = "REGENERATE"

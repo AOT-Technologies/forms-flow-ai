@@ -1,0 +1,53 @@
+# DevX CD Configuration — Forms Flow Web Root Config
+# Deployment: EKS via kubectl patch (matching existing formsflow pattern)
+
+deployment:
+  enabled: false
+  target: eks
+
+  environments:
+    dev:
+      enabled: true
+      region: ca-central-1
+      cluster_name: formsflow-dev
+      namespace: formsflow-dev
+      deployment_name: forms-flow-web-root-config
+      container_name: forms-flow-web-root-config
+      health_check:
+        enabled: false
+        type: k8s
+      auto_rollback: false
+      notifications:
+        enabled: true
+
+    qa:
+      enabled: true
+      region: ca-central-1
+      cluster_name: formsflow-qa
+      namespace: formsflow-qa
+      deployment_name: forms-flow-web-root-config
+      container_name: forms-flow-web-root-config
+      health_check:
+        enabled: false
+        type: k8s
+      auto_rollback: false
+      notifications:
+        enabled: true
+
+    production:
+      enabled: true
+      region: ca-central-1
+      cluster_name: formsflow-prod
+      namespace: formsflow-prod
+      deployment_name: forms-flow-web-root-config
+      container_name: forms-flow-web-root-config
+      health_check:
+        enabled: false
+        type: k8s
+      auto_rollback: false
+      notifications:
+        enabled: true
+
+aws:
+  default_region: ca-central-1
+  role_to_assume: arn:aws:iam::653405621825:role/GitHubActionsRole-test

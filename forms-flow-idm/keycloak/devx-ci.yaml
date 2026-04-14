@@ -1,0 +1,49 @@
+# DevX CI Configuration — Forms Flow IDM (Keycloak Extensions)
+# Language: Maven (Java 18) | Keycloak SPI Plugins
+
+project:
+  language: maven
+  version: "18"
+  working_directory: "./forms-flow-idm/keycloak"
+
+build:
+  enabled: true
+  run_tests: false
+  test_script: "mvn test -B"
+  build_script: "-B -f idp-selector/pom.xml clean package -DskipTests && mvn -B -f tenant-registration/pom.xml clean package -DskipTests"
+  artifact_path: "idp-selector/target/*.jar"
+
+docker:
+  enabled: true
+  working_directory: "./forms-flow-idm/keycloak"
+  dockerfile: "Dockerfile"
+  image_name: "formsflow-idm"
+  image_tag: ""
+  registry_type: ecr
+  platforms: "linux/amd64"
+
+security:
+  sast:
+    enabled: false          # Small SPI extension, enable later if needed
+
+  iac:
+    enabled: false
+
+  trivy:
+    enabled: true
+    severity: CRITICAL
+    fail_on_vuln: false
+    ignore_unfixed: true
+    scanners: vuln,secret,misconfig
+
+  sbom:
+    enabled: true
+    format: cyclonedx-json
+
+  sbom_scan:
+    enabled: true
+    severity: medium
+
+aws:
+  region: ca-central-1
+  role_to_assume: arn:aws:iam::653405621825:role/GitHubActionsRole-test

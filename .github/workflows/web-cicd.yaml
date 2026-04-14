@@ -1,0 +1,101 @@
+name: Forms Flow Web CI/CD
+
+on:
+  push:
+    branches:
+      - develop
+      - 'release/**'
+      - 'hotfix/**'
+    paths:
+      - "forms-flow-web/**"
+      - ".github/workflows/web-cicd.yaml"
+
+  pull_request:
+    branches:
+      - develop
+      - 'release/**'
+      - 'hotfix/**'
+    paths:
+      - "forms-flow-web/**"
+      - ".github/workflows/web-cicd.yaml"
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - qa
+          - production
+      image_uri:
+        description: "Image URI (REQUIRED for Production. Leave empty to trigger a fresh build)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  security-events: write
+  actions: write
+  id-token: write
+  packages: write
+  pull-requests: write
+  deployments: write
+
+concurrency:
+  group: web-cicd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Web CI Pipeline
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.image_uri == ''
+    uses: AOT-Technologies/devx-reusable-workflows/.github/workflows/ci-orchestrator.yaml@v1
+    with:
+      config_path: forms-flow-web/devx-ci.yaml
+      auto_merge: false
+      push: >-
+        ${{
+          (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') && github.event.created == true) ||
+          github.event_name == 'workflow_dispatch'
+        }}
+    secrets: inherit
+
+  cd-dev:
+    name: Deploy Web → DEV
+    needs: ci
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev')
+    uses: AOT-Technologies/devx-reusable-workflows/.github/workflows/cd-orchestrator.yaml@v1
+    with:
+      environment: dev
+      image_uri: ${{ github.event.inputs.image_uri || needs.ci.outputs.image_uri }}
+      config_path: forms-flow-web/devx-config.yaml
+    secrets: inherit
+
+  cd-qa:
+    name: Deploy Web → QA
+    needs: ci
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') && github.event.created == true) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'qa')
+    uses: AOT-Technologies/devx-reusable-workflows/.github/workflows/cd-orchestrator.yaml@v1
+    with:
+      environment: qa
+      image_uri: ${{ github.event.inputs.image_uri || needs.ci.outputs.image_uri }}
+      config_path: forms-flow-web/devx-config.yaml
+    secrets: inherit
+
+  cd-prod:
+    name: Deploy Web → PRODUCTION
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    uses: AOT-Technologies/devx-reusable-workflows/.github/workflows/cd-orchestrator.yaml@v1
+    with:
+      environment: production
+      image_uri: ${{ github.event.inputs.image_uri }}
+      config_path: forms-flow-web/devx-config.yaml
+    secrets: inherit

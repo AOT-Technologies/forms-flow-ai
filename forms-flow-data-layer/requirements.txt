@@ -33,7 +33,7 @@ pydantic_core==2.27.2
 Pygments==2.19.1
 pymongo==4.11.3
 python-dateutil==2.9.0.post0
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 python-jose[cryptography]==3.4.0
 python-multipart==0.0.20
 PyYAML==6.0.2

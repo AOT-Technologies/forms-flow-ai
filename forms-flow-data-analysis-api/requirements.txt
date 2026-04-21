@@ -74,7 +74,7 @@ pycodestyle==2.12.1
 pycparser==2.22
 pyflakes==3.2.0
 pyparsing==3.2.1
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 python-jose[cryptography]==3.4.0
 pytz==2025.1
 redis==5.2.1

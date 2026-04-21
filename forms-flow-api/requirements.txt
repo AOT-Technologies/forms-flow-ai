@@ -52,7 +52,7 @@ pyOpenSSL==25.0.0
 pyasn1==0.4.8
 pycparser==2.22
 pyparsing==3.2.1
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 python-jose[cryptography]==3.4.0
 pytz==2025.1
 redis==5.2.1

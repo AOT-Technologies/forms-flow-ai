@@ -13,7 +13,7 @@
   "dependencies": {
     "@root/walk": "^1.1.0",
     "dotenv": "^16.0.3",
-    "@aws-sdk/client-s3": "^3.256.0"
+    "@aws-sdk/client-s3": "^3.1035.0"
   },
   "devDependencies": {},
   "resolutions": {

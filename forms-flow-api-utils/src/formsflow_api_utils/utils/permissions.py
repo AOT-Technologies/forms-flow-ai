@@ -26,12 +26,12 @@ ANALYZE_SUBMISSIONS_VIEW = "analyze_submissions_view"
 ANALYZE_SUBMISSIONS_VIEW_HISTORY = "analyze_submissions_view_history"
 ANALYZE_PROCESS_VIEW = "analyze_process_view"
 MANAGE_LINKS = "manage_links"
+MANAGE_ORGANIZATION = "manage_organization"
 ADMIN = "admin"
 CREATE_BPMN_FLOWS = "create_bpmn_flows"
 MANAGE_SUBFLOWS = "manage_subflows"
 MANAGE_DECISION_TABLES = "manage_decision_tables"
 REVIEWER_PROCESS_VIEW = "reviewer_process_view"
-ORG_BILLING ="org_billing"
 
 class permission_category(Enum):
     """Enumerations for permission categories."""
@@ -68,8 +68,8 @@ PERMISSION_DETAILS = [
     {"name": MANAGE_USERS, "description": "Users", "category": permission_category.ADMIN.value, "order": 10, "depends_on": []},
     {"name": MANAGE_ROLES, "description": "Roles", "category": permission_category.ADMIN.value, "order": 20, "depends_on": []},
     {"name": MANAGE_DASHBOARD_AUTHORIZATIONS, "description": "Dashboards", "category": permission_category.ADMIN.value, "order": 30, "depends_on": []},
+    {"name": MANAGE_ORGANIZATION, "description": "Organization (Billing)", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []},
     # {"name": MANAGE_LINKS, "description": "Links", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []},
-    {"name":ORG_BILLING,"description":"Organization(Billing)", "category":permission_category.ADMIN.value,"order":70, "depends_on":[]}
 ]
 
 

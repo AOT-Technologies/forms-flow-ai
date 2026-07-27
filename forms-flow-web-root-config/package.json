@@ -21,7 +21,7 @@
     "jest-cli": "^27.0.6",
     "prettier": "^2.3.2",
     "pretty-quick": "^3.1.1",
-    "serve": "^14.2.4",
+    "serve": "^14.2.6",
     "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
@@ -45,6 +45,23 @@
     "@babel/runtime": "^7.26.10"
   },
   "overrides": {
-  "on-headers": "^1.0.2"
-}
+    "on-headers": "^1.0.2",
+    "ws": "8.21.1",
+    "brace-expansion": "5.0.8",
+    "form-data": "4.0.6",
+    "js-yaml": "5.2.2",
+    "minimatch": "10.2.5",
+    "node-forge": "1.4.0",
+    "picomatch": "4.0.5",
+    "postcss": "8.5.23",
+    "shell-quote": "1.10.0",
+    "websocket-driver": "0.7.5",
+    "@babel/plugin-transform-modules-systemjs": "7.29.7",
+    "serve-handler": "6.1.7",
+    "fast-uri": "4.1.1",
+    "serialize-javascript": "7.0.7",
+    "express": {
+      "path-to-regexp": "0.1.13"
+    }
+  }
 }

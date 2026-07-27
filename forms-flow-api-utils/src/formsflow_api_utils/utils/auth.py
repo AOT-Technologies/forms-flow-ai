@@ -6,8 +6,8 @@ from http import HTTPStatus
 from flask import g, request, current_app
 from flask_jwt_oidc import JwtManager
 
-from jose import jwt as json_web_token
-from jose.exceptions import JWTError
+import jwt as pyjwt
+from jwt.exceptions import PyJWTError
 
 from ..exceptions import BusinessException, ExternalError
 from .format import CustomFormatter
@@ -71,14 +71,14 @@ class Auth:
         def decorated(*args, **kwargs):
             token = jwt.get_token_auth_header()
             try:
-                data = json_web_token.decode(
+                data = pyjwt.decode(
                     token,
-                    algorithms="HS256",
+                    algorithms=["HS256"],
                     key=current_app.config.get('FORM_EMBED_JWT_SECRET'),
                     )
                 g.authorization_header = token
                 g.token_info = g.jwt_oidc_token_info = data
-            except JWTError as err:
+            except PyJWTError as err:
                 raise BusinessException(ExternalError.UNAUTHORIZED)
             except Exception as err:
                 raise err

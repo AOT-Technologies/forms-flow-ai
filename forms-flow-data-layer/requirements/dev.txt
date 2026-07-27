@@ -9,3 +9,4 @@ pytest-asyncio
 pytest-cov
 httpx
 pytest-mock
+rsa

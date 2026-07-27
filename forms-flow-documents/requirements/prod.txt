@@ -5,7 +5,7 @@ Flask-Migrate
 Flask-Moment
 Flask-SQLAlchemy
 flask-restx
-flask-jwt-oidc==0.7.0 # somehow latest version is not geting pulled from pypi
+flask-jwt-oidc==0.8.0 # pinned - 0.7.0 pulled in the vulnerable ecdsa/python-jose (CVE-2024-23342); 0.8.0 uses PyJWT internally
 python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy

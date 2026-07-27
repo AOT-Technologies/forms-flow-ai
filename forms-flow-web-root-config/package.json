@@ -59,7 +59,6 @@
     "@babel/plugin-transform-modules-systemjs": "7.29.7",
     "serve-handler": "6.1.7",
     "fast-uri": "4.1.1",
-    "serialize-javascript": "7.0.7",
     "express": {
       "path-to-regexp": "0.1.13"
     }

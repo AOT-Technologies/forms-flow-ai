@@ -45,7 +45,7 @@ class Auth:
             @Auth.require
             @wraps(f)
             def wrapper(*args, **kwargs):
-                if jwt.contains_role(roles):
+                if jwt.contains_role(g.jwt_oidc_token_info, roles):
                     return f(*args, **kwargs)
 
                 raise BusinessException(ExternalError.UNAUTHORIZED)
@@ -57,12 +57,12 @@ class Auth:
     @classmethod
     def has_role(cls, role):
         """Method to validate the role."""
-        return jwt.validate_roles(role)
-    
+        return jwt.validate_roles(g.jwt_oidc_token_info, role)
+
     @classmethod
     def has_any_role(cls, role):
         """Method to validate the role."""
-        return jwt.contains_role(role)
+        return jwt.contains_role(g.jwt_oidc_token_info, role)
 
     @classmethod
     def require_custom(cls, f):

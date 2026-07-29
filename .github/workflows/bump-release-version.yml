@@ -108,9 +108,12 @@ jobs:
       # ── 2. Resolve versions ────────────────────────────────────────────────
       - name: Resolve versions
         id: versions
+        env:
+          INPUT_PREV_VERSION: ${{ inputs.prev_version }}
+          INPUT_NEW_VERSION:  ${{ inputs.new_version }}
         run: |
-          if [[ -n "${{ inputs.prev_version }}" ]]; then
-            CURRENT="${{ inputs.prev_version }}"
+          if [[ -n "$INPUT_PREV_VERSION" ]]; then
+            CURRENT="$INPUT_PREV_VERSION"
           elif [[ -f VERSION ]]; then
             CURRENT="$(tr -d '[:space:]' < VERSION | sed 's/^v//')"
           else
@@ -118,7 +121,7 @@ jobs:
             exit 1
           fi
 
-          NEW="${{ inputs.new_version }}"
+          NEW="$INPUT_NEW_VERSION"
           NEW="${NEW//[[:space:]]/}"
 
           if ! [[ "$NEW" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
@@ -305,10 +308,12 @@ jobs:
 
       # ── 7. Verify something actually changed ──────────────────────────────
       - name: Verify changes
+        env:
+          FF_CUR: ${{ steps.versions.outputs.current }}
         run: |
           if git diff --quiet; then
             echo "::error::Version bump had no effect — no files were modified."
-            echo "::error::Current version in repo files does not match prev_version (${{ steps.versions.outputs.current }})."
+            echo "::error::Current version in repo files does not match prev_version (${FF_CUR})."
             echo "::error::Check that prev_version is exactly what appears in VERSION and the other tracked files."
             exit 1
           fi
@@ -317,11 +322,14 @@ jobs:
 
       # ── 8. Commit and push ────────────────────────────────────────────────
       - name: Commit and push
+        env:
+          FF_CUR: ${{ steps.versions.outputs.current }}
+          FF_NEW: ${{ steps.versions.outputs.new }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "[Version]: bump version ${{ steps.versions.outputs.current }} → ${{ steps.versions.outputs.new }}"
+          git commit -m "[Version]: bump version ${FF_CUR} → ${FF_NEW}"
 
           # Always push to the explicit tracked branch name — never a bare 'git push'
           # which would push to whatever the default tracking branch is and could
@@ -343,10 +351,13 @@ jobs:
         if: ${{ inputs.open_pr == true && inputs.pr_base_branch != '' }}
         env:
           GH_TOKEN: ${{ secrets.RELEASE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          FF_CUR:   ${{ steps.versions.outputs.current }}
+          FF_NEW:   ${{ steps.versions.outputs.new }}
+          PR_BASE:  ${{ inputs.pr_base_branch }}
         run: |
-          CURRENT="${{ steps.versions.outputs.current }}"
-          NEW="${{ steps.versions.outputs.new }}"
-          BASE="${{ inputs.pr_base_branch }}"
+          CURRENT="$FF_CUR"
+          NEW="$FF_NEW"
+          BASE="$PR_BASE"
           HEAD="$(git rev-parse --abbrev-ref HEAD)"
 
           CHANGED_FILES="$(git diff HEAD~1 --name-only | sed 's/^/- /')"

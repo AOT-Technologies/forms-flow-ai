@@ -1,0 +1,786 @@
+# =============================================================================
+# .github/workflows/release-orchestrator.yml
+#
+# Single-trigger orchestrator for the open source repo (forms-flow-ai).
+#
+# Pre-requisite (manual, one-time per release):
+#   Create release/X.Y.Z branch on your fork before running this workflow.
+#   Then trigger this workflow FROM that release/X.Y.Z branch.
+#
+# What it does in order:
+#   1. Read VERSION file from triggering branch → derives prev_version
+#   2. Create release/X.Y.Z-setup branch on fork from triggering branch
+#   3. Merge selected source branch into setup branch (default: develop)
+#      → On conflict: stops, posts instructions, exits non-zero
+#   4. Bump version across all files (calls bump-release-version.yml)
+#      Suffix applied: alpha → X.Y.Z-alpha | rc → X.Y.Z-rc | final → X.Y.Z
+#   5. Open PR: fork release/X.Y.Z-setup → fork release/X.Y.Z
+#   6. Open PR: fork release/X.Y.Z-setup → upstream release/X.Y.Z
+#   7. Post run summary
+#
+# Human gates (intentional):
+#   • Merge conflict resolution  (step 3 halts, tells you what to do)
+#   • PR review + merge          (steps 5 & 6 open PRs, human approves)
+#
+# Required secrets (fork repo → Settings → Secrets → Actions):
+#   RELEASE_BOT_TOKEN          — fine-grained PAT with:
+#       Contents: read+write  on fork repo only
+#       Pull requests: write  on fork repo only
+#
+#   UPSTREAM_RELEASE_BOT_TOKEN — fine-grained PAT issued by someone with
+#       write access to the upstream repo (AOT-Technologies/forms-flow-ai).
+#       Must be scoped to the upstream repo with:
+#       Contents: read-only   on AOT-Technologies/forms-flow-ai
+#       Pull requests: write  on AOT-Technologies/forms-flow-ai
+#
+# No repo variables needed — all config is in the env: block below.
+# =============================================================================
+
+name: Release orchestrator — Open source repo
+
+# Restrict all jobs to no permissions by default.
+# Each job that needs access declares it explicitly.
+permissions: {}
+
+env:
+  UPSTREAM_REPO: AOT-Technologies/forms-flow-ai
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: "The release version number without any suffix (e.g. 8.2.5). The suffix (rc, alpha, or none) is added automatically based on the image_stage selection below."
+        required: true
+
+      image_stage:
+        description: "The stage of this release. 'rc' appends -rc (e.g. 8.2.5-rc) for QA testing. 'alpha' appends -alpha (e.g. 8.2.5-alpha) for internal testing. 'final' uses the version as-is (e.g. 8.2.5) for production."
+        required: true
+        type: choice
+        options:
+          - rc
+          - alpha
+          - final
+        default: rc
+
+      merge_source_branch:
+        description: "The branch whose changes will be merged into the setup branch before the version bump. Defaults to 'develop'. Change this only if you want to cut the release from a different branch."
+        required: false
+        default: "develop"
+
+      skip_merge:
+        description: "Skip merging source branch into setup branch? Set to true only if you already resolved a merge conflict locally and pushed the setup branch manually. Leave false for a normal run."
+        type: boolean
+        required: false
+        default: false
+
+      dry_run:
+        description: "Test the workflow without making any actual changes. When enabled, all steps are printed but no branches are pushed, no files are modified, and no PRs are created. Useful for verifying inputs before a real run."
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  # ============================================================================
+  # JOB 1 — Read VERSION file from triggering branch + derive all strings
+  # ============================================================================
+  prepare:
+    name: Read VERSION + derive release variables
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      new_version:    ${{ steps.vars.outputs.new_version }}
+      versioned:      ${{ steps.vars.outputs.versioned }}
+      prev_version:   ${{ steps.vars.outputs.prev_version }}
+      image_stage:    ${{ steps.vars.outputs.image_stage }}
+      image_tag:      ${{ steps.vars.outputs.image_tag }}
+      release_branch: ${{ steps.vars.outputs.release_branch }}
+      setup_branch:   ${{ steps.vars.outputs.setup_branch }}
+      base_branch:    ${{ steps.vars.outputs.base_branch }}
+
+    steps:
+      - name: Checkout triggering branch
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_BOT_TOKEN }}
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          fetch-depth: 1
+
+      - name: Read VERSION file + derive variables
+        id: vars
+        run: |
+          if [[ ! -f VERSION ]]; then
+            echo "::error::VERSION file not found on branch ${{ github.ref_name }}."
+            exit 1
+          fi
+          PREV="$(tr -d '[:space:]' < VERSION | sed 's/^v//')"
+          if [[ -z "$PREV" ]]; then
+            echo "::error::VERSION file is empty on branch ${{ github.ref_name }}."
+            exit 1
+          fi
+
+          NEW="${{ inputs.new_version }}"
+          NEW="${NEW//[[:space:]]/}"
+          if ! [[ "$NEW" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::new_version must be X.Y.Z with no suffix (e.g. 8.2.5). Got: $NEW"
+            exit 1
+          fi
+
+          STAGE="${{ inputs.image_stage }}"
+          case "$STAGE" in
+            alpha) VERSIONED="${NEW}-alpha"; IMAGE_TAG="${NEW}-alpha" ;;
+            rc)    VERSIONED="${NEW}-rc";    IMAGE_TAG="${NEW}-rc"    ;;
+            final) VERSIONED="${NEW}";       IMAGE_TAG="${NEW}"       ;;
+            *)
+              echo "::error::Unknown image_stage: $STAGE. Expected alpha | rc | final."
+              exit 1 ;;
+          esac
+
+          BASE_BRANCH="${{ github.ref_name }}"
+          RELEASE_BRANCH="release/${NEW}"
+          SETUP_BRANCH="release/${NEW}-setup"
+
+          # Validate that the triggering branch matches the expected release branch
+          # This ensures the workflow is run from the correct branch.
+          if [[ "$BASE_BRANCH" != "$RELEASE_BRANCH" ]]; then
+            echo "::error::This workflow must be triggered from the release branch."
+            echo "::error::Expected: ${RELEASE_BRANCH}  Got: ${BASE_BRANCH}"
+            echo "::error::Create release/${NEW} on your fork and trigger from that branch."
+            exit 1
+          fi
+
+          echo "new_version=$NEW"               >> "$GITHUB_OUTPUT"
+          echo "versioned=$VERSIONED"           >> "$GITHUB_OUTPUT"
+          echo "prev_version=$PREV"             >> "$GITHUB_OUTPUT"
+          echo "image_stage=$STAGE"             >> "$GITHUB_OUTPUT"
+          echo "image_tag=$IMAGE_TAG"           >> "$GITHUB_OUTPUT"
+          echo "release_branch=$RELEASE_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "setup_branch=$SETUP_BRANCH"     >> "$GITHUB_OUTPUT"
+          echo "base_branch=$BASE_BRANCH"       >> "$GITHUB_OUTPUT"
+
+          echo ""
+          echo "════════════════════════════════════════════"
+          echo "  Triggered from : $BASE_BRANCH"
+          echo "  prev_version   : $PREV  (read from VERSION file)"
+          echo "  new_version    : $NEW"
+          echo "  Versioned      : $VERSIONED  (written to files)"
+          echo "  Image tag      : $IMAGE_TAG"
+          echo "  Image stage    : $STAGE"
+          echo "  Release branch : $RELEASE_BRANCH  (fork)"
+          echo "  Setup branch   : $SETUP_BRANCH    (fork)"
+          echo "  Merge source   : ${{ inputs.merge_source_branch }}"
+          echo "  Skip merge     : ${{ inputs.skip_merge }}"
+          echo "  Dry run        : ${{ inputs.dry_run }}"
+          echo "════════════════════════════════════════════"
+
+  # ============================================================================
+  # JOB 2 — Create release/X.Y.Z-setup on fork from triggering branch
+  # Idempotent: if setup branch already exists, checks it out and continues.
+  # ============================================================================
+  create-setup-branch:
+    name: Create setup branch on fork
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      had_conflicts: ${{ steps.merge.outputs.had_conflicts }}
+
+    env:
+      GH_TOKEN:     ${{ secrets.RELEASE_BOT_TOKEN }}
+      SETUP_BRANCH: ${{ needs.prepare.outputs.setup_branch }}
+      BASE_BRANCH:  ${{ needs.prepare.outputs.base_branch }}
+
+    steps:
+      - name: Checkout triggering branch on fork
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_BOT_TOKEN }}
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Fetch all origin branches
+        run: git fetch origin
+
+      - name: Create or checkout setup branch
+        run: |
+          if git ls-remote --exit-code origin "$SETUP_BRANCH" &>/dev/null; then
+            echo "::notice::${SETUP_BRANCH} already exists — checking it out (re-run mode)."
+            git checkout "$SETUP_BRANCH"
+          else
+            git checkout -b "$SETUP_BRANCH"
+            if [[ "${{ inputs.dry_run }}" == "false" ]]; then
+              git push -u origin "$SETUP_BRANCH"
+              echo "✓  Created ${SETUP_BRANCH} from ${BASE_BRANCH} on fork"
+            else
+              echo "[DRY RUN] Would push ${SETUP_BRANCH} to fork"
+            fi
+          fi
+
+      - name: "Merge ${{ inputs.merge_source_branch }} into setup branch"
+        id: merge
+        if: inputs.skip_merge == false
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Accept plain branch name (e.g. develop) or origin/branch — always
+          # resolved against origin since everything is fork-only.
+          RAW="${{ inputs.merge_source_branch }}"
+          RAW="${RAW#origin/}"   # strip origin/ prefix if user included it
+
+          # Validate: plain branch name only, no shell metacharacters, no -- prefix
+          if [[ ! "$RAW" =~ ^[a-zA-Z0-9_./+-]+$ ]]; then
+            echo "::error::merge_source_branch contains invalid characters: \"${RAW}\""
+            echo "::error::Expected a branch name (e.g. develop, release/8.2.4)"
+            exit 1
+          fi
+          if [[ "$RAW" == --* ]]; then
+            echo "::error::merge_source_branch must not start with '--'."
+            exit 1
+          fi
+
+          MERGE_SOURCE="origin/${RAW}"
+
+          if git merge -- "$MERGE_SOURCE" --no-edit \
+               -m "[Release]: merge ${MERGE_SOURCE} into $SETUP_BRANCH"; then
+            echo "had_conflicts=false" >> "$GITHUB_OUTPUT"
+            echo "✓  Merged ${MERGE_SOURCE} cleanly"
+            if [[ "${{ inputs.dry_run }}" == "false" ]]; then
+              git push origin "$SETUP_BRANCH"
+            else
+              echo "[DRY RUN] Would push merged branch to fork"
+            fi
+          else
+            echo "had_conflicts=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Merge conflict detected — aborting."
+            git merge --abort || true
+          fi
+
+      - name: Skip merge (flag set)
+        if: inputs.skip_merge == true
+        run: echo "ℹ️  skip_merge=true — skipping merge of ${{ inputs.merge_source_branch }}."
+
+  # ============================================================================
+  # JOB 3 — Halt on merge conflict + post resolution instructions
+  # ============================================================================
+  conflict-gate:
+    name: Conflict check
+    needs: [prepare, create-setup-branch]
+    runs-on: ubuntu-latest
+    if: needs.create-setup-branch.outputs.had_conflicts == 'true'
+
+    steps:
+      - name: Post conflict resolution instructions and fail
+        run: |
+          SETUP="${{ needs.prepare.outputs.setup_branch }}"
+          BASE="${{ needs.prepare.outputs.base_branch }}"
+          FORK="${{ github.repository }}"
+          MERGE_SOURCE="${{ inputs.merge_source_branch }}"
+          BRANCH="${MERGE_SOURCE#origin/}"   # strip origin/ if present
+
+          cat <<EOF
+          ════════════════════════════════════════════════════════════
+            MERGE CONFLICT — manual resolution required
+          ════════════════════════════════════════════════════════════
+
+          ${MERGE_SOURCE} could not be merged cleanly into ${SETUP}.
+          The branch was NOT pushed.
+
+          Resolve locally:
+
+            git clone https://github.com/${FORK}.git
+            cd ${{ github.event.repository.name }}
+            git fetch origin
+
+            git checkout -b ${SETUP} origin/${BASE}
+            git push -u origin ${SETUP}
+
+            git merge origin/${BRANCH}
+            # ── fix conflicts ──
+            git add .
+            git commit -m "[Release]: merge ${MERGE_SOURCE} into ${SETUP}"
+            git push origin ${SETUP}
+
+          Then re-run this workflow from ${BASE} with:
+            skip_merge = true
+
+          ════════════════════════════════════════════════════════════
+          EOF
+
+          exit 1
+
+  # ============================================================================
+  # JOB 4 — Version bump (calls bump-release-version.yml)
+  # ============================================================================
+  version-bump:
+    name: "Bump version → ${{ needs.prepare.outputs.versioned }}"
+    needs: [prepare, create-setup-branch]
+    permissions:
+      contents: write
+      pull-requests: write
+    if: |
+      always() &&
+      needs.prepare.result == 'success' &&
+      needs.create-setup-branch.result == 'success' &&
+      needs.create-setup-branch.outputs.had_conflicts != 'true' &&
+      inputs.dry_run == false
+    uses: ./.github/workflows/bump-release-version.yml
+    with:
+      new_version:       ${{ needs.prepare.outputs.versioned }}
+      prev_version:      ""
+      open_pr:           false
+      pr_base_branch:    ""
+      target_repository: ${{ github.repository }}
+      target_ref:        ${{ needs.prepare.outputs.setup_branch }}
+    secrets:
+      RELEASE_BOT_TOKEN: ${{ secrets.RELEASE_BOT_TOKEN }}
+
+  # ============================================================================
+  # JOB 5 — Open PR: fork setup branch → fork release branch
+  # Idempotent: if PR already exists, surfaces the URL and moves on.
+  # ============================================================================
+  open-pr:
+    name: Open PR on fork
+    needs: [prepare, version-bump]
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    if: |
+      always() &&
+      needs.version-bump.result == 'success' &&
+      inputs.dry_run == false
+    outputs:
+      pr_url:    ${{ steps.resolve-pr.outputs.pr_url }}
+      pr_number: ${{ steps.resolve-pr.outputs.pr_number }}
+
+    env:
+      GH_TOKEN: ${{ secrets.RELEASE_BOT_TOKEN }}
+
+    steps:
+      - name: Check for existing PR
+        id: pr-check
+        run: |
+          SETUP="${{ needs.prepare.outputs.setup_branch }}"
+          RELEASE="${{ needs.prepare.outputs.release_branch }}"
+
+          EXISTING=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --head "$SETUP" \
+            --base "$RELEASE" \
+            --state open \
+            --json number,url \
+            --jq '.[0]')
+
+          if [[ -n "$EXISTING" && "$EXISTING" != "null" ]]; then
+            PR_URL=$(echo "$EXISTING" | jq -r '.url')
+            PR_NUM=$(echo "$EXISTING" | jq -r '.number')
+            echo "::notice::PR already exists: $PR_URL"
+            echo "exists=true"       >> "$GITHUB_OUTPUT"
+            echo "pr_url=$PR_URL"    >> "$GITHUB_OUTPUT"
+            echo "pr_number=$PR_NUM" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open pull request
+        id: open-pr
+        if: steps.pr-check.outputs.exists == 'false'
+        run: |
+          NEW="${{ needs.prepare.outputs.new_version }}"
+          VERSIONED="${{ needs.prepare.outputs.versioned }}"
+          STAGE="${{ needs.prepare.outputs.image_stage }}"
+          IMAGE_TAG="${{ needs.prepare.outputs.image_tag }}"
+          SETUP="${{ needs.prepare.outputs.setup_branch }}"
+          RELEASE="${{ needs.prepare.outputs.release_branch }}"
+          BASE="${{ needs.prepare.outputs.base_branch }}"
+
+          case "$STAGE" in
+            alpha)
+              STAGE_NOTE="**Alpha** build. Images tagged \`${IMAGE_TAG}\` for internal testing."
+              NEXT_STEP="Promote to RC by re-running with \`image_stage = rc\`."
+              ;;
+            rc)
+              STAGE_NOTE="**Release candidate**. Images tagged \`${IMAGE_TAG}\` for QA."
+              NEXT_STEP="Update Rancher QA to \`${IMAGE_TAG}\` and begin RC testing. After sign-off, re-run with \`image_stage = final\`."
+              ;;
+            final)
+              STAGE_NOTE="**Final release**. Images tagged \`${IMAGE_TAG}\` for production."
+              NEXT_STEP="Update Rancher production to \`${IMAGE_TAG}\` after images are confirmed."
+              ;;
+          esac
+
+          PR_URL=$(gh pr create \
+            --repo "${{ github.repository }}" \
+            --title "[Release]: Release ${VERSIONED} [${STAGE}] — ${SETUP} → ${RELEASE}" \
+            --body "## Release ${NEW} — ${STAGE} stage
+
+          | | |
+          |---|---|
+          | Version | \`${VERSIONED}\` |
+          | Image tag | \`${IMAGE_TAG}\` |
+          | Stage | \`${STAGE}\` |
+          | Base branch | \`${BASE}\` |
+          | Setup branch | \`${SETUP}\` |
+          | Target branch | \`${RELEASE}\` |
+
+          ### What this PR contains
+          - Version bump to \`${VERSIONED}\` across all tracked files
+          - Merged \`${{ inputs.merge_source_branch }}\` into setup branch (unless skipped)
+
+          ### Stage notes
+          ${STAGE_NOTE}
+
+          ### Merge checklist
+          - [ ] Version strings correct in all files
+          - [ ] No unintended changes from source merge
+          - [ ] CI checks passing
+
+          ### After merging
+          ${NEXT_STEP}
+
+          ---
+          *Auto-generated by release-orchestrator workflow.*" \
+            --base "${RELEASE}" \
+            --head "${SETUP}" \
+            --assignee "@me")
+
+          echo "pr_url=$PR_URL"  >> "$GITHUB_OUTPUT"
+          PR_NUM=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+          echo "pr_number=$PR_NUM" >> "$GITHUB_OUTPUT"
+          echo "✓  PR opened: $PR_URL"
+
+      - name: Update existing PR title and description
+        if: steps.pr-check.outputs.exists == 'true'
+        run: |
+          NEW="${{ needs.prepare.outputs.new_version }}"
+          VERSIONED="${{ needs.prepare.outputs.versioned }}"
+          STAGE="${{ needs.prepare.outputs.image_stage }}"
+          IMAGE_TAG="${{ needs.prepare.outputs.image_tag }}"
+          SETUP="${{ needs.prepare.outputs.setup_branch }}"
+          RELEASE="${{ needs.prepare.outputs.release_branch }}"
+          BASE="${{ needs.prepare.outputs.base_branch }}"
+          PR_NUM="${{ steps.pr-check.outputs.pr_number }}"
+
+          case "$STAGE" in
+            alpha)
+              STAGE_NOTE="**Alpha** build. Images tagged \`${IMAGE_TAG}\` for internal testing."
+              NEXT_STEP="Promote to RC by re-running with \`image_stage = rc\`."
+              ;;
+            rc)
+              STAGE_NOTE="**Release candidate**. Images tagged \`${IMAGE_TAG}\` for QA."
+              NEXT_STEP="Update Rancher QA to \`${IMAGE_TAG}\` and begin RC testing. After sign-off, re-run with \`image_stage = final\`."
+              ;;
+            final)
+              STAGE_NOTE="**Final release**. Images tagged \`${IMAGE_TAG}\` for production."
+              NEXT_STEP="Update Rancher production to \`${IMAGE_TAG}\` after images are confirmed."
+              ;;
+          esac
+
+          gh pr edit "$PR_NUM" \
+            --repo "${{ github.repository }}" \
+            --title "[Release]: Release ${VERSIONED} [${STAGE}] — ${SETUP} → ${RELEASE}" \
+            --body "## Release ${NEW} — ${STAGE} stage
+
+          | | |
+          |---|---|
+          | Version | \`${VERSIONED}\` |
+          | Image tag | \`${IMAGE_TAG}\` |
+          | Stage | \`${STAGE}\` |
+          | Base branch | \`${BASE}\` |
+          | Setup branch | \`${SETUP}\` |
+          | Target branch | \`${RELEASE}\` |
+
+          ### What this PR contains
+          - Version bump to \`${VERSIONED}\` across all tracked files
+          - Merged \`${{ inputs.merge_source_branch }}\` into setup branch (unless skipped)
+
+          ### Stage notes
+          ${STAGE_NOTE}
+
+          ### Merge checklist
+          - [ ] Version strings correct in all files
+          - [ ] No unintended changes from source merge
+          - [ ] CI checks passing
+
+          ### After merging
+          ${NEXT_STEP}
+
+          ---
+          *Auto-generated by release-orchestrator workflow.*"
+
+          echo "✓  PR #${PR_NUM} title and description updated"
+
+      - name: Resolve PR outputs
+        id: resolve-pr
+        run: |
+          if [[ "${{ steps.pr-check.outputs.exists }}" == "true" ]]; then
+            echo "pr_url=${{ steps.pr-check.outputs.pr_url }}"       >> "$GITHUB_OUTPUT"
+            echo "pr_number=${{ steps.pr-check.outputs.pr_number }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "pr_url=${{ steps.open-pr.outputs.pr_url }}"       >> "$GITHUB_OUTPUT"
+            echo "pr_number=${{ steps.open-pr.outputs.pr_number }}" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ============================================================================
+  # JOB 6 — Open PR: fork setup branch → upstream release branch
+  # Idempotent: if PR already exists, surfaces the URL and moves on.
+  # ============================================================================
+  open-upstream-pr:
+    name: Open PR on upstream repo
+    needs: [prepare, version-bump]
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    if: |
+      always() &&
+      needs.version-bump.result == 'success' &&
+      inputs.dry_run == false
+    outputs:
+      pr_url:    ${{ steps.resolve-pr.outputs.pr_url }}
+      pr_number: ${{ steps.resolve-pr.outputs.pr_number }}
+
+    env:
+      GH_TOKEN: ${{ secrets.UPSTREAM_RELEASE_BOT_TOKEN }}
+
+    steps:
+      - name: Check for existing upstream PR
+        id: pr-check
+        run: |
+          SETUP="${{ needs.prepare.outputs.setup_branch }}"
+          RELEASE="${{ needs.prepare.outputs.release_branch }}"
+          FORK_OWNER="${{ github.repository_owner }}"
+
+          EXISTING=$(gh pr list \
+            --repo "${{ env.UPSTREAM_REPO }}" \
+            --head "${FORK_OWNER}:${SETUP}" \
+            --base "$RELEASE" \
+            --state open \
+            --json number,url \
+            --jq '.[0]')
+
+          if [[ -n "$EXISTING" && "$EXISTING" != "null" ]]; then
+            PR_URL=$(echo "$EXISTING" | jq -r '.url')
+            PR_NUM=$(echo "$EXISTING" | jq -r '.number')
+            echo "::notice::Upstream PR already exists: $PR_URL"
+            echo "exists=true"       >> "$GITHUB_OUTPUT"
+            echo "pr_url=$PR_URL"    >> "$GITHUB_OUTPUT"
+            echo "pr_number=$PR_NUM" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open upstream pull request
+        id: open-pr
+        if: steps.pr-check.outputs.exists == 'false'
+        run: |
+          NEW="${{ needs.prepare.outputs.new_version }}"
+          VERSIONED="${{ needs.prepare.outputs.versioned }}"
+          STAGE="${{ needs.prepare.outputs.image_stage }}"
+          IMAGE_TAG="${{ needs.prepare.outputs.image_tag }}"
+          SETUP="${{ needs.prepare.outputs.setup_branch }}"
+          RELEASE="${{ needs.prepare.outputs.release_branch }}"
+          BASE="${{ needs.prepare.outputs.base_branch }}"
+          FORK_OWNER="${{ github.repository_owner }}"
+
+          case "$STAGE" in
+            alpha)
+              STAGE_NOTE="**Alpha** build. Images tagged \`${IMAGE_TAG}\` for internal testing."
+              NEXT_STEP="Promote to RC by re-running with \`image_stage = rc\`."
+              ;;
+            rc)
+              STAGE_NOTE="**Release candidate**. Images tagged \`${IMAGE_TAG}\` for QA."
+              NEXT_STEP="Update Rancher QA to \`${IMAGE_TAG}\` and begin RC testing. After sign-off, re-run with \`image_stage = final\`."
+              ;;
+            final)
+              STAGE_NOTE="**Final release**. Images tagged \`${IMAGE_TAG}\` for production."
+              NEXT_STEP="Update Rancher production to \`${IMAGE_TAG}\` after images are confirmed."
+              ;;
+          esac
+
+          PR_URL=$(gh pr create \
+            --repo "${{ env.UPSTREAM_REPO }}" \
+            --title "[Release]: Release ${VERSIONED} [${STAGE}] — ${SETUP} → ${RELEASE}" \
+            --body "## Release ${NEW} — ${STAGE} stage
+
+          | | |
+          |---|---|
+          | Version | \`${VERSIONED}\` |
+          | Image tag | \`${IMAGE_TAG}\` |
+          | Stage | \`${STAGE}\` |
+          | Base branch | \`${BASE}\` |
+          | Setup branch | \`${FORK_OWNER}:${SETUP}\` |
+          | Target branch | \`${RELEASE}\` |
+
+          ### What this PR contains
+          - Version bump to \`${VERSIONED}\` across all tracked files
+          - Merged \`${{ inputs.merge_source_branch }}\` into setup branch (unless skipped)
+
+          ### Stage notes
+          ${STAGE_NOTE}
+
+          ### Merge checklist
+          - [ ] Version strings correct in all files
+          - [ ] No unintended changes from source merge
+          - [ ] CI checks passing
+
+          ### After merging
+          ${NEXT_STEP}
+
+          ---
+          *Auto-generated by release-orchestrator workflow from fork \`${{ github.repository }}\`.*" \
+            --base "${RELEASE}" \
+            --head "${FORK_OWNER}:${SETUP}")
+
+          echo "pr_url=$PR_URL"  >> "$GITHUB_OUTPUT"
+          PR_NUM=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+          echo "pr_number=$PR_NUM" >> "$GITHUB_OUTPUT"
+          echo "✓  Upstream PR opened: $PR_URL"
+
+      - name: Update existing upstream PR title and description
+        if: steps.pr-check.outputs.exists == 'true'
+        run: |
+          NEW="${{ needs.prepare.outputs.new_version }}"
+          VERSIONED="${{ needs.prepare.outputs.versioned }}"
+          STAGE="${{ needs.prepare.outputs.image_stage }}"
+          IMAGE_TAG="${{ needs.prepare.outputs.image_tag }}"
+          SETUP="${{ needs.prepare.outputs.setup_branch }}"
+          RELEASE="${{ needs.prepare.outputs.release_branch }}"
+          BASE="${{ needs.prepare.outputs.base_branch }}"
+          FORK_OWNER="${{ github.repository_owner }}"
+          PR_NUM="${{ steps.pr-check.outputs.pr_number }}"
+
+          case "$STAGE" in
+            alpha)
+              STAGE_NOTE="**Alpha** build. Images tagged \`${IMAGE_TAG}\` for internal testing."
+              NEXT_STEP="Promote to RC by re-running with \`image_stage = rc\`."
+              ;;
+            rc)
+              STAGE_NOTE="**Release candidate**. Images tagged \`${IMAGE_TAG}\` for QA."
+              NEXT_STEP="Update Rancher QA to \`${IMAGE_TAG}\` and begin RC testing. After sign-off, re-run with \`image_stage = final\`."
+              ;;
+            final)
+              STAGE_NOTE="**Final release**. Images tagged \`${IMAGE_TAG}\` for production."
+              NEXT_STEP="Update Rancher production to \`${IMAGE_TAG}\` after images are confirmed."
+              ;;
+          esac
+
+          gh pr edit "$PR_NUM" \
+            --repo "${{ env.UPSTREAM_REPO }}" \
+            --title "[Release]: Release ${VERSIONED} [${STAGE}] — ${SETUP} → ${RELEASE}" \
+            --body "## Release ${NEW} — ${STAGE} stage
+
+          | | |
+          |---|---|
+          | Version | \`${VERSIONED}\` |
+          | Image tag | \`${IMAGE_TAG}\` |
+          | Stage | \`${STAGE}\` |
+          | Base branch | \`${BASE}\` |
+          | Setup branch | \`${FORK_OWNER}:${SETUP}\` |
+          | Target branch | \`${RELEASE}\` |
+
+          ### What this PR contains
+          - Version bump to \`${VERSIONED}\` across all tracked files
+          - Merged \`${{ inputs.merge_source_branch }}\` into setup branch (unless skipped)
+
+          ### Stage notes
+          ${STAGE_NOTE}
+
+          ### Merge checklist
+          - [ ] Version strings correct in all files
+          - [ ] No unintended changes from source merge
+          - [ ] CI checks passing
+
+          ### After merging
+          ${NEXT_STEP}
+
+          ---
+          *Auto-generated by release-orchestrator workflow from fork \`${{ github.repository }}\`.*"
+
+          echo "✓  Upstream PR #${PR_NUM} title and description updated"
+
+      - name: Resolve PR outputs
+        id: resolve-pr
+        run: |
+          if [[ "${{ steps.pr-check.outputs.exists }}" == "true" ]]; then
+            echo "pr_url=${{ steps.pr-check.outputs.pr_url }}"       >> "$GITHUB_OUTPUT"
+            echo "pr_number=${{ steps.pr-check.outputs.pr_number }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "pr_url=${{ steps.open-pr.outputs.pr_url }}"       >> "$GITHUB_OUTPUT"
+            echo "pr_number=${{ steps.open-pr.outputs.pr_number }}" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ============================================================================
+  # JOB 7 — Summary (always runs)
+  # ============================================================================
+  summary:
+    name: Run summary
+    needs: [prepare, create-setup-branch, version-bump, open-pr, open-upstream-pr]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Write job summary
+        run: |
+          NEW="${{ needs.prepare.outputs.new_version }}"
+          VERSIONED="${{ needs.prepare.outputs.versioned }}"
+          STAGE="${{ needs.prepare.outputs.image_stage }}"
+          IMAGE_TAG="${{ needs.prepare.outputs.image_tag }}"
+          PREV="${{ needs.prepare.outputs.prev_version }}"
+          BASE="${{ needs.prepare.outputs.base_branch }}"
+          RELEASE="${{ needs.prepare.outputs.release_branch }}"
+          SETUP="${{ needs.prepare.outputs.setup_branch }}"
+          PR_URL="${{ needs.open-pr.outputs.pr_url }}"
+          UPSTREAM_PR_URL="${{ needs.open-upstream-pr.outputs.pr_url }}"
+          DRY="${{ inputs.dry_run }}"
+
+          icon() {
+            case "$1" in
+              success) echo "✅" ;;
+              skipped) echo "⏭️ skipped" ;;
+              *)        echo "❌" ;;
+            esac
+          }
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<SUMMARY
+          ## Release orchestrator — ${NEW} [${STAGE}]${DRY:+ — DRY RUN}
+
+          | | |
+          |---|---|
+          | Fork | \`${{ github.repository }}\` |
+          | Upstream | \`${{ env.UPSTREAM_REPO }}\` |
+          | Triggered from | \`${BASE}\` |
+          | prev_version (from VERSION file) | \`${PREV}\` |
+          | Version written to files | \`${VERSIONED}\` |
+          | Image tag | \`${IMAGE_TAG}\` |
+          | Stage | \`${STAGE}\` |
+          | Release branch | \`${RELEASE}\` |
+          | Setup branch (fork) | \`${SETUP}\` |
+          | Merge source | \`${{ inputs.merge_source_branch }}\` |
+          | Source merge skipped | ${{ inputs.skip_merge && 'yes' || 'no' }} |
+
+          ### Step results
+          | Step | Result |
+          |---|---|
+          | Read VERSION + validate | $(icon "${{ needs.prepare.result }}") |
+          | Create setup branch + merge | $(icon "${{ needs.create-setup-branch.result }}") |
+          | Version bump → \`${VERSIONED}\` | $(icon "${{ needs.version-bump.result }}") |
+          | Open PR (fork) | $(icon "${{ needs.open-pr.result }}") |
+          | Open PR (upstream) | $(icon "${{ needs.open-upstream-pr.result }}") |
+
+          ### PRs created
+          | Target | URL |
+          |---|---|
+          | Fork | ${PR_URL:-'Not created (dry run or earlier step failed)'} |
+          | Upstream | ${UPSTREAM_PR_URL:-'Not created (dry run or earlier step failed)'} |
+
+          ### Re-run flags
+          | Scenario | Set these inputs |
+          |---|---|
+          | Merge conflict resolved locally | \`skip_merge=true\` |
+          | Version bump failed, branch OK | \`skip_merge=true\` |
+          | Promoting alpha → rc | Same branch, \`image_stage=rc\` |
+          | Promoting rc → final | Same branch, \`image_stage=final\` |
+          SUMMARY

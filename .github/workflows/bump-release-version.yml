@@ -1,0 +1,369 @@
+# =============================================================================
+# .github/workflows/bump-release-version.yml
+#
+# Mirrors bump-release-version.command exactly:
+#   • GLOBAL_FILES      — full file, all occurrences
+#   • README.md         — base version only (badge URL)
+#   • JSON_PKG_FILES    — "version" field, lines ≤ 15
+#   • POM_FILES         — any occurrence, lines ≤ 15
+#
+# Triggers:
+#   • Manual (workflow_dispatch) — primary use case
+#   • Called by other workflows  (workflow_call) — e.g. a release orchestrator
+#
+# Required repo secret:  RELEASE_BOT_TOKEN
+#   A fine-grained PAT with:
+#     Contents: read + write   (push the version-bump commit)
+#     Pull requests: write     (open the RC → release PR)
+#   If the repo uses branch protection, the token owner must satisfy it
+#   or be listed as a bypass actor.
+# =============================================================================
+
+name: Bump release version
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: "New version  (e.g. 8.1.0-rc  or  8.1.0)"
+        required: true
+      prev_version:
+        description: "Current version to replace  (leave blank to read from VERSION file)"
+        required: false
+        default: ""
+      open_pr:
+        description: "Open a PR after the commit?"
+        type: boolean
+        required: false
+        default: true
+      pr_base_branch:
+        description: "PR target branch  (e.g. release/8.1.0)"
+        required: false
+        default: ""
+      target_repository:
+        description: "Repository to check out  (leave blank for current repo)"
+        required: false
+        default: ""
+      target_ref:
+        description: "Branch/ref to check out  (leave blank for dispatch ref)"
+        required: false
+        default: ""
+
+  # Allow a release-orchestrator workflow to call this one
+  workflow_call:
+    inputs:
+      new_version:
+        required: true
+        type: string
+      prev_version:
+        required: false
+        type: string
+        default: ""
+      open_pr:
+        required: false
+        type: boolean
+        default: true
+      pr_base_branch:
+        required: false
+        type: string
+        default: ""
+      # When called from the orchestrator, these ensure the bump runs on the
+      # fork's setup branch rather than the default workflow context.
+      target_repository:
+        description: "Repository to check out  (e.g. fork-org/forms-flow-ai)"
+        required: false
+        type: string
+        default: ""
+      target_ref:
+        description: "Branch/ref to check out  (e.g. release/8.1.0-setup)"
+        required: false
+        type: string
+        default: ""
+    secrets:
+      RELEASE_BOT_TOKEN:
+        required: true
+
+jobs:
+  bump:
+    name: Bump ${{ inputs.prev_version || 'current' }} → ${{ inputs.new_version }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────────────
+      # When called from the orchestrator, target_repository and target_ref
+      # point to the fork's setup branch so the bump runs in the right place.
+      # When run standalone (workflow_dispatch), both default to empty and
+      # actions/checkout uses the current repo + dispatch ref as normal.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          repository: ${{ inputs.target_repository || github.repository }}
+          ref:        ${{ inputs.target_ref || github.ref }}
+          fetch-depth: 0
+
+      # ── 2. Resolve versions ────────────────────────────────────────────────
+      - name: Resolve versions
+        id: versions
+        run: |
+          if [[ -n "${{ inputs.prev_version }}" ]]; then
+            CURRENT="${{ inputs.prev_version }}"
+          elif [[ -f VERSION ]]; then
+            CURRENT="$(tr -d '[:space:]' < VERSION | sed 's/^v//')"
+          else
+            echo "::error::No prev_version supplied and VERSION file not found."
+            exit 1
+          fi
+
+          NEW="${{ inputs.new_version }}"
+          NEW="${NEW//[[:space:]]/}"
+
+          if ! [[ "$NEW" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
+            echo "::error::Invalid version format \"$NEW\". Expected X.Y.Z or X.Y.Z-suffix"
+            exit 1
+          fi
+
+          if [[ "$NEW" == "$CURRENT" ]]; then
+            echo "::error::new_version equals current version ($CURRENT). Nothing to do."
+            exit 1
+          fi
+
+          # Strip pre-release suffix for README badge  (8.3.0.dev0 → 8.3.0)
+          BASE_CUR="${CURRENT%%-*}"
+          BASE_NEW="${NEW%%-*}"
+
+          echo "current=$CURRENT"   >> "$GITHUB_OUTPUT"
+          echo "new=$NEW"           >> "$GITHUB_OUTPUT"
+          echo "base_cur=$BASE_CUR" >> "$GITHUB_OUTPUT"
+          echo "base_new=$BASE_NEW" >> "$GITHUB_OUTPUT"
+
+          echo "Current : $CURRENT  (base: $BASE_CUR)"
+          echo "New     : $NEW      (base: $BASE_NEW)"
+
+      # ── 3. Global replacement files ────────────────────────────────────────
+      #    Every occurrence replaced throughout the entire file.
+      - name: Update global files
+        env:
+          FF_CUR: ${{ steps.versions.outputs.current }}
+          FF_NEW: ${{ steps.versions.outputs.new }}
+        run: |
+          GLOBAL_FILES=(
+            "VERSION"
+            "forms-flow-api/setup.cfg"
+            "forms-flow-api-utils/setup.py"
+            "forms-flow-data-layer/setup.cfg"
+            "forms-flow-documents/setup.cfg"
+            "jobs/sentiment-analysis/setup.cfg"
+            "deployment/docker/docker-compose.yml"
+            "deployment/docker/sample.env"
+            "forms-flow-web-root-config/docker-compose.yml"
+            "forms-flow-web-root-config/sample.env"
+            "forms-flow-web-root-config/src/index.ejs"
+          )
+
+          CHANGED=0; SKIPPED=0; FAILED=()
+
+          for rel in "${GLOBAL_FILES[@]}"; do
+            if [[ ! -f "$rel" ]]; then
+              echo "  SKIP (not found): $rel"; SKIPPED=$((SKIPPED+1)); continue
+            fi
+            if ! grep -qF "$FF_CUR" "$rel"; then
+              echo "  SKIP (no match):  $rel"; SKIPPED=$((SKIPPED+1)); continue
+            fi
+            if perl -i -pe 's/\Q$ENV{FF_CUR}\E/$ENV{FF_NEW}/g' "$rel"; then
+              echo "  ✓  $rel"; CHANGED=$((CHANGED+1))
+            else
+              echo "  ✗  FAILED: $rel"; FAILED+=("$rel")
+            fi
+          done
+
+          echo ""
+          echo "Global files — changed: $CHANGED  skipped: $SKIPPED"
+          if [[ ${#FAILED[@]} -gt 0 ]]; then
+            echo "::error::Failed to update: ${FAILED[*]}"
+            exit 1
+          fi
+
+      # ── 4. README badge URL ────────────────────────────────────────────────
+      #    Pattern: release-vX.Y.Z-<color>  — only base version matched,
+      #    so -rc / -alpha suffixes don't interfere with the badge colour token.
+      - name: Update README badge
+        env:
+          FF_BASE_CUR: ${{ steps.versions.outputs.base_cur }}
+          FF_BASE_NEW: ${{ steps.versions.outputs.base_new }}
+        run: |
+          if [[ ! -f README.md ]]; then
+            echo "  SKIP (not found): README.md"; exit 0
+          fi
+          if ! grep -qF "$FF_BASE_CUR" README.md; then
+            echo "  SKIP (no match):  README.md"; exit 0
+          fi
+          if perl -i -pe \
+            's|(release-v)\Q$ENV{FF_BASE_CUR}\E(-[a-z]+)|$1$ENV{FF_BASE_NEW}$2|g' \
+            README.md; then
+            echo "  ✓  README.md"
+          else
+            echo "::error::Failed to update README.md"
+            exit 1
+          fi
+
+      # ── 5. package.json / package-lock.json ───────────────────────────────
+      #    Only the root "version" field within the first 15 lines.
+      #    npm dependency versions that coincidentally match are left alone.
+      - name: Update package JSON files
+        env:
+          FF_CUR: ${{ steps.versions.outputs.current }}
+          FF_NEW: ${{ steps.versions.outputs.new }}
+        run: |
+          JSON_PKG_FILES=(
+            "forms-flow-web/package.json"
+            "forms-flow-web/package-lock.json"
+            "forms-flow-web-root-config/package.json"
+            "forms-flow-web-root-config/package-lock.json"
+          )
+
+          CHANGED=0; SKIPPED=0; FAILED=()
+
+          for rel in "${JSON_PKG_FILES[@]}"; do
+            if [[ ! -f "$rel" ]]; then
+              echo "  SKIP (not found): $rel"; SKIPPED=$((SKIPPED+1)); continue
+            fi
+            if ! grep -qF "$FF_CUR" "$rel"; then
+              echo "  SKIP (no match):  $rel"; SKIPPED=$((SKIPPED+1)); continue
+            fi
+            if perl -i -pe \
+              's/("version":\s*)"\Q$ENV{FF_CUR}\E"/$1"$ENV{FF_NEW}"/g if $. <= 15' \
+              "$rel"; then
+              echo "  ✓  $rel"; CHANGED=$((CHANGED+1))
+            else
+              echo "  ✗  FAILED: $rel"; FAILED+=("$rel")
+            fi
+          done
+
+          echo ""
+          echo "Package JSON files — changed: $CHANGED  skipped: $SKIPPED"
+          if [[ ${#FAILED[@]} -gt 0 ]]; then
+            echo "::error::Failed to update: ${FAILED[*]}"
+            exit 1
+          fi
+
+      # ── 6. POM files ───────────────────────────────────────────────────────
+      #    Project <version> is at line ~9; dependency <version> tags appear
+      #    much later and must not be touched — hence the lines ≤ 15 guard.
+      - name: Update POM files
+        env:
+          FF_CUR: ${{ steps.versions.outputs.current }}
+          FF_NEW: ${{ steps.versions.outputs.new }}
+        run: |
+          POM_FILES=(
+            "forms-flow-bpm/pom.xml"
+            "forms-flow-bpm/pom-default.xml"
+            "forms-flow-bpm/forms-flow-bpm-camunda/pom.xml"
+            "forms-flow-bpm/forms-flow-bpm-utils/pom.xml"
+          )
+
+          CHANGED=0; SKIPPED=0; FAILED=()
+
+          for rel in "${POM_FILES[@]}"; do
+            if [[ ! -f "$rel" ]]; then
+              echo "  SKIP (not found): $rel"; SKIPPED=$((SKIPPED+1)); continue
+            fi
+            if ! grep -qF "$FF_CUR" "$rel"; then
+              echo "  SKIP (no match):  $rel"; SKIPPED=$((SKIPPED+1)); continue
+            fi
+            if perl -i -pe \
+              's/\Q$ENV{FF_CUR}\E/$ENV{FF_NEW}/g if $. <= 15' \
+              "$rel"; then
+              echo "  ✓  $rel"; CHANGED=$((CHANGED+1))
+            else
+              echo "  ✗  FAILED: $rel"; FAILED+=("$rel")
+            fi
+
+            # For forms-flow-bpm-camunda/pom.xml, also update the forms-flow-bpm-utils
+            # dependency version which lives beyond line 15. Anchor on artifactId so
+            # the replacement is position-independent.
+            if [[ "$rel" == *"forms-flow-bpm-camunda/pom.xml" ]]; then
+              if perl -i -0pe \
+                's|(<artifactId>forms-flow-bpm-utils</artifactId>\s*<version>)\Q$ENV{FF_CUR}\E(</version>)|${1}$ENV{FF_NEW}${2}|g' \
+                "$rel"; then
+                echo "  ✓  $rel (forms-flow-bpm-utils dependency)"
+              else
+                echo "  ✗  FAILED: $rel (forms-flow-bpm-utils dependency)"; FAILED+=("$rel:bpm-utils-dep")
+              fi
+            fi
+          done
+
+          echo ""
+          echo "POM files — changed: $CHANGED  skipped: $SKIPPED"
+          if [[ ${#FAILED[@]} -gt 0 ]]; then
+            echo "::error::Failed to update: ${FAILED[*]}"
+            exit 1
+          fi
+
+      # ── 7. Verify something actually changed ──────────────────────────────
+      - name: Verify changes
+        run: |
+          if git diff --quiet; then
+            echo "::error::Version bump had no effect — no files were modified."
+            echo "::error::Current version in repo files does not match prev_version (${{ steps.versions.outputs.current }})."
+            echo "::error::Check that prev_version is exactly what appears in VERSION and the other tracked files."
+            exit 1
+          fi
+          echo "Modified files:"
+          git diff --name-only | sed 's/^/  • /'
+
+      # ── 8. Commit and push ────────────────────────────────────────────────
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "[Version]: bump version ${{ steps.versions.outputs.current }} → ${{ steps.versions.outputs.new }}"
+
+          # Always push to the explicit tracked branch name — never a bare 'git push'
+          # which would push to whatever the default tracking branch is and could
+          # silently commit to main/master on a standalone workflow_dispatch run.
+          CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+          # Safety guard: refuse to push to main or master
+          if [[ "$CURRENT_BRANCH" == "main" || "$CURRENT_BRANCH" == "master" ]]; then
+            echo "::error::Refusing to push version-bump commit directly to '${CURRENT_BRANCH}'."
+            echo "::error::This workflow must be run on a release or setup branch, not the default branch."
+            exit 1
+          fi
+
+          git push origin "$CURRENT_BRANCH"
+
+      # ── 9. Open PR (optional) ─────────────────────────────────────────────
+      #    Only runs when open_pr=true AND pr_base_branch is provided.
+      - name: Open pull request
+        if: ${{ inputs.open_pr == true && inputs.pr_base_branch != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT="${{ steps.versions.outputs.current }}"
+          NEW="${{ steps.versions.outputs.new }}"
+          BASE="${{ inputs.pr_base_branch }}"
+          HEAD="$(git rev-parse --abbrev-ref HEAD)"
+
+          CHANGED_FILES="$(git diff HEAD~1 --name-only | sed 's/^/- /')"
+
+          gh pr create \
+            --title "[Version]: bump version ${CURRENT} → ${NEW}" \
+            --body "## Version bump
+
+          | | |
+          |---|---|
+          | From | \`${CURRENT}\` |
+          | To   | \`${NEW}\` |
+
+          ### Files updated
+          ${CHANGED_FILES}
+
+          ---
+          *Auto-generated by the bump-release-version workflow.*" \
+            --base "$BASE" \
+            --head "$HEAD"

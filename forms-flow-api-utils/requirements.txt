@@ -16,7 +16,7 @@ sqlalchemy_utils
 markupsafe
 PyJWT
 selenium
-selenium-wire
+selenium-wire-lw
 redis
 sentry-sdk[flask]
 opentelemetry-exporter-otlp

@@ -14,6 +14,8 @@ from formsflow_api_utils.utils import Cache
 class FormioService:
     """This class manages formio API calls."""
 
+    DEFAULT_TOKEN_CACHE_TIMEOUT = 300
+
     def __init__(self):
         """Initializing the service."""
         self.base_url = current_app.config.get("FORMIO_URL")
@@ -21,9 +23,16 @@ class FormioService:
     @classmethod
     def decode_timeout(cls, token):
         """Method to decode token and get timeout."""
-        token = jwt.decode(token, options={"verify_signature": False})
-        timeout = token["exp"] - token["iat"]
-        return timeout
+        try:
+            decoded = jwt.decode(token, options={"verify_signature": False})
+            return decoded["exp"] - decoded["iat"]
+        except (jwt.exceptions.PyJWTError, KeyError, TypeError):
+            current_app.logger.warning(
+                "Unable to decode formio token to determine cache timeout; "
+                "falling back to default of %s seconds.",
+                cls.DEFAULT_TOKEN_CACHE_TIMEOUT,
+            )
+            return cls.DEFAULT_TOKEN_CACHE_TIMEOUT
 
     def get_formio_access_token(self):
         """Method to get formio access token."""

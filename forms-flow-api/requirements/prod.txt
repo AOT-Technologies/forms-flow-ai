@@ -6,7 +6,7 @@ Flask-Moment
 Flask-SQLAlchemy
 flask-restx
 flask-marshmallow
-flask-jwt-oidc==0.7.0
+flask-jwt-oidc==0.8.0
 python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy
@@ -17,4 +17,4 @@ markupsafe
 PyJWT
 redis
 lxml
-git+https://github.com/aot-technologies/forms-flow-ai.git@release/7.3.0#subdirectory=forms-flow-api-utils
+git+https://github.com/aot-technologies/forms-flow-ai.git@Update/FWF-6483-Security-vulnerablilities-fix#subdirectory=forms-flow-api-utils

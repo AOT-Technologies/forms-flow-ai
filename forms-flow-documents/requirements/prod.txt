@@ -5,7 +5,7 @@ Flask-Migrate
 Flask-Moment
 Flask-SQLAlchemy
 flask-restx
-flask-jwt-oidc==0.7.0 # somehow latest version is not geting pulled from pypi
+flask-jwt-oidc==0.8.0 # pinned - 0.7.0 pulled in the vulnerable ecdsa/python-jose (CVE-2024-23342); 0.8.0 uses PyJWT internally
 python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy
@@ -19,4 +19,4 @@ selenium-wire
 blinker<1.8.0 # latest selenium-wire have breaking changes with blinker
 nested-lookup
 setuptools
-git+https://github.com/aot-technologies/forms-flow-ai.git@release/7.3.0#subdirectory=forms-flow-api-utils
+git+https://github.com/aot-technologies/forms-flow-ai.git@Update/FWF-6483-Security-vulnerablilities-fix#subdirectory=forms-flow-api-utils

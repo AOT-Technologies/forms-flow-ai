@@ -21,6 +21,9 @@ RUN npm run build
 # Production stage
 FROM nginx:1.27-alpine as production-stage
 
+# Apply latest Alpine security patches (libxml2, etc.)
+RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
+
 # Copy built files from build stage
 COPY --from=build-stage /forms-flow-web/app/build /usr/share/nginx/html
 

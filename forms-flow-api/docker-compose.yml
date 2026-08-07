@@ -17,8 +17,8 @@ services:
 
   forms-flow-webapi:
     build:
-      context: ./
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: forms-flow-api/Dockerfile
     restart: unless-stopped
     depends_on:
       - forms-flow-webapi-db

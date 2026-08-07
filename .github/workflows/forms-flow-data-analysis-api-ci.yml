@@ -13,8 +13,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-data-analysis-api
-
+    working-directory: .
 jobs:
   setup-job:
     runs-on: ubuntu-24.04
@@ -39,11 +38,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          pip install -r requirements/dev.txt
+          pip install -r forms-flow-data-analysis-api/requirements/dev.txt
       - name: Pylint
         id: pylint
         run: |
-          pylint --rcfile=setup.cfg  src/api
+          pylint --rcfile=forms-flow-data-analysis-api/setup.cfg  forms-flow-data-analysis-api/src/api
 
   Test:
     if: always()
@@ -98,13 +97,16 @@ jobs:
       - name: Install dependencies
         run: |
           make setup
+        working-directory: ./forms-flow-data-analysis-api/
       - name: Download Sentiment Analysis Model
         run: |
           make download-models
+        working-directory: ./forms-flow-data-analysis-api/
       - name: Test
         id: test
         run: |
           make test
+        working-directory: ./forms-flow-data-analysis-api/
 
   Build:
     if: always()
@@ -122,4 +124,4 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Build
         run: |
-          docker build . -t forms-flow-data-analysis-api
+          docker build . -t forms-flow-data-analysis-api -f forms-flow-data-analysis-api/Dockerfile

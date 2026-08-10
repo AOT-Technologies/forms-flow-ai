@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2  # Add this step to check out the repository
+        uses: actions/checkout@v7  # Add this step to check out the repository
 
       - name: Set version
         if: ${{ github.ref != 'refs/heads/master' }}
@@ -39,7 +39,7 @@ jobs:
       - run: echo ${{ env.VERSION }}
       
       - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_DEPLOYMENT_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_DEPLOYMENT_SECRET_ACCESS_KEY }}

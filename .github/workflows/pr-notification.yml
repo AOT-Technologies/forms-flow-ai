@@ -26,7 +26,7 @@ jobs:
           fi
 
       - name: Send notification to Google Chat
-        uses: fjogeleit/http-request-action@v1.16.0
+        uses: fjogeleit/http-request-action@v2.0.1
         with:
           url: ${{ secrets.PR_NOTIFICATION }}
           method: POST

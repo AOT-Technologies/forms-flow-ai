@@ -30,11 +30,11 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v4
         with:
           install: true
 
@@ -58,19 +58,19 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v6
         with:
           images: ${{ matrix.image }}
           tags: ${{ env.VERSION }}
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
       - name: Cache Docker layers
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
@@ -79,7 +79,7 @@ jobs:
 
       - name: Build and push Docker image for non-master branches
         if: ${{ github.ref != 'refs/heads/master' }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: forms-flow-idm/keycloak
           platforms: linux/amd64,linux/arm64/v8
@@ -89,7 +89,7 @@ jobs:
 
       - name: Build and push Docker image for master branch
         if: ${{ github.ref == 'refs/heads/master' }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: forms-flow-idm/keycloak
           platforms: linux/amd64,linux/arm64/v8
@@ -107,6 +107,6 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Upload Snyk report as SARIF 📦
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: snyk.sarif

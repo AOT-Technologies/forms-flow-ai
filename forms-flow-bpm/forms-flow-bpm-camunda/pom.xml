@@ -359,7 +359,7 @@
         <dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
-			<version>6.1.12</version>
+			<version>7.0.8</version>
 		</dependency>
 
         <dependency>

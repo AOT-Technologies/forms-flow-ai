@@ -1,34 +1,109 @@
-name: PR Review Agent
+name: Claude AI Code Review Agent
 
 on:
   pull_request_target:
-    types: [opened, reopened, ready_for_review, synchronize]
+    types: [opened, reopened, ready_for_review, synchronize, review_requested]
     branches:
       - develop
       - master
       - release/**
   issue_comment:
+    types: [created]
 
 permissions:
   contents: write
   issues: write
   pull-requests: write
+  statuses: write
+  checks: write
 
 jobs:
-  pr_agent_job:
+  claude_code_review:
     if: |
-      (github.event_name == 'pull_request_target') || 
-      (github.event_name == 'issue_comment' && github.event.sender.type != 'Bot')
+      (github.event_name == 'pull_request_target' && !github.event.pull_request.draft) || 
+      (github.event_name == 'issue_comment' && 
+       github.event.sender.type != 'Bot' && 
+       contains(github.event.comment.body, '@claude'))
     runs-on: ubuntu-latest
-    name: Run PR Agent on every PR event or issue comment
+    name: Claude AI Code Review
+    timeout-minutes: 15
+    
     steps:
-      - name: PR Agent action step
-        id: pragent
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install PR Agent with Claude
+        run: |
+          npm install -g @qodo-ai/pr-agent
+      
+      - name: Run Claude Code Review
+        id: claude_review
         uses: qodo-ai/pr-agent@main
         env:
-          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          # Use Anthropic Claude API
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          github_action_config.auto_review: "true" # enable\disable auto review
-          github_action_config.auto_describe: "true" # enable\disable auto describe
-          github_action_config.auto_improve: "true" # enable\disable auto improve
+          
+          # Configure to use Claude
+          config.model: "anthropic/claude-sonnet-4.5"
+          
+          # Auto-review configuration
+          github_action_config.auto_review: "true"
+          github_action_config.auto_describe: "true"
+          github_action_config.auto_improve: "true"
+          
+          # PR actions to trigger on
           github_action_config.pr_actions: '["opened", "reopened", "ready_for_review", "review_requested", "synchronize"]'
+          
+          # Review configuration
+          pr_reviewer.num_code_suggestions: "6"
+          pr_reviewer.inline_code_comments: "true"
+          pr_reviewer.require_focused_review: "true"
+          pr_reviewer.require_score_review: "true"
+          pr_reviewer.require_tests_review: "true"
+          pr_reviewer.require_security_review: "true"
+          pr_reviewer.require_estimate_effort_to_review: "true"
+          
+          # Code suggestions configuration
+          pr_code_suggestions.num_code_suggestions: "6"
+          pr_code_suggestions.commitable_code_suggestions: "true"
+          pr_code_suggestions.extra_instructions: "Follow the project's coding standards defined in CONTRIBUTING.md and CLAUDE.md"
+          pr_code_suggestions.rank_suggestions: "true"
+          
+          # Description configuration
+          pr_description.publish_labels: "true"
+          pr_description.add_original_user_description: "true"
+          pr_description.generate_ai_title: "true"
+          
+          # General configuration
+          config.verbosity_level: "1"
+          config.publish_output_progress: "true"
+      
+      - name: Add review summary comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const status = '${{ steps.claude_review.outcome }}';
+            const emoji = status === 'success' ? '✅' : '⚠️';
+            const message = `${emoji} **Claude AI Code Review ${status === 'success' ? 'Completed' : 'Finished with warnings'}**\n\n` +
+              `Review powered by Anthropic Claude Sonnet 4.5\n` +
+              `Timestamp: ${new Date().toISOString()}\n\n` +
+              `For more details, check the review comments above.`;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });

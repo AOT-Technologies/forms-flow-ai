@@ -28,12 +28,13 @@ jobs:
       contents: read
       packages: write
       security-events: write
+      id-token: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v4
         with:
           install: true
       - name: Set version
@@ -60,14 +61,17 @@ jobs:
           images: ${{ matrix.image }}
           tags: ${{ env.VERSION }}
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v1
+      - name: Get Docker token
+        id: docker_oidc
+        uses: docker/oidc-action@v1
         with:
-
-          # registry: ${{ env.REGISTRY }}
-
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          connection-id: ${{ secrets.DOCKER_OIDC_CONNECTION_ID }}
+          expires-in: 3600
+      - name: Log in to the Container registry
+        uses: docker/login-action@v4
+        with:
+         username: ${{ secrets.DOCKER_HUB_USERNAME }}
+         password: ${{ steps.docker_oidc.outputs.token }}
 
       - name: Cache Docker layers
         uses: actions/cache@v4
@@ -76,9 +80,9 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.name }}
-      - name: Build and push Docker image
+      - name: Build and push Docker image from non master branch
         if: ${{ github.ref != 'refs/heads/master' }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: forms-flow-bpm
           push: true
@@ -86,28 +90,16 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Build and push Docker image
+      - name: Build and push Docker image from master branch
         if: ${{ github.ref == 'refs/heads/master' }}
-        uses: docker/build-push-action@v2
-        with:
+        uses: docker/build-push-action@v7
+        with: 
           context: forms-flow-bpm
           push: true
           platforms: linux/amd64,linux/arm64/v8
           file: forms-flow-bpm/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-bpm:latest
-          labels: ${{ steps.meta.outputs.labels }}
-
-      # - name: Build and push Docker image - arm64
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: forms-flow-bpm
-      #     file: forms-flow-bpm/Dockerfile-ARM64
-      #     push: true
-      #     platforms: linux/arm64/v8
-      #     tags: ${{ steps.meta.outputs.tags }}-arm64
-      #     labels: ${{ steps.meta.outputs.labels }}
-
-      
+          labels: ${{ steps.meta.outputs.labels }}  
       - name: Scan Docker image 🐳
         uses: snyk/actions/docker@master
         continue-on-error: true
@@ -160,3 +152,56 @@ jobs:
         run: |
           kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
           kubectl -n ${{ secrets.DEV_OPENSOURCE_NAMESPACE }} rollout restart deployment forms-flow-bpm
+      - name: Notify Google Chat - Success
+        if: ${{ success() }}
+        env:
+          GOOGLE_CHAT_WEBHOOK_URL: ${{ secrets.DOCKER_HUB_DEPLOY_GOOGLE_CHAT_WEBHOOK_URL }}
+          IMAGE_TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          curl --fail-with-body -X POST \
+            -H "Content-Type: application/json; charset=UTF-8" \
+            -d "$(jq -n \
+              --arg repository "${{ github.repository }}" \
+              --arg branch "${{ github.ref_name }}" \
+              --arg tags "$IMAGE_TAGS" \
+              --arg actor "${{ github.actor }}" \
+              --arg sha "${{ github.sha }}" \
+              --arg workflow "${{ github.workflow }}" \
+              --arg run_url "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              '{
+                text: (
+                  "🐳 *Docker Image Released Successfully* 🚀\n\n" +
+                  "*Repository:* " + $repository + "\n" +
+                  "*Branch:* " + $branch + "\n" +
+                  "*Image:* " + $tags + "\n" +
+                  "*Commit:* " + $sha + "\n" +
+                  "*Triggered by:* " + $actor + "\n\n" +
+                  "🔗 " + $run_url
+                )
+              }')" \
+            "$GOOGLE_CHAT_WEBHOOK_URL"
+
+      - name: Notify Google Chat - Failure
+        if: ${{ failure() }}
+        env:
+          GOOGLE_CHAT_WEBHOOK_URL: ${{ secrets.DOCKER_HUB_DEPLOY_GOOGLE_CHAT_WEBHOOK_URL }}
+        run: |
+          curl --fail-with-body -X POST \
+            -H "Content-Type: application/json; charset=UTF-8" \
+            -d "$(jq -n \
+              --arg repository "${{ github.repository }}" \
+              --arg branch "${{ github.ref_name }}" \
+              --arg actor "${{ github.actor }}" \
+              --arg workflow "${{ github.workflow }}" \
+              --arg run_url "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              '{
+                text: (
+                  "❌ *Docker Image Release Failed*\n\n" +
+                  "*Repository:* " + $repository + "\n" +
+                  "*Branch:* " + $branch + "\n" +
+                  "*Workflow:* " + $workflow + "\n" +
+                  "*Triggered by:* " + $actor + "\n\n" +
+                  "🔗 Check the workflow:\n" + $run_url
+                )
+              }')" \
+            "$GOOGLE_CHAT_WEBHOOK_URL"  

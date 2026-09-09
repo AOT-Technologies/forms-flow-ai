@@ -2,6 +2,46 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.3.1 - TBD (update to actual GA date before tagging)
+
+`Fixed`
+
+**forms-flow-api / forms-flow-api-utils**
+* Migrated Keycloak/Formio authentication off `python-jose`/`ecdsa` to `PyJWT`, resolving the `ecdsa` timing-attack vulnerability (CVE-2024-23342)
+* Upgraded `flask-jwt-oidc` 0.7.0 → 0.8.0 and other vulnerable Python dependencies
+
+**forms-flow-data-layer**
+* Migrated Keycloak OIDC verification off `python-jose`/`ecdsa` to `PyJWT` (CVE-2024-23342)
+* Applied OS package upgrades in the Docker image, resolving `libxml2`, `gnutls28`, and `pam` CVEs
+* Upgraded vulnerable Python dependencies
+
+**forms-flow-documents**
+* Removed vulnerable `python-jose`/`ecdsa` dependency in favor of `PyJWT`
+* Applied OS package upgrades (standard and ARM64 images), resolving `libxml2`, `gnutls28`, and `pam` CVEs
+* Upgraded vulnerable Python dependencies
+
+**forms-flow-web**
+* Applied OS package upgrades in the Docker image
+* Upgraded vulnerable frontend dependencies (including build scripts)
+
+**forms-flow-web-root-config**
+* Upgraded vulnerable transitive dependencies via package overrides
+
+**forms-flow-bpm**
+* Upgraded vulnerable Keycloak and Netty Java dependencies
+
+**forms-flow-idm**
+* Upgraded vulnerable dependencies in the IdP selector module
+
+**forms-flow-data-analysis-api**
+* Upgraded vulnerable Python and machine-learning dependencies (including the `sentiment-analysis` job)
+
+`Known Issues`
+* 8 CodeQL findings in the vendored `customformio.js` / `formio.full.min.js` bundles are excluded via `.github/codeql/codeql-config.yml` (generated third-party code, not hand-authored source) rather than fixed directly — tracked against upstream `formiojs` releases instead
+* 10 previously-flagged CVEs (`curl`, `db5.3`, `zlib`, `gdk-pixbuf`, `libsoup2.4`) remain dismissed as `won't fix` — no patched Debian 11/12 build currently exists for these
+
+Ref: FWF-6483, [#3323](https://github.com/AOT-Technologies/forms-flow-ai/pull/3323)
+
 ## 7.3.0 - 2025-10-14
 
 `Modified`

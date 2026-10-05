@@ -58,5 +58,5 @@ tqdm==4.67.1
 transformers==5.10.4
 typer==0.27.2
 typing_extensions==4.12.2
-urllib3==2.7.0
+urllib3==2.8.0
 wrapt==1.17.2

@@ -8,7 +8,8 @@ WORKDIR /forms-flow-api/app
 
 # install curl, gnupg2 and unzip
 RUN  apt-get update \
-  && apt-get install -y git 
+  && apt-get upgrade -y \
+  && apt-get install -y git
 
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH

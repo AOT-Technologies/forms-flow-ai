@@ -3,8 +3,10 @@
 from typing import Any, Dict
 
 import httpx
+import jwt
 from cachelib import SimpleCache
-from jose import JWTError, jwk, jwt
+from jwt import PyJWK
+from jwt.exceptions import PyJWTError
 
 from src.utils.logger import get_logger
 
@@ -41,7 +43,7 @@ class KeycloakOIDC:
         """Retrieving signing public keys from the public keys."""
         keys = public_keys.get("keys", [])
         signing_public_keys = {
-            key["kid"]: jwk.construct(key)
+            key["kid"]: PyJWK(key)
             for key in keys
             if key.get("use") == "sig" and key.get("alg") == "RS256" and key.get("kid")
         }
@@ -70,7 +72,7 @@ class KeycloakOIDC:
                 kid = headers.get("kid")
                 public_keys = await self.__get__signing_keys(public_keys)
                 if not kid or kid not in public_keys:
-                    raise JWTError("Public key not found for 'kid'")
+                    raise PyJWTError("Public key not found for 'kid'")
             public_key = public_keys[kid]
             payload = jwt.decode(
                 token,
@@ -81,5 +83,5 @@ class KeycloakOIDC:
             )
             logger.info("Token Verification completed")
             return payload
-        except JWTError as e:
-            raise JWTError(f"Invalid Token: {str(e)}") from e
+        except PyJWTError as e:
+            raise PyJWTError(f"Invalid Token: {str(e)}") from e

@@ -113,7 +113,7 @@ trainer = Trainer(
     compute_metrics=compute_metrics,
     train_dataset=full_train_dataset,
     eval_dataset=full_eval_dataset,
-    tokenizer=tokenizer,
+    processing_class=tokenizer,
     data_collator=data_collator,
 )
 trainer.train()

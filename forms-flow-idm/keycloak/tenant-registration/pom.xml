@@ -9,7 +9,7 @@
 	<name>tenant-registration</name>
 	<url>http://maven.apache.org</url>
 	<properties>
-		<keycloak.version>26.4.1</keycloak.version>
+		<keycloak.version>26.7.5</keycloak.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -35,7 +35,12 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.15.3</version>
+			<version>2.21.7</version><!-- aligned with Keycloak 26.7.5 -->
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.25.8</version>
 		</dependency>
 	</dependencies>
 	<build>

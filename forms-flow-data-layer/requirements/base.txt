@@ -9,7 +9,7 @@ logging
 orjson
 sqlalchemy
 requests
-python-jose
+PyJWT[crypto]
 cachelib
 httpx
 asyncpg

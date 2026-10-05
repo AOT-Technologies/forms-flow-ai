@@ -15,9 +15,43 @@ const singleSpaAppPlugin = {
   },
 };
 
+// react-scripts 5 generates a webpack-dev-server v4 config, but webpack-dev-server is
+// overridden to v5 (security fixes). Translate the v4-only options to their v5 equivalents.
+const devServerV5CompatPlugin = {
+  plugin: {
+    overrideDevServerConfig: ({ devServerConfig }) => {
+      const {
+        onBeforeSetupMiddleware,
+        onAfterSetupMiddleware,
+        https,
+        ...config
+      } = devServerConfig;
+      if (https) {
+        config.server =
+          typeof https === "object" ? { type: "https", options: https } : "https";
+      }
+      if (onBeforeSetupMiddleware || onAfterSetupMiddleware) {
+        config.setupMiddlewares = (middlewares, devServer) => {
+          if (onBeforeSetupMiddleware) onBeforeSetupMiddleware(devServer);
+          if (onAfterSetupMiddleware) {
+            // Run CRA's "after" middlewares after the built-in ones.
+            const after = [];
+            onAfterSetupMiddleware({ app: { use: (mw) => after.push(mw) } });
+            after.forEach((mw, i) =>
+              middlewares.push({ name: `cra-after-setup-${i}`, middleware: mw })
+            );
+          }
+          return middlewares;
+        };
+      }
+      return config;
+    },
+  },
+};
+
 // Keep any other configuration you are exporting from CRACO and add the plugin to the plugins array
 module.exports = {
-  plugins: [singleSpaAppPlugin],
+  plugins: [singleSpaAppPlugin, devServerV5CompatPlugin],
   webpack: {
     configure: {
       resolve: {

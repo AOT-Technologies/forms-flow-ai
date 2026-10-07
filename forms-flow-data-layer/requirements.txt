@@ -35,8 +35,8 @@ pycparser==3.0
 pydantic==2.10.6
 pydantic_core==2.27.2
 Pygments==2.20.0
-PyJWT==2.14.0
-pymongo==4.11.3
+PyJWT==2.15.1
+pymongo==4.18.2
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.2
 python-multipart==0.0.31
@@ -55,7 +55,7 @@ toml==0.10.2
 typer==0.15.2
 typing_extensions==4.15.0
 typing-inspection==0.4.4
-urllib3==2.7.0
+urllib3==2.8.0
 uvicorn==0.34.0
 watchfiles==1.0.4
 websockets==15.0.1

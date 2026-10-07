@@ -28,7 +28,7 @@
         <version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
         <version.springBoot>3.5.16</version.springBoot><!-- 3.5.x line for Spring 6.2.x / Tomcat 10.1.x security fixes -->
         <version.springSecurityOauth2>2.6.8</version.springSecurityOauth2><!--2.6.7 - 2.6.8 -->
-        <version.jackson>2.21.4</version.jackson><!-- aligned with spring-boot-dependencies 3.5.16 -->
+        <version.jackson>2.21.7</version.jackson><!-- above spring-boot-dependencies 3.5.16 (2.21.4) for security fixes -->
         <version.jacksonAnnotations>2.21</version.jacksonAnnotations><!-- jackson-annotations 2.20+ has no patch segment -->
         <version.springFramework>6.2.19</version.springFramework>
         <version.tomcat>10.1.60</version.tomcat>
@@ -259,7 +259,7 @@
 					<groupId>org.postgresql</groupId>
 					<artifactId>postgresql</artifactId>
 					<!--version>9.4-1205-jdbc41</version -->
-					<version>42.7.11</version>
+					<version>42.7.12</version>
 				</dependency>
 
 

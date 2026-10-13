@@ -298,10 +298,12 @@ jobs:
       # ----------------------------------------------------------
       - name: Configure kubectl
         shell: bash
+        env:
+          DEV_EKS_CLUSTER: ${{ secrets.DEV_EKS_CLUSTER }}
         run: |
           aws eks update-kubeconfig \
             --region "$AWS_REGION" \
-            --name "${{ secrets.DEV_EKS_CLUSTER }}"
+            --name "$DEV_EKS_CLUSTER"
 
       # ----------------------------------------------------------
       # Verify Kubernetes access
@@ -325,9 +327,9 @@ jobs:
       # ========================================================
       - name: Deploy to DEV Open Source namespace
         shell: bash
+        env:
+          NAMESPACE: ${{ secrets.DEV_OPENSOURCE_NAMESPACE }}
         run: |
-          NAMESPACE="${{ secrets.DEV_OPENSOURCE_NAMESPACE }}"
-
           echo "Deploying image:"
           echo "$IMAGE"
 
@@ -347,9 +349,11 @@ jobs:
       # ----------------------------------------------------------
       - name: Verify deployments
         shell: bash
+        env:
+          NAMESPACE: ${{ secrets.DEV_OPENSOURCE_NAMESPACE }}
         run: |
           echo "DEV Open Source:"
-          kubectl -n "${{ secrets.DEV_OPENSOURCE_NAMESPACE }}" \
+          kubectl -n "$NAMESPACE" \
             get deployment forms-flow-data-layer
 
   # ============================================================
@@ -430,10 +434,12 @@ jobs:
       # ----------------------------------------------------------
       - name: Configure kubectl
         shell: bash
+        env:
+          QA_EKS_CLUSTER: ${{ secrets.QA_EKS_CLUSTER }}
         run: |
           aws eks update-kubeconfig \
             --region "$AWS_REGION" \
-            --name "${{ secrets.QA_EKS_CLUSTER }}"
+            --name "$QA_EKS_CLUSTER"
 
       # ----------------------------------------------------------
       # Verify Kubernetes access
@@ -457,9 +463,9 @@ jobs:
       # ========================================================
       - name: Deploy to QA Open Source namespace
         shell: bash
+        env:
+          NAMESPACE: ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
         run: |
-          NAMESPACE="${{ secrets.QA_OPENSOURCE_NAMESPACE }}"
-
           echo "Deploying image:"
           echo "$IMAGE"
 
@@ -479,9 +485,11 @@ jobs:
       # ----------------------------------------------------------
       - name: Verify deployments
         shell: bash
+        env:
+          NAMESPACE: ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
         run: |
           echo "QA Open Source:"
-          kubectl -n "${{ secrets.QA_OPENSOURCE_NAMESPACE }}" \
+          kubectl -n "$NAMESPACE" \
             get deployment forms-flow-data-layer
 
   # ============================================================

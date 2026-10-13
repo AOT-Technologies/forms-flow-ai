@@ -31,17 +31,18 @@ jobs:
 
       - name: Upload ZAP Report to S3
         if: always()
-        run: |
-          if [ -f report_html.html ]; then
-            aws s3 cp report_html.html s3://${{ secrets.ZAP_REPORT_BUCKET }}/zap-reports/zap-report-$(TZ='Asia/Kolkata' date +%Y-%m-%d_%H-%M-%S).html
-          else
-            echo "ZAP report not found!" >&2
-            exit 1
-          fi
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.REGION }}
+          ZAP_REPORT_BUCKET: ${{ secrets.ZAP_REPORT_BUCKET }}
+        run: |
+          if [ -f report_html.html ]; then
+            aws s3 cp report_html.html "s3://$ZAP_REPORT_BUCKET/zap-reports/zap-report-$(TZ='Asia/Kolkata' date +%Y-%m-%d_%H-%M-%S).html"
+          else
+            echo "ZAP report not found!" >&2
+            exit 1
+          fi
 
       - name: Check ZAP Scan Result
         id: check_zap_result
@@ -54,15 +55,20 @@ jobs:
       - name: Create Jira Issue
         id: create_ticket
         if: env.failures == '1'
+        env:
+          JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
         run: |
           current_time=$(TZ='Asia/Kolkata' date +"%m/%d/%Y-%I:%M %p")
 
-          response=$(curl -X POST -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+          response=$(curl -X POST -u "$JIRA_USERNAME:$JIRA_API_TOKEN" \
           -H "Content-Type: application/json" \
           --data '{
             "fields": {
               "project": {
-                "key": "'${{ secrets.JIRA_PROJECT_KEY }}'"
+                "key": "'"$JIRA_PROJECT_KEY"'"
               },
               "summary": "ZAP Scan detected issues in '${{ github.repository }}' at '"${current_time}"'",
               "description": "ZAP Scan found issues in the scan. Please review the attached report.",
@@ -70,14 +76,14 @@ jobs:
                 "name": "Task"
               }
             }
-          }' ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue/)
+          }' "$JIRA_BASE_URL/rest/api/2/issue/")
           issue_id=$(echo $response | jq -r '.id')
           if [[ "$issue_id" != "null" ]]; then
-            curl -X POST -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+            curl -X POST -u "$JIRA_USERNAME:$JIRA_API_TOKEN" \
             -H "X-Atlassian-Token: no-check" \
             -H "Content-Type: multipart/form-data" \
             -F "file=@report_html.html" \
-            ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue/$issue_id/attachments
+            "$JIRA_BASE_URL/rest/api/2/issue/$issue_id/attachments"
             
             echo "issue_id=$issue_id" >> $GITHUB_ENV
             echo "A new Jira ticket has been created with ID: $issue_id"

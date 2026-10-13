@@ -138,9 +138,9 @@ jobs:
 
       - name: Check DEV URL
         id: check-dev-url
+        env:
+          DEV_URL: ${{ secrets.WEB_DEV_URL }}
         run: |
-          DEV_URL="${{ secrets.WEB_DEV_URL }}"
-          
           echo "Checking DEV URL..."
           RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
 

@@ -1,13 +1,14 @@
 #Author: Kurian Benoy
-FROM python:3.13.2-slim-bullseye
+FROM python:3.13.9-slim-bookworm
 
 # set label for image
 LABEL Name="formsflow"
 
 WORKDIR /forms-flow-documents/app
 
-# install curl, gnupg2 and unzip
+# apply latest security patches, then install curl, gnupg2 and unzip
 RUN  apt-get update \
+  && apt-get upgrade -y \
   && apt-get install -y gnupg2 \
   && apt-get install -y curl \
   && apt-get install -y wget \

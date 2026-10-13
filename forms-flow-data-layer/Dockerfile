@@ -1,4 +1,4 @@
-FROM python:3.13.2-slim-bullseye
+FROM python:3.13.9-slim-bookworm
 
 LABEL project="formsflow-data-layer"
 
@@ -9,8 +9,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /formsflow-data-layer
 
-# Install system dependencies & clean up
+# Install system dependencies & apply latest security patches, then clean up
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends gcc libpq-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

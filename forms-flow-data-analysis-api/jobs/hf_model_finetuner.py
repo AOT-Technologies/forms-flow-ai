@@ -55,7 +55,7 @@ training_args = TrainingArguments(
     per_device_train_batch_size=batch_size,
     per_device_eval_batch_size=batch_size,
     weight_decay=0.01,
-    evaluation_strategy="epoch",
+    eval_strategy="epoch",
     disable_tqdm=False,
     logging_steps=logging_steps,
     push_to_hub=True,
@@ -69,7 +69,7 @@ trainer = Trainer(
     compute_metrics=compute_metrics,
     train_dataset=full_train_dataset,
     eval_dataset=full_eval_dataset,
-    tokenizer=tokenizer,
+    processing_class=tokenizer,
 )
 trainer.train()
 

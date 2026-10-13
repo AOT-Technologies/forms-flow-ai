@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.13.2-slim-bullseye
+FROM python:3.13.9-slim-bookworm
 
 # set label for image
 LABEL Name="formsflow"
@@ -8,6 +8,7 @@ WORKDIR /forms-flow-api/app
 
 # install curl, gnupg2 and unzip
 RUN  apt-get update \
+  && apt-get upgrade -y \
   && apt-get install -y git
 
 COPY requirements.txt .

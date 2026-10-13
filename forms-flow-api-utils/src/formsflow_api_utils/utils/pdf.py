@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
+from seleniumwire.options import SeleniumWireOptions
 from .user_context import _get_token_info
 
 
@@ -49,7 +50,7 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None, chrome
     options.add_argument("--run-all-compositor-stages-before-draw")
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
-    sel_options = {"request_storage_base_dir": "/tmp"}
+    sel_options = SeleniumWireOptions(storage_base_dir="/tmp")
 
     service = Service(executable_path=chromedriver)
     # pylint: disable=E1123

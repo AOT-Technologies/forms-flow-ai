@@ -1,11 +1,8 @@
-name: Forms Flow BPM CI
+name: CI - BPM
+
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - develop
-  #     - master
-  #     - release/**
+
   pull_request:
     branches:
       - develop
@@ -20,38 +17,127 @@ defaults:
     working-directory: ./forms-flow-bpm
 
 jobs:
-  setup-job:
+
+  lint:
+    name: Lint
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v2
-      - run: "true"
-  Test:
-    if: always()
-    needs: setup-job
-    runs-on: ubuntu-24.04
-    name: Test
-    steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
-          java-version: '17'
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Run Tests
-        run: mvn -B test --file pom.xml
-  Build:
-    if: always()
-    needs: setup-job
-    runs-on: ubuntu-24.04
-    name: Build
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: forms-flow-bpm/pom.xml
+
+      - name: Run Checkstyle
         run: |
-          docker build . -t forms-flow-bpm
+          mvn -B checkstyle:check
+
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up JDK
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: forms-flow-bpm/pom.xml
+
+      - name: Run Tests
+        run: |
+          mvn -B test --file pom.xml
+
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag forms-flow-bpm:ci \
+            .
+
+      - name: Verify Docker image
+        run: |
+          docker image inspect forms-flow-bpm:ci
+
+  trivy:
+    name: Trivy Security Scan
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag forms-flow-bpm:ci \
+            .
+
+      - name: Run Trivy image scan
+        uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
+        with:
+          image-ref: forms-flow-bpm:ci
+          format: table
+          exit-code: "0"
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          
+  snyk:
+    name: Snyk Security Scan
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up JDK
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: forms-flow-bpm/pom.xml
+
+      - name: Install Snyk
+        run: |
+          npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: |
+          snyk auth "$SNYK_TOKEN"
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk Open Source
+        continue-on-error: true
+        run: |
+          snyk test \
+            --file=pom.xml \
+            --severity-threshold=high
+
+      - name: Snyk Code
+        continue-on-error: true
+        run: |
+          snyk code test \
+            --severity-threshold=high

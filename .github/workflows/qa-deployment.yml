@@ -41,8 +41,8 @@ jobs:
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7
         with:
-          role-to-assume: arn:aws:iam::653405621825:role/githubaction-formsflow-eks-deploy
-          aws-region: ca-central-1
+          role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_ROLE_ARN }}
+          aws-region: ${{ secrets.REGION }}
           role-session-name: github-actions-eks-deploy # Change this to your desired region
       - name: Install kubectl
         run: |
@@ -50,7 +50,7 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
       - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name ${{ secrets.QA_EKS_CLUSTER }}
+        run: aws eks update-kubeconfig --region ${{ secrets.REGION }} --name ${{ secrets.QA_EKS_CLUSTER }}
       
       - name: Deploy to QA
         run: |

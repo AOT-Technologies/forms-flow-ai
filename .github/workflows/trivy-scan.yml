@@ -71,7 +71,7 @@ jobs:
           sudo apt-get install -y trivy=0.69.3
 
       - name: Download Trivy HTML Template
-        run: wget https://raw.githubusercontent.com/aquasecurity/trivy/v0.69.3/contrib/html.tpl -O html.tpl
+        run: curl --proto '=https' --tlsv1.2 -sSf -o html.tpl https://raw.githubusercontent.com/aquasecurity/trivy/v0.69.3/contrib/html.tpl
 
       - name: Run Trivy Vulnerability Scanner
         run: |

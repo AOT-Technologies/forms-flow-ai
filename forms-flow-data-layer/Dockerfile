@@ -1,4 +1,4 @@
-FROM python:3.13.9-slim-bookworm
+FROM python:3.13.16-slim-trixie
 
 LABEL project="formsflow-data-layer"
 
@@ -9,10 +9,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /formsflow-data-layer
 
-# Install system dependencies & apply latest security patches, then clean up
+# Apply OS security patches & clean up. No compiler is needed: every native
+# dependency (asyncpg, httptools, orjson, ...) ships a prebuilt wheel.
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends gcc libpq-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -27,7 +27,8 @@ COPY src/ ./src
 COPY main.py .
 
 # Security: Add non-root user
-RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /formsflow-data-layer
+RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /formsflow-data-layer \
+      && pip uninstall -y ecdsa
 USER appuser
 
 EXPOSE 8000

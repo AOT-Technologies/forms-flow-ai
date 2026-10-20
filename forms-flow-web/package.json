@@ -146,12 +146,8 @@
     "source-map-js": "1.2.2",
     "compression": "1.8.2",
     "proxy-addr": "2.0.8",
-    "postcss-modules-local-by-default": {
-      "postcss-selector-parser": "7.1.6"
-    },
-    "postcss-modules-scope": {
-      "postcss-selector-parser": "7.1.6"
-    }
+    "serialize-javascript": "7.0.5",
+    "postcss-selector-parser": "7.1.6"
   },
   "browserslist": [
     ">0.2%",

@@ -1,5 +1,5 @@
 # Base image
-FROM node:18.20.0-alpine as build-stage
+FROM node:24.21.0-alpine as build-stage
 
 # Set working directory
 WORKDIR /forms-flow-web-root-config/app
@@ -69,8 +69,8 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Expose port
 EXPOSE 8080
 
-# Install necessary packages
-RUN apk add --no-cache bash
+# Apply latest Alpine security patches and install necessary packages
+RUN apk upgrade --no-cache && apk add --no-cache bash
 
 # Set execute permission for env.sh
 RUN chmod +x /usr/share/nginx/html/config/env.sh

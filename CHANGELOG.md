@@ -4,43 +4,61 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 ## 7.3.1 - TBD (update to actual GA date before tagging)
 
+Security release. Release candidate images are tagged `v7.3.1-rc`.
+
 `Fixed`
 
 **forms-flow-api / forms-flow-api-utils**
-* Migrated Keycloak/Formio authentication off `python-jose`/`ecdsa` to `PyJWT`, resolving the `ecdsa` timing-attack vulnerability (CVE-2024-23342)
-* Upgraded `flask-jwt-oidc` 0.7.0 → 0.8.0 and other vulnerable Python dependencies
-
-**forms-flow-data-layer**
-* Migrated Keycloak OIDC verification off `python-jose`/`ecdsa` to `PyJWT` (CVE-2024-23342)
-* Applied OS package upgrades in the Docker image, resolving `libxml2`, `gnutls28`, and `pam` CVEs
-* Upgraded vulnerable Python dependencies
+* Migrated authentication from `python-jose`/`ecdsa` to `PyJWT`, resolving the `ecdsa` timing attack (CVE-2024-23342)
+* Upgraded `flask-jwt-oidc` to 0.8.0 and other vulnerable Python dependencies (`cryptography`, `PyJWT`, `Werkzeug`, `urllib3`, `requests`)
 
 **forms-flow-documents**
-* Removed vulnerable `python-jose`/`ecdsa` dependency in favor of `PyJWT`
-* Applied OS package upgrades (standard and ARM64 images), resolving `libxml2`, `gnutls28`, and `pam` CVEs
-* Upgraded vulnerable Python dependencies
+* Removed `python-jose`/`ecdsa` in favour of `PyJWT` and upgraded vulnerable Python dependencies
+* Docker image moved to Debian 13 and installs Chrome without recommended packages
 
-**forms-flow-web**
-* Applied OS package upgrades in the Docker image
-* Upgraded vulnerable frontend dependencies (including build scripts)
+**forms-flow-data-layer**
+* Migrated Keycloak token verification from `python-jose`/`ecdsa` to `PyJWT`
+* Upgraded `strawberry-graphql` to 0.327.2 and other vulnerable Python dependencies
+* Docker image moved to Debian 13 and no longer installs a compiler
 
-**forms-flow-web-root-config**
-* Upgraded vulnerable transitive dependencies via package overrides
+**forms-flow-data-analysis-api / sentiment-analysis job**
+* Upgraded vulnerable Python and machine-learning dependencies (`torch`, `transformers` and others)
+* Removed unused `nltk` and `spaCy` from the sentiment-analysis job
+
+**forms-flow-web / forms-flow-web-root-config**
+* Upgraded vulnerable frontend dependencies and overrode vulnerable transitive packages, including `serialize-javascript` 7.0.5 (GHSA-5c6j-r48x-rmvq)
 
 **forms-flow-bpm**
-* Upgraded vulnerable Keycloak and Netty Java dependencies
+* Upgraded Spring, Tomcat, Jackson, Netty, BouncyCastle and logback
+* Replaced the retired `app.camunda.com` Maven repository with `artifacts.camunda.com`
 
 **forms-flow-idm**
-* Upgraded vulnerable dependencies in the IdP selector module
+* Upgraded Keycloak to 26.7.5 in the IdP selector extension
 
-**forms-flow-data-analysis-api**
-* Upgraded vulnerable Python and machine-learning dependencies (including the `sentiment-analysis` job)
+*Upgrade notes:*
+
+**forms-flow-web / forms-flow-web-root-config**
+
+   * Builds require Node.js 24 (24.21.0); Node.js 18 is no longer supported
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.4.13
+   * Docker image uses `eclipse-temurin:21-jdk-jammy` instead of `openjdk:21-ea-jdk`
+
+**forms-flow-data-layer / forms-flow-documents**
+
+   * Docker images use `python:3.13.16-slim-trixie` (Debian 13)
+
+`Generic Changes`
+
+* Fixed security vulnerabilities reported by Dependabot, Trivy and Snyk
+* Docker images apply OS security updates at build time
 
 `Known Issues`
-* 8 CodeQL findings in the vendored `customformio.js` / `formio.full.min.js` bundles are excluded via `.github/codeql/codeql-config.yml` (generated third-party code, not hand-authored source) rather than fixed directly — tracked against upstream `formiojs` releases instead
-* 10 previously-flagged CVEs (`curl`, `db5.3`, `zlib`, `gdk-pixbuf`, `libsoup2.4`) remain dismissed as `won't fix` — no patched Debian 11/12 build currently exists for these
 
-Ref: FWF-6483, [#3323](https://github.com/AOT-Technologies/forms-flow-ai/pull/3323)
+* `forms-flow-documents` keeps `Flask` 3.0.3 and `setuptools` < 82 because `selenium-wire`, used for PDF generation, is incompatible with newer versions (low and medium severity advisories)
+* A few OS packages in the Docker images (such as `util-linux` and `ncurses`) still have advisories with no fixed Debian release
 
 ## 7.3.0 - 2025-10-14
 

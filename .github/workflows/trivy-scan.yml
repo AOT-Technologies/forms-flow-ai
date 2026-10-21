@@ -27,6 +27,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'HIGH,CRITICAL'
+          timeout: '20m'
           trivy-version: 'v0.69.3'
 
       - name: Upload Trivy scan results to GitHub Security tab
@@ -38,6 +39,7 @@ jobs:
     name: Trivy Image Scans
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         service:
           - { name: "forms-flow-bpm", tag: "latest" }
@@ -69,11 +71,12 @@ jobs:
           sudo apt-get install -y trivy=0.69.3
 
       - name: Download Trivy HTML Template
-        run: wget https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -O html.tpl
+        run: curl --proto '=https' --tlsv1.2 -sSf -o html.tpl https://raw.githubusercontent.com/aquasecurity/trivy/v0.69.3/contrib/html.tpl
 
       - name: Run Trivy Vulnerability Scanner
         run: |
           trivy image \
+          --timeout 30m \
           --template @html.tpl \
           --format template \
           --vuln-type os,library \

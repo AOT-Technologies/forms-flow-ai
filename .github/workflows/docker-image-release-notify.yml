@@ -3,8 +3,13 @@ name: Notify Google Chat
 on:
   workflow_call:
     inputs:
+      notification_type:
+        description: "Notification type: workflow, docker, kubernetes, s3"
+        required: true
+        type: string
+
       status:
-        description: "Result of the calling workflow/job"
+        description: "Status of the job/workflow"
         required: true
         type: string
 
@@ -15,8 +20,9 @@ on:
 
       image:
         description: "Docker image and tag"
-        required: true
+        required: false
         type: string
+        default: ""
 
       branch:
         description: "Git branch"
@@ -43,72 +49,245 @@ on:
         required: true
         type: string
 
+      environment:
+        description: "Deployment environment"
+        required: false
+        type: string
+        default: ""
+
+      namespace:
+        description: "Kubernetes namespace"
+        required: false
+        type: string
+        default: ""
+
+      deployment:
+        description: "Kubernetes deployment name"
+        required: false
+        type: string
+        default: ""
+
     secrets:
-      GOOGLE_CHAT_WEBHOOK_URL:
+      GOOGLE_CHAT_WORKFLOW_WEBHOOK_URL:
         required: true
+
+      GOOGLE_CHAT_DOCKER_WEBHOOK_URL:
+        required: true
+
+      GOOGLE_CHAT_KUBERNETES_WEBHOOK_URL:
+        required: true
+
 
 jobs:
   notify:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Notify Google Chat
+      - name: Send Google Chat notification
         env:
-          GOOGLE_CHAT_WEBHOOK_URL: ${{ secrets.GOOGLE_CHAT_WEBHOOK_URL }}
+          NOTIFICATION_TYPE: ${{ inputs.notification_type }}
           STATUS: ${{ inputs.status }}
+
           COMPONENT: ${{ inputs.component }}
           IMAGE: ${{ inputs.image }}
+
           BRANCH: ${{ inputs.branch }}
           COMMIT: ${{ inputs.commit }}
           ACTOR: ${{ inputs.actor }}
+
           WORKFLOW: ${{ inputs.workflow }}
           RUN_URL: ${{ inputs.run_url }}
-        run: |
-          if [ "$STATUS" = "success" ]; then
-            MESSAGE=$(jq -n \
-              --arg component "$COMPONENT" \
-              --arg image "$IMAGE" \
-              --arg branch "$BRANCH" \
-              --arg commit "$COMMIT" \
-              --arg actor "$ACTOR" \
-              --arg workflow "$WORKFLOW" \
-              --arg run_url "$RUN_URL" \
-              '{
-                text: (
-                  "🐳 *Docker Image Released Successfully* 🚀\n\n" +
-                  "*Component:* " + $component + "\n" +
-                  "*Image:* " + $image + "\n" +
-                  "*Branch:* " + $branch + "\n" +
-                  "*Commit:* " + $commit + "\n" +
-                  "*Triggered by:* " + $actor + "\n" +
-                  "*Workflow:* " + $workflow + "\n\n" +
-                  "🔗 " + $run_url
-                )
-              }')
-          else
-            MESSAGE=$(jq -n \
-              --arg component "$COMPONENT" \
-              --arg image "$IMAGE" \
-              --arg branch "$BRANCH" \
-              --arg commit "$COMMIT" \
-              --arg actor "$ACTOR" \
-              --arg workflow "$WORKFLOW" \
-              --arg run_url "$RUN_URL" \
-              '{
-                text: (
-                  "❌ *Docker Image Release Failed*\n\n" +
-                  "*Component:* " + $component + "\n" +
-                  "*Image:* " + $image + "\n" +
-                  "*Branch:* " + $branch + "\n" +
-                  "*Commit:* " + $commit + "\n" +
-                  "*Triggered by:* " + $actor + "\n" +
-                  "*Workflow:* " + $workflow + "\n\n" +
-                  "🔗 Check the workflow:\n" + $run_url
-                )
-              }')
-          fi
 
-          curl --fail-with-body -X POST \
+          ENVIRONMENT: ${{ inputs.environment }}
+          NAMESPACE: ${{ inputs.namespace }}
+          DEPLOYMENT: ${{ inputs.deployment }}
+
+          WORKFLOW_WEBHOOK: ${{ secrets.GOOGLE_CHAT_WORKFLOW_WEBHOOK_URL }}
+          DOCKER_WEBHOOK: ${{ secrets.GOOGLE_CHAT_DOCKER_WEBHOOK_URL }}
+          KUBERNETES_WEBHOOK: ${{ secrets.GOOGLE_CHAT_KUBERNETES_WEBHOOK_URL }}
+
+        run: |
+          set -e
+
+          DATE_TIME=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+
+          case "$NOTIFICATION_TYPE" in
+
+            workflow)
+              WEBHOOK="$WORKFLOW_WEBHOOK"
+
+              if [ "$STATUS" = "success" ]; then
+                TITLE="🚀 GitHub Actions Workflow Successful"
+                STATUS_TEXT="✅ SUCCESS"
+                MESSAGE_TEXT="Workflow completed successfully."
+              else
+                TITLE="❌ GitHub Actions Workflow Failed"
+                STATUS_TEXT="❌ FAILED"
+                MESSAGE_TEXT="Workflow failed. Please check the GitHub Actions run."
+              fi
+
+              MESSAGE=$(jq -n \
+                --arg title "$TITLE" \
+                --arg component "$COMPONENT" \
+                --arg workflow "$WORKFLOW" \
+                --arg branch "$BRANCH" \
+                --arg commit "$COMMIT" \
+                --arg actor "$ACTOR" \
+                --arg status "$STATUS_TEXT" \
+                --arg date_time "$DATE_TIME" \
+                --arg message "$MESSAGE_TEXT" \
+                --arg run_url "$RUN_URL" \
+                '{
+                  text: (
+                    $title + "\n\n" +
+                    "*Component:* " + $component + "\n" +
+                    "*Workflow:* " + $workflow + "\n" +
+                    "*Branch:* " + $branch + "\n" +
+                    "*Commit:* " + $commit + "\n" +
+                    "*Triggered by:* " + $actor + "\n" +
+                    "*Status:* " + $status + "\n" +
+                    "*Date & Time:* " + $date_time + "\n\n" +
+                    $message + "\n\n" +
+                    "🔗 " + $run_url
+                  )
+                }')
+              ;;
+
+            docker)
+              WEBHOOK="$DOCKER_WEBHOOK"
+
+              if [ "$STATUS" = "success" ]; then
+                TITLE="🐳 Docker Image Push Successful"
+                STATUS_TEXT="✅ PUSH SUCCESSFUL"
+                MESSAGE_TEXT="Docker image was successfully pushed to Docker Hub."
+              else
+                TITLE="🚨 Docker Image Push Failed"
+                STATUS_TEXT="❌ PUSH FAILED"
+                MESSAGE_TEXT="Docker image was NOT successfully pushed to Docker Hub."
+              fi
+
+              MESSAGE=$(jq -n \
+                --arg title "$TITLE" \
+                --arg component "$COMPONENT" \
+                --arg image "$IMAGE" \
+                --arg branch "$BRANCH" \
+                --arg commit "$COMMIT" \
+                --arg actor "$ACTOR" \
+                --arg status "$STATUS_TEXT" \
+                --arg date_time "$DATE_TIME" \
+                --arg message "$MESSAGE_TEXT" \
+                --arg run_url "$RUN_URL" \
+                '{
+                  text: (
+                    $title + "\n\n" +
+                    "*Component:* " + $component + "\n" +
+                    "*Image:* " + $image + "\n" +
+                    "*Branch:* " + $branch + "\n" +
+                    "*Commit:* " + $commit + "\n" +
+                    "*Triggered by:* " + $actor + "\n" +
+                    "*Status:* " + $status + "\n" +
+                    "*Date & Time:* " + $date_time + "\n\n" +
+                    "📦 " + $message + "\n\n" +
+                    "🔗 " + $run_url
+                  )
+                }')
+              ;;
+
+            s3)
+              WEBHOOK="$DOCKER_WEBHOOK"
+
+              if [ "$STATUS" = "success" ]; then
+                TITLE="🪣 S3 Artifact Push Successful"
+                STATUS_TEXT="✅ PUSH SUCCESSFUL"
+                MESSAGE_TEXT="Artifact was successfully uploaded to S3."
+              else
+                TITLE="🚨 S3 Artifact Push Failed"
+                STATUS_TEXT="❌ PUSH FAILED"
+                MESSAGE_TEXT="Artifact was NOT successfully uploaded to S3."
+              fi
+
+              MESSAGE=$(jq -n \
+                --arg title "$TITLE" \
+                --arg component "$COMPONENT" \
+                --arg branch "$BRANCH" \
+                --arg commit "$COMMIT" \
+                --arg actor "$ACTOR" \
+                --arg status "$STATUS_TEXT" \
+                --arg date_time "$DATE_TIME" \
+                --arg message "$MESSAGE_TEXT" \
+                --arg run_url "$RUN_URL" \
+                '{
+                  text: (
+                    $title + "\n\n" +
+                    "*Component:* " + $component + "\n" +
+                    "*Branch:* " + $branch + "\n" +
+                    "*Commit:* " + $commit + "\n" +
+                    "*Triggered by:* " + $actor + "\n" +
+                    "*Status:* " + $status + "\n" +
+                    "*Date & Time:* " + $date_time + "\n\n" +
+                    "📦 " + $message + "\n\n" +
+                    "🔗 " + $run_url
+                  )
+                }')
+              ;;
+
+            kubernetes)
+              WEBHOOK="$KUBERNETES_WEBHOOK"
+
+              if [ "$STATUS" = "success" ]; then
+                TITLE="☸️ Kubernetes Deployment Successful"
+                STATUS_TEXT="✅ DEPLOYMENT SUCCESSFUL"
+                MESSAGE_TEXT="Kubernetes rollout completed successfully."
+              else
+                TITLE="🚨 Kubernetes Deployment Failed"
+                STATUS_TEXT="❌ DEPLOYMENT FAILED"
+                MESSAGE_TEXT="Kubernetes rollout failed. Please check the deployment."
+              fi
+
+              MESSAGE=$(jq -n \
+                --arg title "$TITLE" \
+                --arg component "$COMPONENT" \
+                --arg image "$IMAGE" \
+                --arg environment "$ENVIRONMENT" \
+                --arg namespace "$NAMESPACE" \
+                --arg deployment "$DEPLOYMENT" \
+                --arg branch "$BRANCH" \
+                --arg commit "$COMMIT" \
+                --arg actor "$ACTOR" \
+                --arg status "$STATUS_TEXT" \
+                --arg date_time "$DATE_TIME" \
+                --arg message "$MESSAGE_TEXT" \
+                --arg run_url "$RUN_URL" \
+                '{
+                  text: (
+                    $title + "\n\n" +
+                    "*Component:* " + $component + "\n" +
+                    "*Image:* " + $image + "\n" +
+                    "*Environment:* " + $environment + "\n" +
+                    "*Namespace:* " + $namespace + "\n" +
+                    "*Deployment:* " + $deployment + "\n" +
+                    "*Branch:* " + $branch + "\n" +
+                    "*Commit:* " + $commit + "\n" +
+                    "*Triggered by:* " + $actor + "\n" +
+                    "*Status:* " + $status + "\n" +
+                    "*Date & Time:* " + $date_time + "\n\n" +
+                    "☸️ " + $message + "\n\n" +
+                    "🔗 " + $run_url
+                  )
+                }')
+              ;;
+
+            *)
+              echo "ERROR: Invalid notification_type: $NOTIFICATION_TYPE"
+              echo "Allowed values: workflow, docker, kubernetes, s3"
+              exit 1
+              ;;
+          esac
+
+          curl --fail-with-body \
+            --retry 3 \
+            --retry-delay 2 \
+            -X POST \
             -H "Content-Type: application/json; charset=UTF-8" \
             -d "$MESSAGE" \
-            "$GOOGLE_CHAT_WEBHOOK_URL"
+            "$WEBHOOK"

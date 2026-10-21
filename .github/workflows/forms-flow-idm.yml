@@ -1,4 +1,4 @@
-name: Push keycloak-customizations to registry
+name: CD - IDM
 
 on:
   workflow_dispatch:
@@ -11,12 +11,16 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-idm/keycloak
 
 jobs:
+
+  # ============================================================
+  # 1. BUILD AND PUSH DOCKER IMAGE
+  # ============================================================
   build-and-push-image-to-dockerhub:
     if: github.repository == 'AOT-Technologies/forms-flow-ai'
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         include:
@@ -24,89 +28,276 @@ jobs:
             context: forms-flow-idm/keycloak
             dockerfile: Dockerfile
             name: keycloak-customizations
+
+    outputs:
+      image: ${{ steps.image-output.outputs.image }}
+      digest: ${{ steps.image-output.outputs.digest }}
+
     permissions:
       contents: read
       packages: write
       security-events: write
+      id-token: write
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
+      # ----------------------------------------------------------
+      # Cosign
+      # ----------------------------------------------------------
+      - name: Install cosign
+        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 # v3.5.0
+
+      # ----------------------------------------------------------
+      # Docker Buildx
+      # ----------------------------------------------------------
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e
         with:
           install: true
 
-      - name: Set version for non-master branches
+      # ----------------------------------------------------------
+      # Version
+      # ----------------------------------------------------------
+      - name: Set version
         if: ${{ github.ref != 'refs/heads/master' }}
         working-directory: .
         run: |
           VER=$(cat VERSION)
-          echo "VERSION=$VER" >> $GITHUB_ENV
+          echo "VERSION=$VER" >> "$GITHUB_ENV"
 
-      - name: Set version for master branch
+      - name: Set version
         if: ${{ github.ref == 'refs/heads/master' }}
         working-directory: .
         run: |
           VER=$(cat VERSION)
           VER=${VER/-alpha/''}
-          echo "VERSION=$VER" >> $GITHUB_ENV
-      
-      - name: Output version
-        run: echo ${{ env.VERSION }}
+          echo "VERSION=$VER" >> "$GITHUB_ENV"
 
+      - name: Show version
+        run: echo "VERSION=${{ env.VERSION }}"
+
+      # ----------------------------------------------------------
+      # Docker metadata
+      # ----------------------------------------------------------
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302
         with:
           images: ${{ matrix.image }}
-          tags: ${{ env.VERSION }}
+          tags: |
+            type=raw,value=${{ env.VERSION }}
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v1
+      # ----------------------------------------------------------
+      # Docker Hub OIDC
+      # ----------------------------------------------------------
+      - name: Get Docker token
+        id: docker_oidc
+        uses: docker/oidc-action@2500c95e182cadc20f0ead5f96113ee82c736e88
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          connection-id: ${{ secrets.DOCKER_OIDC_CONNECTION_ID }}
+          expires-in: 1800
 
+      - name: Docker login
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f
+        with:
+          username: ${{ secrets.DOCKER_HUB_ORG_USERNAME }}
+          password: ${{ steps.docker_oidc.outputs.token }}
+
+      # ----------------------------------------------------------
+      # Docker layer cache
+      # ----------------------------------------------------------
       - name: Cache Docker layers
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.name }}
 
-      - name: Build and push Docker image for non-master branches
+      # ----------------------------------------------------------
+      # Multi-architecture support
+      # ----------------------------------------------------------
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e
+        with:
+          driver: docker-container
+
+      # ----------------------------------------------------------
+      # Build and push - non-master
+      # ----------------------------------------------------------
+      - name: Build and push Docker image (Non-master branch)
+        id: docker-push-nonmaster
         if: ${{ github.ref != 'refs/heads/master' }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
         with:
           context: forms-flow-idm/keycloak
-          platforms: linux/amd64,linux/arm64/v8
+          file: forms-flow-idm/keycloak/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Build and push Docker image for master branch
+      # ----------------------------------------------------------
+      # Build and push - master
+      # ----------------------------------------------------------
+      - name: Build and push Docker image (Master branch)
+        id: docker-push-master
         if: ${{ github.ref == 'refs/heads/master' }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
         with:
           context: forms-flow-idm/keycloak
-          platforms: linux/amd64,linux/arm64/v8
+          file: forms-flow-idm/keycloak/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}, formsflow/keycloak-customizations:latest
           labels: ${{ steps.meta.outputs.labels }}
-          
-      - name: Scan Docker image 🐳
-        uses: snyk/actions/docker@12140f4059e244892ae643824a95459a102120dd
-        continue-on-error: true
-        with:
-          image: ${{ steps.meta.outputs.tags }}
-          args: --severity-threshold=high --sarif-file-output=snyk.sarif
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      - name: Upload Snyk report as SARIF 📦
-        uses: github/codeql-action/upload-sarif@ebcb5b36ded6beda4ceefea6a8bc4cc885255bb3 # v3.34.1
-        with:
-          sarif_file: snyk.sarif
+      # ----------------------------------------------------------
+      # Sign image by immutable digest
+      # ----------------------------------------------------------
+      - name: Sign published Docker image
+        env:
+          DIGEST: ${{ github.ref == 'refs/heads/master' && steps.docker-push-master.outputs.digest || steps.docker-push-nonmaster.outputs.digest }}
+        run: |
+          set -euo pipefail
+
+          IMAGE="formsflow/keycloak-customizations"
+
+          echo "Signing:"
+          echo "${IMAGE}@${DIGEST}"
+
+          cosign sign --yes "${IMAGE}@${DIGEST}"
+
+      # ----------------------------------------------------------
+      # Verify signed Docker image
+      # ----------------------------------------------------------
+      - name: Verify signed Docker image
+        env:
+          DIGEST: ${{ github.ref == 'refs/heads/master' && steps.docker-push-master.outputs.digest || steps.docker-push-nonmaster.outputs.digest }}
+        run: |
+          set -euo pipefail
+
+          IMAGE="formsflow/keycloak-customizations@${DIGEST}"
+
+          echo "Verifying image signature for: $IMAGE"
+
+          if cosign verify \
+            "$IMAGE" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            --certificate-identity "https://github.com/${{ github.repository }}/.github/workflows/forms-flow-idm.yml@${{ github.ref }}"; then
+            echo "Image signature successfully verified for: $IMAGE"
+          else
+            echo "ERROR: Image signature verification failed for $IMAGE!" >&2
+            exit 1
+          fi
+
+      # ----------------------------------------------------------
+      # Image output
+      # ----------------------------------------------------------
+      - name: Set image output
+        id: image-output
+        if: ${{ steps.docker-push-nonmaster.outcome == 'success' || steps.docker-push-master.outcome == 'success' }}
+        run: |
+          IMAGE="${{ matrix.image }}:${{ env.VERSION }}"
+          DIGEST="${{ github.ref == 'refs/heads/master' && steps.docker-push-master.outputs.digest || steps.docker-push-nonmaster.outputs.digest }}"
+
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
+
+          echo "Docker image:"
+          echo "$IMAGE"
+
+          echo "Docker digest:"
+          echo "$DIGEST"
+
+  # ============================================================
+  # 2. DOCKER PUSH NOTIFICATION
+  # ============================================================
+  docker-notification:
+    name: Docker Push Notification
+
+    needs:
+      - build-and-push-image-to-dockerhub
+
+    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' }}
+
+    uses: ./.github/workflows/docker-image-release-notify.yml
+
+    with:
+      notification_type: docker
+      status: ${{ needs.build-and-push-image-to-dockerhub.result }}
+      component: "forms-flow-keycloak-customizations"
+      image: ${{ needs.build-and-push-image-to-dockerhub.outputs.image }}
+      branch: ${{ github.ref_name }}
+      commit: ${{ github.sha }}
+      actor: ${{ github.actor }}
+      workflow: ${{ github.workflow }}
+      run_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    secrets: inherit
+
+  # ============================================================
+  # 3. CALCULATE OVERALL WORKFLOW STATUS
+  # ============================================================
+  workflow-status:
+    name: Calculate Overall Workflow Status
+
+    needs:
+      - build-and-push-image-to-dockerhub
+
+    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' }}
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      status: ${{ steps.status.outputs.status }}
+
+    steps:
+      - name: Calculate status
+        id: status
+        shell: bash
+        run: |
+          BUILD_RESULT="${{ needs.build-and-push-image-to-dockerhub.result }}"
+
+          echo "Build result: $BUILD_RESULT"
+
+          if [ "$BUILD_RESULT" = "success" ]; then
+            echo "status=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=failure" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ============================================================
+  # 4. OVERALL WORKFLOW NOTIFICATION
+  # ============================================================
+  workflow-notification:
+    name: Overall Workflow Notification
+
+    needs:
+      - build-and-push-image-to-dockerhub
+      - workflow-status
+
+    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' }}
+
+    uses: ./.github/workflows/docker-image-release-notify.yml
+
+    with:
+      notification_type: workflow
+      status: ${{ needs.workflow-status.outputs.status }}
+      component: "forms-flow-keycloak-customizations"
+      image: ${{ needs.build-and-push-image-to-dockerhub.outputs.image }}
+      branch: ${{ github.ref_name }}
+      commit: ${{ github.sha }}
+      actor: ${{ github.actor }}
+      workflow: ${{ github.workflow }}
+      run_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    secrets: inherit

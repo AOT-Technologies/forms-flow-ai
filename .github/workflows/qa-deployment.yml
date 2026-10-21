@@ -41,8 +41,8 @@ jobs:
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7
         with:
-          role-to-assume: arn:aws:iam::653405621825:role/githubaction-formsflow-eks-deploy
-          aws-region: ca-central-1
+          role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_ROLE_ARN }}
+          aws-region: ${{ secrets.REGION }}
           role-session-name: github-actions-eks-deploy # Change this to your desired region
       - name: Install kubectl
         run: |
@@ -50,18 +50,23 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
       - name: Update Kube config
-        run: aws eks update-kubeconfig --region ca-central-1 --name ${{ secrets.QA_EKS_CLUSTER }}
+        env:
+          AWS_REGION: ${{ secrets.REGION }}
+          QA_EKS_CLUSTER: ${{ secrets.QA_EKS_CLUSTER }}
+        run: aws eks update-kubeconfig --region "$AWS_REGION" --name "$QA_EKS_CLUSTER"
       
       - name: Deploy to QA
+        env:
+          NAMESPACE: ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
         run: |
-          kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi:${{ env.VERSION }}"}]}}}}'
-          kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
-          kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-data-layer -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-data-layer","image":"docker.io/formsflow/forms-flow-data-layer:${{ env.VERSION }}"}]}}}}'
-          kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api:${{ env.VERSION }}"}]}}}}'
-          kubectl -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }} patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
-          kubectl rollout restart deployment forms-flow-api -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
-          kubectl rollout restart deployment forms-flow-bpm -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
-          kubectl rollout restart deployment forms-flow-data-layer -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
-          kubectl rollout restart deployment forms-flow-documents-api -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
-          kubectl rollout restart deployment forms-flow-web -n ${{ secrets.QA_OPENSOURCE_NAMESPACE }}
+          kubectl -n "$NAMESPACE" patch deployment forms-flow-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-api","image":"docker.io/formsflow/forms-flow-webapi:${{ env.VERSION }}"}]}}}}'
+          kubectl -n "$NAMESPACE" patch deployment forms-flow-bpm -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-bpm","image":"docker.io/formsflow/forms-flow-bpm:${{ env.VERSION }}"}]}}}}'
+          kubectl -n "$NAMESPACE" patch deployment forms-flow-data-layer -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-data-layer","image":"docker.io/formsflow/forms-flow-data-layer:${{ env.VERSION }}"}]}}}}'
+          kubectl -n "$NAMESPACE" patch deployment forms-flow-documents-api -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-documents-api","image":"docker.io/formsflow/forms-flow-documents-api:${{ env.VERSION }}"}]}}}}'
+          kubectl -n "$NAMESPACE" patch deployment forms-flow-web -p '{"spec":{"template":{"spec":{"containers":[{"name":"forms-flow-web","image":"docker.io/formsflow/forms-flow-web:${{ env.VERSION }}"}]}}}}'
+          kubectl rollout restart deployment forms-flow-api -n "$NAMESPACE"
+          kubectl rollout restart deployment forms-flow-bpm -n "$NAMESPACE"
+          kubectl rollout restart deployment forms-flow-data-layer -n "$NAMESPACE"
+          kubectl rollout restart deployment forms-flow-documents-api -n "$NAMESPACE"
+          kubectl rollout restart deployment forms-flow-web -n "$NAMESPACE"
 

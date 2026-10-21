@@ -1,11 +1,9 @@
-name: forms-flow-web-CD
+name: CD - Web
+
 on:
   workflow_dispatch:
   push:
-    branches:
-      - master
-      - develop
-      - release/*
+    branches: [ master, develop, release/* ]
     paths:
       - "forms-flow-web/**"
       - "VERSION"
@@ -15,69 +13,140 @@ defaults:
     shell: bash
 
 jobs:
+
+  # ============================================================
+  # 1. BUILD AND PUSH ARTIFACTS TO S3
+  # ============================================================
   build:
     if: github.repository == 'AOT-Technologies/forms-flow-ai'
     name: Build and push artifacts to s3
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      # ----------------------------------------------------------
+      # Checkout repository
+      # ----------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      # ----------------------------------------------------------
+      # Setup Node.js
+      # ----------------------------------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 #v7.0.0
         with:
+
           node-version: '24.21.0'
       - run: npm ci
         working-directory: ./forms-flow-web
-      - run: npm run build
+
+      - name: Build web application
+        run: npm run build
         working-directory: ./forms-flow-web
-      - uses: aws-actions/configure-aws-credentials@v1
+
+      # ----------------------------------------------------------
+      # Configure AWS credentials
+      # ----------------------------------------------------------
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.REGION }}
+          role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_S3_ROLE_ARN }}
+          aws-region: ${{ secrets.S3_REGION }}
+
+      # ----------------------------------------------------------
+      # Version
+      # ----------------------------------------------------------
       - name: Set version
         if: ${{ github.ref != 'refs/heads/master' }}
         working-directory: .
         run: |
           VER=$(cat VERSION)
-          echo "VERSION=$VER" >> $GITHUB_ENV
-          
+          echo "VERSION=$VER" >> "$GITHUB_ENV"
+
       - name: Set version
         if: ${{ github.ref == 'refs/heads/master' }}
         working-directory: .
         run: |
           VER=$(cat VERSION)
           VER=${VER/-alpha/''}
-          echo "VERSION=$VER" >> $GITHUB_ENV
-      - run: echo ${{ env.VERSION }}
-      - run: npm ci
+          echo "VERSION=$VER" >> "$GITHUB_ENV"
+
+      - name: Show version
+        run: echo "VERSION=${{ env.VERSION }}"
+
+      # ----------------------------------------------------------
+      # Upload artifacts to S3
+      # ----------------------------------------------------------
+      - name: Install script dependencies
+        run: npm ci
         working-directory: ./forms-flow-web/scripts
-      - run: node index
+
+      - name: Upload artifacts to S3
+        run: node index
         env:
           BUCKET: ${{ secrets.BUCKET }}
           VERSION: ${{ env.VERSION }}
+          REGION: ${{ secrets.S3_REGION }}
         working-directory: ./forms-flow-web/scripts
 
+  # ============================================================
+  # 2. ARTIFACT PUSH NOTIFICATION
+  # ============================================================
+  artifact-notification:
+    name: Artifact Push Notification
+
+    needs:
+      - build
+
+    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' }}
+
+    uses: ./.github/workflows/docker-image-release-notify.yml
+
+    with:
+      notification_type: s3
+      status: ${{ needs.build.result }}
+      component: "forms-flow-web"
+      branch: ${{ github.ref_name }}
+      commit: ${{ github.sha }}
+      actor: ${{ github.actor }}
+      workflow: ${{ github.workflow }}
+      run_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    secrets: inherit
+
+  # ============================================================
+  # 3. ZAP SCAN
+  # ============================================================
   zap_scan:
     runs-on: ubuntu-latest
     name: Scan the web application
+    
+    permissions:
+      contents: read
+      id-token: write     
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Check DEV URL
         id: check-dev-url
+        env:
+          DEV_URL: ${{ secrets.WEB_DEV_URL }}
         run: |
-          DEV_URL="${{ secrets.WEB_DEV_URL }}"
-          
           echo "Checking DEV URL..."
           RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
 
           if [ "$RESPONSE_DEV" -eq 200 ]; then
             echo "DEV URL is up"
-            echo "WEB_TARGET_URL=$DEV_URL" >> $GITHUB_ENV
-            echo "URL_STATUS=success" >> $GITHUB_ENV
+            echo "WEB_TARGET_URL=$DEV_URL" >> "$GITHUB_ENV"
+            echo "URL_STATUS=success" >> "$GITHUB_ENV"
           else
             echo "DEV URL is down. Exiting workflow."
-            echo "URL_STATUS=failure" >> $GITHUB_ENV
+            echo "URL_STATUS=failure" >> "$GITHUB_ENV"
             exit 0
           fi
 
@@ -94,21 +163,76 @@ jobs:
           target: ${{ env.WEB_TARGET_URL }}
           rules_file_name: '.zap/rules.tsv'
 
-      - name: Install AWS CLI
-        if: env.URL_STATUS == 'success'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-          
+      # AWS CLI v2 is preinstalled on GitHub-hosted Ubuntu runners.
+      # The apt package "awscli" was dropped in Ubuntu 24.04 (ubuntu-latest).
       - name: Configure AWS credentials
         if: env.URL_STATUS == 'success'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_ZAP_SCAN_REPORT_S3_ROLE_ARN }}
           aws-region: ${{ secrets.REGION }}
-
       - name: Upload ZAP Report to S3
         if: env.URL_STATUS == 'success'
         run: |
           aws s3 cp report_html.html s3://zap-report-formsflow/zap-reports/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html
+
+  # ============================================================
+  # 4. CALCULATE OVERALL WORKFLOW STATUS
+  # ============================================================
+  workflow-status:
+    name: Calculate Overall Workflow Status
+
+    needs:
+      - build
+      - zap_scan
+
+    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' }}
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      status: ${{ steps.status.outputs.status }}
+
+    steps:
+      - name: Calculate status
+        id: status
+        shell: bash
+        run: |
+          BUILD_RESULT="${{ needs.build.result }}"
+          ZAP_RESULT="${{ needs.zap_scan.result }}"
+
+          echo "Build result: $BUILD_RESULT"
+          echo "ZAP scan result: $ZAP_RESULT"
+
+          if [ "$BUILD_RESULT" = "success" ] && [ "$ZAP_RESULT" = "success" ]; then
+            echo "status=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=failure" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ============================================================
+  # 5. OVERALL WORKFLOW NOTIFICATION
+  # ============================================================
+  workflow-notification:
+    name: Overall Workflow Notification
+
+    needs:
+      - build
+      - zap_scan
+      - workflow-status
+
+    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' }}
+
+    uses: ./.github/workflows/docker-image-release-notify.yml
+
+    with:
+      notification_type: workflow
+      status: ${{ needs.workflow-status.outputs.status }}
+      component: "forms-flow-web"
+      branch: ${{ github.ref_name }}
+      commit: ${{ github.sha }}
+      actor: ${{ github.actor }}
+      workflow: ${{ github.workflow }}
+      run_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    secrets: inherit

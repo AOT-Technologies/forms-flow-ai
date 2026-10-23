@@ -27,6 +27,7 @@ ANALYZE_SUBMISSIONS_VIEW_HISTORY = "analyze_submissions_view_history"
 ANALYZE_PROCESS_VIEW = "analyze_process_view"
 MANAGE_LINKS = "manage_links"
 MANAGE_ORGANIZATION = "manage_organization"
+MANAGE_APP_STYLING = "manage_app_styling"
 ADMIN = "admin"
 CREATE_BPMN_FLOWS = "create_bpmn_flows"
 MANAGE_SUBFLOWS = "manage_subflows"
@@ -69,6 +70,7 @@ PERMISSION_DETAILS = [
     {"name": MANAGE_ROLES, "description": "Roles", "category": permission_category.ADMIN.value, "order": 20, "depends_on": []},
     {"name": MANAGE_DASHBOARD_AUTHORIZATIONS, "description": "Dashboards", "category": permission_category.ADMIN.value, "order": 30, "depends_on": []},
     {"name": MANAGE_ORGANIZATION, "description": "Organization (Billing)", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []},
+    {"name": MANAGE_APP_STYLING, "description": "App styling", "category": permission_category.ADMIN.value, "order": 50, "depends_on": []},
     # {"name": MANAGE_LINKS, "description": "Links", "category": permission_category.ADMIN.value, "order": 40, "depends_on": []},
 ]
 

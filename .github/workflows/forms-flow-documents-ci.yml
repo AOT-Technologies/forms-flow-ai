@@ -1,12 +1,8 @@
-name: Forms Flow Document CI
+name: CI - Documents API
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - develop
-  #     - master
-  #     - release/**
+
   pull_request:
     branches:
       - develop
@@ -21,41 +17,49 @@ defaults:
     working-directory: ./forms-flow-documents
 
 jobs:
-  setup-job:
-    runs-on: ubuntu-24.04
 
-    steps:
-      - uses: actions/checkout@v2
-      - run: "true"
-
-  Lint:
-    needs: setup-job
+  lint:
+    name: Lint
     runs-on: ubuntu-24.04
 
     strategy:
       matrix:
-        python-version: [3.12.7]
+        python-version:
+          - "3.13.16"
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 #v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: forms-flow-documents/requirements/dev.txt
+
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements/dev.txt
+
       - name: Pylint
-        id: pylint
         run: |
-          pylint --rcfile=setup.cfg  src/formsflow_documents
+          pylint --rcfile=setup.cfg src/formsflow_documents
+
       - name: Flake8
-        id: flake8
         run: |
           flake8 src/formsflow_documents tests
-  
-  Test:
-    needs: setup-job
+
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+
+    strategy:
+      matrix:
+        python-version:
+          - "3.13.16"
+
     env:
       FLASK_ENV: "testing"
       DATABASE_URL_TEST: "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -70,18 +74,13 @@ jobs:
       JWT_OIDC_ISSUER: "http://localhost:8081/auth/realms/forms-flow-ai"
       JWT_OIDC_AUDIENCE: "forms-flow-web"
       JWT_OIDC_CACHING_ENABLED: "True"
-      FORMIO_URL: http://localhost:8080/forms
-      FORMIO_ROOT_EMAIL: test@test.com
-      FORMIO_ROOT_PASSWORD: test
+      FORMIO_URL: "http://localhost:8080/forms"
+      FORMIO_ROOT_EMAIL: "test@test.com"
+      FORMIO_ROOT_PASSWORD: "test"
       SKIP_IN_CI: "True"
       USE_DOCKER_MOCK: "True"
       JWT_OIDC_TEST_PRIVATE_KEY_PEM: ${{ secrets.JWT_OIDC_TEST_PRIVATE_KEY_PEM }}
-      FORMIO_TEST_JWT_TOKEN: ${{ secrets.FORMIO_TEST_JWT_TOKEN}}
-
-    runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        python-version: [3.12.7]
+      FORMIO_TEST_JWT_TOKEN: ${{ secrets.FORMIO_TEST_JWT_TOKEN }}
 
     services:
       postgres:
@@ -92,43 +91,127 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 #v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Docker Compose
+          cache: pip
+          cache-dependency-path: forms-flow-documents/requirements/dev.txt
+
+      - name: Verify Docker
         run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-      - name: Check for docker-compose.yml
+          docker --version
+          docker compose version
+
+      - name: Check Docker Compose file
         run: |
           if [ ! -f tests/docker/docker-compose.yml ]; then
             echo "docker-compose.yml not found!"
             exit 1
           fi
+
       - name: Install dependencies
         run: |
           make build
-      - name: Test
-        id: test
+
+      - name: Run tests
         run: |
           make test
-  Build:
-    if: always()
-    runs-on: ubuntu-24.04
+
+  build:
     name: Build
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Build
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Build Docker image
         run: |
-          docker build . -t forms-flow-documents
+          docker build \
+            --tag forms-flow-documents:ci \
+            .
+
+      - name: Verify Docker image
+        run: |
+          docker image inspect forms-flow-documents:ci
+
+  trivy:
+    name: Trivy Security Scan
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag forms-flow-documents:ci \
+            .
+
+      - name: Run Trivy image scan
+        uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
+        with:
+          image-ref: forms-flow-documents:ci
+          format: table
+          exit-code: "0"
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
+
+  snyk:
+    name: Snyk Security Scan
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 #v7.0.0
+        with:
+          python-version: "3.13.16"
+          cache: pip
+          cache-dependency-path: forms-flow-documents/requirements/dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/dev.txt
+
+      - name: Install Snyk
+        run: |
+          npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: |
+          snyk auth "$SNYK_TOKEN"
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk Open Source
+        continue-on-error: true
+        run: |
+          snyk test \
+            --file=requirements/dev.txt \
+            --package-manager=pip \
+            --severity-threshold=high
+
+      - name: Snyk Code
+        continue-on-error: true
+        run: |
+          snyk code test \
+            --severity-threshold=high

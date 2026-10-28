@@ -6,13 +6,13 @@ import os
 import tempfile
 
 from flask import current_app, make_response
+from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from seleniumwire import webdriver
 from .user_context import _get_token_info
 
 
@@ -34,10 +34,6 @@ def send_devtools(driver, cmd, params=None):
 
 def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None, chrome_driver_timeout=60):
     """Load url in chrome web driver and print as pdf."""
-
-    def interceptor(request):
-        request.headers["Authorization"] = args["auth_token"]
-
     if args is None:
         args = {}
 
@@ -49,17 +45,18 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None, chrome
     options.add_argument("--run-all-compositor-stages-before-draw")
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
-    sel_options = {"request_storage_base_dir": "/tmp"}
 
     service = Service(executable_path=chromedriver)
-    # pylint: disable=E1123
-    driver = webdriver.Chrome(
-        service=service, options=options, seleniumwire_options=sel_options
-    )
+    driver = webdriver.Chrome(service=service, options=options)
     driver.set_window_size(1920, 1080)
 
     if "auth_token" in args:
-        driver.request_interceptor = interceptor
+        # Send the token on every request the page makes (replaces the selenium-wire interceptor)
+        driver.execute_cdp_cmd("Network.enable", {})
+        driver.execute_cdp_cmd(
+            "Network.setExtraHTTPHeaders",
+            {"headers": {"Authorization": args["auth_token"]}},
+        )
 
     if "timezone" in args and args["timezone"] is not None:
         tz_params = {"timezoneId": args["timezone"]}

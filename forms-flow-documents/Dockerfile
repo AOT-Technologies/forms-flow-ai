@@ -44,8 +44,11 @@ RUN : \
     && pip install -r requirements.txt 
 
 ADD . /forms-flow-documents/app
+# pip is removed from the venv and the base image because it is not needed at
+# runtime and bundles outdated certifi/urllib3/msgpack.
 RUN pip install -e . && \
-    pip uninstall ecdsa -y && \
+    pip uninstall ecdsa pip -y && \
+    /usr/local/bin/python3 -m pip uninstall -y pip && \
     apt-get remove -y \
     git unzip \
     && apt-get clean \

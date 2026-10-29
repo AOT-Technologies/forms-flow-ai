@@ -34,4 +34,4 @@ USER appuser
 EXPOSE 8000
 
 # Start Uvicorn server with parameterized workers
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000 --workers ${FOMRSFLOW_DATA_LAYER_WORKERS:-4}"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000 --workers ${FORMSFLOW_DATA_LAYER_WORKERS:-${FOMRSFLOW_DATA_LAYER_WORKERS:-4}}"]

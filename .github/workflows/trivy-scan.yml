@@ -10,7 +10,8 @@ permissions:
   security-events: write   # needed for upload-sarif
   contents: read
   actions: read
-
+  id-token: write
+  
 jobs:
   repo-scan:
     name: Trivy Repo Scan
@@ -51,15 +52,23 @@ jobs:
           - { name: "forms-flow-documents-api", tag: "latest" }
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - name: Authenticate with Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        run: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      # ----------------------------------------------------------
+      # Docker Hub OIDC
+      # ----------------------------------------------------------
+      - name: Get Docker token
+        id: docker_oidc
+        uses: docker/oidc-action@2500c95e182cadc20f0ead5f96113ee82c736e88
+        with:
+          connection-id: ${{ secrets.DOCKER_OIDC_CONNECTION_ID }}
+          expires-in: 1800
 
+      - name: Docker login
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f
+        with:
+          username: ${{ secrets.DOCKER_HUB_ORG_USERNAME }}
+          password: ${{ steps.docker_oidc.outputs.token }}
       - name: Install Trivy (pinned to last known clean version)
         run: |
           sudo apt-get update

@@ -3,6 +3,27 @@
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
 
+## Unreleased
+
+`Fixed`
+
+**forms-flow-documents**
+
+* Security: caller-supplied PDF templates are rendered in a Jinja sandbox (`ImmutableSandboxedEnvironment`) with no access to Flask `config`, `request`, `session` or `g`. Unsafe templates are rejected with `400 TEMPLATE_UNSAFE`, and temporary template files are always removed.
+
+**forms-flow-api-utils**
+
+* Security: during PDF generation, headless Chrome sends the user's token only to trusted formsflow origins instead of every host the page contacts.
+
+**forms-flow-analytics**
+
+* Security: `sample.env` no longer ships default `REDASH_COOKIE_SECRET` / `REDASH_SECRET_KEY` values.
+
+*Upgrade notes:*
+
+* `formsflow_api_utils.utils.pdf.get_pdf_from_html` attaches the token only to the page's own origin plus the hosts passed in `args["auth_hosts"]`. Upgrade forms-flow-documents together with api-utils (it passes `FORMSFLOW_DOC_API_URL`, `FORMSFLOW_API_URL`, `FORMIO_URL` and `CUSTOM_SUBMISSION_URL`); other callers must pass their API hosts in `auth_hosts`.
+* forms-flow-analytics: `docker compose up` now fails unless `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` are set in `.env`. Deployments that used the old `redash-selfhosted` values must rotate both secrets (see `forms-flow-analytics/README.md`).
+
 ## 8.0.0 
 
 `Added`

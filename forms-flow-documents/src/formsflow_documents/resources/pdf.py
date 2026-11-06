@@ -92,9 +92,12 @@ class FormResourceRenderPdf(Resource):
         )
         current_app.logger.debug("Render data received")
         headers = {"Content-Type": "text/html"}
-        return make_response(
-            render_template(template_name, **render_data), 200, headers
-        )
+        if use_template:
+            # Caller-supplied template: standalone sandbox, no Flask globals
+            html = pdf_service.render_custom_template(template_name, render_data)
+        else:
+            html = render_template(template_name, **render_data)
+        return make_response(html, 200, headers)
 
 
 @cors_preflight("POST,OPTIONS")
@@ -168,15 +171,15 @@ class FormResourceExportPdf(Resource):
             current_app.logger.info(
                 f"Template variables created : {template_variable_name}"
             )
-            return pdf_service.create_pdf_from_custom_template(
+            result = pdf_service.create_pdf_from_custom_template(
                 template_name, template_variable_name, token, timezone
             )
-
-        current_app.logger.info("Generating PDF...")
-        result = pdf_service.generate_pdf_from_template(
-            timezone,
-            token,
-        )
+        else:
+            current_app.logger.info("Generating PDF...")
+            result = pdf_service.generate_pdf_from_template(
+                timezone,
+                token,
+            )
         if result:
             return result
         response, status = (

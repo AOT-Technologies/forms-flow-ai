@@ -5,7 +5,6 @@ import json
 import os
 import tempfile
 import threading
-import urllib.request
 from urllib.parse import urlsplit
 
 from flask import current_app, make_response
@@ -16,7 +15,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from websocket import create_connection
+from websocket import WebSocketConnectionClosedException, create_connection
 
 from .user_context import _get_token_info
 
@@ -51,8 +50,8 @@ def _origin(url):
         host = f"[{host}]"
     default_port = 443 if scheme == "https" else 80
     if port and port != default_port:
-        return f"{scheme}://{host}:{port}"
-    return f"{scheme}://{host}"
+        return f"{scheme}://{host}:{port}"  # noqa: E231
+    return f"{scheme}://{host}"  # noqa: E231
 
 
 def _trusted_origins(path, auth_hosts):
@@ -62,6 +61,9 @@ def _trusted_origins(path, auth_hosts):
         origins.add(_origin(host))
     origins.discard(None)
     return origins
+
+
+_LOOPBACK_HOSTS = ("127.0.0.1", "localhost", "::1")
 
 
 class _AuthHeaderInterceptor:
@@ -80,6 +82,8 @@ class _AuthHeaderInterceptor:
         self._origins = origins
         self._msg_id = 0
         self._lock = threading.Lock()
+        # current_app is not available on the listener thread
+        self._logger = current_app.logger
         self._ws = create_connection(
             self._page_ws_url(driver), timeout=timeout, suppress_origin=True
         )
@@ -95,16 +99,21 @@ class _AuthHeaderInterceptor:
 
     @staticmethod
     def _page_ws_url(driver):
-        """Find the DevTools websocket URL of the page controlled by the driver."""
+        """Return the DevTools websocket URL of the page controlled by the driver.
+
+        The target id comes from chromedriver itself (no HTTP discovery call),
+        so we always attach to the exact page the driver is controlling.
+        Only a loopback debugger address is accepted.
+        """
         address = driver.capabilities["goog:chromeOptions"]["debuggerAddress"]
-        with urllib.request.urlopen(  # nosec B310 - local chrome debugger endpoint
-            f"http://{address}/json", timeout=10
-        ) as response:
-            targets = json.loads(response.read().decode("utf-8"))
-        for target in targets:
-            if target.get("type") == "page" and target.get("webSocketDebuggerUrl"):
-                return target["webSocketDebuggerUrl"]
-        raise RuntimeError("No Chrome page target found for request interception")
+        host, _, port = address.rpartition(":")
+        host = host.strip("[]").lower()
+        if host not in _LOOPBACK_HOSTS or not port.isdigit():
+            raise RuntimeError(f"Unexpected Chrome debugger address: {address}")
+        target_id = driver.execute_cdp_cmd("Target.getTargetInfo", {})["targetInfo"]["targetId"]
+        if host == "::1":
+            return f"ws://[::1]:{port}/devtools/page/{target_id}"  # noqa: E231
+        return f"ws://127.0.0.1:{port}/devtools/page/{target_id}"  # noqa: E231
 
     def _call(self, method, params):
         with self._lock:
@@ -121,14 +130,31 @@ class _AuthHeaderInterceptor:
                 return
 
     def _listen(self):
-        try:
-            while True:
+        while True:
+            try:
                 message = json.loads(self._ws.recv())
-                if message.get("method") == "Fetch.requestPaused":
-                    self._continue(message["params"])
-        except Exception:  # pylint: disable=broad-except
-            # Connection closed when the driver quits.
+            except (WebSocketConnectionClosedException, OSError):
+                return  # driver quit / close()
+            except ValueError:
+                self._logger.warning("Ignoring malformed DevTools message")
+                continue
+            if message.get("method") != "Fetch.requestPaused":
+                continue
+            params = message.get("params", {})
+            try:
+                self._continue(params)
+            except Exception:  # pylint: disable=broad-except
+                # Never leave a request paused: let it continue without the token
+                self._logger.exception("PDF auth interceptor failed; continuing request unmodified")
+                self._continue_unmodified(params)
+
+    def _continue_unmodified(self, params):
+        if "requestId" not in params:
             return
+        try:
+            self._call("Fetch.continueRequest", {"requestId": params["requestId"]})
+        except Exception:  # pylint: disable=broad-except
+            self._logger.exception("PDF auth interceptor could not continue request")
 
     def _continue(self, params):
         request = params.get("request", {})
@@ -144,12 +170,12 @@ class _AuthHeaderInterceptor:
         self._call("Fetch.continueRequest", payload)
 
     def close(self):
-        """Close the DevTools connection."""
+        """Close the DevTools connection and stop the listener thread."""
         try:
             self._ws.close()
         except Exception:  # pylint: disable=broad-except
             pass
-
+        self._thread.join(timeout=1)
 
 
 # pylint: disable=R1710
@@ -242,7 +268,6 @@ def save_pdf_local(result, file_name="Pdf.pdf"):
     """Save html content as pdf response."""
     with open(file_name, "wb") as file:
         file.write(result)
-
 
 
 def get_pdf_from_html_string(html_content, chrome_driver_path=None, args=None, chrome_driver_timeout=60):

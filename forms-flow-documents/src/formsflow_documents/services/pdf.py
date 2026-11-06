@@ -10,6 +10,7 @@ from typing import Any, Tuple, Union
 
 import requests
 from flask import current_app, make_response
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.services import FormioService
 from formsflow_api_utils.utils import HTTP_TIMEOUT
 from formsflow_api_utils.utils.pdf import (
@@ -17,11 +18,14 @@ from formsflow_api_utils.utils.pdf import (
     get_pdf_from_html_string,
     pdf_response,
 )
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import FileSystemLoader
+from jinja2.sandbox import SecurityError
 from nested_lookup import get_occurrences_and_values
 
 from formsflow_documents.filters import is_b64image
 from formsflow_documents.utils import DocUtils
+from formsflow_documents.utils.constants import BusinessErrorCode
+from formsflow_documents.utils.sandbox import create_sandboxed_environment
 
 
 class PDFService:
@@ -209,7 +213,22 @@ class PDFService:
         timezone: str, token: str, use_template: bool = False
     ) -> dict:
         """Returns PDF render arguments."""
-        args = {"wait": "completed", "timezone": timezone, "auth_token": token}
+        args = {
+            "wait": "completed",
+            "timezone": timezone,
+            "auth_token": token,
+            # Only these formsflow hosts may receive the user token from headless Chrome
+            "auth_hosts": [
+                url
+                for url in (
+                    current_app.config.get("FORMSFLOW_DOC_API_URL"),
+                    current_app.config.get("FORMSFLOW_API_URL"),
+                    current_app.config.get("FORMIO_URL"),
+                    current_app.config.get("CUSTOM_SUBMISSION_URL"),
+                )
+                if url
+            ],
+        }
         if use_template:
             del args["wait"]
         return args
@@ -434,65 +453,55 @@ class PDFService:
         )
         return response
 
-    def copy_templates_to_temp(self, temp_dir):
-        """Copy template.html from the source directory to the temporary directory."""
-        current_app.logger.debug("Copying template.html to temporary directory...")
-        source_dir = os.path.dirname(__file__).replace("services", "templates")
-        source_file = os.path.join(source_dir, "template.html")
-        dest_file = os.path.join(temp_dir, "template.html")
+    def render_custom_template(self, template_name: str, render_data: dict) -> str:
+        """Render a caller-supplied template from the temp directory in the sandbox.
 
-        # Create destination directory if it doesn't exist
-        os.makedirs(temp_dir, exist_ok=True)
-
-        # Copy template.html if it doesn't already exist in the temp directory
-        if os.path.isfile(source_file) and not os.path.exists(dest_file):
-            shutil.copy2(source_file, dest_file)
-            current_app.logger.debug(f"Copied template.html to {temp_dir}")
+        Uses a standalone sandboxed environment (no Flask globals such as
+        ``config``, ``request`` or ``g``). Templates may extend the service's
+        built-in ``template.html``. Raises ``BusinessException(TEMPLATE_UNSAFE)``
+        when the sandbox blocks an expression.
+        """
+        # Built-in templates first, so nothing in the shared temp dir can shadow them
+        loader = FileSystemLoader(
+            [self.get_template_path(is_temp=False), self.get_template_path(is_temp=True)]
+        )
+        env = create_sandboxed_environment(loader)
+        env.globals.update(is_signature=is_b64image)
+        try:
+            return env.get_template(template_name).render(**render_data)
+        except SecurityError as err:
+            current_app.logger.warning(f"Blocked unsafe template {template_name}: {err}")
+            raise BusinessException(BusinessErrorCode.TEMPLATE_UNSAFE) from err
 
     def create_pdf_from_custom_template(
         self, template_name, template_variable_name, token, timezone
     ):
         """Directly render the template instead of calling the additional endpoint."""
         try:
-            # Get the template path
-            temp_dir = self.get_template_path(is_temp=True)
-            current_app.logger.info(f"Template directory: {temp_dir}")
-
             # Get render data
             render_data = self.get_render_data(True, template_variable_name, token)
             current_app.logger.info(
                 "Render data received for direct template rendering"
             )
 
-            # Set up Jinja environment with the temp directory
-            env = Environment(loader=FileSystemLoader(temp_dir), autoescape=True)
-            template_obj = env.get_template(template_name)
-
-            if not template_variable_name:
-                # When generating PDF without template variables,
-                # copy necessary templates to the temporary directory if not already present
-                self.copy_templates_to_temp(temp_dir)
-                # Update the Jinja environment to include the is_signature function
-                env.globals.update(is_signature=is_b64image)
-
-            # Render the template directly
-            rendered_html = template_obj.render(**render_data)
+            # Render the template in the sandbox
+            rendered_html = self.render_custom_template(template_name, render_data)
 
             # Generate PDF from the rendered HTML
             pdf = self.get_pdf_from_html_content(rendered_html, timezone, token)
-
             if pdf:
-                # Clean up temporary files
-                current_app.logger.info("Cleaning up temporary template files...")
-                self.delete_template(template_name)
-                if template_variable_name:
-                    self.delete_template(template_variable_name)
-
-                # Return the PDF
                 return self.create_pdf_response(pdf, self.generate_pdf_file_name())
 
+        except BusinessException:
+            raise
         except Exception as e:  # pylint:disable=broad-exception-caught
             current_app.logger.error(f"Error in direct template rendering: {str(e)}")
+        finally:
+            # Always remove the caller-supplied files, including after failed renders
+            current_app.logger.info("Cleaning up temporary template files...")
+            self.delete_template(template_name)
+            if template_variable_name:
+                self.delete_template(template_variable_name)
         return None
 
     def generate_pdf_from_template(  # pylint: disable-msg=too-many-locals
@@ -509,7 +518,7 @@ class PDFService:
         current_app.logger.info(f"Template directory: {template_dir}")
 
         # Setup environment
-        env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+        env = create_sandboxed_environment(FileSystemLoader(template_dir))
 
         # Override `url_for` to output relative paths like static/style.css
         # Avoids url_for undefined error outside Flask

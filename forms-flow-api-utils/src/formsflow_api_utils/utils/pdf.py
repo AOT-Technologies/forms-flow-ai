@@ -4,6 +4,9 @@ import base64
 import json
 import os
 import tempfile
+import threading
+import urllib.request
+from urllib.parse import urlsplit
 
 from flask import current_app, make_response
 from selenium import webdriver
@@ -13,6 +16,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from websocket import create_connection
+
 from .user_context import _get_token_info
 
 
@@ -27,6 +32,124 @@ def send_devtools(driver, cmd, params=None):
     if response.get("status"):
         raise Exception(response.get("value"))
     return response.get("value")
+
+
+def _origin(url):
+    """Return the normalized ``scheme://host[:port]`` origin of an http(s) URL, else None."""
+    if not url:
+        return None
+    try:
+        parts = urlsplit(str(url).strip())
+        port = parts.port
+    except ValueError:
+        return None
+    scheme = (parts.scheme or "").lower()
+    if scheme not in ("http", "https") or not parts.hostname:
+        return None
+    host = parts.hostname.lower()
+    if ":" in host:  # IPv6 literal
+        host = f"[{host}]"
+    default_port = 443 if scheme == "https" else 80
+    if port and port != default_port:
+        return f"{scheme}://{host}:{port}"
+    return f"{scheme}://{host}"
+
+
+def _trusted_origins(path, auth_hosts):
+    """Origins allowed to receive the user token: the page's own origin plus auth_hosts."""
+    origins = {_origin(path)}
+    for host in auth_hosts or []:
+        origins.add(_origin(host))
+    origins.discard(None)
+    return origins
+
+
+class _AuthHeaderInterceptor:
+    """Attach the Authorization header only to requests sent to trusted origins.
+
+    ``Network.setExtraHTTPHeaders`` sends the header to every host the page
+    contacts (CDNs, images, any external URL in a form), leaking the user's
+    token. Instead, we open our own DevTools connection to the page, enable
+    ``Fetch`` interception only for the trusted origins, and add the header to
+    each paused request after re-checking its origin. Requests to any other
+    host are never paused and never see the token.
+    """
+
+    def __init__(self, driver, token, origins, timeout=10):
+        self._token = token
+        self._origins = origins
+        self._msg_id = 0
+        self._lock = threading.Lock()
+        self._ws = create_connection(
+            self._page_ws_url(driver), timeout=timeout, suppress_origin=True
+        )
+        patterns = [
+            {"urlPattern": f"{origin}/*", "requestStage": "Request"}
+            for origin in sorted(origins)
+        ]
+        self._call("Fetch.enable", {"patterns": patterns})
+        self._wait_for(self._msg_id)
+        self._ws.settimeout(None)
+        self._thread = threading.Thread(target=self._listen, daemon=True)
+        self._thread.start()
+
+    @staticmethod
+    def _page_ws_url(driver):
+        """Find the DevTools websocket URL of the page controlled by the driver."""
+        address = driver.capabilities["goog:chromeOptions"]["debuggerAddress"]
+        with urllib.request.urlopen(  # nosec B310 - local chrome debugger endpoint
+            f"http://{address}/json", timeout=10
+        ) as response:
+            targets = json.loads(response.read().decode("utf-8"))
+        for target in targets:
+            if target.get("type") == "page" and target.get("webSocketDebuggerUrl"):
+                return target["webSocketDebuggerUrl"]
+        raise RuntimeError("No Chrome page target found for request interception")
+
+    def _call(self, method, params):
+        with self._lock:
+            self._msg_id += 1
+            self._ws.send(json.dumps({"id": self._msg_id, "method": method, "params": params}))
+            return self._msg_id
+
+    def _wait_for(self, msg_id):
+        while True:
+            message = json.loads(self._ws.recv())
+            if message.get("id") == msg_id:
+                if "error" in message:
+                    raise RuntimeError(message["error"])
+                return
+
+    def _listen(self):
+        try:
+            while True:
+                message = json.loads(self._ws.recv())
+                if message.get("method") == "Fetch.requestPaused":
+                    self._continue(message["params"])
+        except Exception:  # pylint: disable=broad-except
+            # Connection closed when the driver quits.
+            return
+
+    def _continue(self, params):
+        request = params.get("request", {})
+        payload = {"requestId": params["requestId"]}
+        if _origin(request.get("url")) in self._origins:
+            headers = [
+                {"name": name, "value": value}
+                for name, value in request.get("headers", {}).items()
+                if name.lower() != "authorization"
+            ]
+            headers.append({"name": "Authorization", "value": self._token})
+            payload["headers"] = headers
+        self._call("Fetch.continueRequest", payload)
+
+    def close(self):
+        """Close the DevTools connection."""
+        try:
+            self._ws.close()
+        except Exception:  # pylint: disable=broad-except
+            pass
+
 
 
 # pylint: disable=R1710
@@ -50,44 +173,39 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None, chrome
     driver = webdriver.Chrome(service=service, options=options)
     driver.set_window_size(1920, 1080)
 
-    if "auth_token" in args:
-        # Send the token on every request the page makes (replaces the selenium-wire interceptor)
-        driver.execute_cdp_cmd("Network.enable", {})
-        driver.execute_cdp_cmd(
-            "Network.setExtraHTTPHeaders",
-            {"headers": {"Authorization": args["auth_token"]}},
-        )
-
-    if "timezone" in args and args["timezone"] is not None:
-        tz_params = {"timezoneId": args["timezone"]}
-        driver.execute_cdp_cmd("Emulation.setTimezoneOverride", tz_params)
-
-    driver.get(path)
-
-    # Set user details to local storage
-    token_info = _get_token_info()
-    user_details = {
-        "sub": token_info.get("sub", None),
-        "email_verified": token_info.get("email_verified", False),
-        "role": token_info.get("roles", None) or token_info.get(
-            "role", None
-        ),
-        "roles": token_info.get("roles", None) or token_info.get(
-            "role", None
-        ),
-        "name": token_info.get("name", None),
-        "groups": token_info.get("groups", None),
-        "preferred_username": token_info.get("preferred_username", None),
-        "given_name": token_info.get("given_name", None),
-        "family_name": token_info.get("family_name", None),
-        "email": token_info.get("email", None),
-        "tenantKey": token_info.get("tenantKey", None),
-    }
-    
-    user_details_json = json.dumps(user_details)
-    driver.execute_script(f"window.localStorage.setItem('UserDetails', '{user_details_json}')")
-
+    interceptor = None
     try:
+        if args.get("auth_token"):
+            # Attach the token only to formsflow hosts, never to third-party hosts.
+            origins = _trusted_origins(path, args.get("auth_hosts"))
+            if origins:
+                interceptor = _AuthHeaderInterceptor(driver, args["auth_token"], origins)
+
+        if "timezone" in args and args["timezone"] is not None:
+            tz_params = {"timezoneId": args["timezone"]}
+            driver.execute_cdp_cmd("Emulation.setTimezoneOverride", tz_params)
+
+        driver.get(path)
+
+        # Set user details to local storage
+        token_info = _get_token_info()
+        user_details = {
+            "sub": token_info.get("sub", None),
+            "email_verified": token_info.get("email_verified", False),
+            "role": token_info.get("roles", None) or token_info.get("role", None),
+            "roles": token_info.get("roles", None) or token_info.get("role", None),
+            "name": token_info.get("name", None),
+            "groups": token_info.get("groups", None),
+            "preferred_username": token_info.get("preferred_username", None),
+            "given_name": token_info.get("given_name", None),
+            "family_name": token_info.get("family_name", None),
+            "email": token_info.get("email", None),
+            "tenantKey": token_info.get("tenantKey", None),
+        }
+
+        user_details_json = json.dumps(user_details)
+        driver.execute_script(f"window.localStorage.setItem('UserDetails', '{user_details_json}')")
+
         if "wait" in args:
             delay = chrome_driver_timeout  # seconds
             elem_loc = EC.presence_of_element_located((By.CLASS_NAME, args["wait"]))
@@ -101,13 +219,15 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None, chrome
         if p_options is not None:
             calculated_print_options.update(p_options)
         result = send_devtools(driver, "Page.printToPDF", calculated_print_options)
-        driver.quit()
         return base64.b64decode(result["data"])
 
     except TimeoutException as err:
-        driver.quit()
         current_app.logger.warning(err)
         return False
+    finally:
+        if interceptor:
+            interceptor.close()
+        driver.quit()
 
 
 def pdf_response(result, file_name="Pdf.pdf"):

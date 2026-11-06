@@ -16,6 +16,7 @@ sqlalchemy_utils
 markupsafe
 PyJWT
 selenium
+websocket-client
 redis
 sentry-sdk[flask]
 opentelemetry-exporter-otlp

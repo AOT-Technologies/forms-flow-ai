@@ -6,7 +6,6 @@ Initialize app and the dependencies.
 import json
 import logging
 import os
-import tempfile
 from http import HTTPStatus
 
 from flask import Flask, current_app, g, request
@@ -26,13 +25,15 @@ from formsflow_api_utils.utils.startup import (
     collect_user_resource_ids,
     setup_jwt_manager,
 )
-from jinja2 import ChoiceLoader, FileSystemLoader
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from formsflow_documents import config
 from formsflow_documents.filters import is_b64image
 from formsflow_documents.resources import API
-from formsflow_documents.utils.sandbox import SandboxedFlaskEnvironment
+from formsflow_documents.utils.sandbox import (
+    SandboxedFlaskEnvironment,
+    harden_flask_templates,
+)
 
 
 def create_app(
@@ -124,9 +125,9 @@ def create_app(
             return response
 
     app.jinja_env.globals.update(is_signature=is_b64image)  # pylint: disable=no-member
-    # Configure template paths
-    temp_dir = os.path.join(tempfile.gettempdir(), "templates")
-    app.jinja_loader = ChoiceLoader([app.jinja_loader, FileSystemLoader(temp_dir)])
+    # Flask's environment only renders the service's own templates. Caller-supplied
+    # templates are rendered by PDFService.render_custom_template, without Flask globals.
+    harden_flask_templates(app)
 
     register_shellcontext(app)
     if not app.config["MULTI_TENANCY_ENABLED"]:

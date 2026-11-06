@@ -17,11 +17,12 @@ from formsflow_api_utils.utils.pdf import (
     get_pdf_from_html_string,
     pdf_response,
 )
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import FileSystemLoader
 from nested_lookup import get_occurrences_and_values
 
 from formsflow_documents.filters import is_b64image
 from formsflow_documents.utils import DocUtils
+from formsflow_documents.utils.sandbox import create_sandboxed_environment
 
 
 class PDFService:
@@ -209,7 +210,22 @@ class PDFService:
         timezone: str, token: str, use_template: bool = False
     ) -> dict:
         """Returns PDF render arguments."""
-        args = {"wait": "completed", "timezone": timezone, "auth_token": token}
+        args = {
+            "wait": "completed",
+            "timezone": timezone,
+            "auth_token": token,
+            # Only these formsflow hosts may receive the user token from headless Chrome
+            "auth_hosts": [
+                url
+                for url in (
+                    current_app.config.get("FORMSFLOW_DOC_API_URL"),
+                    current_app.config.get("FORMSFLOW_API_URL"),
+                    current_app.config.get("FORMIO_URL"),
+                    current_app.config.get("CUSTOM_SUBMISSION_URL"),
+                )
+                if url
+            ],
+        }
         if use_template:
             del args["wait"]
         return args
@@ -465,7 +481,7 @@ class PDFService:
             )
 
             # Set up Jinja environment with the temp directory
-            env = Environment(loader=FileSystemLoader(temp_dir), autoescape=True)
+            env = create_sandboxed_environment(FileSystemLoader(temp_dir))
             template_obj = env.get_template(template_name)
 
             if not template_variable_name:
@@ -509,7 +525,7 @@ class PDFService:
         current_app.logger.info(f"Template directory: {template_dir}")
 
         # Setup environment
-        env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+        env = create_sandboxed_environment(FileSystemLoader(template_dir))
 
         # Override `url_for` to output relative paths like static/style.css
         # Avoids url_for undefined error outside Flask

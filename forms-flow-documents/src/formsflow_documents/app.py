@@ -32,6 +32,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from formsflow_documents import config
 from formsflow_documents.filters import is_b64image
 from formsflow_documents.resources import API
+from formsflow_documents.utils.sandbox import SandboxedFlaskEnvironment
 
 
 def create_app(
@@ -39,6 +40,8 @@ def create_app(
 ):  # pylint:disable=too-many-statements
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
+    # Render every template (incl. caller-supplied custom templates) in a Jinja sandbox
+    app.jinja_environment = SandboxedFlaskEnvironment
     app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.from_object(config.CONFIGURATION[run_mode])
     app.logger.removeHandler(default_handler)

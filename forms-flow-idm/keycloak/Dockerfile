@@ -1,4 +1,4 @@
-FROM maven:3.8.7-openjdk-18-slim AS builder
+FROM maven:3.9.11-eclipse-temurin-17 AS builder
 
 WORKDIR /build
 
@@ -7,7 +7,7 @@ COPY idp-selector/src idp-selector/src/
 
 RUN mvn -f idp-selector/pom.xml clean package
 
-FROM alpine:latest
+FROM alpine:3.24
 
 WORKDIR /custom
 

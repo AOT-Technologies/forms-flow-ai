@@ -26,9 +26,15 @@
         <version.camunda>7.21.0</version.camunda><!-- 7.20.0 - 7.21.0 -->
         <version.camundaConnect>1.5.4</version.camundaConnect><!-- 1.5.4 -->
         <version.camundaMail>1.5.0</version.camundaMail><!-- 1.5.0 -->
-        <version.springBoot>3.3.11</version.springBoot><!-- 3.3.5 - 3.3.11 -->
+        <version.springBoot>3.4.13</version.springBoot><!-- 3.4.x: ships Spring 6.2.x / Reactor 2024.0 / Jackson 2.18; patch-level overrides below -->
         <version.springSecurityOauth2>2.6.8</version.springSecurityOauth2><!--2.6.7 - 2.6.8 -->
-        <version.jackson>2.15.0</version.jackson>
+        <version.jackson>2.18.11</version.jackson>
+        <version.springFramework>6.2.19</version.springFramework>
+        <version.tomcat>10.1.60</version.tomcat>
+        <version.netty>4.1.138.Final</version.netty>
+        <version.bouncycastle>1.86</version.bouncycastle>
+        <version.nimbusJoseJwt>9.37.4</version.nimbusJoseJwt>
+        <version.logback>1.5.38</version.logback>
         <version.commonsFileUpload>1.6.0</version.commonsFileUpload>
 		<version.commonsIo>2.16.1</version.commonsIo>
         <version.snakeyaml>2.2</version.snakeyaml>
@@ -51,12 +57,95 @@
 						<scope>import</scope>
 						<type>pom</type>
 					</dependency>
+					<!-- Security overrides: these BOMs must precede spring-boot-dependencies so they win -->
+					<dependency>
+						<groupId>com.fasterxml.jackson</groupId>
+						<artifactId>jackson-bom</artifactId>
+						<version>${version.jackson}</version>
+						<type>pom</type>
+						<scope>import</scope>
+					</dependency>
+					<dependency>
+						<groupId>io.netty</groupId>
+						<artifactId>netty-bom</artifactId>
+						<version>${version.netty}</version>
+						<type>pom</type>
+						<scope>import</scope>
+					</dependency>
+					<dependency>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-framework-bom</artifactId>
+						<version>${version.springFramework}</version>
+						<type>pom</type>
+						<scope>import</scope>
+					</dependency>
 					<dependency>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-dependencies</artifactId>
 						<version>${version.springBoot}</version>
 						<type>pom</type>
 						<scope>import</scope>
+					</dependency>
+					<!-- Security overrides: pinned versions override spring-boot-dependencies -->
+					<dependency>
+						<groupId>org.apache.tomcat.embed</groupId>
+						<artifactId>tomcat-embed-core</artifactId>
+						<version>${version.tomcat}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.tomcat.embed</groupId>
+						<artifactId>tomcat-embed-el</artifactId>
+						<version>${version.tomcat}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.tomcat.embed</groupId>
+						<artifactId>tomcat-embed-websocket</artifactId>
+						<version>${version.tomcat}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.bouncycastle</groupId>
+						<artifactId>bcprov-jdk18on</artifactId>
+						<version>${version.bouncycastle}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.bouncycastle</groupId>
+						<artifactId>bcpkix-jdk18on</artifactId>
+						<version>${version.bouncycastle}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.bouncycastle</groupId>
+						<artifactId>bcutil-jdk18on</artifactId>
+						<version>${version.bouncycastle}</version>
+					</dependency>
+					<dependency>
+						<groupId>com.nimbusds</groupId>
+						<artifactId>nimbus-jose-jwt</artifactId>
+						<version>${version.nimbusJoseJwt}</version>
+					</dependency>
+					<dependency>
+						<groupId>ch.qos.logback</groupId>
+						<artifactId>logback-core</artifactId>
+						<version>${version.logback}</version>
+					</dependency>
+					<dependency>
+						<groupId>ch.qos.logback</groupId>
+						<artifactId>logback-classic</artifactId>
+						<version>${version.logback}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>commons-lang3</artifactId>
+						<version>3.18.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.freemarker</groupId>
+						<artifactId>freemarker</artifactId>
+						<version>2.3.35</version>
+					</dependency>
+					<dependency>
+						<groupId>com.sun.mail</groupId>
+						<artifactId>jakarta.mail</artifactId>
+						<version>1.6.8</version>
 					</dependency>
 					<!-- modules -->
 					<dependency>
@@ -112,6 +201,21 @@
 					<groupId>org.springframework.security.oauth.boot</groupId>
 					<artifactId>spring-security-oauth2-autoconfigure</artifactId>
 					<version>${version.springSecurityOauth2}</version>
+					<exclusions>
+						<!-- Vulnerable bcpkix/bcprov-jdk15on 1.64 (via spring-security-jwt); replaced by jdk18on below -->
+						<exclusion>
+							<groupId>org.bouncycastle</groupId>
+							<artifactId>bcpkix-jdk15on</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.bouncycastle</groupId>
+							<artifactId>bcprov-jdk15on</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcpkix-jdk18on</artifactId>
 				</dependency>
 
 				<dependency>
@@ -193,14 +297,14 @@
 					<groupId>org.postgresql</groupId>
 					<artifactId>postgresql</artifactId>
 					<!--version>9.4-1205-jdbc41</version -->
-					<version>42.7.2</version>
+					<version>42.7.12</version>
 				</dependency>
 
 
 				<dependency>
 					<groupId>com.microsoft.sqlserver</groupId>
 					<artifactId>mssql-jdbc</artifactId>
-					<version>7.4.1.jre11</version>
+					<version>12.8.2.jre11</version>
 				</dependency>
 
 				<!-- Required to use Spin dataformat support -->
@@ -235,7 +339,7 @@
 				<dependency>
 					<groupId>org.assertj</groupId>
 					<artifactId>assertj-core</artifactId>
-					<version>3.21.0</version>
+					<version>3.27.7</version>
 					<scope>test</scope>
 				</dependency>
 
@@ -258,7 +362,7 @@
 				<dependency>
 					<groupId>org.jsoup</groupId>
 					<artifactId>jsoup</artifactId>
-					<version>1.15.3</version>
+					<version>1.23.2</version>
 				</dependency>
 
 				<dependency>
@@ -299,13 +403,13 @@
 				<dependency>
 		            <groupId>org.springframework</groupId>
 		            <artifactId>spring-websocket</artifactId>
-		            <version>6.1.12</version>
+		            <version>${version.springFramework}</version>
 		        </dependency>
 
 				<dependency>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-messaging</artifactId>
-					<version>6.1.12</version>
+					<version>${version.springFramework}</version>
 				</dependency>
 
 				<dependency>
@@ -360,18 +464,18 @@
 				<dependency>
 					<groupId>org.apache.tomcat.embed</groupId>
 					<artifactId>tomcat-embed-core</artifactId>
-					<version>10.1.44</version>
+					<version>${version.tomcat}</version>
 				</dependency>
 				<dependency>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-core</artifactId>
-					<version>6.2.11</version>
+					<version>${version.springFramework}</version>
 				</dependency>
 			
 				<dependency>
 					<groupId>io.netty</groupId>
 					<artifactId>netty-codec-http2</artifactId>
-					<version>4.2.4.Final</version>
+					<version>${version.netty}</version>
 				</dependency>
 
 			</dependencies>
@@ -388,12 +492,7 @@
 		<repository>
 			<id>camunda-bpm-nexus</id>
 			<name>Camunda Maven Repository</name>
-			<url>https://app.camunda.com/nexus/content/groups/public</url>
-		</repository>
-		<repository>
-			<id>camunda-bpm-nexus-snapshot</id>
-			<name>Camunda Maven Repository</name>
-			<url>https://app.camunda.com/nexus/repository/camunda-bpm-community-extensions-snapshots</url>
+			<url>https://artifacts.camunda.com/artifactory/public/</url>
 		</repository>
 
 	</repositories>

@@ -1,5 +1,5 @@
 # Base image
-FROM node:18.20.0-alpine as build-stage
+FROM node:24.21.0-alpine as build-stage
 
 # Set working directory
 WORKDIR /forms-flow-web/app
@@ -20,6 +20,9 @@ RUN npm run build
 
 # Production stage
 FROM nginx:1.27-alpine as production-stage
+
+# Apply latest Alpine security patches (libxml2, libpng, etc.)
+RUN apk upgrade --no-cache
 
 # Copy built files from build stage
 COPY --from=build-stage /forms-flow-web/app/build /usr/share/nginx/html

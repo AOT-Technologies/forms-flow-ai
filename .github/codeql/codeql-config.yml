@@ -1,0 +1,9 @@
+name: "CodeQL config"
+
+# Vendored/minified third-party bundles that are not hand-authored source and
+# cannot be safely hand-patched (no local build pipeline regenerates them from
+# source). Track upstream formiojs releases for real fixes instead of scanning
+# generated output here.
+paths-ignore:
+  - "forms-flow-documents/src/formsflow_documents/static/js/customformio.js"
+  - "forms-flow-documents/src/formsflow_documents/static/js/formio.full.min.js"

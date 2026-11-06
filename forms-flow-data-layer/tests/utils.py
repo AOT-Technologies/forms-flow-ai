@@ -2,8 +2,8 @@ import time
 from base64 import urlsafe_b64encode
 from typing import Dict, Optional
 
+import jwt
 import rsa
-from jose import jwt
 
 # Class-level variables for shared keys
 _CLASS_PRIVATE_KEY = None

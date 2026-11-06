@@ -1,6 +1,6 @@
 
 # Maven build
-FROM maven:3.8.1-openjdk-17-slim AS MAVEN_TOOL_CHAIN
+FROM maven:3.9.11-eclipse-temurin-17 AS MAVEN_TOOL_CHAIN
 COPY settings-docker.xml /usr/share/maven/ref/
 WORKDIR /tmp/
 

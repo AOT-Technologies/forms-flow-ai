@@ -19,7 +19,7 @@ COPY . /forms-flow-web/app/
 RUN npm run build
 
 # Production stage
-FROM nginx:1.27-alpine as production-stage
+FROM nginx:1.30-alpine as production-stage
 
 # Apply latest Alpine security patches (libxml2, libpng, etc.)
 RUN apk upgrade --no-cache

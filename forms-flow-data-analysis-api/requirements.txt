@@ -22,12 +22,12 @@ anyio==4.14.2
 attrs==25.3.0
 blinker==1.9.0
 cachelib==0.13.0
-certifi==2026.10.18
+certifi==2026.10.23
 cffi==2.0.0
 charset-normalizer==3.4.1
 click==8.5.0
 cryptography==50.0.2
-filelock==3.20.3
+filelock==4.2.1
 flake8-import-order==0.18.2
 flask-jwt-oidc==0.9.0
 flask-marshmallow==1.3.0
@@ -77,7 +77,7 @@ packaging==24.2
 protobuf==5.29.6
 psycopg2-binary==2.9.10
 pyOpenSSL==26.4.0
-pyasn1==0.6.4
+pyasn1==0.6.5
 pycodestyle==2.12.1
 pycparser==2.22
 pyflakes==3.2.0

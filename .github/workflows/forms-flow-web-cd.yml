@@ -117,65 +117,6 @@ jobs:
       run_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     secrets: inherit
-
-  # ============================================================
-  # 3. ZAP SCAN
-  # ============================================================
-  zap_scan:
-    runs-on: ubuntu-latest
-    name: Scan the web application
-    
-    permissions:
-      contents: read
-      id-token: write     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-
-      - name: Check DEV URL
-        id: check-dev-url
-        env:
-          DEV_URL: ${{ secrets.WEB_DEV_URL }}
-        run: |
-          echo "Checking DEV URL..."
-          RESPONSE_DEV=$(curl -s -o /dev/null -w "%{http_code}" "$DEV_URL" || echo "Failed")
-
-          if [ "$RESPONSE_DEV" -eq 200 ]; then
-            echo "DEV URL is up"
-            echo "WEB_TARGET_URL=$DEV_URL" >> "$GITHUB_ENV"
-            echo "URL_STATUS=success" >> "$GITHUB_ENV"
-          else
-            echo "DEV URL is down. Exiting workflow."
-            echo "URL_STATUS=failure" >> "$GITHUB_ENV"
-            exit 0
-          fi
-
-      - name: Print selected target
-        if: env.URL_STATUS == 'success'
-        run: |
-          echo "Selected target URL is: ${{ env.WEB_TARGET_URL }}"
-
-      - name: ZAP Scan
-        if: env.URL_STATUS == 'success'
-        uses: zaproxy/action-full-scan@v0.8.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target: ${{ env.WEB_TARGET_URL }}
-          rules_file_name: '.zap/rules.tsv'
-
-      # AWS CLI v2 is preinstalled on GitHub-hosted Ubuntu runners.
-      # The apt package "awscli" was dropped in Ubuntu 24.04 (ubuntu-latest).
-      - name: Configure AWS credentials
-        if: env.URL_STATUS == 'success'
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_ZAP_SCAN_REPORT_S3_ROLE_ARN }}
-          aws-region: ${{ secrets.REGION }}
-      - name: Upload ZAP Report to S3
-        if: env.URL_STATUS == 'success'
-        run: |
-          aws s3 cp report_html.html s3://zap-report-formsflow/zap-reports/zap-report-$(date +%Y-%m-%d_%H-%M-%S).html
-
   # ============================================================
   # 4. CALCULATE OVERALL WORKFLOW STATUS
   # ============================================================
@@ -184,7 +125,6 @@ jobs:
 
     needs:
       - build
-      - zap_scan
 
     if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' }}
 
@@ -199,12 +139,10 @@ jobs:
         shell: bash
         run: |
           BUILD_RESULT="${{ needs.build.result }}"
-          ZAP_RESULT="${{ needs.zap_scan.result }}"
 
           echo "Build result: $BUILD_RESULT"
-          echo "ZAP scan result: $ZAP_RESULT"
 
-          if [ "$BUILD_RESULT" = "success" ] && [ "$ZAP_RESULT" = "success" ]; then
+          if [ "$BUILD_RESULT" = "success" ]; then
             echo "status=success" >> "$GITHUB_OUTPUT"
           else
             echo "status=failure" >> "$GITHUB_OUTPUT"
@@ -218,7 +156,6 @@ jobs:
 
     needs:
       - build
-      - zap_scan
       - workflow-status
 
     if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' }}

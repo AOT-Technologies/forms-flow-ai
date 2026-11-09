@@ -13,11 +13,11 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
-			<!-- keycloak-services 26.7.5 pulls opentelemetry-api 1.57.0 (CVE-2026-45292) -->
+			<!-- keycloak-services 26.7.5 pulls opentelemetry-api 1.57.0 (CVE-2026-45292, CVE-2026-118259) -->
 			<dependency>
 				<groupId>io.opentelemetry</groupId>
 				<artifactId>opentelemetry-api</artifactId>
-				<version>1.62.0</version>
+				<version>1.67.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

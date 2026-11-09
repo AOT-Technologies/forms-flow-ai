@@ -31,7 +31,7 @@ mdurl==0.1.2
 motor==3.7.0
 orjson==3.11.6
 packaging==24.2
-pyasn1==0.6.4
+pyasn1==0.6.5
 pycparser==3.0
 pydantic==2.10.6
 pydantic_core==2.27.2

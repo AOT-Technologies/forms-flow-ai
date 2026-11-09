@@ -63,6 +63,24 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- json-path (Spin JSON) pulls json-smart 2.5.x: CVE-2024-57699 -->
+            <dependency>
+                <groupId>net.minidev</groupId>
+                <artifactId>json-smart</artifactId>
+                <version>2.6.1</version>
+            </dependency>
+            <!-- ant 1.10.14: CVE-2026-78254 -->
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.10.18</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-launcher</artifactId>
+                <version>1.10.18</version>
+            </dependency>
+            <!-- Netty BOM must precede spring-boot-dependencies so it wins -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
@@ -325,7 +343,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <!--version>9.4-1205-jdbc41</version -->
-            <version>42.7.12</version>
+            <version>42.7.14</version>
         </dependency>
 
         <dependency>
@@ -334,10 +352,15 @@
             <version>12.8.2.jre11</version>
         </dependency>
 
-        <!-- Required to use Spin dataformat support -->
+        <!-- Spin dataformats (JSON + XML). Non-shaded artifacts so Jackson and json-smart
+             resolve to the managed versions; dataformat-all bundles Jackson 2.15.2 / json-smart 2.5.0 -->
         <dependency>
             <groupId>org.camunda.spin</groupId>
-            <artifactId>camunda-spin-dataformat-all</artifactId>
+            <artifactId>camunda-spin-dataformat-json-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.camunda.spin</groupId>
+            <artifactId>camunda-spin-dataformat-xml-dom</artifactId>
         </dependency>
         <dependency>
             <groupId>org.camunda.bpm</groupId>

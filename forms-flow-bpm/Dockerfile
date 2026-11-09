@@ -20,6 +20,11 @@ RUN mvn -s /usr/share/maven/ref/settings-docker.xml install -P camunda
 
 FROM eclipse-temurin:21-jdk-jammy
 
+# Apply OS security updates (e.g. apt CVEs in the base image)
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # set label for image
 LABEL Name="formsflow"
 

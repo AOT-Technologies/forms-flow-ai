@@ -1,5 +1,5 @@
 gunicorn
-psycopg2
+psycopg2-binary
 Flask
 python-dotenv
 psycopg2-binary

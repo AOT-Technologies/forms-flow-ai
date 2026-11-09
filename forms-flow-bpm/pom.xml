@@ -35,6 +35,10 @@
         <version.bouncycastle>1.86</version.bouncycastle>
         <version.nimbusJoseJwt>9.37.4</version.nimbusJoseJwt>
         <version.logback>1.5.38</version.logback>
+        <version.httpclient5>5.6.5</version.httpclient5>
+        <version.httpcore5>5.4.4</version.httpcore5>
+        <version.freemarker>2.3.35</version.freemarker>
+        <version.velocity>2.4.1</version.velocity>
         <version.commonsFileUpload>1.6.0</version.commonsFileUpload>
 		<version.commonsIo>2.16.1</version.commonsIo>
         <version.snakeyaml>2.2</version.snakeyaml>
@@ -137,15 +141,36 @@
 						<artifactId>commons-lang3</artifactId>
 						<version>3.18.0</version>
 					</dependency>
+					<!-- httpcore5 5.4.x needs httpclient5 5.6.x -->
+					<dependency>
+						<groupId>org.apache.httpcomponents.client5</groupId>
+						<artifactId>httpclient5</artifactId>
+						<version>${version.httpclient5}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.httpcomponents.core5</groupId>
+						<artifactId>httpcore5</artifactId>
+						<version>${version.httpcore5}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.httpcomponents.core5</groupId>
+						<artifactId>httpcore5-h2</artifactId>
+						<version>${version.httpcore5}</version>
+					</dependency>
 					<dependency>
 						<groupId>org.freemarker</groupId>
 						<artifactId>freemarker</artifactId>
-						<version>2.3.35</version>
+						<version>${version.freemarker}</version>
 					</dependency>
 					<dependency>
 						<groupId>com.sun.mail</groupId>
 						<artifactId>jakarta.mail</artifactId>
 						<version>1.6.8</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.velocity</groupId>
+						<artifactId>velocity-engine-core</artifactId>
+						<version>${version.velocity}</version>
 					</dependency>
 					<!-- modules -->
 					<dependency>

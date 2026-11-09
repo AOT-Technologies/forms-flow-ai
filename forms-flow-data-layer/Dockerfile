@@ -26,9 +26,11 @@ RUN python3 -m venv /venv && \
 COPY src/ ./src
 COPY main.py .
 
-# Security: Add non-root user
+# Security: Add non-root user. pip is removed from the venv and the base image
+# because it is not needed at runtime and bundles outdated certifi/urllib3/msgpack.
 RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /formsflow-data-layer \
-      && pip uninstall -y ecdsa
+      && pip uninstall -y ecdsa pip \
+      && /usr/local/bin/python3 -m pip uninstall -y pip
 USER appuser
 
 EXPOSE 8000

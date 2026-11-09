@@ -10,9 +10,13 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 
 **forms-flow-api / forms-flow-api-utils**
 * Migrated authentication from `python-jose`/`ecdsa` to `PyJWT`, resolving the `ecdsa` timing attack (CVE-2024-23342)
-* Upgraded `flask-jwt-oidc` to 0.8.0 and other vulnerable Python dependencies (`cryptography`, `PyJWT`, `Werkzeug`, `urllib3`, `requests`)
+* Upgraded `flask-jwt-oidc` to 0.8.0 and other vulnerable Python dependencies (`cryptography`, `PyJWT`, `Werkzeug`, `urllib3`, `requests`, `pyasn1`)
+* PDF generation attaches the user's token only to trusted formsflow origins; previously headless Chrome sent it to every host the page loaded from
+* Removed `selenium-wire` from api-utils; request headers are now set through the Chrome DevTools Protocol
 
 **forms-flow-documents**
+* PDF templates, including caller-supplied custom templates, render in a sandboxed Jinja environment (template injection)
+* Upgraded `Flask` to 3.1.3 (CVE-2026-27205) and `flask-jwt-oidc` to 0.9.0, and removed `selenium-wire`
 * Removed `python-jose`/`ecdsa` in favour of `PyJWT` and upgraded vulnerable Python dependencies
 * Docker image moved to Debian 13 and installs Chrome without recommended packages
 
@@ -26,14 +30,19 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 * Removed unused `nltk` and `spaCy` from the sentiment-analysis job
 
 **forms-flow-web / forms-flow-web-root-config**
-* Upgraded vulnerable frontend dependencies and overrode vulnerable transitive packages, including `serialize-javascript` 7.0.5 (GHSA-5c6j-r48x-rmvq)
+* Upgraded vulnerable frontend dependencies and overrode vulnerable transitive packages, including `serialize-javascript` 7.1.3, `dompurify` 3.4.17, `body-parser`, `follow-redirects` and `qs`
+* Docker images use `nginx:1.30-alpine`
 
 **forms-flow-bpm**
-* Upgraded Spring, Tomcat, Jackson, Netty, BouncyCastle and logback
+* Upgraded Spring, Tomcat, Jackson, Netty, BouncyCastle, logback, `httpclient5`/`httpcore5`, `json-smart` (CVE-2024-57699), `ant` and the PostgreSQL driver
+* Replaced the shaded `camunda-spin-dataformat-all` with the JSON and XML Spin dataformats, so Jackson and `json-smart` resolve to patched versions
 * Replaced the retired `app.camunda.com` Maven repository with `artifacts.camunda.com`
 
 **forms-flow-idm**
-* Upgraded Keycloak to 26.7.5 in the IdP selector extension
+* Upgraded Keycloak to 26.7.5 in the IdP selector extension, with `opentelemetry-api` 1.67.0
+
+**forms-flow-analytics**
+* Removed the default `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` from `sample.env`; Docker Compose now refuses to start without them
 
 *Upgrade notes:*
 
@@ -50,14 +59,18 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 
    * Docker images use `python:3.13.16-slim-trixie` (Debian 13)
 
+**forms-flow-analytics**
+
+   * Set your own `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` before starting Redash; deployments that used the old sample values should rotate them
+
 `Generic Changes`
 
 * Fixed security vulnerabilities reported by Dependabot, Trivy and Snyk
 * Docker images apply OS security updates at build time
+* Added an OSV dependency vulnerability scan workflow and `SECURITY.md` for private vulnerability reporting
 
 `Known Issues`
 
-* `forms-flow-documents` keeps `Flask` 3.0.3 and `setuptools` < 82 because `selenium-wire`, used for PDF generation, is incompatible with newer versions (low and medium severity advisories)
 * A few OS packages in the Docker images (such as `util-linux` and `ncurses`) still have advisories with no fixed Debian release
 
 ## 7.3.0 - 2025-10-14

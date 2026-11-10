@@ -1,6 +1,6 @@
 
 # Maven build
-FROM maven:3.9.11-eclipse-temurin-17 AS MAVEN_TOOL_CHAIN
+FROM maven:3.9-eclipse-temurin-26 AS MAVEN_TOOL_CHAIN
 COPY settings-docker.xml /usr/share/maven/ref/
 WORKDIR /tmp/
 
@@ -18,7 +18,7 @@ COPY forms-flow-bpm-utils/src ./forms-flow-bpm-utils/src/
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml install -P camunda
 
 
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:25-jdk-jammy
 
 # Apply OS security updates (e.g. apt CVEs in the base image)
 RUN apt-get update \

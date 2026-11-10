@@ -26,8 +26,9 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 * Docker image moved to Debian 13 and no longer installs a compiler
 
 **forms-flow-data-analysis-api / sentiment-analysis job**
-* Upgraded vulnerable Python and machine-learning dependencies (`torch`, `transformers` and others)
+* Upgraded vulnerable Python and machine-learning dependencies (`torch`, `transformers` 5.10.4 and others)
 * Removed unused `nltk` and `spaCy` from the sentiment-analysis job
+* Fixed the sentiment-analysis image build: it no longer compiles `psycopg2` from source (`psycopg2-binary` is used)
 
 **forms-flow-web / forms-flow-web-root-config**
 * Upgraded vulnerable frontend dependencies and overrode vulnerable transitive packages, including `serialize-javascript` 7.1.3, `dompurify` 3.4.17, `body-parser`, `follow-redirects` and `qs`
@@ -46,6 +47,10 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 
 *Upgrade notes:*
 
+**forms-flow-api-utils**
+
+   * Services now use `flask-jwt-oidc` 0.8.0 (api) or 0.9.0 (documents, data-analysis). 0.9.0 changed `contains_role`/`validate_roles` to `(roles, claims=None)`; api-utils passes keyword arguments so it works with both. Custom code that calls these methods directly should do the same
+
 **forms-flow-web / forms-flow-web-root-config**
 
    * Builds require Node.js 24 (24.21.0); Node.js 18 is no longer supported
@@ -58,6 +63,10 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 **forms-flow-data-layer / forms-flow-documents**
 
    * Docker images use `python:3.13.16-slim-trixie` (Debian 13)
+
+**sentiment-analysis job**
+
+   * Docker image uses `python:3.13.9-slim-bookworm` (Debian 12) instead of Debian 11
 
 **forms-flow-analytics**
 
@@ -72,6 +81,8 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 `Known Issues`
 
 * A few OS packages in the Docker images (such as `util-linux` and `ncurses`) still have advisories with no fixed Debian release
+* `forms-flow-bpm` stays on Spring Boot 3.4.13, which has two actuator advisories (CVE-2026-22731, CVE-2026-22733) fixed only in 3.5.x. Neither applies to the default configuration: no health group uses `additional-path`, and the Cloud Foundry actuator endpoints are inactive outside Cloud Foundry
+* The micro-frontends and `forms-flow-forms` are unchanged in this release; use their `v7.3.0` versions
 
 ## 7.3.0 - 2025-10-14
 

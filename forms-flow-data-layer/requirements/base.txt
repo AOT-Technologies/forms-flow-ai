@@ -7,7 +7,7 @@ python-dotenv
 redis
 logging
 orjson
-sqlalchemy
+sqlalchemy[asyncio]
 requests
 PyJWT[crypto]
 cachelib

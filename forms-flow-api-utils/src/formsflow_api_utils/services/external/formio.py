@@ -24,7 +24,9 @@ class FormioService:
     def decode_timeout(cls, token):
         """Method to decode token and get timeout."""
         try:
-            decoded = jwt.decode(token, options={"verify_signature": False})
+            # Our own service token from the formio login API; decoded only to
+            # read exp/iat for the cache TTL, never trusted for authentication.
+            decoded = jwt.decode(token, options={"verify_signature": False})  # NOSONAR
             return decoded["exp"] - decoded["iat"]
         except (jwt.exceptions.PyJWTError, KeyError, TypeError):
             current_app.logger.warning(

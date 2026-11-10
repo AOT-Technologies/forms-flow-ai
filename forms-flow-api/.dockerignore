@@ -1,0 +1,39 @@
+# Keep the build context and image limited to what the service needs at runtime.
+
+# Version control and editor files
+.git
+.gitignore
+.vscode/
+.idea/
+
+# Local secrets and environment files (configuration is passed at runtime)
+.env
+.env.*
+*.env
+
+# Virtual environments, caches and build output
+venv/
+.venv/
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Tests, coverage and logs
+tests/
+.coverage
+coverage.xml
+htmlcov/
+logs/
+*.log
+
+# Docker and CI files not used inside the image
+Dockerfile*
+openshift_custom_Dockerfile
+docker-compose*.yml
+
+# API documentation (published separately)
+api-spec/
+docs/

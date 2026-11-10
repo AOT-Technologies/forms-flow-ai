@@ -2,6 +2,88 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.3.1 - TBD (update to actual GA date before tagging)
+
+Security release. Release candidate images are tagged `v7.3.1-rc`.
+
+`Fixed`
+
+**forms-flow-api / forms-flow-api-utils**
+* Migrated authentication from `python-jose`/`ecdsa` to `PyJWT`, resolving the `ecdsa` timing attack (CVE-2024-23342)
+* Upgraded `flask-jwt-oidc` to 0.8.0 and other vulnerable Python dependencies (`cryptography`, `PyJWT`, `Werkzeug`, `urllib3`, `requests`, `pyasn1`)
+* PDF generation attaches the user's token only to trusted formsflow origins; previously headless Chrome sent it to every host the page loaded from
+* Removed `selenium-wire` from api-utils; request headers are now set through the Chrome DevTools Protocol
+
+**forms-flow-documents**
+* PDF templates, including caller-supplied custom templates, render in a sandboxed Jinja environment (template injection)
+* Upgraded `Flask` to 3.1.3 (CVE-2026-27205) and `flask-jwt-oidc` to 0.9.0, and removed `selenium-wire`
+* Removed `python-jose`/`ecdsa` in favour of `PyJWT` and upgraded vulnerable Python dependencies
+* Docker image moved to Debian 13 and installs Chrome without recommended packages
+
+**forms-flow-data-layer**
+* Migrated Keycloak token verification from `python-jose`/`ecdsa` to `PyJWT`
+* Upgraded `strawberry-graphql` to 0.327.2 and other vulnerable Python dependencies
+* Docker image moved to Debian 13 and no longer installs a compiler
+
+**forms-flow-data-analysis-api / sentiment-analysis job**
+* Upgraded vulnerable Python and machine-learning dependencies (`torch`, `transformers` 5.10.4 and others)
+* Removed unused `nltk` and `spaCy` from the sentiment-analysis job
+* Fixed the sentiment-analysis image build: it no longer compiles `psycopg2` from source (`psycopg2-binary` is used)
+
+**forms-flow-web / forms-flow-web-root-config**
+* Upgraded vulnerable frontend dependencies and overrode vulnerable transitive packages, including `serialize-javascript` 7.1.3, `dompurify` 3.4.17, `body-parser`, `follow-redirects` and `qs`
+* Docker images use `nginx:1.30-alpine`
+
+**forms-flow-bpm**
+* Upgraded Spring, Tomcat, Jackson, Netty, BouncyCastle, logback, `httpclient5`/`httpcore5`, `json-smart` (CVE-2024-57699), `ant` and the PostgreSQL driver
+* Replaced the shaded `camunda-spin-dataformat-all` with the JSON and XML Spin dataformats, so Jackson and `json-smart` resolve to patched versions
+* Replaced the retired `app.camunda.com` Maven repository with `artifacts.camunda.com`
+
+**forms-flow-idm**
+* Upgraded Keycloak to 26.7.5 in the IdP selector extension, with `opentelemetry-api` 1.67.0
+
+**forms-flow-analytics**
+* Removed the default `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` from `sample.env`; Docker Compose now refuses to start without them
+
+*Upgrade notes:*
+
+**forms-flow-api-utils**
+
+   * Services now use `flask-jwt-oidc` 0.8.0 (api) or 0.9.0 (documents, data-analysis). 0.9.0 changed `contains_role`/`validate_roles` to `(roles, claims=None)`; api-utils passes keyword arguments so it works with both. Custom code that calls these methods directly should do the same
+
+**forms-flow-web / forms-flow-web-root-config**
+
+   * Builds require Node.js 24 (24.21.0); Node.js 18 is no longer supported
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.4.13
+   * Docker image uses `eclipse-temurin:21-jdk-jammy` instead of `openjdk:21-ea-jdk`
+
+**forms-flow-data-layer / forms-flow-documents**
+
+   * Docker images use `python:3.13.16-slim-trixie` (Debian 13)
+
+**sentiment-analysis job**
+
+   * Docker image uses `python:3.13.9-slim-bookworm` (Debian 12) instead of Debian 11
+
+**forms-flow-analytics**
+
+   * Set your own `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` before starting Redash; deployments that used the old sample values should rotate them
+
+`Generic Changes`
+
+* Fixed security vulnerabilities reported by Dependabot, Trivy and Snyk
+* Docker images apply OS security updates at build time
+* Added an OSV dependency vulnerability scan workflow and `SECURITY.md` for private vulnerability reporting
+
+`Known Issues`
+
+* A few OS packages in the Docker images (such as `util-linux` and `ncurses`) still have advisories with no fixed Debian release
+* `forms-flow-bpm` stays on Spring Boot 3.4.13, which has two actuator advisories (CVE-2026-22731, CVE-2026-22733) fixed only in 3.5.x. Neither applies to the default configuration: no health group uses `additional-path`, and the Cloud Foundry actuator endpoints are inactive outside Cloud Foundry
+* `formsflow/forms-flow-forms` and the micro-frontends from forms-flow-ai-micro-front-ends (nav, admin, review, submissions, service, components) are unchanged in this release; use their `v7.3.0` versions. `forms-flow-web` is published as `v7.3.1`
+
 ## 7.3.0 - 2025-10-14
 
 `Modified`

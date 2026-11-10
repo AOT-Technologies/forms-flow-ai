@@ -15,6 +15,16 @@ from .format import CustomFormatter
 jwt = JwtManager()  # pylint: disable=invalid-name
 
 
+def _token_claims():
+    """Return the verified token claims of the current request.
+
+    flask-jwt-oidc 0.8.x takes ``(claims, roles)`` and 0.9.x takes
+    ``(roles, claims=None)``. Callers pass keyword arguments so the role
+    checks work with both versions.
+    """
+    return g.get("jwt_oidc_token_info", {})
+
+
 class Auth:
     """Extending JwtManager to include additional functionalities."""
 
@@ -45,7 +55,7 @@ class Auth:
             @Auth.require
             @wraps(f)
             def wrapper(*args, **kwargs):
-                if jwt.contains_role(g.jwt_oidc_token_info, roles):
+                if jwt.contains_role(roles=roles, claims=_token_claims()):
                     return f(*args, **kwargs)
 
                 raise BusinessException(ExternalError.UNAUTHORIZED)
@@ -57,12 +67,12 @@ class Auth:
     @classmethod
     def has_role(cls, role):
         """Method to validate the role."""
-        return jwt.validate_roles(g.jwt_oidc_token_info, role)
+        return jwt.validate_roles(required_roles=role, claims=_token_claims())
 
     @classmethod
     def has_any_role(cls, role):
         """Method to validate the role."""
-        return jwt.contains_role(g.jwt_oidc_token_info, role)
+        return jwt.contains_role(roles=role, claims=_token_claims())
 
     @classmethod
     def require_custom(cls, f):

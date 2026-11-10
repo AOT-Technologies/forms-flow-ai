@@ -1,137 +1,954 @@
+# =============================================================================
+# Dependabot configuration - forms-flow-ai (open source)
+# -----------------------------------------------------------------------------
+# Security-first policy. Three kinds of PR per service block:
+#
+#   security-fixes   ONE grouped PR per service as soon as an alert is raised.
+#                    Always targets the default branch (develop).
+#   patch-only-safe  ONE grouped PR per service with patch bumps only.
+#                    One review pass, merge.
+#   minor-and-major  ONE batch PR per service with every minor AND major bump.
+#                    Reviewed entry by entry. Not ready for one entry?
+#                    Comment `@dependabot ignore <dependency name> major version`
+#                    on it and the batch is recreated without it.
+#   github-actions   ONE PR for every action bump (github-actions-all).
+#
+# So each service has at most three open Dependabot PRs. The language
+# ecosystems (npm, pip, maven) run DAILY at 09:00 IST; docker and GitHub
+# Actions run weekly on Monday 09:00 IST.
+#
+# Repo facts this file encodes:
+#   - Polyglot monorepo of independently built services. PRs are split BY
+#     SERVICE on purpose: one update block per service and ecosystem, so every
+#     PR lands on exactly one service's path-filtered CI.
+#       npm     forms-flow-web (+ scripts), forms-flow-web-root-config
+#       pip     forms-flow-api, -api-utils, -documents, -data-layer,
+#               -data-analysis-api (+ model_training), jobs/sentiment-analysis,
+#               forms-flow-idm/migration  (pinned requirements.txt)
+#       maven   forms-flow-bpm (parent pom -> utils + camunda modules),
+#               forms-flow-idm/keycloak/* (stand-alone extension poms)
+#       docker  one block per service Dockerfile
+#   - Group names are the SAME in every block (security-fixes / patch-only-safe
+#     / minor-and-major, docker-* for docker, github-actions-all). The
+#     directory in the PR title tells the services apart.
+#   - Python services use pinned requirements.txt files, so the ecosystem is
+#     `pip`. The requirements/*.txt files are unpinned input lists and are not
+#     bumped.
+#   - NOT covered, by design: the docker-compose files in deployment/, which pin
+#     infra images and our own release-tagged images that the release process
+#     owns.
+#   - Frozen majors: the React 17 / CRA + CRACO / single-spa / formio stack in
+#     forms-flow-web, the bundler and lint tooling in forms-flow-web-root-config,
+#     and the web/ORM/ML frameworks in the Python and Java services. Lift an
+#     ignore when an upgrade is planned.
+#   - Default branch is `develop`; no target-branch is set on purpose. Security
+#     updates only ever target the default branch, and a non-default
+#     target-branch detaches the groups and labels from them. Dependabot reads
+#     this file from the default branch only; copies on release branches are
+#     kept for reference.
+#
+# Manual refresh: Insights -> Dependency graph -> Dependabot -> "Check for updates".
+# Validation:     Insights -> Dependency graph -> Dependabot (shows config errors).
+# =============================================================================
 version: 2
 
 updates:
-  # ==============================
-  # Frontend (React / Node)
-  # ==============================
+  # ===========================================================================
+  # npm - forms-flow-web (React single-spa MFE) + its CD helper package.
+  # Daily 09:00 IST. Both directories in one block so the groups span them.
+  # ===========================================================================
   - package-ecosystem: "npm"
-    directory: "/"
-    target-branch: "dependabot-updates"
-
+    directories:
+      - "/forms-flow-web"
+      - "/forms-flow-web/scripts"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "05:00"
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
 
-    open-pull-requests-limit: 5
+    # At most three PRs per block (security, patch, batch). The limit stays at
+    # 10 so a recreate is never held back by stale PRs.
+    open-pull-requests-limit: 10
 
+    # Bump the range in package.json AND the lockfile (app behaviour).
+    versioning-strategy: "increase"
+
+    # Supply-chain cooldown: never take a release the day it is published.
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+
+    # Labels must already exist in the repo (unknown labels are ignored).
     labels:
       - "dependencies"
-      - "frontend"
-      - "dependabot"
+      - "javascript"
+
+    pull-request-branch-name:
+      separator: "/"
 
     groups:
-      frontend-minor-patch:
-        update-types:
-          - "minor"
-          - "patch"
-
-  # ==============================
-  # Backend Java (forms-flow-api)
-  # ==============================
-  - package-ecosystem: "maven"
-    directory: "/forms-flow-api"
-    target-branch: "dependabot-updates"
-
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "05:30"
-
-    labels:
-      - "dependencies"
-      - "backend"
-      - "java"
-
-    groups:
-      backend-minor-patch:
-        update-types:
-          - "minor"
-          - "patch"
-
-  # ==============================
-  # BPM Engine (Camunda service)
-  # ==============================
-  - package-ecosystem: "maven"
-    directory: "/forms-flow-bpm"
-    target-branch: "dependabot-updates"
-
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "05:45"
-
-    labels:
-      - "dependencies"
-      - "backend"
-      - "bpm"
-
-    groups:
-      bpm-minor-patch:
-        update-types:
-          - "minor"
-          - "patch"
-
-  # ==============================
-  # Python Analytics
-  # ==============================
-  - package-ecosystem: "pip"
-    directory: "/forms-flow-analytics"
-    target-branch: "dependabot-updates"
-
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-
-    labels:
-      - "dependencies"
-      - "python"
-
-    groups:
-      python-minor-patch:
-        update-types:
-          - "minor"
-          - "patch"
-
-  # ==============================
-  # Docker Images
-  # ==============================
-  - package-ecosystem: "docker"
-    directory: "/"
-    target-branch: "dependabot-updates"
-
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:15"
-
-    labels:
-      - "dependencies"
-      - "docker"
-
-    groups:
-      docker-base-images:
+      # ONE PR for security fixes, raised as soon as an alert exists.
+      security-fixes:
+        applies-to: "security-updates"
         patterns:
           - "*"
 
-  # ==============================
-  # GitHub Actions
-  # ==============================
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    target-branch: "dependabot-updates"
+      # ONE PR for every patch-level bump in this service.
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
 
+      # ONE batch PR for everything else (minor + major).
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+    ignore:
+      # React: patch only. forms-flow-web and the micro-front-ends share one
+      # React through the root-config import map; a minor/major is cross-repo.
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+      # Build system (CRA + CRACO + single-spa): majors are a planned project.
+      - dependency-name: "react-scripts"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@craco/craco"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "craco-plugin-single-spa-app-aot"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "single-spa*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@babel/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "sass"
+        update-types: ["version-update:semver-major"]
+
+      # Form engine (AOT formio fork) and the BPMN/DMN modelers.
+      - dependency-name: "@aot-technologies/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@formio/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "bpmn-js*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "dmn-js*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "diagram-js"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@bpmn-io/*"
+        update-types: ["version-update:semver-major"]
+
+      # Shared runtime libraries pinned to a major by the app architecture
+      # (react-router-dom v5, react-query v3, keycloak-js 10, RTK 2, redux 4).
+      - dependency-name: "react-router-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-query"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "keycloak-js"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@reduxjs/toolkit"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "redux"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-bootstrap"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "i18next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-i18next"
+        update-types: ["version-update:semver-major"]
+
+  # ===========================================================================
+  # npm - forms-flow-web-root-config (single-spa shell / import map).
+  # ===========================================================================
+  - package-ecosystem: "npm"
+    directories:
+      - "/forms-flow-web-root-config"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    versioning-strategy: "increase"
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "javascript"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      # Bundler / runtime loader (shared with forms-flow-web and the MFEs).
+      - dependency-name: "webpack*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "*-webpack-plugin"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "single-spa*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@babel/*"
+        update-types: ["version-update:semver-major"]
+      # Intentional tooling versions (eslint 7, prettier 2).
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-config-*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-plugin-*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "prettier"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "pretty-quick"
+        update-types: ["version-update:semver-major"]
+
+  # ===========================================================================
+  # pip - Python services (pinned requirements.txt), one block per service.
+  # Daily 09:00 IST. The ignore list is repeated per block because Dependabot
+  # has no shared config.
+  # ===========================================================================
+  - package-ecosystem: "pip"
+    directories:
+      - "/forms-flow-api"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "python"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      # Web/ORM frameworks: majors are a planned project.
+      - dependency-name: "flask"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "werkzeug"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "sqlalchemy"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "marshmallow"
+        update-types: ["version-update:semver-major"]
+
+  # Shared library installed by the Python services from git; its own pins
+  # are bumped here.
+  - package-ecosystem: "pip"
+    directories:
+      - "/forms-flow-api-utils"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "python"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      - dependency-name: "flask"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "werkzeug"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "sqlalchemy"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "marshmallow"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "pip"
+    directories:
+      - "/forms-flow-documents"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "python"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      - dependency-name: "flask"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "werkzeug"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "sqlalchemy"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "marshmallow"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "pip"
+    directories:
+      - "/forms-flow-data-layer"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "python"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      - dependency-name: "sqlalchemy"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "fastapi"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "starlette"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "pydantic"
+        update-types: ["version-update:semver-major"]
+
+  # forms-flow-data-analysis-api runs on the python:3.11 image while the other
+  # services are on 3.13. That drift is deliberate; do not "align" it in a
+  # Dependabot PR. model_training is in the same block so the groups span it.
+  - package-ecosystem: "pip"
+    directories:
+      - "/forms-flow-data-analysis-api"
+      - "/forms-flow-data-analysis-api/model_training"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "python"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      - dependency-name: "flask"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "werkzeug"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "sqlalchemy"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "marshmallow"
+        update-types: ["version-update:semver-major"]
+      # ML stack: majors change model loading and need a retest.
+      - dependency-name: "torch"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "transformers"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "pip"
+    directories:
+      - "/jobs/sentiment-analysis"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "python"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      - dependency-name: "flask"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "werkzeug"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "sqlalchemy"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "torch"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "transformers"
+        update-types: ["version-update:semver-major"]
+
+  # Keycloak migration scripts. No PR CI covers this directory: run the
+  # migration locally before merging. Nothing frozen.
+  - package-ecosystem: "pip"
+    directories:
+      - "/forms-flow-idm/migration"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "python"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  # ===========================================================================
+  # maven - forms-flow-bpm (Spring Boot + Camunda 7 CE). Daily 09:00 IST.
+  # The parent pom declares the utils and camunda modules; Dependabot follows
+  # <modules> from the parent, so one directory covers all three poms.
+  # Versions are Maven properties (version.camunda, version.springBoot, ...),
+  # which Dependabot bumps in place.
+  # ===========================================================================
+  - package-ecosystem: "maven"
+    directories:
+      - "/forms-flow-bpm"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "java"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      # Framework majors are a planned project. Maven names are
+      # groupId:artifactId, so the wildcard covers every artifact of the group.
+      - dependency-name: "org.springframework*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "org.camunda*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "org.keycloak*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "jakarta.*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "org.hibernate*"
+        update-types: ["version-update:semver-major"]
+
+  # ===========================================================================
+  # maven - forms-flow-idm Keycloak extensions (stand-alone poms, one block so
+  # the groups span them). No PR CI covers these directories: build locally
+  # before merging. keycloak.version must match the deployed Keycloak server;
+  # majors ignored, minors arrive in the batch PR and need that check.
+  # ===========================================================================
+  - package-ecosystem: "maven"
+    directories:
+      - "/forms-flow-idm/keycloak/idp-selector"
+      - "/forms-flow-idm/keycloak/tenant-registration"
+    schedule:
+      interval: "daily"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-patch-days: 7
+      semver-minor-days: 14
+      semver-major-days: 30
+    labels:
+      - "dependencies"
+      - "java"
+    pull-request-branch-name:
+      separator: "/"
+    groups:
+      security-fixes:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+    ignore:
+      - dependency-name: "org.keycloak*"
+        update-types: ["version-update:semver-major"]
+
+  # ===========================================================================
+  # Docker - base images, one block per service Dockerfile. Monday 09:00 IST.
+  # Patch bumps grouped; minor/major (e.g. python 3.13 -> 3.14, node 24 -> 26)
+  # arrive in one batch PR per service because they change the build image and
+  # need a deliberate decision. Docker tags are not SemVer for Dependabot, so
+  # only `default-days` cooldown applies. Dependabot has no security updates
+  # for docker, so there is no security-fixes group.
+  # ===========================================================================
+  - package-ecosystem: "docker"
+    directories:
+      - "/forms-flow-web"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "06:30"
-
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
-      - "ci"
-
     groups:
-      github-actions:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/forms-flow-web-root-config"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/forms-flow-api"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/forms-flow-documents"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/forms-flow-data-layer"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  # Stays on python:3.11 on purpose (see the pip block above).
+  - package-ecosystem: "docker"
+    directories:
+      - "/forms-flow-data-analysis-api"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/jobs/sentiment-analysis"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/forms-flow-bpm"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  # Keycloak image build (maven builder + alpine runtime). No PR CI.
+  - package-ecosystem: "docker"
+    directories:
+      - "/forms-flow-idm/keycloak"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      docker-patch-only-safe:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      docker-minor-and-major:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "major"
+
+  # ===========================================================================
+  # GitHub Actions - pins in .github/workflows. Monday 09:00 IST. One PR for
+  # everything; action bumps are low-risk and the Dependency Vulnerability
+  # Scan runs on every PR. SHA-pinned actions get the SHA and `# vX` comment
+  # bumped together.
+  # ===========================================================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 3
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+    groups:
+      github-actions-all:
+        applies-to: "version-updates"
         patterns:
           - "*"

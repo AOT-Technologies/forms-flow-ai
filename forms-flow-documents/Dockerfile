@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.13.16-slim-trixie
+FROM python:3.15.0-slim-trixie
 
 # set label for image
 LABEL Name="formsflow"

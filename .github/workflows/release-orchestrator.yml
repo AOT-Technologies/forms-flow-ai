@@ -100,7 +100,7 @@ jobs:
 
     steps:
       - name: Checkout triggering branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.RELEASE_BOT_TOKEN }}
           repository: ${{ github.repository }}
@@ -202,7 +202,7 @@ jobs:
 
     steps:
       - name: Checkout triggering branch on fork
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.RELEASE_BOT_TOKEN }}
           repository: ${{ github.repository }}

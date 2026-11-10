@@ -11,10 +11,10 @@ click==8.1.8
 colorama==0.4.6
 cross-web==0.7.0
 cryptography==50.0.2
-dnspython==2.9.0
+dnspython==2.9.1
 email_validator==2.2.0
 fastapi==0.141.1
-fastapi-cli==0.0.7
+fastapi-cli==0.0.32
 graphql-core==3.2.12
 greenlet==3.1.1
 h11==0.16.0
@@ -26,9 +26,9 @@ Jinja2==3.1.6
 lazy-model==0.2.0
 logging==0.4.9.6
 markdown-it-py==3.0.0
-MarkupSafe==3.0.2
+MarkupSafe==3.0.4
 mdurl==0.1.2
-motor==3.7.0
+motor==3.7.1
 orjson==3.11.6
 packaging==24.2
 pycparser==3.0
@@ -38,9 +38,9 @@ Pygments==2.20.0
 PyJWT==2.15.1
 pymongo==4.18.3
 python-dateutil==2.9.0.post0
-python-dotenv==1.2.2
-python-multipart==0.0.31
-PyYAML==6.0.2
+python-dotenv==1.2.4
+python-multipart==0.0.33
+PyYAML==6.0.3
 redis==5.2.1
 requests==2.33.0
 rich==13.9.4

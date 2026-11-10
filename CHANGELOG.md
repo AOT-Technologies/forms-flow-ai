@@ -82,7 +82,7 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 
 * A few OS packages in the Docker images (such as `util-linux` and `ncurses`) still have advisories with no fixed Debian release
 * `forms-flow-bpm` stays on Spring Boot 3.4.13, which has two actuator advisories (CVE-2026-22731, CVE-2026-22733) fixed only in 3.5.x. Neither applies to the default configuration: no health group uses `additional-path`, and the Cloud Foundry actuator endpoints are inactive outside Cloud Foundry
-* The micro-frontends and `forms-flow-forms` are unchanged in this release; use their `v7.3.0` versions
+* `formsflow/forms-flow-forms` is unchanged in this release; use `v7.3.0`
 
 ## 7.3.0 - 2025-10-14
 

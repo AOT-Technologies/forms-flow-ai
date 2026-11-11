@@ -1,15 +1,8 @@
-name: Forms Flow Data Layer CI
+name: CI - Data Layer
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - develop
-      - master
-      - release/**
-    paths:
-      - "forms-flow-data-layer/**"
-      - "VERSION"
+
   pull_request:
     branches:
       - develop
@@ -24,60 +17,88 @@ defaults:
     working-directory: ./forms-flow-data-layer
 
 jobs:
-  setup-job:
-    runs-on: ubuntu-24.04
 
-    steps:
-      - uses: actions/checkout@v2
-      - run: "true"
-
-  Lint:
-    if: always()
-    needs: setup-job
+  lint:
+    name: Lint
     runs-on: ubuntu-24.04
 
     strategy:
       matrix:
-        python-version: [3.12.10]
+        python-version:
+          - "3.12.10"
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4 
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 #v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: forms-flow-data-layer/requirements/dev.txt
+
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements/dev.txt
+
       - name: Pylint
-        id: pylint
         run: |
-          pylint --rcfile=setup.cfg  src
+          pylint --rcfile=setup.cfg src
+
       - name: Flake8
-        id: flake8
         run: |
           flake8 src tests
-  Test:
-    if: always()
-    needs: setup-job
-    runs-on: ubuntu-24.04
 
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+    
     strategy:
       matrix:
-        python-version: [3.12.11]
-    
+        python-version:
+          - "3.13.16"
+
     env:
       JWT_OIDC_JWKS_URI: "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/certs"
       JWT_OIDC_ISSUER: "http://localhost:8081/auth/realms/forms-flow-ai"
       JWT_OIDC_AUDIENCE: "forms-flow-web"
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 #v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: forms-flow-data-layer/requirements/dev.txt
+
       - name: Install dependencies
-        run: pip install -r requirements/dev.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/dev.txt
+
       - name: Run tests
-        run: pytest
+        run: |
+          pytest
+
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag forms-flow-data-layer:ci \
+            .
+
+      - name: Verify Docker image
+        run: |
+          docker image inspect forms-flow-data-layer:ci

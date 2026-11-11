@@ -1,22 +1,17 @@
-name: Forms Flow Web CI
+name: CI - Web
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - develop
-      - master
-      - release/**
-    paths:
-      - "forms-flow-web/**"
-      - "VERSION"
+
   pull_request:
     branches:
       - develop
       - master
       - release/**
+      - feature/**
     paths:
       - "forms-flow-web/**"
+      - "VERSION"
 
 defaults:
   run:
@@ -24,31 +19,56 @@ defaults:
     working-directory: ./forms-flow-web
 
 jobs:
-  setup-job:
+  lint:
+    name: Lint
     runs-on: ubuntu-24.04
-
-    steps:
-      - uses: actions/checkout@v2
-      - run: "true"
-
-  Lint:
-    needs: setup-job
-    runs-on: ubuntu-24.04
-
     strategy:
       matrix:
-        node-version: [24.21.0]
+        node-version:
+          - "18.20.0"
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: forms-flow-web/package-lock.json
+
       - name: Install dependencies
         run: |
           npm ci
-      - name: Linting
+
+      - name: Lint
+        run: |
+          npm run lint
+
+  test:
+    name: Unit Test
+    needs: lint
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        node-version: [24.21.0]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: forms-flow-web/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Unit tests
         run: |
           npm run lint
   # Test:
@@ -76,22 +96,27 @@ jobs:
 
   Build:
     if: always()
-    needs: setup-job
+    needs: lint
     runs-on: ubuntu-24.04
     strategy:
       matrix:
         node-version: [24.21.0]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: forms-flow-web/package-lock.json
+
       - name: Install dependencies
         run: |
           npm ci
-      - name: build to check strictness
-        id: build
+
+      - name: Build
         run: |
           npm run build

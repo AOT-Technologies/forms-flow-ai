@@ -1,11 +1,8 @@
-name: Forms Flow BPM CI
+name: CI - BPM
+
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - develop
-  #     - master
-  #     - release/**
+
   pull_request:
     branches:
       - develop
@@ -20,38 +17,61 @@ defaults:
     working-directory: ./forms-flow-bpm
 
 jobs:
-  setup-job:
+
+  lint:
+    name: Lint
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v2
-      - run: "true"
-  Test:
-    if: always()
-    needs: setup-job
-    runs-on: ubuntu-24.04
-    name: Test
-    steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
-          java-version: '17'
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Run Tests
-        run: mvn -B test --file pom.xml
-  Build:
-    if: always()
-    needs: setup-job
-    runs-on: ubuntu-24.04
-    name: Build
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: forms-flow-bpm/pom.xml
+
+      - name: Run Checkstyle
         run: |
-          docker build . -t forms-flow-bpm
+          mvn -B checkstyle:check
+
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up JDK
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: forms-flow-bpm/pom.xml
+
+      - name: Run Tests
+        run: |
+          mvn -B test --file pom.xml
+
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag forms-flow-bpm:ci \
+            .
+
+      - name: Verify Docker image
+        run: |
+          docker image inspect forms-flow-bpm:ci

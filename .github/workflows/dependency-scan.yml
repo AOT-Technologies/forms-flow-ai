@@ -1,0 +1,108 @@
+# .github/workflows/dependency-scan.yml
+#
+# Blocks PRs that introduce NEW known-vulnerable dependencies.
+# Works on private repos without GitHub Code Security / Advanced Security.
+#
+# To enforce: Settings -> Branches (or Rulesets) -> require the
+# "scan-pr / osv-scan" status check on your protected branches.
+#
+# Uses `pull_request` (NOT `pull_request_target`) so fork PRs run with a
+# read-only token and no secrets. Do not change the trigger.
+#
+# Do NOT add `paths:` filters: a required check that never runs will
+# block every PR that doesn't touch a manifest.
+
+name: Dependency Vulnerability Scan
+
+on:
+  pull_request:
+    branches: ["develop", "master", "release/**"]   # adjust to your branches
+  schedule:
+    - cron: "30 3 * * 1"                             # weekly full scan of existing deps
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # PR gate: compares base branch vs PR branch, fails only on NEW vulns.
+  scan-pr:
+    if: github.event_name == 'pull_request'
+    permissions:
+      # The reusable workflow declares security-events: write; the caller must
+      # grant it or the run fails validation. On fork PRs GitHub downgrades it
+      # to read automatically, which is fine since SARIF upload is off.
+      contents: read
+      actions: read
+      security-events: write
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
+    with:
+      fail-on-vuln: true
+      # SARIF upload to the Security tab needs Code Security on private repos.
+      upload-sarif: false
+      scan-args: |-
+        --recursive
+        --config=./osv-scanner.toml
+        ./
+
+  # Scheduled/manual: reports ALL known vulns (existing debt), doesn't gate PRs.
+  # Fails when any vuln is found so the notify job below raises an alert.
+  scan-full:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    permissions:
+      # The reusable workflow declares security-events: write; the caller must
+      # grant it or the run fails validation.
+      contents: read
+      actions: read
+      security-events: write
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
+    with:
+      fail-on-vuln: true
+      upload-sarif: false
+      scan-args: |-
+        --recursive
+        --config=./osv-scanner.toml
+        ./
+
+  # Posts to Google Chat when either scan fails. Fork PRs get no secrets,
+  # so the webhook is empty there and the message is skipped.
+  notify:
+    needs: [scan-pr, scan-full]
+    if: always() && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message to Google Chat
+        env:
+          GOOGLE_CHAT_WEBHOOK: ${{ secrets.PR_NOTIFICATION }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          REF_NAME: ${{ github.ref_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$GOOGLE_CHAT_WEBHOOK" ]; then
+            echo "No webhook secret available (fork PR?), skipping notification."
+            exit 0
+          fi
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            MESSAGE="🚨 *New vulnerable dependency in PR*
+          *PR:* ${PR_TITLE}
+          *Author:* ${PR_AUTHOR}
+          🔗 ${PR_URL}
+          📋 Scan: ${RUN_URL}"
+          else
+            MESSAGE="🚨 *Dependency scan found known vulnerabilities*
+          *Branch:* ${REF_NAME}
+          *Trigger:* ${EVENT_NAME}
+          📋 Scan: ${RUN_URL}"
+          fi
+          PAYLOAD=$(jq -n --arg text "$MESSAGE" '{text: $text}')
+          curl --fail-with-body -X POST -H 'Content-Type: application/json' \
+               -d "$PAYLOAD" \
+               "$GOOGLE_CHAT_WEBHOOK"

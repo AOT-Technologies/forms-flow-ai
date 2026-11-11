@@ -16,6 +16,10 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     TEMPLATE_VARS_NOT_FOUND = "Template variables not found!", HTTPStatus.BAD_REQUEST
     URL_DECODE_FAILED = "URL Decode failed", HTTPStatus.BAD_REQUEST
     TEMPLATE_DECODE_FAILED = "Template Decode failed", HTTPStatus.BAD_REQUEST
+    TEMPLATE_UNSAFE = (
+        "Template contains unsafe expressions!",
+        HTTPStatus.BAD_REQUEST,
+    )
 
     def __new__(cls, message, status_code):
         """Constructor."""

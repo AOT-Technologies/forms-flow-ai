@@ -1,9 +1,9 @@
 gunicorn
-psycopg2
+psycopg2-binary
 Flask
 python-dotenv
 psycopg2-binary
 Werkzeug
 pymssql
 
--e git+https://github.com/AOT-Technologies/forms-flow-ai.git@release/7.3.0#egg=forms_flow_data_analysis_api&subdirectory=forms-flow-data-analysis-api
+-e git+https://github.com/AOT-Technologies/forms-flow-ai.git@release/7.3.1#egg=forms_flow_data_analysis_api&subdirectory=forms-flow-data-analysis-api

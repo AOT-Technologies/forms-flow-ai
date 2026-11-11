@@ -96,7 +96,7 @@ jobs:
 
   Build:
     if: always()
-    needs: setup-job
+    needs: lint
     runs-on: ubuntu-24.04
     strategy:
       matrix:

@@ -14,6 +14,9 @@ jobs:
   zap_scan:
     runs-on: ubuntu-latest
     name: Scan the web application
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -31,11 +34,12 @@ jobs:
 
       - name: Upload ZAP Report to S3
         if: always()
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.REGION }}
-          ZAP_REPORT_BUCKET: ${{ secrets.ZAP_REPORT_BUCKET }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_ZAP_SCAN_REPORT_S3_ROLE_ARN }}
+          aws-region: ${{ secrets.REGION }}
+
         run: |
           if [ -f report_html.html ]; then
             aws s3 cp report_html.html "s3://$ZAP_REPORT_BUCKET/zap-reports/zap-report-$(TZ='Asia/Kolkata' date +%Y-%m-%d_%H-%M-%S).html"

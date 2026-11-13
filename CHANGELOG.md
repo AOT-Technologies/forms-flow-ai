@@ -19,10 +19,15 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Security: `sample.env` no longer ships default `REDASH_COOKIE_SECRET` / `REDASH_SECRET_KEY` values.
 
+**forms-flow-bpm / forms-flow-web-root-config**
+
+* Security: Docker Compose files, `sample.env` files and `config.sample.js` no longer ship a default `WEBSOCKET_ENCRYPT_KEY`.
+
 *Upgrade notes:*
 
 * `formsflow_api_utils.utils.pdf.get_pdf_from_html` attaches the token only to the page's own origin plus the hosts passed in `args["auth_hosts"]`. Upgrade forms-flow-documents together with api-utils (it passes `FORMSFLOW_DOC_API_URL`, `FORMSFLOW_API_URL`, `FORMIO_URL` and `CUSTOM_SUBMISSION_URL`); other callers must pass their API hosts in `auth_hosts`.
 * forms-flow-analytics: `docker compose up` now fails unless `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` are set in `.env`. Deployments that used the old `redash-selfhosted` values must rotate both secrets (see `forms-flow-analytics/README.md`).
+* forms-flow-bpm / forms-flow-web: `docker compose up` now fails unless `WEBSOCKET_ENCRYPT_KEY` is set in `.env`. Use the same value for forms-flow-bpm and forms-flow-web (`REACT_APP_WEBSOCKET_ENCRYPT_KEY`). Deployments that used the old public default must set a new random value (e.g. `openssl rand -hex 32`).
 
 ## 8.0.0 
 

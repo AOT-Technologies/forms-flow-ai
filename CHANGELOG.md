@@ -45,7 +45,14 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 **forms-flow-analytics**
 * Removed the default `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` from `sample.env`; Docker Compose now refuses to start without them
 
+**forms-flow-bpm / forms-flow-web-root-config**
+* Removed the default `WEBSOCKET_ENCRYPT_KEY` from the Docker Compose files, `sample.env` files and `config.sample.js`; Docker Compose now refuses to start without it
+
 *Upgrade notes:*
+
+**forms-flow-bpm / forms-flow-web-root-config**
+
+   * `docker compose up` now fails unless `WEBSOCKET_ENCRYPT_KEY` is set in `.env`. Use the same value for forms-flow-bpm and forms-flow-web (`REACT_APP_WEBSOCKET_ENCRYPT_KEY`). Deployments that used the old public default must set a new random value (e.g. `openssl rand -hex 32`)
 
 **forms-flow-api-utils**
 

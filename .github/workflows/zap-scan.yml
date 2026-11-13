@@ -19,13 +19,13 @@ jobs:
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           ref: develop
 
       - name: ZAP Scan
         id: zap_scan
-        uses: zaproxy/action-full-scan@v0.12.0
+        uses: zaproxy/action-full-scan@v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: ${{ secrets.WEB_TARGET_URL }}
@@ -35,7 +35,7 @@ jobs:
       - name: Upload ZAP Report to S3
         if: always()
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_ZAP_SCAN_REPORT_S3_ROLE_ARN }}
           aws-region: ${{ secrets.REGION }}

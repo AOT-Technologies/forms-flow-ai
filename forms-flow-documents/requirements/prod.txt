@@ -14,6 +14,6 @@ Werkzeug
 sqlalchemy_utils
 markupsafe
 PyJWT
-selenium==4.25.0
+selenium==4.52.0
 nested-lookup
 git+https://github.com/aot-technologies/forms-flow-ai.git@develop#subdirectory=forms-flow-api-utils

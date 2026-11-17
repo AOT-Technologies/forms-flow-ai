@@ -16,7 +16,6 @@ ARG MODEL_ID=distilbert-base-uncased-finetuned-sst-2-english
 
 # Create virtual environment and install dependencies with CPU-only torch
 RUN python3 -m venv /venv \
-    && pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir --default-timeout=1000 \
        --extra-index-url https://download.pytorch.org/whl/cpu \
        -r requirements.txt \

@@ -12,7 +12,7 @@ WORKDIR /forms-flow-documents/app
 RUN  apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends \
-       chromium chromium-driver fonts-liberation git ca-certificates \
+       ca-certificates chromium chromium-driver fonts-liberation git \
   && ln -fs /usr/bin/chromedriver /usr/local/bin/chromedriver \
   && rm -rf /var/lib/apt/lists/*
 

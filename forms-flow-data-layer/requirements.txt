@@ -11,7 +11,7 @@ click==8.1.8
 colorama==0.4.6
 cross-web==0.7.0
 cryptography==50.0.2
-dnspython==2.9.0
+dnspython==2.9.2
 email_validator==2.2.0
 fastapi==0.140.0
 fastapi-cli==0.0.7

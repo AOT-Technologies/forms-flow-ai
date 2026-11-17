@@ -13,21 +13,24 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 * Upgraded `flask-jwt-oidc` to 0.8.0 and other vulnerable Python dependencies (`cryptography`, `PyJWT`, `Werkzeug`, `urllib3`, `requests`, `pyasn1`)
 * PDF generation attaches the user's token only to trusted formsflow origins; previously headless Chrome sent it to every host the page loaded from
 * Removed `selenium-wire` from api-utils; request headers are now set through the Chrome DevTools Protocol
+* forms-flow-api Docker image moved to Debian 13 (`python:3.13.16-slim-trixie`) and no longer ships `pip`
 
 **forms-flow-documents**
 * PDF templates, including caller-supplied custom templates, render in a sandboxed Jinja environment (template injection)
 * Upgraded `Flask` to 3.1.3 (CVE-2026-27205) and `flask-jwt-oidc` to 0.9.0, and removed `selenium-wire`
 * Removed `python-jose`/`ecdsa` in favour of `PyJWT` and upgraded vulnerable Python dependencies
-* Docker image moved to Debian 13 and installs Chrome without recommended packages
+* Docker image moved to Debian 13 and uses Debian's `chromium` and `chromium-driver` packages instead of Chrome 116 and ChromeDriver downloaded from `formsflow-documentsapi.aot-technologies.com` (those downloads are no longer available, so the image could not be built)
 
 **forms-flow-data-layer**
 * Migrated Keycloak token verification from `python-jose`/`ecdsa` to `PyJWT`
 * Upgraded `strawberry-graphql` to 0.327.2 and other vulnerable Python dependencies
 * Docker image moved to Debian 13 and no longer installs a compiler
+* Upgraded `dnspython` to 2.9.2
 
 **forms-flow-data-analysis-api / sentiment-analysis job**
 * Upgraded vulnerable Python and machine-learning dependencies (`torch`, `transformers` 5.10.4 and others)
 * Removed unused `nltk` and `spaCy` from the sentiment-analysis job
+* forms-flow-data-analysis-api Docker image moved to Debian 13 (`python:3.11.17-slim-trixie`) and no longer ships `pip`, `setuptools` or `wheel`
 * Fixed the sentiment-analysis image build: it no longer compiles `psycopg2` from source (`psycopg2-binary` is used)
 
 **forms-flow-web / forms-flow-web-root-config**
@@ -41,6 +44,7 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 
 **forms-flow-idm**
 * Upgraded Keycloak to 26.7.5 in the IdP selector extension, with `opentelemetry-api` 1.67.0
+* `keycloak-customizations` Docker image applies Alpine security updates at build time
 
 **forms-flow-analytics**
 * Removed the default `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` from `sample.env`; Docker Compose now refuses to start without them
@@ -60,9 +64,17 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
    * SpringBoot version upgraded to 3.4.13
    * Docker image uses `eclipse-temurin:21-jdk-jammy` instead of `openjdk:21-ea-jdk`
 
-**forms-flow-data-layer / forms-flow-documents**
+**forms-flow-api / forms-flow-data-layer / forms-flow-documents**
 
    * Docker images use `python:3.13.16-slim-trixie` (Debian 13)
+
+**forms-flow-documents**
+
+   * PDFs are rendered with Debian's Chromium (156 at release time) instead of Google Chrome 116. Check custom PDF templates for layout differences. `CHROME_DRIVER_PATH` still defaults to `/usr/local/bin/chromedriver`
+
+**forms-flow-data-analysis-api**
+
+   * Docker image uses `python:3.11.17-slim-trixie` (Debian 13) instead of `python:3.11.7-slim-bookworm`
 
 **sentiment-analysis job**
 
@@ -80,7 +92,9 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 
 `Known Issues`
 
-* A few OS packages in the Docker images (such as `util-linux` and `ncurses`) still have advisories with no fixed Debian release
+* A few OS packages in the Docker images (such as `util-linux`, `krb5` and `ncurses`) still have advisories with no fixed Debian release
+* The `chromium` package in the forms-flow-documents image has open advisories until Debian publishes the next Chromium security update; rebuild the image to pick it up
+* `forms-flow-bpm` includes Spring Framework 6.2 / Spring Security 6.4 advisories (CVE-2026-47884, CVE-2026-47890, CVE-2026-47892, CVE-2026-22732) that are fixed only in Spring Boot 3.5.x or 4.x; this needs an application upgrade and is tracked separately
 * `forms-flow-bpm` stays on Spring Boot 3.4.13, which has two actuator advisories (CVE-2026-22731, CVE-2026-22733) fixed only in 3.5.x. Neither applies to the default configuration: no health group uses `additional-path`, and the Cloud Foundry actuator endpoints are inactive outside Cloud Foundry
 * `formsflow/forms-flow-forms` and the micro-frontends from forms-flow-ai-micro-front-ends (nav, admin, review, submissions, service, components) are unchanged in this release; use their `v7.3.0` versions. `forms-flow-web` is published as `v7.3.1`
 

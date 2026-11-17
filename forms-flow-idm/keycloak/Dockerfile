@@ -9,6 +9,9 @@ RUN mvn -f idp-selector/pom.xml clean package
 
 FROM alpine:3.24
 
+# Apply latest Alpine security patches
+RUN apk upgrade --no-cache
+
 WORKDIR /custom
 
 COPY --from=builder /build/idp-selector/target/*.jar /custom/providers/

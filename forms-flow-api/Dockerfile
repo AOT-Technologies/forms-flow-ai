@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.13.9-slim-bookworm
+FROM python:3.13.16-slim-trixie
 
 # set label for image
 LABEL Name="formsflow"
@@ -21,9 +21,9 @@ RUN : \
 
 ADD . /forms-flow-api/app
 RUN pip install -e . \
-    && pip uninstall ecdsa -y \
-    && apt-get purge -y --auto-remove \
-      sqlite3 libsqlite3-0 git \
+    && pip uninstall ecdsa pip -y \
+    && /usr/local/bin/python3 -m pip uninstall -y pip \
+    && apt-get purge -y --auto-remove git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

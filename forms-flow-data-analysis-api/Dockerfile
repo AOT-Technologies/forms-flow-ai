@@ -1,4 +1,4 @@
-FROM python:3.11.7-slim-bookworm
+FROM python:3.11.17-slim-trixie
 
 # set label for image
 LABEL Name="formsflow"
@@ -16,6 +16,7 @@ ARG MODEL_ID=distilbert-base-uncased-finetuned-sst-2-english
 
 # Create virtual environment and install dependencies with CPU-only torch
 RUN python3 -m venv /venv \
+    && pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir --default-timeout=1000 \
        --extra-index-url https://download.pytorch.org/whl/cpu \
        -r requirements.txt \
@@ -24,9 +25,9 @@ RUN python3 -m venv /venv \
 ADD . /forms-flow-data-analysis-api/app
 
 RUN pip install --no-cache-dir . \
-      && pip uninstall -y ecdsa \
-      && apt-get remove -y \
-      libsqlite3-0 git \
+      && pip uninstall -y ecdsa pip \
+      && /usr/local/bin/python3 -m pip uninstall -y pip setuptools wheel \
+      && apt-get purge -y --auto-remove git \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/*
 

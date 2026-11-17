@@ -1,4 +1,5 @@
 """Common setup and fixtures for the pytest suite used by this service."""
+import os
 import time
 
 import pytest
@@ -106,3 +107,13 @@ def mock_redis_client():
         return_value=mock_redis,
     ) as _mock:  # noqa
         yield mock_redis
+
+
+@pytest.fixture(autouse=True)
+def mock_formio_access_token():
+    """Mock formio access token."""
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_formio_access_token",
+        return_value=os.getenv("FORMIO_TEST_JWT_TOKEN"),
+    ):
+        yield

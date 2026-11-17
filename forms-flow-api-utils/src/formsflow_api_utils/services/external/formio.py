@@ -166,3 +166,11 @@ class FormioService:
         if query_params:
             url = f"{url}?{query_params}"
         return self._invoke_service(url, headers, method='GET')
+
+    def create_submission(self, form_id, data, formio_token):
+        """Formio POST API to create submission details."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = (
+            f"{self.base_url}/form/{form_id}/submission"
+        )
+        return self._invoke_service(url, headers, data=data)

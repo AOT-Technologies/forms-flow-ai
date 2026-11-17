@@ -9,3 +9,4 @@ pytest-asyncio
 pytest-cov
 httpx
 pytest-mock
+rsa # used by tests/utils.py to generate test keys (was transitive via python-jose)

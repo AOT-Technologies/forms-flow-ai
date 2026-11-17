@@ -554,6 +554,8 @@ class ImportService:  # pylint: disable=too-many-public-methods
             form_components["title"] = title
             form_components["path"] = path
             form_components["parentFormId"] = mapper.parent_form_id
+            # Add display from incoming(import) form json
+            form_components["display"] = form_json.get("display")
             form_response = self.form_update(form_components, form_id)
             form_response["componentChanged"] = True
             form_response["parentFormId"] = mapper.parent_form_id

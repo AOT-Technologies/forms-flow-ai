@@ -28,13 +28,6 @@ const LandingPage = () => {
 
   return (
     <div className="landing">
-      <div className="imageContainer">
-        <img
-          src="https://i0.wp.com/formsflow.ai/wp-content/uploads/2021/08/srvc-bnr.png?fit=702%2C569&ssl=1"
-          alt="Login Image"
-          className="image"
-        />
-      </div>
       <div className="formContainer">
         <div className="innerContainer">
           <img

@@ -213,3 +213,13 @@ def create_mapper_custom():
         return FormProcessMapperSchema().dump(response)
 
     return _create_mapper_custom
+
+
+@pytest.fixture(autouse=True)
+def mock_formio_access_token():
+    """Mock formio access token."""
+    with patch(
+        "formsflow_api_utils.services.external.formio.FormioService.get_formio_access_token",
+        return_value=os.getenv("FORMIO_TEST_JWT_TOKEN"),
+    ):
+        yield

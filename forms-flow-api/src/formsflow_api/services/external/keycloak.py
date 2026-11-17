@@ -1,11 +1,13 @@
 """This exposes the Keycloak Admin APIs."""
 
 import json
+from urllib.parse import quote
 
 import requests
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api_utils.utils import (
+    Cache,
     HTTP_TIMEOUT,
     UserContext,
     profiletime,
@@ -25,6 +27,14 @@ class KeycloakAdminAPIService:
         bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
         bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
         bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
+
+        # Validate required configuration
+        if not all([bpm_token_api, bpm_client_id, bpm_client_secret]):
+            current_app.logger.error(
+                "Missing BPM configuration. Required: BPM_TOKEN_API, BPM_CLIENT_ID, BPM_CLIENT_SECRET"
+            )
+            raise BusinessException(BusinessErrorCode.BPM_CONFIG_MISSING)
+
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         payload = {
             "client_id": bpm_client_id,
@@ -32,11 +42,21 @@ class KeycloakAdminAPIService:
             "grant_type": bpm_grant_type,
         }
 
-        response = requests.post(
-            bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
-        )
-        data = json.loads(response.text)
-        assert data["access_token"] is not None
+        try:
+            response = requests.post(
+                bpm_token_api, headers=headers, data=payload, timeout=HTTP_TIMEOUT
+            )
+            response.raise_for_status()
+            data = json.loads(response.text)
+            if not data.get("access_token"):
+                current_app.logger.error(
+                    f"Failed to obtain access token from Keycloak. Response: {data}"
+                )
+                raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL)
+        except requests.exceptions.RequestException as err:
+            current_app.logger.error(f"Failed to connect to Keycloak token endpoint: {err}")
+            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL) from err
+
         self.session.headers.update(
             {
                 "Authorization": "Bearer " + data["access_token"],
@@ -57,14 +77,27 @@ class KeycloakAdminAPIService:
         """
         current_app.logger.debug("Establishing new connection to keycloak...")
         url = f"{self.base_url}/{url_path}"
-        response = self.session.request("GET", url)
-        current_app.logger.debug(f"keycloak Admin API get request URL: {url}")
-        current_app.logger.debug(f"Keycloak response: {response.json()}")
-        response.raise_for_status()
+        try:
+            response = self.session.request("GET", url)
+            current_app.logger.debug(f"keycloak Admin API get request URL: {url}")
+            current_app.logger.debug(f"Keycloak response status: {response.status_code}")
 
-        if response.ok:
-            return response.json()
-        return None
+            if response.status_code == 401:
+                current_app.logger.error(
+                    f"Keycloak Admin API returned 401 Unauthorized for {url}. "
+                    "Check if the BPM service account has proper realm-management roles "
+                    "(e.g., view-identity-providers, manage-users)."
+                )
+                raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL)
+
+            response.raise_for_status()
+
+            if response.ok:
+                return response.json()
+            return None
+        except requests.exceptions.HTTPError as err:
+            current_app.logger.error(f"Keycloak Admin API request failed: {err}")
+            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL) from err
 
     def get_paginated_request(self, url_path, first, max_results):
         """Method to fetch GET paginated request of Keycloak Admin APIs.
@@ -222,3 +255,81 @@ class KeycloakAdminAPIService:
         if search:
             url += f"?search={search}"
         return self.get_request(url_path=url)
+
+    @profiletime
+    def get_user_federated_identity(self, user_id: str):
+        """Return federated identity providers linked to the user.
+
+        This calls GET /admin/realms/{realm}/users/{userId}/federated-identity
+        to determine if a user logs in via internal IDP or external IDP
+        (e.g., Google, Microsoft, etc.).
+        """
+        return self.get_request(url_path=f"users/{user_id}/federated-identity")
+
+    @profiletime
+    def get_realm_info(self, force_refresh: bool = False):
+        """Return realm information including settings like editUsernameAllowed.
+
+        This calls GET /admin/realms/{realm} to get the realm configuration.
+        Uses Redis cache to store realm info for 5 minutes.
+        """
+        # Build cache key using realm name from base_url
+        realm_name = current_app.config.get("KEYCLOAK_URL_REALM", "default")
+        cache_key = f"keycloak_realm_info_{realm_name}"
+
+        # Check Redis cache first
+        if not force_refresh:
+            cached_realm_info = Cache.get(cache_key)
+            if cached_realm_info:
+                current_app.logger.debug("Returning realm info from Redis cache")
+                return cached_realm_info
+
+        # The base_url already includes /admin/realms/{realm}
+        # So we just need to call get_request with empty path
+        url = f"{self.base_url}"
+        try:
+            response = self.session.request("GET", url)
+            current_app.logger.debug(f"keycloak Admin API get realm info URL: {url}")
+            current_app.logger.debug(f"Keycloak response status: {response.status_code}")
+            response.raise_for_status()
+            if response.ok:
+                realm_info = response.json()
+                # Cache for 5 minutes (300 seconds)
+                Cache.set(cache_key, realm_info, timeout=300)
+                current_app.logger.debug("Realm info cached in Redis")
+                return realm_info
+            return None
+        except requests.exceptions.HTTPError as err:
+            current_app.logger.error(f"Keycloak Admin API get realm info failed: {err}")
+            raise BusinessException(BusinessErrorCode.KEYCLOAK_REQUEST_FAIL) from err
+
+    @profiletime
+    def get_user_by_username(self, username: str):
+        """Check if a username already exists in the realm.
+
+        This calls GET /admin/realms/{realm}/users?exact=true&username={username}
+        Returns list of users with exact username match.
+        """
+        encoded_username = quote(username, safe="")
+        url_path = f"users?exact=true&username={encoded_username}"
+        return self.get_request(url_path=url_path)
+
+    @profiletime
+    def get_user_by_email(self, email: str):
+        """Check if an email already exists in the realm.
+
+        This calls GET /admin/realms/{realm}/users?exact=true&email={email}
+        Returns list of users with exact email match.
+        """
+        encoded_email = quote(email, safe="")
+        url_path = f"users?exact=true&email={encoded_email}"
+        return self.get_request(url_path=url_path)
+
+    @profiletime
+    def get_user_by_id(self, user_id: str):
+        """Get user by ID.
+
+        This calls GET /admin/realms/{realm}/users/{userId}
+        Returns the user representation.
+        """
+        return self.get_request(url_path=f"users/{user_id}")

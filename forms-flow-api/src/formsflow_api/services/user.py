@@ -103,18 +103,19 @@ class UserService:
 
     @staticmethod
     @user_context
-    def update_user_data(data, **kwargs):
+    def update_user_data(data, user_name=None, **kwargs):
         """Update user data."""
         user: UserContext = kwargs["user"]
-        user_data = User.get_user_by_user_name(user_name=user.user_name)
+        effective_user_name = user_name or user.user_name
+        user_data = User.get_user_by_user_name(user_name=effective_user_name)
         if user_data:
             if user_data.tenant is None and user.tenant_key:
                 data["tenant"] = user.tenant_key
             user_data.update(data)
         else:
-            data["user_name"] = user.user_name
+            data["user_name"] = effective_user_name
             data["tenant"] = user.tenant_key
-            data["created_by"] = user.user_name
+            data["created_by"] = effective_user_name
             user_data = User.create_user(data)
         return UserSchema().dump(user_data)
 

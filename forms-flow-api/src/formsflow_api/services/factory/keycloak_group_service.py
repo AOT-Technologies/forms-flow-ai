@@ -14,7 +14,7 @@ from formsflow_api.services import KeycloakAdminAPIService, UserService
 from .keycloak_admin import KeycloakAdmin
 
 
-class KeycloakGroupService(KeycloakAdmin):
+class KeycloakGroupService(KeycloakAdmin):  # pylint: disable=too-many-public-methods
     """Keycloak implementation for keycloak group related operations."""
 
     def __init__(self):

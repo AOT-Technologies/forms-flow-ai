@@ -21,6 +21,31 @@ def test_create_filter(app, client, session, jwt):
     assert response.json.get("id") is not None
     assert response.json.get("name") == "Test Task"
 
+    # create filter without roles or users in payload
+    payload = {
+        "name": "Test task filter",
+        "variables": [
+            {
+                "key": "applicationId",
+                "label": "Submission Id",
+                "type": "number",
+                "name": "applicationId",
+                "isChecked": True,
+                "sortOrder": 1,
+                "isFormVariable": False
+            }
+        ],
+        "criteria": {"candidateGroupsExpression": "${currentUserGroups()}", "includeAssignedTasks": True},
+        "filterType": "TASK",
+    }
+    response = client.post(
+        "/filter", headers=headers, json=payload
+    )
+    assert response.status_code == 201
+    assert response.json.get("id") is not None
+    assert response.json.get("users") == []
+    assert response.json.get("roles") == []
+
 
 def test_get_user_filters(app, client, session, jwt):
     """Test - Get filters based on user role."""

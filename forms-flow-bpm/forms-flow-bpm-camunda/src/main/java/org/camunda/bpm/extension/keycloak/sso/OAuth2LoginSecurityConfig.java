@@ -88,14 +88,14 @@ public class OAuth2LoginSecurityConfig  {
 		return http
 				.csrf(AbstractHttpConfigurer::disable)
 				.securityMatcher(AntPathRequestMatcher.antMatcher("/engine-rest-ext/**"))
-				.authorizeHttpRequests(auth -> auth
+				.authorizeHttpRequests(auth -> auth				 
 						.requestMatchers(
-								antMatcher(HttpMethod.OPTIONS,"/engine-rest/**"),
-								antMatcher(HttpMethod.OPTIONS,"/engine-rest-ext/**"),
+								antMatcher(HttpMethod.OPTIONS,"/engine-rest-ext/v1/**"),
 								antMatcher(HttpMethod.OPTIONS, "/forms-flow-bpm-socket/**"),
 								antMatcher(HttpMethod.OPTIONS, "/engine-rest/**"),
-								antMatcher("/engine-rest-ext/**"))
+								antMatcher("/engine-rest-ext/v1/**"))
 						.permitAll()
+						.requestMatchers(antMatcher("/engine-rest-ext/**")).denyAll()
 						.anyRequest().authenticated())
 				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
 						.jwt(jwt -> jwt

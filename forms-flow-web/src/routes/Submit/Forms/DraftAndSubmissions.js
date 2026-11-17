@@ -6,15 +6,12 @@ import { useTranslation } from "react-i18next";
 import { fetchApplicationsAndDrafts } from "../../../apiManager/services/applicationServices";
 import userRoles from "../../../constants/permissions";
 import {
-  setFormSubmissionSort,
   setApplicationListActivePage,
   setApplicationListSearchParams,
   setApplicationLoading
 } from "../../../actions/applicationActions";
-import { navigateToSubmitFormsListing, navigateToNewSubmission } from "../../../helper/routerHelper";
-import { CustomSearch, CustomButton, BackToPrevIcon, ConnectIcon, ButtonDropdown } from "@formsflow/components";
-import { HelperServices } from '@formsflow/service';
-import FilterSortActions from "../../../components/CustomComponents/FilterSortActions";
+import { navigateToNewSubmission, navigateToSubmitFormsListing } from "../../../helper/routerHelper";
+import { CustomSearch, BreadCrumbs, V8CustomButton, BreadcrumbVariant } from "@formsflow/components";
 import SubmissionsAndDraftTable from "../../../components/Form/constants/SubmissionsAndDraftTable";
 import { useParams } from "react-router-dom";
 
@@ -33,6 +30,7 @@ const SearchBar = ({ search, setSearch, handleSearch, handleClearSearch, searchL
         searchLoading={searchLoading}
         title={t("Search Form Name and Description")}
         dataTestId="form-search-input"
+        width="462px"
       />
     </div>
   );
@@ -69,48 +67,7 @@ const DraftsAndSubmissions = () => {
 
   // Local state
   const [search, setSearch] = useState("");
-  const [selectedItem, setSelectedItem] = useState("All");
-  const [showSortModal, setShowSortModal] = useState(false);
-
-  // Dropdown filter options
-  // const dropdownItems = [
-  //   { label: t("All"), onClick: () => handleSelection("All"), dataTestId: "all-submissions-button", ariaLabel: "View all submissions" },
-  //   { label: t("Draft"), onClick: () => handleSelection("Draft"), dataTestId: "draft-submissions-button", ariaLabel: "View draft submissions" },
-  //   { label: t("Submissions"), onClick: () => handleSelection("Submissions"), dataTestId: "completed-submissions-button", ariaLabel: "View completed submissions" }
-  // ];
-
-  const dropdownItems = [
-    {
-      content: <span>{t("All")}</span>,
-      onClick: () => handleSelection("All"),
-      dataTestId: "all-submissions-button",
-      ariaLabel: "View all submissions",
-    },
-    {
-      content: <span>{t("Draft")}</span>,
-      onClick: () => handleSelection("Draft"),
-      dataTestId: "draft-submissions-button",
-      ariaLabel: "View draft submissions",
-    },
-    {
-      content: <span>{t("Submissions")}</span>,
-      onClick: () => handleSelection("Submissions"),
-      dataTestId: "completed-submissions-button",
-      ariaLabel: "View completed submissions",
-    },
-  ];
-  
- //options for sortmodal
- const optionSortBy = [   
-    { value: "id", label: t("Submission Id") },
-    { value: "created", label: t("Submitted On") },
-    { value: "type", label: t("Type") },
-    { value: "modified", label: t("Last Modified") },
-    { value: "applicationStatus", label: t("Status") },
-  ];
-  // Handlers
-  const handleSelection = (label) => setSelectedItem(label);
-
+    
   useEffect(() => {
     if (!search?.trim()) {
       dispatch(setApplicationListSearchParams(""));
@@ -123,18 +80,6 @@ const DraftsAndSubmissions = () => {
 
   const handleClearSearch = () => setSearch("");
 
-  const handleSortApply = (selectedSortOption, selectedSortOrder) => {
-    const resetSortOrders = HelperServices.getResetSortOrders(optionSortBy);
-    dispatch(
-      setFormSubmissionSort({
-        ...resetSortOrders,
-        activeKey: selectedSortOption,
-        [selectedSortOption]: { sortOrder: selectedSortOrder },
-      })
-    );
-    setShowSortModal(false);
-  };
-
   const fetchSubmissionsAndDrafts = () => {
     dispatch(setApplicationLoading(true));
     dispatch(
@@ -145,8 +90,7 @@ const DraftsAndSubmissions = () => {
         parentFormId,
         search,
         createdUserSubmissions: true,
-        onlyDrafts: selectedItem === "Draft",
-        includeDrafts: selectedItem === "All",
+        includeDrafts: true,
       })
     );
   };
@@ -159,78 +103,66 @@ const DraftsAndSubmissions = () => {
     navigateToSubmitFormsListing(dispatch, tenantId);
   };
 
-
   // Fetch data when dependencies change
   useEffect(() => {
     fetchSubmissionsAndDrafts();
-  }, [pageNo, limit, applicationSort, search, selectedItem, parentFormId,formId]);
+  }, [pageNo, limit, applicationSort, search, parentFormId,formId]);
+  
+  const breadcrumbItems = [
+    { id: "submit", label: t("Submit")},
+    { label: formName || ""}
+  ];
+
+  const handleBreadcrumbClick = (item) => {
+  if (item.id === "submit") {
+    redirectBackToForm();
+  }
+  };
 
   return (
     <>
-      {/* Header */}
-      <div className="nav-bar">
-        <div className="icon-back" onClick={redirectBackToForm}>
-          <BackToPrevIcon data-testid="back-to-form-listing" ariaLabel="Back To Form Button" />
-        </div>
-
-        <div className="description">
-          <p className="text-main">
-            {formName || ""}
-          </p>
-        </div>
+      <div className="header-section-1">
+          <div className="section-seperation-left">
+            <BreadCrumbs 
+              items={breadcrumbItems} 
+              onBreadcrumbClick={handleBreadcrumbClick}
+              variant={BreadcrumbVariant.Default}
+              underline={false}
+            /> 
+          </div>
+          <div className="section-seperation-right">
+            {createSubmissions && 
+            <V8CustomButton
+              variant="primary"
+              label={t("Create new submission")}
+              onClick={submitNewForm}
+            />} 
+          </div>
       </div>
 
-      {/* Actions */}
-      <div className="table-bar">
-        <div className="filters">
-
-          <ButtonDropdown
-            label={t(selectedItem)}
-            dropdownItems={dropdownItems}
-            dropdownType="DROPDOWN_ONLY"
-            dataTestId="submission-filter-dropdown"
-            ariaLabel="Submission Filter Dropdown"
-            className="input-filter"
-          />
-          <ConnectIcon />
-          <SearchBar
-            search={search}
-            setSearch={setSearch}
-            handleSearch={handleSearch}
-            handleClearSearch={handleClearSearch}
-            searchLoading={searchFormLoading}
-            data-testid="search-bar"
-            aria-label="Search Submissions"
-          />
-        </div>
-
-        <div className="actions">
-          <FilterSortActions
-            showSortModal={showSortModal}
-            handleSortApply={handleSortApply}
-            handleFilterIconClick={() => setShowSortModal(true)}
-            handleRefresh={fetchSubmissionsAndDrafts}
-            handleSortModalClose={() => setShowSortModal(false)}
-            optionSortBy={optionSortBy}
-            defaultSortOption={applicationSort?.activeKey}
-            defaultSortOrder={applicationSort?.[applicationSort?.activeKey]?.sortOrder || "asc"}
-            filterDataTestId="form-list-filter"
-            refreshDataTestId="form-list-refresh"
-          />
-          {createSubmissions && <CustomButton
-            label={t("New Submission")}
-            onClick={submitNewForm}
-            dataTestId="create-form-button"
-            ariaLabel="Create Form"
-            action
-          />}
-        </div>
-      </div>
+            <div className="header-section-2">
+                <div className="section-seperation-left">
+                      <CustomSearch
+                        search={search}
+                        setSearch={setSearch}
+                        handleSearch={handleSearch}
+                        handleClearSearch={handleClearSearch}
+                        placeholder={t("Search")}
+                        searchLoading={searchFormLoading}
+                        title={t("Search")}
+                        dataTestId="form-search-input"
+                        width="462px"
+                      />
+                </div>
+             </div>
 
       {/* Applications-Drafts Table */}
-      <SubmissionsAndDraftTable
+      <div className="body-section">
+              <SubmissionsAndDraftTable
         fetchSubmissionsAndDrafts={fetchSubmissionsAndDrafts}
       />
+      </div>
+
     </>
   );
 };

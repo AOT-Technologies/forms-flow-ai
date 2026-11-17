@@ -3,28 +3,14 @@
   flex-direction: column;
   height: 100vh;
   align-items: center;
-}
-
-.imageContainer {
-  width: 100%;
-  display: flex;
   justify-content: center;
-  align-items: center;
-  background-position: left top;
-  padding: 1rem;
-}
-
-.image {
-  width: 100%;
-  max-width: 700px;
-  object-fit: contain;
 }
 
 .formContainer {
   width: 100%;
   max-width: 500px;
   padding: 5rem;
-  background-color: #f9f9f9;
+  background-color: white;
   box-shadow: 0 0.5rem 1rem 0 rgba(3, 3, 3, 0.16),
     0 0 0.375rem 0 rgba(3, 3, 3, 0.08);
   margin: 1rem auto;
@@ -101,17 +87,11 @@
 
 @media (min-width: 768px) {
   .landing {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .imageContainer {
-    flex: 1;
-    max-width: 50%;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .formContainer {
-    flex: 1;
     margin: auto;
   }
 }

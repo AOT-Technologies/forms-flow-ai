@@ -2,8 +2,8 @@
 
 import datetime
 
+import jwt as json_web_token
 from flask import current_app
-from jose import jwt as json_web_token
 
 from formsflow_api.models import Authorization, AuthType
 

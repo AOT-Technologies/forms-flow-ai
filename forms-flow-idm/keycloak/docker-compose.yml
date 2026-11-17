@@ -27,7 +27,7 @@ services:
       - keycloak-server-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.1.2
+    image: quay.io/keycloak/keycloak:26.4.1
     restart: unless-stopped
     container_name: keycloak
     volumes:
@@ -44,6 +44,8 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
       - KEYCLOAK_START_MODE=${KEYCLOAK_START_MODE:-start-dev}
       - KEYCLOAK_HTTP_PATH=${KEYCLOAK_HTTP_PATH:-/auth}
+      - FF_ADMIN_API_URL=${FF_ADMIN_API_URL:-http://localhost:5010}
+      - FF_KEYCLOAK_PUBLIC_URL=${FF_KEYCLOAK_PUBLIC_URL}
     ports:
       - "8080:8080"
     depends_on:
@@ -58,7 +60,15 @@ services:
       dockerfile: Dockerfile
     volumes:
       - keycloak_custom_data:/custom
-    command: /bin/sh
+    command: |
+      /bin/sh -c "
+      if [ -f /custom/imports/formsflow-ai-realm.json ]; then
+        echo 'Renaming realm file to correct name...'
+        mv -f /custom/imports/formsflow-ai-realm.json /custom/imports/forms-flow-ai-realm.json
+      fi
+      # Keep container alive for debugging
+      tail -f /dev/null
+      "
     tty: true
     stdin_open: true    
     networks:

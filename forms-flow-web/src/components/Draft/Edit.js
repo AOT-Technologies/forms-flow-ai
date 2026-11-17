@@ -18,7 +18,7 @@ import isEqual from "lodash/isEqual";
 import {RESOURCE_BUNDLES_DATA} from "../../resourceBundles/i18n";
 
 import useInterval from "../../customHooks/useInterval";
-import { CUSTOM_EVENT_TYPE } from "../ServiceFlow/constants/customEventTypes";
+import { CUSTOM_EVENT_TYPE } from "../../constants/customEventTypes";
 import selectApplicationCreateAPI from "../Form/constants/apiSelectHelper";
 import {
   setFormSubmissionError,

@@ -2,7 +2,11 @@
 
 from typing import Dict, List
 
-from formsflow_api_utils.utils import SUBMISSION_VIEW_HISTORY, get_token
+from formsflow_api_utils.utils import (
+    SUBMISSION_VIEW_HISTORY,
+    REVIEWER_VIEW_HISTORY,
+    get_token,
+)
 
 from formsflow_api.models import Application
 
@@ -37,6 +41,34 @@ def test_post_application_history_create_method(app, client, session, jwt):
     assert new_application.json["submissionId"] == "3423"
     assert new_application.json["applicationStatus"] == "New"
     assert new_application.json["submittedBy"] == "client"
+
+
+def test_get_application_history_private_notes_validate(app, client, session, jwt):
+    """Verify private notes are listed for proper role."""
+    # Create application history with private notes
+    token = get_token(jwt, role=REVIEWER_VIEW_HISTORY)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    payload = get_history_create_payload()
+    payload["privateNotes"] = "This is a private note"
+    new_entry = client.post(
+        "/application/1/history",
+        headers=headers,
+        json=payload,
+    )
+    assert new_entry.status_code == 201
+    # Verify that private notes are listed for user with proper role
+    rv = client.get("/application/1/history", headers=headers)
+    assert rv.status_code == 200
+    assert len(rv.json["applications"]) == 1
+    assert rv.json["applications"][0]["privateNotes"] == "This is a private note"
+
+    # Verify that private notes are not listed for user without proper role
+    token = get_token(jwt, role=SUBMISSION_VIEW_HISTORY)
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.get("/application/1/history", headers=headers)
+    assert response.status_code == 200
+    assert len(response.json["applications"]) == 1
+    assert "privateNotes" not in response.json["applications"][0]
 
 
 def test_get_application_history(app, client, session, jwt):

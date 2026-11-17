@@ -1,0 +1,10 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-DEBIAN12-ZLIB-6008963:
+    - '*':
+        reason: Not considered a security issue by upstream Debian
+        expires: 2026-11-26T05:15:05.384Z
+        created: 2025-10-27T05:15:05.389Z
+patch: {}

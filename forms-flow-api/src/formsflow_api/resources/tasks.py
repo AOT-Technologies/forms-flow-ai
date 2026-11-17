@@ -5,6 +5,7 @@ from http import HTTPStatus
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from formsflow_api_utils.utils import (
+    MANAGE_TASKS,
     auth,
     cors_preflight,
     profiletime,
@@ -39,6 +40,70 @@ task_outcome_response = API.inherit(
         "createdBy": fields.String(description="Created by"),
         "tenant": fields.String(description="Tenant key"),
         "created": fields.DateTime(description="Created date"),
+    },
+)
+
+# Task completion request models
+variable_value_model = API.model(
+    "TaskCompletionVariableValue",
+    {"value": fields.Raw(required=True, description="Variable value")},
+)
+
+bpmn_variables_model = API.model(
+    "TaskCompletionBpmnVariables",
+    {
+        "formUrl": fields.Nested(
+            variable_value_model, required=True, description="Form URL used by Camunda"
+        ),
+        "applicationId": fields.Nested(
+            variable_value_model, required=True, description="Application ID"
+        ),
+        "webFormUrl": fields.Nested(
+            variable_value_model, required=True, description="Web form URL"
+        ),
+        "action": fields.Nested(
+            variable_value_model,
+            required=True,
+            description="Action string (e.g., Reviewed)",
+        ),
+    },
+)
+
+bpmn_data_model = API.model(
+    "TaskCompletionBpmnData",
+    {
+        "variables": fields.Nested(
+            bpmn_variables_model, required=True, description="Camunda variables"
+        ),
+    },
+)
+
+application_data_model = API.model(
+    "TaskCompletionApplicationData",
+    {
+        "applicationId": fields.Integer(required=True, description="Application ID"),
+        "applicationStatus": fields.String(
+            required=True, description="Application status"
+        ),
+        "formUrl": fields.String(
+            required=True, description="Form URL of created submission"
+        ),
+        "submittedBy": fields.String(
+            required=True, description="User name who submitted"
+        ),
+        "privateNotes": fields.String(required=False, description="Private notes"),
+    },
+)
+
+task_completion_request_model = API.model(
+    "TaskCompletionRequest",
+    {
+        "bpmnData": fields.Nested(
+            bpmn_data_model, required=True, description="Camunda completion variables"
+        ),
+        "applicationData": fields.Nested(
+            application_data_model, required=True, description="Application metadata"
+        ),
     },
 )
 
@@ -133,4 +198,55 @@ class TaskOutcomeByIdResource(Resource):
                 }
         """
         response = TaskService().get_task_outcome_configuration(task_id)
+        return response, HTTPStatus.OK
+
+
+@cors_preflight("POST, OPTIONS")
+@API.route("/<string:task_id>/complete", methods=["POST", "OPTIONS"])
+class TaskCompletionResource(Resource):
+    """Resource to complete task and capture task completion details."""
+
+    @staticmethod
+    @auth.has_one_of_roles([MANAGE_TASKS])
+    @profiletime
+    @API.expect(task_completion_request_model)
+    @API.doc(
+        responses={
+            200: ("OK:- Successful request."),
+            400: "BAD_REQUEST:- Invalid request.",
+            401: "UNAUTHORIZED:- Authorization header not provided or an invalid token passed.",
+        }
+    )
+    def post(task_id: str):
+        """Complete a Camunda task and return the workflow response.
+
+        Args:
+            task_id (str): Identifier of the Camunda user task to complete.
+
+        Returns:
+            tuple[dict, HTTPStatus]: Response body from the BPM service and HTTP status.
+
+        Request JSON:
+            {
+                "bpmnData": {
+                    "variables": {
+                        "formUrl": {"value": "http://.../submission/690ded51944a118ff360502f"},
+                        "applicationId": {"value": 28},
+                        "webFormUrl": {"value": "http://.../submission/690ded51944a118ff360502f"},
+                        "action": {"value": "Reviewed"}
+                    }
+                },
+                "applicationData": {
+                    "applicationId": 28,
+                    "applicationStatus": "Reviewed",
+                    "formUrl": "http://.../submission/690ded51944a118ff360502f",
+                    "submittedBy": "John Doe",
+                    "privateNotes": "blah blah"
+                }
+            }
+        """
+        data = request.get_json()
+        if not data:
+            return {"message": "Invalid input"}, HTTPStatus.BAD_REQUEST
+        response = TaskService().complete_task(task_id, data)
         return response, HTTPStatus.OK

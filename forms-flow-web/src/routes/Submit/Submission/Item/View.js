@@ -61,13 +61,13 @@ const View = React.memo((props) => {
  
 
   return (
-    <div className={`${scrollableOverview} bg-white ps-3 pe-3 m-0 form-border`}>
+    <div className={`${scrollableOverview} bg-white m-0 form-border`}>
       <LoadingOverlay
         active={isFormSubmissionLoading}
         spinner
         text={t("Loading...")}
         className="col-12"
-      ><div className="form-preview-tab">
+      ><div>
         {shouldShowFormTitle && (
           <div className="preview-header-text mb-4">{form?.title}</div>
         )}

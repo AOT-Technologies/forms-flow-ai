@@ -30,6 +30,10 @@ const initialState = {
   processData:{},
   totalBpmnCount:0,
   totalDmnCount:0,
+  bpmnPage: 1,
+  dmnPage: 1,
+  bpmnLimit: 10,
+  dmnLimit: 10,
   defaultProcessXmlData:createNewProcess().defaultWorkflow.xml,
   defaultDmnXmlData:createNewDecision().defaultWorkflow.xml,
   bpmsort: {
@@ -108,6 +112,7 @@ const process = (state = initialState, action) => {
         isProcessDiagramLoading: true,
         applicationCount: 0,
         applicationCountResponse: false,
+        processData: {},
       };
     case ACTION_CONSTANTS.WORKFLOW_ASSOCIATION_CHANGED:
       return { ...state, workflowAssociated: action.payload };
@@ -135,6 +140,14 @@ const process = (state = initialState, action) => {
         return { ...state, bpmsort: action.payload };
     case ACTION_CONSTANTS.DMN_SORT:
         return { ...state, dmnSort: action.payload };
+    case ACTION_CONSTANTS.BPMN_PAGE:
+        return { ...state, bpmnPage: action.payload };
+    case ACTION_CONSTANTS.DMN_PAGE:
+        return { ...state, dmnPage: action.payload };
+    case ACTION_CONSTANTS.BPMN_LIMIT:
+        return { ...state, bpmnLimit: action.payload };
+    case ACTION_CONSTANTS.DMN_LIMIT:
+        return { ...state, dmnLimit: action.payload };
     default:
       return state;
   }

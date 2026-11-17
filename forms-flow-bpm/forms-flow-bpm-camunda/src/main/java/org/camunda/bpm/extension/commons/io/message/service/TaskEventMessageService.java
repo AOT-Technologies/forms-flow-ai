@@ -4,8 +4,8 @@ import org.camunda.bpm.extension.commons.io.socket.message.TaskMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-import spinjar.com.fasterxml.jackson.core.JsonProcessingException;
-import spinjar.com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

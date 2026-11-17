@@ -8,6 +8,9 @@ from http import HTTPStatus
 
 from formsflow_api_utils.exceptions import ErrorCodeMixin
 
+# Error messages
+INVALID_REQUEST_DATA_MESSAGE = "Invalid request data"
+
 # Static task filter variables.
 # These variables are used in the migration & tenant based task filter configuration.
 
@@ -212,6 +215,55 @@ class BusinessErrorCode(ErrorCodeMixin, Enum):
     )
     TASK_OUTCOME_NOT_FOUND = (
         "Task outcome configuration not found for the given task Id",
+        HTTPStatus.BAD_REQUEST,
+    )
+    FORM_PAYLOAD_MISSING = (
+        "Form payload is missing in the request",
+        HTTPStatus.BAD_REQUEST,
+    )
+    MISSING_REQUIRED_KEYS = (
+        "Request must contain at least one of: formData, mapper, authorizations, process",
+        HTTPStatus.BAD_REQUEST,
+    )
+    WORKFLOW_TASK_COMPLETION_FAILED = (
+        "Task completion failed in the workflow engine",
+        HTTPStatus.BAD_REQUEST,
+    )
+    INVALID_FORM_URL = "Invalid form URL format", HTTPStatus.BAD_REQUEST
+    BPM_CONFIG_MISSING = (
+        "Missing BPM configuration. Required: BPM_TOKEN_API, BPM_CLIENT_ID, BPM_CLIENT_SECRET",
+        HTTPStatus.INTERNAL_SERVER_ERROR,
+    )
+    CLIENT_ID_NOT_FOUND = (
+        "client_id not found in token",
+        HTTPStatus.BAD_REQUEST,
+    )
+    REDIRECT_URI_NOT_FOUND = (
+        "redirect_uri not found in request",
+        HTTPStatus.BAD_REQUEST,
+    )
+    USER_ID_MISMATCH = (
+        "You can only update your own profile",
+        HTTPStatus.FORBIDDEN,
+    )
+    USERNAME_NOT_EDITABLE = (
+        "Username editing is not allowed for this realm",
+        HTTPStatus.BAD_REQUEST,
+    )
+    USERNAME_ALREADY_EXISTS = (
+        "This username is already taken",
+        HTTPStatus.CONFLICT,
+    )
+    EMAIL_ALREADY_EXISTS = (
+        "Email already exists",
+        HTTPStatus.CONFLICT,
+    )
+    INVALID_EMAIL_FORMAT = (
+        "Invalid email format",
+        HTTPStatus.BAD_REQUEST,
+    )
+    EMPTY_FIELD_VALUE = (
+        "Field value cannot be empty",
         HTTPStatus.BAD_REQUEST,
     )
 

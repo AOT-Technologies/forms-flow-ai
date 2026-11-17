@@ -181,7 +181,7 @@ class Permissions(Resource):
     """Resource to list."""
 
     @staticmethod
-    @auth.has_one_of_roles([MANAGE_ROLES])
+    @auth.require
     @profiletime
     @API.doc(
         responses={

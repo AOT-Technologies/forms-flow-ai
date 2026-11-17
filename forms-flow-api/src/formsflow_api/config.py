@@ -85,8 +85,6 @@ class _Config:  # pylint: disable=too-few-public-methods
     # BPM Camunda Details
     BPM_API_URL = os.getenv("BPM_API_URL")
 
-    # API Base URL (Self)
-    FORMSFLOW_API_URL = os.getenv("WEB_API_BASE_URL")
     # Analytics API End points
     ANALYTICS_API_URL = os.getenv("INSIGHT_API_URL")
     ANALYTICS_API_KEY = os.getenv("INSIGHT_API_KEY")
@@ -168,7 +166,6 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     DEBUG = True
     TESTING = True
 
-    FORMSFLOW_API_URL = os.getenv("WEB_API_BASE_URL")
     # POSTGRESQL
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL_TEST")
 

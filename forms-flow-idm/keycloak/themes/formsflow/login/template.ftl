@@ -14,6 +14,9 @@
     </#if>
     <title>${msg("loginTitle",(realm.displayName!''))}</title>
     <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
     <#if properties.stylesCommon?has_content>
         <#list properties.stylesCommon?split(' ') as style>
             <link href="${url.resourcesCommonPath}/${style}" rel="stylesheet" />
@@ -49,9 +52,66 @@
           "${url.ssoLoginInOtherTabsUrl?no_esc}"
         );
     </script>
+    <style>
+        /* Critical CSS to prevent FOUC - hide header/content on tenant registration pages */
+        /* Hide header and title for tenant registration until body class is applied */
+        html[data-tenant-registration="true"] #kc-header,
+        html[data-tenant-registration="true"] #kc-page-title,
+        html[data-tenant-registration="true"] header img {
+            display: none !important;
+        }
+        /* Ensure registration container is visible once body class is applied */
+        body.tenant-registration-page #kc-register-container,
+        body.multitenancy-registration-page #kc-register-container {
+            display: flex !important;
+        }
+    </style>
+    <script>
+        // Critical script to detect registration page and add body class BEFORE first paint
+        (function(){
+            var path = (typeof location !== 'undefined' && location.pathname) ? location.pathname : '';
+            var search = (typeof location !== 'undefined' && location.search) ? location.search : '';
+            // Check for both 'registration' and 'register-tenant' paths
+            if (path.indexOf('registration') !== -1 || path.indexOf('register-tenant') !== -1) {
+                // Add class to html element immediately (body doesn't exist yet)
+                if (document.documentElement) {
+                    document.documentElement.setAttribute('data-registration-page', 'true');
+                    if (/\bcreate_tenant=true\b/i.test(search)) {
+                        document.documentElement.setAttribute('data-tenant-registration', 'true');
+                    }
+                }
+            }
+        })();
+    </script>
 </head>
 
 <body class="${properties.kcBodyClass!}">
+<script>
+(function(){
+  // Apply body classes immediately based on data attributes set in head
+  var htmlEl = document.documentElement;
+  if (htmlEl && htmlEl.getAttribute('data-registration-page') === 'true') {
+    document.body.classList.add('registration-page');
+    if (htmlEl.getAttribute('data-tenant-registration') === 'true') {
+      document.body.classList.add('tenant-registration-page');
+    }
+    // Clean up attributes
+    htmlEl.removeAttribute('data-registration-page');
+    htmlEl.removeAttribute('data-tenant-registration');
+  } else {
+    // Fallback: check URL if attributes weren't set
+    var path = (typeof location !== 'undefined' && location.pathname) ? location.pathname : '';
+    var search = (typeof location !== 'undefined' && location.search) ? location.search : '';
+    // Check for both 'registration' and 'register-tenant' paths
+    if (path.indexOf('registration') !== -1 || path.indexOf('register-tenant') !== -1) {
+      document.body.classList.add('registration-page');
+      if (/\bcreate_tenant=true\b/i.test(search)) {
+        document.body.classList.add('tenant-registration-page');
+      }
+    }
+  }
+})();
+</script>
 <div class="${properties.kcLoginClass!}">
     <div id="kc-header" class="${properties.kcHeaderClass!}">
         <div id="kc-header-wrapper"

@@ -1,8 +1,11 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "react-loading-overlay-ts";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 
-import { Legend, PieChart, Pie, Cell } from "recharts";
+// Register Chart.js components
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const COLORS = [
   "#0088FE",
@@ -15,7 +18,6 @@ const COLORS = [
   "#ff7c43",
 ];
 
-// label={renderCustomizedLabel}
 const ChartForm = React.memo((props) => {
   const { submissionsStatusList, submissionData, submissionStatusCountLoader } = props;
   const {formVersions, formName, parentFormId} = submissionData;
@@ -33,6 +35,50 @@ const ChartForm = React.memo((props) => {
     const id = isParentId ? parentFormId : value;
     const option = {parentId : isParentId};
     props.getStatusDetails(id,option);
+  };
+
+  // Transform data from Recharts format to Chart.js format
+  const chartData = useMemo(() => {
+    if (!pieData || pieData.length === 0) {
+      return {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: [],
+        }]
+      };
+    }
+
+    return {
+      labels: pieData.map(entry => entry.statusName),
+      datasets: [{
+        data: pieData.map(entry => entry.count),
+        backgroundColor: pieData.map((entry, index) => 
+          COLORS[index % COLORS.length]
+        ),
+        borderWidth: 0,
+      }]
+    };
+  }, [pieData]);
+
+  // Chart.js options configuration
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false, // We're using custom legend below
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.parsed || 0;
+            return `${label}: ${value}`;
+          }
+        }
+      }
+    }
   };
 
 
@@ -91,26 +137,14 @@ const ChartForm = React.memo((props) => {
       >
          <div className="white-box status-container flex-row d-md-flex flex-wrap align-items-center justify-content-around">
  
-    <div className="col-md-6">
-      <PieChart width={400} height={400}>
-        <Pie
-          paddingAngle={1}
-          minAngle={1}
-          data={pieData}
-          labelLine={false}
-          outerRadius={90}
-          fill="#8884d8"
-          dataKey="count"
-          nameKey="statusName"
-          label
-        >
-          <Legend />
-
-          {pieData.map((entry) => (
-  <Cell key={entry.statusName} fill={COLORS[pieData.indexOf(entry) % COLORS.length]} />
-))}
-        </Pie>
-      </PieChart>
+    <div className="col-md-6" style={{ height: '400px', width: '400px' }}>
+      {pieData.length > 0 ? (
+        <Pie data={chartData} options={chartOptions} />
+      ) : (
+        <div className="d-flex justify-content-center align-items-center w-100 h-100">
+          <span className="text-center">{t("No submissions")}</span>
+        </div>
+      )}
     </div>
     {
               pieData.length ? (
@@ -129,11 +163,8 @@ const ChartForm = React.memo((props) => {
                 </div>
               ))}
             </div>
-              )  : (
-    <div className="d-flex justify-content-center align-items-center w-100" style={{ minHeight: "200px" }}>
-      <span className="text-center">{t("No submissions")}</span>
-    </div>
-  )}
+              )  : null
+  }
 </div>
 
           </LoadingOverlay>

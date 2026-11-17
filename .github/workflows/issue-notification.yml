@@ -29,8 +29,10 @@ jobs:
           echo "Issue status: ${{ github.event.action }}"
 
     - name: Google Chat Notification
+      env:
+        NOTIFY_GITHUB_ISSUES: ${{ secrets.NOTIFY_GITHUB_ISSUES }}
       run: |
-          curl --location --request POST '${{ secrets.NOTIFY_GITHUB_ISSUES }}' \
+          curl --location --request POST "$NOTIFY_GITHUB_ISSUES" \
           --header 'Content-Type: application/json' \
           --data-raw '{
               "cards": [

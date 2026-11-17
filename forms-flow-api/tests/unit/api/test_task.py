@@ -1,10 +1,18 @@
 """Test suite for Task API endpoint."""
 
 import json
+from unittest.mock import patch
 
-from formsflow_api_utils.utils import get_token
+from formsflow_api_utils.utils import (
+    CREATE_SUBMISSIONS,
+    MANAGE_TASKS,
+    get_token,
+)
 
-from tests.utilities.base_test import task_outcome_config_payload
+from tests.utilities.base_test import (
+    get_application_create_payload,
+    task_outcome_config_payload,
+)
 
 
 class TestOutcomeResource:
@@ -123,3 +131,100 @@ class TestOutcomeResource:
         response = client.get("tasks/task-outcome-configuration/1", headers=headers)
         assert response.status_code == 400
         assert response.json["message"] == "Task outcome configuration not found for the given task Id"
+
+
+class TestTaskCompletionResource:
+    """Test suite for the task completion endpoint."""
+
+    def task_completion_payload(self, application_id):
+        """Returns a valid payload for task completion."""
+        return {
+            "bpmnData": {
+                "variables": {
+                    "formUrl": {"value": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f"},
+                    "applicationId": {"value": application_id},
+                    "webFormUrl": {"value": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f"},
+                    "action": {"value": "Reviewed"}
+                }
+            },
+            "applicationData": {
+                "applicationId": application_id,
+                "applicationStatus": "Reviewed",
+                "formUrl": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f",
+                "submittedBy": "John Doe",
+                "privateNotes": "Test private notes"
+            }
+        }
+
+    def test_task_complete_api_success(self, app, client, session, jwt, create_mapper):
+        """Assert that completing a task returns correct response."""
+        form_id = create_mapper["formId"]
+        token = get_token(jwt, role=CREATE_SUBMISSIONS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        rv = client.post(
+            "/application/create",
+            headers=headers,
+            json=get_application_create_payload(form_id),
+        )
+        assert rv.status_code == 201
+        application_id = rv.json.get("id")
+        token = get_token(jwt, role=MANAGE_TASKS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        task_id = "f30c90f8-be30-11f0-88b5-f2154b5a3afb"
+        # Mock only BPMService.complete_task
+        with patch("formsflow_api.services.tasks.BPMService.complete_task") as mock_bpm:
+            mock_bpm.return_value = None
+            response = client.post(
+                f"tasks/{task_id}/complete",
+                headers=headers,
+                json=self.task_completion_payload(application_id=application_id)
+            )
+
+        assert response.status_code == 200
+        assert response.json["message"] == "Task completed successfully"
+
+    def test_task_complete_api_invalid_request(self, app, client, session, jwt):
+        """Assert that completing a task returns error response."""
+        token = get_token(jwt, role=MANAGE_TASKS)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        task_id = "f30c90f8-be30-11f0-88b5-f2154b5a3afb"
+        # Payload missing bpmnData
+        payload = {
+            "applicationData": {
+                "applicationId": 1,
+                "applicationStatus": "Reviewed",
+                "formUrl": "http://localhost/form/690b032bf089b0ad31b912a3/submission/690ded51944a118ff360502f",
+                "submittedBy": "John Doe",
+                "privateNotes": "Test private notes"
+            }
+        }
+        response = client.post(
+            f"tasks/{task_id}/complete",
+            headers=headers,
+            json=payload
+        )
+        assert response.status_code == 400
+
+    def test_task_complete_api_unauthorized_request(self, app, client, session, jwt):
+        """Assert that completing a task returns unauthorized response."""
+        token = get_token(jwt)
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        task_id = "f30c90f8-be30-11f0-88b5-f2154b5a3afb"
+        response = client.post(
+            f"tasks/{task_id}/complete",
+            headers=headers,
+            json=self.task_completion_payload(application_id=1)
+        )
+        assert response.status_code == 401

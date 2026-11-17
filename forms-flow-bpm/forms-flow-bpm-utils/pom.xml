@@ -8,11 +8,11 @@
     <parent>
         <groupId>formsflow.ai</groupId>
         <artifactId>forms-flow-bpm</artifactId>
-        <version>7.3.0</version>
+        <version>8.1.0-alpha</version>
     </parent>
 
     <artifactId>forms-flow-bpm-utils</artifactId>
-    <version>7.3.0</version>
+    <version>8.1.0-alpha</version>
 
     <name>formsflow BPM Extension Utils</name>
     <description>formsflow BPM Extension</description>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.48</version>
             <scope>provided</scope>
         </dependency>
 

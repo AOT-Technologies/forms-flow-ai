@@ -14,6 +14,7 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(50), nullable=False)
+    role = db.Column(db.String(), nullable=True, comment="user selected role")
     default_filter = db.Column(
         db.Integer, db.ForeignKey("filter.id", ondelete="SET NULL"), nullable=True
     )
@@ -35,6 +36,7 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         user = cls()
         user.created_by = user_data.get("created_by")
         user.user_name = user_data.get("user_name")
+        user.role = user_data.get("role")
         user.locale = user_data.get("locale")
         user.tenant = user_data.get("tenant")
         user.default_filter = user_data.get("default_filter")
@@ -46,6 +48,7 @@ class User(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Update user data."""
         self.update_from_dict(
             [
+                "role",
                 "locale",
                 "tenant",
                 "default_filter",

@@ -44,6 +44,21 @@ const Index = () => {
     dispatch(resetFormData("form", formId));
     dispatch(resetFormProcessData());
     dispatch(setFormAuthVerifyLoading(true));
+    
+    // If no formId, it's a new form creation - just set minimal state
+    if (!formId) {      
+      // Set empty authorization details for new form
+      dispatch(setFormAuthorizationDetails({
+        application: { roles: [], userName: null, resourceDetails: { submitter: false } },
+        designer: { roles: [], userName: null, resourceDetails: {} },
+        reviewer: { roles: [], userName: null, resourceDetails: {} }
+      }));
+      
+      // Set loading state to false for new forms
+      dispatch(setFormAuthVerifyLoading(false));
+      return;
+    }
+    
     dispatch(
       getForm("form", formId, async (err, res) => {
         if (err) {
@@ -70,6 +85,10 @@ const Index = () => {
     );
   }, [formId]);
 
+  // For new forms (no formId), use local state
+  // For existing forms, check both formAuthVerifyLoading and mapperDataLoading
+  
+  
   if (formAuthVerifyLoading || mapperDataLoading) {
     return <Loading />;
   }

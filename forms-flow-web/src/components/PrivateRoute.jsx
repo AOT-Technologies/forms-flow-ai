@@ -37,12 +37,12 @@ import {
 
 import SubmitFormRoutes from "./../routes/Submit/Forms";
 import DesignFormRoutes from "./../routes/Design/Forms";
-import ServiceFlow from "./ServiceFlow";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
 import DesignProcessRoutes from "./../routes/Design/Process";
 import Drafts from "./Draft";
+import Onboarding from "./Onboarding/index";
 import {
   BPM_API_URL_WITH_VERSION,
   WEB_BASE_URL,
@@ -353,6 +353,12 @@ const PrivateRoute = React.memo((props) => {
             )}
             {ENABLE_FORMS_MODULE && (
               <DesignerRoute
+                path={ROUTE_TO.FORM_CREATE}
+                component={DesignFormRoutes}
+              />
+            )}
+            {ENABLE_FORMS_MODULE && (
+              <DesignerRoute
                 path={ROUTE_TO.FORMFLOW}
                 component={DesignFormRoutes}
               />
@@ -389,16 +395,12 @@ const PrivateRoute = React.memo((props) => {
               />
             )}
 
-            {ENABLE_TASKS_MODULE && (
-              <ReviewerRoute path={ROUTE_TO.TASK_OLD} component={ServiceFlow} />
-            )}
-           <Route exact path={ROUTE_TO.TASK} />
-            <Route exact path={ROUTE_TO.ADMIN} />
-            {/* * This route is used to redirect the user to the correct base route
-             * based on their roles. If the user has no roles, they will be redirected
-             * to the not found page.
-             */}
+            <Route exact path={ROUTE_TO.TASK} />
+            <Route path={ROUTE_TO.ADMIN} />
             <Route exact path={ROUTE_TO.ANALYZESUBMISSIONS} />
+            {MULTITENANCY_ENABLED && (
+              <Route path={ROUTE_TO.ONBOARDING} component={Onboarding} />
+            )}
             <Route exact path={BASE_ROUTE}>
               {userRoles.length && <Redirect to={BASE_ROUTE_PATH} />}
             </Route>

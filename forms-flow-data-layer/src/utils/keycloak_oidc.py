@@ -3,8 +3,10 @@
 from typing import Any, Dict
 
 import httpx
+import jwt
 from cachelib import SimpleCache
-from jose import JWTError, jwk, jwt
+from jwt import PyJWK
+from jwt.exceptions import PyJWTError
 
 from src.utils.logger import get_logger
 
@@ -33,18 +35,19 @@ class KeycloakOIDC:
                 response.raise_for_status()
                 jwks = response.json()
             logger.info("Got response form keycloak [public key]")
-            keys = jwks.get("keys", [])
-            # Filter only signing keys with RS256
-            signing_keys = {
-                key["kid"]: jwk.construct(key)
-                for key in keys
-                if key.get("use") == "sig"
-                and key.get("alg") == "RS256"
-                and key.get("kid")
-            }
-            return signing_keys
+            return jwks
         except Exception as e:
             raise RuntimeError(f"Failed to fetch Keycloak public keys: {str(e)}") from e
+
+    async def __get__signing_keys(self, public_keys) -> Dict[str, Any]:
+        """Retrieving signing public keys from the public keys."""
+        keys = public_keys.get("keys", [])
+        signing_public_keys = {
+            key["kid"]: PyJWK(key)
+            for key in keys
+            if key.get("use") == "sig" and key.get("alg") == "RS256" and key.get("kid")
+        }
+        return signing_public_keys
 
     async def __get_public_keys(self) -> Dict[str, Any]:
         """Retrieve public keys from cache or fetch if not present."""
@@ -52,7 +55,8 @@ class KeycloakOIDC:
         if public_keys is None:
             public_keys = await self.__fetch_keys()
             self.cache.set("public_keys", public_keys)
-        return public_keys
+        signing_keys = await self.__get__signing_keys(public_keys)
+        return signing_keys
 
     async def verify_token(self, token: str) -> Dict[str, Any]:
         """Verify the JWT token and return the payload if valid."""
@@ -66,8 +70,9 @@ class KeycloakOIDC:
                 public_keys = await self.__fetch_keys()
                 self.cache.set("public_keys", public_keys)
                 kid = headers.get("kid")
+                public_keys = await self.__get__signing_keys(public_keys)
                 if not kid or kid not in public_keys:
-                    raise JWTError("Public key not found for 'kid'")
+                    raise PyJWTError("Public key not found for 'kid'")
             public_key = public_keys[kid]
             payload = jwt.decode(
                 token,
@@ -78,5 +83,5 @@ class KeycloakOIDC:
             )
             logger.info("Token Verification completed")
             return payload
-        except JWTError as e:
-            raise JWTError(f"Invalid Token: {str(e)}") from e
+        except PyJWTError as e:
+            raise PyJWTError(f"Invalid Token: {str(e)}") from e

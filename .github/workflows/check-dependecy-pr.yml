@@ -1,5 +1,9 @@
 name: Check Dependency PR
 
+# Uses pull_request_target so it can edit the body of fork PRs (needs a write token).
+# It never checks out or runs PR code. From 2026-12-02 GitHub blocks
+# pull_request_target in public repos unless an Actions event policy allows it,
+# so this file must be on that policy's allowlist.
 on:
   pull_request_target:
     types: [opened, edited, synchronize, reopened]
@@ -14,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Extract and update PR with Dependency PR status
-        uses: shuhaibzahir/check-dependency-pr@v3
+        uses: shuhaibzahir/check-dependency-pr@01ad9012c936a2fc0db6db6a3341050342e77b9b # v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # user-token: ${{ secrets.USER_GITHUB_TOKEN }}  // if we need to check a private repo pr pass a user's token

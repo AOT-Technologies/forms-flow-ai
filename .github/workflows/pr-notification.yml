@@ -1,10 +1,17 @@
 name: PR Notification to Google Chat
 
+# Uses pull_request_target so fork PRs can read the PR_NOTIFICATION webhook secret.
+# It never checks out or runs PR code. From 2026-12-02 GitHub blocks
+# pull_request_target in public repos unless an Actions event policy allows it,
+# so this file must be on that policy's allowlist.
 on:
   pull_request_target:
     types: [opened, synchronize, closed]
     branches:
       - develop
+
+# This job doesn't use the GITHUB_TOKEN.
+permissions: {}
 
 jobs:
   notify:
@@ -14,19 +21,22 @@ jobs:
     steps:
       - name: Determine PR Status
         id: pr_status
+        env:
+          PR_ACTION: ${{ github.event.action }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
         run: |
-          if [[ "${{ github.event.action }}" == "opened" ]]; then
+          if [[ "$PR_ACTION" == "opened" ]]; then
             echo "status=🟢 Open" >> $GITHUB_ENV
-          elif [[ "${{ github.event.action }}" == "closed" && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+          elif [[ "$PR_ACTION" == "closed" && "$PR_MERGED" == "true" ]]; then
             echo "status=🟣 Merged" >> $GITHUB_ENV
-          elif [[ "${{ github.event.action }}" == "closed" ]]; then
+          elif [[ "$PR_ACTION" == "closed" ]]; then
             echo "status=🔴 Closed" >> $GITHUB_ENV
           else
             echo "status=🟢 Open" >> $GITHUB_ENV
           fi
 
       - name: Send notification to Google Chat
-        uses: fjogeleit/http-request-action@v1.16.0
+        uses: fjogeleit/http-request-action@dea46570591713c7de04a5b556bf2ff7bdf0aa9c # v1.16.0
         with:
           url: ${{ secrets.PR_NOTIFICATION }}
           method: POST
@@ -37,7 +47,7 @@ jobs:
                 {
                   "header": {
                     "title": "Open source: Pull Request Opened by ${{ github.event.pull_request.user.login }}",
-                    "subtitle": "Pull Request #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}",
+                    "subtitle": ${{ toJSON(format('Pull Request #{0}: {1}', github.event.pull_request.number, github.event.pull_request.title)) }},
                     "imageUrl": "${{ github.event.pull_request.user.avatar_url }}"
                   },
                   "sections": [

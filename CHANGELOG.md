@@ -52,6 +52,9 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 **forms-flow-bpm / forms-flow-web-root-config**
 * Removed the default `WEBSOCKET_ENCRYPT_KEY` from the Docker Compose files, `sample.env` files and `config.sample.js`; Docker Compose now refuses to start without it
 
+**forms-flow-redis / deployment**
+* Pinned the bundled Redis to `redis:7.2.17-alpine` (BSD-3-Clause). The unpinned `redis:alpine` now resolves to Redis 8.x, which is licensed under AGPL, RSAL or SSPL
+
 *Upgrade notes:*
 
 **forms-flow-bpm / forms-flow-web-root-config**
@@ -90,6 +93,10 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 **forms-flow-analytics**
 
    * Set your own `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` before starting Redash; deployments that used the old sample values should rotate them
+
+**forms-flow-redis**
+
+   * The bundled Redis service uses `redis:7.2.17-alpine` instead of `redis:alpine`. The service name, `REDIS_URL` and the `REDIS_*` settings are unchanged. The bundled Redis has no volume and is used only as a cache, so no data migration is needed
 
 `Generic Changes`
 

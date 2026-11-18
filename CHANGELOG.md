@@ -23,11 +23,16 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Fea
 
 * Security: Docker Compose files, `sample.env` files and `config.sample.js` no longer ship a default `WEBSOCKET_ENCRYPT_KEY`.
 
+**forms-flow-redis / deployment**
+
+* Pinned the bundled Redis to `redis:7.2.17-alpine` (BSD-3-Clause). The unpinned `redis:alpine` now resolves to Redis 8.x, which is licensed under AGPL, RSAL or SSPL.
+
 *Upgrade notes:*
 
 * `formsflow_api_utils.utils.pdf.get_pdf_from_html` attaches the token only to the page's own origin plus the hosts passed in `args["auth_hosts"]`. Upgrade forms-flow-documents together with api-utils (it passes `FORMSFLOW_DOC_API_URL`, `FORMSFLOW_API_URL`, `FORMIO_URL` and `CUSTOM_SUBMISSION_URL`); other callers must pass their API hosts in `auth_hosts`.
 * forms-flow-analytics: `docker compose up` now fails unless `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` are set in `.env`. Deployments that used the old `redash-selfhosted` values must rotate both secrets (see `forms-flow-analytics/README.md`).
 * forms-flow-bpm / forms-flow-web: `docker compose up` now fails unless `WEBSOCKET_ENCRYPT_KEY` is set in `.env`. Use the same value for forms-flow-bpm and forms-flow-web (`REACT_APP_WEBSOCKET_ENCRYPT_KEY`). Deployments that used the old public default must set a new random value (e.g. `openssl rand -hex 32`).
+* forms-flow-redis: The bundled Redis service uses `redis:7.2.17-alpine` instead of `redis:alpine`. The service name, `REDIS_URL` and the `REDIS_*` settings are unchanged. The bundled Redis has no volume and is used only as a cache, so no data migration is needed.
 
 ## 8.0.0 
 

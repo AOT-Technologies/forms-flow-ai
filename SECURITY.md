@@ -1,43 +1,64 @@
-# Security Policy
+<!--
+SPDX-FileCopyrightText: 2026 AOT Technologies
 
-## Supported Versions
+SPDX-License-Identifier: Apache-2.0
+-->
 
-Security fixes are released for the latest minor release line of formsflow.ai.
-Older releases do not receive security patches; please upgrade to a supported
-version.
+# Security policy
+
+The formsflow.ai maintainers take the security of the project seriously. This
+document explains which versions receive security fixes and how to report a
+vulnerability responsibly.
+
+## Supported versions
+
+formsflow.ai follows [Semantic Versioning](https://semver.org/). Security fixes are
+applied to the latest 7.x release and the `master` branch.
 
 | Version | Supported          |
 | ------- | ------------------ |
 | 7.3.x   | :white_check_mark: |
 | < 7.3   | :x:                |
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
-**Please do not report security vulnerabilities through public GitHub issues,
-discussions or pull requests.**
+**Do not open a public GitHub issue for security vulnerabilities.**
 
-Report them privately through GitHub's private vulnerability reporting:
+Report suspected vulnerabilities privately through either of the following:
 
-1. Go to the [Security tab](https://github.com/AOT-Technologies/forms-flow-ai/security) of this repository.
-2. Click **Report a vulnerability**, or open a
-   [new security advisory](https://github.com/AOT-Technologies/forms-flow-ai/security/advisories/new) directly.
+- **GitHub Security Advisories** — use the
+  [private vulnerability reporting](https://github.com/AOT-Technologies/forms-flow-ai/security/advisories/new)
+  form for this repository (preferred).
+- **Email** — send details to **opensource@aot-technologies.com**.
 
-Please include as much of the following as you can:
+When reporting, include as much of the following as you can:
 
-- The affected component (for example `forms-flow-api`, `forms-flow-documents`,
-  `forms-flow-api-utils`, `forms-flow-web`, `forms-flow-bpm`, `forms-flow-analytics`)
-  and version or commit
-- The type of issue (for example injection, authentication bypass, information disclosure)
-- Step-by-step instructions to reproduce the issue
-- A proof of concept, if you have one
-- The impact, including how an attacker could exploit the issue
+- A description of the vulnerability and its potential impact, including the type
+  of issue (for example injection, authentication bypass, information disclosure).
+- The component or file involved (for example, `forms-flow-api`, `forms-flow-web`,
+  `forms-flow-bpm`, `forms-flow-documents`, `forms-flow-data-layer`,
+  `forms-flow-api-utils`, `forms-flow-analytics`, or the deployment configuration
+  under `deployment/`).
+- Steps to reproduce, including a minimal proof of concept if available.
+- The version, commit, or deployment configuration affected.
 
-## What to Expect
+## What to expect
 
-- We will acknowledge your report within **3 business days**.
-- We will keep you informed while we investigate and work on a fix.
-- Once a fix is released, we will publish a GitHub security advisory and credit
-  you for the report, unless you prefer to stay anonymous.
+- **Acknowledgement** within 3 business days of your report.
+- An initial assessment and severity triage within 10 business days.
+- Coordinated disclosure: we will work with you on a fix and a public
+  disclosure timeline, and credit you in the advisory unless you prefer to
+  remain anonymous.
 
-Please give us a reasonable amount of time to release a fix before you disclose
-the issue publicly.
+Give us a reasonable opportunity to remediate the issue before any
+public disclosure.
+
+## Scope
+
+This policy covers the code in this repository: the web application, API,
+workflow (BPM), documents, data layer, and identity customizations, together
+with the container images published from it and the default deployment
+configuration. Vulnerabilities in third-party components that formsflow.ai
+integrates, such as Form.io, Camunda, Keycloak, and Redash, should be reported
+to the relevant upstream project; if such an issue affects formsflow.ai users,
+we still welcome a heads-up so we can pin or patch accordingly.

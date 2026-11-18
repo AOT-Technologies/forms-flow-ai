@@ -1,5 +1,9 @@
 name: PR Review Agent
 
+# Uses pull_request_target so fork PRs get OPENAI_KEY and a write token.
+# It never checks out or runs PR code: PR Agent reads the diff via the API.
+# From 2026-12-02 GitHub blocks pull_request_target in public repos unless an
+# Actions event policy allows it, so this file must be on that policy's allowlist.
 on:
   pull_request_target:
     types: [opened, reopened, ready_for_review, synchronize]
@@ -10,21 +14,29 @@ on:
   issue_comment:
 
 permissions:
-  contents: write
+  contents: read # write is only needed for /update_changelog, which isn't used
   issues: write
   pull-requests: write
 
 jobs:
   pr_agent_job:
+    # Comment commands only run on PRs, and only for trusted commenters, so outside
+    # users can't spend the OpenAI key or drive a bot that has write access.
     if: |
-      (github.event_name == 'pull_request_target') || 
-      (github.event_name == 'issue_comment' && github.event.sender.type != 'Bot')
+      (github.event_name == 'pull_request_target') ||
+      (github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        github.event.sender.type != 'Bot' &&
+        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
     runs-on: ubuntu-latest
     name: Run PR Agent on every PR event or issue comment
     steps:
       - name: PR Agent action step
         id: pragent
-        uses: qodo-ai/pr-agent@main
+        # pragent/pr-agent:0.50.0-github_action, pinned by digest (provenance verified
+        # with `gh attestation verify --repo The-PR-Agent/pr-agent`). To upgrade, see
+        # https://github.com/qodo-ai/pr-agent/blob/main/SECURITY.md
+        uses: docker://pragent/pr-agent@sha256:548e894a88071180832b2f4233f734d0acd0db1a879e2fcbaa70bac8b8372ebe
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

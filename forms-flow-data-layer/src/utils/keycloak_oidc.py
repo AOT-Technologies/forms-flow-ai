@@ -3,8 +3,10 @@
 from typing import Any, Dict
 
 import httpx
+import jwt
 from cachelib import SimpleCache
-from jose import JWTError, jwk, jwt
+from jwt import PyJWK
+from jwt.exceptions import PyJWTError
 
 from src.utils.logger import get_logger
 
@@ -35,8 +37,11 @@ class KeycloakOIDC:
             logger.info("Got response form keycloak [public key]")
             keys = jwks.get("keys", [])
             # Filter only signing keys with RS256
+            # Cache the raw JWK dicts (picklable) rather than constructed key
+            # objects, since cachelib pickles cached values and the
+            # cryptography-backed key objects PyJWK produces are not picklable.
             signing_keys = {
-                key["kid"]: jwk.construct(key)
+                key["kid"]: key
                 for key in keys
                 if key.get("use") == "sig"
                 and key.get("alg") == "RS256"
@@ -67,8 +72,8 @@ class KeycloakOIDC:
                 self.cache.set("public_keys", public_keys)
                 kid = headers.get("kid")
                 if not kid or kid not in public_keys:
-                    raise JWTError("Public key not found for 'kid'")
-            public_key = public_keys[kid]
+                    raise PyJWTError("Public key not found for 'kid'")
+            public_key = PyJWK(public_keys[kid]).key
             payload = jwt.decode(
                 token,
                 public_key,
@@ -78,5 +83,5 @@ class KeycloakOIDC:
             )
             logger.info("Token Verification completed")
             return payload
-        except JWTError as e:
-            raise JWTError(f"Invalid Token: {str(e)}") from e
+        except PyJWTError as e:
+            raise PyJWTError(f"Invalid Token: {str(e)}") from e

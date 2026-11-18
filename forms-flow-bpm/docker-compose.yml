@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
     volumes:
-      - postgres_camunda:/var/lib/postgresql/data
+      - postgres_camunda:/var/lib/postgresql
     ports:
       - '5432:5432'
     restart: unless-stopped

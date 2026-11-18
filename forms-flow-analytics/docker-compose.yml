@@ -1,12 +1,18 @@
 # Author: Gurumoorthy Mohan, Kurian Benoy
 version: "3.7"
 
+# Secrets are required: compose fails to start if they are unset or empty.
+x-redash-environment: &redash-environment
+  REDASH_COOKIE_SECRET: ${REDASH_COOKIE_SECRET:?REDASH_COOKIE_SECRET is required. Set a unique random value in .env (e.g. openssl rand -hex 32)}
+  REDASH_SECRET_KEY: ${REDASH_SECRET_KEY:?REDASH_SECRET_KEY is required. Set a unique random value in .env (e.g. openssl rand -hex 32)}
+
 x-redash-service: &redash-service
   image: formsflow/redash:24.04.0
   depends_on:
       - postgres
       - redis
   env_file: .env
+  environment: *redash-environment
   restart: always
 
 services:
@@ -16,6 +22,7 @@ services:
     ports:
       - '7000:5000'
     environment:
+      <<: *redash-environment
       REDASH_WEB_WORKERS: 4
       REDASH_MULTI_ORG: ${REDASH_MULTI_ORG:-false}
   scheduler:
@@ -33,6 +40,7 @@ services:
     <<: *redash-service
     command: worker
     environment:
+      <<: *redash-environment
       QUEUES: "periodic emails default"
       WORKERS_COUNT: 1
     depends_on:

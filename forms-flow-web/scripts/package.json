@@ -17,6 +17,9 @@
   },
   "devDependencies": {},
   "resolutions": {
-    "fast-xml-parser": "5.0.9"
+    "fast-xml-parser": "5.10.1"
+  },
+  "overrides": {
+    "fast-xml-parser": "5.10.1"
   }
 }

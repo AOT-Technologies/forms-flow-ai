@@ -1,4 +1,4 @@
-FROM python:3.13.2-slim-bullseye
+FROM python:3.13.16-slim-trixie
 
 LABEL project="formsflow-data-layer"
 
@@ -9,9 +9,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /formsflow-data-layer
 
-# Install system dependencies & clean up
+# Apply OS security patches & clean up. No compiler is needed: every native
+# dependency (asyncpg, httptools, orjson, ...) ships a prebuilt wheel.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc libpq-dev && \
+    apt-get upgrade -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -25,8 +26,11 @@ RUN python3 -m venv /venv && \
 COPY src/ ./src
 COPY main.py .
 
-# Security: Add non-root user
-RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /formsflow-data-layer
+# Security: Add non-root user. pip is removed from the venv and the base image
+# because it is not needed at runtime and bundles outdated certifi/urllib3/msgpack.
+RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /formsflow-data-layer \
+      && pip uninstall -y ecdsa pip \
+      && /usr/local/bin/python3 -m pip uninstall -y pip
 USER appuser
 
 EXPOSE 8000

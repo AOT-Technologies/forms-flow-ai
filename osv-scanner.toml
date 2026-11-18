@@ -1,0 +1,10 @@
+# OSV-Scanner config, used by .github/workflows/dependency-scan.yml.
+# This file must exist on the base branch, or the PR scan's base comparison fails.
+#
+# Exception process: add an entry in a PR so every exception is reviewed and
+# expires. Example:
+#
+# [[IgnoredVulns]]
+# id = "GHSA-xxxx-xxxx-xxxx"
+# ignoreUntil = 2026-12-31
+# reason = "Not reachable: only used in build tooling. Approved by <name>, FWF-XXXX"

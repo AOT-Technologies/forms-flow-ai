@@ -56,7 +56,7 @@ services:
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
     volumes:
-      - postgres_camunda:/var/lib/postgresql/data
+      - postgres_camunda:/var/lib/postgresql
     ports:
       - '5432:5432'
     restart: always
@@ -147,7 +147,7 @@ services:
       context: ./../../forms-flow-web-root-config/
       dockerfile: Dockerfile
       args:
-        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.3.0/forms-flow-web.gz.js}
+        - MF_FORMSFLOW_WEB_URL=${MF_FORMSFLOW_WEB_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-web@v7.3.1-rc/forms-flow-web.gz.js}
         - MF_FORMSFLOW_NAV_URL=${MF_FORMSFLOW_NAV_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-nav@v7.3.0/forms-flow-nav.gz.js}
         - MF_FORMSFLOW_SERVICE_URL=${MF_FORMSFLOW_SERVICE_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-service@v7.3.0/forms-flow-service.gz.js}
         - MF_FORMSFLOW_COMPONENTS_URL=${MF_FORMSFLOW_COMPONENTS_URL:-https://forms-flow-microfrontends.aot-technologies.com/forms-flow-components@v7.3.0/forms-flow-components.gz.js}

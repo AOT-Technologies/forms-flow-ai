@@ -3,7 +3,8 @@ version: '3.7'
 services:
   redis: 
     container_name: redis
-    image: "redis:alpine"
+    # Pinned to Redis 7.2.x, the last BSD-3-Clause line. Redis 8.x (redis:alpine/latest) is AGPL/RSAL/SSPL.
+    image: "redis:7.2.17-alpine"
     ports:
       - "6379:6379"
     networks:

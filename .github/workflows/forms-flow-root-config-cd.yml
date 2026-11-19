@@ -264,8 +264,8 @@ jobs:
     needs:
       - build-and-push-image-to-dockerhub
 
-    # Deploy to the DEV/QA clusters only from release/* branches.
-    if: ${{ needs.build-and-push-image-to-dockerhub.result == 'success' && startsWith(github.ref, 'refs/heads/release/') }}
+    # Deploy to the DEV/QA clusters only from release/7.3.1.
+    if: ${{ needs.build-and-push-image-to-dockerhub.result == 'success' && github.ref == 'refs/heads/release/7.3.1' }}
 
     runs-on: ubuntu-latest
 
@@ -401,8 +401,8 @@ jobs:
     needs:
       - build-and-push-image-to-dockerhub
 
-    # Deploy to the DEV/QA clusters only from release/* branches.
-    if: ${{ needs.build-and-push-image-to-dockerhub.result == 'success' && startsWith(github.ref, 'refs/heads/release/') }}
+    # Deploy to the DEV/QA clusters only from release/7.3.1.
+    if: ${{ needs.build-and-push-image-to-dockerhub.result == 'success' && github.ref == 'refs/heads/release/7.3.1' }}
 
     runs-on: ubuntu-latest
 
@@ -539,7 +539,7 @@ jobs:
       - build-and-push-image-to-dockerhub
       - deploy-to-dev-eks
 
-    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' && startsWith(github.ref, 'refs/heads/release/') }}
+    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' && github.ref == 'refs/heads/release/7.3.1' }}
 
     uses: ./.github/workflows/docker-image-release-notify.yml
 
@@ -569,7 +569,7 @@ jobs:
       - build-and-push-image-to-dockerhub
       - deploy-to-qa-eks
 
-    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' && startsWith(github.ref, 'refs/heads/release/') }}
+    if: ${{ always() && github.repository == 'AOT-Technologies/forms-flow-ai' && github.ref == 'refs/heads/release/7.3.1' }}
 
     uses: ./.github/workflows/docker-image-release-notify.yml
 

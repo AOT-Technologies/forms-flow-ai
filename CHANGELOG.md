@@ -2,9 +2,9 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 7.3.1 - TBD (update to actual GA date before tagging)
+## 7.3.1 - 2026-11-20
 
-Security release. Release candidate images are tagged `v7.3.1-rc`.
+Security release. Images are tagged `v7.3.1`.
 
 `Fixed`
 

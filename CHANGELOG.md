@@ -100,6 +100,7 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 
 `Generic Changes`
 
+* Removed the forms-flow-data-analysis-api CI/CD workflows, matching develop
 * Fixed security vulnerabilities reported by Dependabot, Trivy and Snyk
 * Docker images apply OS security updates at build time
 * Added an OSV dependency vulnerability scan workflow and `SECURITY.md` for private vulnerability reporting
@@ -110,7 +111,8 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 * The `chromium` package in the forms-flow-documents image has open advisories until Debian publishes the next Chromium security update; rebuild the image to pick it up
 * `forms-flow-bpm` includes Spring Framework 6.2 / Spring Security 6.4 advisories (CVE-2026-47884, CVE-2026-47890, CVE-2026-47892, CVE-2026-22732) that are fixed only in Spring Boot 3.5.x or 4.x; this needs an application upgrade and is tracked separately
 * `forms-flow-bpm` stays on Spring Boot 3.4.13, which has two actuator advisories (CVE-2026-22731, CVE-2026-22733) fixed only in 3.5.x. Neither applies to the default configuration: no health group uses `additional-path`, and the Cloud Foundry actuator endpoints are inactive outside Cloud Foundry
-* `formsflow/forms-flow-forms` is unchanged in this release; use its `v7.3.0` version. The `forms-flow-web` image (forms-flow-web-root-config) loads the `v7.3.1` micro-frontends from forms-flow-ai-micro-front-ends (nav, admin, review, submissions, service, components)
+* `formsflow/forms-flow-forms` and the micro-frontends from forms-flow-ai-micro-front-ends (nav, admin, review, submissions, service, components) are unchanged in this release; use their `v7.3.0` versions. `forms-flow-web` is published as `v7.3.1`
+* No `formsflow/forms-flow-data-analysis-api` image is published for 7.3.1: its CI/CD workflows were removed, as on develop. The source and Dockerfile fixes above are included; build the image from source to use them
 
 ## 7.3.0 - 2025-10-14
 

@@ -81,7 +81,17 @@ Security release. Release candidate images are tagged `v7.3.1-rc`.
 **forms-flow-documents**
 
    * PDFs are rendered with Debian's Chromium (156 at release time) instead of Google Chrome 116. Check custom PDF templates for layout differences. `CHROME_DRIVER_PATH` still defaults to `/usr/local/bin/chromedriver`
-   * Give the forms-flow-documents container at least 1 GiB of memory (2 GiB recommended). Each PDF export starts a Chromium browser on top of the 5 API workers, and with a 512 MiB limit the container is killed (`OOMKilled`) during export, which shows up as a 502 error
+   * Give the forms-flow-documents container a memory limit of at least 1 GiB. Each PDF export starts a Chromium browser on top of the 5 API workers, and with a 512 MiB limit the container is killed (`OOMKilled`) during export, which shows up as a 502 error. Tested resources:
+
+     ```yaml
+     resources:
+       requests:
+         cpu: 300m
+         memory: 512Mi
+       limits:
+         cpu: 400m
+         memory: 1Gi
+     ```
 
 **forms-flow-data-analysis-api**
 

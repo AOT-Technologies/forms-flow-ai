@@ -24,7 +24,7 @@ window["_env_"] = {
   REACT_APP_BPM_URL: "<Camunda base API>",
 
 //Web Socket encrypt key for Socket IO
-  REACT_APP_WEBSOCKET_ENCRYPT_KEY: "giert989jkwrgb@DR55",
+  REACT_APP_WEBSOCKET_ENCRYPT_KEY: "<Same value as WEBSOCKET_ENCRYPT_KEY in forms-flow-bpm>",
 
   // web Api End point, default: http://{your-ip-address}:3004/single-spa-build.js
   REACT_APP_WEB_BASE_URL: "<Web Api base end-point>",

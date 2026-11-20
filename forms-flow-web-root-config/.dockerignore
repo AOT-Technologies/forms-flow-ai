@@ -1,0 +1,23 @@
+# Keep the build context limited to what the build needs.
+
+# Dependencies are installed with `npm ci` inside the image; a local
+# node_modules must never overwrite them.
+node_modules/
+
+# Build output is produced inside the image
+dist/
+
+# Local environment files. webpack.config.js loads ./.env and inlines
+# process.env into the bundle, so a local .env must never reach the build.
+.env
+.env.*
+*.env
+
+# Version control, editor and Docker files
+.git
+.gitignore
+.vscode/
+.idea/
+Dockerfile*
+docker-compose*.yml
+*.log

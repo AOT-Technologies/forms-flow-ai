@@ -5,7 +5,7 @@ Flask-Migrate
 Flask-Moment
 Flask-SQLAlchemy
 flask-restx
-flask-jwt-oidc==0.7.0 # somehow latest version is not geting pulled from pypi
+flask-jwt-oidc==0.9.0
 python-dotenv
 psycopg2-binary
 marshmallow-sqlalchemy
@@ -15,8 +15,5 @@ sqlalchemy_utils
 markupsafe
 PyJWT
 selenium==4.25.0
-selenium-wire
-blinker<1.8.0 # latest selenium-wire have breaking changes with blinker
 nested-lookup
-setuptools
-git+https://github.com/aot-technologies/forms-flow-ai.git@release/7.3.0#subdirectory=forms-flow-api-utils
+git+https://github.com/aot-technologies/forms-flow-ai.git@release/7.3.1#subdirectory=forms-flow-api-utils

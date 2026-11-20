@@ -2,6 +2,139 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Modified`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 7.3.1 - 2026-11-20
+
+Security release. Images are tagged `v7.3.1`.
+
+`Fixed`
+
+**forms-flow-api / forms-flow-api-utils**
+* Migrated authentication from `python-jose`/`ecdsa` to `PyJWT`, resolving the `ecdsa` timing attack (CVE-2024-23342)
+* Upgraded `flask-jwt-oidc` to 0.8.0 and other vulnerable Python dependencies (`cryptography`, `PyJWT`, `Werkzeug`, `urllib3`, `requests`, `pyasn1`)
+* PDF generation attaches the user's token only to trusted formsflow origins; previously headless Chrome sent it to every host the page loaded from
+* Removed `selenium-wire` from api-utils; request headers are now set through the Chrome DevTools Protocol
+* forms-flow-api Docker image moved to Debian 13 (`python:3.13.16-slim-trixie`) and no longer ships `pip`
+* Form.io token caching no longer fails when the token cannot be decoded; it falls back to a 300-second cache
+
+**forms-flow-documents**
+* PDF templates, including caller-supplied custom templates, render in a sandboxed Jinja environment (template injection)
+* Upgraded `Flask` to 3.1.3 (CVE-2026-27205) and `flask-jwt-oidc` to 0.9.0, and removed `selenium-wire`
+* Removed `python-jose`/`ecdsa` in favour of `PyJWT` and upgraded vulnerable Python dependencies
+* Docker image moved to Debian 13 and uses Debian's `chromium` and `chromium-driver` packages instead of Chrome 116 and ChromeDriver downloaded from `formsflow-documentsapi.aot-technologies.com` (those downloads are no longer available, so the image could not be built)
+
+**forms-flow-data-layer**
+* Migrated Keycloak token verification from `python-jose`/`ecdsa` to `PyJWT`
+* Upgraded `strawberry-graphql` to 0.327.2 and other vulnerable Python dependencies
+* Docker image moved to Debian 13 and no longer installs a compiler
+* Upgraded `dnspython` to 2.9.2
+
+**forms-flow-data-analysis-api / sentiment-analysis job**
+* Upgraded vulnerable Python and machine-learning dependencies (`torch`, `transformers` 5.10.4 and others)
+* Removed unused `nltk` and `spaCy` from the sentiment-analysis job
+* forms-flow-data-analysis-api Docker image moved to Debian 13 (`python:3.11.17-slim-trixie`) and no longer ships `pip`, `setuptools` or `wheel`
+* Fixed the sentiment-analysis image build: it no longer compiles `psycopg2` from source (`psycopg2-binary` is used)
+
+**forms-flow-web / forms-flow-web-root-config**
+* Upgraded vulnerable frontend dependencies and overrode vulnerable transitive packages, including `serialize-javascript` 7.1.3, `dompurify` 3.4.17, `body-parser`, `follow-redirects` and `qs`
+* Docker images use `nginx:1.30-alpine`
+* Docker Compose and `sample.env` files point to the `v7.3.1` micro-frontends
+
+**forms-flow-bpm**
+* Upgraded Spring, Tomcat, Jackson, Netty, BouncyCastle, logback, `httpclient5`/`httpcore5`, `json-smart` (CVE-2024-57699), `ant` and the PostgreSQL driver
+* Replaced the shaded `camunda-spin-dataformat-all` with the JSON and XML Spin dataformats, so Jackson and `json-smart` resolve to patched versions
+* Replaced the retired `app.camunda.com` Maven repository with `artifacts.camunda.com`
+
+**forms-flow-idm**
+* Upgraded Keycloak to 26.7.5 in the IdP selector extension, with `opentelemetry-api` 1.67.0
+* `keycloak-customizations` Docker image applies Alpine security updates at build time
+
+**forms-flow-analytics**
+* Removed the default `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` from `sample.env`; Docker Compose now refuses to start without them
+
+**forms-flow-bpm / forms-flow-web-root-config**
+* Removed the default `WEBSOCKET_ENCRYPT_KEY` from the Docker Compose files, `sample.env` files and `config.sample.js`; Docker Compose now refuses to start without it
+
+**forms-flow-redis / deployment**
+* Pinned the bundled Redis to `redis:7.2.17-alpine` (BSD-3-Clause). The unpinned `redis:alpine` now resolves to Redis 8.x, which is licensed under AGPL, RSAL or SSPL
+
+*Upgrade notes:*
+
+**forms-flow-bpm / forms-flow-web-root-config**
+
+   * `docker compose up` now fails unless `WEBSOCKET_ENCRYPT_KEY` is set in `.env`. Use the same value for forms-flow-bpm and forms-flow-web (`REACT_APP_WEBSOCKET_ENCRYPT_KEY`). Deployments that used the old public default must set a new random value (e.g. `openssl rand -hex 32`)
+
+**forms-flow-api-utils**
+
+   * Services now use `flask-jwt-oidc` 0.8.0 (api) or 0.9.0 (documents, data-analysis). 0.9.0 changed `contains_role`/`validate_roles` to `(roles, claims=None)`; api-utils passes keyword arguments so it works with both. Custom code that calls these methods directly should do the same
+
+**forms-flow-web / forms-flow-web-root-config**
+
+   * Builds require Node.js 24 (24.21.0); Node.js 18 is no longer supported
+   * `webpack-dev-server` is overridden to 5.x for security fixes; `craco.config.js` converts the dev-server options created by react-scripts, so `npm start` works as before
+
+**forms-flow-bpm**
+
+   * SpringBoot version upgraded to 3.4.13
+   * Docker image uses `eclipse-temurin:21-jdk-jammy` instead of `openjdk:21-ea-jdk`
+   * The shaded `camunda-spin-dataformat-all` is no longer included. Custom extensions that import Jackson from `spinjar.com.fasterxml.jackson.*` must import `com.fasterxml.jackson.*` instead
+
+**forms-flow-api / forms-flow-data-layer / forms-flow-documents**
+
+   * Docker images use `python:3.13.16-slim-trixie` (Debian 13)
+
+**forms-flow-documents**
+
+   * PDFs are rendered with Debian's Chromium (156 at release time) instead of Google Chrome 116. Check custom PDF templates for layout differences. `CHROME_DRIVER_PATH` still defaults to `/usr/local/bin/chromedriver`
+   * Custom PDF templates are rendered in a sandbox without Flask globals (`config`, `request`, `session`, `g`). Templates that use them, or other unsafe expressions, are rejected with `400 TEMPLATE_UNSAFE`
+   * Give the forms-flow-documents container a memory limit of at least 1 GiB. Each PDF export starts a Chromium browser on top of the 5 API workers, and with a 512 MiB limit the container is killed (`OOMKilled`) during export, which shows up as a 502 error. Tested resources:
+
+     ```yaml
+     resources:
+       requests:
+         cpu: 300m
+         memory: 512Mi
+       limits:
+         cpu: 400m
+         memory: 1Gi
+     ```
+
+**forms-flow-data-analysis-api**
+
+   * Docker image uses `python:3.11.17-slim-trixie` (Debian 13) instead of `python:3.11.7-slim-bookworm`
+
+**sentiment-analysis job**
+
+   * Docker image uses `python:3.13.9-slim-bookworm` (Debian 12) instead of Debian 11
+
+**forms-flow-analytics**
+
+   * Set your own `REDASH_COOKIE_SECRET` and `REDASH_SECRET_KEY` before starting Redash; deployments that used the old sample values should rotate them
+
+**forms-flow-redis**
+
+   * The bundled Redis service uses `redis:7.2.17-alpine` instead of `redis:alpine`. The service name, `REDIS_URL` and the `REDIS_*` settings are unchanged. The bundled Redis has no volume and is used only as a cache, so no data migration is needed
+
+`Generic Changes`
+
+* Removed the forms-flow-data-analysis-api CI/CD workflows, matching develop
+* Fixed security vulnerabilities reported by Dependabot, Trivy and Snyk
+* Docker images apply OS security updates at build time
+* Added an OSV dependency vulnerability scan workflow and `SECURITY.md` for private vulnerability reporting
+* Synced the GitHub Actions workflows from develop: Docker Hub login uses short-lived OIDC tokens instead of a stored password, published images are signed with cosign, and release workflows (release orchestrator, version bump) were added
+* Added `GOVERNANCE.md`, updated `SECURITY.md` and `README.md`, and added version-bump scripts for macOS and Windows
+* Added `.dockerignore` files for forms-flow-api, forms-flow-documents and forms-flow-web-root-config, so images contain only runtime files
+* Removed `forms-flow-documents/Dockerfile-ARM64`; all published images are built for amd64 and arm64 from their main `Dockerfile`
+* Added `.trivyignore.yaml` for Trivy findings that are not vulnerabilities
+
+`Known Issues`
+
+* A few OS packages in the Docker images (such as `util-linux`, `krb5` and `ncurses`) still have advisories with no fixed Debian release
+* The `chromium` package in the forms-flow-documents image has open advisories until Debian publishes the next Chromium security update; rebuild the image to pick it up
+* `forms-flow-bpm` includes Spring Framework 6.2 / Spring Security 6.4 advisories (CVE-2026-47884, CVE-2026-47890, CVE-2026-47892, CVE-2026-22732) that are fixed only in Spring Boot 3.5.x or 4.x; this needs an application upgrade and is tracked separately
+* `forms-flow-bpm` stays on Spring Boot 3.4.13, which has two actuator advisories (CVE-2026-22731, CVE-2026-22733) fixed only in 3.5.x. Neither applies to the default configuration: no health group uses `additional-path`, and the Cloud Foundry actuator endpoints are inactive outside Cloud Foundry
+* `formsflow/forms-flow-forms` is unchanged in this release; use its `v7.3.0` version. The `forms-flow-web` image (forms-flow-web-root-config) loads the `v7.3.1` micro-frontends from forms-flow-ai-micro-front-ends (nav, admin, review, submissions, service, components)
+* No `formsflow/forms-flow-data-analysis-api` image is published for 7.3.1: its CI/CD workflows were removed, as on develop. The source and Dockerfile fixes above are included; build the image from source to use them
+
 ## 7.3.0 - 2025-10-14
 
 `Modified`

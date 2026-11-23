@@ -2,7 +2,7 @@
 # if the application is built from a source repo other than aot , use the custom copying.
 # steps : checkout the aot source code and use the copy logic.
 # -----------------------------------------------------------
-FROM docker-remote.artifacts.developer.gov.bc.ca/python:3.8
+FROM docker-remote.artifacts.developer.gov.bc.ca/python:3.10
 
 RUN apt-get update \
     && apt-get install -y git

@@ -98,7 +98,7 @@ jobs:
       # When run standalone (workflow_dispatch), both default to empty and
       # actions/checkout uses the current repo + dispatch ref as normal.
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.RELEASE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
           repository: ${{ inputs.target_repository || github.repository }}
